@@ -1,30 +1,35 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
 package org.openhab.binding.resolvbus.model;
+
+/**
+ * @author Michael Heckmann
+ * @since 1.7.0
+ */
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "destination", "source", "command", "field"})
-@XmlRootElement(name = "packet")
 
 public class ResolVBUSPacket {
 	
-	@XmlElement(required = true)
-	protected String destination;
-	@XmlElement(required = true)
-	protected String source;
-	@XmlElement(required = true)
-	protected String command;
-	@XmlElement(required = true)
+	private String destination;
+	private String source;
+	private String command;
+	private String destinationMask;
+	private String sourceMask;
 	
-	protected List<ResolVBUSField> field;
+	@XStreamImplicit
+	private List<ResolVBUSField> field;
 	
 	
 	public String getDestination() {
@@ -70,6 +75,21 @@ public class ResolVBUSPacket {
 				return field;
 		}
 		return null;
+	}
+	public String getDestinationMask() {
+		return destinationMask;
+	}
+	public void setDestinationMask(String destinationMask) {
+		this.destinationMask = destinationMask;
+	}
+	public void setField(List<ResolVBUSField> field) {
+		this.field = field;
+	}
+	public String getSourceMask() {
+		return sourceMask;
+	}
+	public void setSourceMask(String sourceMask) {
+		this.sourceMask = sourceMask;
 	}
 
 }

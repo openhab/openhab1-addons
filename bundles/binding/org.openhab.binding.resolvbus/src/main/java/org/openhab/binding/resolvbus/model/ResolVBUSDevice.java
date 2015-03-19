@@ -1,26 +1,24 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
 package org.openhab.binding.resolvbus.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "address", "name", "mask", "isMaster"})
-@XmlRootElement(name = "device")
+/**
+ * @author Michael Heckmann
+ * @since 1.7.0
+ */
 
 public class ResolVBUSDevice {
 	
-	@XmlElement(required = true)
 	protected String address;
-	@XmlElement(required = true)
 	protected String name;
-	@XmlElement(required = false)
 	protected String mask;
-	@XmlElement(required = true)
 	protected boolean isMaster;
 	
 	

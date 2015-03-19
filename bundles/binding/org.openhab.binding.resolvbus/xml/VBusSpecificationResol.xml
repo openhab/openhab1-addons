@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <vbusSpecification>
 	<device>
 		<address>0x7731</address>
@@ -144,14 +144,14 @@
 		<destination>0x0010</destination>
 		<source>0x7731</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -227,24 +227,24 @@
 			<bitSize>8</bitSize>
 			<factor>1</factor>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärmemenge</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>20</offset>
 				<bitSize>16</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>22</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>24</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 		<field>
 			<offset>26</offset>
@@ -259,14 +259,14 @@
 		<destination>0x0010</destination>
 		<source>0x3211</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -286,7 +286,7 @@
 			<bitSize>8</bitSize>
 			<unit> %</unit>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>7</offset>
 			<name>Fehlercode</name>
 			<bitSize>8</bitSize>
@@ -314,14 +314,14 @@
 		<destination>0x0010</destination>
 		<source>0x3221</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -352,7 +352,7 @@
 			<name>Regelflags</name>
 			<bitSize>16</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>10</offset>
 			<name>Errormask</name>
 			<bitSize>8</bitSize>
@@ -376,14 +376,14 @@
 		<destination>0x0010</destination>
 		<source>0x5210</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -440,23 +440,23 @@
 			<name>Antifreeze type</name>
 			<bitSize>8</bitSize>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Heat amount</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>16</offset>
 				<bitSize>16</bitSize>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>18</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>20</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 		<field>
 			<offset>22</offset>
@@ -468,7 +468,7 @@
 			<name>Software</name>
 			<bitSize>8</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>24</offset>
 			<name>Error mask</name>
 			<bitSize>8</bitSize>
@@ -501,14 +501,14 @@
 		<destination>0x0010</destination>
 		<source>0x5510</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -546,7 +546,7 @@
 			<name>Regelstatus</name>
 			<bitSize>8</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>12</offset>
 			<name>Errormask</name>
 			<bitSize>8</bitSize>
@@ -558,7 +558,7 @@
 		<destination>0x0010</destination>
 		<source>0x6610</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
@@ -566,7 +566,7 @@
 			<format>F1</format>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -659,7 +659,7 @@
 			<name>Fehlernummer</name>
 			<bitSize>8</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>16</offset>
 			<name>Errormask</name>
 			<bitSize>16</bitSize>
@@ -735,38 +735,38 @@
 		<source>0x4010</source>
 		<sourceMask>0xFFF0</sourceMask>
 		<command>0x0100</command>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärme</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>2</offset>
 				<bitSize>16</bitSize>
-				<factor>1.0</factor>
-			</field>
-			<field>
+				<factor>1</factor>
+			</value>
+			<value>
 				<offset>0</offset>
 				<bitSize>16</bitSize>
-				<factor>1000.0</factor>
-			</field>
-			<field>
+				<factor>1000</factor>
+			</value>
+			<value>
 				<offset>12</offset>
 				<bitSize>16</bitSize>
-				<factor>1000000.0</factor>
-			</field>
+				<factor>1000000</factor>
+			</value>
 		</field>
 		<field>
 			<name>Leistung</name>
 			<unit> W</unit>
-			<field>
+			<value>
 				<offset>6</offset>
 				<bitSize>8</bitSize>
 				<factor>10</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>14</offset>
 				<bitSize>8</bitSize>
 				<factor>2560</factor>
-			</field>
+			</value>
 		</field>
 		<field>
 			<offset>4</offset>
@@ -808,14 +808,14 @@
 		<destination>0x0010</destination>
 		<source>0x4221</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -853,7 +853,7 @@
 			<name>Relais mask</name>
 			<bitSize>8</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>11</offset>
 			<name>Error mask</name>
 			<bitSize>8</bitSize>
@@ -925,24 +925,24 @@
 			<bitSize>16</bitSize>
 			<factor>1</factor>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Heat amount</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>20</offset>
 				<bitSize>16</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>22</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>24</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 		<field>
 			<offset>26</offset>
@@ -1069,14 +1069,14 @@
 		<destination>0x0010</destination>
 		<source>0x7311</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -1243,7 +1243,7 @@
 			<name>Relais usage mask</name>
 			<bitSize>16</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>60</offset>
 			<name>Error mask</name>
 			<bitSize>16</bitSize>
@@ -1341,23 +1341,23 @@
 			<bitSize>16</bitSize>
 			<unit> l/h</unit>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärme</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>6</offset>
 				<bitSize>16</bitSize>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>8</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>10</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 	</packet>
 	
@@ -1366,14 +1366,14 @@
 		<destination>0x0010</destination>
 		<source>0x7411</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -1562,24 +1562,24 @@
 			<bitSize>16</bitSize>
 			<unit> h</unit>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärmemenge</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>40</offset>
 				<bitSize>16</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>42</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>44</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 	</packet>
 
@@ -1838,14 +1838,14 @@
 		<destination>0x0010</destination>
 		<source>0x3231</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -1865,7 +1865,7 @@
 			<bitSize>7</bitSize>
 			<unit> %</unit>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>7</offset>
 			<name>Errormask</name>
 			<bitSize>7</bitSize>
@@ -1900,14 +1900,14 @@
 		<destination>0x0010</destination>
 		<source>0x3251</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -1927,7 +1927,7 @@
 			<bitSize>7</bitSize>
 			<unit> %</unit>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>7</offset>
 			<name>Errormask</name>
 			<bitSize>7</bitSize>
@@ -2060,37 +2060,37 @@
 			<name>Status</name>
 			<bitSize>8</bitSize>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärmemenge</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>28</offset>
 				<bitSize>16</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>30</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>32</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 		<field>
 			<name>Version</name>
-			<field>
+			<value>
 				<offset>34</offset>
 				<bitSize>7</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>35</offset>
 				<bitSize>7</bitSize>
-				<factor>0,01</factor>
-			</field>
+				<factor>0.01</factor>
+			</value>
 		</field>
 	</packet>
 
@@ -2099,14 +2099,14 @@
 		<destination>0x0010</destination>
 		<source>0x7621</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -2198,7 +2198,7 @@
 			<bitSize>7</bitSize>
 			<unit> %</unit>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>25</offset>
 			<name>Errormask</name>
 			<bitSize>16</bitSize>
@@ -2210,16 +2210,16 @@
 		</field>
 		<field>
 			<name>Version</name>
-			<field>
+			<value>
 				<offset>30</offset>
 				<bitSize>7</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>31</offset>
 				<bitSize>7</bitSize>
-				<factor>0,01</factor>
-			</field>
+				<factor>0.01</factor>
+			</value>
 			<format>F2</format>
 		</field>
 	</packet>
@@ -2249,24 +2249,24 @@
 			<bitSize>15</bitSize>
 			<unit> l/h</unit>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärmemenge</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>6</offset>
 				<bitSize>16</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>8</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>10</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 	</packet>
 
@@ -2275,14 +2275,14 @@
 		<destination>0x0010</destination>
 		<source>0x7721</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -2408,7 +2408,7 @@
 			<bitSize>7</bitSize>
 			<unit> %</unit>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>36</offset>
 			<name>Errormask</name>
 			<bitSize>16</bitSize>
@@ -2503,16 +2503,16 @@
 		</field>
 		<field>
 			<name>Version</name>
-			<field>
+			<value>
 				<offset>60</offset>
 				<bitSize>7</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>61</offset>
 				<bitSize>7</bitSize>
-				<factor>0,01</factor>
-			</field>
+				<factor>0.01</factor>
+			</value>
 			<format>F2</format>
 		</field>
 	</packet>
@@ -2543,24 +2543,24 @@
 			<bitSize>15</bitSize>
 			<unit> l/h</unit>
 		</field>
-		<field commonUsage='heat'>
+		<field>
 			<name>Wärmemenge</name>
 			<unit> Wh</unit>
-			<field>
+			<value>
 				<offset>6</offset>
 				<bitSize>16</bitSize>
 				<factor>1</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>8</offset>
 				<bitSize>16</bitSize>
 				<factor>1000</factor>
-			</field>
-			<field>
+			</value>
+			<value>
 				<offset>10</offset>
 				<bitSize>16</bitSize>
 				<factor>1000000</factor>
-			</field>
+			</value>
 		</field>
 	</packet>
 
@@ -2607,14 +2607,14 @@
 		<destination>0x0010</destination>
 		<source>0x7321</source>
 		<command>0x0100</command>
-		<field commonUsage='collector1'>
+		<field>
 			<offset>0</offset>
 			<name>Temperature sensor 1</name>
 			<bitSize>15</bitSize>
 			<factor>0.1</factor>
 			<unit> °C</unit>
 		</field>
-		<field commonUsage='store1'>
+		<field>
 			<offset>2</offset>
 			<name>Temperature sensor 2</name>
 			<bitSize>15</bitSize>
@@ -2781,7 +2781,7 @@
 			<name>Relais usage mask</name>
 			<bitSize>16</bitSize>
 		</field>
-		<field commonUsage='error'>
+		<field>
 			<offset>60</offset>
 			<name>Error mask</name>
 			<bitSize>16</bitSize>

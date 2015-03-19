@@ -27,6 +27,6 @@ Export-Package: org.openhab.binding.resolvbus
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: ., lib/xstream-1.4.6.jar
 Require-Bundle: org.eclipse.osgi,
  javax.xml.bind

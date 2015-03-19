@@ -8,21 +8,21 @@
  */
 package org.openhab.binding.resolvbus.internal;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
 import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
+import org.openhab.binding.resolvbus.model.ResolVBUSDevice;
 import org.openhab.binding.resolvbus.model.ResolVBUSField;
 import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
 import org.openhab.binding.resolvbus.model.ResolVBUSPacket;
+import org.openhab.binding.resolvbus.model.ResolVBUSValue;
 
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -35,10 +35,13 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thoughtworks.xstream.XStream;
 
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * Implement this class if you are going create an actively polling service
@@ -109,20 +112,17 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			
 	
 			// read further config parameters here ...
-			try {
-				loadXMLConfig();
-				// make sure that there is no listener running
-				packetReceiver.stopListener();
-				// send the parsed information to the listener
-				packetReceiver.initializeReceiver(host,port, config);
-				// start the listener
-				new Thread(packetReceiver).start();
-				setProperlyConfigured(true);
+		
+			loadXMLConfig();
+			// make sure that there is no listener running
+			packetReceiver.stopListener();
+			// send the parsed information to the listener
+			packetReceiver.initializeReceiver(host,port, config);
+			// start the listener
+			new Thread(packetReceiver).start();
+			setProperlyConfigured(true);
 				
-			} catch (JAXBException e) {
-				logger.debug("Couldn't read XML Config: "+e.getMessage()+" ");
-				e.printStackTrace();
-			}
+			
 			
 		}
 	}
@@ -229,15 +229,45 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 
 	}
 	
-	public void loadXMLConfig() throws JAXBException {
+	public void loadXMLConfig()  {
 
-		JAXBContext jc;
-		jc = JAXBContext.newInstance(ResolVBUSConfig.class);
-		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		config = (ResolVBUSConfig) unmarshaller.unmarshal(getClass().getResourceAsStream("/xml/VBusSpecificationResol.xml"));
-		if (config == null) {
-			logger.debug("Error reading XML Configuration");
+//		try {
+//			JAXBContext jc = JAXBContext.newInstance(ResolVBUSConfig.class);
+//			Unmarshaller unmarshaller = jc.createUnmarshaller();
+//			config = (ResolVBUSConfig) unmarshaller.unmarshal(getClass().getResourceAsStream("/xml/VBusSpecificationResol.xml"));
+//			if (config == null) {
+//				logger.debug("Error reading XML Configuration");
+//			}
+//		} catch (JAXBException e) {
+//			logger.debug("Couldn't read XML Config: "+e.getMessage()+" ");
+//			e.printStackTrace();
+//		}
+		
+		
+		URL entry = FrameworkUtil.getBundle(ResolVBUSConfig.class).getEntry("xml/VBusSpecificationResol.xml");
+
+		if (entry == null) {
+			config = null;
+			logger.error("Unable to load VBusSpecificationResol.xml");
+			return;
 		}
+		
+		XStream xstream = new XStream(new StaxDriver());
+		xstream.alias("vbusSpecification",ResolVBUSConfig.class);
+		xstream.alias("device",ResolVBUSDevice.class);
+		xstream.alias("field",ResolVBUSField.class);
+		xstream.alias("packet",ResolVBUSPacket.class);
+		xstream.alias("value", ResolVBUSValue.class);
+		
+		xstream.processAnnotations(ResolVBUSConfig.class);
+		
+		try {
+		InputStream x = entry.openStream();
+		config = (ResolVBUSConfig) xstream.fromXML(x);
+		} catch (IOException e) {
+			logger.error("Couldn't read XML Config: "+e.getMessage());
+		}
+		
 	}
 
 

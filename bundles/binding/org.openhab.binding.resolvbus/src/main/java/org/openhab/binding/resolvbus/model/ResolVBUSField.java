@@ -1,40 +1,39 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+
 package org.openhab.binding.resolvbus.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "name", "factor", "unit", "offset", "bitSize", "format", "commonUsage" })
-@XmlRootElement(name = "field")
+/**
+ * @author Michael Heckmann
+ * @since 1.7.0
+ */
 
 public class ResolVBUSField {
 
-	protected String format;
+	private String format;
+	private BigInteger offset;
+	private String name;
+	private BigInteger bitSize;
+	private BigDecimal factor;
+	private String unit;
+	private String field;
+	private BigInteger bitPos;
+	private String timeRef;
 	
-	@XmlElement(required = true)
-	protected BigInteger offset;
-	
-	@XmlElement(required = true)
-	protected String name;
-	
-	@XmlElement(required = true)
-	protected BigInteger bitSize;
-	
-	@XmlElement(required = true)
-	protected BigDecimal factor;
-	
-	@XmlElement(required = true)
-	protected String unit;
-	
-	@XmlAttribute
-	protected String commonUsage;
+	@XStreamImplicit
+	private List<ResolVBUSValue> value;
 
 	public String getFormat() {
 		return format;
@@ -84,12 +83,36 @@ public class ResolVBUSField {
 		this.unit = unit;
 	}
 
-	public String getCommonUsage() {
-		return commonUsage;
+	public String getField() {
+		return field;
 	}
 
-	public void setCommonUsage(String commonUsage) {
-		this.commonUsage = commonUsage;
+	public void setField(String field) {
+		this.field = field;
 	}
-	
+
+	public List<ResolVBUSValue> getValue() {
+		return value;
+	}
+
+	public void setValue(List<ResolVBUSValue> value) {
+		this.value = value;
+	}
+
+	public BigInteger getBitPos() {
+		return bitPos;
+	}
+
+	public void setBitPos(BigInteger bitPos) {
+		this.bitPos = bitPos;
+	}
+
+	public String getTimeRef() {
+		return timeRef;
+	}
+
+	public void setTimeRef(String timeRef) {
+		this.timeRef = timeRef;
+	}
+
 }
