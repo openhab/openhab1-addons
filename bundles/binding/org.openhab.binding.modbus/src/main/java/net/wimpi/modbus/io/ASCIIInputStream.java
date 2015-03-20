@@ -16,11 +16,12 @@
 
 package net.wimpi.modbus.io;
 
-import net.wimpi.modbus.Modbus;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.FilterInputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class implementing a specialized <tt>InputStream</tt> which
@@ -39,6 +40,7 @@ import java.io.FilterInputStream;
 public class ASCIIInputStream
     extends FilterInputStream {
 
+  private static final Logger logger = LoggerFactory.getLogger(ASCIIInputStream.class);
   /**
    * Constructs a new <tt>ASCIIInputStream</tt> instance
    * reading from the given <tt>InputStream</tt>.
@@ -78,12 +80,13 @@ public class ASCIIInputStream
       } else {
         try {
           sbuf.append((char) in.read());
-          //System.out.println("Read byte: " + sbuf.toString().toLowerCase());
+          logger.trace("Read byte: {}", sbuf.toString().toLowerCase());
           return Integer.parseInt(sbuf.toString().toLowerCase(), 16);
         } catch (NumberFormatException ex) {
           //malformed stream
-          if(Modbus.debug) System.out.println(sbuf.toString());
-          throw new IOException("Malformed Stream - Wrong Characters");
+          final String errMsg = "Malformed Stream - Wrong Characters";
+          logger.debug("{}: {}", errMsg, sbuf.toString());
+          throw new IOException(errMsg);
         }
       }
     }
