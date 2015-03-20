@@ -51,6 +51,8 @@ public class SliderRenderer extends AbstractWidgetRenderer {
 
 		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(s));
 		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(s)));
+		snippet = StringUtils.replace(snippet, "%alarm_icon%", escapeURLPath(itemUIRegistry.getAlarmIcon(w)));
+		snippet = StringUtils.replace(snippet, "%alarm_text%", itemUIRegistry.getAlarmText(w));
 		snippet = StringUtils.replace(snippet, "%item%", w.getItem());
 		snippet = StringUtils.replace(snippet, "%label%", getLabel(s));
 		snippet = StringUtils.replace(snippet, "%state%", itemUIRegistry.getState(s).toString());

@@ -32,6 +32,7 @@ import org.openhab.core.scriptengine.Script;
 import org.openhab.core.scriptengine.ScriptEngine;
 import org.openhab.core.scriptengine.ScriptExecutionException;
 import org.openhab.core.scriptengine.ScriptExecutionThread;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.EventType;
 import org.openhab.core.types.State;
@@ -196,6 +197,15 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			}
 		}
 		
+		/* (non-Javadoc)
+		 * @see org.openhab.core.items.StateChangeListener#alarmStateUpdated(org.openhab.core.items.Item, org.openhab.core.types.AlarmState)
+		 */
+		@Override
+		public void alarmStateUpdated(Item item, AlarmState alarmState) {
+			// TODO Implement this if we want alarm triggers in rules
+			
+		}
+
 		private void internalItemAdded(Item item) {
 			if (item instanceof GenericItem) {
 				GenericItem genericItem = (GenericItem) item;

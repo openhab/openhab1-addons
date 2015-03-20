@@ -18,6 +18,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.State;
 import org.openhab.io.cv.internal.broadcaster.CometVisuBroadcaster;
 import org.openhab.io.cv.internal.cache.CVBroadcasterCache;
@@ -99,6 +100,13 @@ abstract public class ResourceStateChangeListener {
 			
 			public void stateChanged(final Item item, State oldState, State newState) {
 				// broadcast the item, or cache it when there is no resource available at the moment
+				broadcaster.broadcast(item);
+			}
+			/* (non-Javadoc)
+			 * @see org.openhab.core.items.StateChangeListener#alarmStateUpdated(org.openhab.core.items.Item, boolean, java.lang.String)
+			 */
+			@Override
+			public void alarmStateUpdated(Item item, AlarmState alarmState) {
 				broadcaster.broadcast(item);
 			}
 		};

@@ -28,6 +28,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.State;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.filter.DuplicateBroadcastProtectionFilter;
@@ -160,6 +161,14 @@ abstract public class ResourceStateChangeListener {
 //				if(!broadcaster.getAtmosphereResources().isEmpty()) {
 //					broadcaster.broadcast(item);
 //				}
+			}
+
+			/* (non-Javadoc)
+			 * @see org.openhab.core.items.StateChangeListener#alarmStateUpdated(org.openhab.core.items.Item, org.openhab.core.types.AlarmState)
+			 */
+			@Override
+			public void alarmStateUpdated(Item item, AlarmState alarmState) {
+				broadcaster.broadcast(item);
 			}
 		};
 		

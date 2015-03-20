@@ -11,6 +11,8 @@ package org.openhab.core.events;
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
 
+import org.openhab.core.types.AlarmState;
+import org.openhab.core.types.AlarmState.AlarmClass;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.EventType;
@@ -41,6 +43,24 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 			Command command = (Command) event.getProperty("command");
 			if(command!=null) receiveCommand(itemName, command);
 		}
+		if(operation.equals(EventType.ALARM.toString())) {
+			boolean alarmOn = (Boolean) event.getProperty("alarm");
+			if (!alarmOn) {
+				receiveAlarmCancel(itemName);
+			}
+			else {
+				String alarmText = (String) event.getProperty("alarmtext");
+				if(alarmText!=null) {
+					AlarmState alarmState;
+					AlarmClass alarmClass=(AlarmState.AlarmClass) event.getProperty("alarmclass");
+					alarmState=new AlarmState(alarmText, alarmClass);
+
+					long alarmTime=(Long) event.getProperty("alarmtime_utc");
+					alarmState.setAlarmTimeUTC(alarmTime);
+					receiveAlarm(itemName, alarmState);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -57,4 +77,17 @@ abstract public class AbstractEventSubscriber implements EventSubscriber, EventH
 		// default implementation: do nothing
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void receiveAlarm(String itemName, AlarmState alarmState) {
+		// default implementation: do nothing
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void receiveAlarmCancel(String itemName) {
+		// default implementation: do nothing
+	}
 }

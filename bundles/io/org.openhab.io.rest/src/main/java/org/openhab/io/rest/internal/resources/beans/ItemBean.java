@@ -25,7 +25,11 @@ public class ItemBean {
 	public String name;	
 	public String state;
 	public String link;
-	
+	public String alarm;
+	public String alarmtext;
+	public String alarmclass;
+	public String alarmtime_utc;	
+
 	public ItemBean() {}
 		
 }

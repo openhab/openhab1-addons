@@ -8,6 +8,7 @@
  */
 package org.openhab.core.items;
 
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.State;
 
 /**
@@ -38,4 +39,13 @@ public interface StateChangeListener {
 	 */
 	public void stateUpdated(Item item, State state);
 
+	/**
+	 * This method is called, if an alarmstate changed. 
+	 * Canceled alarms will be indicated by setting
+	 * alarmState to null
+	 *
+	 * @param item the item, for which the alarm state has changed
+	 * @param alarmState the alarm state or null
+	 */
+	public void alarmStateUpdated(Item item, AlarmState alarmState);
 }

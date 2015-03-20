@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.alarm.internal
+Ignore-Package: org.openhab.binding.alarm.internal
+Bundle-Name: openHAB Alarming Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.7.0.qualifier
+Bundle-Activator: org.openhab.binding.alarm.internal.AlarmActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: This is the runtime component of the open Home Automation Bus (openHAB)
+Import-Package: gnu.io;resolution:=optional,
+ org.apache.commons.lang,
+ org.openhab.core.autoupdate,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.alarm
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/alarmbinding.xml, OSGI-INF/alarmgenericbindingprovider.xml
+Bundle-ClassPath: .
+Export-Package: org.openhab.binding.alarm.config

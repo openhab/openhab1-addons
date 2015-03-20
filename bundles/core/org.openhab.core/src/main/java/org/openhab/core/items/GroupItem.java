@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.collections.ListUtils;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -203,7 +204,10 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 		"Type=" + getClass().getSimpleName() + ", " +
 		(baseItem != null ? "BaseType=" + baseItem.getClass().getSimpleName() + ", " : "") +
 		"Members=" + members.size() + ", " +
-		"State=" + getState() + ")";
+		"State=" + getState() +
+		"Alarm=" + isAlarmed() +
+		"Alarm State=" + getAlarmState() +
+		")";
 	}
 
 	/**
@@ -218,5 +222,25 @@ public class GroupItem extends GenericItem implements StateChangeListener {
 	 */
 	public void stateUpdated(Item item, State state) {
 		setState(function.calculate(members));
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.core.items.StateChangeListener#alarmStateUpdated(org.openhab.core.items.Item, org.openhab.core.types.AlarmState)
+	 */
+	@Override
+	public void alarmStateUpdated(Item item, AlarmState alarmState) {
+
+		// Iterate over all members. If one member has an alarm set the group to alarmed.
+		for(int i=0; i<members.size(); i++) {
+			if (members.get(i).isAlarmed()) {
+				//Don't show alarm text of a member on the group
+
+				//TODO handle alarm priorities on groups
+				AlarmState groupAlarmState= new AlarmState("");
+				setAlarmed(groupAlarmState);
+				return;
+			}
+		}
+		cancelAlarm();
 	}
 }

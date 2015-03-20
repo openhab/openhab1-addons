@@ -37,6 +37,7 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.openhab.model.core.EventType;
@@ -221,6 +222,14 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 
 	public void stateUpdated(Item item, State state) {
 		handleStateEvent(item, false);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.openhab.core.items.StateChangeListener#alarmStateUpdated(org.openhab.core.items.Item, org.openhab.core.types.AlarmState)
+	 */
+	@Override
+	public void alarmStateUpdated(Item item, AlarmState alarmState) {
+		handleStateEvent(item, true);
 	}
 
 	/**

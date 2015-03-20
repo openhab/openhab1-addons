@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -125,6 +126,47 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 * @param newState the {@link State} to be update
 	 */
 	protected void internalReceiveUpdate(String itemName, State newState) {};
+
+ 	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void receiveAlarm(String itemName, AlarmState alarmState) {
+		// does any provider contain a binding config?
+		if (!providesBindingFor(itemName)) {
+			return;
+		}
+		internalReceiveAlarm(itemName, alarmState);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.openhab.core.events.AbstractEventSubscriber#receiveAlarmCancel(java.lang.String)
+	 */
+	@Override
+	public void receiveAlarmCancel(String itemName) {
+		// does any provider contain a binding config?
+		if (!providesBindingFor(itemName)) {
+			return;
+		}
+		internalReceiveAlarmCancel(itemName);
+	}
+
+	/**
+	 * Is called by <code>receiveAlarm()</code> only if one of the 
+	 * {@link BindingProvider}s provide a binding for <code>itemName</code>.
+	 * 
+	 * @param itemName the item on which teh alarm will be set
+	 * @param alarmText the alarm text to be updated
+	 */
+	protected void internalReceiveAlarm(String itemName, AlarmState alarmState) {};
+
+	/**
+	 * Is called by <code>receiveAlarmCancel()</code> only if one of the 
+	 * {@link BindingProvider}s provide a binding for <code>itemName</code>.
+	 * 
+	 * @param itemName the item on which the alarm will be canceled
+	 */
+	protected void internalReceiveAlarmCancel(String itemName) {};
 
 	/**
 	 * checks if any of the bindingProviders contains an adequate mapping

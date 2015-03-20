@@ -14,6 +14,7 @@ import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -97,4 +98,34 @@ public class ItemUpdater extends AbstractEventSubscriber {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.core.events.EventSubscriber#receiveAlarm(java.lang.String, org.openhab.core.types.AlarmState)
+	 */
+	@Override
+	public void receiveAlarm(String itemName, AlarmState alarmState) {
+		if (itemRegistry != null) {
+			try {
+				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
+				item.setAlarmed(alarmState);
+			} catch (ItemNotFoundException e) {
+				logger.debug("Received alarm for non-existing item: {}", e.getMessage());
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.core.events.AbstractEventSubscriber#receiveAlarmCancel(java.lang.String)
+	 */
+	@Override
+	public void receiveAlarmCancel(String itemName) {
+		if (itemRegistry != null) {
+			try {
+				GenericItem item = (GenericItem) itemRegistry.getItem(itemName);
+					item.cancelAlarm();
+			} catch (ItemNotFoundException e) {
+				logger.debug("Received alarm cancel for non-existing item: {}", e.getMessage());
+			}
+		}
+	}
+	
 }

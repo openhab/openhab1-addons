@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -39,6 +40,20 @@ public class EventPublisherMock implements EventPublisher {
     public void postUpdate(String itemName, State newState) {
         this.itemName = itemName;
         this.updateState = newState;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openhab.core.events.EventPublisher#postAlarm(java.lang.String, org.openhab.core.types.AlarmState)
+     */
+    public void postAlarm(String itemName, AlarmState alarmState) {
+        //ignore
+    }
+
+    /* (non-Javadoc)
+     * @see org.openhab.core.events.EventPublisher#postAlarmCancel(java.lang.String)
+     */
+    public void postAlarmCancel(String itemName) {
+        //ignore
     }
 
     public Command popLastCommand() {

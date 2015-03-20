@@ -15,6 +15,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.EventType;
 import org.openhab.core.types.State;
@@ -81,6 +82,28 @@ public class EventPublisherImpl implements EventPublisher {
 		}
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see org.openhab.core.events.EventPublisher#postAlarm(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void postAlarm(String itemName, AlarmState alarmState) {
+		if (alarmState != null) {
+			if(eventAdmin!=null) eventAdmin.postEvent(createAlarmEvent(itemName, alarmState));
+		} else {
+			logger.warn("given alarm text is NULL, couldn't post alarm update for '{}'", itemName);
+		}
+	}
+	
+ 			 	
+	 /* (non-Javadoc)
+	 * @see org.openhab.core.events.EventPublisher#postAlarmCancel(java.lang.String)
+	 */
+	@Override
+	public void postAlarmCancel(String itemName) {
+		if(eventAdmin!=null) eventAdmin.postEvent(createCancelAlarmEvent(itemName));
+	}
+
 	private Event createUpdateEvent(String itemName, State newState) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("item", itemName);
@@ -99,5 +122,20 @@ public class EventPublisherImpl implements EventPublisher {
 		return TOPIC_PREFIX + TOPIC_SEPERATOR + type + TOPIC_SEPERATOR + itemName;
 	}
 	
-	
+	private Event createCancelAlarmEvent(String itemName) {
+		Dictionary<String, Object> properties = new Hashtable<String, Object>();
+		properties.put("item", itemName);
+		properties.put("alarm", false);
+		return new Event(createTopic(EventType.ALARM, itemName), properties);
+	}
+
+	private Event createAlarmEvent(String itemName, AlarmState alarmState) {
+		Dictionary<String, Object> properties = new Hashtable<String, Object>();
+		properties.put("item", itemName);
+		properties.put("alarm", true);
+		properties.put("alarmtext", alarmState.getAlarmMessage());
+		properties.put("alarmclass", alarmState.getAlarmClass());
+		properties.put("alarmtime_utc", alarmState.getAlarmTimeUTC());
+		return new Event(createTopic(EventType.ALARM, itemName), properties);
+	}
 }
