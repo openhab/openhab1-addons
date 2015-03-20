@@ -1,0 +1,5 @@
+Group Holidays (All)
+Switch Holiday       		  "Feiertag"                                      (Holidays)
+String SpecialDay    		  "Feiertag [MAP(holidays_de.map):%s]" <calendar> (Holidays)
+Switch SchoolVacation		  "Schulferien"                                   (Holidays)
+String SchoolVacationName	"Schulferien [%s]"                   <calendar> (Holidays)
