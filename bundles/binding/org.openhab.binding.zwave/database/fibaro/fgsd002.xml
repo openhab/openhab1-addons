@@ -193,15 +193,15 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">FIRE ALARM broadcast (2-nd & 4-th Association Group) active; enclosure opening notification broadcast (3-rd & 5-th Association Group) inactive</Label>
+				<Label lang="en">FIRE ALARM broadcast (2-nd and 4-th Association Group) active; enclosure opening notification broadcast (3-rd and 5-th Association Group) inactive</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">FIRE ALARM broadcast (2-nd & 4-th Association Group) inactive; enclosure opening notification broadcast (3-rd & 5-th Association Group) active</Label>
+				<Label lang="en">FIRE ALARM broadcast (2-nd and 4-th Association Group) inactive; enclosure opening notification broadcast (3-rd and 5-th Association Group) active</Label>
 			</Item>
 			<Item>
 				<Value>3</Value>
-				<Label lang="en">FIRE ALARM broadcast (2-nd & 4-th Association Group) active; enclosure opening notification broadcast (3-rd & 5-th Association Group) active.</Label>
+				<Label lang="en">FIRE ALARM broadcast (2-nd and 4-th Association Group) active; enclosure opening notification broadcast (3-rd and 5-th Association Group) active.</Label>
 			</Item>
 		</Parameter>
 		
