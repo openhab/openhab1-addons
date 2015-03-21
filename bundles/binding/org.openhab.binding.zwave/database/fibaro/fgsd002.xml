@@ -146,7 +146,7 @@
 			<Help lang="en">This parameter defines which frames will be sent in the 2-nd Association Group (FIRE ALARM). The values of BASIC ON and BASIC OFF frames may be defined as described in further parameters.</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">BASIC ON & BASIC OFF enabled</Label>
+				<Label lang="en">BASIC ON and BASIC OFF enabled</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
