@@ -198,7 +198,10 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 			result = resultRegistry.registerCommand(seqNumber);
 			connector.sendMessage(data);
 
-		} catch (IOException | RFXComException e) {
+		} catch ( IOException e) {
+			logger.error("Message sending to RFXCOM controller failed.", e);
+			return false;
+		} catch( RFXComException e) {
 			logger.error("Message sending to RFXCOM controller failed.", e);
 			return false;
 		}
@@ -224,7 +227,15 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 				break;
 			}
 
-		} catch (InterruptedException | ExecutionException | TimeoutException ie) {
+		} catch (InterruptedException e) {
+			logger.error(
+					"No acknowledge received from RFXCOM controller, timeout {}ms ",
+					timeout);
+		} catch (ExecutionException e) {
+			logger.error(
+					"No acknowledge received from RFXCOM controller, timeout {}ms ",
+					timeout);
+		} catch (TimeoutException e) {
 			logger.error(
 					"No acknowledge received from RFXCOM controller, timeout {}ms ",
 					timeout);

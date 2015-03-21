@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 class ResultRegistry {
 	private static final Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
 
-	private final Map<Byte, RFXComResponse> results = new HashMap<>(40); 
+	private final Map<Byte, RFXComResponse> results = new HashMap<Byte, RFXComResponse>(40); 
 
 	public Future<RFXComTransmitterMessage> registerCommand(final byte seqNumber) {
 		synchronized(results) {
