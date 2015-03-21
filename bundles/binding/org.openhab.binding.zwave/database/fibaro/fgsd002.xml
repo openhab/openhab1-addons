@@ -4,8 +4,11 @@
 	<Label lang="en">Smoke Detector</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
 		<Class><id>0x70</id></Class>
+		<Class><id>0x84</id></Class>
 		<Class><id>0x85</id></Class>
+		<Class><id>0x9C</id></Class>
 	</CommandClasses>
 
 	<Configuration>
@@ -271,25 +274,21 @@
 			<Index>2</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Smoke Alarm</Label>
-			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Tamper Alarm</Label>
-			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>4</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Fire Alarm</Label>
-			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>5</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Tamper Alarm</Label>
-			<SetToController>true</SetToController>
 		</Group>		
 	</Associations>
 </Product>
