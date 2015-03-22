@@ -36,11 +36,13 @@ public class APIMessage {
 	private String apiDescription = "";
 	private String apiCodeReceived = "";
 	private APIMessageType apiMessageType = APIMessageType.PANEL_EVENT;
+	private String timeStamp = "";
 	private int partition = 0;
 	private int zone = 0;
 	private String data = "";
 	private String mode= "";
 	private String user = "";
+	private String error = "";
 
 	/**
 	 * Constructor. Creates a new instance of the APIMessage class.
@@ -60,6 +62,7 @@ public class APIMessage {
 		if (apiMessage.length() > 3) {
 			try {
 				if(apiMessage.length() >= 8 && apiMessage.charAt(2) == ':'  && apiMessage.charAt(5) == ':') {
+					timeStamp = apiMessage.substring(0,8);
 					apiMessage = apiMessage.substring(9, apiMessage.length() - 2);					
 				}
 				else { 
@@ -77,7 +80,9 @@ public class APIMessage {
 	        	apiCodeReceived = "000";
 			}
 		   	 
-			if(APICode.getAPICodeValue(apiCodeReceived) != null) {
+			APICode apiCode = APICode.getAPICodeValue(apiCodeReceived);
+
+			if(apiCode != null) {
 				
 				switch (APICode.getAPICodeValue(apiCodeReceived)) {
 					case CommandAcknowledge: /*500*/
@@ -91,6 +96,92 @@ public class APIMessage {
 					case SystemError: /*502*/
 						apiName = "System Error";
 						apiDescription = apiCodeReceived + ": An error has been detected.";
+						int systemErrorCode = 0;
+						systemErrorCode = Integer.parseInt(data);
+						switch(systemErrorCode) {
+							case 1:
+								error = "Receive Buffer Overrun";
+								break;
+							case 2:
+								error = "Receive Buffer Overflow";
+								break;
+							case 3:
+								error = "Transmit Buffer Overflow";
+								break;
+							case 10:
+								error = "Keybus Transmit Buffer Overrun";
+								break;
+							case 11:
+								error = "Keybus Transmit Time Timeout";
+								break;
+							case 12:
+								error = "Keybus Transmit Mode Timeout";
+								break;
+							case 13:
+								error = "Keybus Transmit Keystring Timeout";
+								break;
+							case 14:
+								error = "Keybus Interface Not Functioning";
+								break;
+							case 15:
+								error = "Keybus Busy - Attempting to Disarm or Arm with user code";
+								break;
+							case 16:
+								error = "Keybus Busy – Lockout";
+								break;
+							case 17:
+								error = "Keybus Busy – Installers Mode";
+								break;
+							case 18:
+								error = "Keybus Busy - General Busy";
+								break;
+							case 20:
+								error = "API Command Syntax Error";
+								break;
+							case 21:
+								error = "API Command Partition Error - Requested Partition is out of bounds";
+								break;
+							case 22:
+								error = "API Command Not Supported";
+								break;
+							case 23:
+								error = "API System Not Armed - Sent in response to a disarm command";
+								break;
+							case 24:
+								error = "API System Not Ready to Arm - System is either not-secure, in exit-delay, or already armed";
+								break;
+							case 25:
+								error = "API Command Invalid Length";
+								break;
+							case 26:
+								error = "API User Code not Required";
+								break;
+							case 27:
+								error = "API Invalid Characters in Command - No alpha characters are allowed except for checksum";
+								break;
+							case 28:
+								error = "API Virtual Keypad is Disabled";
+								break;
+							case 29:
+								error = "API Not Valid Parameter";
+								break;
+							case 30:
+								error = "API Keypad Does Not Come Out of Blank Mode";
+								break;
+							case 31:
+								error = "API IT-100 is Already in Thermostat Menu";
+								break;
+							case 32:
+								error = "API IT-100 is NOT in Thermostat Menu";
+								break;
+							case 33:
+								error = "API No Response From Thermostat or Escort Module";
+								break;
+							case 0:
+							default:
+								error = "No Error";
+								break;
+						}
 						break;
 					case LoginResponse: /*505*/
 						apiName = "Login Interaction";
@@ -109,7 +200,7 @@ public class APIMessage {
 					case TimeDateBroadcast: /*550*/
 						apiName = "Time-Date Broadcast";
 						apiDescription = apiCodeReceived + ": The current security system time.";
-						data = apiMessage.substring(4);
+						data = apiMessage.substring(3);
 						break;
 					case RingDetected: /*560*/
 						apiName = "Ring Detected";
@@ -588,6 +679,11 @@ public class APIMessage {
 		sb.append(apiDescription);
 		sb.append("\"");
 
+		if (timeStamp != "") {
+			sb.append(", Time Stamp: ");
+			sb.append(timeStamp);
+		}
+
 		if (partition != 0) {
 			sb.append(", Partition: ");
 			sb.append(partition);
@@ -611,6 +707,11 @@ public class APIMessage {
 		if (user != "") {
 			sb.append(", user: ");
 			sb.append(user);
+		}
+
+		if (error != "") {
+			sb.append(", error: ");
+			sb.append(error);
 		}
 
 		return sb.toString();
@@ -705,5 +806,23 @@ public class APIMessage {
 	 */
 	public String getUser() {
 		return user;
+	}
+
+	/**
+	 * Returns the error string from the API message
+	 * 
+	 * @return user
+	 */
+	public String getError() {
+		return error;
+	}
+
+	/**
+	 * Returns the time stamp if available
+	 * 
+	 * @return timeStamp
+	 */
+	public String getTimeStamp() {
+		return timeStamp;
 	}
 }

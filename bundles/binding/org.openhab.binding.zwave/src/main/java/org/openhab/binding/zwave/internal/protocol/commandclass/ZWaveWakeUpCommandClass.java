@@ -502,7 +502,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		timerTask = new WakeupTimerTask(this);
 
 		// Start the timer
-		timer.schedule(timerTask, 2000);
+		timer.schedule(timerTask, 1000);
 	}
 
 	public synchronized void resetSleepTimer() {
