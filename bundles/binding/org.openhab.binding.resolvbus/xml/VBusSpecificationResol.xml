@@ -138,6 +138,94 @@
 		<name>DeltaSol E [WMZ]</name>
 		<isMaster>false</isMaster>
 	</device>
+		<device>
+		<address>0x4278</address>
+		<name>DeltaSol BS/DrainBack</name>
+		<isMaster>false</isMaster>
+	</device>
+	
+	<!-- DeltaSol BS/DrainBack -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x4278</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Pump speed relay 1</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Pump speed relay 2</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Operating hours relay 1</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Operating hours relay 2</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Status</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Programs</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Version</name>
+			<bitSize>7</bitSize>
+			<factor>0.01</factor>
+		</field>
+		
+	</packet>
+	
 	
 	<!-- Soltop -->
 	<packet>
