@@ -404,16 +404,16 @@ public class ZWaveNode {
 	 * Gets the node application firmware version
 	 * @return the version
 	 */
-	public double getApplicationVersion() {
+	public String getApplicationVersion() {
 		ZWaveVersionCommandClass versionCmdClass = (ZWaveVersionCommandClass) this.getCommandClass(CommandClass.VERSION);
 		if(versionCmdClass == null) {
-			return 0.0;
+			return "0.0";
 		}
 
-		Double appVersion = versionCmdClass.getApplicationVersion();
+		String appVersion = versionCmdClass.getApplicationVersion();
 		if(appVersion == null) {
 			logger.trace("NODE {}: App version requested but version is unknown", this.getNodeId());
-			return 0.0;			
+			return "0.0";
 		}
 		
 		return appVersion;
