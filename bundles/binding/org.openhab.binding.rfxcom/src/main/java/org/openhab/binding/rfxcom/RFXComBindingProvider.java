@@ -18,7 +18,10 @@ import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
  * Implementing classes should register themselves as a service in order to be
  * taken into account.
  * 
- * @author Pauli Anttila
+ * Extending AutoUpdateBindingProvider to only update the state of items if
+ * the command was successfully sent by the RFXComm Tranceiver hardware.
+ * 
+ * @author Pauli Anttila, Jürgen Richtsfeld
  * @since 1.2.0
  */
 public interface RFXComBindingProvider extends AutoUpdateBindingProvider {
