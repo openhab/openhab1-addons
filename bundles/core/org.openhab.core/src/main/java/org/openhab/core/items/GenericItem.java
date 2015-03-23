@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -41,6 +42,8 @@ abstract public class GenericItem implements Item {
 	
 	protected State state = UnDefType.NULL;
 	
+	protected AlarmState mAlarmState = null;
+
 	public GenericItem(String name) {
 		this.name = name;
 	}
@@ -83,6 +86,21 @@ abstract public class GenericItem implements Item {
 		return groupNames;
 	}
 
+
+ 	/**
+ 	 * {@inheritDoc}
+ 	 */
+	public boolean isAlarmed() {
+		return mAlarmState!=null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public AlarmState getAlarmState() {
+		return mAlarmState;
+	}
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
@@ -100,6 +118,24 @@ abstract public class GenericItem implements Item {
 		notifyListeners(oldState, state);
 	}
 
+	/**
+	 * Sets the alarm flag and alarm text and notifies all registered listeners
+	 * about this event
+	 * @param alarmText alarm text of this GenericItem
+	 */
+	public void setAlarmed(AlarmState alarmState) {
+		this.mAlarmState=alarmState;
+		notifyListeners(mAlarmState);
+	}
+	/**
+	 * Cancels the alarm flag and notifies all registered listeners
+	 * about this event
+	 */
+	public void cancelAlarm() {
+		this.mAlarmState=null;
+		notifyListeners(null);
+	}
+	
 	private void notifyListeners(State oldState, State newState) {
 		// if nothing has changed, we send update notifications
 		Set<StateChangeListener> clonedListeners = null;
@@ -111,6 +147,14 @@ abstract public class GenericItem implements Item {
 			for(StateChangeListener listener : clonedListeners) {
 				listener.stateChanged(this, oldState, newState);
 			}
+		}
+	}
+
+	private void notifyListeners(AlarmState alarmState) {
+		Set<StateChangeListener> clonedListeners = null;
+		clonedListeners = new CopyOnWriteArraySet<StateChangeListener>(listeners);
+		for(StateChangeListener listener : clonedListeners) {
+			listener.alarmStateUpdated(this, alarmState);
 		}
 	}
 		

@@ -16,6 +16,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.binding.alarm</module>
+    <module>org.openhab.binding.alarm.test</module>
     <module>org.openhab.binding.lgtv</module>
     <module>org.openhab.binding.bluetooth</module>
     <module>org.openhab.binding.knx</module>

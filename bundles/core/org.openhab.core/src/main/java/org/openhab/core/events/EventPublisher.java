@@ -8,6 +8,7 @@
  */
 package org.openhab.core.events;
 
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -46,4 +47,20 @@ public interface EventPublisher {
 	 */
 	public abstract void postUpdate(String itemName, State newState);
 
+	/**
+	 * Initiate asynchronous sending of an alarm status update.
+	 * This method returns immediately to the caller.
+	 * 
+	 * @param itemName name of the item to send the update for
+	 * @param alarmText the new alarm text to send
+	 */
+	public abstract void postAlarm(String itemName, AlarmState alarmState);
+
+	/**
+	 * Initiate asynchronous sending of an alarm cancellation update.
+	 * This method returns immediately to the caller.
+	 * 
+	 * @param itemName name of the item to send the alarm cancellation for
+	 */
+	public abstract void postAlarmCancel(String itemName);
 }

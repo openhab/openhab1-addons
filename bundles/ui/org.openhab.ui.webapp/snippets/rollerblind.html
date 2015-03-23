@@ -1,2 +1,9 @@
-<li style="%labelstyle%"><img src="/images/%icon%.png" width="29" height="29" class="iFull" /><span class="options"><img src="images/_down.png" ontouchstart="OH.buttonPressed('../CMD?%item%=DOWN');event.stopPropagation();event.preventDefault();" ontouchend="OH.buttonReleased('../CMD?%item%=DOWN', '../CMD?%item%=STOP');event.stopPropagation();event.preventDefault();" onMouseDown="OH.buttonPressed('../CMD?%item%=DOWN')" onMouseUp="OH.buttonReleased('../CMD?%item%=DOWN', '../CMD?%item%=STOP')" /><img src="images/_stop.png" onclick="OH.changeState('../CMD?%item%=STOP')" /><img src="images/_up.png" ontouchstart="OH.buttonPressed('../CMD?%item%=UP');event.stopPropagation();event.preventDefault();" ontouchend="OH.buttonReleased('../CMD?%item%=UP', '../CMD?%item%=STOP');event.stopPropagation();event.preventDefault();" onMouseDown="OH.buttonPressed('../CMD?%item%=UP')" onMouseUp="OH.buttonReleased('../CMD?%item%=UP', '../CMD?%item%=STOP')" /></span style="%valuestyle%">%label%</li>
-
+<li style="%labelstyle%">
+   <img src="/images/%alarm_icon%.png" width="12" height="29" class="iFull" />
+   <img src="/images/%icon%.png" width="29" height="29" class="iFull" />
+   <span class="options">
+      <img src="images/_down.png" ontouchstart="OH.buttonPressed('../CMD?%item%=DOWN');event.stopPropagation();event.preventDefault();" ontouchend="OH.buttonReleased('../CMD?%item%=DOWN', '../CMD?%item%=STOP');event.stopPropagation();event.preventDefault();" onMouseDown="OH.buttonPressed('../CMD?%item%=DOWN')" onMouseUp="OH.buttonReleased('../CMD?%item%=DOWN', '../CMD?%item%=STOP')" /><img src="images/_stop.png" onclick="OH.changeState('../CMD?%item%=STOP')" /><img src="images/_up.png" ontouchstart="OH.buttonPressed('../CMD?%item%=UP');event.stopPropagation();event.preventDefault();" ontouchend="OH.buttonReleased('../CMD?%item%=UP', '../CMD?%item%=STOP');event.stopPropagation();event.preventDefault();" onMouseDown="OH.buttonPressed('../CMD?%item%=UP')" onMouseUp="OH.buttonReleased('../CMD?%item%=UP', '../CMD?%item%=STOP')" />
+   </span style="%valuestyle%">
+   %label%
+   <label style="color:red">%alarm_text%</label>
+</li>

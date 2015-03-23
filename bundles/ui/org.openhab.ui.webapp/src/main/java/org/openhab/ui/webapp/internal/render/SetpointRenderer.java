@@ -83,6 +83,8 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 
 		snippet = StringUtils.replace(snippet, "%id%", itemUIRegistry.getWidgetId(w));
 		snippet = StringUtils.replace(snippet, "%icon%", escapeURLPath(itemUIRegistry.getIcon(w)));
+		snippet = StringUtils.replace(snippet, "%alarm_icon%", escapeURLPath(itemUIRegistry.getAlarmIcon(w)));
+		snippet = StringUtils.replace(snippet, "%alarm_text%", itemUIRegistry.getAlarmText(w));
 		snippet = StringUtils.replace(snippet, "%item%", w.getItem());
 		snippet = StringUtils.replace(snippet, "%state%", state.toString());
 		snippet = StringUtils.replace(snippet, "%newlowerstate%", newLowerState);

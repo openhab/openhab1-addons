@@ -155,4 +155,36 @@ public interface ItemUIRegistry extends ItemRegistry, ItemUIProvider {
 	 * @return State of the item
 	 */
 	public State getItemState(String itemName);
+
+ 	/**
+	 * Retrieves the alarm icon name for a widget.
+	 * 
+	 * This first checks, it checks all item UI providers for an icon.
+	 * If no icon can be found, the default icon name is "alarm".
+	 * 
+	 * @param w
+	 *            the widget to retrieve the alarm icon name for
+	 * @return the alarm icon name to use for the widget
+	 */
+	public String getAlarmIcon(Widget w);
+
+	/**
+	 * Retrieves the alarm state for a widget.
+	 * 
+	 * 
+	 * @param w
+	 *            the widget to retrieve the alarm status for
+	 * @return the alarm state to use for the widget
+	 */
+	public boolean isAlarmed(Widget w);
+
+	/**
+	 * Retrieves the alarm text name for a widget.
+	 * Return is guaranteed to be non-null.
+	 *  
+	 * @param w
+	 *            the widget to retrieve the alarm text for
+	 * @return the alarm to use for the widget
+	 */
+	public String getAlarmText(Widget w);
 }

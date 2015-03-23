@@ -8,6 +8,7 @@
  */
 package org.openhab.core.events;
 
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -35,4 +36,18 @@ public interface EventSubscriber {
 	 */
 	public void receiveUpdate(String itemName, State newStatus);
 
+	/**
+	 * Callback method if an alarm update was sent on the event bus
+	 * 
+	 * @param itemName the item for which a state update was sent
+	 * @param alarmText the alarm text that was sent
+	 */
+	public void receiveAlarm(String itemName, AlarmState alarmState);
+
+	/**
+	 * Callback method if an alarm cancel was sent on the event bus
+	 * 
+	 * @param itemName the item for which a state update was sent
+	 */
+	public void receiveAlarmCancel(String itemName);
 }

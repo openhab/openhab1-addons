@@ -10,6 +10,7 @@ package org.openhab.core.items;
 
 import java.util.List;
 
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -72,4 +73,15 @@ public interface Item {
 	 * @return list of item group names
 	 */
 	public List<String> getGroupNames();
-}
+
+	/**
+	 * Checks if an item is in alarmed state
+	 * @return true if Item is alarmed, false otherwise
+	 */
+	public boolean isAlarmed();
+	
+	/**
+	 * Get the AlarmState
+	 * @return the AlarmState object if item is alarmed, null otherwise
+	 */
+	public AlarmState getAlarmState();}

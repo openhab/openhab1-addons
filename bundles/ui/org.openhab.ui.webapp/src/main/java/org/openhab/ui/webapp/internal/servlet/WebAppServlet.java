@@ -23,6 +23,7 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.StateChangeListener;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Frame;
 import org.openhab.model.sitemap.LinkableWidget;
@@ -257,7 +258,14 @@ public class WebAppServlet extends BaseServlet {
 		public void stateUpdated(Item item, State state) {
 			changed = true;
 		}
-		
+
+		/* (non-Javadoc)
+		 * @see org.openhab.core.items.StateChangeListener#alarmStateUpdated(org.openhab.core.items.Item, org.openhab.core.types.AlarmState)
+		 */
+		@Override
+		public void alarmStateUpdated(Item item, AlarmState alarmState) {
+			changed = true;
+		}	
 	}
 	
 	

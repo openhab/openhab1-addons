@@ -423,6 +423,69 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	}
 
 	
+
+	/* (non-Javadoc)
+	 * @see org.openhab.ui.items.ItemUIRegistry#isAlarmed(org.openhab.model.sitemap.Widget)
+	 */
+	@Override
+	public boolean isAlarmed(Widget w) {
+		String itemName = w.getItem();
+		if(itemName!=null) {
+			try {
+				Item item = getItem(itemName);
+				if (item.isAlarmed()) {
+					return true;
+				}
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve item '{}' for widget {}", new Object[] { itemName, w.eClass().getInstanceTypeName() });
+			}
+		}
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.ui.items.ItemUIRegistry#getAlarmIcon(org.openhab.model.sitemap.Widget)
+	 */
+	@Override
+	public String getAlarmIcon(Widget w) {
+
+		String itemName = w.getItem();
+		if(itemName!=null) {
+			try {
+				Item item = getItem(itemName);
+				if (item.isAlarmed()) {
+					String alarmText=item.getAlarmState().getAlarmClass().toString();
+					if (alarmText!=null) {
+						return "alarm-"+alarmText.toLowerCase();
+					}
+				}
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve item '{}' for widget {}", new Object[] { itemName, w.eClass().getInstanceTypeName() });
+			}
+		}
+		return ICON_NONE;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.ui.items.ItemUIRegistry#getAlarmText(org.openhab.model.sitemap.Widget)
+	 */
+	@Override
+	public String getAlarmText(Widget w) {
+		String itemName = w.getItem();
+		if(itemName!=null) {
+			try {
+				Item item = getItem(itemName);
+				if (item.isAlarmed()) {
+					String alarmText=item.getAlarmState().getAlarmMessage();
+					return alarmText==null?"":alarmText;
+				}
+			} catch (ItemNotFoundException e) {
+				logger.error("Cannot retrieve item '{}' for widget {}", new Object[] { itemName, w.eClass().getInstanceTypeName() });
+			}
+		}
+		return "";
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
