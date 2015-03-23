@@ -8,13 +8,11 @@
  */
 package org.openhab.binding.resolvbus.internal;
 
-import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
-
 public interface ResolVBUSReceiver extends Runnable{
 	
 	public void stopListener();
-	public void initializeReceiver(String host, int port, String password, ResolVBUSConfig config);
-	public void initializeReceiver(String serialPort, String password, ResolVBUSConfig config);
+	public void initializeReceiver(String host, int port, String password);
+	public void initializeReceiver(String serialPort, String password);
 	
 
 }

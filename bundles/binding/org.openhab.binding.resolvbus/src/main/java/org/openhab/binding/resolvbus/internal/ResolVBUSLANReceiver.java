@@ -9,11 +9,6 @@
 
 package org.openhab.binding.resolvbus.internal;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,12 +17,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 
-import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
-import org.openhab.binding.resolvbus.model.ResolVBUSDevice;
 import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +38,6 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	private Socket vBusSocket;
 	private InputStream inStream;
 	private boolean running = false;
-	private ResolVBUSConfig config;
 	private ResolVBUSInputStream resolStream;
 	private List<Byte> resolStreamRAW;
 	private String password;
@@ -58,10 +49,9 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	/**
 	 * Open Socket to the LAN-Adapter
 	 */
-	public void initializeReceiver(String host, int port, String password, ResolVBUSConfig config) {
+	public void initializeReceiver(String host, int port, String password) {
 
 		try {
-			this.config = config;
 			this.password = password;
 			vBusSocket = new Socket(host, port);
 			inStream = vBusSocket.getInputStream();
@@ -190,7 +180,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	}
 
 
-	public void initializeReceiver(String serialPort, String password, ResolVBUSConfig config) {
+	public void initializeReceiver(String serialPort, String password) {
 		logger.debug("This is the LAN Receiver. No Serial/USB defintion necessary");
 		
 	}

@@ -20,14 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
 
-import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
-import org.openhab.binding.resolvbus.model.ResolVBUSDevice;
 import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +42,6 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 	private ResolVBUSListener listener;
 		private InputStream inStream;
 	private boolean running = false;
-	private ResolVBUSConfig config;
 	private ResolVBUSInputStream resolStream;
 	private List<Byte> resolStreamRAW;
 	private CommPortIdentifier serialPortId;
@@ -66,10 +62,9 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 	/**
 	 * Open Socket to the SERIAL/USB-Adapter
 	 */
-	public void initializeReceiver(String serialPort, String password, ResolVBUSConfig config) {
+	public void initializeReceiver(String serialPort, String password) {
 
 		try {
-			this.config = config;
 			this.password = password;
 			openSerialPort();
 			logger.debug("Connected to: " + serialPort);
@@ -117,7 +112,7 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 				
 
 				if (!resolStream.isErrorFree()) {
-					logger.debug("Error in received stream...trying next stream");
+					logger.debug("Warning: Error in received stream...trying next stream. Can be ignored if everything else is working fine.");
 					resolStreamRAW.clear();
 					continue;							
 				}
@@ -184,7 +179,7 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 			}
 			logger.debug("SYNC byte received...Data processing..");
 		} catch (IOException e) {
-			logger.debug("Error while initializing LAN interface)");
+			logger.debug("Error while initializing Serial/USB interface)");
 			logger.debug(e.getMessage());
 			return false;
 		}
@@ -227,8 +222,7 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 
 
 	@Override
-	public void initializeReceiver(String host, int port, String password,
-			ResolVBUSConfig config) {
+	public void initializeReceiver(String host, int port, String password) {
 		logger.debug("This is the SerialReceiver. No LAN defintion necessary");
 		
 	}	

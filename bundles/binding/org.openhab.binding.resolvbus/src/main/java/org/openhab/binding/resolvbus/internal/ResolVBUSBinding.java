@@ -59,7 +59,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private String host;
 	private int port;
 	private ResolVBUSConfig config;
-	private String password = "vbus";
+	private String password;
 	private String serialPort;
 	private int inputMode;
 	private static final int INPUT_MODE_LAN = 10;
@@ -82,7 +82,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	
 	
 	public ResolVBUSBinding() {
-		
+		password = "vbus";
 	}
 		
 	
@@ -126,7 +126,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				port = Integer.parseInt(portString);
 			}
 						
-			if (StringUtils.isNotBlank(portString)) {
+			if (StringUtils.isNotBlank(pwString)) {
 				password = pwString;
 			}
 			
@@ -134,12 +134,9 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				serialPort = serialString;
 				inputMode = INPUT_MODE_SERIAL;
 			}
-			
-	
-			// read further config parameters here ...
 		
 			loadXMLConfig();
-						
+
 			// Create LAN oder Serial Receiver the parsed information to the listener
 			switch (inputMode) {
 			
@@ -147,13 +144,13 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				packetReceiver = new ResolVBUSLANReceiver(this);
 				// make sure that there is no listener running
 				packetReceiver.stopListener();
-				packetReceiver.initializeReceiver(host,port,password,config);
+				packetReceiver.initializeReceiver(host,port,password);
 				break;
 			}
 			case INPUT_MODE_SERIAL: {
 				packetReceiver = new ResolVBUSSerialReceiver(this);
 				packetReceiver.stopListener();
-				packetReceiver.initializeReceiver(serialPort,password, config);
+				packetReceiver.initializeReceiver(serialPort,password);
 				break;
 			}
 			}
