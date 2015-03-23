@@ -59,6 +59,11 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private String host;
 	private int port;
 	private ResolVBUSConfig config;
+	private String password = "vbus";
+	private String serialPort;
+	private int inputMode;
+	private static final int INPUT_MODE_LAN = 10;
+	private static final int INPUT_MODE_SERIAL = 20;	
 
 	
 	/**
@@ -77,7 +82,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	
 	
 	public ResolVBUSBinding() {
-		packetReceiver = new ResolVBUSReceiver(this);
+		
 	}
 		
 	
@@ -96,34 +101,67 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 
 		if (configuration != null) {
+			
 			String refreshIntervalString = (String) configuration.get("refresh");
+			String serialString = (String) configuration.get("serialport");
+			String hostString = (String) configuration.get("host");
+			String portString = (String) configuration.get("port");
+			String pwString = (String) configuration.get("password");
+			
+			if (StringUtils.isNotBlank(hostString) && (StringUtils.isNotBlank(serialString))) {
+				logger.debug("You cannot define a LAN and a serial/USB interface");
+				return;
+			}
+			
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-			
-			String hostString = (String) configuration.get("host");
+						
 			if (StringUtils.isNotBlank(hostString)) {
 				host = hostString;
+				inputMode = INPUT_MODE_LAN;
 			}
-			String portString = (String) configuration.get("port");
+			
 			if (StringUtils.isNotBlank(portString)) {
 				port = Integer.parseInt(portString);
+			}
+						
+			if (StringUtils.isNotBlank(portString)) {
+				password = pwString;
+			}
+			
+			if (StringUtils.isNotBlank(serialString)) {
+				serialPort = serialString;
+				inputMode = INPUT_MODE_SERIAL;
 			}
 			
 	
 			// read further config parameters here ...
 		
 			loadXMLConfig();
-			// make sure that there is no listener running
-			packetReceiver.stopListener();
-			// send the parsed information to the listener
-			packetReceiver.initializeReceiver(host,port, config);
+						
+			// Create LAN oder Serial Receiver the parsed information to the listener
+			switch (inputMode) {
+			
+			case INPUT_MODE_LAN: {
+				packetReceiver = new ResolVBUSLANReceiver(this);
+				// make sure that there is no listener running
+				packetReceiver.stopListener();
+				packetReceiver.initializeReceiver(host,port,password,config);
+				break;
+			}
+			case INPUT_MODE_SERIAL: {
+				packetReceiver = new ResolVBUSSerialReceiver(this);
+				packetReceiver.stopListener();
+				packetReceiver.initializeReceiver(serialPort,password, config);
+				break;
+			}
+			}
+	
 			// start the listener
 			new Thread(packetReceiver).start();
 			setProperlyConfigured(true);
-				
-			
-			
+		
 		}
 	}
 	
