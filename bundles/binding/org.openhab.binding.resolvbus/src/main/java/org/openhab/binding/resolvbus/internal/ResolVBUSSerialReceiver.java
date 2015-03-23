@@ -123,7 +123,7 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 				while (bBuffer[0] != (byte) 0xAA) {
 					inStream.read(bBuffer);
 				}
-				Thread.sleep(5000);
+//				Thread.sleep(5000);
 			}
 			
 			inStream.close();
@@ -131,8 +131,8 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 			
 		} catch (IOException e) {
 			logger.debug(e.getMessage());
-		} catch (InterruptedException e) {
-			logger.debug(e.getMessage());
+//		} catch (InterruptedException e) {
+//			logger.debug(e.getMessage());
 		}
 	}
 

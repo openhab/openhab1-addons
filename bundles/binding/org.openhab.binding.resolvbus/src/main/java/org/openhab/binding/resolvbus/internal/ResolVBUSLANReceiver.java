@@ -105,7 +105,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 				
 
 				if (!resolStream.isErrorFree()) {
-					logger.debug("Error in received stream...trying next stream");
+					logger.debug("Warning: Error in received stream...trying next stream. Can be ignored if everything else is working fine.");
 					resolStreamRAW.clear();
 					continue;							
 				}
@@ -116,15 +116,13 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 				while (bBuffer[0] != (byte) 0xAA) {
 					inStream.read(bBuffer);
 				}
-				Thread.sleep(5000);
+//				Thread.sleep(5000);
 			}
 			
 			inStream.close();
 		
 			
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
-		} catch (InterruptedException e) {
 			logger.debug(e.getMessage());
 		}
 	}
