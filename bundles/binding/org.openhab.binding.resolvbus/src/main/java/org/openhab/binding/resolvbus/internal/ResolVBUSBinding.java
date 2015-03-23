@@ -322,7 +322,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				for (String itemName : provider.getItemNames()) {
 					double value;
 					String itemConfig = provider.getName(itemName);
-					logger.debug("Updating item: "+itemName+" who has config: "+itemConfig);
+					logger.debug("Trying to update item: "+itemName+" who has config: "+itemConfig);
 					if (itemConfig != null) {
 						ResolVBUSField field = packet.getFieldWithName(itemConfig);
 						if (field == null) {
