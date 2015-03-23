@@ -262,12 +262,13 @@
 			<Label lang="en">Lack of Z-Wave range indication interval</Label>
 			<Help lang="en">Time interval of signaling (visual indication/sound) lack of Z-Wave range. Available settings: 1-8640 (multiply by 10 seconds) [10s-24h]. 1-8640 - [10s-24h]</Help>	
 		</Parameter>		
+	</Configuration>
 		
 	<Associations>
 		<Group>
 			<Index>1</Index>
 			<Maximum>1</Maximum>
-			<Label lang="en">Device Status/Label>
+			<Label lang="en">Device Status</Label>
 			<SetToController>true</SetToController>
 		</Group>
 		<Group>
