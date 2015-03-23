@@ -92,6 +92,15 @@ public class CalDavConfig {
 			boolean disableCertificateVerification) {
 		this.disableCertificateVerification = disableCertificateVerification;
 	}
+
+	@Override
+	public String toString() {
+		return "CalDavConfig [key=" + key + ", username=" + username
+				+ ", password=" + password + ", url=" + url
+				+ ", reloadMinutes=" + reloadMinutes + ", preloadMinutes="
+				+ preloadMinutes + ", disableCertificateVerification="
+				+ disableCertificateVerification + "]";
+	}
 	
 	
 }

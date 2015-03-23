@@ -106,6 +106,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				} else if (key.equals(PROP_TIMEZONE)) {
 					TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
 					TimeZone timezone = registry.getTimeZone(config.get(key) + "");
+					if (timezone == null) {
+						throw new ConfigurationException(PROP_TIMEZONE, "invalid timezone value: " + config.get(key));
+					}
 					tzOffsetMillis = timezone.getRawOffset();
 					continue;
 				}
@@ -317,6 +320,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			if (resource.isDirectory()) {
 				continue;
 			}
+			
+			LOG.debug("loading resource: {}", resource);
 
 			URL url = new URL(config.getUrl());
 			url = new URL(url.getProtocol(), url.getHost(), url.getPort(),
@@ -329,9 +334,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 			Calendar calendar = builder.build(inputStream);
 			for (CalendarComponent comp : calendar.getComponents()) {
+				LOG.trace("loading event: {}", comp);
 				if (comp instanceof VEvent) {
 					VEvent vEvent = (VEvent) comp;
-//					System.out.println("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary());
+					LOG.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
 					java.util.Calendar instance1 = java.util.Calendar
 							.getInstance();
 					instance1.add(java.util.Calendar.HOUR_OF_DAY, -1);
