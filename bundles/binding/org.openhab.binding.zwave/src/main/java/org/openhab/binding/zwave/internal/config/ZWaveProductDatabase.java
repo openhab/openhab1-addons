@@ -42,7 +42,7 @@ public class ZWaveProductDatabase {
 	ZWaveDbProduct selProduct = null;
 
 	ZWaveDbProductFile productFile = null;
-	double productVersion;
+	String productVersion;
 
 	public ZWaveProductDatabase() {
 		loadDatabase();
@@ -194,7 +194,7 @@ public class ZWaveProductDatabase {
 	 *            The product ID
 	 * @return true if the product was found
 	 */
-	public boolean FindProduct(int manufacturerId, int productType, int productId, double version) {
+	public boolean FindProduct(int manufacturerId, int productType, int productId, String version) {
 		if (FindManufacturer(manufacturerId) == false) {
 			return false;
 		}
@@ -212,7 +212,7 @@ public class ZWaveProductDatabase {
 	 *            The product ID
 	 * @return true if the product was found
 	 */
-	public boolean FindProduct(int productType, int productId, double version) {
+	public boolean FindProduct(int productType, int productId, String version) {
 		if (selManufacturer == null) {
 			return false;
 		}
