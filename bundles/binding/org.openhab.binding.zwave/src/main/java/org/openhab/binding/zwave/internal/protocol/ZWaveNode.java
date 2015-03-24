@@ -226,8 +226,13 @@ public class ZWaveNode {
 			this.resendCount = 0;
 			break;
 
-		case FAILED:
 		case DEAD:
+			// If the node is failed, then we don't allow transitions to DEAD
+			// The only valid state change from FAILED is to ALIVE
+			if(nodeState == ZWaveNodeState.FAILED) {
+				return;
+			}
+		case FAILED:
 			this.deadCount++;
 			this.deadTime = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Node is DEAD.", this.nodeId);
