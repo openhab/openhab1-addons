@@ -20,8 +20,9 @@ import java.math.BigInteger;
 public class ResolVBUSValue {
 
 	private BigInteger offset;
-	private BigInteger bitSize;
+	private BigInteger size;
 	private BigDecimal factor;
+	
 	
 	public BigInteger getOffset() {
 		return offset;
@@ -29,11 +30,11 @@ public class ResolVBUSValue {
 	public void setOffset(BigInteger offset) {
 		this.offset = offset;
 	}
-	public BigInteger getBitSize() {
-		return bitSize;
+	public BigInteger getSize() {
+		return size;
 	}
-	public void setBitsize(BigInteger bitSize) {
-		this.bitSize = bitSize;
+	public void setSize(BigInteger size) {
+		this.size = size;
 	}
 	public BigDecimal getFactor() {
 		return factor;
@@ -41,9 +42,8 @@ public class ResolVBUSValue {
 	public void setFactor(BigDecimal factor) {
 		this.factor = factor;
 	}
-	public void setBitSize(BigInteger bitSize) {
-		this.bitSize = bitSize;
-	}
+	
+
 
 	
 	

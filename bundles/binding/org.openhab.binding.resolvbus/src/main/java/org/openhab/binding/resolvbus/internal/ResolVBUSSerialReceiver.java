@@ -56,6 +56,10 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 
 	public ResolVBUSSerialReceiver(ResolVBUSListener listener) {
 		this.listener = listener;
+		baudrate = 9600;
+		parity = SerialPort.PARITY_NONE;
+		stopBits = 1;
+		dataBits = 8;
 	}
 
 		

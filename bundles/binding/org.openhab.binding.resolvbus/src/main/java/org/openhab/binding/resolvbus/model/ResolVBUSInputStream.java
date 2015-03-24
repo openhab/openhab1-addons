@@ -126,6 +126,11 @@ public class ResolVBUSInputStream {
 			errorFree = false;
 			return;
 		}
+		
+		if (protocolVersion!= 16) {
+			logger.debug("Wrong protocol version: "+protocolVersion+" Only Version 1.0 is supported");
+		}
+		
 
 		payloadByte = new byte[4 * payloadCount];
 		

@@ -19,7 +19,6 @@ public class ResolVBUSDevice {
 	protected String address;
 	protected String name;
 	protected String mask;
-	protected boolean isMaster;
 	
 	
 	public String getAddress() {
@@ -40,13 +39,4 @@ public class ResolVBUSDevice {
 	public void setMask(String mask) {
 		this.mask = mask;
 	}
-	public boolean isMaster() {
-		return isMaster;
-	}
-	public void setMaster(boolean isMaster) {
-		this.isMaster = isMaster;
-	}
-
-	
-
 }

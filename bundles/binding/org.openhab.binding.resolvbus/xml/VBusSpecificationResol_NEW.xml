@@ -1,149 +1,738 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <vbusSpecification>
 	<device>
+		<address>0x0000</address>
+		<name>Broadcast</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x0010</address>
+		<name>DFA</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x3011</address>
+		<name>WMZ-L10</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
 		<address>0x7731</address>
-		<name>Soltop Deltasol S2/S3</name>
-		<isMaster>false</isMaster>
+		<name>SOLTOP DeltaSol S2/S3</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7711</address>
+		<name>Multitronic [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7712</address>
+		<name>Multitronic [WMZ]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x6620</address>
+		<name>SunGo XL</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7F71</address>
+		<name>DeltaSol FCS</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7421</address>
+		<name>DeltaSol BX</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4252</address>
+		<name>BS Solex US</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7E11</address>
+		<name>DeltaSol MX [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7E21</address>
+		<name>DeltaSol MX [Heating circuit #]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7E31</address>
+		<name>DeltaSol MX [WMZ #]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x1120</address>
+		<name>DeltaSol AL-E</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7774</address>
+		<name>EMZ/CME</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7331</address>
+		<name>SLR</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7332</address>
+		<name>SLR expansion module #1</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7333</address>
+		<name>SLR expansion module #2</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7334</address>
+		<name>SLR expansion module #3</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7335</address>
+		<name>SLR expansion module #4</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x6521</address>
+		<name>MSR-65 #</name>
+		<mask>0xFFF0</mask>
+	</device>
+	<device>
+		<address>0x3311</address>
+		<name>Diemasol C</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7751</address>
+		<name>DeDietrich Diemasol C v2007</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4311</address>
+		<name>Drainback DeDietrich</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7511</address>
+		<name>SOLTEX-Controller [Part 1]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7512</address>
+		<name>SOLTEX-Controller [Part 2]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7315</address>
+		<name>DeltaSol M [Volume]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4241</address>
+		<name>Huber - REGLOfresh / Felix [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7221</address>
+		<name>DrainBloC</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7231</address>
+		<name>SC25</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x3241</address>
+		<name>DT4 (B)</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x5221</address>
+		<name>DT4 (MS)</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x3271</address>
+		<name>ConergyDT5</name>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x3211</address>
 		<name>EL1</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x3221</address>
 		<name>DeltaSol Pro</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x3231</address>
 		<name>DeltaSol B</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x3251</address>
 		<name>DeltaSol BS</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x4010</address>
-		<mask>0xFFF0</mask>
 		<name>WMZ #</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFF0</mask>
 	</device>
 	<device>
 		<address>0x4221</address>
 		<name>DeltaSol BS Plus</name>
-		<isMaster>true</isMaster>
-	</device>
-	<device>
-		<address>0x4410</address>
-		<mask>0xFFF0</mask>
-		<name>MSR44 #</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x4420</address>
-		<mask>0xFFF0</mask>
 		<name>HKM1 #</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFF0</mask>
 	</device>
 	<device>
 		<address>0x5210</address>
 		<name>DeltaSol Plus</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x5510</address>
 		<name>EL2/3</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x6510</address>
 		<name>HKM2</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x6520</address>
 		<name>MSR65</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x6610</address>
 		<name>Midi Pro</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x6650</address>
 		<name>EM1</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7311</address>
-		<name>DeltaSol M [Regler]</name>
-		<isMaster>true</isMaster>
+		<name>DeltaSol M [Controller]</name>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7312</address>
 		<name>DeltaSol M [HK1]</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7313</address>
 		<name>DeltaSol M [HK2]</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7316</address>
 		<name>DeltaSol M [WMZ1]</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7317</address>
 		<name>DeltaSol M [WMZ2]</name>
-		<isMaster>false</isMaster>
-	</device>
-	<device>
-		<address>0x7321</address>
-		<name>Viessmann Vitosolic 200 SD4</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7411</address>
 		<name>DeltaSol ES</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7611</address>
 		<name>Friwa</name>
-		<isMaster>true</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7621</address>
-		<name>SOLEX [Regler]</name>
-		<isMaster>true</isMaster>
+		<name>SOLEX [Controller]</name>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7622</address>
 		<name>SOLEX [WMZ]</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7721</address>
-		<name>DeltaSol E [Regler]</name>
-		<isMaster>true</isMaster>
+		<name>DeltaSol E [Controller]</name>
+		<mask>0xFFFF</mask>
 	</device>
 	<device>
 		<address>0x7722</address>
 		<name>DeltaSol E [WMZ]</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
-		<device>
+	<device>
+		<address>0x7F61</address>
+		<name>IOC-Modul [measured values]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7F62</address>
+		<name>IOC-Modul [daily balance]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x5111</address>
+		<name>DeltaSol D</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
 		<address>0x4278</address>
 		<name>DeltaSol BS/DrainBack</name>
-		<isMaster>false</isMaster>
+		<mask>0xFFFF</mask>
 	</device>
-	
+	<device>
+		<address>0x4279</address>
+		<name>DeltaSol BS/DrainBack (Fahrenheit)</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7761</address>
+		<name>DeltaSol Pool</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7762</address>
+		<name>DeltaSol Pool [WMZ]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4212</address>
+		<name>DeltaSol C</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4223</address>
+		<name>DeltaSol BS Plus BTU</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4321</address>
+		<name>DeltaSol MiniPool</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4111</address>
+		<name>DeltaSol AL</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7729</address>
+		<name>DeltaSol E Fahrenheit [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x772A</address>
+		<name>DeltaSol E Fahrenheit [WMZ]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x427B</address>
+		<name>DeltaSol BS 2009</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x5311</address>
+		<name>X-Control</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4261</address>
+		<name>DeltaSol E SorTech [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7210</address>
+		<name>SKSR 1/2/3</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7211</address>
+		<name>SKSC3 [HK1]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7212</address>
+		<name>SKSC3 [HK2]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7213</address>
+		<name>SKSC3 [HK3]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4211</address>
+		<name>SKSC1/2-Prototype</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4231</address>
+		<name>Frista</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4251</address>
+		<name>DSPlus UMSYS [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x4265</address>
+		<name>Aton DeltaSol BS</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7321</address>
+		<name>Vitosolic 200 [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7326</address>
+		<name>Vitosolic 200 [WMZ1]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7327</address>
+		<name>Vitosolic 200 [WMZ2]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7821</address>
+		<name>COSMO Multi [Controller]</name>
+		<mask>0xFFFF</mask>
+	</device>
+	<device>
+		<address>0x7822</address>
+		<name>COSMO Multi [WMZ]</name>
+		<mask>0xFFFF</mask>
+	</device>
+
+	<!--MSR-65-->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x6521</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<size>2</size>
+			<mask/>
+			<name>Temperature sensor 1</name>
+
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<size>2</size>
+			<mask/>
+			<name>Temperature sensor 2</name>
+
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<size>2</size>
+			<mask/>
+			<name>Temperature sensor 3</name>
+
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<size>2</size>
+			<mask/>
+			<name>Temperature sensor 4</name>
+
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<size>2</size>
+			<mask/>
+			<name>Temperature 5</name>
+
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<size>2</size>
+			<mask/>
+			<name>Temperature sensor 6</name>
+
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+
+
+
+
+
+
+
+	</packet>
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x6521</source>
+		<command>0x0200</command>
+
+
+
+
+		<field>
+			<offset>1</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 1 R1</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 2 R1</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>5</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 2 R1</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 1 R2</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 1 R2</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 2 R2</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 2 R2</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 1 R3</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>17</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 1 R3</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 2 R3</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 2 R3</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 1 R4</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 1 R4</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 2 R4</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 2 R4</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 1 R5</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>33</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 1 R5</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed 2 R5</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>37</offset>
+			<size>3</size>
+			<mask/>
+			<name>Runtime 2 R5</name>
+			<factor>1</factor>
+			<unit>s</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<size>1</size>
+			<mask/>
+			<name>Offset Sensor 1</name>
+			<factor>1</factor>
+			<unit>K</unit>
+		</field>
+		<field>
+			<offset>41</offset>
+			<size>1</size>
+			<mask/>
+			<name>Offset Sensor 2</name>
+			<factor>1</factor>
+			<unit>K</unit>
+		</field>
+		<field>
+			<offset>42</offset>
+			<size>1</size>
+			<mask/>
+			<name>Offset Sensor 3</name>
+			<factor>1</factor>
+			<unit>K</unit>
+		</field>
+		<field>
+			<offset>43</offset>
+			<size>1</size>
+			<mask/>
+			<name>Offset Sensor 4</name>
+			<factor>1</factor>
+			<unit>K</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<size>1</size>
+			<mask/>
+			<name>Offset Sensor 5</name>
+			<factor>1</factor>
+			<unit>K</unit>
+		</field>
+		<field>
+			<offset>45</offset>
+			<size>1</size>
+			<mask/>
+			<name>Offset Sensor 6</name>
+			<factor>1</factor>
+			<unit>K</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<size>1</size>
+			<mask/>
+			<name>Sensor mask</name>
+			<factor>1</factor>
+			<unit/>
+		</field>
+		<field>
+			<offset>47</offset>
+			<size>1</size>
+			<mask/>
+			<name>Relay mask</name>
+			<factor>1</factor>
+			<unit/>
+		</field>
+
+
+
+
+
+
+
+
+
+	</packet>
 	<!-- DeltaSol BS/DrainBack -->
 	<packet>
 		<destination>0x0010</destination>
@@ -223,10 +812,10 @@
 			<bitSize>7</bitSize>
 			<factor>0.01</factor>
 		</field>
-		
+
 	</packet>
-	
-	
+
+
 	<!-- Soltop -->
 	<packet>
 		<destination>0x0010</destination>
@@ -341,124 +930,164 @@
 			<factor>1</factor>
 		</field>
 	</packet>
-	
+
 	<!-- EL1 -->
 	<packet>
 		<destination>0x0010</destination>
 		<source>0x3211</source>
 		<command>0x0100</command>
+
+
+
+
+
+
+
 		<field>
 			<offset>0</offset>
+			<size>2</size>
+			<mask/>
 			<name>Temperature sensor 1</name>
-			<bitSize>15</bitSize>
 			<factor>0.1</factor>
-			<unit> °C</unit>
+			<unit>°C</unit>
 		</field>
 		<field>
 			<offset>2</offset>
+			<size>2</size>
+			<mask/>
 			<name>Temperature sensor 2</name>
-			<bitSize>15</bitSize>
-			<factor>0.1</factor>
-			<unit> °C</unit>
+			<factor>1</factor>
+			<unit>°C</unit>
 		</field>
 		<field>
 			<offset>4</offset>
+			<size>2</size>
+			<mask/>
 			<name>Temperature sensor 3</name>
-			<bitSize>15</bitSize>
-			<factor>0.1</factor>
-			<unit> °C</unit>
+			<factor>1</factor>
+			<unit>°C</unit>
 		</field>
 		<field>
 			<offset>6</offset>
-			<name>Drehzahl R1</name>
-			<bitSize>8</bitSize>
-			<unit> %</unit>
+			<size>1</size>
+			<mask/>
+			<name>Pump speed R1</name>
+			<factor>1</factor>
+			<unit>%</unit>
 		</field>
 		<field>
 			<offset>7</offset>
-			<name>Fehlercode</name>
-			<bitSize>8</bitSize>
+			<size>1</size>
+			<mask/>
+			<name>Error code</name>
+			<factor>1</factor>
+			<unit/>
 		</field>
 		<field>
 			<offset>8</offset>
-			<name>Pumpenlaufzeit R1</name>
-			<bitSize>16</bitSize>
-			<unit> h</unit>
+			<size>2</size>
+			<mask/>
+			<name>Pump runtime R1</name>
+			<factor>1</factor>
+			<unit>h</unit>
 		</field>
 		<field>
 			<offset>10</offset>
-			<name>Ladestatus</name>
-			<bitSize>8</bitSize>
+			<size>1</size>
+			<mask/>
+			<name>Loading status</name>
+			<factor>1</factor>
+			<unit/>
 		</field>
 		<field>
 			<offset>11</offset>
+			<size>1</size>
+			<mask/>
 			<name>Flags</name>
-			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit/>
 		</field>
 	</packet>
-	
+
 	<!-- DeltaSol Pro -->
 	<packet>
 		<destination>0x0010</destination>
 		<source>0x3221</source>
 		<command>0x0100</command>
-		<field>
+		<source>
 			<offset>0</offset>
-			<name>Temperature sensor 1</name>
-			<bitSize>15</bitSize>
+			<size>2</size>
+			
+			<mask/><name>Temperature sensor 1</name>
 			<factor>0.1</factor>
-			<unit> °C</unit>
-		</field>
-		<field>
+			<unit>°C</unit>
+		</source>
+		<source>
 			<offset>2</offset>
+			<size>2</size>
+			<mask/>
 			<name>Temperature sensor 2</name>
-			<bitSize>15</bitSize>
-			<factor>0.1</factor>
-			<unit> °C</unit>
-		</field>
-		<field>
+			<factor>1</factor>
+			<unit>°C</unit>
+		</source>
+		<source>
 			<offset>4</offset>
+			<size>2</size><mask/>
+			
 			<name>Temperature sensor 3</name>
-			<bitSize>15</bitSize>
-			<factor>0.1</factor>
-			<unit> °C</unit>
-		</field>
-		<field>
+			<factor>1</factor>
+			<unit>°C</unit>
+		</source>
+		<source>
 			<offset>6</offset>
-			<name>Pump speed 1</name>
-			<bitSize>8</bitSize>
-			<unit> %</unit>
-		</field>
-		<field>
+			<size>1</size><mask/>
+			
+			<name>Pump speed relay 1</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</source>
+		<source>
 			<offset>7</offset>
-			<name>Pump speed 2</name>
-			<bitSize>8</bitSize>
-			<unit> %</unit>
-		</field>
-		<field>
+			<size>1</size><mask/>
+			
+			<name>Pump speed relay 2</name>
+			<factor>1</factor>
+			<unit>%</unit>
+		</source>
+		<source>
 			<offset>8</offset>
-			<name>Regelflags</name>
-			<bitSize>16</bitSize>
-		</field>
-		<field>
+			<size>2</size><mask/>
+			
+			<name>Control flags</name>
+			<factor>1</factor>
+			<unit/>
+		</source>
+		<source>
 			<offset>10</offset>
-			<name>Errormask</name>
-			<bitSize>8</bitSize>
-		</field>
-		<field>
+			<size>1</size><mask/>
+			
+			<name>Error mask</name>
+			<factor>1</factor>
+			<unit/>
+		</source>
+		<source>
 			<offset>12</offset>
-			<name>Working hours Relais 1</name>
-			<bitSize>16</bitSize>
-			<unit> h</unit>
-		</field>
-		<field>
+			<size>2</size><mask/>
+			<name>Operating hours relay 1</name>
+			
+			<factor>1</factor>
+			<unit>h</unit>
+		</source>
+		<source>
 			<offset>14</offset>
-			<name>Working hours Relais 2</name>
-			<bitSize>16</bitSize>
-			<unit> h</unit>
-		</field>
+			<size>2</size><mask/>
+			
+			<name>Operating hours relay 2</name>
+			<factor>1</factor>
+			<unit>h</unit>
+		</source>
 	</packet>
-	
+
 	<!-- DeltaSol Plus -->
 	<packet>
 		<destination>0x0010</destination>
@@ -583,7 +1212,7 @@
 			<format>t</format>
 		</field>
 	</packet>
-	
+
 	<!-- EL2/3 -->
 	<packet>
 		<destination>0x0010</destination>
@@ -640,7 +1269,7 @@
 			<bitSize>8</bitSize>
 		</field>
 	</packet>
-	
+
 	<!-- Midi Pro -->
 	<packet>
 		<destination>0x0010</destination>
@@ -815,7 +1444,7 @@
 			<bitSize>8</bitSize>
 		</field>
 	</packet>
-	
+
 	<!-- WMZ-M1 -->
 	<packet>
 		<destination>0x0000</destination>
@@ -890,7 +1519,7 @@
 			<unit> bar</unit>
 		</field>
 	</packet>
-	
+
 	<!-- DeltaSol BS Plus -->
 	<packet>
 		<destination>0x0010</destination>
@@ -964,42 +1593,42 @@
 			<name>Option Kollektor Max.</name>
 			<bitSize>1</bitSize>
 			<bitPos>0</bitPos>
-			<unit></unit>
+			<unit/>
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Kollektor Min.</name>
 			<bitSize>1</bitSize>
 			<bitPos>1</bitPos>
-			<unit></unit>
+			<unit/>
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Kollektor Frost</name>
 			<bitSize>1</bitSize>
 			<bitPos>2</bitPos>
-			<unit></unit>
+			<unit/>
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Röhrenkollektor</name>
 			<bitSize>1</bitSize>
 			<bitPos>3</bitPos>
-			<unit></unit>
+			<unit/>
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Rückkühlung</name>
 			<bitSize>1</bitSize>
 			<bitPos>4</bitPos>
-			<unit></unit>
+			<unit/>
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option WMZ</name>
 			<bitSize>1</bitSize>
 			<bitPos>5</bitPos>
-			<unit></unit>
+			<unit/>
 		</field>
 		<field>
 			<offset>16</offset>
@@ -1039,7 +1668,7 @@
 			<factor>0.01</factor>
 		</field>
 	</packet>
-	
+
 	<!-- HKM1 -->
 	<packet>
 		<destination>0x4420</destination>
@@ -1089,7 +1718,7 @@
 			<bitSize>8</bitSize>
 		</field>
 	</packet>
-	
+
 	<!-- HKM1 -->
 	<packet>
 		<destination>0x0000</destination>
@@ -1151,7 +1780,7 @@
 			<bitSize>16</bitSize>
 		</field>
 	</packet>
-	
+
 	<!-- DeltaSol M [Regler] -->
 	<packet>
 		<destination>0x0010</destination>
@@ -1354,7 +1983,7 @@
 			<timeRef>1</timeRef>
 		</field>
 	</packet>
-	
+
 	<!-- DeltaSol M [HK] -->
 	<packet>
 		<destination>0x0010</destination>
@@ -1402,7 +2031,7 @@
 			<bitSize>8</bitSize>
 		</field>
 	</packet>
-	
+
 	<!-- DeltaSol M [WMZ] -->
 	<packet>
 		<destination>0x0010</destination>
@@ -1448,7 +2077,7 @@
 			</value>
 		</field>
 	</packet>
-	
+
 	<!-- DeltaSol ES -->
 	<packet>
 		<destination>0x0010</destination>
@@ -1523,7 +2152,7 @@
 			<bitSize>15</bitSize>
 			<unit> W/qm</unit>
 		</field>
-<!-- 
+		<!-- 
 		<field>
 			<offset>20</offset>
 			<name>Relaisbyte</name>
@@ -1801,7 +2430,7 @@
 			<factor>0.1</factor>
 		</field>
 	</packet>
-	
+
 	<!-- HKM2 -->
 	<packet>
 		<destination>0x0000</destination>
@@ -1920,7 +2549,7 @@
 			<unit> °C</unit>
 		</field>
 	</packet>
-	
+
 	<!--  DeltaSol B -->
 	<packet>
 		<destination>0x0010</destination>
@@ -2027,7 +2656,7 @@
 			<unit> h</unit>
 		</field>
 	</packet>
-	
+
 	<!-- Friwa -->
 	<packet>
 		<destination>0x0010</destination>
@@ -2689,7 +3318,7 @@
 			<name>Resistor 6</name>
 			<bitSize>31</bitSize>
 		</field>
-		
+
 	</packet>
 	<packet>
 		<destination>0x0010</destination>

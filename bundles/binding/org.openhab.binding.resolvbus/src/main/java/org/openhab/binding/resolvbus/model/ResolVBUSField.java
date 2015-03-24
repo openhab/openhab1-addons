@@ -25,12 +25,13 @@ public class ResolVBUSField {
 	private String format;
 	private BigInteger offset;
 	private String name;
-	private BigInteger bitSize;
+	private BigInteger size;
 	private BigDecimal factor;
 	private String unit;
 	private String field;
 	private BigInteger bitPos;
 	private String timeRef;
+	private String mask;
 	
 	@XStreamImplicit
 	private List<ResolVBUSValue> value;
@@ -59,12 +60,12 @@ public class ResolVBUSField {
 		this.name = name;
 	}
 
-	public BigInteger getBitSize() {
-		return bitSize;
+	public BigInteger getSize() {
+		return size;
 	}
 
-	public void setBitSize(BigInteger bitSize) {
-		this.bitSize = bitSize;
+	public void setSize(BigInteger size) {
+		this.size = size;
 	}
 
 	public BigDecimal getFactor() {
@@ -113,6 +114,14 @@ public class ResolVBUSField {
 
 	public void setTimeRef(String timeRef) {
 		this.timeRef = timeRef;
+	}
+
+	public String getMask() {
+		return mask;
+	}
+
+	public void setMask(String mask) {
+		this.mask = mask;
 	}
 
 }

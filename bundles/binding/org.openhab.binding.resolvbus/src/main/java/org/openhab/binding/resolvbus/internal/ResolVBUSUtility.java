@@ -97,18 +97,21 @@ public class ResolVBUSUtility {
 			int fieldValue = 0;
 			
 			// Calculate number of bytes from bitsize
-			int byteLength = (field.getBitSize().intValue() + 7) / 8;
+//			int byteLength = (field.getBitSize().intValue() + 7) / 8;
+			int bitSize = field.getSize().intValue()*8-1;
+			int byteLength = field.getSize().intValue();
 			
-			int freeBits = byteLength * 8 - field.getBitSize().intValue();
-
+//			int freeBits = byteLength * 8 - field.getBitSize().intValue();
+			int freeBits = byteLength * 8 - bitSize;
+			
 			// bitSize beachten, alles da¸aber ignorieren
 			for (int i = 1; i <= freeBits; i++) {
 				fieldValue |= 1 << byteLength * 8 - i;
 			}
 //			System.out.println("Bytes to int: "+bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength));
 			fieldValue = ~fieldValue & bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength);
-			if (fieldValue > (int) (Math.pow(2, field.getBitSize().intValue()) - 1) / 2) {
-				for (int i = field.getBitSize().intValue(); i < 32; i++) {
+			if (fieldValue > (int) (Math.pow(2, bitSize) - 1) / 2) {
+				for (int i = bitSize; i < 32; i++) {
 					fieldValue |= 1 << i;
 				}
 			}
@@ -128,18 +131,20 @@ public class ResolVBUSUtility {
 		}
 		
 		// Calculate number of bytes from bitsize
-		int byteLength = (field.getBitSize().intValue() + 7) / 8;
+		int byteLength = (field.getSize().intValue() + 7) / 8;
+//		int bitSize = field.getSize().intValue()*8-1;
+//		int byteLength = field.getSize().intValue();
 		
-		int freeBits = byteLength * 8 - field.getBitSize().intValue();
+		int freeBits = byteLength * 8 - field.getSize().intValue();
+//		int freeBits = byteLength * 8 - bitSize;
 
-		// bitSize beachten, alles da¸aber ignorieren
+		// transform in regards to bitsize
 		for (int i = 1; i <= freeBits; i++) {
 			fieldValue |= 1 << byteLength * 8 - i;
 		}
-//		System.out.println("Bytes to int: "+bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength));
 		fieldValue = ~fieldValue & bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength);
-		if (fieldValue > (int) (Math.pow(2, field.getBitSize().intValue()) - 1) / 2) {
-			for (int i = field.getBitSize().intValue(); i < 32; i++) {
+		if (fieldValue > (int) (Math.pow(2, field.getSize().intValue()) - 1) / 2) {
+			for (int i = field.getSize().intValue(); i < 32; i++) {
 				fieldValue |= 1 << i;
 			}
 		}
