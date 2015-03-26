@@ -20,5 +20,5 @@ public interface ZWaveGetCommands {
 	 * Gets a SerialMessage with the GET command 
 	 * @return the serial message
 	 */
-	public SerialMessage getValueMessage() ;
+	public SerialMessage getValueMessage();
 }

@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class that implements the Modbus/BIN transport
  * flavor.
@@ -39,6 +42,7 @@ import java.io.OutputStream;
 public class ModbusBINTransport
     extends ModbusSerialTransport {
 
+  private static final Logger logger = LoggerFactory.getLogger(ModbusBINTransport.class);
   private DataInputStream m_InputStream;     //used to read from
   private ASCIIOutputStream m_OutputStream;   //used to write to
 
@@ -136,8 +140,9 @@ public class ModbusBINTransport
       } while (!done);
       return request;
     } catch (Exception ex) {
-      if(Modbus.debug) System.out.println(ex.getMessage());
-      throw new ModbusIOException("I/O exception - failed to read.");
+      final String errMsg = "failed to read";
+      logger.debug("{}: {}", errMsg, ex.getMessage());
+      throw new ModbusIOException("I/O exception - " + errMsg);
     }
 
   }//readRequest
@@ -191,8 +196,9 @@ public class ModbusBINTransport
       } while (!done);
       return response;
     } catch (Exception ex) {
-      if(Modbus.debug) System.out.println(ex.getMessage());
-      throw new ModbusIOException("I/O exception - failed to read.");
+      final String errMsg = "failed to read";
+      logger.debug("{}: {}", errMsg, ex.getMessage());
+      throw new ModbusIOException("I/O exception - " + errMsg);
     }
   }//readResponse
 

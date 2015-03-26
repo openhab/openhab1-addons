@@ -31,7 +31,7 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface MSwitchActor extends EObject
+public interface MSwitchActor extends SwitchSensor
 {
   /**
    * Returns the value of the '<em><b>Switch State</b></em>' attribute.
@@ -66,13 +66,5 @@ public interface MSwitchActor extends EObject
    * @generated
    */
   void turnSwitch(OnOffValue state);
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model
-   * @generated
-   */
-  void fetchSwitchState();
 
 } // MSwitchActor

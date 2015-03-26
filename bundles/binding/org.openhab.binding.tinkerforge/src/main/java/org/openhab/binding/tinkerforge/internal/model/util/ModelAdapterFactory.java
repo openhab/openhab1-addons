@@ -172,9 +172,19 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMActorAdapter();
       }
       @Override
+      public Adapter caseSwitchSensor(SwitchSensor object)
+      {
+        return createSwitchSensorAdapter();
+      }
+      @Override
       public Adapter caseMSwitchActor(MSwitchActor object)
       {
         return createMSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseProgrammableSwitchActor(ProgrammableSwitchActor object)
+      {
+        return createProgrammableSwitchActorAdapter();
       }
       @Override
       public Adapter caseMOutSwitchActor(MOutSwitchActor object)
@@ -227,6 +237,96 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMLCDSubDeviceAdapter();
       }
       @Override
+      public Adapter caseDigitalActor(DigitalActor object)
+      {
+        return createDigitalActorAdapter();
+      }
+      @Override
+      public Adapter caseNumberActor(NumberActor object)
+      {
+        return createNumberActorAdapter();
+      }
+      @Override
+      public Adapter caseColorActor(ColorActor object)
+      {
+        return createColorActorAdapter();
+      }
+      @Override
+      public Adapter caseMoveActor(MoveActor object)
+      {
+        return createMoveActorAdapter();
+      }
+      @Override
+      public <TC extends DimmableConfiguration> Adapter caseDimmableActor(DimmableActor<TC> object)
+      {
+        return createDimmableActorAdapter();
+      }
+      @Override
+      public <C extends DimmableConfiguration> Adapter caseSetPointActor(SetPointActor<C> object)
+      {
+        return createSetPointActorAdapter();
+      }
+      @Override
+      public Adapter caseMBrickletDualButton(MBrickletDualButton object)
+      {
+        return createMBrickletDualButtonAdapter();
+      }
+      @Override
+      public Adapter caseDualButtonDevice(DualButtonDevice object)
+      {
+        return createDualButtonDeviceAdapter();
+      }
+      @Override
+      public Adapter caseDualButtonLeftButton(DualButtonLeftButton object)
+      {
+        return createDualButtonLeftButtonAdapter();
+      }
+      @Override
+      public Adapter caseDualButtonRightButton(DualButtonRightButton object)
+      {
+        return createDualButtonRightButtonAdapter();
+      }
+      @Override
+      public Adapter caseDualButtonLeftLed(DualButtonLeftLed object)
+      {
+        return createDualButtonLeftLedAdapter();
+      }
+      @Override
+      public Adapter caseDualButtonRightLed(DualButtonRightLed object)
+      {
+        return createDualButtonRightLedAdapter();
+      }
+      @Override
+      public Adapter caseMBrickletLinearPoti(MBrickletLinearPoti object)
+      {
+        return createMBrickletLinearPotiAdapter();
+      }
+      @Override
+      public Adapter caseMBrickletJoystick(MBrickletJoystick object)
+      {
+        return createMBrickletJoystickAdapter();
+      }
+      @Override
+      public Adapter caseJoystickDevice(JoystickDevice object)
+      {
+        return createJoystickDeviceAdapter();
+      }
+      @Override
+      public Adapter caseJoystickXPosition(JoystickXPosition object)
+      {
+        return createJoystickXPositionAdapter();
+      }
+      @Override
+      public Adapter caseJoystickYPosition(JoystickYPosition object)
+      {
+        return createJoystickYPositionAdapter();
+      }
+      @Override
+      public Adapter caseJoystickButton(JoystickButton object)
+      {
+        return createJoystickButtonAdapter();
+      }
+      @Override
       public Adapter caseMBrickServo(MBrickServo object)
       {
         return createMBrickServoAdapter();
@@ -277,24 +377,9 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createDigitalActorDigitalOut4Adapter();
       }
       @Override
-      public Adapter caseDigitalActor(DigitalActor object)
-      {
-        return createDigitalActorAdapter();
-      }
-      @Override
-      public Adapter caseNumberActor(NumberActor object)
-      {
-        return createNumberActorAdapter();
-      }
-      @Override
       public Adapter caseMBrickletSegmentDisplay4x7(MBrickletSegmentDisplay4x7 object)
       {
         return createMBrickletSegmentDisplay4x7Adapter();
-      }
-      @Override
-      public Adapter caseColorActor(ColorActor object)
-      {
-        return createColorActorAdapter();
       }
       @Override
       public Adapter caseMBrickletLEDStrip(MBrickletLEDStrip object)
@@ -610,6 +695,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseBrickletMultiTouchConfiguration(BrickletMultiTouchConfiguration object)
       {
         return createBrickletMultiTouchConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseDimmableConfiguration(DimmableConfiguration object)
+      {
+        return createDimmableConfigurationAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -994,6 +1084,231 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MoveActor <em>Move Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MoveActor
+   * @generated
+   */
+  public Adapter createMoveActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor <em>Dimmable Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DimmableActor
+   * @generated
+   */
+  public Adapter createDimmableActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor <em>Set Point Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.SetPointActor
+   * @generated
+   */
+  public Adapter createSetPointActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton <em>MBricklet Dual Button</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton
+   * @generated
+   */
+  public Adapter createMBrickletDualButtonAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonDevice <em>Dual Button Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DualButtonDevice
+   * @generated
+   */
+  public Adapter createDualButtonDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton <em>Dual Button Left Button</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton
+   * @generated
+   */
+  public Adapter createDualButtonLeftButtonAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton <em>Dual Button Right Button</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton
+   * @generated
+   */
+  public Adapter createDualButtonRightButtonAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed <em>Dual Button Left Led</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed
+   * @generated
+   */
+  public Adapter createDualButtonLeftLedAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonRightLed <em>Dual Button Right Led</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DualButtonRightLed
+   * @generated
+   */
+  public Adapter createDualButtonRightLedAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti <em>MBricklet Linear Poti</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti
+   * @generated
+   */
+  public Adapter createMBrickletLinearPotiAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick <em>MBricklet Joystick</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick
+   * @generated
+   */
+  public Adapter createMBrickletJoystickAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickDevice <em>Joystick Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickDevice
+   * @generated
+   */
+  public Adapter createJoystickDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickXPosition <em>Joystick XPosition</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickXPosition
+   * @generated
+   */
+  public Adapter createJoystickXPositionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickYPosition <em>Joystick YPosition</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickYPosition
+   * @generated
+   */
+  public Adapter createJoystickYPositionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickButton <em>Joystick Button</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickButton
+   * @generated
+   */
+  public Adapter createJoystickButtonAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip <em>MBricklet LED Strip</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1054,6 +1369,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.SwitchSensor <em>Switch Sensor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.SwitchSensor
+   * @generated
+   */
+  public Adapter createSwitchSensorAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MSwitchActor <em>MSwitch Actor</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1064,6 +1394,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMSwitchActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor <em>Programmable Switch Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor
+   * @generated
+   */
+  public Adapter createProgrammableSwitchActorAdapter()
   {
     return null;
   }
@@ -1574,6 +1919,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createBrickletMultiTouchConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration <em>Dimmable Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration
+   * @generated
+   */
+  public Adapter createDimmableConfigurationAdapter()
   {
     return null;
   }

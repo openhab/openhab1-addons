@@ -52,6 +52,9 @@ public class InsteonDevice {
 	private Long						m_lastMsgReceived = 0L;
 	private boolean						m_isModem		= false;
 	private	 Deque<QEntry>				m_requestQueue  = new LinkedList<QEntry>();
+	private DeviceFeature.QueryStatus	m_requestQueueState = DeviceFeature.QueryStatus.QUERY_ANSWERED;
+	private static final long			QUERY_TIMEOUT	= 2000;
+	private long						m_lastQueryTime	= 0L;					
 	private	boolean						m_hasModemDBEntry = false;
 	private DeviceStatus				m_status		= DeviceStatus.INITIALIZED;
 	
@@ -301,6 +304,17 @@ public class InsteonDevice {
 			if (m_requestQueue.isEmpty()) {
 				return 0L;
 			}
+			if (m_requestQueueState == DeviceFeature.QueryStatus.QUERY_PENDING) {
+				long dt = timeNow - (m_lastQueryTime + QUERY_TIMEOUT);
+				if (dt < 0) {
+					logger.debug("still waiting for query reply from {} for another {} usec",
+							m_address, dt);
+					return (m_lastQueryTime + QUERY_TIMEOUT);
+				} else {
+					logger.warn("gave up waiting for query reply from device {}", m_address);
+				}
+			} 
+			m_lastQueryTime = timeNow;
 			QEntry qe = m_requestQueue.poll();
 			qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
 			long quietTime = qe.getMsg().getQuietTime();
@@ -319,13 +333,24 @@ public class InsteonDevice {
 	 * @param f device feature that sent this message (so we can associate the response message with it)
 	 */
 	public void enqueueMessage(Msg m, DeviceFeature f) {
+		enqueueDelayedMessage(m, f, 0);
+	}
+
+	/**
+	 * Enqueues message to be sent after a delay
+	 * @param m message to be sent
+	 * @param f device feature that sent this message (so we can associate the response message with it)
+	 * @param d time (in milliseconds)to delay before enqueuing message
+	 */
+	public void enqueueDelayedMessage(Msg m, DeviceFeature f, long delay) {
 		synchronized (m_requestQueue) {
 			m_requestQueue.add(new QEntry(f, m));
 		}
 		long now = System.currentTimeMillis();
-		RequestQueueManager.s_instance().addQueue(this, now);
+		logger.trace("enqueing direct message with delay {}", delay);
+		RequestQueueManager.s_instance().addQueue(this, now + delay);
 	}
-	
+
 	private void writeMessage(Msg m) throws IOException {
 		m_driver.writeMessage(getPort(), m);
 	}

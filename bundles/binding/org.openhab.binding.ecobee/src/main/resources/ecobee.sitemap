@@ -1,0 +1,22 @@
+sitemap ecobee label="Ecobee Thermostat Test"
+{
+	Frame label="Thermostat" {
+	    Text item=identifier
+		Text item=name
+		Text item=thermostatRev
+		Switch item=isRegistered
+		Text item=modelNumber
+		Text item=lastModified
+		Text item=thermostatTime
+		Text item=utcTime
+		Text item=equipmentStatus
+		Text item=version_thermostatFirmwareVersion
+		Text item=program_currentClimateRef
+		Switch item=settings_hvacMode label="HVAC Mode" mappings=[ auto=auto, auxHeatOnly=auxHeatOnly, cool=cool, heat=heat, off=off ]
+		Group item=gSettings label="Settings" icon="temperature"
+		Group item=gRuntime label="Runtime" icon="temperature"
+		Group item=gLocation label="Location" icon="house"
+		Group item=gWeather label="Weather" icon="contact-open"
+		Group item=gHouseDetails label="House Details" icon="house"
+	}
+}

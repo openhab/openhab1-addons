@@ -40,7 +40,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
  *
  * @generated
  */
-public class TFServoConfigurationImpl extends MinimalEObjectImpl.Container implements TFServoConfiguration
+public class TFServoConfigurationImpl extends DimmableConfigurationImpl implements TFServoConfiguration
 {
   /**
    * The default value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.

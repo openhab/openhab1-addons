@@ -58,9 +58,14 @@ class AnelConnectorThread extends Thread {
 	/** Remember last time the cache was purged. */
 	private long lastCachePurge = 0;
 
+	/** The device name specified in config and used in items. */
+	private String device;
+
 	/**
 	 * Initialize a new thread for listening on UDP packages of an Anel device.
 	 * 
+	 * @param device
+	 *            The device name for this thread.
 	 * @param host
 	 *            The IP address / host name of an Anel device.
 	 * @param udpReceivePort
@@ -77,8 +82,9 @@ class AnelConnectorThread extends Thread {
 	 * @param cachePeriod
 	 *            Cache values for the given amount of minutes.
 	 */
-	AnelConnectorThread(String host, int udpReceivePort, int udpSendPort, String user, String password,
+	AnelConnectorThread(String device, String host, int udpReceivePort, int udpSendPort, String user, String password,
 			IInternalAnelBinding binding, long cachePeriod) {
+		this.device = device;
 		this.binding = binding;
 		this.password = password;
 		this.user = user;
@@ -105,30 +111,29 @@ class AnelConnectorThread extends Thread {
 
 		// check via Boolean object because current state may be null
 		if (!Boolean.valueOf(newState).equals(switchState)) {
+			logger.debug("switch " + switchNr + " has already the requested state " + (newState ? "ON" : "OFF")
+					+ ", but sending update anyway.");
+		}
 
-			// check that this switch is not locked!
-			if (switchLocked != null) {
-				if (!switchLocked) {
+		// check that this switch is not locked!
+		if (switchLocked != null) {
+			if (!switchLocked) {
 
-					// Format to switch on: Sw_on<nr><user><pwd>
-					// Format to switch off: Sw_off<nr><user><pwd>
-					// Example: Sw_on3adminanel
-					final String cmd = "Sw_" + (newState ? "on" : "off") + switchNr + user + password;
-					logger.debug("Sending to " + state.host + ": " + cmd);
-					try {
-						connector.sendDatagram(cmd.getBytes());
-					} catch (Exception e) {
-						logger.error("Error occured when sending UDP data to Anel device: " + cmd, e);
-					}
-				} else {
-					logger.debug("switch " + switchNr + " is locked, nothing sent.");
+				// Format to switch on: Sw_on<nr><user><pwd>
+				// Format to switch off: Sw_off<nr><user><pwd>
+				// Example: Sw_on3adminanel
+				final String cmd = "Sw_" + (newState ? "on" : "off") + switchNr + user + password;
+				logger.debug("Sending to " + connector.host + ":" + connector.receivePort + " -> " + cmd);
+				try {
+					connector.sendDatagram(cmd.getBytes());
+				} catch (Exception e) {
+					logger.error("Error occured when sending UDP data to Anel device: " + cmd, e);
 				}
 			} else {
-				logger.debug("switch " + switchNr + " lock state not yet initialized, nothing sent.");
+				logger.debug("switch " + switchNr + " is locked, nothing sent.");
 			}
 		} else {
-			logger.debug("switch " + switchNr + " has already the requested state " + (newState ? "ON" : "OFF")
-					+ ", nothing sent.");
+			logger.debug("switch " + switchNr + " lock state not yet initialized, nothing sent.");
 		}
 	}
 
@@ -150,33 +155,32 @@ class AnelConnectorThread extends Thread {
 		}
 
 		// check via Boolean object because current state may be null
-		if (!Boolean.valueOf(newState).equals(ioState)) {
-
-			// check whether IO is of direction output
-			if (isInput == null || !isInput) {
-				logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF")
-						+ " but it's direction is " + (isInput == null ? "unknown" : "input"));
-				return; // better not send anything if direction is not
-						// 'out'
-			}
-
-			// Format to switch on: IO_on<nr><user><pwd>
-			// Format to switch off: IO_off<nr><user><pwd>
-			// Example: IO_on3adminanel
-			final String cmd = "IO_" + (newState ? "on" : "off") + ioNr + user + password;
-			logger.debug("Sending to " + state.host + ": " + cmd);
-			try {
-				connector.sendDatagram(cmd.getBytes());
-			} catch (Exception e) {
-				if (e.getCause() instanceof UnknownHostException) {
-					logger.error("Could not check status of Anel device '" + state.host + "'");
-				} else {
-					logger.error("Error occured when sending UDP data to Anel device: " + cmd, e);
-				}
-			}
-		} else {
+		if (Boolean.valueOf(newState).equals(ioState)) {
 			logger.debug("IO " + ioNr + " has already the requested state " + (newState ? "ON" : "OFF")
-					+ ", nothing sent.");
+					+ ", but sending update anyway.");
+		}
+
+		// check whether IO is of direction output
+		if (isInput == null || !isInput) {
+			logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF")
+					+ " but it's direction is " + (isInput == null ? "unknown" : "input"));
+			return; // better not send anything if direction is not
+					// 'out'
+		}
+
+		// Format to switch on: IO_on<nr><user><pwd>
+		// Format to switch off: IO_off<nr><user><pwd>
+		// Example: IO_on3adminanel
+		final String cmd = "IO_" + (newState ? "on" : "off") + ioNr + user + password;
+		logger.debug("Sending to " + state.host + ": " + cmd);
+		try {
+			connector.sendDatagram(cmd.getBytes());
+		} catch (Exception e) {
+			if (e.getCause() instanceof UnknownHostException) {
+				logger.error("Could not check status of Anel device '" + state.host + "'");
+			} else {
+				logger.error("Error occured when sending UDP data to Anel device: " + cmd, e);
+			}
 		}
 	}
 
@@ -246,13 +250,13 @@ class AnelConnectorThread extends Thread {
 
 				// updates are only needed if commands have been parsed
 				if (newValues != null && !newValues.isEmpty()) {
-					logger.debug("newValues (len={}): {}", newValues.size(), newValues);
+					logger.debug("newValues ({}, len={}): {}", this.connector.host, newValues.size(), newValues);
 
 					// get all item names and post updates to event bus
 					for (AnelCommandType cmd : newValues.keySet()) {
 						final org.openhab.core.types.State state = newValues.get(cmd);
 
-						final Collection<String> itemNames = binding.getItemNamesForCommandType(cmd);
+						final Collection<String> itemNames = binding.getItemNamesForCommandType(device, cmd);
 						for (String itemName : itemNames) {
 							binding.postUpdateToEventBus(itemName, state);
 						}

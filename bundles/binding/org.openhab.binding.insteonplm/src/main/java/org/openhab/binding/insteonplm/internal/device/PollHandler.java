@@ -85,6 +85,23 @@ public abstract class PollHandler {
 		}
 	}
 
+	public static class PowerMeterPollHandler extends PollHandler {
+		PowerMeterPollHandler(DeviceFeature f) { super(f); }
+		@Override
+		public Msg makeMsg(InsteonDevice d) {
+			Msg m = null;
+			try {
+				m = d.makeStandardMessage((byte)0x0f, (byte)0x82, (byte)0x00);
+				m.setQuietTime(500L);
+			} catch (FieldException e) {
+				logger.warn("error setting field in msg: ", e);
+			} catch (IOException e) {
+				logger.error("poll failed with exception ", e);
+			}
+			return m;
+		}
+	}
+
 	public static class NoPollHandler extends PollHandler {
 		NoPollHandler(DeviceFeature f) { super(f); }
 		@Override

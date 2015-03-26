@@ -1,0 +1,5 @@
+NONE=None
+PENDING=Pending
+SUCCESS=Success
+ERROR=Error
+UNDEFINED=Unknown
