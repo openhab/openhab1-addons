@@ -48,6 +48,17 @@ public class ThermostatResponse extends ApiResponse {
 		return this.thermostatList;
 	}
 
+	/**
+	 * Fix up any internal references and create name-based maps for easy traversal.
+	 */
+	protected void sync() {
+		if (this.thermostatList != null) {
+			for (Thermostat t : this.thermostatList) {
+				t.sync();
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();

@@ -87,6 +87,7 @@ public class Selection extends AbstractMessagePart {
 	private Boolean includeNotificationSettings;
 	private Boolean includePrivacy;
 	private Boolean includeVersion;
+	private Boolean includeSensors;
 
 	/**
 	 * The <code>SelectionType</code> defines the type of selection to perform.
@@ -740,6 +741,30 @@ public class Selection extends AbstractMessagePart {
 		this.includeVersion = includeVersion;
 	}
 
+	/**
+	 * @return include the {@link Thermostat.RemoteSensor}s. If not specified, defaults to <code>false</code>.
+	 */
+	@JsonProperty("includeSensors")
+	public Boolean getIncludeSensors() {
+		return this.includeSensors;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like remote sensor information returned from this Selection.
+	 */
+	public boolean includeSensors() {
+		return (this.includeSensors == null) ? false : this.includeSensors;
+	}
+
+	/**
+	 * @param includeSensors
+	 *            include the {@link Thermostat.RemoteSensor}s. If not specified, defaults to <code>false</code>.
+	 */
+	@JsonProperty("includeSensors")
+	public void setIncludeSensors(final Boolean includeSensors) {
+		this.includeSensors = includeSensors;
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();
@@ -765,6 +790,7 @@ public class Selection extends AbstractMessagePart {
 		builder.append("includeNotificationSettings", this.includeNotificationSettings);
 		builder.append("includePrivacy", this.includePrivacy);
 		builder.append("includeVersion", this.includeVersion);
+		builder.append("includeSensors", this.includeSensors);
 
 		return builder.toString();
 	}
