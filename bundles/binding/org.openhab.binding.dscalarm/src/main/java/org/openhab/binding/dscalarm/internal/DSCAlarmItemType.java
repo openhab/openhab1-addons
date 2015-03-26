@@ -23,7 +23,10 @@ public enum DSCAlarmItemType{
 	PANEL_MESSAGE("panel_message"),
 	PANEL_COMMAND("panel_command"),
 	PANEL_SYSTEM_ERROR("panel_system_error"),
-	PANEL_TIME_DATE("panel_time_date"),
+
+	PANEL_TIME("panel_time"),
+	PANEL_TIME_STAMP("panel_time_stamp"),
+	PANEL_TIME_BROADCAST("panel_time_broadcast"),
 
 	PANEL_FIRE_KEY_ALARM("panel_fire_key_alarm"),
 	PANEL_PANIC_KEY_ALARM("panel_panic_key_alarm"),
