@@ -112,7 +112,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				logger.debug("Initial Homematic datapoints reload");
 				context.getStateHolder().reloadDatapoints();
 			}
-		}, 61000);
+		}, 61000); // 61 seconds to prevent reload at a reconnect
 	}
 
 	/**
