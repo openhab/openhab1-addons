@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
-import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
@@ -44,7 +43,7 @@ import com.tinkerforge.BrickletLCD20x4;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSwitchState <em>Switch State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getUid <em>Uid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#isPoll <em>Poll</em>}</li>
@@ -62,24 +61,14 @@ import com.tinkerforge.BrickletLCD20x4;
 public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements MLCD20x4Button
 {
   /**
-   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getSwitchState()
+   * @see #getSensorValue()
    * @generated
    * @ordered
    */
-  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchState()
-   * @generated
-   * @ordered
-   */
-  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
+  protected OnOffValue sensorValue;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -243,7 +232,8 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
 
 private ButtonPressedListener buttonPressedListener;
 
-private ButtonReleasedListener buttonReleasedListener;
+  private BrickletLCD20x4 tinkerforgeDevice;
+
 
   /**
    * <!-- begin-user-doc -->
@@ -271,9 +261,9 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public OnOffValue getSwitchState()
+  public OnOffValue getSensorValue()
   {
-    return switchState;
+    return sensorValue;
   }
 
   /**
@@ -281,12 +271,12 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSwitchState(OnOffValue newSwitchState)
+  public void setSensorValue(OnOffValue newSensorValue)
   {
-    OnOffValue oldSwitchState = switchState;
-    switchState = newSwitchState;
+    OnOffValue oldSensorValue = sensorValue;
+    sensorValue = newSensorValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE, oldSwitchState, switchState));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -506,63 +496,51 @@ private ButtonReleasedListener buttonReleasedListener;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MLCD20x4ButtonImpl.class);
-		buttonNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MLCD20x4ButtonImpl.class);
+    buttonNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		setSwitchState(OnOffValue.UNDEF);
-		MBrickletLCD20x4 masterBrick = getMbrick();
-		if (masterBrick == null) {
-			logger.error("{} No brick found for Button: {} ",
-					LoggerConstants.TFINIT, subId);
-		} else {
-			BrickletLCD20x4 brickletLCD20x4 = masterBrick
-					.getTinkerforgeDevice();
-			buttonPressedListener = new ButtonPressedListener();
-			brickletLCD20x4.addButtonPressedListener(buttonPressedListener);
-			// buttonReleasedListener = new ButtonReleasedListener();
-			// brickletLCD20x4.addButtonReleasedListener(buttonReleasedListener);
-		}
-	}
+  public void enable() {
+    setSensorValue(OnOffValue.UNDEF);
+    tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+    buttonPressedListener = new ButtonPressedListener();
+    tinkerforgeDevice.addButtonPressedListener(buttonPressedListener);
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  private class ButtonPressedListener implements BrickletLCD20x4.ButtonPressedListener{
+  private class ButtonPressedListener implements BrickletLCD20x4.ButtonPressedListener {
 
-	@Override
-	public void buttonPressed(short buttonChangedButtonNum) {
-		if (buttonChangedButtonNum == buttonNum){
-			if (switchState == OnOffValue.OFF){
-				setSwitchState(OnOffValue.ON);
-				logger.debug("set switch state on");
-			}
-			else if (switchState == OnOffValue.ON){
-				setSwitchState(OnOffValue.OFF);
-				logger.debug("set switch state on");
-			}
-			else {
-				setSwitchState(OnOffValue.ON);
-				logger.debug("set switch state on");				
-			}
-		}
-	}
-	  
+    @Override
+    public void buttonPressed(short buttonChangedButtonNum) {
+      if (buttonChangedButtonNum == buttonNum) {
+        if (sensorValue == OnOffValue.OFF) {
+          setSensorValue(OnOffValue.ON);
+          logger.debug("set sensor value on for button {}", buttonChangedButtonNum);
+        } else if (sensorValue == OnOffValue.ON) {
+          setSensorValue(OnOffValue.OFF);
+          logger.debug("set switch state off for button {}", buttonChangedButtonNum);
+        } else {
+          setSensorValue(OnOffValue.ON);
+          logger.debug("set switch state on from undef for button {}", buttonChangedButtonNum);
+        }
+      }
+    }
+
   }
   
   /**
@@ -570,63 +548,25 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated NOT
    */
-   private class ButtonReleasedListener implements  BrickletLCD20x4.ButtonReleasedListener{
+  public void disable() {
+    if (buttonPressedListener != null) {
+      tinkerforgeDevice.removeButtonPressedListener(buttonPressedListener);
+    }
+  }
 
-	@Override
-	public void buttonReleased(short arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	   
-   }
-   
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
+  public void fetchSensorValue()
   {
-	    MBrickletLCD20x4 masterBrick = getMbrick();
-	    if (masterBrick == null){
-	    	logger.error("{} disable: no brick found for Button: {} ", LoggerConstants.TFINIT, subId);
-	    }
-	    else {
-	    	BrickletLCD20x4 brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
-	    	if (buttonPressedListener != null)
-	    		brickletLCD20x4.removeButtonPressedListener(buttonPressedListener);
-	    	if (buttonReleasedListener != null)
-	    		brickletLCD20x4.removeButtonReleasedListener(buttonReleasedListener);
-	    }
+    // just resend the current state to the eventbus
+    setSensorValue(sensorValue);
   }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void turnSwitch(OnOffValue state)
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void fetchSwitchState()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+	/**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -684,8 +624,8 @@ private ButtonReleasedListener buttonReleasedListener;
   {
     switch (featureID)
     {
-      case ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE:
-        return getSwitchState();
+      case ModelPackage.MLCD2_0X4_BUTTON__SENSOR_VALUE:
+        return getSensorValue();
       case ModelPackage.MLCD2_0X4_BUTTON__LOGGER:
         return getLogger();
       case ModelPackage.MLCD2_0X4_BUTTON__UID:
@@ -718,8 +658,8 @@ private ButtonReleasedListener buttonReleasedListener;
   {
     switch (featureID)
     {
-      case ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE:
-        setSwitchState((OnOffValue)newValue);
+      case ModelPackage.MLCD2_0X4_BUTTON__SENSOR_VALUE:
+        setSensorValue((OnOffValue)newValue);
         return;
       case ModelPackage.MLCD2_0X4_BUTTON__LOGGER:
         setLogger((Logger)newValue);
@@ -759,8 +699,8 @@ private ButtonReleasedListener buttonReleasedListener;
   {
     switch (featureID)
     {
-      case ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE:
-        setSwitchState(SWITCH_STATE_EDEFAULT);
+      case ModelPackage.MLCD2_0X4_BUTTON__SENSOR_VALUE:
+        setSensorValue((OnOffValue)null);
         return;
       case ModelPackage.MLCD2_0X4_BUTTON__LOGGER:
         setLogger(LOGGER_EDEFAULT);
@@ -800,8 +740,8 @@ private ButtonReleasedListener buttonReleasedListener;
   {
     switch (featureID)
     {
-      case ModelPackage.MLCD2_0X4_BUTTON__SWITCH_STATE:
-        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
+      case ModelPackage.MLCD2_0X4_BUTTON__SENSOR_VALUE:
+        return sensorValue != null;
       case ModelPackage.MLCD2_0X4_BUTTON__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MLCD2_0X4_BUTTON__UID:
@@ -977,11 +917,8 @@ private ButtonReleasedListener buttonReleasedListener;
       case ModelPackage.MLCD2_0X4_BUTTON___DISABLE:
         disable();
         return null;
-      case ModelPackage.MLCD2_0X4_BUTTON___TURN_SWITCH__ONOFFVALUE:
-        turnSwitch((OnOffValue)arguments.get(0));
-        return null;
-      case ModelPackage.MLCD2_0X4_BUTTON___FETCH_SWITCH_STATE:
-        fetchSwitchState();
+      case ModelPackage.MLCD2_0X4_BUTTON___FETCH_SENSOR_VALUE:
+        fetchSensorValue();
         return null;
     }
     return super.eInvoke(operationID, arguments);
@@ -998,8 +935,8 @@ private ButtonReleasedListener buttonReleasedListener;
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (switchState: ");
-    result.append(switchState);
+    result.append(" (sensorValue: ");
+    result.append(sensorValue);
     result.append(", logger: ");
     result.append(logger);
     result.append(", uid: ");

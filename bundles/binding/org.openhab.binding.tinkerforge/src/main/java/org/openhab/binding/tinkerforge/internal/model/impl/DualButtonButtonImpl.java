@@ -14,12 +14,15 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,24 +33,27 @@ import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Dual Button Right Button</b></em>'.
+ * An implementation of the model object '<em><b>Dual Button Button</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonRightButtonImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getPosition <em>Position</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container implements DualButtonRightButton
+public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implements DualButtonButton
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -58,6 +64,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected static final Logger LOGGER_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -67,6 +74,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected Logger logger = LOGGER_EDEFAULT;
+
   /**
    * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -76,6 +84,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected static final String UID_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -85,6 +94,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
   /**
    * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -94,6 +104,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected static final boolean POLL_EDEFAULT = true;
+
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -103,6 +114,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected boolean poll = POLL_EDEFAULT;
+
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -112,6 +124,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected static final AtomicBoolean ENABLED_A_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -121,6 +134,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected AtomicBoolean enabledA = ENABLED_A_EDEFAULT;
+
   /**
    * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -130,6 +144,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected static final String SUB_ID_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -139,6 +154,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String subId = SUB_ID_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -147,16 +163,70 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected HighLowValue sensorValue;
+  protected OnOffValue sensorValue;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected ButtonConfiguration tfConfig;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "dualbutton_button";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPosition()
+   * @generated
+   * @ordered
+   */
+  protected static final DualButtonDevicePosition POSITION_EDEFAULT = DualButtonDevicePosition.LEFT;
+
+  /**
+   * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPosition()
+   * @generated
+   * @ordered
+   */
+  protected DualButtonDevicePosition position = POSITION_EDEFAULT;
+
   private BrickletDualButton tinkerforgeDevice;
+
   private StateListener listener;
+
+  private boolean tactile;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected DualButtonRightButtonImpl()
+  protected DualButtonButtonImpl()
   {
     super();
   }
@@ -169,7 +239,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.DUAL_BUTTON_RIGHT_BUTTON;
+    return ModelPackage.Literals.DUAL_BUTTON_BUTTON;
   }
 
   /**
@@ -192,7 +262,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -215,7 +285,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__UID, oldUid, uid));
   }
 
   /**
@@ -238,7 +308,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__POLL, oldPoll, poll));
   }
 
   /**
@@ -261,7 +331,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -284,7 +354,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -294,7 +364,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    */
   public MBrickletDualButton getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK) return null;
+    if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_BUTTON__MBRICK) return null;
     return (MBrickletDualButton)eContainer();
   }
 
@@ -305,7 +375,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    */
   public NotificationChain basicSetMbrick(MBrickletDualButton newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DUAL_BUTTON_BUTTON__MBRICK, msgs);
     return msgs;
   }
 
@@ -316,7 +386,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    */
   public void setMbrick(MBrickletDualButton newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_BUTTON__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -329,7 +399,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -337,7 +407,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public HighLowValue getSensorValue()
+  public OnOffValue getSensorValue()
   {
     return sensorValue;
   }
@@ -347,12 +417,106 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(HighLowValue newSensorValue)
+  public void setSensorValue(OnOffValue newSensorValue)
   {
-    HighLowValue oldSensorValue = sensorValue;
+    OnOffValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE, oldSensorValue, sensorValue));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE, oldSensorValue, sensorValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ButtonConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(ButtonConfiguration newTfConfig, NotificationChain msgs)
+  {
+    ButtonConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(ButtonConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDeviceType(String newDeviceType)
+  {
+    String oldDeviceType = deviceType;
+    deviceType = newDeviceType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__DEVICE_TYPE, oldDeviceType, deviceType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonDevicePosition getPosition()
+  {
+    return position;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPosition(DualButtonDevicePosition newPosition)
+  {
+    DualButtonDevicePosition oldPosition = position;
+    position = newPosition == null ? POSITION_EDEFAULT : newPosition;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_BUTTON__POSITION, oldPosition, position));
   }
 
   /**
@@ -364,7 +528,18 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     try {
       ButtonState buttonState = tinkerforgeDevice.getButtonState();
-      setSensorValue(getValue4State(buttonState.buttonR));
+      OnOffValue newValue;
+      if (position == DualButtonDevicePosition.LEFT) {
+        newValue = getValue4State(buttonState.buttonL);
+      } else {
+        newValue = getValue4State(buttonState.buttonR);
+      }
+      if (newValue != sensorValue) {
+        setSensorValue(newValue);
+        logger.trace("{} fetch value changed to: {}", position, newValue);
+      } else {
+        logger.trace("{} fetch omitting unchanged value: {}", position, newValue);
+      }
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -381,7 +556,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(DualButtonRightButtonImpl.class);
+    logger = LoggerFactory.getLogger(DualButtonButtonImpl.class);
   }
 
   /**
@@ -389,33 +564,20 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
    * 
    * @generated NOT
    */
-  public void enable()
-  {
+  public void enable() {
     tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+    tactile = false;
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("tactile"))) {
+        tactile = tfConfig.isTactile();
+      }
+    }
+    logger.trace("tactile for {} is {}", position, tactile);
+
     listener = new StateListener();
     tinkerforgeDevice.addStateChangedListener(listener);
-    fetchSensorValue();
+    fetchSensorValue(); // TODO should I really call fetch()
   }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  private class StateListener implements BrickletDualButton.StateChangedListener {
-
-    @Override
-    public void stateChanged(short buttonL, short buttonR, short ledL, short ledR) {
-      HighLowValue value = getValue4State(buttonR);
-      setSensorValue(value);
-    }
-
-  }
-
-  private HighLowValue getValue4State(short state) {
-    return state == BrickletDualButton.BUTTON_STATE_PRESSED ? HighLowValue.LOW : HighLowValue.HIGH;
-  }
-
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -431,8 +593,49 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private class StateListener implements BrickletDualButton.StateChangedListener {
+
+    @Override
+    public void stateChanged(short buttonL, short buttonR, short ledL, short ledR) {
+      OnOffValue newValue;
+      short newState;
+      if (position == DualButtonDevicePosition.LEFT) {
+        newValue = getValue4State(buttonL);
+        newState = buttonL;
+      } else {
+        newValue = getValue4State(buttonR);
+        newState = buttonR;
+      }
+      if (tactile) {
+        if (newValue != sensorValue) {
+          setSensorValue(newValue);
+          logger.trace("listener {} tactile value changed to: {}", position, newValue);
+        } else {
+          logger.trace("listener {} omitting unchanged tactile value: {}", position, newValue);
+        }
+      } else {
+        if (newState == BrickletDualButton.BUTTON_STATE_PRESSED) {
+          // toggle current device state
+          OnOffValue newTactileValue =
+              sensorValue == OnOffValue.ON ? OnOffValue.OFF : OnOffValue.ON;
+          logger.trace("listener switch value changed to {}", newTactileValue);
+          setSensorValue(newTactileValue);
+        }
+      }
+    }
+
+  }
+
+  private OnOffValue getValue4State(short state) {
+    return state == BrickletDualButton.BUTTON_STATE_PRESSED ? OnOffValue.ON : OnOffValue.OFF;
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -440,7 +643,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetMbrick((MBrickletDualButton)otherEnd, msgs);
@@ -458,8 +661,10 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         return basicSetMbrick(null, msgs);
+      case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -474,7 +679,7 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -490,20 +695,26 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_BUTTON__LOGGER:
         return getLogger();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__UID:
         return getUid();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_BUTTON__POLL:
         return isPoll();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_BUTTON__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID:
         return getSubId();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         return getMbrick();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE:
         return getSensorValue();
+      case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
+        return getTfConfig();
+      case ModelPackage.DUAL_BUTTON_BUTTON__DEVICE_TYPE:
+        return getDeviceType();
+      case ModelPackage.DUAL_BUTTON_BUTTON__POSITION:
+        return getPosition();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -518,26 +729,35 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_BUTTON__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_BUTTON__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_BUTTON__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         setMbrick((MBrickletDualButton)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE:
-        setSensorValue((HighLowValue)newValue);
+      case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE:
+        setSensorValue((OnOffValue)newValue);
+        return;
+      case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
+        setTfConfig((ButtonConfiguration)newValue);
+        return;
+      case ModelPackage.DUAL_BUTTON_BUTTON__DEVICE_TYPE:
+        setDeviceType((String)newValue);
+        return;
+      case ModelPackage.DUAL_BUTTON_BUTTON__POSITION:
+        setPosition((DualButtonDevicePosition)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -553,26 +773,35 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_BUTTON__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_BUTTON__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_BUTTON__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         setMbrick((MBrickletDualButton)null);
         return;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE:
-        setSensorValue((HighLowValue)null);
+      case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE:
+        setSensorValue((OnOffValue)null);
+        return;
+      case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
+        setTfConfig((ButtonConfiguration)null);
+        return;
+      case ModelPackage.DUAL_BUTTON_BUTTON__DEVICE_TYPE:
+        setDeviceType(DEVICE_TYPE_EDEFAULT);
+        return;
+      case ModelPackage.DUAL_BUTTON_BUTTON__POSITION:
+        setPosition(POSITION_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -588,20 +817,26 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_BUTTON__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_BUTTON__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_BUTTON__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_BUTTON__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_BUTTON__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE:
         return sensorValue != null;
+      case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG:
+        return tfConfig != null;
+      case ModelPackage.DUAL_BUTTON_BUTTON__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.DUAL_BUTTON_BUTTON__POSITION:
+        return position != POSITION_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -618,7 +853,15 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        case ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -637,7 +880,15 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.DUAL_BUTTON_RIGHT_BUTTON__SENSOR_VALUE;
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.DUAL_BUTTON_BUTTON__SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.DUAL_BUTTON_BUTTON__TF_CONFIG;
         default: return -1;
       }
     }
@@ -656,7 +907,14 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.DUAL_BUTTON_RIGHT_BUTTON___FETCH_SENSOR_VALUE;
+        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.DUAL_BUTTON_BUTTON___FETCH_SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -673,16 +931,16 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
   {
     switch (operationID)
     {
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON___FETCH_SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_BUTTON___FETCH_SENSOR_VALUE:
         fetchSensorValue();
         return null;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON___INIT:
+      case ModelPackage.DUAL_BUTTON_BUTTON___INIT:
         init();
         return null;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON___ENABLE:
+      case ModelPackage.DUAL_BUTTON_BUTTON___ENABLE:
         enable();
         return null;
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON___DISABLE:
+      case ModelPackage.DUAL_BUTTON_BUTTON___DISABLE:
         disable();
         return null;
     }
@@ -712,8 +970,12 @@ public class DualButtonRightButtonImpl extends MinimalEObjectImpl.Container impl
     result.append(subId);
     result.append(", sensorValue: ");
     result.append(sensorValue);
+    result.append(", deviceType: ");
+    result.append(deviceType);
+    result.append(", position: ");
+    result.append(position);
     result.append(')');
     return result.toString();
   }
 
-} //DualButtonRightButtonImpl
+} //DualButtonButtonImpl

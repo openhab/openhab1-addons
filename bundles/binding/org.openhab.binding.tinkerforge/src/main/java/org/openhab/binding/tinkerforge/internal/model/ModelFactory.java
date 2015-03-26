@@ -89,40 +89,22 @@ public interface ModelFactory extends EFactory
   MBrickletDualButton createMBrickletDualButton();
 
   /**
-   * Returns a new object of class '<em>Dual Button Left Button</em>'.
+   * Returns a new object of class '<em>Dual Button Button</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Left Button</em>'.
+   * @return a new object of class '<em>Dual Button Button</em>'.
    * @generated
    */
-  DualButtonLeftButton createDualButtonLeftButton();
+  DualButtonButton createDualButtonButton();
 
   /**
-   * Returns a new object of class '<em>Dual Button Right Button</em>'.
+   * Returns a new object of class '<em>Dual Button Led</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Right Button</em>'.
+   * @return a new object of class '<em>Dual Button Led</em>'.
    * @generated
    */
-  DualButtonRightButton createDualButtonRightButton();
-
-  /**
-   * Returns a new object of class '<em>Dual Button Left Led</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Left Led</em>'.
-   * @generated
-   */
-  DualButtonLeftLed createDualButtonLeftLed();
-
-  /**
-   * Returns a new object of class '<em>Dual Button Right Led</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Right Led</em>'.
-   * @generated
-   */
-  DualButtonRightLed createDualButtonRightLed();
+  DualButtonLed createDualButtonLed();
 
   /**
    * Returns a new object of class '<em>MBricklet Linear Poti</em>'.
@@ -537,6 +519,24 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   DimmableConfiguration createDimmableConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Button Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Button Configuration</em>'.
+   * @generated
+   */
+  ButtonConfiguration createButtonConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Dual Button LED Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button LED Configuration</em>'.
+   * @generated
+   */
+  DualButtonLEDConfiguration createDualButtonLEDConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.

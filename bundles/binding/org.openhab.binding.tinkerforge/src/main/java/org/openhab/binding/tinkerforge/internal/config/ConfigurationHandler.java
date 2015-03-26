@@ -28,6 +28,10 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
@@ -92,7 +96,8 @@ public class ConfigurationHandler {
     bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, 
     bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
     voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
-    bricklet_halleffect, bricklet_joystick, bricklet_linear_poti
+    bricklet_halleffect, bricklet_joystick, bricklet_linear_poti, dualbutton_button,
+    dualbutton_led
   }
 
 
@@ -393,6 +398,21 @@ public class ConfigurationHandler {
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(VoltageCurrentSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.dualbutton_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, DualButtonButtonSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(DualButtonButtonSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.dualbutton_led.name())) {
+      logger.debug("setting DualButtonLEDConfiguration device_type {}", deviceType);
+      DualButtonLEDConfiguration configuration = modelFactory.createDualButtonLEDConfiguration();
+      OHTFDevice<DualButtonLEDConfiguration, DualButtonLedSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(DualButtonLedSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
     } else {
       logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
@@ -419,6 +439,7 @@ public class ConfigurationHandler {
         throw new ConfigurationException(subid, String.format(
             "\"%s\" is an invalid subId: openhab.cfg has to be fixed!", subid));
       }
+      logger.trace("fillupConfig ohtfDevice subid {}", subid);
       ohtfDevice.setSubid(subid);
     }
     if (ohConfig.getConfigByTFId(uid, subid) != null) {
@@ -457,7 +478,8 @@ public class ConfigurationHandler {
           if (feature.getName().equals(property)) {
             logger.trace("{} feature type {}", LoggerConstants.CONFIG, feature.getEType()
                 .getInstanceClassName());
-            logger.debug("configuring feature: {} for uid {}", feature.getName(), uid);
+            logger.debug("configuring feature: {} for uid {} subid {}", feature.getName(), uid,
+                subid);
             String className = feature.getEType().getInstanceClassName();
             if (className.equals("int")) {
               tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));

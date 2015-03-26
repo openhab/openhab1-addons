@@ -18,6 +18,12 @@ import com.tinkerforge.BrickletLEDStrip;
  * @since 1.5.0
  * <!-- end-user-doc -->
  *
+ * <p>
+ * The following features are supported:
+ * <ul>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip#getDeviceType <em>Device Type</em>}</li>
+ * </ul>
+ * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLEDStrip()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.ColorActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLEDStrip>"
@@ -25,4 +31,20 @@ import com.tinkerforge.BrickletLEDStrip;
  */
 public interface MBrickletLEDStrip extends ColorActor, MDevice<BrickletLEDStrip>
 {
+
+  /**
+   * Returns the value of the '<em><b>Device Type</b></em>' attribute.
+   * The default value is <code>"bricklet_ledstrip"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Device Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Device Type</em>' attribute.
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLEDStrip_DeviceType()
+   * @model default="bricklet_ledstrip" unique="false" changeable="false"
+   * @generated
+   */
+  String getDeviceType();
 } // MBrickletLEDStrip

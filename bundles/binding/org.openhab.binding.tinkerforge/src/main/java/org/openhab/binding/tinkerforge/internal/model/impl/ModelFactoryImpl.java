@@ -20,50 +20,6 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.*;
-import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
-import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
-import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
-import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
-import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
-import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
-import org.openhab.binding.tinkerforge.internal.model.MServo;
-import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
-import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
-import org.openhab.binding.tinkerforge.internal.model.OHConfig;
-import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFConfig;
-import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
@@ -107,7 +63,6 @@ import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
-import java.math.BigDecimal;
 
 /**
  * <!-- begin-user-doc -->
@@ -164,10 +119,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
       case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
-      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON: return createDualButtonLeftButton();
-      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON: return createDualButtonRightButton();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED: return createDualButtonLeftLed();
-      case ModelPackage.DUAL_BUTTON_RIGHT_LED: return createDualButtonRightLed();
+      case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
+      case ModelPackage.DUAL_BUTTON_LED: return createDualButtonLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
       case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
       case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
@@ -243,6 +196,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION: return createMultiTouchDeviceConfiguration();
       case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION: return createBrickletMultiTouchConfiguration();
       case ModelPackage.DIMMABLE_CONFIGURATION: return createDimmableConfiguration();
+      case ModelPackage.BUTTON_CONFIGURATION: return createButtonConfiguration();
+      case ModelPackage.DUAL_BUTTON_LED_CONFIGURATION: return createDualButtonLEDConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -296,6 +251,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.CONFIG_OPTS_SERVO:
         return createConfigOptsServoFromString(eDataType, initialValue);
+      case ModelPackage.DUAL_BUTTON_DEVICE_POSITION:
+        return createDualButtonDevicePositionFromString(eDataType, initialValue);
+      case ModelPackage.DUAL_BUTTON_LED_SUB_IDS:
+        return createDualButtonLedSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.DUAL_BUTTON_BUTTON_SUB_IDS:
+        return createDualButtonButtonSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -441,6 +402,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.CONFIG_OPTS_SERVO:
         return convertConfigOptsServoToString(eDataType, instanceValue);
+      case ModelPackage.DUAL_BUTTON_DEVICE_POSITION:
+        return convertDualButtonDevicePositionToString(eDataType, instanceValue);
+      case ModelPackage.DUAL_BUTTON_LED_SUB_IDS:
+        return convertDualButtonLedSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.DUAL_BUTTON_BUTTON_SUB_IDS:
+        return convertDualButtonButtonSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -610,10 +577,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public DualButtonLeftButton createDualButtonLeftButton()
+  public DualButtonButton createDualButtonButton()
   {
-    DualButtonLeftButtonImpl dualButtonLeftButton = new DualButtonLeftButtonImpl();
-    return dualButtonLeftButton;
+    DualButtonButtonImpl dualButtonButton = new DualButtonButtonImpl();
+    return dualButtonButton;
   }
 
   /**
@@ -621,32 +588,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public DualButtonRightButton createDualButtonRightButton()
+  public DualButtonLed createDualButtonLed()
   {
-    DualButtonRightButtonImpl dualButtonRightButton = new DualButtonRightButtonImpl();
-    return dualButtonRightButton;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public DualButtonLeftLed createDualButtonLeftLed()
-  {
-    DualButtonLeftLedImpl dualButtonLeftLed = new DualButtonLeftLedImpl();
-    return dualButtonLeftLed;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public DualButtonRightLed createDualButtonRightLed()
-  {
-    DualButtonRightLedImpl dualButtonRightLed = new DualButtonRightLedImpl();
-    return dualButtonRightLed;
+    DualButtonLedImpl dualButtonLed = new DualButtonLedImpl();
+    return dualButtonLed;
   }
 
   /**
@@ -1160,6 +1105,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public ButtonConfiguration createButtonConfiguration()
+  {
+    ButtonConfigurationImpl buttonConfiguration = new ButtonConfigurationImpl();
+    return buttonConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLEDConfiguration createDualButtonLEDConfiguration()
+  {
+    DualButtonLEDConfigurationImpl dualButtonLEDConfiguration = new DualButtonLEDConfigurationImpl();
+    return dualButtonLEDConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MServo createMServo()
   {
     MServoImpl mServo = new MServoImpl();
@@ -1541,6 +1508,72 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertConfigOptsServoToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonDevicePosition createDualButtonDevicePositionFromString(EDataType eDataType, String initialValue)
+  {
+    DualButtonDevicePosition result = DualButtonDevicePosition.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDualButtonDevicePositionToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLedSubIds createDualButtonLedSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    DualButtonLedSubIds result = DualButtonLedSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDualButtonLedSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonButtonSubIds createDualButtonButtonSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    DualButtonButtonSubIds result = DualButtonButtonSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDualButtonButtonSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

@@ -2189,6 +2189,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (derivedFeatureID)
       {
+        case ModelPackage.MBRICK_DC__SWITCH_STATE: return ModelPackage.SWITCH_SENSOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -2196,7 +2197,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICK_DC__SWITCH_STATE: return ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -2281,6 +2281,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (baseFeatureID)
       {
+        case ModelPackage.SWITCH_SENSOR__SWITCH_STATE: return ModelPackage.MBRICK_DC__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -2288,7 +2289,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MBRICK_DC__SWITCH_STATE;
         default: return -1;
       }
     }
