@@ -87,6 +87,9 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 
 		if (initDevice())
 			running = true; // start loop
+		else
+			logger.debug("Initialization of device was not successful");
+		
 		try {
 			byte [] bBuffer = new byte[1];
 			

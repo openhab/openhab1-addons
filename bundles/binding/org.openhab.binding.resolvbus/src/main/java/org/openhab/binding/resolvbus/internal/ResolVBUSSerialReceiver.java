@@ -66,12 +66,12 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 	/**
 	 * Open Socket to the SERIAL/USB-Adapter
 	 */
-	public void initializeReceiver(String serialPort, String password) {
+	public void initializeReceiver(String portName, String password) {
 
 		try {
 			this.password = password;
+			this.portName = portName;
 			openSerialPort();
-			logger.debug("Connected to: " + serialPort);
 			resolStreamRAW = new ArrayList<Byte>();
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
@@ -98,6 +98,9 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 
 		if (initDevice())
 			running = true; // start loop
+		else
+			logger.debug("Initialization of device was not successful");
+		
 		try {
 			byte [] bBuffer = new byte[1];
 			
@@ -194,11 +197,11 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 		// OpenSerialPort
 		Boolean foundPort = false;
 
-		System.out.println("Opening Serialport");
+		logger.debug("Looking for serialport "+serialPortId);
 		enumComm = CommPortIdentifier.getPortIdentifiers();
 		while (enumComm.hasMoreElements()) {
 			serialPortId = (CommPortIdentifier) enumComm.nextElement();
-			if (portName.contentEquals(serialPortId.getName())) {
+			if (portName.equalsIgnoreCase(serialPortId.getName())) {
 				foundPort = true;
 				break;
 			}
@@ -209,19 +212,17 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 			return;
 		}
 		try {
-			serialPort = (SerialPort) serialPortId
-					.open("Open and Sending", 500);
+			serialPort = (SerialPort) serialPortId.open("Open and Sending", 500);
 		} catch (PortInUseException e) {
-			logger.debug("Port in use");
+			logger.debug("Serialport "+serialPort.getName()+" is in use");
 		}
 
 		try {
-			serialPort
-					.setSerialPortParams(baudrate, dataBits, stopBits, parity);
+			serialPort.setSerialPortParams(baudrate, dataBits, stopBits, parity);
 		} catch (UnsupportedCommOperationException e) {
 			logger.debug("Setting SerialPort parameters not possible");
 		}
-		System.out.println("Serialport open");
+		logger.debug("Serialport open");
 	}
 
 
