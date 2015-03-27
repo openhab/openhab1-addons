@@ -299,6 +299,19 @@ public class InsteonPLMActiveBinding
 		if (!m_hasInitialItemConfig) triggerBindingChangedCalls();
 		return;
 	}
+	/**
+	 * Method to find a device by address
+	 * @param aAddr the insteon address to search for
+	 * @return reference to the device, or null if not found
+	 */
+	public InsteonDevice getDevice(InsteonAddress aAddr) {
+		InsteonDevice dev = null;
+		synchronized (m_devices) {
+			dev = (aAddr == null) ? null : m_devices.get(aAddr);
+		}
+		return (dev);
+	}
+	
 
 	/**
 	 * HACK around openHAB synchronization issues that don't show
@@ -367,7 +380,9 @@ public class InsteonPLMActiveBinding
 	private void shutdown() {
 		logger.debug("shutting down binding");
 		m_driver.stopAllPorts();
-		m_devices.clear();
+		synchronized (m_devices) {
+			m_devices.clear();
+		}
 		RequestQueueManager.s_destroyInstance();
 		Poller.s_instance().stop();
 	}
@@ -386,16 +401,6 @@ public class InsteonPLMActiveBinding
 		dev.processCommand(m_driver, c, command);
 	}
 
-	/**
-	 * Helper method to find a device by address
-	 * @param aAddr the insteon address to search for
-	 * @return reference to the device, or null if not found
-	 */
-	private InsteonDevice getDevice(InsteonAddress aAddr) {
-		if (aAddr == null) return null;
-		return m_devices.get(aAddr);
-	}
-	
 	/**
 	 * Finds the device that a particular item was bound to, and removes the
 	 * item as a listener
@@ -494,7 +499,7 @@ public class InsteonPLMActiveBinding
 			logger.error("item {} references unknown feature: {}, item disabled!", aItemName, aConfig.getFeature());
 			return;
 		}
-		DeviceFeatureListener fl = new DeviceFeatureListener(aItemName, eventPublisher);
+		DeviceFeatureListener fl = new DeviceFeatureListener(this, aItemName, eventPublisher);
 		fl.setParameters(aConfig.getParameters());
 		f.addListener(fl);	
 	}
@@ -596,10 +601,10 @@ public class InsteonPLMActiveBinding
 	}
 	
 	private void logDeviceStatistics() {
-		logger.info(String.format("devices: %3d configured, %3d polling, msgs received: %5d",
-					m_devices.size(), Poller.s_instance().getSizeOfQueue(), m_messagesReceived));
-		m_messagesReceived = 0;
 		synchronized (m_devices) {
+			logger.info(String.format("devices: %3d configured, %3d polling, msgs received: %5d",
+					m_devices.size(), Poller.s_instance().getSizeOfQueue(), m_messagesReceived));
+			m_messagesReceived = 0;
 			for (InsteonDevice dev : m_devices.values()) {
 				if (dev.isModem()) continue;
 				if (m_deadDeviceTimeout > 0 &&

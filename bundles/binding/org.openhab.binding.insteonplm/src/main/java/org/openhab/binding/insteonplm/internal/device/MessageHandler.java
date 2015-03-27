@@ -166,6 +166,7 @@ public abstract class MessageHandler {
 			m = new GroupMessageStateMachine();
 			m_groupState.put(new Integer(group), m);
 		}
+		logger.debug("updating group state for {} to {}", group, a);
 		return (m.action(a, hops));
 	}
 	
@@ -262,6 +263,8 @@ public abstract class MessageHandler {
 				logger.info("{}: device {} was switched on.", nm(),
 								f.getDevice().getAddress());
 				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
+			} else {
+				logger.debug("ignored message: {} or {}", isDuplicate(msg), isMybutton(msg,f));
 			}
 		}
 	}
