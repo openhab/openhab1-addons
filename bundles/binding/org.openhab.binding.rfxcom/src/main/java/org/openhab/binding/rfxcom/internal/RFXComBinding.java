@@ -54,7 +54,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 	private static byte seqNbr = 0;
 	private final ResultRegistry resultRegistry = new ResultRegistry();
 
-	private MessageLister eventLister = new MessageLister();
+	private final MessageLister eventLister = new MessageLister();
 
 	public RFXComBinding() {
 	}
@@ -256,8 +256,6 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 					RFXComTransmitterMessage resp = (RFXComTransmitterMessage) obj;
 					resultRegistry.responseReceived(resp);
 				} else {
-					logger.debug("received message: {}", obj.toString());
-					
 					final String deviceId = obj.generateDeviceId();
 
 					final List<RFXComValueSelector> supportedValueSelectors = 
