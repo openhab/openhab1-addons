@@ -984,7 +984,8 @@ public class KNXCoreTypeMapperTest {
 		 * 
 		 */
 		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "00:00:00");
+		String today=String.format(Locale.US, "%1$ta", Calendar.getInstance());
+		testToDPTValue(dpt, type, today+", 00:00:00");
 
 		/*
 		 * Set day to Monday, 0 hours, 0 minutes and 0 seconds January 5th, 1970 was a Monday
