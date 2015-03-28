@@ -279,7 +279,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 //		}
 		
 		
-		URL entry = FrameworkUtil.getBundle(ResolVBUSConfig.class).getEntry("xml/VBusSpecificationResol.xml");
+		URL entry = FrameworkUtil.getBundle(ResolVBUSConfig.class).getEntry("xml/VBusSpecificationResol_NEW.xml");
 
 		if (entry == null) {
 			config = null;
@@ -308,10 +308,10 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 
 	public void processInputStream(ResolVBUSInputStream vbusStream) {
 		
-		ResolVBUSPacket packet = config.getPacketWithDevice(vbusStream.getSourceAddress());
+		ResolVBUSPacket packet = config.getPacketWithDevice(vbusStream.getSourceAddress(),vbusStream.getDestinationAdress());
 		
 		if (packet == null) {
-			logger.debug("No XML-Packet found for address: "+ vbusStream.getSourceAddress());
+			logger.debug("No XML-Packet found for address: "+ vbusStream.getSourceAddress()+ " destination: "+vbusStream.getDestinationAdress());
 		}
 		
 		if (packet != null) {
