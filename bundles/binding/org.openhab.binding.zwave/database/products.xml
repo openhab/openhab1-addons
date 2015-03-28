@@ -2008,6 +2008,15 @@
 			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZSMOKE</Model>
+			<Label lang="en">Smoke Alarm</Label>
+			<ConfigFile>brk/zsmoke.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>003b</Id>
