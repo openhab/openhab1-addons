@@ -108,6 +108,7 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 			logger.debug("Initialization of device was not successful");
 		
 		try {
+			inStream=serialPort.getInputStream();
 			byte [] bBuffer = new byte[1];
 			
 			//Waiting for input which is sent periodically
@@ -138,9 +139,9 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 					inStream.read(bBuffer);
 				}
 			}
-			
-			inStream.close();
-		
+			if(inStream!=null)
+				inStream.close();
+
 			
 		} catch (IOException e) {
 			logger.debug(e.getMessage());
@@ -157,32 +158,7 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 					serialPort.getOutputStream()));
 
 			inputString = reader.readLine();
-			logger.debug("Received input: "+inputString);
-			if (inputString.startsWith("+HELLO")) {
-				logger.debug("Welcome message...sending password");
-				writer.write("PASS "+password);
-				writer.flush();
-			} else {
-				logger.debug("No welcome Message...Exiting");
-				writer.close();
-				reader.close();
-				return false;
-			}
-
-			inputString = reader.readLine();
-			logger.debug("Received input: "+inputString);
-			if (inputString.startsWith("+OK:")) {
-				logger.debug("Password accepted..");
-				writer.write("DATA");
-				writer.flush();
-			} else {
-				logger.debug("Password not accepted...Exiting");
-				writer.close();
-				reader.close();
-				return false;
-			}
-
-			inputString = reader.readLine();
+			
 			logger.debug("Waiting for SYNC byte...");
 			int syncByte = -1;
 			while (syncByte != 127) {
