@@ -4,6 +4,7 @@ Documentation of the eBus Binding Bundle
 
 Date        | Description
 ---         | ---
+30.03.2015  | Change internal event handling from Thread to ThreadPool, enhance java doc
 21.01.2015  | Add new vaillant configuration ``vaillant-bai00``
 
 ## Introduction
