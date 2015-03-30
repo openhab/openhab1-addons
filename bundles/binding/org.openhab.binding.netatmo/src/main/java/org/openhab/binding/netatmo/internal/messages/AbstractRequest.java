@@ -25,6 +25,8 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 	protected static final String HTTP_GET = "GET";
 
 	protected static final String HTTP_POST = "POST";
+	
+	protected static final String API_BASE_URL = "https://api.netatmo.net/api/";
 
 	protected static final Properties HTTP_HEADERS;
 

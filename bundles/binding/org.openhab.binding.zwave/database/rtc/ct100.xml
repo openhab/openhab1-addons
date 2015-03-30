@@ -20,5 +20,14 @@
 		<Class><id>0x86</id></Class>
 		<Class><id>0x87</id></Class>
 	</CommandClasses>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>2</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en">Send report about Thermostat Mode, Thermostat Operating State, Fan Mode, Fan State, Setpoint, Sensor Multilevel</Help>
+		</Group>
+	</Associations>
 </Product>
 

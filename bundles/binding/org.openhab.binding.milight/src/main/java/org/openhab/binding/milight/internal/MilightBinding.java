@@ -178,8 +178,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				logger.debug("milight: item is of type rgb");
 				if (command instanceof HSBType) {
 					sendColor(command, bridgeId, bulb);
-				}				
-				if (command instanceof PercentType) {
+				} else if (command instanceof PercentType) {
 					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
 				}
 	        }

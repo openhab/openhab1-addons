@@ -156,4 +156,12 @@ public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, 
    */
   void init();
 
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model unique="false"
+   * @generated
+   */
+  boolean clear();
+
 } // MBrickletLCD20x4

@@ -227,5 +227,11 @@ public interface Modbus {
    */
   public static final String DEFAULT_SERIAL_ENCODING = SERIAL_ENCODING_ASCII;
 
+  /**
+   * presents a list of valid modbus serial encoding options
+   */
+  public static final String[] validSerialEncodings = {
+			SERIAL_ENCODING_ASCII, SERIAL_ENCODING_RTU, SERIAL_ENCODING_BIN };
+
 }//class Modbus
 

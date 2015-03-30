@@ -30,7 +30,7 @@ public enum DSMRMeterType {
 	/** Generic meter (generic.channel) */
 	GENERIC("generic.channel"),
 	/** Slave electricity meter (slaveelectricity.channel) */
-	SLAVE_ELECTRICITY("slavelectricity.channel");
+	SLAVE_ELECTRICITY("slaveelectricity.channel");
 
 	/** Channel configuration key for openhab.cfg */
 	public final String channelConfigKey;

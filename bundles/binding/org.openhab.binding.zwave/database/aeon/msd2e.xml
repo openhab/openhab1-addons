@@ -39,6 +39,7 @@
                         <Maximum>65535</Maximum>
                         <Default>0</Default>
                         <Size>2</Size>
+						<WriteOnly>true</WriteOnly>
                         <Label lang="en">Make Micro Smart Dimmer 2nd Edition Blink</Label>
                         <Label lang="de">Make Micro Smart Dimmer 2nd Edition Blink</Label>
 						<Help lang="en">This is a double byte value. The LSB defines the total time the device need to blink. The value if set in seconds. The MSB defines the on/off interval of the blinking. The unit is 0.1 s.</Help>
@@ -69,13 +70,14 @@
                         <Type>list</Type>
                         <Default>0</Default>
                         <Size>1</Size>
+						<WriteOnly>true</WriteOnly>
                         <Label lang="en">Enable/Disable CRC16 encapsulation</Label>
                         <Label lang="de">Enable/Disable CRC16 encapsulation</Label>
                         <Help lang="en">Parameter to Enable/Disable CRC16 encapsulation</Help>
                         <Help lang="de">Parameter to Enable/Disable CRC16 encapsulation</Help>
                         <Item>
                                 <Value>0</Value>
-                                <Label lang="en">Deavtivate</Label>
+                                <Label lang="en">Deactivate</Label>
                                 <Label lang="de">Deaktiviert</Label>
                         </Item>
                         <Item>

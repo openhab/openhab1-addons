@@ -31,7 +31,7 @@ public class PilightBindingConfig implements BindingConfig {
 		
 		private String property; 
 		
-		private Integer scale = 1; 
+		private int scale = 0; 
 		
 		public String getItemName() {
 			return itemName;
@@ -82,11 +82,11 @@ public class PilightBindingConfig implements BindingConfig {
 			this.property = value;
 		}
 		
-		public Integer getScale() {
+		public int getScale() {
 			return scale;
 		}
 		
-		public void setScale(Integer scale) {
+		public void setScale(int scale) {
 			this.scale = scale;
 		}
 		
