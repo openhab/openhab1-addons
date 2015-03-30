@@ -1,5 +1,11 @@
 Documentation of the eBus Binding Bundle
 
+## Change log
+
+Date        | Description
+---         | ---
+21.01.2015  | Add new vaillant configuration ``vaillant-bai00``
+
 ## Introduction
 The eBus binding allows you to control your heating system. The eBus protocol is used by heating system vendors like Wolf, Vaillant, Kromschröder etc. You can read temperatures, pump performance, gas consumption etc.
 
@@ -31,6 +37,7 @@ For your convenience you can see the relevant section as follows:
 	# >> common - All telegrams defined by eBus interest group
 	# >> wolf - All telegrams specified by Wolf/Kromschröder
 	# >> vaillant - All telegrams specified by Vaillant
+	# >> vaillant-bai00 - Telegrams for Vaillant Controller (used by VSC 196 etc. ?) 
 	# >> testing -  All unknown or test telegrams
 	# >> custom - Use configuration defined by ebus:parserUrl
 	# default uses common and all vendor specified telegrams
@@ -214,6 +221,18 @@ temp_vessel            | heating_v         | temp_vessel            | Number    
 temp_outdoor           | control_v         | temp_vessel            | Number    | Temperature outdoor
 temp_return            | solar_v           | temp_return            | Number    | Solar return temperature
 
+### Vaillant Testing ( BAI 00 )
+
+Here a unsupported list for Vaillant BIA 00 device. ID's, class and command names can be changed in further releases.
+
+ID                     | Class             | Command                | Item type | Description
+---                    | ---               | ---                    | ---       | ---
+performance_burner-kw  | bai00             | performance_burner-kw  | Number    | Burner performance kW
+performance_burner     | bai00             | performance_burner     | Number    | Burner performance %
+temp_flow              | bai00             | temp_flow              | Number    | Flow temperature °C
+status_flow            | bai00             |                        | Switch    | Flow temperature status
+temp_return            | bai00             | temp_return            | Number    | Return temperature °C
+status_return          | bai00             |                        | Switch    | Return temperature status
 
 
 ### Example for item configuration
