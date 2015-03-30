@@ -73,7 +73,8 @@ public abstract class MessageDispatcher {
 	 * Dispatches message
 	 * @param msg Message to dispatch
 	 * @param port Insteon device ('/dev/usb') from which the message came
-	 * @return true if dispatch was successful, false otherwise
+	 * @return true if this message was found to be a reply to a direct message,
+	 *              and was claimed by one of the handlers 
 	 */
 	public abstract boolean dispatch(Msg msg, String port);
 
@@ -96,10 +97,10 @@ public abstract class MessageDispatcher {
 				cmd1 = msg.getByte("command1");
 			} catch (FieldException e) {
 				logger.debug("no command found, dropping msg {}", msg);
-				return isConsumed;
+				return false;
 			}
 			if (handleAllLinkMessage(msg, port)) {
-				return isConsumed;
+				return false;
 			}
 			if (msg.isAckOfDirect()) {
 				// in the case of direct ack, the cmd1 code is useless.
@@ -127,26 +128,25 @@ public abstract class MessageDispatcher {
 			if (isConsumed) {
 				m_feature.setQueryStatus(DeviceFeature.QueryStatus.QUERY_ANSWERED);
 			}
-
 			return isConsumed;
 		}
 	}
-
-	private static class GreedyDispatcher extends MessageDispatcher {
-		GreedyDispatcher(DeviceFeature f) { super(f); }
+	
+	private static class SimpleDispatcher extends MessageDispatcher {
+		SimpleDispatcher(DeviceFeature f) { super(f); }
 		@Override
 		public boolean dispatch(Msg msg, String port) {
 			byte cmd1 = 0x00;
-			boolean isConsumed = false;
 			try {
 				if (handleAllLinkMessage(msg, port)) {
-					return isConsumed;
+					return false;
 				}
 				cmd1 = msg.getByte("command1");
 			} catch (FieldException e) {
 				logger.debug("no cmd1 found, dropping msg {}", msg);
-				return isConsumed;
+				return false;
 			}
+			boolean isConsumed = msg.isAckOfDirect() && (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING);
 			int key = (cmd1 & 0xFF);
 			MessageHandler h = m_feature.getMsgHandlers().get(key);
 			if (h == null) h = m_feature.getDefaultMsgHandler();
@@ -198,7 +198,7 @@ public abstract class MessageDispatcher {
 	public static MessageDispatcher s_makeMessageDispatcher(String name, DeviceFeature f) {
 		if (name.equals("PassThroughDispatcher")) return new PassThroughDispatcher(f);
 		else if (name.equals("DefaultDispatcher")) return new DefaultDispatcher(f);
-		else if (name.equals("GreedyDispatcher")) return new GreedyDispatcher(f);
+		else if (name.equals("SimpleDispatcher")) return new SimpleDispatcher(f);
 		else if (name.equals("X10Dispatcher")) return new X10Dispatcher(f);
 		else {
 			logger.error("unimplemented message dispatcher requested: {}", name);

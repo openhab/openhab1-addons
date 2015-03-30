@@ -10,11 +10,12 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.mios.genericbindingprovider">
-   <implementation class="org.openhab.binding.mios.internal.MiosBindingProviderImpl"/>
+	<implementation class="org.openhab.binding.mios.internal.MiosBindingProviderImpl" />
    
-   <service>
-      <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.mios.MiosBindingProvider"/>
-   </service>
-   <reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
+	<service>
+		<provide interface="org.openhab.model.item.binding.BindingConfigReader" />
+		<provide interface="org.openhab.binding.mios.MiosBindingProvider" />
+	</service>
+
+	<reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry" />
 </scr:component>

@@ -57,6 +57,62 @@ public class HeatpumpConnector {
 	}
 
 	/**
+	 * read the parameters of the heatpump
+	 * @return
+	 * @throws IOException
+	 */
+	public int[] getParams() throws IOException {
+		int[] heatpump_values = null;
+		while (datain.available() > 0){
+			datain.readByte();
+		}
+		dataout.writeInt(3003);
+		dataout.writeInt(0);
+		dataout.flush();
+		if (datain.readInt() != 3003) {
+			return null;
+		}
+		//int stat = datain.readInt();
+		int arraylength = datain.readInt();
+		heatpump_values = new int[arraylength];
+
+		
+		for (int i = 0; i < arraylength; i++)
+			heatpump_values[i] = datain.readInt();
+		return heatpump_values;
+	}	
+	
+	/**
+	 * set a parameter of the heatpump
+	 * @param param
+	 * @param value
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean setParam(int param, int value) throws IOException {
+		while (datain.available() > 0){
+			datain.readByte();
+		}
+		dataout.writeInt(3002);
+		dataout.writeInt(param);
+		dataout.writeInt(value);
+		dataout.flush();
+
+		int cmd = datain.readInt();
+		int resp = datain.readInt();
+		if (cmd != 3002) {
+			logger.error("can't write parameter " + param + " with value " + value +" to heatpump.");
+			return false;
+		}else{
+			if(logger.isDebugEnabled()){
+				logger.debug("successful parameter" + param + " with value " + value +" to heatpump written.");
+			}
+			return true;
+		}
+
+	}		
+	
+	/**
 	 * read the internal state of the heatpump
 	 * @return a array with all internal data of the heatpump
 	 * @throws IOException indicate that no data can be read from the heatpump

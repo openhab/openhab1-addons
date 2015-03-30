@@ -11,6 +11,8 @@
 import java.util.HashMap;
 import org.openhab.core.types.State;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,15 +50,19 @@ public class DeviceFeatureListener {
 	public String getItemName() {
 		return m_itemName;
 	}
-
 	/**
-	 * Test is given parameter is configured
-	 * @param key parameter to test for
-	 * @return
+	 * Test if string parameter is present and has a given value
+	 * 
+	 * @param key		key to match
+	 * @param value		value to match
+	 * @return			true if key exists and value matches
 	 */
-	public boolean hasParameter(String key) {
-		return m_parameters != null && m_parameters.get(key) != null;
+	private boolean parameterHasValue(String key, String value) {
+		if (m_parameters == null) return false;
+		String v = m_parameters.get(key);
+		return (v != null &&v.equals(value));
 	}
+
 	/**
 	 * Set parameters for this feature listener
 	 * @param p the parameters to set
@@ -64,26 +70,7 @@ public class DeviceFeatureListener {
 	public void setParameters(HashMap<String,String> p) {
 		m_parameters = p;
 	}
-	/**
-	 * Gets integer parameter or -1 if not found
-	 * @param key name of parameter to get
-	 * @return value of parameter or -1 if not found
-	 */
-	public int getIntParameter(String key) {
-		return (getIntParameter(key, -1));
-	}
-	/**
-	 * Gets integer parameter or default value
-	 * @param key the parameter key to look for
-	 * @param def the default if key is not found
-	 * @return the value (or default if key is not found)
-	 */
-	public int getIntParameter(String key, int def) {
-		if (m_parameters == null) return def;
-		String s = m_parameters.get(key);
-		if (s == null) return def;
-		return (Integer.parseInt(s));
-	}
+	
 	/**
 	 * Publishes a state change on the openhab bus
 	 * @param state the new state to publish on the openhab bus
@@ -94,14 +81,51 @@ public class DeviceFeatureListener {
 		if (oldState == null) {
 			logger.trace("new state: {}:{}", state.getClass().getSimpleName(), state);
 			// state has changed, must publish
-			m_eventPublisher.postUpdate(m_itemName, state);
+			publishState(state);
 		} else {
 			logger.trace("old state: {}:{}=?{}", state.getClass().getSimpleName(), oldState, state);
 			// only publish if state has changed or it is requested explicitly
-			if (changeType == StateChangeType.ALWAYS || oldState != state) {
-				m_eventPublisher.postUpdate(m_itemName, state);
+			if (changeType == StateChangeType.ALWAYS || !oldState.equals(state)) {
+				publishState(state);
 			}
 		}
 		m_state.put(state.getClass(), state);
+	}
+	/**
+	 * Call this function to inform about a state change for a given
+	 * parameter key and value. If dataKey and dataValue don't match,
+	 * the state change will be ignored.
+	 * @param state the new state to which the feature has changed
+	 * @param changeType how to process the state change (always, or only when changed)
+	 * @param dataKey the data key on which to filter
+	 * @param dataValue the value that the data key must match for the state to be published
+	 */
+	public void stateChanged(State state, StateChangeType changeType,
+								String dataKey, String dataValue) {
+		if (parameterHasValue(dataKey, dataValue)) {
+			stateChanged(state, changeType);
+		}
+	}
+    /**
+     * Publish the state. In the case of PercentType, if the value is
+     * 0, send a OnOffType.OFF and if the value is 100, send a OnOffType.ON.
+     * That way an OpenHAB Switch will work properly with a Insteon dimmer,
+     * as long it is used like a switch (On/Off). An openHAB DimmerItem will
+     * internally convert the ON back to 100% and OFF back to 0, so there is
+     * no need to send both 0/OFF and 100/ON.
+     * 
+     * @param state the new state of the feature
+     */
+	private void publishState(State state) {
+		State publishState = state;
+		if (state instanceof PercentType) {
+			if (state.equals(PercentType.ZERO)) {
+				publishState = OnOffType.OFF;
+			} else if (state.equals(PercentType.HUNDRED)) {
+				publishState = OnOffType.ON;
+			}
+		}
+
+		m_eventPublisher.postUpdate(m_itemName, publishState);
 	}
 }

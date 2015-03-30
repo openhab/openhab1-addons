@@ -8,12 +8,11 @@
  */
 package org.openhab.binding.zwave.internal.converter;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.converter.command.DecimalCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.IntegerCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
-import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -48,26 +47,19 @@ public class ZWaveThermostatModeConverter extends
 	public ZWaveThermostatModeConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
-		this.addCommandConverter(new DecimalCommandConverter());
-		this.addStateConverter(new BigDecimalDecimalTypeConverter());
+		this.addCommandConverter(new IntegerCommandConverter());
+		this.addStateConverter(new IntegerDecimalTypeConverter());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatModeCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-		
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-			return;
-		}
-		
-		this.getController().sendData(serialMessage);
+		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 	}
 
 	/**
@@ -103,8 +95,8 @@ public class ZWaveThermostatModeConverter extends
 		}
 		
 		logger.debug("NODE {}: receiveCommand with converter {} ", node.getNodeId(), converter.getClass());
-		
-		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage(((BigDecimal)converter.convertFromCommandToValue(item, command)).intValue()), commandClass, endpointId);
+
+		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage((Integer)converter.convertFromCommandToValue(item, command)), commandClass, endpointId);
 		logger.debug("NODE {}: receiveCommand sending message {} ", node.getNodeId(), serialMessage); 
 		if (serialMessage == null) {
 			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);

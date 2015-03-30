@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>HSP02</Model>
+	<Label lang="en">Motion Detector</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Basic Set Level</Label>
+			<Label lang="de">Basic Set Wert</Label>
+			<Help lang="en">Value to be sent with a BASIC SET command</Help>
+			<Help lang="de">Wert der bei einem BASIC SET gesendet wird</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Sensor Detecting Function</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Group 1 Enabled / Group 2 Enabled</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Group 1 Enabled / Group 2 Disabled</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Group 1 Disabled / Group 2 Disabled</Label>
+			</Item>		
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>10</Maximum>
+			<Default>6</Default>
+			<Size>1</Size>
+			<Label lang="en">Sensitivity Level</Label>
+		</Parameter>			
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>5</Minimum>
+			<Maximum>3600</Maximum>
+			<Default>180</Default>
+			<Size>1</Size>
+			<Label lang="en">Re-trigger Interval Setting</Label>
+		</Parameter>		
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">LUX Level</Label>
+			<Help lang="en">Value for what LUX level will arm the detection sensor</Help>
+		</Parameter>		
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Minimum>5</Minimum>
+			<Maximum>3600</Maximum>
+			<Default>15</Default>
+			<Size>1</Size>
+			<Label lang="en">On-Off Duration</Label>
+		</Parameter>					
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Target for reports</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Target nodes who receive BASIC_SET command</Label>
+		</Group>
+	</Associations>
+</Product>
+
