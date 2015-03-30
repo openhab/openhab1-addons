@@ -66,6 +66,7 @@ import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
 import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
 import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
 import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
@@ -1040,6 +1041,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum dualButtonButtonSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum joystickSubIdsEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -5423,6 +5431,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getJoystickSubIds()
+  {
+    return joystickSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -6563,6 +6581,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonDevicePositionEEnum = createEEnum(DUAL_BUTTON_DEVICE_POSITION);
     dualButtonLedSubIdsEEnum = createEEnum(DUAL_BUTTON_LED_SUB_IDS);
     dualButtonButtonSubIdsEEnum = createEEnum(DUAL_BUTTON_BUTTON_SUB_IDS);
+    joystickSubIdsEEnum = createEEnum(JOYSTICK_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -6781,6 +6800,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     joystickButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
     g2 = createEGenericType(this.getSwitchState());
+    g1.getETypeArguments().add(g2);
+    joystickButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getButtonConfiguration());
     g1.getETypeArguments().add(g2);
     joystickButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
@@ -7270,7 +7293,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMLCDSubDevice());
     mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getCallbackListener());
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getButtonConfiguration());
+    g1.getETypeArguments().add(g2);
     mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getOHTFDevice());
     g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_TFC);
@@ -8067,6 +8092,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEEnum(dualButtonButtonSubIdsEEnum, DualButtonButtonSubIds.class, "DualButtonButtonSubIds");
     addEEnumLiteral(dualButtonButtonSubIdsEEnum, DualButtonButtonSubIds.DUALBUTTON_LEFTBUTTON);
     addEEnumLiteral(dualButtonButtonSubIdsEEnum, DualButtonButtonSubIds.DUALBUTTON_RIGHTBUTTON);
+
+    initEEnum(joystickSubIdsEEnum, JoystickSubIds.class, "JoystickSubIds");
+    addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_XPOSITION);
+    addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_YPOSITION);
+    addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_BUTTON);
 
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

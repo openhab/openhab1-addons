@@ -257,6 +257,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createDualButtonLedSubIdsFromString(eDataType, initialValue);
       case ModelPackage.DUAL_BUTTON_BUTTON_SUB_IDS:
         return createDualButtonButtonSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.JOYSTICK_SUB_IDS:
+        return createJoystickSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -408,6 +410,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertDualButtonLedSubIdsToString(eDataType, instanceValue);
       case ModelPackage.DUAL_BUTTON_BUTTON_SUB_IDS:
         return convertDualButtonButtonSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.JOYSTICK_SUB_IDS:
+        return convertJoystickSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -1574,6 +1578,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertDualButtonButtonSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickSubIds createJoystickSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    JoystickSubIds result = JoystickSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertJoystickSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

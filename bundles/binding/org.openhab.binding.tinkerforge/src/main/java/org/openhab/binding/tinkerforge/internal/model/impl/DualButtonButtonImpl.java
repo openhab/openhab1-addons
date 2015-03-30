@@ -524,28 +524,29 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
    * 
    * @generated NOT
    */
-  public void fetchSensorValue()
-  {
-    try {
-      ButtonState buttonState = tinkerforgeDevice.getButtonState();
-      OnOffValue newValue;
-      if (position == DualButtonDevicePosition.LEFT) {
-        newValue = getValue4State(buttonState.buttonL);
-      } else {
-        newValue = getValue4State(buttonState.buttonR);
-      }
-      if (newValue != sensorValue) {
+  public void fetchSensorValue() {
+    if (tactile || this.sensorValue == null || this.sensorValue == OnOffValue.UNDEF) {
+      try {
+        ButtonState buttonState = tinkerforgeDevice.getButtonState();
+        OnOffValue newValue;
+        if (position == DualButtonDevicePosition.LEFT) {
+          newValue = getValue4State(buttonState.buttonL);
+        } else {
+          newValue = getValue4State(buttonState.buttonR);
+        }
         setSensorValue(newValue);
-        logger.trace("{} fetch value changed to: {}", position, newValue);
-      } else {
-        logger.trace("{} fetch omitting unchanged value: {}", position, newValue);
+        logger.trace("{} fetch value: {}", position, newValue);
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
       }
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    } else {
+      // send current state to update the eventbus
+      setSensorValue(getSensorValue());
     }
+
   }
 
   /**
@@ -620,10 +621,10 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
       } else {
         if (newState == BrickletDualButton.BUTTON_STATE_PRESSED) {
           // toggle current device state
-          OnOffValue newTactileValue =
+          OnOffValue newSwitchValue =
               sensorValue == OnOffValue.ON ? OnOffValue.OFF : OnOffValue.ON;
-          logger.trace("listener switch value changed to {}", newTactileValue);
-          setSensorValue(newTactileValue);
+          logger.trace("listener switch value changed to {}", newSwitchValue);
+          setSensorValue(newSwitchValue);
         }
       }
     }

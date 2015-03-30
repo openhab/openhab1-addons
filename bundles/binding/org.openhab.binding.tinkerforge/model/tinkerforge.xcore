@@ -296,7 +296,8 @@ class JoystickYPosition extends JoystickDevice, MSensor<MDecimalValue> {
 		readonly String deviceType = "joystick_yposition"
 }
 
-class JoystickButton extends JoystickDevice, MSensor<SwitchState> {
+class JoystickButton extends JoystickDevice, MSensor<SwitchState>,
+	MTFConfigConsumer<ButtonConfiguration> {
 		readonly String deviceType = "joystick_button"
 }
 
@@ -648,7 +649,7 @@ class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 	readonly String deviceType = "backlight"
 }
 
-class MLCD20x4Button extends MSensor<SwitchState>, MLCDSubDevice, CallbackListener{
+class MLCD20x4Button extends MSensor<SwitchState>, MLCDSubDevice, MTFConfigConsumer<ButtonConfiguration>{
 	readonly String deviceType = "lcd_button"
 	short buttonNum
 }
@@ -883,4 +884,8 @@ enum DualButtonLedSubIds {
 
 enum DualButtonButtonSubIds {
 	DUALBUTTON_LEFTBUTTON, DUALBUTTON_RIGHTBUTTON
+}
+
+enum JoystickSubIds {
+	joystick_xposition, joystick_yposition, joystick_button
 }

@@ -19,13 +19,15 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
 import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
@@ -50,7 +52,7 @@ import com.tinkerforge.BrickletLCD20x4;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getCallbackPeriod <em>Callback Period</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getButtonNum <em>Button Num</em>}</li>
  * </ul>
@@ -171,26 +173,16 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
+   * @see #getTfConfig()
    * @generated
    * @ordered
    */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+  protected ButtonConfiguration tfConfig;
 
   /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
-
-/**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -230,9 +222,11 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
    */
   protected short buttonNum = BUTTON_NUM_EDEFAULT;
 
-private ButtonPressedListener buttonPressedListener;
+  private ButtonListener buttonListener;
 
   private BrickletLCD20x4 tinkerforgeDevice;
+
+  private boolean tactile;
 
 
   /**
@@ -444,6 +438,54 @@ private ButtonPressedListener buttonPressedListener;
    * <!-- end-user-doc -->
    * @generated
    */
+  public ButtonConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(ButtonConfiguration newTfConfig, NotificationChain msgs)
+  {
+    ButtonConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(ButtonConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -473,29 +515,6 @@ private ButtonPressedListener buttonPressedListener;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
-  }
-
-  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * 
    * @generated NOT
@@ -514,8 +533,16 @@ private ButtonPressedListener buttonPressedListener;
   public void enable() {
     setSensorValue(OnOffValue.UNDEF);
     tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
-    buttonPressedListener = new ButtonPressedListener();
-    tinkerforgeDevice.addButtonPressedListener(buttonPressedListener);
+    tactile = false;
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("tactile"))) {
+        tactile = tfConfig.isTactile();
+      }
+    }
+    logger.trace("button {} tactile is {}", buttonNum, tactile);
+    buttonListener = new ButtonListener();
+    tinkerforgeDevice.addButtonPressedListener(buttonListener);
+    tinkerforgeDevice.addButtonReleasedListener(buttonListener);
   }
 
   /**
@@ -523,34 +550,45 @@ private ButtonPressedListener buttonPressedListener;
    * 
    * @generated NOT
    */
-  private class ButtonPressedListener implements BrickletLCD20x4.ButtonPressedListener {
+  private class ButtonListener
+      implements
+        BrickletLCD20x4.ButtonPressedListener,
+        BrickletLCD20x4.ButtonReleasedListener {
+
+    @Override
+    public void buttonReleased(short button) {
+      if (tactile) {
+        logger.trace("{} released setting new tactile value", LoggerConstants.TFMODELUPDATE);
+        setSensorValue(OnOffValue.OFF);
+      } else {
+        logger.trace("{} released omitting in switch mode", LoggerConstants.TFMODELUPDATE);
+      }
+    }
 
     @Override
     public void buttonPressed(short buttonChangedButtonNum) {
       if (buttonChangedButtonNum == buttonNum) {
-        if (sensorValue == OnOffValue.OFF) {
+        if (tactile) {
+          logger.trace("button pressed setting new tactile value {}", OnOffValue.ON);
           setSensorValue(OnOffValue.ON);
-          logger.debug("set sensor value on for button {}", buttonChangedButtonNum);
-        } else if (sensorValue == OnOffValue.ON) {
-          setSensorValue(OnOffValue.OFF);
-          logger.debug("set switch state off for button {}", buttonChangedButtonNum);
         } else {
-          setSensorValue(OnOffValue.ON);
-          logger.debug("set switch state on from undef for button {}", buttonChangedButtonNum);
+          // toggle current device state
+          OnOffValue newSwitchValue = sensorValue == OnOffValue.ON ? OnOffValue.OFF : OnOffValue.ON;
+          logger.trace("pressed switch value changed to {}", newSwitchValue);
+          setSensorValue(newSwitchValue);
         }
       }
     }
-
   }
-  
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated NOT
    */
   public void disable() {
-    if (buttonPressedListener != null) {
-      tinkerforgeDevice.removeButtonPressedListener(buttonPressedListener);
+    if (buttonListener != null) {
+      tinkerforgeDevice.removeButtonPressedListener(buttonListener);
     }
   }
 
@@ -594,6 +632,8 @@ private ButtonPressedListener buttonPressedListener;
     {
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         return basicSetMbrick(null, msgs);
+      case ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -638,8 +678,8 @@ private ButtonPressedListener buttonPressedListener;
         return getSubId();
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         return getMbrick();
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        return getCallbackPeriod();
+      case ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG:
+        return getTfConfig();
       case ModelPackage.MLCD2_0X4_BUTTON__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
@@ -679,8 +719,8 @@ private ButtonPressedListener buttonPressedListener;
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         setMbrick((MBrickletLCD20x4)newValue);
         return;
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
+      case ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG:
+        setTfConfig((ButtonConfiguration)newValue);
         return;
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
         setButtonNum((Short)newValue);
@@ -720,8 +760,8 @@ private ButtonPressedListener buttonPressedListener;
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         setMbrick((MBrickletLCD20x4)null);
         return;
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+      case ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG:
+        setTfConfig((ButtonConfiguration)null);
         return;
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
         setButtonNum(BUTTON_NUM_EDEFAULT);
@@ -754,8 +794,8 @@ private ButtonPressedListener buttonPressedListener;
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+      case ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG:
+        return tfConfig != null;
       case ModelPackage.MLCD2_0X4_BUTTON__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
@@ -799,11 +839,11 @@ private ButtonPressedListener buttonPressedListener;
         default: return -1;
       }
     }
-    if (baseClass == CallbackListener.class)
+    if (baseClass == MTFConfigConsumer.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        case ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -845,11 +885,11 @@ private ButtonPressedListener buttonPressedListener;
         default: return -1;
       }
     }
-    if (baseClass == CallbackListener.class)
+    if (baseClass == MTFConfigConsumer.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD;
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MLCD2_0X4_BUTTON__TF_CONFIG;
         default: return -1;
       }
     }
@@ -888,7 +928,7 @@ private ButtonPressedListener buttonPressedListener;
         default: return -1;
       }
     }
-    if (baseClass == CallbackListener.class)
+    if (baseClass == MTFConfigConsumer.class)
     {
       switch (baseOperationID)
       {
@@ -947,8 +987,6 @@ private ButtonPressedListener buttonPressedListener;
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", buttonNum: ");

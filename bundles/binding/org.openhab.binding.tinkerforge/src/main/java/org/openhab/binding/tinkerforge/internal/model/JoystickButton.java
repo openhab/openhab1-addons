@@ -17,10 +17,10 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getJoystickButton()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.JoystickDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.SwitchState>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.JoystickDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.SwitchState> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
  * @generated
  */
-public interface JoystickButton extends JoystickDevice, MSensor<OnOffValue>
+public interface JoystickButton extends JoystickDevice, MSensor<OnOffValue>, MTFConfigConsumer<ButtonConfiguration>
 {
 
   /**

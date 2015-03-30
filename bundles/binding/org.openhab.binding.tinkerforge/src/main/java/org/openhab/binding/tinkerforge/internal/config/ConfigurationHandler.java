@@ -35,6 +35,8 @@ import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
@@ -96,8 +98,8 @@ public class ConfigurationHandler {
     bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, 
     bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
     voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
-    bricklet_halleffect, bricklet_joystick, bricklet_linear_poti, dualbutton_button,
-    dualbutton_led
+    bricklet_halleffect, bricklet_joystick, joystick_button, bricklet_linear_poti, 
+ dualbutton_button, dualbutton_led, lcd_button
   }
 
 
@@ -411,6 +413,18 @@ public class ConfigurationHandler {
       OHTFDevice<DualButtonLEDConfiguration, DualButtonLedSubIds> ohtfDevice =
           modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(DualButtonLedSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.joystick_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, JoystickSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(JoystickSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.lcd_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, LCDButtonSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LCDButtonSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {
