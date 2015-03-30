@@ -20,6 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is the serial implementation of the eBus connector. It only handles
+ * serial specific connection/disconnection. All logic is handled by
+ * abstract class AbstractEBusConnector.
+ * 
 * @author Christian Sowada
 * @since 1.7.0
 */

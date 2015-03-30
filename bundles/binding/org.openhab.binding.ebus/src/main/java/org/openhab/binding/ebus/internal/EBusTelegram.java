@@ -11,6 +11,8 @@ package org.openhab.binding.ebus.internal;
 import java.nio.ByteBuffer;
 
 /**
+ * Represent a valid ebus telegram structure.
+ * 
 * @author Christian Sowada
 * @since 1.7.0
 */
@@ -34,11 +36,12 @@ public class EBusTelegram {
 	/** Telegram type Master-Master */
 	public static final byte MASTER_MASTER = 3;
 	
+	/** internal raw data */
 	private ByteBuffer data;
 	
 	/**
 	 * Constructor
-	 * @param data
+	 * @param data An eBus telegram as ByteBuffer
 	 */
 	public EBusTelegram(ByteBuffer data) {
 		this.data = data;
@@ -46,7 +49,7 @@ public class EBusTelegram {
 	
 	/**
 	 * Constructor
-	 * @param data
+	 * @param data An eBus telegram as byte array
 	 */
 	public EBusTelegram(byte[] data) {
 		this.data = ByteBuffer.wrap(data);

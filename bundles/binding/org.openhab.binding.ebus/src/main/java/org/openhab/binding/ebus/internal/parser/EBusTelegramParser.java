@@ -27,6 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class parses received eBus telegrams from eBus and convert them to
+ * a result map with keys and resolved values.
+ * 
  * @author Christian Sowada
  * @since 1.7.0
  */
@@ -46,6 +49,10 @@ public class EBusTelegramParser {
 	// The configuration provider to parse the ebus telegram
 	private EBusConfigurationProvider configurationProvider; 
 
+	/**
+	 * Constructor
+	 * @param configurationProvider
+	 */
 	public EBusTelegramParser(EBusConfigurationProvider configurationProvider) {
 		this.configurationProvider = configurationProvider;
 	}
@@ -245,7 +252,7 @@ public class EBusTelegramParser {
 	}
 
 	/**
-	 * Parses a valid eBus telegram an returns a map with key/values based on
+	 * Parses a valid eBus telegram and returns a map with key/values based on
 	 * configuration registry.
 	 * @param telegram The eBus telegram
 	 * @return A Map with parsed key/values

@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * A helper class to decode all eBus data types and telegrams.
+ * 
  * @author Christian Sowada
  * @since 1.7.0
  */
@@ -100,8 +102,6 @@ public class EBusUtils {
 	 * @return The crc result
 	 */
 	public static byte crc8_tab(byte data, byte crc_init) {
-		//int ci = unsignedInt(crc_init);
-		//byte crc = (byte) (CRC_TAB_8_VALUE[ci] ^ unsignedInt(data));
 		short ci = (short) (crc_init & 0xFF);
 		byte crc = (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
 		return crc;
@@ -116,6 +116,11 @@ public class EBusUtils {
 		return (data >> 4)*10 + (data & (byte) 0x0F);
 	}
 
+	/**
+	 * Convert eBus Type DATA1B
+	 * @param data The encoded value
+	 * @return The decoded value
+	 */
 	public static int decodeDATA1b(byte data) {
 		if((data & (byte) 0x80) == (byte) 0x80) {
 			return -1 * ((short) ((data^0xFF) & 0xFF) + 1);
@@ -125,7 +130,7 @@ public class EBusUtils {
 	}
 	
 	/**
-	 * Convert EBus Type DATA1C
+	 * Convert eBus Type DATA1C
 	 * @param data The encoded value
 	 * @return The decoded value
 	 */
@@ -134,7 +139,7 @@ public class EBusUtils {
 	}
 
 	/**
-	 * Convert EBus Type DATA2b
+	 * Convert eBus Type DATA2b
 	 * @param highData The encoded high byte
 	 * @param lowData The encoded low byte
 	 * @return The decoded value
@@ -182,7 +187,7 @@ public class EBusUtils {
 	 * Convert eBus Type WORD
 	 * @param highData
 	 * @param lowData
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeWORD(byte highData, byte lowData) {
 		return ((highData & 0xFF)<<8) + (lowData & 0xFF);
@@ -191,7 +196,7 @@ public class EBusUtils {
 	/**
 	 * Convert eBus Type CHAR
 	 * @param data
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeChar(byte data) {
 		return data;
@@ -200,7 +205,7 @@ public class EBusUtils {
 	/**
 	 * Convert eBus Type UCHAR
 	 * @param data
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeUChar(byte data) {
 		return data & 0xFF;
@@ -209,7 +214,7 @@ public class EBusUtils {
 	/**
 	 * Convert eBus Type BYTE
 	 * @param data
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeByte(byte data) {
 		return data;
@@ -219,7 +224,7 @@ public class EBusUtils {
 	 * Convert eBus Type BIT
 	 * @param data
 	 * @param bit
-	 * @return
+	 * @return The decoded value
 	 */
 	public static boolean decodeBit(byte data, short bit) {
 		return ((byte)data >> bit& 0x1) == 1;
@@ -229,7 +234,7 @@ public class EBusUtils {
 	 * Convert eBus Type Int, same as WORD
 	 * @param highData
 	 * @param lowData
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeInt(byte highData, byte lowData) {
 		return decodeWORD(highData, lowData);
@@ -239,7 +244,7 @@ public class EBusUtils {
 	 * Convert eBus Type UInt
 	 * @param highData
 	 * @param lowData
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeUInt(byte highData, byte lowData) {
 		int v = decodeInt(highData, lowData);
@@ -251,7 +256,7 @@ public class EBusUtils {
 	 * Convert eBus Type Long, same as WORD
 	 * @param highData
 	 * @param lowData
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeLng(byte highData, byte lowData) {
 		return decodeWORD(highData, lowData);
@@ -261,7 +266,7 @@ public class EBusUtils {
 	 * Convert eBus Type ULong
 	 * @param highData
 	 * @param lowData
-	 * @return
+	 * @return The decoded value
 	 */
 	public static int decodeULng(byte highData, byte lowData) {
 		int v = decodeInt(highData, lowData);

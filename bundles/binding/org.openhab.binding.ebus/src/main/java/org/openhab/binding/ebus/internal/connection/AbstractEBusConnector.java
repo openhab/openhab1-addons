@@ -119,7 +119,7 @@ public abstract class AbstractEBusConnector extends Thread {
 	}
 
 	/**
-	 * Add a listener
+	 * Add an eBus listener to receive valid eBus telegrams
 	 * @param listener
 	 */
 	public void addEBusEventListener(EBusConnectorEventListener listener) {
@@ -127,7 +127,7 @@ public abstract class AbstractEBusConnector extends Thread {
 	}
 
 	/**
-	 * Remove a listener
+	 * Remove an eBus listener
 	 * @param listener
 	 * @return
 	 */
@@ -136,6 +136,10 @@ public abstract class AbstractEBusConnector extends Thread {
 	}
 
 	/**
+	 * Reconnect to the eBus up to 50 times. Connection can be lost by restart
+	 * heating system etc. Warning, can cause an file handler issue
+	 * on Linux (Windows not tested!) with serial connections.
+	 * 
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -179,6 +183,7 @@ public abstract class AbstractEBusConnector extends Thread {
 					if(read == -1) {
 						logger.error("eBus read timeout occured, ignore it currently!");
 
+						// currently disabled because of file handler issues!
 						// reconnect
 						//reconnect();
 
@@ -226,7 +231,7 @@ public abstract class AbstractEBusConnector extends Thread {
 	}
 
 	/**
-	 * Called if a SYN packet was received
+	 * Called event if a SYN packet has been received
 	 * @throws IOException
 	 */
 	protected void onEBusSyncReceived() throws IOException {
@@ -277,7 +282,7 @@ public abstract class AbstractEBusConnector extends Thread {
 
 	/**
 	 * Called if a valid eBus telegram was received. Send to event
-	 * listeners in a seperate thread.
+	 * listeners in a separate thread.
 	 * @param telegram
 	 */
 	protected void onEBusTelegramReceived(final EBusTelegram telegram) {

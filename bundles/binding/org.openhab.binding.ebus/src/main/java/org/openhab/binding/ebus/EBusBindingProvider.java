@@ -13,6 +13,9 @@ import java.util.List;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+* This interface can parse information from the binding format and provides eBus
+* binding informations.
+* 
 * @author Christian Sowada
 * @since 1.7.0
 */
@@ -20,15 +23,15 @@ public interface EBusBindingProvider extends BindingProvider {
 	
 	/**
 	 * Return the configurated command for this item or null if not set
-	 * @param itemName
-	 * @return
+	 * @param itemName The openhab item name
+	 * @return The value or null
 	 */
 	public String getCommand(String itemName);
 
 	/**
 	 * Return the configurated class for this item or null if not set
-	 * @param itemName
-	 * @return
+	 * @param itemName The openhab item name
+	 * @return The value or null
 	 */
 	public String getCommandClass(String itemName);
 	
@@ -42,7 +45,7 @@ public interface EBusBindingProvider extends BindingProvider {
 	/**
 	 * Return the refresh rate for a polling commands
 	 * @param itemName
-	 * @return
+	 * @return The value or null
 	 */
 	public int getRefreshRate(String itemName);
 	

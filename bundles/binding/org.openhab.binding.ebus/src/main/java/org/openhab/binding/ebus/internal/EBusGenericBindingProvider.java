@@ -27,6 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+* This class can parse information from the binding format and provides eBus
+* binding informations.
+* 
 * @author Christian Sowada
 * @since 1.7.0
 */
@@ -136,11 +139,12 @@ public class EBusGenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
+		// noop
 	}
 
 	/**
 	 * This is an internal data structure to store information from the binding
-	 * config strings.
+	 * config strings. Simple map used.
 	 */
 	class EBusBindingConfig implements BindingConfig {
 		public HashMap<String, Object> map = new HashMap<String, Object>();
@@ -148,10 +152,10 @@ public class EBusGenericBindingProvider extends
 
 	/**
 	 * Simple get a value from binding configuration or use default value.
-	 * @param itemName
-	 * @param type
-	 * @param defaultValue
-	 * @return
+	 * @param itemName The openhab item name
+	 * @param type The eBus item type
+	 * @param defaultValue The default value if not set
+	 * @return The value or default if set
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T get(String itemName, String type, T defaultValue) {

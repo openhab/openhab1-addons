@@ -11,9 +11,11 @@ package org.openhab.binding.ebus.internal.connection;
 import org.openhab.binding.ebus.internal.EBusTelegram;
 
 /**
-* @author Christian Sowada
-* @since 1.7.0
-*/
+ * This listener is called if the connector received a valid eBus telegram.
+ * 
+ * @author Christian Sowada
+ * @since 1.7.0
+ */
 public interface EBusConnectorEventListener {
 
 	/**

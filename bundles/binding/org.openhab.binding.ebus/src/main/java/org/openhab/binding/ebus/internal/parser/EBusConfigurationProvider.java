@@ -32,6 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * The configuration provider reads the vendors specific ebus protocol
+ * infomation from the json configuration files. All placeholders (regex)
+ * and javascript snippets will be compiled after loading to improve
+ * runtime performance.
+ * 
  * @author Christian Sowada
  * @since 1.7.0
  */
@@ -60,6 +65,7 @@ public class EBusConfigurationProvider {
 	public EBusConfigurationProvider() {
 		final ScriptEngineManager mgr = new ScriptEngineManager();
 		
+		// load script engine if available
 		if(mgr != null) {
 			final ScriptEngine engine = mgr.getEngineByName("JavaScript");
 			
@@ -85,8 +91,8 @@ public class EBusConfigurationProvider {
 	/**
 	 * Loads a JSON configuration file by url
 	 * @param url The url to a configuration file
-	 * @throws IOException
-	 * @throws ParseException
+	 * @throws IOException Unable to read configuration file
+	 * @throws ParseException A invalid json file
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadConfigurationFile(URL url) throws IOException {

@@ -37,6 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * eBus binding implementation.
+ * 
  * @author Christian Sowada
  * @since 1.7.0
  */

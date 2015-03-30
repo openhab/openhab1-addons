@@ -14,10 +14,15 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
-* @author Christian Sowada
-* @since 1.7.0
-*/
+ * This is the TCP/IP implementation of the eBus connector. It only handles
+ * TCP/IP specific connection/disconnection. All logic is handled by
+ * abstract class AbstractEBusConnector.
+ * 
+ * @author Christian Sowada
+ * @since 1.7.0
+ */
 public class EBusTCPConnector extends AbstractEBusConnector {
 
 	private static final Logger logger = LoggerFactory

@@ -11,6 +11,8 @@ package org.openhab.binding.ebus.internal.utils;
 import java.math.BigDecimal;
 
 /**
+ * A utility class for numbers.
+ * 
  * @author Christian Sowada
  * @since 1.7.0
  */

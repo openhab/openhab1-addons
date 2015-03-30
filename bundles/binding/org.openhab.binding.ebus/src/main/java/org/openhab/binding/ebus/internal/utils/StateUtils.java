@@ -18,9 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-* @author Christian Sowada
-* @since 1.7.0
-*/
+ * A utility  class for openhab states.
+ * 
+ * @author Christian Sowada
+ * @since 1.7.0
+ */
 public class StateUtils {
 
 	private static final Logger logger = LoggerFactory
