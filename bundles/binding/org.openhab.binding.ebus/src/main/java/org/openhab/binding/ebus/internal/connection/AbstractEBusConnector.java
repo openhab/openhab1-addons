@@ -102,8 +102,7 @@ public abstract class AbstractEBusConnector extends Thread {
 	 */
 	public boolean connect() throws IOException {
 		
-		// create new thread pool to send received telegrams
-		threadPool = Executors.newCachedThreadPool();
+
 
 		// reset ebus counter
 		lockCounter = LOCKOUT_COUNTER_MAX;
@@ -130,8 +129,6 @@ public abstract class AbstractEBusConnector extends Thread {
 		
 		if(outputStream != null)
 			outputStream.close();
-		
-		threadPool.shutdown();
 		
 		return true;
 	}
@@ -189,6 +186,9 @@ public abstract class AbstractEBusConnector extends Thread {
 	@Override
 	public void run() {
 
+		// create new thread pool to send received telegrams
+		threadPool = Executors.newCachedThreadPool();
+		
 		// loop until interrupt or reconnector count is -1 (to many retries)
 		while (!isInterrupted() || reConnectCounter == -1) {
 			try {
@@ -246,6 +246,10 @@ public abstract class AbstractEBusConnector extends Thread {
 		} catch (IOException e) {
 			logger.error(e.toString(), e);
 		}
+		
+		// shutdown threadpool
+		if(threadPool != null && !threadPool.isShutdown())
+			threadPool.shutdown();
 	}
 
 	/**
@@ -304,6 +308,12 @@ public abstract class AbstractEBusConnector extends Thread {
 	 * @param telegram
 	 */
 	protected void onEBusTelegramReceived(final EBusTelegram telegram) {
+		
+		if(threadPool == null) {
+			logger.warn("ThreadPool not ready!");
+			return;
+		}
+		
 		threadPool.execute(new Runnable() {
 			@Override
 			public void run() {

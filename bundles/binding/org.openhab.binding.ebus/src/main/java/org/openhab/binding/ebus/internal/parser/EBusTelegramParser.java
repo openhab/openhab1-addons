@@ -44,7 +44,7 @@ public class EBusTelegramParser {
 	private static final Logger loggerBrutforce = LoggerFactory
 			.getLogger(EBusTelegramParser.class.getPackage().getName() + ".BruteForce");
 
-	private Map<String, Object> settings;
+//	private Map<String, Object> settings;
 
 	// The configuration provider to parse the ebus telegram
 	private EBusConfigurationProvider configurationProvider; 
@@ -59,13 +59,23 @@ public class EBusTelegramParser {
 
 	/**
 	 * @param byteBuffer
+	 * @param settings 
 	 * @param type
 	 * @param pos
 	 * @return
 	 */
-	private Object getValue(ByteBuffer byteBuffer, String type, int pos, 
-			BigDecimal min, BigDecimal max, BigDecimal replaceValue, BigDecimal factor) {
+	private Object getValue(ByteBuffer byteBuffer, Map<String, Object> settings) {
+		
+		String type = ((String) settings.get("type")).toLowerCase();
+		int pos = settings.containsKey("pos") ? ((Integer) settings.get("pos")).intValue() : -1;
 
+		// load possible min, max, replace values and a factor from configuration
+		BigDecimal valueMin = NumberUtils.toBigDecimal(settings.get("min"));
+		BigDecimal valueMax = NumberUtils.toBigDecimal(settings.get("max"));
+		BigDecimal replaceValue = NumberUtils.toBigDecimal(settings.get("replaceValue"));
+		BigDecimal factor = NumberUtils.toBigDecimal(settings.get("factor"));
+		
+		
 		Object value = null;
 		byte hByte = 0;
 		byte lByte = 0;
@@ -75,7 +85,7 @@ public class EBusTelegramParser {
 		// requested pos is greater as whole buffer
 		if(pos > byteBuffer.position()) {
 			//FIXME: Do something
-			logger.warn("Wow, buffer pos error!");
+			logger.warn("eBus buffer pos error! Can happen ...");
 		}
 
 		if(type.equals("data2b")) {
@@ -153,12 +163,12 @@ public class EBusTelegramParser {
 			}
 			
 			// value is below min value, return null
-			if(min != null && b != null && b.compareTo(min) == -1) {
+			if(valueMin != null && b != null && b.compareTo(valueMin) == -1) {
 				logger.trace("Minimal value reached, skip value ...");
 				value = b = null;
 				
 			// value is above max value, return null
-			} else if (max != null && b != null && b.compareTo(max) == 1) {
+			} else if (valueMax != null && b != null && b.compareTo(valueMax) == 1) {
 				logger.trace("Maximal value reached, skip value ...");
 				value = b = null;
 			}
@@ -323,25 +333,17 @@ public class EBusTelegramParser {
 			loggerAnalyses.debug("  >>> {}", registryEntry.containsKey("comment") ? 
 					registryEntry.get("comment") : "<No comment available>");
 
+			Map<String, Object> settings = null;
+			
 			// loop over all entries
 			for (Entry<String, Map<String, Object>> entry : values.entrySet()) {
 
 				String uniqueKey = (classKey != "" ? classKey + "." : "") + entry.getKey();
 				settings = entry.getValue();
 
-				String type = ((String) settings.get("type")).toLowerCase();
-				int pos = settings.containsKey("pos") ? ((Integer) settings.get("pos")).intValue() : -1;
-
-				// load possible min, max, replace values and a factor from configuration
-				BigDecimal valueMin = NumberUtils.toBigDecimal(settings.get("min"));
-				BigDecimal valueMax = NumberUtils.toBigDecimal(settings.get("max"));
-				BigDecimal replaceValue = NumberUtils.toBigDecimal(settings.get("replaceValue"));
-				BigDecimal factor = NumberUtils.toBigDecimal(settings.get("factor"));
-
 				// Extract the value from byte buffer
-				Object value = getValue(byteBuffer, type, pos,
-						valueMin, valueMax, replaceValue, factor);
-
+				Object value = getValue(byteBuffer, entry.getValue());
+				
 				// If compiled script available for this key, execute it now
 				if(settings.containsKey("cscript")) {
 					try {
