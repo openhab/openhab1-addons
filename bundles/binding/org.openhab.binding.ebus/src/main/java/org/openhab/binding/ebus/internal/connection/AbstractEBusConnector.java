@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.openhab.binding.ebus.internal.EBusTelegram;
@@ -64,11 +66,22 @@ public abstract class AbstractEBusConnector extends Thread {
 	
 	/** default sender id */
 	private byte senderId = (byte)0xFF;
+
+	/** The thread pool to execute events without blocking  */
+	private ExecutorService threadPool;
 	
+	/**
+	 * Returns the eBus binding used sender Id
+	 * @return
+	 */
 	public byte getSenderId() {
 		return senderId;
 	}
 
+	/**
+	 * Set the eBus binding sender Id
+	 * @param senderId The new id, default is 0xFF
+	 */
 	public void setSenderId(byte senderId) {
 		this.senderId = senderId;
 	}
@@ -89,6 +102,9 @@ public abstract class AbstractEBusConnector extends Thread {
 	 */
 	public boolean connect() throws IOException {
 		
+		// create new thread pool to send received telegrams
+		threadPool = Executors.newCachedThreadPool();
+
 		// reset ebus counter
 		lockCounter = LOCKOUT_COUNTER_MAX;
 
@@ -108,12 +124,14 @@ public abstract class AbstractEBusConnector extends Thread {
 	 * @throws IOException
 	 */
 	public boolean disconnect() throws IOException {
-		
+
 		if(inputStream != null)
 			inputStream.close();
 		
 		if(outputStream != null)
 			outputStream.close();
+		
+		threadPool.shutdown();
 		
 		return true;
 	}
@@ -282,18 +300,18 @@ public abstract class AbstractEBusConnector extends Thread {
 
 	/**
 	 * Called if a valid eBus telegram was received. Send to event
-	 * listeners in a separate thread.
+	 * listeners via thread pool to prevent blocking.
 	 * @param telegram
 	 */
 	protected void onEBusTelegramReceived(final EBusTelegram telegram) {
-		new Thread(new Runnable() {
+		threadPool.execute(new Runnable() {
 			@Override
 			public void run() {
 				for (EBusConnectorEventListener listener : listeners) {
 					listener.onTelegramReceived(telegram);
 				}
 			}
-		}).start();;
+		});
 	}
 
 	/**
