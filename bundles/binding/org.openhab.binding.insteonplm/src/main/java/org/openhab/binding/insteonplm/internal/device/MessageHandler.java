@@ -718,15 +718,16 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
-				if (cmd1 == 0x6a) {
+				if (msg.isExtended()) {
+					logger.info("{}: received msg for feature {}", nm(), f.getName());
+					int level = ((f.getName()).equals("ThermostatCoolSetPoint")) ? (int)(msg.getByte("userData7") & 0xff) : (int)(msg.getByte("userData8") & 0xff);
+					logger.info("{}: got SetPoint from {} of value: {}", nm(), dev.getAddress(), level);
+					f.publish(new DecimalType(level), StateChangeType.CHANGED);
+				} else {
 					logger.info("{}: received msg for feature {}", nm(), f.getName());
 					int cmd2 = (int) (msg.getByte("command2") & 0xff);
-					
 					int level = cmd2/2;
-					
 					logger.info("{}: got SETPOINT from {} of value: {}", nm(), dev.getAddress(), level);
-					logger.info("{}: set device {} setpoint to level {}", nm(), dev.getAddress(), level);
-				
 					f.publish(new DecimalType(level), StateChangeType.CHANGED);
 				}
 			} catch (FieldException e) {
@@ -737,7 +738,7 @@ public abstract class MessageHandler {
 	}
 
 	/**
-	 * Handles Thermostat replies to Status requests.
+	 * Handles Thermostat replies to Temperature requests.
 	 */
 	public static class ThermostatTemperatureRequestReplyHandler extends  MessageHandler {
 		ThermostatTemperatureRequestReplyHandler(DeviceFeature p) { super(p); }
@@ -746,19 +747,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
-				/**0x00 Temperature returned in ACK yes In 1 degree units
-				* 0x20 Setpoint returned in ACK yes In 1 degree units
-				* 0x60 Humidity returned in ACK yes In 1 percent units
-				*/
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
-				
 				int level = cmd2/2;
-				
 				logger.info("{}: got TEMPERATURE from {} of value: {}", nm(), dev.getAddress(), level);
 				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), level);
-				
 				f.publish(new DecimalType(level), StateChangeType.CHANGED);
-				
 			} catch (FieldException e) {
 				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
 				return;
@@ -767,7 +760,7 @@ public abstract class MessageHandler {
 	}	
 		
 	/**
-	 * Handles Thermostat replies to Status requests.
+	 * Handles Thermostat replies to Humidity requests.
 	 */
 	public static class ThermostatHumidityRequestReplyHandler extends  MessageHandler {
 		ThermostatHumidityRequestReplyHandler(DeviceFeature p) { super(p); }
@@ -776,16 +769,10 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
-				/**0x00 Temperature returned in ACK yes In 1 degree units
-				* 0x20 Setpoint returned in ACK yes In 1 degree units
-				* 0x60 Humidity returned in ACK yes In 1 percent units
-				*/
 				int cmd2 = (int) msg.getByte("command2");
-				
 				logger.info("{}: got HUMIDITY from {} of value: {}", nm(), dev.getAddress(), cmd2);
 				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), cmd2);
 				f.publish(new PercentType(cmd2), StateChangeType.CHANGED);
-				
 			} catch (FieldException e) {
 				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
 				return;
@@ -813,17 +800,17 @@ public abstract class MessageHandler {
 				switch (cmd2) {
 				case 0x04:
 					logger.info("{}: set device {} to {}", nm(),
-							dev.getAddress(), "ON");
+							dev.getAddress(), "HEAT");
 					f.publish(new DecimalType(2), StateChangeType.CHANGED);
 					break;
 				case 0x05:
 					logger.info("{}: set device {} to {}", nm(),
-							dev.getAddress(), "ON");
+							dev.getAddress(), "COOL");
 					f.publish(new DecimalType(1), StateChangeType.CHANGED);
 					break;
 				case 0x06:
 					logger.info("{}: set device {} to {}", nm(),
-							dev.getAddress(), "ON");
+							dev.getAddress(), "AUTO");
 					f.publish(new DecimalType(3), StateChangeType.CHANGED);
 					break;
 				default: // do nothing

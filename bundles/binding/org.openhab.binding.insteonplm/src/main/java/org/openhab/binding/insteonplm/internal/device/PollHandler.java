@@ -126,14 +126,17 @@ public abstract class PollHandler {
 			return m;
 		}
 	}
-
-	public static class ThermostatSetPointPollHandler extends PollHandler {
-		ThermostatSetPointPollHandler(DeviceFeature f) { super(f); }
+	
+	public static class ThermostatHeatCoolSetPointPollHandler extends PollHandler {
+		ThermostatHeatCoolSetPointPollHandler(DeviceFeature f) { super(f); }
 		@Override
 		public Msg makeMsg(InsteonDevice d) {
 			Msg m = null;
 			try {
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x6a, (byte)0x20);
+				m = d.makeExtendedMessage((byte) 0x1f, (byte) 0x2e, (byte) 0x00);
+				m.setByte("userData1", (byte) 0x01);
+				m.setByte("userData3", (byte) 0x01);
+				m.setByte("userData14", (byte)0x00);
 				m.setQuietTime(500L);
 			} catch (FieldException e) {
 				logger.warn("error setting field in msg: ", e);

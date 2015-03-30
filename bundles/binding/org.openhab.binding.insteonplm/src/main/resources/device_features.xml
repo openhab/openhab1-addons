@@ -251,12 +251,21 @@
 </feature>
 <feature name="ThermostatCoolSetPoint">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
-	<message-handler cmd="0x19" >ThermostatSetPointMsgHandler</message-handler>
-	<message-handler cmd="0x2E" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x6c" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x2e" >ThermostatSetPointMsgHandler</message-handler>
 	<message-handler default="true">NoOpMsgHandler</message-handler>
-	<command-handler command="IncreaseDecreaseType">ThermostatSetPointCommandHandler</command-handler>
+	<command-handler command="DecimalType">ThermostatCoolSetPointCommandHandler</command-handler>
 	<command-handler default="true" >NoOpCommandHandler</command-handler>
-	<poll-handler>ThermostatSetPointPollHandler</poll-handler>
+	<poll-handler>ThermostatHeatCoolSetPointPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatHeatSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x6d" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x2e" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType">ThermostatHeatSetPointCommandHandler</command-handler>
+	<command-handler default="true" >NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHeatCoolSetPointPollHandler</poll-handler>
 </feature>
 <feature name="ThermostatHumidity">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>

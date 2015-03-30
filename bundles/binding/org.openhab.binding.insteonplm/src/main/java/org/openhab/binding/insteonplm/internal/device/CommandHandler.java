@@ -639,6 +639,9 @@ public abstract class CommandHandler {
 		}
 	}
 	
+	/* This Command Handler has been tested but is not implemented.  
+	 * Increments or decrements cool setpoint by 1 
+	 **/
 	public static class ThermostatSetPointCommandHandler extends CommandHandler {
 		ThermostatSetPointCommandHandler(DeviceFeature f) { super(f); }
 		@Override
@@ -655,6 +658,42 @@ public abstract class CommandHandler {
 				} else {
 					// DO NOTHING
 				}
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+	
+	public static class ThermostatCoolSetPointCommandHandler extends CommandHandler {
+		ThermostatCoolSetPointCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				byte level = (byte) (((DecimalType)cmd).intValue() * 2);
+				Msg m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6c, level);
+				dev.enqueueMessage(m, m_feature);
+				logger.info("{}: sent msg to change Cool SetPoint to {}", nm(), ((DecimalType)cmd).intValue());
+				m = null;
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+	
+	public static class ThermostatHeatSetPointCommandHandler extends CommandHandler {
+		ThermostatHeatSetPointCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				byte level = (byte) (((DecimalType)cmd).intValue() * 2);
+				Msg m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6d, level);
+				dev.enqueueMessage(m, m_feature);
+				logger.info("{}: sent msg to change Heat SetPoint to {}", nm(), ((DecimalType)cmd).intValue());
+				m = null;
 			} catch (IOException e) {
 				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
