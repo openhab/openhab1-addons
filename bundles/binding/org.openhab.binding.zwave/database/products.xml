@@ -659,6 +659,10 @@
 				<Type>0002</Type>
 				<Id>004A</Id>
 			</Reference>
+			<Reference>
+				<Type>0102</Type>
+				<Id>004A</Id>
+			</Reference>
 			<Model>4in1MS</Model>
 			<Label lang="en">4 in One MultiSensor (G5)</Label>
 			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
