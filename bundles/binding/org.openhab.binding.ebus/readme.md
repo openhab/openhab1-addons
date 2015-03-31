@@ -1,4 +1,4 @@
-Documentation of the eBus Binding Bundle
+_**Note:** This Binding will be available in the upcoming 1.7 Release. For preliminary builds please see the [CI server at Cloudbees](https://openhab.ci.cloudbees.com/job/openHAB/)._
 
 ## Change log
 
@@ -10,7 +10,14 @@ Date        | Description
 ## Introduction
 The eBus binding allows you to control your heating system. The eBus protocol is used by heating system vendors like Wolf, Vaillant, Kromschröder etc. You can read temperatures, pump performance, gas consumption etc.
 
-To access your heating system you either need a eBus interface. You can buy a ready interface or solder your own circuit (examples: [eBus Wiki](http://ebus.webhop.org/twiki/bin/view.pl/EBus/EBusKonverter)). A simple read-only interface can be build with an Arduino device.
+	┌────────┐                                          ┌──────┐
+	│        │  serial (eBus)  ┌───┐ serial/usb (rs232) │ ──── │
+	│        │<--------------->│ X │<------------------>│ :    │
+	│  ◊◊◊◊  │                 └───┘                    └──────┘
+	└────────┘
+	Heating Unit             eBus Adapter              openHAB Server
+
+To access your heating system you either need an eBus interface. You can buy a ready interface or solder your own circuit (examples: [eBus Wiki](http://ebus.webhop.org/twiki/bin/view.pl/EBus/EBusKonverter)). A simple read-only interface can be build with an Arduino device.
 
 For installation of the binding, please see Wiki page [[Bindings]]. You can download the latest binding from here: 
 [eBus binding 1.7.0 SNAPSHOT](https://buildhive.cloudbees.com/job/openhab/job/openhab/2067/org.openhab.binding$org.openhab.binding.ebus/artifact/org.openhab.binding/org.openhab.binding.ebus/1.7.0-SNAPSHOT/org.openhab.binding.ebus-1.7.0-SNAPSHOT.jar)
@@ -283,3 +290,19 @@ Here is a longer example.
 	
 	Number HU_PollingExample1			"Polling Example 1 [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
 	Number HU_PollingExample2			"Polling Example 2 [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
+
+## Customize this binding
+
+?
+
+### How the binding works
+
+?
+
+### Logging
+
+?
+
+### Modify/create own Parser configuration
+
+?
