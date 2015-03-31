@@ -1160,9 +1160,15 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
+	        <dependency>
+                        <groupId>org.openhab.binding</groupId>
+                        <artifactId>org.openhab.binding.networkupstools</artifactId>
+                        <version>${project.version}</version>
+                        <type>jar</type>
+                </dependency>
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
-			<artifactId>org.openhab.binding.networkupstools</artifactId>
+			<artifactId>org.openhab.binding.plex</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
