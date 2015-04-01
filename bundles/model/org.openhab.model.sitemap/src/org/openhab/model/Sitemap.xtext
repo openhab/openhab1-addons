@@ -133,7 +133,7 @@ Command returns ecore::EString:
 	INT | ID | STRING;
 
 Number returns ecore::EBigDecimal:
-	INT | FLOAT;
+	'-'? (INT | FLOAT);
 
 XState returns ecore::EString:
 	INT | ID | STRING | FLOAT;
