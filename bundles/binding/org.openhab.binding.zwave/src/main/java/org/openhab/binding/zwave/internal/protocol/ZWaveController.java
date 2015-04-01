@@ -46,6 +46,7 @@ import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSeria
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.ControllerSetDefaultMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetControllerCapabilitiesMessageClass;
@@ -888,6 +889,17 @@ public class ZWaveController {
 	public void requestSoftReset()
 	{
 		SerialMessage msg = new SerialApiSoftResetMessageClass().doRequest();
+		msg.attempts = 1;
+		this.enqueue(msg);
+	}
+
+	/**
+	 * Sends a request to perform a hard reset on the controller.
+	 * This will reset the controller to its default, resetting the network completely
+	 */
+	public void requestHardReset()
+	{
+		SerialMessage msg = new ControllerSetDefaultMessageClass().doRequest();
 		msg.attempts = 1;
 		this.enqueue(msg);
 	}
