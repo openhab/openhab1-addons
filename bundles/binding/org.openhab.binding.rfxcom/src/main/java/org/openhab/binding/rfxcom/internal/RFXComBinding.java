@@ -229,16 +229,16 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 
 		} catch (InterruptedException e) {
 			logger.error(
-					"No acknowledge received from RFXCOM controller, timeout {}ms ",
-					timeout);
+					"No acknowledge received from RFXCOM controller, timeout {}ms due to",
+					timeout, e);
 		} catch (ExecutionException e) {
 			logger.error(
-					"No acknowledge received from RFXCOM controller, timeout {}ms ",
-					timeout);
+					"No acknowledge received from RFXCOM controller, timeout {}ms due to {}",
+					timeout, e);
 		} catch (TimeoutException e) {
 			logger.error(
-					"No acknowledge received from RFXCOM controller, timeout {}ms ",
-					timeout);
+					"No acknowledge received from RFXCOM controller, timeout {}ms due to {}",
+					timeout, e);
 		}
 		
 		return success;

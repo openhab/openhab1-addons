@@ -4,6 +4,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.openhab.binding.rfxcom.internal.messages.RFXComTransmitterMessage;
 
@@ -16,7 +19,8 @@ import org.openhab.binding.rfxcom.internal.messages.RFXComTransmitterMessage;
  */
 class RFXComResponse implements Future<RFXComTransmitterMessage> {
 
-	private final Object mutex = new Object(); // don't use 'this' for synchronization to prevent misuse from outside
+	private final Lock lock = new ReentrantLock();
+	private final Condition condition = lock.newCondition();
 	
 	private RFXComTransmitterMessage result = null;
 	private boolean done = false;
@@ -33,38 +37,54 @@ class RFXComResponse implements Future<RFXComTransmitterMessage> {
 
 	@Override
 	public boolean isDone() {
-		synchronized(mutex) {
+		lock.lock();
+		try {
 			return done;
+		} finally {
+			lock.unlock();
 		}
+		
 	}
 
 	@Override
 	public RFXComTransmitterMessage get() throws InterruptedException,
 			ExecutionException {
-		synchronized(mutex) {
+		lock.lock();
+		try {
 			if(!done) {
-				mutex.wait();
+				condition.await();
 			}
 			return result;
+		} finally {
+			lock.unlock();
 		}
 	}
 
 	@Override
 	public RFXComTransmitterMessage get(long timeout, TimeUnit unit)
 			throws InterruptedException, ExecutionException, TimeoutException {
-		synchronized(mutex) {
+		lock.lock();
+		try {
 			if(!done) {
-				mutex.wait(unit.toMillis(timeout));
+				final boolean timedOut = !condition.await(timeout, unit);
+				if(timedOut) {
+					throw new TimeoutException("waiting timed out");
+				}
 			}
 			return result;
+		} finally {
+			lock.unlock();
 		}
 	}
 	
 	public void set(final RFXComTransmitterMessage result) {
-		synchronized(mutex) {
+		lock.lock();
+		try {
 			this.result = result;
 			this.done = true;
-			mutex.notifyAll();
+			condition.signalAll();
+		} finally {
+			lock.unlock();
 		}
 	}
 }
