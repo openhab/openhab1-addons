@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -659,6 +659,10 @@
 				<Type>0002</Type>
 				<Id>004A</Id>
 			</Reference>
+			<Reference>
+				<Type>0102</Type>
+				<Id>004A</Id>
+			</Reference>
 			<Model>4in1MS</Model>
 			<Label lang="en">4 in One MultiSensor (G5)</Label>
 			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
@@ -986,6 +990,10 @@
 				<Type>2001</Type>
 				<Id>0102</Id>
 			</Reference>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0105</Id>
+			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
 			<Label lang="de">Tür-Fenster-Sensor</Label>
@@ -1217,6 +1225,15 @@
 			<Model>FGSS101</Model>
 			<Label lang="en">Smoke Sensor</Label>
 			<ConfigFile>fibaro/fgss101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0C02</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Model>FGSD002</Model>
+			<Label lang="en">Smoke Detector</Label>
+			<ConfigFile>fibaro/fgsd002.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1555,6 +1572,11 @@
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Model>PSM-02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/psm02.xml</ConfigFile>
+		</Product>
+		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>000C</Id>
@@ -1563,9 +1585,9 @@
 				<Type>0002</Type>
 				<Id>000D</Id>
 			</Reference>
-			<Model>PSM-02</Model>
+			<Model>PST-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
-			<ConfigFile>philio/psm02.xml</ConfigFile>
+			<ConfigFile>philio/pst02.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1994,6 +2016,15 @@
 			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZSMOKE</Model>
+			<Label lang="en">Smoke Alarm</Label>
+			<ConfigFile>brk/zsmoke.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>003b</Id>
@@ -2008,4 +2039,35 @@
 			<ConfigFile>schlage/be468.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+    <Manufacturer>
+        <Id>0184</Id>
+        <Name>Dragon Tech Industrial, Ltd.</Name>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3031</Id>
+            </Reference>
+            <Model>PA-100</Model>
+            <Label lang="en">Plug-in On/Off Switch</Label>
+            <ConfigFile>dragontech/pa100.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3033</Id>
+            </Reference>
+            <Model>WS-100</Model>
+            <Label lang="en">Wall On/Off Switch</Label>
+            <ConfigFile>dragontech/ws100.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3034</Id>
+            </Reference>
+            <Model>WD-100</Model>
+            <Label lang="en">Wall Dimmer Switch</Label>
+            <ConfigFile>dragontech/wd100.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 </Manufacturers>

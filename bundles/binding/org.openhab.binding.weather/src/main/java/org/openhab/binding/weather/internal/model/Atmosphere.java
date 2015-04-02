@@ -15,12 +15,12 @@ import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
 
 /**
- * Common provider model for athmosphere data.
+ * Common provider model for atmosphere data.
  * 
  * @author Gerhard Riegler
  * @since 1.6.0
  */
-public class Athmosphere {
+public class Atmosphere {
 
 	@ProviderMappings({
 			@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.relative_humidity", converter = ConverterType.PERCENT_INTEGER),

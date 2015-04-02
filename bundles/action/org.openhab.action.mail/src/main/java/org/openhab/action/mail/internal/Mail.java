@@ -112,7 +112,10 @@ import org.slf4j.LoggerFactory;
 
 			try {
 				email.setFrom(from);
-				email.addTo(to);
+				String[] toList = to.split(";");
+				for (String toAddress : toList){
+					email.addTo(toAddress);
+				}
 				if(!StringUtils.isEmpty(subject)) email.setSubject(subject);
 				if(!StringUtils.isEmpty(message)) email.setMsg(message);
 				email.send();

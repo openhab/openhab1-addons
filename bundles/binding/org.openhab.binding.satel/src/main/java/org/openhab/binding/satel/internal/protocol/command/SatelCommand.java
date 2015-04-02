@@ -153,9 +153,9 @@ public abstract class SatelCommand {
 			return true;
 		default:
 			if (responseCode >= 0x80 && responseCode <= 0x8f) {
-				errorMsg = String.format("Other error: {}", responseCode);
+				errorMsg = String.format("Other error: %02X", responseCode);
 			} else {
-				errorMsg = String.format("Unknown response code: {}", responseCode);
+				errorMsg = String.format("Unknown response code: %02X", responseCode);
 			}
 		}
 

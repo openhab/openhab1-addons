@@ -9,7 +9,6 @@
 package org.openhab.io.cv.internal.listeners;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +16,6 @@ import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
@@ -38,7 +36,6 @@ import org.openhab.io.cv.internal.resources.beans.ItemStateListBean;
  */
 abstract public class ResourceStateChangeListener {
 
-	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
 	private CometVisuBroadcaster broadcaster;
 
@@ -96,18 +93,7 @@ abstract public class ResourceStateChangeListener {
 		stateChangeListener = new StateChangeListener() {
 			// don't react on update events
             public void stateUpdated(Item item, State state) {
-                    // if the group has a base item and thus might calculate its state
-                    // as a DecimalType or other, we also consider it to be necessary to
-                    // send an update to the client as the label of the item might have changed,
-                    // even though its state is yet the same.
-                    if(item instanceof GroupItem) {
-                            GroupItem gItem = (GroupItem) item;
-                            if(gItem.getBaseItem()!=null) {
-                                    if(!broadcaster.getAtmosphereResources().isEmpty()) {
-                                            broadcaster.broadcast(item);
-                                    }
-                            }
-                    }
+               //updates can be ignored                    
             }
 
 			
@@ -131,11 +117,8 @@ abstract public class ResourceStateChangeListener {
 	}
 
 	protected void unregisterStateChangeListenerOnRelevantItems() {
-		
-		if(relevantItems!=null) {
-			for(String itemName : relevantItems) {
-				unregisterChangeListenerOnItem(stateChangeListener, itemName);
-			}
+		for(String itemName : getRelevantItemNames()) {
+			unregisterChangeListenerOnItem(stateChangeListener, itemName);
 		}
 	}
 

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
+import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceType;
 import org.openhab.binding.dscalarm.internal.model.Panel;
 import org.openhab.binding.dscalarm.internal.model.Partition;
@@ -224,4 +225,56 @@ public class DSCAlarmItemUpdate {
 			}
 		}
 	}
+	
+	/**
+	 * Get DSC Alarm Device Properties
+	 * 
+	 * @param item
+	 * @param config
+	 */
+	public synchronized DSCAlarmDeviceProperties getDeviceProperties(Item item, DSCAlarmBindingConfig config) {
+		logger.debug("updateDeviceProperties(): Item Name: {}", item.getName());
+		
+		DSCAlarmDeviceProperties dscAlarmDeviceProperties = null;
+
+	
+		if( config != null) {
+			DSCAlarmDeviceType dscAlarmDeviceType = config.getDeviceType();
+			int panelId = 1;
+			int partitionId;
+			int zoneId;
+			int keypadId = 1;
+			
+			switch (dscAlarmDeviceType) {
+				case PANEL:
+					Panel panel = panelMap.get(panelId);
+					if(panel != null) {
+						dscAlarmDeviceProperties = panel.panelProperties;
+					}
+					break;					
+				case PARTITION:
+					partitionId = config.getPartitionId();
+					Partition partition = partitionMap.get(partitionId);
+					if(partition != null)
+						dscAlarmDeviceProperties = partition.partitionProperties;
+					break;
+				case ZONE:
+					partitionId = config.getPartitionId();
+					zoneId = config.getZoneId();
+					Zone zone = zoneMap.get(zoneId);
+					if(zone != null)
+						dscAlarmDeviceProperties = zone.zoneProperties;
+					break;
+				case KEYPAD:
+					Keypad keypad = keypadMap.get(keypadId);
+					if(keypad != null)
+						dscAlarmDeviceProperties = keypad.keypadProperties;
+					break;
+				default:
+					break;
+			}
+		}
+
+		return dscAlarmDeviceProperties;
+	}	
 }

@@ -55,6 +55,8 @@
         <deb.section>misc</deb.section>
         <deb.distribution>development</deb.distribution>
         <deb.depends>openhab-runtime</deb.depends>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
     
     <packaging>pom</packaging>
@@ -210,8 +212,8 @@
                     <version>${tycho-version}</version>
                     <configuration>
                         <encoding>UTF-8</encoding>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
                     </configuration>
                 </plugin>
                 <plugin>
