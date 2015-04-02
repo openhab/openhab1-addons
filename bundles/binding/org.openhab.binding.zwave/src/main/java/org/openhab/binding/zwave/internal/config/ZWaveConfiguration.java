@@ -770,6 +770,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
+				record = new OpenHABConfigurationRecord(domain, "LastWake", "Last Wakeup", true);
+				if(wakeupCommandClass.getLastWakeup() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(wakeupCommandClass.getLastWakeup());
+				}
+				records.add(record);
+
 				record = new OpenHABConfigurationRecord(domain, "Target", "Target Node", true);
 				record.value = Integer.toString(wakeupCommandClass.getTargetNodeId());
 				records.add(record);
