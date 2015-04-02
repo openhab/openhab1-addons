@@ -1831,7 +1831,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_IsConnected()
+  public EAttribute getMBrickd_Authkey()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(4);
   }
@@ -1841,7 +1841,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_AutoReconnect()
+  public EAttribute getMBrickd_IsConnected()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(5);
   }
@@ -1851,7 +1851,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_Reconnected()
+  public EAttribute getMBrickd_AutoReconnect()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(6);
   }
@@ -1861,7 +1861,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_Timeout()
+  public EAttribute getMBrickd_Reconnected()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(7);
   }
@@ -1871,9 +1871,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickd_Timeout()
+  {
+    return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getMBrickd_Mdevices()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(8);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -1883,7 +1893,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EReference getMBrickd_Ecosystem()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(9);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(10);
   }
 
   /**
@@ -6079,6 +6089,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickdEClass, MBRICKD__IP_CONNECTION);
     createEAttribute(mBrickdEClass, MBRICKD__HOST);
     createEAttribute(mBrickdEClass, MBRICKD__PORT);
+    createEAttribute(mBrickdEClass, MBRICKD__AUTHKEY);
     createEAttribute(mBrickdEClass, MBRICKD__IS_CONNECTED);
     createEAttribute(mBrickdEClass, MBRICKD__AUTO_RECONNECT);
     createEAttribute(mBrickdEClass, MBRICKD__RECONNECTED);
@@ -7353,6 +7364,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickd_IpConnection(), this.getMIPConnection(), "ipConnection", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Host(), theEcorePackage.getEString(), "host", "localhost", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Port(), theEcorePackage.getEInt(), "port", "4223", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_Authkey(), theEcorePackage.getEString(), "authkey", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_IsConnected(), theEcorePackage.getEBoolean(), "isConnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_AutoReconnect(), theEcorePackage.getEBoolean(), "autoReconnect", "true", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Reconnected(), theEcorePackage.getEBoolean(), "reconnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
