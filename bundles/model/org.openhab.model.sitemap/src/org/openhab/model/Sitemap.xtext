@@ -130,7 +130,7 @@ ColorArray:
 	((item=ID)? (condition=("==" | ">" | "<" | ">=" | "<=" | "!="))? (sign=('-'|'+'))? (state=XState) '=')? (arg=STRING);
 
 Command returns ecore::EString:
-	INT | ID | STRING;
+	Number | ID | STRING;
 
 Number returns ecore::EBigDecimal:
 	'-'? (INT | FLOAT);
