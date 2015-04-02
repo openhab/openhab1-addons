@@ -612,7 +612,7 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     rangePattern = Pattern.compile("(.+)-(.+)");
     tinkerforgeDevice = new BrickletLEDStrip(getUid(), getIpConnection());
     try {
-      tinkerforgeDevice.setFrameDuration(1);
+      tinkerforgeDevice.setFrameDuration(100); // TODO this must be configurable
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {

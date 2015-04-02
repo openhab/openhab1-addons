@@ -569,13 +569,22 @@ public interface ModelPackage extends EPackage
   int MBRICKD__PORT = 3;
 
   /**
+   * The feature id for the '<em><b>Authkey</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKD__AUTHKEY = 4;
+
+  /**
    * The feature id for the '<em><b>Is Connected</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKD__IS_CONNECTED = 4;
+  int MBRICKD__IS_CONNECTED = 5;
 
   /**
    * The feature id for the '<em><b>Auto Reconnect</b></em>' attribute.
@@ -584,7 +593,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__AUTO_RECONNECT = 5;
+  int MBRICKD__AUTO_RECONNECT = 6;
 
   /**
    * The feature id for the '<em><b>Reconnected</b></em>' attribute.
@@ -593,7 +602,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__RECONNECTED = 6;
+  int MBRICKD__RECONNECTED = 7;
 
   /**
    * The feature id for the '<em><b>Timeout</b></em>' attribute.
@@ -602,7 +611,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__TIMEOUT = 7;
+  int MBRICKD__TIMEOUT = 8;
 
   /**
    * The feature id for the '<em><b>Mdevices</b></em>' containment reference list.
@@ -611,7 +620,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__MDEVICES = 8;
+  int MBRICKD__MDEVICES = 9;
 
   /**
    * The feature id for the '<em><b>Ecosystem</b></em>' container reference.
@@ -620,7 +629,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD__ECOSYSTEM = 9;
+  int MBRICKD__ECOSYSTEM = 10;
 
   /**
    * The number of structural features of the '<em>MBrickd</em>' class.
@@ -629,7 +638,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKD_FEATURE_COUNT = 10;
+  int MBRICKD_FEATURE_COUNT = 11;
 
   /**
    * The operation id for the '<em>Connect</em>' operation.
@@ -15561,6 +15570,17 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickd_Port();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Authkey</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey()
+   * @see #getMBrickd()
+   * @generated
+   */
+  EAttribute getMBrickd_Authkey();
+
+  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isIsConnected <em>Is Connected</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -20267,6 +20287,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MBRICKD__PORT = eINSTANCE.getMBrickd_Port();
+
+    /**
+     * The meta object literal for the '<em><b>Authkey</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKD__AUTHKEY = eINSTANCE.getMBrickd_Authkey();
 
     /**
      * The meta object literal for the '<em><b>Is Connected</b></em>' attribute feature.

@@ -33,6 +33,7 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIpConnection <em>Ip Connection</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getHost <em>Host</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getPort <em>Port</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect <em>Auto Reconnect</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}</li>
@@ -153,6 +154,32 @@ public interface MBrickd extends EObject
    * @generated
    */
   void setPort(int value);
+
+  /**
+   * Returns the value of the '<em><b>Authkey</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Authkey</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Authkey</em>' attribute.
+   * @see #setAuthkey(String)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickd_Authkey()
+   * @model unique="false"
+   * @generated
+   */
+  String getAuthkey();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Authkey</em>' attribute.
+   * @see #getAuthkey()
+   * @generated
+   */
+  void setAuthkey(String value);
 
   /**
    * Returns the value of the '<em><b>Is Connected</b></em>' attribute.

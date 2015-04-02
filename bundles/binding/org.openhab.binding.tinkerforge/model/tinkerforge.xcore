@@ -121,6 +121,7 @@ class MBrickd {
 	MIPConnection ipConnection
 	String host = "localhost"
 	int port = "4223"
+	String authkey
 	boolean isConnected = "false"
 	boolean autoReconnect = "true"
 	boolean reconnected = "false"

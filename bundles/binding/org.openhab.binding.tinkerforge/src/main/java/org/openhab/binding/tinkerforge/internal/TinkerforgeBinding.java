@@ -195,13 +195,15 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    * 
    * @param host The host name or ip address of the TinkerForge brickd as String.
    * @param port The port of the TinkerForge brickd as int.
+   * @param authkey
    */
-  private void connectBrickd(String host, int port) {
+  private void connectBrickd(String host, int port, String authkey) {
     MBrickd brickd = tinkerforgeEcosystem.getBrickd(host, port);
     if (brickd == null) {
       brickd = modelFactory.createMBrickd();
       brickd.setHost(host);
       brickd.setPort(port);
+      brickd.setAuthkey(authkey);
       brickd.setEcosystem(tinkerforgeEcosystem);
       tinkerforgeEcosystem.getMbrickds().add(brickd);
       brickd.init();
@@ -748,13 +750,6 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               if (mDevice instanceof MTextActor) {
                 ((MTextActor) mDevice).setText(command.toString());
               }
-            } else if (command instanceof PercentType) {
-              if (mDevice instanceof SetPointActor) {
-                ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
-                    provider.getDeviceOptions(itemName));
-              } else {
-                logger.error("found no percenttype actor");
-              }
             } else if (command instanceof DecimalType) {
               logger.debug("{} found number command", LoggerConstants.COMMAND);
               if (command instanceof HSBType) {
@@ -763,14 +758,20 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                   ((ColorActor) mDevice).setColor((HSBType) command,
                       provider.getDeviceOptions(itemName));
                 }
+              } else if (command instanceof PercentType) {
+                if (mDevice instanceof SetPointActor) {
+                  ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
+                      provider.getDeviceOptions(itemName));
+                } else {
+                  logger.error("found no percenttype actor");
+                }
               } else {
                 if (mDevice instanceof NumberActor) {
                   ((NumberActor) mDevice).setNumber(((DecimalType) command).toBigDecimal());
-                } else if ( mDevice instanceof SetPointActor){
+                } else if (mDevice instanceof SetPointActor) {
                   ((SetPointActor<?>) mDevice).setValue(((DecimalType) command).toBigDecimal(),
                       provider.getDeviceOptions(itemName));
-                }
-                else {
+                } else {
                   logger.error("found no number actor");
                 }
               }
@@ -781,19 +782,17 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                 ((MoveActor) mDevice).move((UpDownType) command,
                     provider.getDeviceOptions(itemName));
               }
-            }
-            else if (command instanceof StopMoveType){
+            } else if (command instanceof StopMoveType) {
               StopMoveType cmd = (StopMoveType) command;
               if (mDevice instanceof MoveActor) {
-                if ( cmd == StopMoveType.STOP){
+                if (cmd == StopMoveType.STOP) {
                   ((MoveActor) mDevice).stop();
                 } else {
                   ((MoveActor) mDevice).moveon(provider.getDeviceOptions(itemName));
                 }
               }
-               logger.debug("{} StopMoveType command {}", itemName, cmd);
-            }
-            else if (command instanceof IncreaseDecreaseType){
+              logger.debug("{} StopMoveType command {}", itemName, cmd);
+            } else if (command instanceof IncreaseDecreaseType) {
               IncreaseDecreaseType cmd = (IncreaseDecreaseType) command;
               if (mDevice instanceof DimmableActor) {
                 ((DimmableActor<?>) mDevice).dimm((IncreaseDecreaseType) command,
@@ -857,15 +856,27 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     String[] cfgHostsEntries = cfgHostsLine.split("\\s");
     for (int i = 0; i < cfgHostsEntries.length; i++) {
       String cfgHostEntry = cfgHostsEntries[i];
-      String[] cfgHostAndPort = cfgHostEntry.split(":", 2);
+      String[] cfgHostAndPort = cfgHostEntry.split(":", 3);
       String host = cfgHostAndPort[0];
       int port;
-      if (cfgHostAndPort.length == 2) {
-        port = Integer.parseInt(cfgHostAndPort[1]);
+      String authkey = null;
+      if (cfgHostAndPort.length > 1) {
+        if (!cfgHostAndPort[1].equals("")) {
+          port = Integer.parseInt(cfgHostAndPort[1]);
+        } else {
+          port = BRICKD_DEFAULT_PORT;
+        }
       } else {
         port = BRICKD_DEFAULT_PORT;
       }
-      connectBrickd(host, port);
+      if (cfgHostAndPort.length == 3) {
+        authkey = cfgHostAndPort[2];
+      }
+      logger.debug("parse brickd config: host {}, port {}, authkey is set {}", host, port,
+          authkey != null
+          ? true
+          : false);
+      connectBrickd(host, port, authkey);
     }
   }
 
