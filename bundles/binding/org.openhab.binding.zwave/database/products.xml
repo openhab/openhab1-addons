@@ -990,6 +990,10 @@
 				<Type>2001</Type>
 				<Id>0102</Id>
 			</Reference>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0105</Id>
+			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
 			<Label lang="de">Tür-Fenster-Sensor</Label>
