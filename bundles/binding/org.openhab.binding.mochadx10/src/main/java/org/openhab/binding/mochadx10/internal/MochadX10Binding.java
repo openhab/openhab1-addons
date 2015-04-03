@@ -236,7 +236,15 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> 
 			initializeBinding();
 		}
 	}
-
+	
+	@Override
+	public void deactivate() {
+		// Close the connection with the Mochad X10 Server
+		disconnectFromMochadX10Server();
+		
+		super.deactivate();
+	}
+	
 	/**
 	 * Initialize the binding. Connection to the Mochad X10 host is established and after that
 	 * the receive thread is started.
