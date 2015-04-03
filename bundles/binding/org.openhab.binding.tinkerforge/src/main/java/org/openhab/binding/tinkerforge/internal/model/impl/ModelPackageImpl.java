@@ -71,6 +71,7 @@ import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
 import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
 import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -775,6 +776,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dualButtonLEDConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ledStripConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -4241,6 +4249,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getLEDStripConfiguration()
+  {
+    return ledStripConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_Chiptype()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_Frameduration()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_Clockfrequency()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMServo()
   {
     return mServoEClass;
@@ -6569,6 +6617,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonLEDConfigurationEClass = createEClass(DUAL_BUTTON_LED_CONFIGURATION);
     createEAttribute(dualButtonLEDConfigurationEClass, DUAL_BUTTON_LED_CONFIGURATION__AUTOTOGGLE);
 
+    ledStripConfigurationEClass = createEClass(LED_STRIP_CONFIGURATION);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__CHIPTYPE);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__FRAMEDURATION);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__CLOCKFREQUENCY);
+
     // Create enums
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
     industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
@@ -6927,6 +6980,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLEDStrip());
+    g1.getETypeArguments().add(g2);
+    mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getLEDStripConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDigitalActor());
@@ -7335,6 +7392,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dimmableConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     buttonConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     dualButtonLEDConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    ledStripConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -7951,6 +8009,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(dualButtonLEDConfigurationEClass, DualButtonLEDConfiguration.class, "DualButtonLEDConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDualButtonLEDConfiguration_Autotoggle(), theEcorePackage.getEBoolean(), "autotoggle", "false", 0, 1, DualButtonLEDConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ledStripConfigurationEClass, LEDStripConfiguration.class, "LEDStripConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLEDStripConfiguration_Chiptype(), theEcorePackage.getEString(), "chiptype", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_Frameduration(), theEcorePackage.getEIntegerObject(), "frameduration", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_Clockfrequency(), theEcorePackage.getELongObject(), "clockfrequency", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");

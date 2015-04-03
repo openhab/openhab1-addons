@@ -381,8 +381,8 @@ class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegm
 
 }
 
-
-class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
+class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>,
+    MTFConfigConsumer<LEDStripConfiguration> {
 	readonly String deviceType = "bricklet_ledstrip"
 }
 
@@ -791,6 +791,12 @@ class ButtonConfiguration extends TFConfig {
 
 class DualButtonLEDConfiguration extends TFConfig {
 	boolean autotoggle = "false"
+}
+
+class LEDStripConfiguration extends TFConfig {
+	String chiptype
+	Integer frameduration
+	Long clockfrequency
 }
 
 enum NoSubIds {

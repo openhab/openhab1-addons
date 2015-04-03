@@ -26,10 +26,10 @@ import com.tinkerforge.BrickletLEDStrip;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLEDStrip()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.ColorActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLEDStrip>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.ColorActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLEDStrip> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration>"
  * @generated
  */
-public interface MBrickletLEDStrip extends ColorActor, MDevice<BrickletLEDStrip>
+public interface MBrickletLEDStrip extends ColorActor, MDevice<BrickletLEDStrip>, MTFConfigConsumer<LEDStripConfiguration>
 {
 
   /**

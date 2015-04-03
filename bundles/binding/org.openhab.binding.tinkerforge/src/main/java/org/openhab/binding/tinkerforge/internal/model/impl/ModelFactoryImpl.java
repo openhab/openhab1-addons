@@ -198,6 +198,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DIMMABLE_CONFIGURATION: return createDimmableConfiguration();
       case ModelPackage.BUTTON_CONFIGURATION: return createButtonConfiguration();
       case ModelPackage.DUAL_BUTTON_LED_CONFIGURATION: return createDualButtonLEDConfiguration();
+      case ModelPackage.LED_STRIP_CONFIGURATION: return createLEDStripConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -1124,6 +1125,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DualButtonLEDConfigurationImpl dualButtonLEDConfiguration = new DualButtonLEDConfigurationImpl();
     return dualButtonLEDConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LEDStripConfiguration createLEDStripConfiguration()
+  {
+    LEDStripConfigurationImpl ledStripConfiguration = new LEDStripConfigurationImpl();
+    return ledStripConfiguration;
   }
 
   /**

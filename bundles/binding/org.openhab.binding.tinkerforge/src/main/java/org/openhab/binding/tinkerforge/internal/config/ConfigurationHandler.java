@@ -37,6 +37,7 @@ import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
@@ -99,7 +100,7 @@ public class ConfigurationHandler {
     bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
     voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
     bricklet_halleffect, bricklet_joystick, joystick_button, bricklet_linear_poti, 
- dualbutton_button, dualbutton_led, lcd_button
+ dualbutton_button, dualbutton_led, lcd_button, bricklet_ledstrip
   }
 
 
@@ -427,6 +428,12 @@ public class ConfigurationHandler {
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LCDButtonSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_ledstrip.name())) {
+      LEDStripConfiguration configuration = modelFactory.createLEDStripConfiguration();
+      OHTFDevice<LEDStripConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
     } else {
       logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
@@ -495,7 +502,7 @@ public class ConfigurationHandler {
             logger.debug("configuring feature: {} for uid {} subid {}", feature.getName(), uid,
                 subid);
             String className = feature.getEType().getInstanceClassName();
-            if (className.equals("int")) {
+            if (className.equals("int") || className.equals("java.lang.Integer")) {
               tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));
             } else if (className.equals("short") || className.equals("java.lang.Short")) {
               tfConfig.eSet(feature, Short.parseShort(deviceConfig.get(property)));

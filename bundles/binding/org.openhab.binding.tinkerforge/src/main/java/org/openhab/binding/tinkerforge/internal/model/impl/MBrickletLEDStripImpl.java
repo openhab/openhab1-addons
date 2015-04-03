@@ -25,10 +25,12 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.core.library.types.HSBType;
 import org.slf4j.Logger;
@@ -60,6 +62,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getBrickd <em>Brickd</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
@@ -261,6 +264,16 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected LEDStripConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -585,6 +598,54 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  public LEDStripConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(LEDStripConfiguration newTfConfig, NotificationChain msgs)
+  {
+    LEDStripConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(LEDStripConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -598,7 +659,7 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(MBrickletLEDStrip.class);
+    logger = LoggerFactory.getLogger(MBrickletLEDStripImpl.class);
   }
 
   /**
@@ -610,9 +671,42 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
   {
     logger.trace("enabling");
     rangePattern = Pattern.compile("(.+)-(.+)");
+    int chipType = BrickletLEDStrip.CHIP_TYPE_WS2801;
+    int frameDuration = 100;
+    Long clockFrequency = null;
     tinkerforgeDevice = new BrickletLEDStrip(getUid(), getIpConnection());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("chiptype"))) {
+        String chipTypeString = tfConfig.getChiptype();
+        if (chipTypeString.equalsIgnoreCase("ws2801")) {
+          chipType = BrickletLEDStrip.CHIP_TYPE_WS2801;
+        } else if (chipTypeString.equalsIgnoreCase("ws2811")) {
+          chipType = BrickletLEDStrip.CHIP_TYPE_WS2811;
+        } else if (chipTypeString.equalsIgnoreCase("ws2812")) {
+          chipType = BrickletLEDStrip.CHIP_TYPE_WS2812;
+        } else {
+          logger.error("Unkown ChipType {}", chipTypeString);
+          // TODO raise configuration error
+        }
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("frameduration"))) {
+        frameDuration = tfConfig.getFrameduration();
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("clockfrequency"))) {
+        clockFrequency = tfConfig.getClockfrequency();
+      }
+    }
+    logger.debug("chipType is {}", chipType);
+    logger.debug("frameDuration is {}", frameDuration);
     try {
-      tinkerforgeDevice.setFrameDuration(100); // TODO this must be configurable
+      tinkerforgeDevice.setChipType(chipType);
+      tinkerforgeDevice.setFrameDuration(frameDuration);
+      if (clockFrequency != null) {
+        logger.debug("clockFrequency is {}", clockFrequency);
+        tinkerforgeDevice.setClockFrequency(clockFrequency);
+      } else {
+        logger.debug("clockFrequency is not set");
+      }
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -757,6 +851,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     {
       case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
         return basicSetBrickd(null, msgs);
+      case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -809,6 +905,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
         return getName();
       case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
         return getBrickd();
+      case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
+        return getTfConfig();
       case ModelPackage.MBRICKLET_LED_STRIP__DEVICE_TYPE:
         return getDeviceType();
     }
@@ -858,6 +956,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
+      case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
+        setTfConfig((LEDStripConfiguration)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -905,6 +1006,9 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
         setBrickd((MBrickd)null);
         return;
+      case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
+        setTfConfig((LEDStripConfiguration)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -941,6 +1045,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case ModelPackage.MBRICKLET_LED_STRIP__BRICKD:
         return getBrickd() != null;
+      case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG:
+        return tfConfig != null;
       case ModelPackage.MBRICKLET_LED_STRIP__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
@@ -980,6 +1086,14 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -1016,6 +1130,14 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_LED_STRIP__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1038,6 +1160,13 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
       }
     }
     if (baseClass == MDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
     {
       switch (baseOperationID)
       {

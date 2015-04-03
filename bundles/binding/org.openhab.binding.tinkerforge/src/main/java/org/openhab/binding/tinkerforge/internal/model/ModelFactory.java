@@ -539,6 +539,15 @@ public interface ModelFactory extends EFactory
   DualButtonLEDConfiguration createDualButtonLEDConfiguration();
 
   /**
+   * Returns a new object of class '<em>LED Strip Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>LED Strip Configuration</em>'.
+   * @generated
+   */
+  LEDStripConfiguration createLEDStripConfiguration();
+
+  /**
    * Returns a new object of class '<em>MServo</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
