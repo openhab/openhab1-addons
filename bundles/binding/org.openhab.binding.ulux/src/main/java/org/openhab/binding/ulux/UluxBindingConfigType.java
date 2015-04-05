@@ -18,6 +18,8 @@ public enum UluxBindingConfigType {
 
 	DISPLAY(),
 
+	LUX(),
+
 	PAGE_INDEX(),
 
 	PROXIMITY(),

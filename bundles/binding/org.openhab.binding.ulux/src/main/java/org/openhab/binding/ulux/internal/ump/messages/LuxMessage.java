@@ -29,7 +29,8 @@ public class LuxMessage extends AbstractUluxMessage {
 		super((byte) 0x08, UluxMessageId.Lux, actorId, data);
 
 		this.lux = data.getShort();
-		this.valid = data.get() == 0x01;
+		this.valid = data.get() == (byte) 0x01;
+		data.get(); // reserved
 	}
 
 	@Override

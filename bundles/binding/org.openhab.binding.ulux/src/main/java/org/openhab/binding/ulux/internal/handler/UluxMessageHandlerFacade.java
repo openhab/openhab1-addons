@@ -13,6 +13,7 @@ import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Control;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.EditValue;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Event;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.IdList;
+import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Lux;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.PageCount;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.PageIndex;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.State;
@@ -42,6 +43,7 @@ public class UluxMessageHandlerFacade {
 		messageHandlers.put(EditValue, new EditValueMessageHandler());
 		messageHandlers.put(Event, new EventMessageHandler());
 		messageHandlers.put(IdList, new IdListMessageHandler());
+		messageHandlers.put(Lux, new LuxMessageHandler());
 		messageHandlers.put(PageCount, new PageCountMessageHandler());
 		messageHandlers.put(PageIndex, new PageIndexMessageHandler());
 		messageHandlers.put(State, new StateMessageHandler());
