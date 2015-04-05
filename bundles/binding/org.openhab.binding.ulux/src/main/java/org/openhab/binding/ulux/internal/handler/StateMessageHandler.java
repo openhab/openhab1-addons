@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_AMBIENT_LIGHT;
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_DISPLAY;
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_PROXIMITY;
+import static org.openhab.binding.ulux.UluxBindingConfigType.AMBIENT_LIGHT;
+import static org.openhab.binding.ulux.UluxBindingConfigType.DISPLAY;
+import static org.openhab.binding.ulux.UluxBindingConfigType.PROXIMITY;
 
 import java.util.Map.Entry;
 
@@ -38,21 +38,21 @@ final class StateMessageHandler extends AbstractMessageHandler<StateMessage> {
 		}
 
 		// display state
-		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(TYPE_DISPLAY).entrySet()) {
+		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(DISPLAY).entrySet()) {
 			final OnOffType newState = message.isDisplayActive() ? OnOffType.ON : OnOffType.OFF;
 
 			this.eventPublisher.postUpdate(entry.getKey(), newState);
 		}
 
 		// proximity sensor
-		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(TYPE_PROXIMITY).entrySet()) {
+		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(PROXIMITY).entrySet()) {
 			final OnOffType newState = message.isProximityDetected() ? OnOffType.ON : OnOffType.OFF;
 
 			this.eventPublisher.postUpdate(entry.getKey(), newState);
 		}
 
 		// ambient light sensor
-		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(TYPE_AMBIENT_LIGHT).entrySet()) {
+		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(AMBIENT_LIGHT).entrySet()) {
 			final OnOffType newState = message.isAmbientLightBright() ? OnOffType.ON : OnOffType.OFF;
 
 			this.eventPublisher.postUpdate(entry.getKey(), newState);

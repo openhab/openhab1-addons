@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.ulux.UluxBindingConfig;
+import org.openhab.binding.ulux.UluxBindingConfigType;
 import org.openhab.binding.ulux.UluxBindingProvider;
 import org.openhab.binding.ulux.internal.UluxException;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
@@ -116,7 +117,7 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 		return configs;
 	}
 
-	protected final Map<String, UluxBindingConfig> getBindingConfigs(String message) {
+	protected final Map<String, UluxBindingConfig> getBindingConfigs(UluxBindingConfigType type) {
 		final Map<String, UluxBindingConfig> configs = new HashMap<String, UluxBindingConfig>();
 
 		// TODO provide better methods in UluxBindingProvider
@@ -124,7 +125,7 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 			for (final String itemName : provider.getItemNames()) {
 				final UluxBindingConfig binding = provider.getBinding(itemName);
 
-				if (StringUtils.equals(binding.getMessage(), message)) {
+				if (binding.getType() == type) {
 					configs.put(itemName, binding);
 				}
 			}

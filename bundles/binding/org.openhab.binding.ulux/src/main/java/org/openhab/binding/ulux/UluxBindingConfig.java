@@ -18,21 +18,9 @@ import org.openhab.core.binding.BindingConfig;
  */
 public class UluxBindingConfig implements BindingConfig {
 
-	public static final String TYPE_AMBIENT_LIGHT = "AmbientLight";
-
-	public static final String TYPE_DISPLAY = "Display";
-
-	public static final String TYPE_PAGE_INDEX = "PageIndex";
-
-	public static final String TYPE_PROXIMITY = "Proximity";
-
-	public static final String MESSAGE_AUDIO_PLAY_LOCAL = "AudioPlayLocal";
-
-	public static final String MESSAGE_EDIT_VALUE = "EditValue";
-
 	private short actorId;
 	private short switchId;
-	private String message;
+	private UluxBindingConfigType type;
 
 	public short getActorId() {
 		return this.actorId;
@@ -42,11 +30,8 @@ public class UluxBindingConfig implements BindingConfig {
 		return this.switchId;
 	}
 
-	/**
-	 * TODO UluxMessageId or a dedicated enum instead of String
-	 */
-	public String getMessage() {
-		return this.message;
+	public UluxBindingConfigType getType() {
+		return this.type;
 	}
 
 	public void setActorId(short actorId) {
@@ -57,8 +42,8 @@ public class UluxBindingConfig implements BindingConfig {
 		this.switchId = switchId;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setType(UluxBindingConfigType type) {
+		this.type = type;
 	}
 
 	@Override
@@ -66,7 +51,7 @@ public class UluxBindingConfig implements BindingConfig {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		builder.append("switchId", this.switchId);
 		builder.append("actorId", this.actorId);
-		builder.append("message", this.message);
+		builder.append("type", this.type);
 
 		return builder.toString();
 	}

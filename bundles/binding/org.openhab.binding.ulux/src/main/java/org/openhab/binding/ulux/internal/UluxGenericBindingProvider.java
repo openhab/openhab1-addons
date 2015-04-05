@@ -8,7 +8,11 @@
  */
 package org.openhab.binding.ulux.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openhab.binding.ulux.UluxBindingConfig;
+import org.openhab.binding.ulux.UluxBindingConfigType;
 import org.openhab.binding.ulux.UluxBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -23,6 +27,17 @@ import org.slf4j.LoggerFactory;
 public class UluxGenericBindingProvider extends AbstractGenericBindingProvider implements UluxBindingProvider {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UluxGenericBindingProvider.class);
+
+	private static final Map<String, UluxBindingConfigType> TYPES = new HashMap<String, UluxBindingConfigType>();
+
+	static {
+		TYPES.put("AmbientLight", UluxBindingConfigType.AMBIENT_LIGHT);
+		TYPES.put("Display", UluxBindingConfigType.DISPLAY);
+		TYPES.put("PageIndex", UluxBindingConfigType.PAGE_INDEX);
+		TYPES.put("Proximity", UluxBindingConfigType.PROXIMITY);
+		TYPES.put("AudioPlayLocal", UluxBindingConfigType.AUDIO_PLAY_LOCAL);
+		TYPES.put("EditValue", UluxBindingConfigType.EDIT_VALUE);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -69,9 +84,12 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 		config.setActorId(Short.valueOf(configParts[1]));
 
 		if (configParts.length > 2) {
-			config.setMessage(configParts[2]);
+			if (!TYPES.containsKey(configParts[2])) {
+				throw new BindingConfigParseException("Unknown type: " + configParts[2]);
+			}
+			config.setType(TYPES.get(configParts[2]));
 		} else {
-			config.setMessage(UluxBindingConfig.MESSAGE_EDIT_VALUE);
+			config.setType(UluxBindingConfigType.EDIT_VALUE);
 		}
 
 		LOG.debug("Adding binding: {}", config);

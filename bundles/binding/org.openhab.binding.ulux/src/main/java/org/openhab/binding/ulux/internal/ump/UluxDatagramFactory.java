@@ -8,12 +8,6 @@
  */
 package org.openhab.binding.ulux.internal.ump;
 
-import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
-import static org.openhab.binding.ulux.UluxBindingConfig.MESSAGE_AUDIO_PLAY_LOCAL;
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_AMBIENT_LIGHT;
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_DISPLAY;
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_PAGE_INDEX;
-import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_PROXIMITY;
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
 import java.net.InetAddress;
@@ -110,11 +104,12 @@ public class UluxDatagramFactory {
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, DecimalType type) {
-		if (equalsIgnoreCase(config.getMessage(), TYPE_PAGE_INDEX)) {
+		switch (config.getType()) {
+		case PAGE_INDEX:
 			return messageFactory.createPageIndexMessage(type);
-		} else if (equalsIgnoreCase(config.getMessage(), MESSAGE_AUDIO_PLAY_LOCAL)) {
+		case AUDIO_PLAY_LOCAL:
 			return messageFactory.createAudioPlayLocalMessage(type);
-		} else {
+		default:
 			return messageFactory.createEditValueMessage(config, type);
 		}
 	}
@@ -124,13 +119,13 @@ public class UluxDatagramFactory {
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, OnOffType type) {
-		if (equalsIgnoreCase(config.getMessage(), TYPE_AMBIENT_LIGHT)) {
+		switch (config.getType()) {
+		case AMBIENT_LIGHT:
+		case PROXIMITY:
 			return null; // ignore
-		} else if (equalsIgnoreCase(config.getMessage(), TYPE_PROXIMITY)) {
-			return null; // ignore
-		} else if (equalsIgnoreCase(config.getMessage(), TYPE_DISPLAY)) {
+		case DISPLAY:
 			return messageFactory.createActivateMessage(type);
-		} else {
+		default:
 			return messageFactory.createEditValueMessage(config, type);
 		}
 	}
