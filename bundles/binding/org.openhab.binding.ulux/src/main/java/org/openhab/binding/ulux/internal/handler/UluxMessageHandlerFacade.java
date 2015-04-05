@@ -26,6 +26,7 @@ import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.binding.ulux.internal.ump.UluxMessageId;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.ItemRegistry;
 
 /**
  * @author Andreas Brenk
@@ -53,6 +54,12 @@ public class UluxMessageHandlerFacade {
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		for (AbstractMessageHandler<?> messageHandler : messageHandlers.values()) {
 			messageHandler.setEventPublisher(eventPublisher);
+		}
+	}
+
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		for (AbstractMessageHandler<?> messageHandler : messageHandlers.values()) {
+			messageHandler.setItemRegistry(itemRegistry);
 		}
 	}
 

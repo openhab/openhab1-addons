@@ -1,6 +1,7 @@
 package org.openhab.binding.ulux.internal.handler;
 
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.net.InetAddress;
@@ -16,7 +17,7 @@ import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
-import org.openhab.model.item.binding.BindingConfigParseException;
+import org.openhab.core.items.ItemRegistry;
 
 // TODO rework class hierarchy of tests
 public abstract class AbstractHandlerTest<T extends UluxMessage> extends AbstractMessageTest {
@@ -27,6 +28,9 @@ public abstract class AbstractHandlerTest<T extends UluxMessage> extends Abstrac
 
 	@Mock
 	protected EventPublisher eventPublisher;
+
+	@Mock
+	protected ItemRegistry itemRegistry;
 
 	/**
 	 * Set by {@link #handleMessage(String)}.
@@ -41,6 +45,7 @@ public abstract class AbstractHandlerTest<T extends UluxMessage> extends Abstrac
 
 		handler = createMessageHandler();
 		handler.setEventPublisher(eventPublisher);
+		handler.setItemRegistry(itemRegistry);
 		handler.setProviders(Collections.<UluxBindingProvider> singleton(bindingProvider));
 
 		response = null;
@@ -53,10 +58,12 @@ public abstract class AbstractHandlerTest<T extends UluxMessage> extends Abstrac
 		verifyNoMoreInteractions(eventPublisher);
 	}
 
-	protected final void addBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
+	protected final void addBindingConfig(Item item, String bindingConfig) throws Exception {
 		final String context = getClass().getSimpleName();
 
 		this.bindingProvider.processBindingConfiguration(context, item, bindingConfig);
+
+		when(itemRegistry.getItem(item.getName())).thenReturn(item);
 	}
 
 	protected final void handleMessage(String data) throws Exception {

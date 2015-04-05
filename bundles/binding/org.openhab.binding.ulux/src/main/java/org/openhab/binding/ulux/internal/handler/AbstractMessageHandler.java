@@ -8,17 +8,21 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
+import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingConfigType;
 import org.openhab.binding.ulux.UluxBindingProvider;
 import org.openhab.binding.ulux.internal.UluxException;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
@@ -38,66 +42,86 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 
 	protected EventPublisher eventPublisher;
 
+	private ItemRegistry itemRegistry;
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
+	}
+
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
 	}
 
 	public void setProviders(Collection<UluxBindingProvider> providers) {
 		this.providers = providers;
 	}
 
-	protected final Command createCommand(final String type, final short value) {
-		final Command command;
+	/**
+	 * TODO RollershutterItem handles UpDownType as well as StopMoveType and PercentType...
+	 * 
+	 * @return <code>null</code> if command cannot be created
+	 */
+	protected final Command createCommand(final String itemName, final short value) {
+		final Item item;
 
-		if (StringUtils.equalsIgnoreCase(type, "OnOffType")) {
-			if (value == 0) {
-				command = OnOffType.OFF;
-			} else if (value == 1) {
-				command = OnOffType.ON;
-			} else {
-				throw new UluxException("Unsupported value for OnOffType: " + value);
-			}
-		} else if (StringUtils.equalsIgnoreCase(type, "IncreaseDecreaseType")) {
-			if (value == 0) {
-				command = IncreaseDecreaseType.DECREASE;
-			} else if (value == 1) {
-				command = IncreaseDecreaseType.INCREASE;
-			} else {
-				throw new UluxException("Unsupported value for IncreaseDecreaseType: " + value);
-			}
-		} else if (StringUtils.equalsIgnoreCase(type, "OpenClosedType")) {
-			if (value == 0) {
-				command = OpenClosedType.CLOSED;
-			} else if (value == 1) {
-				command = OpenClosedType.OPEN;
-			} else {
-				throw new UluxException("Unsupported value for OpenClosedType: " + value);
-			}
-		} else if (StringUtils.equalsIgnoreCase(type, "StopMoveType")) {
-			if (value == 0) {
-				command = StopMoveType.STOP;
-			} else if (value == 1) {
-				command = StopMoveType.MOVE;
-			} else {
-				throw new UluxException("Unsupported value for StopMoveType: " + value);
-			}
-		} else if (StringUtils.equalsIgnoreCase(type, "UpDownType")) {
-			if (value == 0) {
-				command = UpDownType.DOWN;
-			} else if (value == 1) {
-				command = UpDownType.UP;
-			} else {
-				throw new UluxException("Unsupported value for UpDownType: " + value);
-			}
-		} else if (StringUtils.equalsIgnoreCase(type, "PercentType")) {
-			command = new PercentType(value);
-		} else if (StringUtils.equalsIgnoreCase(type, "DecimalType")) {
-			command = new DecimalType(value);
-		} else {
-			command = new DecimalType(value);
+		try {
+			item = itemRegistry.getItem(itemName);
+		} catch (ItemNotFoundException e) {
+			LOG.debug("Tried to create command for non-existing item: {}", e.getMessage());
+			return null;
 		}
 
-		return command;
+		for (Class<? extends Command> type : item.getAcceptedCommandTypes()) {
+			if (OnOffType.class.isAssignableFrom(type)) {
+				if (value == 0) {
+					return OnOffType.OFF;
+				} else if (value == 1) {
+					return OnOffType.ON;
+				} else {
+					throw new UluxException("Unsupported value for OnOffType: " + value);
+				}
+			} else if (IncreaseDecreaseType.class.isAssignableFrom(type)) {
+				if (value == 0) {
+					return IncreaseDecreaseType.DECREASE;
+				} else if (value == 1) {
+					return IncreaseDecreaseType.INCREASE;
+				} else {
+					throw new UluxException("Unsupported value for IncreaseDecreaseType: " + value);
+				}
+			} else if (OpenClosedType.class.isAssignableFrom(type)) {
+				if (value == 0) {
+					return OpenClosedType.CLOSED;
+				} else if (value == 1) {
+					return OpenClosedType.OPEN;
+				} else {
+					throw new UluxException("Unsupported value for OpenClosedType: " + value);
+				}
+			} else if (StopMoveType.class.isAssignableFrom(type)) {
+				if (value == 0) {
+					return StopMoveType.STOP;
+				} else if (value == 1) {
+					return StopMoveType.MOVE;
+				} else {
+					throw new UluxException("Unsupported value for StopMoveType: " + value);
+				}
+			} else if (UpDownType.class.isAssignableFrom(type)) {
+				if (value == 0) {
+					return UpDownType.DOWN;
+				} else if (value == 1) {
+					return UpDownType.UP;
+				} else {
+					throw new UluxException("Unsupported value for UpDownType: " + value);
+				}
+			} else if (PercentType.class.isAssignableFrom(type)) {
+				return new PercentType(value);
+			} else if (DecimalType.class.isAssignableFrom(type)) {
+				return new DecimalType(value);
+			} else {
+				return new DecimalType(value);
+			}
+		}
+
+		return null;
 	}
 
 	protected final Map<String, UluxBindingConfig> getBindingConfigs(short actorId) {

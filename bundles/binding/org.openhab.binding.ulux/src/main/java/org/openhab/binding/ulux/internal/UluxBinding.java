@@ -28,6 +28,7 @@ import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.binding.ulux.internal.ump.UluxMessageParser;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -75,11 +76,19 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 		this.messageHandler.setEventPublisher(eventPublisher);
 	}
 
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.messageHandler.setItemRegistry(itemRegistry);
+	}
+
 	@Override
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		super.unsetEventPublisher(eventPublisher);
 
 		this.messageHandler.setEventPublisher(null);
+	}
+
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.messageHandler.setItemRegistry(null);
 	}
 
 	@Override

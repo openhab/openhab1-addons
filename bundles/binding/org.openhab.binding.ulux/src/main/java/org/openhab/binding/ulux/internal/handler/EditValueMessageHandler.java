@@ -29,15 +29,11 @@ final class EditValueMessageHandler extends AbstractMessageHandler<EditValueMess
 		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(actorId).entrySet()) {
 			final String itemName = entry.getKey();
 
-			// TODO
-			final Command command;
-			if (value > 1) {
-				command = createCommand("DecimalType", value);
-			} else {
-				command = createCommand("OnOffType", value);
-			}
+			final Command command = createCommand(itemName, value);
 
-			this.eventPublisher.postCommand(itemName, command);
+			if (command != null) {
+				this.eventPublisher.postCommand(itemName, command);
+			}
 		}
 	}
 
