@@ -9,16 +9,16 @@
 package org.openhab.binding.caldav_personal.internal;
 
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.caldav_personal.CalDavBindingProvider;
 import org.openhab.binding.caldav_personal.internal.CalDavConfig.Type;
 
@@ -48,7 +48,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 
 	private static final String PARAM_HOME_IDENTIFIERS = "homeIdentifiers";
     private static final String PARAM_USED_CALENDARS = "usedCalendars";
-	private static final DateFormat DF = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+	private static final DateTimeFormatter DF = DateTimeFormat.shortDateTime();
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(CalDavBinding.class);
@@ -254,21 +254,21 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			case DESCRIPTION: command = new StringType(event.getContent()); break;
 			case PLACE: command = new StringType(event.getLocation()); break;
 			case START: 
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(event.getStart());
-				command = new DateTimeType(cal); 
+//				Calendar cal = Calendar.getInstance();
+//				cal.setTime(event.getStart());
+				command = new DateTimeType(event.getStart().toCalendar(Locale.getDefault())); 
 				break;
 			case END: 
-				Calendar cal2 = Calendar.getInstance();
-				cal2.setTime(event.getEnd());
-				command = new DateTimeType(cal2); 
+//				Calendar cal2 = Calendar.getInstance();
+//				cal2.setTime(event.getEnd());
+				command = new DateTimeType(event.getEnd().toCalendar(Locale.getDefault())); 
 				break;
 			case TIME:
-				String startEnd = DF.format(event.getStart()) + " - " + DF.format(event.getEnd());
+				String startEnd = DF.print(event.getStart()) + " - " + DF.print(event.getEnd());
 				command = new StringType(startEnd);
 				break;
 			case NAMEANDTIME:
-				String startEnd2 = DF.format(event.getStart()) + " - " + DF.format(event.getEnd());
+				String startEnd2 = DF.print(event.getStart()) + " - " + DF.print(event.getEnd());
 				String name = event.getName();
 				command = new StringType(name + " @ " + startEnd2);
 			}
@@ -290,14 +290,13 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
 	private List<CalDavEvent> getActiveEvents(String calendar) {
 		List<CalDavEvent> subList = new ArrayList<CalDavEvent>();
-		Date now = new Date();
 		for (CalDavEvent event : this.eventMap.values()) {
 			if (!event.getCalendarId().equals(calendar)) {
 				continue;
 			}
 			
-			if (!(event.getStart().before(now)
-					&& event.getEnd().after(now))) {
+			if (!(event.getStart().isBeforeNow()
+					&& event.getEnd().isAfterNow())) {
 				continue;
 			}
 			
@@ -309,13 +308,12 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
 	private List<CalDavEvent> getUpcomingEvents(String calendar) {
 		List<CalDavEvent> subList = new ArrayList<CalDavEvent>();
-		Date now = new Date();
 		for (CalDavEvent event : this.eventMap.values()) {
 			if (!event.getCalendarId().equals(calendar)) {
 				continue;
 			}
 			
-			if (event.getStart().before(now)) {
+			if (event.getStart().isBeforeNow()) {
 				continue;
 			}
 			

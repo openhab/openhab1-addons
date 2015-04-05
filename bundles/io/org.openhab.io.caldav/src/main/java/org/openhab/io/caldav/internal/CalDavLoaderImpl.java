@@ -16,6 +16,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -38,9 +39,6 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
-import net.fortuna.ical4j.model.TimeZone;
-import net.fortuna.ical4j.model.TimeZoneRegistry;
-import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -50,6 +48,7 @@ import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.joda.time.DateTimeZone;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
@@ -79,6 +78,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private static final String PROP_USERNAME = "username";
 	private static final String PROP_TIMEZONE = "timeZone";
 	private static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
+	private DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CalDavLoaderImpl.class);
@@ -91,7 +91,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private List<EventNotifier> eventListenerList = new ArrayList<EventNotifier>();
 	
 	
-	private int tzOffsetMillis;
+//	private int tzOffsetMillis;
 
 	@Override
 	public void updated(Dictionary<String, ?> config)
@@ -104,15 +104,16 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				if (key.equals("service.pid")) {
 					continue;
 				} else if (key.equals(PROP_TIMEZONE)) {
-					TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-					TimeZone timezone = registry.getTimeZone(config.get(key) + "");
-					if (timezone == null) {
+					defaultTimeZone = DateTimeZone.forID(config.get(key) + "");
+					if (defaultTimeZone == null) {
 						throw new ConfigurationException(PROP_TIMEZONE, "invalid timezone value: " + config.get(key));
 					}
-					tzOffsetMillis = timezone.getRawOffset();
 					continue;
 				}
 				String[] keys = key.split(":");
+				if (keys.length != 2) {
+					throw new ConfigurationException(key, "unknown identifier");
+				}
 				String id = keys[0];
 				String paramKey = keys[1];
 				CalDavConfig calDavConfig = configMap.get(id);
@@ -190,7 +191,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		ConcurrentHashMap<String, CalDavEvent> eventMap = this.eventCache.get(event.getCalendarId());
 		
 		if (eventMap.containsKey(event.getId())) {
-			if (event.getLastChanged().after(eventMap.get(event.getId()).getLastChanged())) {
+			if (event.getLastChanged().isAfter(eventMap.get(event.getId()).getLastChanged())) {
 				LOG.debug("event is already in event map and newer -> delete the old one, reschedule timer");
 				// cancel old jobs
 				if (timerBeginMap.contains(event.getId())) {
@@ -259,8 +260,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			}
 		};
 		timerBeginMap.put(event.getId(), timerTaskBegin);
-		new Timer().schedule(timerTaskBegin, event.getStart());
-		LOG.debug("begin timer scheduled for event '{}' @ {}", event.getShortName(), event.getStart());
+		new Timer().schedule(timerTaskBegin, event.getStart().toDate());
+		LOG.debug("begin timer scheduled for event '{}' @ {}", event.getShortName(), event.getStart().toDate());
 		
 		TimerTask timerTaskEnd = new TimerTask() {
 			@Override
@@ -276,8 +277,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			}
 		};
 		timerEndMap.put(event.getId(), timerTaskEnd);
-		new Timer().schedule(timerTaskEnd, event.getEnd());
-		LOG.debug("end timer scheduled for event '{}' @ {}", event.getShortName(), event.getEnd());
+		new Timer().schedule(timerTaskEnd, event.getEnd().toDate());
+		LOG.debug("end timer scheduled for event '{}' @ {}", event.getShortName(), event.getEnd().toDate());
 	}
 
 	private synchronized List<CalDavEvent> loadEvents(CalDavConfig config, List<String> currentLoad)
@@ -353,21 +354,23 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							continue;
 						}
 						
-						TimeZone tzStart = vEvent.getStartDate().getTimeZone();
-						TimeZone tzEnd = vEvent.getEndDate().getTimeZone();
+						DateTimeZone dateTimeZone = 
+								p.getStart().getTimeZone() == null ? 
+								DateTimeZone.UTC : 
+								DateTimeZone.forID(p.getStart().getTimeZone().getID());
 						
 						CalDavEvent event = new CalDavEvent(vEvent.getSummary()
 								.getValue(), 
 								vEvent.getUid().getValue(),
 								config.getKey(), 
-								new Date(p.getRangeStart().getTime() - (tzStart == null ? tzOffsetMillis : 0)), 
-								new Date(p.getRangeEnd().getTime() - (tzEnd == null ? tzOffsetMillis : 0))
+								new org.joda.time.DateTime(p.getRangeStart(), dateTimeZone), 
+								new org.joda.time.DateTime(p.getRangeEnd(), dateTimeZone)
 						);
 						if (vEvent.getLastModified() != null) {
-							event.setLastChanged(vEvent.getLastModified().getDate());
+							event.setLastChanged(new org.joda.time.DateTime(vEvent.getLastModified().getDate()));
 						} else {
 							// set dummy date
-							event.setLastChanged(new Date(0));
+							event.setLastChanged(new org.joda.time.DateTime(0));
 						}
 						if (vEvent.getLocation() != null) {
 							event.setLocation(vEvent.getLocation().getValue());

@@ -8,8 +8,11 @@
  */
 package org.openhab.io.caldav;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * A calendar event
@@ -18,12 +21,12 @@ import java.util.Date;
  * @since 1.7.0
  */
 public class CalDavEvent {
-	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy/HH:mm");
+	private static final DateTimeFormatter SDF = DateTimeFormat.forPattern("dd.MM.yyyy/HH:mm");
 	
 	private String name;
-	private Date start;
-	private Date end;
-	private Date lastChanged;
+	private DateTime start;
+	private DateTime end;
+	private DateTime lastChanged;
 	private String id;
 	private String calendarId;
 	private String location;
@@ -33,7 +36,7 @@ public class CalDavEvent {
 		super();
 	}
 	
-	public CalDavEvent(String name, String id, String calendarId, Date start, Date end) {
+	public CalDavEvent(String name, String id, String calendarId, DateTime start, DateTime end) {
 		super();
 		
 		this.name = name;
@@ -51,19 +54,19 @@ public class CalDavEvent {
 		this.name = name;
 	}
 	
-	public Date getStart() {
+	public DateTime getStart() {
 		return start;
 	}
 	
-	public void setStart(Date start) {
+	public void setStart(DateTime start) {
 		this.start = start;
 	}
 	
-	public Date getEnd() {
+	public DateTime getEnd() {
 		return end;
 	}
 	
-	public void setEnd(Date end) {
+	public void setEnd(DateTime end) {
 		this.end = end;
 	}
 
@@ -83,11 +86,11 @@ public class CalDavEvent {
 		this.calendarId = calendarId;
 	}
 
-	public Date getLastChanged() {
+	public DateTime getLastChanged() {
 		return lastChanged;
 	}
 
-	public void setLastChanged(Date lastChanged) {
+	public void setLastChanged(DateTime lastChanged) {
 		this.lastChanged = lastChanged;
 	}
 	
@@ -113,9 +116,9 @@ public class CalDavEvent {
 		sb.append("(");
 		sb.append(this.name);
 		sb.append("@");
-		sb.append(SDF.format(this.start));
+		sb.append(SDF.print(this.start));
 		sb.append("-");
-		sb.append(SDF.format(this.end));
+		sb.append(SDF.print(this.end));
 		sb.append(")");
 		return sb.toString();
 	}

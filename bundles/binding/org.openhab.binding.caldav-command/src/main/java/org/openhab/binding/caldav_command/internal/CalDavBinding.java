@@ -10,15 +10,15 @@ package org.openhab.binding.caldav_command.internal;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.joda.time.DateTime;
 import org.openhab.binding.caldav_command.CalDavBindingProvider;
 
 import org.openhab.core.binding.AbstractBinding;
@@ -328,7 +328,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	private void addToEventMap(CalDavNextEventConfig config, String itemName, String command, 
-			Date changeDate, CalDavType type, String eventId, String scope) {
+			DateTime changeDate, CalDavType type, String eventId, String scope) {
 		if (!this.itemNextEventMap.containsKey(config)) {
 			logger.trace("creating initial list for config: {}", config.getItemName());
 			this.itemNextEventMap.put(config, new ArrayList<NextEventContainer>());
@@ -389,9 +389,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			logger.debug("setting value for '{}' to: {}", itemName, c);
 			eventPublisher.postCommand(itemName, c);
 		} else if (type == CalDavType.DATE) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(container.getChangeDate());
-			State c = new DateTimeType(cal);
+//			Calendar cal = Calendar.getInstance();
+//			cal.setTime(container.getChangeDate());
+			State c = new DateTimeType(container.getChangeDate().toCalendar(Locale.getDefault()));
 			logger.debug("setting value for '{}' to: {}", itemName, c);
 			eventPublisher.postUpdate(itemName, c);
 		} else {
@@ -401,7 +401,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
 	class NextEventContainer {
 		private String command;
-		private Date changeDate;
+		private DateTime changeDate;
 		private CalDavType type;
 		private String eventId;
 		private String scope;
@@ -415,11 +415,11 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 
 
-		public Date getChangeDate() {
+		public DateTime getChangeDate() {
 			return changeDate;
 		}
 
-		public void setChangeDate(Date changeDate) {
+		public void setChangeDate(DateTime changeDate) {
 			this.changeDate = changeDate;
 		}
 		
