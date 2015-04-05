@@ -5,6 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="lib" path="/org.openhab.io.transport.serial/lib/nrjavaserial-3.9.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
