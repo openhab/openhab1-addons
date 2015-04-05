@@ -44,11 +44,22 @@ Send the index of the audio file (starting at 1) to a number item with message t
 
 `Number Ulux_Audio   "Audio"      <none> { ulux="1:0:AudioPlayLocal"}`
 
-### Switching the display on and off
+### Display state and switching the display on and off
 
-Send ON or OFF to a switch item with the message type "Activate".
+Send ON or OFF to a switch item of type "Display". It's probably best to configure the
+item with auto-update off as the switch immediately sends back its state.
 
-`Switch Ulux_Display "Display"    <none> { ulux="1:0:Activate" }`
+`Switch Ulux_Display "Display"    <none> { ulux="1:0:Display", autoupdate="false" }`
+
+### Proximity sensor
+
+`Switch Ulux_Proximity  "Proximity"  <none> { ulux="1:0:Proximity" }`
+
+### Ambient light sensor
+
+ON if it's bright, OFF if it's dark.
+
+`Switch Ulux_AmbientLight  "Ambient light"  <none> { ulux="1:0:AmbientLight" }`
 
 ### The page displayed on the switch
 

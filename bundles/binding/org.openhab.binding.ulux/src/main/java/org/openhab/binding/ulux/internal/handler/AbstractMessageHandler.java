@@ -116,4 +116,21 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 		return configs;
 	}
 
+	protected final Map<String, UluxBindingConfig> getBindingConfigs(String message) {
+		final Map<String, UluxBindingConfig> configs = new HashMap<String, UluxBindingConfig>();
+
+		// TODO provide better methods in UluxBindingProvider
+		for (final UluxBindingProvider provider : this.providers) {
+			for (final String itemName : provider.getItemNames()) {
+				final UluxBindingConfig binding = provider.getBinding(itemName);
+
+				if (StringUtils.equals(binding.getMessage(), message)) {
+					configs.put(itemName, binding);
+				}
+			}
+		}
+
+		return configs;
+	}
+
 }

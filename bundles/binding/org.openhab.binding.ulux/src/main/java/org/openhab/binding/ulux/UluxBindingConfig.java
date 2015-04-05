@@ -18,13 +18,17 @@ import org.openhab.core.binding.BindingConfig;
  */
 public class UluxBindingConfig implements BindingConfig {
 
-	public static final String MESSAGE_ACTIVATE = "Activate";
+	public static final String TYPE_AMBIENT_LIGHT = "AmbientLight";
+
+	public static final String TYPE_DISPLAY = "Display";
+
+	public static final String TYPE_PAGE_INDEX = "PageIndex";
+
+	public static final String TYPE_PROXIMITY = "Proximity";
 
 	public static final String MESSAGE_AUDIO_PLAY_LOCAL = "AudioPlayLocal";
 
 	public static final String MESSAGE_EDIT_VALUE = "EditValue";
-
-	public static final String MESSAGE_PAGE_INDEX = "PageIndex";
 
 	private short actorId;
 	private short switchId;

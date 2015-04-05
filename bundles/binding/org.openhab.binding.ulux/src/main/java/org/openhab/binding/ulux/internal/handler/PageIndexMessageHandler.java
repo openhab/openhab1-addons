@@ -8,10 +8,15 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
+import static org.openhab.binding.ulux.UluxBindingConfig.TYPE_PAGE_INDEX;
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
+import java.util.Map.Entry;
+
+import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.PageIndexMessage;
+import org.openhab.core.library.types.DecimalType;
 
 /**
  * @author Andreas Brenk
@@ -23,8 +28,11 @@ final class PageIndexMessageHandler extends AbstractMessageHandler<PageIndexMess
 	public void handleMessage(PageIndexMessage message, UluxDatagram response) {
 		LOG.debug("Page {}", message.getPageIndex());
 
-		// TODO pageIndex
-		// eventPublisher.postUpdate("PageIndex", new DecimalType(message.getPageIndex()));
+		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(TYPE_PAGE_INDEX).entrySet()) {
+			final String itemName = entry.getKey();
+
+			this.eventPublisher.postUpdate(itemName, new DecimalType(message.getPageIndex()));
+		}
 	}
 
 }

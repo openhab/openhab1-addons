@@ -64,6 +64,18 @@ public class StateMessage extends AbstractUluxMessage {
 		return this.displayActive;
 	}
 
+	public boolean isProximityDetected() {
+		return this.proximitySensor;
+	}
+
+	public boolean isAmbientLightBright() {
+		return this.lightSensor == true;
+	}
+
+	public boolean isAmbientLightDark() {
+		return this.lightSensor == false;
+	}
+
 	@Override
 	protected void addData(final ByteBuffer buffer) {
 		// empty data
