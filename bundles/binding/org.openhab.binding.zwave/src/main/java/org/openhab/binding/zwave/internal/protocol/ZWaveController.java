@@ -123,15 +123,13 @@ public class ZWaveController {
 	private int sucID = 0;
 	private boolean softReset = false;
 	private boolean masterController = false;
-	
+
 	private int SOFCount = 0;
 	private int CANCount = 0;
 	private int NAKCount = 0;
 	private int ACKCount = 0;
 	private int OOFCount = 0;
 	private AtomicInteger timeOutCount = new AtomicInteger(0);
-
-//	private boolean initializationComplete = false;
 
 	private boolean isConnected;
 
@@ -386,7 +384,7 @@ public class ZWaveController {
 				this.manufactureId = ((SerialApiGetCapabilitiesMessageClass)processor).getManufactureId();
 				this.deviceId = ((SerialApiGetCapabilitiesMessageClass)processor).getDeviceId();
 				this.deviceType = ((SerialApiGetCapabilitiesMessageClass)processor).getDeviceType();
-				
+
 				this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
 				break;
 			case GetControllerCapabilities:
@@ -899,9 +897,19 @@ public class ZWaveController {
 	 */
 	public void requestHardReset()
 	{
+		// Clear the queues
+		// If we're resetting, there's no point in queuing messages!
+		sendQueue.clear();
+		recvQueue.clear();
+		
+		// Hard reset the stick - everything will be reset to factory default
 		SerialMessage msg = new ControllerSetDefaultMessageClass().doRequest();
 		msg.attempts = 1;
 		this.enqueue(msg);
+		
+		// Clear all the nodes and we'll reinitialise
+		this.zwaveNodes.clear();
+		this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
 	}
 
 	/**
