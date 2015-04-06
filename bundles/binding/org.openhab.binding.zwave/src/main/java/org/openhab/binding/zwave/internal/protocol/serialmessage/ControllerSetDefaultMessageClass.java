@@ -27,10 +27,10 @@ public class ControllerSetDefaultMessageClass extends ZWaveCommandProcessor {
 	public SerialMessage doRequest() {
 		return new SerialMessage(SerialMessageClass.SetDefault, SerialMessageType.Request, SerialMessageClass.SetDefault, SerialMessagePriority.High);
 	}
-	
+
 	@Override
-	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug(String.format("Received SetDefault response"));
+	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
+		logger.debug(String.format("Received SetDefault request"));
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		
