@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,19 +31,71 @@ public class HeatingThermostat extends Device {
 
 	/** Temperature setpoint in degrees celcius */
 	private double temperatureSetpoint;
-	
 	private boolean temperatureSetpointUpdated;
 
 	/** Actual Temperature in degrees celcius */
 	private double temperatureActual;
-	
 	private boolean temperatureActualUpdated;
-
+	
+	/** Comfort temperature in degrees celcius */
+	private Float temperatureComfort;
+	private boolean temperatureComfortUpdated;
+	
+	/** Valve position when in Boost-Mode in % */
+	private Float boostValvePosition;
+	private boolean boostValvePositionUpdated;
+	
+	/** Date when decalcification will run */
+	private Float decalcificationDate;
+	private boolean decalcificationDateUpdated;
+	
+	/** Maximum valve position in % */
+	private Float maxValvePosition;
+	private boolean maxValvePositionUpdated;
+	
+	/** Valve offset in % */
+	private Float valveOffset;
+	private boolean valveOffsetUpdated;
+	
+	/** ECO temperature in degrees celcius */
+	private Float temperatureEco;
+	private boolean temperatureEcoUpdated;
+	
+	/** Maximum allowed setpoint temperature in degrees celcius */
+	private Float temperatureSetpointMax;
+	private boolean temperatureSetpointMaxUpdated;
+	
+	/** Minimum allowed setpoint temperature in degrees celcius */
+	private Float temperatureSetpointMin;
+	private boolean temperatureSetpointMinUpdated;
+	
+	/** Temperature offset in degrees celcius */
+	private Double temperatureOffset;
+	private boolean temperatureOffsetUpdated;
+	
+	/** Temperature when window is open in degrees celcius */
+	private Float temperatureOpenWindow;
+	private boolean temperatureOpenWindowUpdated;
+	
+	/** Minutes until "open window" mode will automatically be disabled */
+	private Float durationOpenWindow;
+	private boolean durationOpenWindowUpdated;
+	
+	/** Week and day programs as String */
+	private String programData;
+	private boolean programDataUpdated;
+	
+	/** Duration for Boost-Mode in Minutes */
+	private Float boostDuration;
+	private boolean boostDurationUpdated;
+	
+	
 	/** Date setpoint until the termperature setpoint is valid */
 	private Date dateSetpoint;
 
 	/** Device type for this thermostat **/
 	private DeviceType deviceType = DeviceType.HeatingThermostat;
+
 
 	public HeatingThermostat(Configuration c) {
 		super(c);
@@ -174,7 +225,206 @@ public class HeatingThermostat extends Device {
 	public State getTemperatureSetpoint() {
 		return new DecimalType(this.temperatureSetpoint);
 	}
+	
+	
+	
+	public void setTemperatureComfort(Float value) {
+		this.temperatureComfortUpdated = ((value != null) && (!value.equals(this.temperatureComfort)));
+		this.temperatureComfort = value;
+	}
 
+	public State getTemperatureComfort() {
+		return new DecimalType(this.temperatureComfort);
+	}
+	
+	
+
+	public void setBoostValvePosition(Float value) {
+		this.boostValvePositionUpdated = ((value != null) && (!value.equals(this.boostValvePosition)));
+		this.boostValvePosition = value;
+	}
+
+	public State getBoostValvePosition() {
+		return new DecimalType(this.boostValvePosition);
+	}
+	
+	
+
+	public void setDecalcificationDate(Float value) {
+		this.decalcificationDateUpdated = ((value != null) && (!value.equals(this.decalcificationDate)));
+		this.decalcificationDate = value;
+	}
+
+	public State getDecalcificationDate() {
+		return new DecimalType(this.decalcificationDate);
+	}
+	
+	
+
+	public void setMaxValvePosition(Float value) {
+		this.maxValvePositionUpdated = ((value != null) && (!value.equals(this.maxValvePosition)));
+		this.maxValvePosition = value;
+	}
+
+	public State getMaxValvePosition() {
+		return new DecimalType(this.maxValvePosition);
+	}
+	
+	
+
+	public void setValveOffset(Float value) {
+		this.valveOffsetUpdated = ((value != null) && (!value.equals(this.valveOffset)));
+		this.valveOffset = value;
+	}
+
+	public State getValveOffset() {
+		return new DecimalType(this.valveOffset);
+	}
+	
+	
+
+	public void setTemperatureEco(Float value) {
+		this.temperatureEcoUpdated = ((value != null) && (!value.equals(this.temperatureEco)));
+		this.temperatureEco = value;
+	}
+
+	public State getTemperatureEco() {
+		return new DecimalType(this.temperatureEco);
+	}
+
+	
+	
+	public void setTemperatureSetpointMax(Float value) {
+		this.temperatureSetpointMaxUpdated = ((value != null) && (!value.equals(this.temperatureSetpointMax)));
+		this.temperatureSetpointMax = value;
+	}
+
+	public State getTemperatureSetpointMax() {
+		return new DecimalType(this.temperatureSetpointMax);
+	}
+	
+	
+
+	public void setTemperatureSetpointMin(Float value) {
+		this.temperatureSetpointMinUpdated = ((value != null) && (!value.equals(this.temperatureSetpointMin)));
+		this.temperatureSetpointMin = value;
+	}
+
+	public State getTemperatureSetpointMin() {
+		return new DecimalType(this.temperatureSetpointMin);
+	}
+	
+	
+
+	public void setTemperatureOffset(Double value) {
+		this.temperatureOffsetUpdated = ((value != null) && (!value.equals(this.temperatureOffset)));
+		this.temperatureOffset = value;
+	}
+
+	public State getTemperatureOffset() {
+		return new DecimalType(this.temperatureOffset);
+	}
+	
+	
+
+	public void setTemperatureOpenWindow(Float value) {
+		this.temperatureOpenWindowUpdated = ((value != null) && (!value.equals(this.temperatureOpenWindow)));
+		this.temperatureOpenWindow = value;
+	}
+
+	public State getTemperatureOpenWindow() {
+		return new DecimalType(this.temperatureOpenWindow);
+	}
+	
+	
+
+	public void setDurationOpenWindow(Float value) {
+		this.durationOpenWindowUpdated = ((value != null) && (!value.equals(this.durationOpenWindow)));
+		this.durationOpenWindow = value;
+	}
+
+	public State getDurationOpenWindow() {
+		return new DecimalType(this.durationOpenWindow);
+	}
+	
+	
+
+	public void setProgramData(String value) {
+		this.programDataUpdated = ((value != null) && (!value.equals(this.programData)));
+		this.programData = value;
+	}
+
+	public State getProgramData() {
+		return new StringType (this.programData);
+	}
+	
+	
+
+	public void setBoostDuration(Float value) {
+		this.boostDurationUpdated = ((value != null) && (!value.equals(this.boostDuration)));
+		this.boostDuration = value;
+	}
+	
+	public State getBoostDuration() {
+		return new DecimalType(this.boostDuration);
+	}
+	
+	
+	
+	public boolean isTemperatureComfortUpdated() {
+		return this.temperatureComfortUpdated;
+	}
+
+	public boolean isBoostValvePositionUpdated() {
+		return this.boostValvePositionUpdated;
+	}
+
+	public boolean isDecalcificationDateUpdated() {
+		return this.decalcificationDateUpdated;
+	}
+
+	public boolean isMaxValvePositionUpdated() {
+		return this.maxValvePositionUpdated;
+	}
+
+	public boolean isValveOffsetUpdated() {
+		return this.valveOffsetUpdated;
+	}
+
+	public boolean isTemperatureEcoUpdated() {
+		return this.temperatureEcoUpdated;
+	}
+
+	public boolean isTemperatureSetpointMaxUpdated() {
+		return this.temperatureSetpointMaxUpdated;
+	}
+
+	public boolean isTemperatureSetpointMinUpdated() {
+		return this.temperatureSetpointMinUpdated;
+	}
+
+	public boolean isTemperatureOffsetUpdated() {
+		return this.temperatureOffsetUpdated;
+	}
+
+	public boolean isTemperatureOpenWindowUpdated() {
+		return this.temperatureOpenWindowUpdated;
+	}
+
+	public boolean isDurationOpenWindowUpdated() {
+		return this.durationOpenWindowUpdated;
+	}
+
+	public boolean isProgramDataUpdated() {
+		return this.programDataUpdated;
+	}
+
+	public boolean isBoostDurationUpdated() {
+		return this.boostDurationUpdated;
+	}
+
+	
+	
 	public boolean isModeUpdated() {
 		return modeUpdated;
 	}
@@ -190,5 +440,10 @@ public class HeatingThermostat extends Device {
 	public boolean isTemperatureActualUpdated() {
 		return temperatureActualUpdated;
 	}
+
+	
+	
+	
+	
 	
 }

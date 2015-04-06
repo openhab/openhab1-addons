@@ -29,19 +29,19 @@ public final class C_Message extends Message {
 	private int length = 0;
 	private DeviceType deviceType = null;
 	private String serialNumber = null;
-	private String tempComfort= null;
-	private String tempEco = null;
-	private String tempSetpointMax= null;
-	private String tempSetpointMin= null;
-	private String tempOffset = null;
-	private String tempOpenWindow = null;
-	private String durationOpenWindow = null;
-	private String decalcification = null;
-	private String valveMaximum = null;
-	private String valveOffset = null;
+	private Float tempComfort= null;
+	private Float tempEco = null;
+	private Float tempSetpointMax= null;
+	private Float tempSetpointMin= null;
+	private Double tempOffset = null;
+	private Float tempOpenWindow = null;
+	private Float durationOpenWindow = null;
+	private Float decalcification = null;
+	private Float valveMaximum = null;
+	private Float valveOffset = null;
 	private String programData = null;
-	private String boostDuration = null;
-	private String boostValve = null;
+	private Float boostDuration = null;
+	private Float boostValve = null;
 
 
 	public C_Message(String raw) {
@@ -50,7 +50,7 @@ public final class C_Message extends Message {
 		String[] tokens = this.getPayload().split(Message.DELIMETER);
 
 		rfAddress = tokens[0];
-
+		
 		byte[] bytes = Base64.decodeBase64(tokens[1].getBytes());
 
 		int[] data = new int[bytes.length];
@@ -121,10 +121,10 @@ public final class C_Message extends Message {
 
 			int plusDataStart = 18;
 			int programDataStart = 11;
-			tempComfort= Float.toString( bytes[plusDataStart ]/2);
-			tempEco = Float.toString( bytes[plusDataStart + 1]/2);
-			tempSetpointMax=  Float.toString( bytes[plusDataStart + 2]/2);
-			tempSetpointMin=  Float.toString( bytes[plusDataStart + 3]/2);
+			tempComfort = Float.valueOf(bytes[plusDataStart ]/2);
+			tempEco = Float.valueOf(bytes[plusDataStart + 1]/2);
+			tempSetpointMax=  Float.valueOf( bytes[plusDataStart + 2]/2);
+			tempSetpointMin=  Float.valueOf( bytes[plusDataStart + 3]/2);
 
 			logger.debug("DeviceType:             {}", deviceType.toString());
 			logger.debug("RFAddress:              {}", rfAddress);
@@ -142,14 +142,14 @@ public final class C_Message extends Message {
 			} else
 			{
 				// Device is a HeatingThermostat(+)
-				tempOffset =  Double.toString( (bytes[plusDataStart +4 ]/2) - 3.5);
-				tempOpenWindow =  Float.toString( bytes[plusDataStart + 5]/2);
-				durationOpenWindow =  Float.toString( bytes[plusDataStart + 6]);
-				boostDuration =  Float.toString( bytes[plusDataStart + 7]&0xFF >> 5 );
-				boostValve =  Float.toString( (bytes[plusDataStart + 7]&0x1F)*5);
-				decalcification =  Float.toString( bytes[plusDataStart + 8]);
-				valveMaximum = Float.toString( bytes[plusDataStart + 9]&0xFF * 100 / 255);
-				valveOffset = Float.toString( bytes[plusDataStart+ 10]&0xFF * 100 / 255 );
+				tempOffset =  Double.valueOf( (bytes[plusDataStart +4 ]/2) - 3.5);
+				tempOpenWindow =  Float.valueOf( bytes[plusDataStart + 5]/2);
+				durationOpenWindow =  Float.valueOf( bytes[plusDataStart + 6]);
+				boostDuration =  Float.valueOf( bytes[plusDataStart + 7]&0xFF >> 5 );
+				boostValve =  Float.valueOf( (bytes[plusDataStart + 7]&0x1F)*5);
+				decalcification =  Float.valueOf( bytes[plusDataStart + 8]);
+				valveMaximum = Float.valueOf( bytes[plusDataStart + 9]&0xFF * 100 / 255);
+				valveOffset = Float.valueOf( bytes[plusDataStart+ 10]&0xFF * 100 / 255 );
 				logger.debug("Temp Offset:            {}", tempOffset);
 				logger.debug("Temp Open Window:       {}", tempOpenWindow );
 				logger.debug("Duration Open Window:   {}", durationOpenWindow);
@@ -199,11 +199,63 @@ public final class C_Message extends Message {
 		return deviceType;
 	}
 
+	public Float getTempComfort() {
+		return tempComfort;
+	}
+
+	public Float getTempEco() {
+		return tempEco;
+	}
+
+	public Float getTempSetpointMax() {
+		return tempSetpointMax;
+	}
+
+	public Float getTempSetpointMin() {
+		return tempSetpointMin;
+	}
+
+	public Double getTempOffset() {
+		return tempOffset;
+	}
+
+	public Float getTempOpenWindow() {
+		return tempOpenWindow;
+	}
+
+	public Float getDurationOpenWindow() {
+		return durationOpenWindow;
+	}
+
+	public Float getDecalcification() {
+		return decalcification;
+	}
+
+	public Float getValveMaximum() {
+		return valveMaximum;
+	}
+
+	public Float getValveOffset() {
+		return valveOffset;
+	}
+
+	public String getProgramData() {
+		return programData;
+	}
+
+	public Float getBoostDuration() {
+		return boostDuration;
+	}
+
+	public Float getBoostValve() {
+		return boostValve;
+	}
+
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== C_Message === ");
 		logger.trace("\tRAW:        {}", this.getPayload());
-		logger.debug("DeviceType:   {}" , deviceType.toString());
+		logger.debug("DeviceType:   {}" , deviceType);
 		logger.debug("SerialNumber: {}" , serialNumber);
 		logger.debug("RFAddress:    {}" , rfAddress);
 	}

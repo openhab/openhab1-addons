@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.util.Calendar;
-import org.openhab.binding.maxcube.internal.Utils;
 
 /**
 * Base class for configuration provided by the MAX!Cube C_Message. 
@@ -24,6 +22,47 @@ public final class Configuration {
 	private String serialNumber = null;
 	private String name = null;
 	private int roomId = -1;
+	
+	/** Comfort temperature in degrees celcius */
+	private Float temperatureComfort;
+	
+	/** Valve position when in Boost-Mode in % */
+	private Float boostValvePosition;
+	
+	/** Date when decalcification will run */
+	private Float decalcificationDate;
+	
+	/** Maximum valve position in % */
+	private Float maxValvePosition;
+	
+	/** Valve offset in % */
+	private Float valveOffset;
+	
+	/** ECO temperature in degrees celcius */
+	private Float temperatureEco;
+	
+	/** Maximum allowed setpoint temperature in degrees celcius */
+	private Float temperatureSetpointMax;
+	
+	/** Minimum allowed setpoint temperature in degrees celcius */
+	private Float temperatureSetpointMin;
+	
+	/** Temperature offset in degrees celcius */
+	private Double temperatureOffset;
+	
+	/** Temperature when window is open in degrees celcius */
+	private Float temperatureOpenWindow;
+	
+	/** Minutes until "open window" mode will automatically be disabled */
+	private Float durationOpenWindow;
+	
+	/** Week and day programs as String */
+	private String programData;
+	
+	/** Duration for Boost-Mode in Minutes */
+	private Float boostDuration;
+	
+	
 	
 	private Configuration() {
 	}
@@ -44,6 +83,21 @@ public final class Configuration {
 
 	public void setValues(C_Message message) {
 		setValues(message.getRFAddress(), message.getDeviceType(), message.getSerialNumber());
+
+		
+		this.temperatureComfort = message.getTempComfort();
+		this.boostValvePosition = message.getBoostValve();
+		this.decalcificationDate = message.getDecalcification();
+		this.maxValvePosition = message.getValveMaximum();
+		this.valveOffset = message.getValveOffset();
+		this.temperatureEco = message.getTempEco();
+		this.temperatureSetpointMax = message.getTempSetpointMax();
+		this.temperatureSetpointMin = message.getTempSetpointMin();
+		this.temperatureOffset = message.getTempOffset();
+		this.temperatureOpenWindow = message.getTempOpenWindow();
+		this.durationOpenWindow = message.getDurationOpenWindow();
+		this.programData = message.getProgramData();
+		this.boostDuration = message.getBoostDuration();
 	}
 	
 	private void setValues(String rfAddress, DeviceType deviceType, String serialNumber, String name) {
@@ -79,5 +133,59 @@ public final class Configuration {
 	
 	public void setRoomId(int roomId) {
 		this.roomId = roomId;
-	}	
+	}
+
+	public Float getTemperatureComfort() {
+		return temperatureComfort;
+	}
+
+	public Float getBoostValvePosition() {
+		return boostValvePosition;
+	}
+
+	public Float getDecalcificationDate() {
+		return decalcificationDate;
+	}
+
+	public Float getMaxValvePosition() {
+		return maxValvePosition;
+	}
+
+	public Float getValveOffset() {
+		return valveOffset;
+	}
+
+	public Float getTemperatureEco() {
+		return temperatureEco;
+	}
+
+	public Float getTemperatureSetpointMax() {
+		return temperatureSetpointMax;
+	}
+
+	public Float getTemperatureSetpointMin() {
+		return temperatureSetpointMin;
+	}
+
+	public Double getTemperatureOffset() {
+		return temperatureOffset;
+	}
+
+	public Float getTemperatureOpenWindow() {
+		return temperatureOpenWindow;
+	}
+
+	public Float getDurationOpenWindow() {
+		return durationOpenWindow;
+	}
+
+	public String getProgramData() {
+		return programData;
+	}
+
+	public Float getBoostDuration() {
+		return boostDuration;
+	}
+	
+	
 }
