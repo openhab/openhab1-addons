@@ -22,6 +22,7 @@ import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
@@ -138,6 +139,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4: return createDigitalActorDigitalOut4();
       case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7: return createMBrickletSegmentDisplay4x7();
       case ModelPackage.MBRICKLET_LED_STRIP: return createMBrickletLEDStrip();
+      case ModelPackage.LED_GROUP: return createLEDGroup();
       case ModelPackage.DIGITAL_ACTOR_IO16: return createDigitalActorIO16();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
@@ -199,6 +201,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.BUTTON_CONFIGURATION: return createButtonConfiguration();
       case ModelPackage.DUAL_BUTTON_LED_CONFIGURATION: return createDualButtonLEDConfiguration();
       case ModelPackage.LED_STRIP_CONFIGURATION: return createLEDStripConfiguration();
+      case ModelPackage.LED_GROUP_CONFIGURATION: return createLEDGroupConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -284,6 +287,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createSwitchStateFromString(eDataType, initialValue);
       case ModelPackage.DIGITAL_VALUE:
         return createDigitalValueFromString(eDataType, initialValue);
+      case ModelPackage.HSB_VALUE:
+        return createHSBValueFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_IO16:
         return createTinkerBrickletIO16FromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
@@ -437,6 +442,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertSwitchStateToString(eDataType, instanceValue);
       case ModelPackage.DIGITAL_VALUE:
         return convertDigitalValueToString(eDataType, instanceValue);
+      case ModelPackage.HSB_VALUE:
+        return convertHSBValueToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_IO16:
         return convertTinkerBrickletIO16ToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICK_SERVO:
@@ -784,6 +791,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletLEDStripImpl mBrickletLEDStrip = new MBrickletLEDStripImpl();
     return mBrickletLEDStrip;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LEDGroup createLEDGroup()
+  {
+    LEDGroupImpl ledGroup = new LEDGroupImpl();
+    return ledGroup;
   }
 
   /**
@@ -1143,6 +1161,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public LEDGroupConfiguration createLEDGroupConfiguration()
+  {
+    LEDGroupConfigurationImpl ledGroupConfiguration = new LEDGroupConfigurationImpl();
+    return ledGroupConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MServo createMServo()
   {
     MServoImpl mServo = new MServoImpl();
@@ -1460,6 +1489,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertDigitalValueToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public HSBValue createHSBValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (HSBValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertHSBValueToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

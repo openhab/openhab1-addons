@@ -37,6 +37,7 @@ import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
@@ -100,7 +101,7 @@ public class ConfigurationHandler {
     bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
     voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
     bricklet_halleffect, bricklet_joystick, joystick_button, bricklet_linear_poti, 
- dualbutton_button, dualbutton_led, lcd_button, bricklet_ledstrip
+ dualbutton_button, dualbutton_led, lcd_button, bricklet_ledstrip, ledgroup
   }
 
 
@@ -431,6 +432,13 @@ public class ConfigurationHandler {
     } else if (deviceType.equals(TypeKey.bricklet_ledstrip.name())) {
       LEDStripConfiguration configuration = modelFactory.createLEDStripConfiguration();
       OHTFDevice<LEDStripConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.ledgroup.name())) {
+      LEDGroupConfiguration configuration = modelFactory.createLEDGroupConfiguration();
+      OHTFSubDeviceAdminDevice<LEDGroupConfiguration, NoSubIds> ohtfDevice =
+          modelFactory.createOHTFSubDeviceAdminDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);

@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import org.openhab.binding.tinkerforge.internal.types.PercentValue
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue
+import org.openhab.binding.tinkerforge.internal.types.HSBValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
@@ -72,6 +73,7 @@ type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
 type MTinkerBrickletIndustrialDigitalOut4 wraps BrickletIndustrialDigitalOut4
 type SwitchState wraps OnOffValue
 type DigitalValue wraps HighLowValue
+type HSBValue wraps HSBValue
 type TinkerBrickletIO16 wraps BrickletIO16
 type MTinkerBrickServo wraps BrickServo
 type MTinkerforgeValue wraps TinkerforgeValue
@@ -231,7 +233,15 @@ interface NumberActor {
 }
 
 interface ColorActor {
-    op void setColor(HSBType color, DeviceOptions opts)
+	HSBValue color
+}
+
+interface ProgrammableColorActor extends ColorActor {
+    op void setSelectedColor(HSBType color, DeviceOptions opts)
+}
+
+interface SimpleColorActor extends ColorActor {
+    op void setSelectedColor(HSBType color)
 }
 
 interface MoveActor {
@@ -378,12 +388,17 @@ class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustri
 
 class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegmentDisplay4x7>{
     readonly String deviceType = "bricklet_segmentdisplay4x7"
-
 }
 
-class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>,
-    MTFConfigConsumer<LEDStripConfiguration> {
+class MBrickletLEDStrip extends ProgrammableColorActor, MDevice<TinkerBrickletLEDStrip>,
+    MTFConfigConsumer<LEDStripConfiguration>, MSubDeviceHolder<LEDGroup> {
 	readonly String deviceType = "bricklet_ledstrip"
+	String colorMapping = "rgb"
+}
+
+class LEDGroup extends MSubDevice<MBrickletLEDStrip>, SimpleColorActor, MSwitchActor,
+	 MTFConfigConsumer<LEDGroupConfiguration>{
+	readonly String deviceType = "ledgroup"
 }
 
 class DigitalActorIO16 extends DigitalActor, IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
@@ -797,6 +812,12 @@ class LEDStripConfiguration extends TFConfig {
 	String chiptype
 	Integer frameduration
 	Long clockfrequency
+	String colorMapping
+	String subDevices
+}
+
+class LEDGroupConfiguration extends TFConfig {
+	String leds
 }
 
 enum NoSubIds {

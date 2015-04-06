@@ -260,6 +260,15 @@ public interface ModelFactory extends EFactory
   MBrickletLEDStrip createMBrickletLEDStrip();
 
   /**
+   * Returns a new object of class '<em>LED Group</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>LED Group</em>'.
+   * @generated
+   */
+  LEDGroup createLEDGroup();
+
+  /**
    * Returns a new object of class '<em>Digital Actor IO16</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -546,6 +555,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   LEDStripConfiguration createLEDStripConfiguration();
+
+  /**
+   * Returns a new object of class '<em>LED Group Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>LED Group Configuration</em>'.
+   * @generated
+   */
+  LEDGroupConfiguration createLEDGroupConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.

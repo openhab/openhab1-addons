@@ -44,12 +44,15 @@ import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
@@ -58,6 +61,7 @@ import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -432,7 +436,13 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
       if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE) {
         processValue((MBaseDevice) actor, notification);
       }
-
+    }
+    if (notification.getNotifier() instanceof ColorActor) {
+      ColorActor actor = (ColorActor) notification.getNotifier();
+      int featureID = notification.getFeatureID(ColorActor.class);
+      if (featureID == ModelPackage.COLOR_ACTOR__COLOR) {
+        processValue((MBaseDevice) actor, notification);
+      }
     }
     // TODO hier muss noch was fuer die dimmer und rollershutter rein
     else {
@@ -676,6 +686,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else {
           continue;
         }
+      } else if (sensorValue instanceof HSBValue) {
+        if (itemType.isAssignableFrom(ColorItem.class)) {
+          logger.trace("found item to update for HSBValue {}", itemName);
+          value = ((HSBValue) sensorValue).getHsbValue();
+        }
       } else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
         value = UnDefType.UNDEF;
       }
@@ -731,7 +746,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
             if (command instanceof OnOffType) {
               logger.trace("{} found onoff command", LoggerConstants.COMMAND);
               OnOffType cmd = (OnOffType) command;
-              if (mDevice instanceof MInSwitchActor) {
+              if (mDevice instanceof MSwitchActor) {
                 OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF : OnOffValue.ON;
                 ((MSwitchActor) mDevice).turnSwitch(state);
               } else if (mDevice instanceof DigitalActor) {
@@ -754,9 +769,13 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               logger.debug("{} found number command", LoggerConstants.COMMAND);
               if (command instanceof HSBType) {
                 logger.debug("{} found HSBType command", LoggerConstants.COMMAND);
-                if (mDevice instanceof ColorActor) {
-                  ((ColorActor) mDevice).setColor((HSBType) command,
+                if (mDevice instanceof ProgrammableColorActor) {
+                  logger.debug("{} found ProgrammableColorActor {}", itemName);
+                  ((ProgrammableColorActor) mDevice).setSelectedColor((HSBType) command,
                       provider.getDeviceOptions(itemName));
+                } else if (mDevice instanceof SimpleColorActor) {
+                  logger.debug("{} found SimpleColorActor {}", itemName);
+                  ((SimpleColorActor) mDevice).setSelectedColor((HSBType) command);
                 }
               } else if (command instanceof PercentType) {
                 if (mDevice instanceof SetPointActor) {

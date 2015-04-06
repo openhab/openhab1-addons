@@ -14,6 +14,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getChiptype <em>Chiptype</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getFrameduration <em>Frameduration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getClockfrequency <em>Clockfrequency</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping <em>Color Mapping</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getSubDevices <em>Sub Devices</em>}</li>
  * </ul>
  * </p>
  *
@@ -100,5 +102,57 @@ public interface LEDStripConfiguration extends TFConfig
    * @generated
    */
   void setClockfrequency(Long value);
+
+  /**
+   * Returns the value of the '<em><b>Color Mapping</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Color Mapping</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Color Mapping</em>' attribute.
+   * @see #setColorMapping(String)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLEDStripConfiguration_ColorMapping()
+   * @model unique="false"
+   * @generated
+   */
+  String getColorMapping();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping <em>Color Mapping</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Color Mapping</em>' attribute.
+   * @see #getColorMapping()
+   * @generated
+   */
+  void setColorMapping(String value);
+
+  /**
+   * Returns the value of the '<em><b>Sub Devices</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Sub Devices</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Sub Devices</em>' attribute.
+   * @see #setSubDevices(String)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLEDStripConfiguration_SubDevices()
+   * @model unique="false"
+   * @generated
+   */
+  String getSubDevices();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getSubDevices <em>Sub Devices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Sub Devices</em>' attribute.
+   * @see #getSubDevices()
+   * @generated
+   */
+  void setSubDevices(String value);
 
 } // LEDStripConfiguration

@@ -22,6 +22,8 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getChiptype <em>Chiptype</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getFrameduration <em>Frameduration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getClockfrequency <em>Clockfrequency</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getColorMapping <em>Color Mapping</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDStripConfigurationImpl#getSubDevices <em>Sub Devices</em>}</li>
  * </ul>
  * </p>
  *
@@ -88,6 +90,46 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected Long clockfrequency = CLOCKFREQUENCY_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getColorMapping() <em>Color Mapping</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getColorMapping()
+   * @generated
+   * @ordered
+   */
+  protected static final String COLOR_MAPPING_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getColorMapping() <em>Color Mapping</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getColorMapping()
+   * @generated
+   * @ordered
+   */
+  protected String colorMapping = COLOR_MAPPING_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getSubDevices() <em>Sub Devices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSubDevices()
+   * @generated
+   * @ordered
+   */
+  protected static final String SUB_DEVICES_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSubDevices() <em>Sub Devices</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSubDevices()
+   * @generated
+   * @ordered
+   */
+  protected String subDevices = SUB_DEVICES_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -184,6 +226,52 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getColorMapping()
+  {
+    return colorMapping;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setColorMapping(String newColorMapping)
+  {
+    String oldColorMapping = colorMapping;
+    colorMapping = newColorMapping;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__COLOR_MAPPING, oldColorMapping, colorMapping));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getSubDevices()
+  {
+    return subDevices;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSubDevices(String newSubDevices)
+  {
+    String oldSubDevices = subDevices;
+    subDevices = newSubDevices;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LED_STRIP_CONFIGURATION__SUB_DEVICES, oldSubDevices, subDevices));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -195,6 +283,10 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
         return getFrameduration();
       case ModelPackage.LED_STRIP_CONFIGURATION__CLOCKFREQUENCY:
         return getClockfrequency();
+      case ModelPackage.LED_STRIP_CONFIGURATION__COLOR_MAPPING:
+        return getColorMapping();
+      case ModelPackage.LED_STRIP_CONFIGURATION__SUB_DEVICES:
+        return getSubDevices();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -217,6 +309,12 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
         return;
       case ModelPackage.LED_STRIP_CONFIGURATION__CLOCKFREQUENCY:
         setClockfrequency((Long)newValue);
+        return;
+      case ModelPackage.LED_STRIP_CONFIGURATION__COLOR_MAPPING:
+        setColorMapping((String)newValue);
+        return;
+      case ModelPackage.LED_STRIP_CONFIGURATION__SUB_DEVICES:
+        setSubDevices((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -241,6 +339,12 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.LED_STRIP_CONFIGURATION__CLOCKFREQUENCY:
         setClockfrequency(CLOCKFREQUENCY_EDEFAULT);
         return;
+      case ModelPackage.LED_STRIP_CONFIGURATION__COLOR_MAPPING:
+        setColorMapping(COLOR_MAPPING_EDEFAULT);
+        return;
+      case ModelPackage.LED_STRIP_CONFIGURATION__SUB_DEVICES:
+        setSubDevices(SUB_DEVICES_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -261,6 +365,10 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
         return FRAMEDURATION_EDEFAULT == null ? frameduration != null : !FRAMEDURATION_EDEFAULT.equals(frameduration);
       case ModelPackage.LED_STRIP_CONFIGURATION__CLOCKFREQUENCY:
         return CLOCKFREQUENCY_EDEFAULT == null ? clockfrequency != null : !CLOCKFREQUENCY_EDEFAULT.equals(clockfrequency);
+      case ModelPackage.LED_STRIP_CONFIGURATION__COLOR_MAPPING:
+        return COLOR_MAPPING_EDEFAULT == null ? colorMapping != null : !COLOR_MAPPING_EDEFAULT.equals(colorMapping);
+      case ModelPackage.LED_STRIP_CONFIGURATION__SUB_DEVICES:
+        return SUB_DEVICES_EDEFAULT == null ? subDevices != null : !SUB_DEVICES_EDEFAULT.equals(subDevices);
     }
     return super.eIsSet(featureID);
   }
@@ -282,6 +390,10 @@ public class LEDStripConfigurationImpl extends MinimalEObjectImpl.Container impl
     result.append(frameduration);
     result.append(", clockfrequency: ");
     result.append(clockfrequency);
+    result.append(", colorMapping: ");
+    result.append(colorMapping);
+    result.append(", subDevices: ");
+    result.append(subDevices);
     result.append(')');
     return result.toString();
   }

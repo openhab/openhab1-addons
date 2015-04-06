@@ -26,7 +26,6 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.BrickletDualButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
@@ -71,6 +70,8 @@ import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
 import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
 import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
@@ -133,6 +134,7 @@ import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
 import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.Proximity;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
@@ -144,6 +146,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
 import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
@@ -167,6 +170,7 @@ import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
@@ -390,6 +394,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass programmableColorActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass simpleColorActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass moveActorEClass = null;
 
   /**
@@ -482,6 +500,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletLEDStripEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ledGroupEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -783,6 +808,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass ledStripConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ledGroupConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1490,6 +1522,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType digitalValueEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType hsbValueEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2579,9 +2618,49 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getColorActor__SetColor__HSBType_DeviceOptions()
+  public EAttribute getColorActor_Color()
   {
-    return colorActorEClass.getEOperations().get(0);
+    return (EAttribute)colorActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProgrammableColorActor()
+  {
+    return programmableColorActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getProgrammableColorActor__SetSelectedColor__HSBType_DeviceOptions()
+  {
+    return programmableColorActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSimpleColorActor()
+  {
+    return simpleColorActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getSimpleColorActor__SetSelectedColor__HSBType()
+  {
+    return simpleColorActorEClass.getEOperations().get(0);
   }
 
   /**
@@ -2932,6 +3011,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getMBrickletLEDStrip_DeviceType()
   {
     return (EAttribute)mBrickletLEDStripEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLEDStrip_ColorMapping()
+  {
+    return (EAttribute)mBrickletLEDStripEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLEDGroup()
+  {
+    return ledGroupEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDGroup_DeviceType()
+  {
+    return (EAttribute)ledGroupEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -4289,6 +4398,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getLEDStripConfiguration_ColorMapping()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_SubDevices()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLEDGroupConfiguration()
+  {
+    return ledGroupConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDGroupConfiguration_Leds()
+  {
+    return (EAttribute)ledGroupConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMServo()
   {
     return mServoEClass;
@@ -5429,6 +5578,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getHSBValue()
+  {
+    return hsbValueEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getTinkerBrickletIO16()
   {
     return tinkerBrickletIO16EDataType;
@@ -6224,7 +6383,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(numberActorEClass, NUMBER_ACTOR___SET_NUMBER__BIGDECIMAL);
 
     colorActorEClass = createEClass(COLOR_ACTOR);
-    createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
+    createEAttribute(colorActorEClass, COLOR_ACTOR__COLOR);
+
+    programmableColorActorEClass = createEClass(PROGRAMMABLE_COLOR_ACTOR);
+    createEOperation(programmableColorActorEClass, PROGRAMMABLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE_DEVICEOPTIONS);
+
+    simpleColorActorEClass = createEClass(SIMPLE_COLOR_ACTOR);
+    createEOperation(simpleColorActorEClass, SIMPLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE);
 
     moveActorEClass = createEClass(MOVE_ACTOR);
     createEAttribute(moveActorEClass, MOVE_ACTOR__DIRECTION);
@@ -6328,6 +6493,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mBrickletLEDStripEClass = createEClass(MBRICKLET_LED_STRIP);
     createEAttribute(mBrickletLEDStripEClass, MBRICKLET_LED_STRIP__DEVICE_TYPE);
+    createEAttribute(mBrickletLEDStripEClass, MBRICKLET_LED_STRIP__COLOR_MAPPING);
+
+    ledGroupEClass = createEClass(LED_GROUP);
+    createEAttribute(ledGroupEClass, LED_GROUP__DEVICE_TYPE);
 
     digitalActorIO16EClass = createEClass(DIGITAL_ACTOR_IO16);
     createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__DEVICE_TYPE);
@@ -6621,6 +6790,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__CHIPTYPE);
     createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__FRAMEDURATION);
     createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__CLOCKFREQUENCY);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__COLOR_MAPPING);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__SUB_DEVICES);
+
+    ledGroupConfigurationEClass = createEClass(LED_GROUP_CONFIGURATION);
+    createEAttribute(ledGroupConfigurationEClass, LED_GROUP_CONFIGURATION__LEDS);
 
     // Create enums
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
@@ -6660,6 +6834,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletIndustrialDigitalOut4EDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4);
     switchStateEDataType = createEDataType(SWITCH_STATE);
     digitalValueEDataType = createEDataType(DIGITAL_VALUE);
+    hsbValueEDataType = createEDataType(HSB_VALUE);
     tinkerBrickletIO16EDataType = createEDataType(TINKER_BRICKLET_IO16);
     mTinkerBrickServoEDataType = createEDataType(MTINKER_BRICK_SERVO);
     mTinkerforgeValueEDataType = createEDataType(MTINKERFORGE_VALUE);
@@ -6778,6 +6953,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletLCD20x4());
     g1.getETypeArguments().add(g2);
     mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
+    programmableColorActorEClass.getESuperTypes().add(this.getColorActor());
+    simpleColorActorEClass.getESuperTypes().add(this.getColorActor());
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(dimmableActorEClass_TC);
     g1.getETypeArguments().add(g2);
@@ -6976,7 +7153,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTinkerBrickletSegmentDisplay4x7());
     g1.getETypeArguments().add(g2);
     mBrickletSegmentDisplay4x7EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getColorActor());
+    g1 = createEGenericType(this.getProgrammableColorActor());
     mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLEDStrip());
@@ -6986,6 +7163,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getLEDStripConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getLEDGroup());
+    g1.getETypeArguments().add(g2);
+    mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletLEDStrip());
+    g1.getETypeArguments().add(g2);
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getSimpleColorActor());
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSwitchActor());
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getLEDGroupConfiguration());
+    g1.getETypeArguments().add(g2);
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDigitalActor());
     digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIODevice());
@@ -7393,6 +7586,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     buttonConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     dualButtonLEDConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     ledStripConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    ledGroupConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -7541,10 +7735,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, theEcorePackage.getEBigDecimal(), "value", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(colorActorEClass, ColorActor.class, "ColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getColorActor_Color(), this.getHSBValue(), "color", null, 0, 1, ColorActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    op = initEOperation(getColorActor__SetColor__HSBType_DeviceOptions(), null, "setColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    initEClass(programmableColorActorEClass, ProgrammableColorActor.class, "ProgrammableColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getProgrammableColorActor__SetSelectedColor__HSBType_DeviceOptions(), null, "setSelectedColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(simpleColorActorEClass, SimpleColorActor.class, "SimpleColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getSimpleColorActor__SetSelectedColor__HSBType(), null, "setSelectedColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMoveActor_Direction(), this.getDirectionValue(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7674,6 +7876,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mBrickletLEDStripEClass, MBrickletLEDStrip.class, "MBrickletLEDStrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletLEDStrip_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ledstrip", 0, 1, MBrickletLEDStrip.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLEDStrip_ColorMapping(), theEcorePackage.getEString(), "colorMapping", "rgb", 0, 1, MBrickletLEDStrip.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ledGroupEClass, LEDGroup.class, "LEDGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLEDGroup_DeviceType(), theEcorePackage.getEString(), "deviceType", "ledgroup", 0, 1, LEDGroup.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(digitalActorIO16EClass, DigitalActorIO16.class, "DigitalActorIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActorIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -8014,6 +8220,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getLEDStripConfiguration_Chiptype(), theEcorePackage.getEString(), "chiptype", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLEDStripConfiguration_Frameduration(), theEcorePackage.getEIntegerObject(), "frameduration", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLEDStripConfiguration_Clockfrequency(), theEcorePackage.getELongObject(), "clockfrequency", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_ColorMapping(), theEcorePackage.getEString(), "colorMapping", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_SubDevices(), theEcorePackage.getEString(), "subDevices", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ledGroupConfigurationEClass, LEDGroupConfiguration.class, "LEDGroupConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLEDGroupConfiguration_Leds(), theEcorePackage.getEString(), "leds", null, 0, 1, LEDGroupConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
@@ -8186,6 +8397,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletIndustrialDigitalOut4EDataType, BrickletIndustrialDigitalOut4.class, "MTinkerBrickletIndustrialDigitalOut4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(switchStateEDataType, OnOffValue.class, "SwitchState", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(digitalValueEDataType, HighLowValue.class, "DigitalValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(hsbValueEDataType, HSBValue.class, "HSBValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletIO16EDataType, BrickletIO16.class, "TinkerBrickletIO16", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickServoEDataType, BrickServo.class, "MTinkerBrickServo", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerforgeValueEDataType, TinkerforgeValue.class, "MTinkerforgeValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
