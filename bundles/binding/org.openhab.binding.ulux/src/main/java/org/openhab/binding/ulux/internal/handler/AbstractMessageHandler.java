@@ -12,7 +12,9 @@ import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingConfigType;
@@ -70,59 +72,72 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 			return null;
 		}
 
-		for (Class<? extends Command> type : item.getAcceptedCommandTypes()) {
-			if (OnOffType.class.isAssignableFrom(type)) {
-				if (value == 0) {
-					return OnOffType.OFF;
-				} else if (value == 1) {
-					return OnOffType.ON;
-				} else {
-					LOG.debug("Unsupported value for OnOffType: {}", value);
-				}
-			} else if (IncreaseDecreaseType.class.isAssignableFrom(type)) {
-				if (value == 0) {
-					return IncreaseDecreaseType.DECREASE;
-				} else if (value == 1) {
-					return IncreaseDecreaseType.INCREASE;
-				} else {
-					LOG.debug("Unsupported value for IncreaseDecreaseType: {}", value);
-				}
-			} else if (OpenClosedType.class.isAssignableFrom(type)) {
-				if (value == 0) {
-					return OpenClosedType.CLOSED;
-				} else if (value == 1) {
-					return OpenClosedType.OPEN;
-				} else {
-					LOG.debug("Unsupported value for OpenClosedType: {}", value);
-				}
-			} else if (StopMoveType.class.isAssignableFrom(type)) {
-				if (value == 0) {
-					return StopMoveType.STOP;
-				} else if (value == 1) {
-					return StopMoveType.MOVE;
-				} else {
-					LOG.debug("Unsupported value for StopMoveType: {}", value);
-				}
-			} else if (UpDownType.class.isAssignableFrom(type)) {
-				if (value == 0) {
-					return UpDownType.DOWN;
-				} else if (value == 1) {
-					return UpDownType.UP;
-				} else {
-					LOG.debug("Unsupported value for UpDownType: {}", value);
-				}
-			} else if (PercentType.class.isAssignableFrom(type)) {
-				if (value >= 0 || value <= 100) {
-					return new PercentType(value);
-				} else {
-					LOG.debug("Unsupported value for PercentType: {}", value);
-				}
-			} else if (DecimalType.class.isAssignableFrom(type)) {
-				return new DecimalType(value);
+		Set<Class<? extends Command>> acceptedCommandTypes = new HashSet<Class<? extends Command>>(
+				item.getAcceptedCommandTypes());
+
+		if (acceptedCommandTypes.contains(IncreaseDecreaseType.class)) {
+			if (value == 0) {
+				return IncreaseDecreaseType.DECREASE;
+			} else if (value == 1) {
+				return IncreaseDecreaseType.INCREASE;
 			} else {
-				LOG.debug("Unsupported value '{}' of type '{}'!", type, type.getClass());
+				LOG.debug("Unsupported value for IncreaseDecreaseType: {}", value);
 			}
 		}
+
+		if (acceptedCommandTypes.contains(OpenClosedType.class)) {
+			if (value == 0) {
+				return OpenClosedType.CLOSED;
+			} else if (value == 1) {
+				return OpenClosedType.OPEN;
+			} else {
+				LOG.debug("Unsupported value for OpenClosedType: {}", value);
+			}
+		}
+
+		if (acceptedCommandTypes.contains(UpDownType.class)) {
+			if (value == 0) {
+				return UpDownType.DOWN;
+			} else if (value == 1) {
+				return UpDownType.UP;
+			} else {
+				LOG.debug("Unsupported value for UpDownType: {}", value);
+			}
+		}
+
+		if (acceptedCommandTypes.contains(StopMoveType.class)) {
+			if (value == 0) {
+				return StopMoveType.STOP;
+			} else if (value == 1) {
+				return StopMoveType.MOVE;
+			} else {
+				LOG.debug("Unsupported value for StopMoveType: {}", value);
+			}
+		}
+
+		if (acceptedCommandTypes.contains(PercentType.class)) {
+			if (value >= 0 || value <= 100) {
+				return new PercentType(value);
+			} else {
+				LOG.debug("Unsupported value for PercentType: {}", value);
+			}
+		}
+
+		if (acceptedCommandTypes.contains(OnOffType.class)) {
+			if (value == 0) {
+				return OnOffType.OFF;
+			} else if (value == 1) {
+				return OnOffType.ON;
+			} else {
+				LOG.debug("Unsupported value for OnOffType: {}", value);
+			}
+		}
+
+		if (acceptedCommandTypes.contains(DecimalType.class)) {
+			return new DecimalType(value);
+		}
+
+		LOG.debug("Unsupported value '{}' for item '{}'!", value, item);
 
 		return null;
 	}

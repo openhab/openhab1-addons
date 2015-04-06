@@ -10,6 +10,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.UpDownType;
 
@@ -26,9 +27,7 @@ public class EditValueMessageHandlerTest extends AbstractHandlerTest<EditValueMe
 
 		handleMessage("06:42:01:00:01:00");
 
-		// TODO
-		// verify(eventPublisher).postCommand("Ulux_Color", IncreaseDecreaseType.INCREASE);
-		verify(eventPublisher).postCommand("Ulux_Color", OnOffType.ON);
+		verify(eventPublisher).postCommand("Ulux_Color", IncreaseDecreaseType.INCREASE);
 	}
 
 	@Test
@@ -37,9 +36,7 @@ public class EditValueMessageHandlerTest extends AbstractHandlerTest<EditValueMe
 
 		handleMessage("06:42:01:00:01:00");
 
-		// TODO
-		// verify(eventPublisher).postCommand("Ulux_Dimmer", IncreaseDecreaseType.INCREASE);
-		verify(eventPublisher).postCommand("Ulux_Dimmer", OnOffType.ON);
+		verify(eventPublisher).postCommand("Ulux_Dimmer", IncreaseDecreaseType.INCREASE);
 	}
 
 	@Test
