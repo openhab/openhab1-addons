@@ -140,7 +140,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 					String[] keyVal = option.split("=", 2);
 					options.put(keyVal[0].toUpperCase(), keyVal[1]);
 				} else {
-					options.put(option, "");
+					options.put(option.toUpperCase(), "true");
 				}
 			}
 
