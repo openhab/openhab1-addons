@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -53,6 +54,9 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 	private int parity;
 	private String portName;
 	private String password;
+	private long updateInterval;
+	private Date start;
+	private boolean keepConnectionAlive;
 
 	public ResolVBUSSerialReceiver(ResolVBUSListener listener) {
 		this.listener = listener;
@@ -66,13 +70,14 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 	/**
 	 * Open Socket to the SERIAL/USB-Adapter
 	 */
-	public void initializeReceiver(String serialPort, String password) {
+	public void initializeReceiver(String portName, String password, long updateInterval, boolean keepConnectionAlive) {
 
 		try {
 			this.password = password;
-			this.portName=serialPort;
+			this.portName = portName;
+			this.updateInterval = updateInterval;
+			this.keepConnectionAlive = keepConnectionAlive;
 			openSerialPort();
-			logger.debug("Connected to: " + serialPort);
 			resolStreamRAW = new ArrayList<Byte>();
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
@@ -99,6 +104,9 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 
 		if (initDevice())
 			running = true; // start loop
+		else
+			logger.debug("Initialization of device was not successful");
+		
 		try {
 			inStream=serialPort.getInputStream();
 			byte [] bBuffer = new byte[1];
@@ -123,24 +131,20 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 					continue;							
 				}
 				
-				listener.processInputStream(resolStream);
+				if(checkUpdateInterval())
+					listener.processInputStream(resolStream);
 				
 				resolStreamRAW.clear();
 				while (bBuffer[0] != (byte) 0xAA) {
 					inStream.read(bBuffer);
 				}
-//				Thread.sleep(5000);
 			}
-			
 			if(inStream!=null)
-			{
-			inStream.close();
-			}
+				inStream.close();
+
 			
 		} catch (IOException e) {
 			logger.debug(e.getMessage());
-//		} catch (InterruptedException e) {
-//			logger.debug(e.getMessage());
 		}
 	}
 
@@ -153,9 +157,8 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
 					serialPort.getOutputStream()));
 
-
-
 			inputString = reader.readLine();
+			
 			logger.debug("Waiting for SYNC byte...");
 			int syncByte = -1;
 			while (syncByte != 127) {
@@ -174,11 +177,11 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 		// OpenSerialPort
 		Boolean foundPort = false;
 
-		System.out.println("Opening Serialport");
+		logger.debug("Looking for serialport "+serialPortId);
 		enumComm = CommPortIdentifier.getPortIdentifiers();
 		while (enumComm.hasMoreElements()) {
 			serialPortId = (CommPortIdentifier) enumComm.nextElement();
-			if (portName.contentEquals(serialPortId.getName())) {
+			if (portName.equalsIgnoreCase(serialPortId.getName())) {
 				foundPort = true;
 				break;
 			}
@@ -189,26 +192,42 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 			return;
 		}
 		try {
-			serialPort = (SerialPort) serialPortId
-					.open("Open and Sending", 500);
+			serialPort = (SerialPort) serialPortId.open("Open and Sending", 500);
 		} catch (PortInUseException e) {
-			logger.debug("Port in use");
+			logger.debug("Serialport "+serialPort.getName()+" is in use");
 		}
 
 		try {
-			serialPort
-					.setSerialPortParams(baudrate, dataBits, stopBits, parity);
+			serialPort.setSerialPortParams(baudrate, dataBits, stopBits, parity);
 		} catch (UnsupportedCommOperationException e) {
 			logger.debug("Setting SerialPort parameters not possible");
 		}
-		System.out.println("Serialport open");
+		logger.debug("Serialport open");
 	}
 
+	private boolean checkUpdateInterval() {
+		
+		// Compare time with updateInterval to see if an update has to be made
+		 if (start == null) {
+			 start = new Date();
+			 return true;
+		 }
+		 
+		 Date now = new Date();
+		 if (now.getTime()-start.getTime() < updateInterval*1000) {
+			 return false;
+		 }
+		 else {
+			 start = now;
+			 return true;
+		 }
+
+	}
 
 	@Override
-	public void initializeReceiver(String host, int port, String password) {
+	public void initializeReceiver(String host, int port, String password, long updateInterval, boolean keepConnectionAlive) {
 		logger.debug("This is the SerialReceiver. No LAN defintion necessary");
 		
 	}	
-
+	
 }

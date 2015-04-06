@@ -62,8 +62,10 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private String password;
 	private String serialPort;
 	private int inputMode;
+	private long updateInterval;
 	private static final int INPUT_MODE_LAN = 10;
-	private static final int INPUT_MODE_SERIAL = 20;	
+	private static final int INPUT_MODE_SERIAL = 20;
+	private boolean useThread = true;
 
 	
 	/**
@@ -83,6 +85,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	
 	public ResolVBUSBinding() {
 		password = "vbus";
+		useThread = true;
 	}
 		
 	
@@ -107,6 +110,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			String hostString = (String) configuration.get("host");
 			String portString = (String) configuration.get("port");
 			String pwString = (String) configuration.get("password");
+			String updIvalString = (String) configuration.get("updateinterval");
 			
 			if (StringUtils.isNotBlank(hostString) && (StringUtils.isNotBlank(serialString))) {
 				logger.debug("You cannot define a LAN and a serial/USB interface");
@@ -130,13 +134,17 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				password = pwString;
 			}
 			
+			if (StringUtils.isNotBlank(updIvalString)) {
+				updateInterval = Long.parseLong(updIvalString);
+			}
+			
 			if (StringUtils.isNotBlank(serialString)) {
 				serialPort = serialString;
 				inputMode = INPUT_MODE_SERIAL;
 			}
 		
 			loadXMLConfig();
-
+						
 			// Create LAN oder Serial Receiver the parsed information to the listener
 			switch (inputMode) {
 			
@@ -144,19 +152,32 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				packetReceiver = new ResolVBUSLANReceiver(this);
 				// make sure that there is no listener running
 				packetReceiver.stopListener();
-				packetReceiver.initializeReceiver(host,port,password);
+				// if updateInterval is longer than 30 seconds, the execute() method is used
+				if (updateInterval < 30) {
+					logger.debug("Starting ResolVBUS LAN Receiver");
+					packetReceiver.initializeReceiver(host,port,password,updateInterval, true);
+					useThread = true;
+				}
+				else {
+					refreshInterval = updateInterval*1000;
+					useThread = false;
+				}
 				break;
 			}
 			case INPUT_MODE_SERIAL: {
 				packetReceiver = new ResolVBUSSerialReceiver(this);
+				// make sure that there is no listener running
 				packetReceiver.stopListener();
-				packetReceiver.initializeReceiver(serialPort,password);
+				logger.debug("Starting ResolVBUS Serial Receiver");
+				packetReceiver.initializeReceiver(serialPort,password,updateInterval, true);
+				useThread = true;
 				break;
 			}
 			}
 	
 			// start the listener
-			new Thread(packetReceiver).start();
+			if (useThread)
+				new Thread(packetReceiver).start();
 			setProperlyConfigured(true);
 		
 		}
@@ -211,10 +232,21 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-//		logger.debug("execute() method is called!");
+		
+		if(!useThread && isProperlyConfigured()) {
+					
+			logger.debug("Refreshing values");
+			
+			if (packetReceiver == null) {
+				logger.debug("No Packet Receiver active...skipping");
+			}
+			else {
+				packetReceiver.initializeReceiver(host, port, password, updateInterval, false);
+				new Thread(packetReceiver).start();
+			}
+			
+		}
 	}
 
 	/**
@@ -342,8 +374,6 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				
 			}
 		}
-				
-		
 		
 	}
 		

@@ -11,8 +11,7 @@ package org.openhab.binding.resolvbus.internal;
 public interface ResolVBUSReceiver extends Runnable{
 	
 	public void stopListener();
-	public void initializeReceiver(String host, int port, String password);
-	public void initializeReceiver(String serialPort, String password);
-	
+	public void initializeReceiver(String host, int port, String password, long updateInterval, boolean keepConnectionAlive);
+	public void initializeReceiver(String serialPort, String password, long updateInterval, boolean keepConnectionAlive);
 
 }

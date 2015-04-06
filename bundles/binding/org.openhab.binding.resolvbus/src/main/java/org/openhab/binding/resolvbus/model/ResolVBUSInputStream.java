@@ -129,6 +129,8 @@ public class ResolVBUSInputStream {
 		
 		if (protocolVersion!= 16) {
 			logger.debug("Wrong protocol version: "+protocolVersion+" Only Version 1.0 is supported");
+			errorFree = false;
+			return;
 		}
 		
 

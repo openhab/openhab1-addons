@@ -16,7 +16,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -41,6 +43,12 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	private ResolVBUSInputStream resolStream;
 	private List<Byte> resolStreamRAW;
 	private String password;
+	private long updateInterval;
+	private Date startTime;
+	private boolean keepConnectionAlive;
+	private String host;
+	private int port;
+	private boolean valuePublished;
 
 	public ResolVBUSLANReceiver(ResolVBUSListener listener) {
 		this.listener = listener;
@@ -49,20 +57,40 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	/**
 	 * Open Socket to the LAN-Adapter
 	 */
-	public void initializeReceiver(String host, int port, String password) {
+	public void initializeReceiver(String host, int port, String password, long updateInterval, boolean keepAlive) {
 
+		this.password = password;
+		this.updateInterval = updateInterval;
+		this.host = host;
+		this.port = port;
+		this.keepConnectionAlive = keepAlive;
+		resolStreamRAW = new ArrayList<Byte>();
+		valuePublished = false;
+		startTime = null;
+
+	}
+	
+	private void openConnection() {
+		
 		try {
-			this.password = password;
 			vBusSocket = new Socket(host, port);
 			inStream = vBusSocket.getInputStream();
 			logger.debug("Connected to: " + host + ":" + port);
-			resolStreamRAW = new ArrayList<Byte>();
+		} catch (UnknownHostException e) {	
+			e.printStackTrace();
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
 			e.printStackTrace();
 		}
+
 	}
 	
+	private void closeConnection() throws IOException {
+		
+		inStream.close();
+		logger.debug("Closing socket..");
+		vBusSocket.close();
+		logger.debug("Socket to: " + host + ":" + port+" closed");
+	}
 
 	/**
 	 * Stop the thread
@@ -80,6 +108,9 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	}
 
 	public void run() {
+		
+		openConnection();
+		
 		if (vBusSocket == null)
 			throw new IllegalStateException(
 					"Cannot access socket. You must call"
@@ -87,46 +118,45 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 
 		if (initDevice())
 			running = true; // start loop
+		else
+			logger.debug("Initialization of device was not successful");
+		
 		try {
-			byte [] bBuffer = new byte[1];
+			byte [] byteBuffer = new byte[1];
 			
 			//Waiting for input which is sent periodically
-			while (running) {
-				
-				do {
-					inStream.read(bBuffer);
-					resolStreamRAW.add(bBuffer[0]);
-
-				} while (bBuffer[0] != (byte) 0xAA);
-		
-				resolStreamRAW.add(0, (byte) 0xAA);
-
-				resolStream = new ResolVBUSInputStream(resolStreamRAW);
-				
-
-				if (!resolStream.isErrorFree()) {
-					logger.debug("Warning: Error in received stream...trying next stream. Can be ignored if everything else is working fine.");
-					resolStreamRAW.clear();
-					continue;							
-				}
-				
-				listener.processInputStream(resolStream);
-				
-				resolStreamRAW.clear();
-				while (bBuffer[0] != (byte) 0xAA) {
-					inStream.read(bBuffer);
-				}
-//				Thread.sleep(5000);
-			}
+			do {
+				receiveAndUpdate(byteBuffer);
+				if (valuePublished  && !keepConnectionAlive) 
+					running = false;
+			} while (running);
 			
-			inStream.close();
-		
+			closeConnection();
 			
 		} catch (IOException e) {
 			logger.debug(e.getMessage());
 		}
 	}
 
+
+	private boolean checkUpdateInterval() {
+		
+		 if (startTime == null) {
+			 startTime = new Date();
+			 return true;
+		 }
+		 
+		 Date now = new Date();
+		 if (now.getTime()-startTime.getTime() < updateInterval*1000) {
+			 logger.debug("Skipping data...Update Interval not reached");
+			 return false;
+		 }
+		 else {
+			 startTime = now;
+			 return true;
+		 }
+
+	}
 
 	private boolean initDevice() {
 		String inputString;
@@ -177,9 +207,40 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 		return true;
 	}
 
+	private void receiveAndUpdate(byte [] bBuffer) throws IOException {
+		
+		do {
+			inStream.read(bBuffer);
+			resolStreamRAW.add(bBuffer[0]);
 
-	public void initializeReceiver(String serialPort, String password) {
+		} while (bBuffer[0] != (byte) 0xAA);
+
+		resolStreamRAW.add(0, (byte) 0xAA);
+
+		resolStream = new ResolVBUSInputStream(resolStreamRAW);
+		
+		if (resolStream.isErrorFree()) {
+			logger.debug("Received a clean stream...processing..");
+			if (checkUpdateInterval()) 
+				listener.processInputStream(resolStream);
+			
+			resolStreamRAW.clear();
+			while (bBuffer[0] != (byte) 0xAA) {
+				inStream.read(bBuffer);
+			}
+			valuePublished = true;
+		}
+		else {
+			logger.debug("Warning: Error in received stream...trying next stream. Can be ignored if everything else is working fine.");
+			resolStreamRAW.clear();
+			resolStream = null;
+			return;	
+		}
+	}
+	
+	public void initializeReceiver(String serialPort, String password, long updateInterval, boolean keepConnectionAlive) {
 		logger.debug("This is the LAN Receiver. No Serial/USB defintion necessary");
 		
 	}
+
 }

@@ -95,14 +95,11 @@ public class ResolVBUSUtility {
 
 		for (ResolVBUSField field : vPacket.getField()) {
 			int fieldValue = 0;
-			
+			int bitSize = field.getBitSize().intValue();
 			// Calculate number of bytes from bitsize
-//			int byteLength = (field.getBitSize().intValue() + 7) / 8;
-			int bitSize = field.getSize().intValue()*8-1;
-			int byteLength = field.getSize().intValue();
-			
-//			int freeBits = byteLength * 8 - field.getBitSize().intValue();
+			int byteLength = (field.getBitSize().intValue() + 7) / 8;			
 			int freeBits = byteLength * 8 - bitSize;
+
 			
 			// bitSize beachten, alles da¸aber ignorieren
 			for (int i = 1; i <= freeBits; i++) {
@@ -124,6 +121,7 @@ public class ResolVBUSUtility {
 	public static double getValueWithVBUSField(ResolVBUSInputStream vInputStream, ResolVBUSField field) {
 		
 		int fieldValue = 0;
+		int bitSize = field.getBitSize().intValue();
 		
 		if (field == null) {
 			logger.debug("No ResolVBUSfield found..returning -999 ");
@@ -131,20 +129,17 @@ public class ResolVBUSUtility {
 		}
 		
 		// Calculate number of bytes from bitsize
-		int byteLength = (field.getSize().intValue() + 7) / 8;
-//		int bitSize = field.getSize().intValue()*8-1;
-//		int byteLength = field.getSize().intValue();
+		int byteLength = (bitSize + 7) / 8;
 		
-		int freeBits = byteLength * 8 - field.getSize().intValue();
-//		int freeBits = byteLength * 8 - bitSize;
+		int freeBits = byteLength * 8 - bitSize;
 
 		// transform in regards to bitsize
 		for (int i = 1; i <= freeBits; i++) {
 			fieldValue |= 1 << byteLength * 8 - i;
 		}
 		fieldValue = ~fieldValue & bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength);
-		if (fieldValue > (int) (Math.pow(2, field.getSize().intValue()) - 1) / 2) {
-			for (int i = field.getSize().intValue(); i < 32; i++) {
+		if (fieldValue > (int) (Math.pow(2, bitSize) - 1) / 2) {
+			for (int i = bitSize; i < 32; i++) {
 				fieldValue |= 1 << i;
 			}
 		}

@@ -25,7 +25,7 @@ public class ResolVBUSField {
 	private String format;
 	private BigInteger offset;
 	private String name;
-	private BigInteger size;
+	private BigInteger bitSize;
 	private BigDecimal factor;
 	private String unit;
 	private String field;
@@ -58,14 +58,6 @@ public class ResolVBUSField {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public BigInteger getSize() {
-		return size;
-	}
-
-	public void setSize(BigInteger size) {
-		this.size = size;
 	}
 
 	public BigDecimal getFactor() {
@@ -122,6 +114,14 @@ public class ResolVBUSField {
 
 	public void setMask(String mask) {
 		this.mask = mask;
+	}
+
+	public BigInteger getBitSize() {
+		return bitSize;
+	}
+
+	public void setBitSize(BigInteger bitSize) {
+		this.bitSize = bitSize;
 	}
 
 }
