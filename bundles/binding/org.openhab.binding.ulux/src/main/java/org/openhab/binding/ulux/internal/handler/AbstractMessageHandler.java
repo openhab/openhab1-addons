@@ -17,7 +17,6 @@ import java.util.Map;
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingConfigType;
 import org.openhab.binding.ulux.UluxBindingProvider;
-import org.openhab.binding.ulux.internal.UluxException;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -78,7 +77,7 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 				} else if (value == 1) {
 					return OnOffType.ON;
 				} else {
-					throw new UluxException("Unsupported value for OnOffType: " + value);
+					LOG.debug("Unsupported value for OnOffType: {}", value);
 				}
 			} else if (IncreaseDecreaseType.class.isAssignableFrom(type)) {
 				if (value == 0) {
@@ -86,7 +85,7 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 				} else if (value == 1) {
 					return IncreaseDecreaseType.INCREASE;
 				} else {
-					throw new UluxException("Unsupported value for IncreaseDecreaseType: " + value);
+					LOG.debug("Unsupported value for IncreaseDecreaseType: {}", value);
 				}
 			} else if (OpenClosedType.class.isAssignableFrom(type)) {
 				if (value == 0) {
@@ -94,7 +93,7 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 				} else if (value == 1) {
 					return OpenClosedType.OPEN;
 				} else {
-					throw new UluxException("Unsupported value for OpenClosedType: " + value);
+					LOG.debug("Unsupported value for OpenClosedType: {}", value);
 				}
 			} else if (StopMoveType.class.isAssignableFrom(type)) {
 				if (value == 0) {
@@ -102,7 +101,7 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 				} else if (value == 1) {
 					return StopMoveType.MOVE;
 				} else {
-					throw new UluxException("Unsupported value for StopMoveType: " + value);
+					LOG.debug("Unsupported value for StopMoveType: {}", value);
 				}
 			} else if (UpDownType.class.isAssignableFrom(type)) {
 				if (value == 0) {
@@ -110,14 +109,18 @@ abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMess
 				} else if (value == 1) {
 					return UpDownType.UP;
 				} else {
-					throw new UluxException("Unsupported value for UpDownType: " + value);
+					LOG.debug("Unsupported value for UpDownType: {}", value);
 				}
 			} else if (PercentType.class.isAssignableFrom(type)) {
-				return new PercentType(value);
+				if (value >= 0 || value <= 100) {
+					return new PercentType(value);
+				} else {
+					LOG.debug("Unsupported value for PercentType: {}", value);
+				}
 			} else if (DecimalType.class.isAssignableFrom(type)) {
 				return new DecimalType(value);
 			} else {
-				return new DecimalType(value);
+				LOG.debug("Unsupported value '{}' of type '{}'!", type, type.getClass());
 			}
 		}
 

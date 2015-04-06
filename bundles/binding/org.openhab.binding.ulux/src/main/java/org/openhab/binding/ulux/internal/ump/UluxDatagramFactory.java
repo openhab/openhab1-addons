@@ -92,14 +92,14 @@ public class UluxDatagramFactory {
 
 		if (message != null) {
 			datagram.addMessage(message);
-		} else {
-			LOG.warn("No message created for unsupported type '{}'!", type);
 		}
 
 		return datagram;
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, DateTimeType type) {
+		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+
 		return null; // TODO
 	}
 
@@ -115,6 +115,8 @@ public class UluxDatagramFactory {
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, IncreaseDecreaseType type) {
+		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+
 		return null; // TODO
 	}
 
@@ -131,14 +133,20 @@ public class UluxDatagramFactory {
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, OpenClosedType type) {
+		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+
 		return null; // TODO
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, StopMoveType type) {
+		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+
 		return null; // TODO
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, UpDownType type) {
+		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+
 		return null; // TODO
 	}
 
