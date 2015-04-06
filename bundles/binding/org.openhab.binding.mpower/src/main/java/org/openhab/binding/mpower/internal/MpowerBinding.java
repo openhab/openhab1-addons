@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mpower.MpowerBindingProvider;
 import org.openhab.binding.mpower.internal.connector.MpowerSSHConnector;
-import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author magcode
  */
-public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
+public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 		implements ManagedService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerBinding.class);
@@ -41,6 +41,7 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 	private static final String CONFIG_PASSWORD = "password";
 	private static final String CONFIG_REFRESH = "refresh";
 	private Map<String, MpowerSSHConnector> connectors = new HashMap<String, MpowerSSHConnector>();
+	private long refreshInterval = 10000;
 
 	public MpowerBinding() {
 	}
@@ -56,13 +57,7 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 		return this.connectors;
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
-	// @Override
-	protected long getRefreshInterval() {
-		return 2000;
-	}
+
 
 	/**
 	 * @{inheritDoc
@@ -70,13 +65,6 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 	// @Override
 	protected String getName() {
 		return "Ubiquiti mPower Binding";
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	// @Override
-	protected void execute() {
 	}
 
 	/**
@@ -136,6 +124,12 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 
 			while (keys.hasMoreElements()) {
 				String key = keys.nextElement();
+				if (CONFIG_REFRESH.equals(key)) {
+					// global refresh = watchdog
+					String reconn = (String) config.get(CONFIG_REFRESH);
+					refreshInterval = Long.parseLong(reconn);
+					continue;
+				}
 				String mpowerId = StringUtils.substringBefore(key, ".");
 				String configOption = StringUtils.substringAfterLast(key, ".");
 				if (!"service".equals(mpowerId)) {
@@ -181,19 +175,20 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 
 					MpowerSSHConnector connector = new MpowerSSHConnector(
 							aConfig.getHost(), aConfig.getId(),
-							aConfig.getUser(), aConfig.getPassword(), 3000L,
-							this);
+							aConfig.getUser(), aConfig.getPassword(),
+							aConfig.getRefreshInterval(), this);
 					connectors.put(aConfig.getId(), connector);
 					connector.start();
 				} else {
 					logger.warn("Invalid mPower configuration");
 				}
 			}
+			setProperlyConfigured(true);
 		}
 	}
 
 	/**
-	 * Called from websocket listener This method will update the OH items if
+	 * Called from ssh connector. This method will update the OH items if
 	 * 
 	 * a) the refresh time has passed and the item has changed
 	 * 
@@ -279,5 +274,23 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void execute() {
+		for (MpowerSSHConnector connector : connectors.values()) {
+			logger.debug("Watchdog checking {}", connector.getId());
+			if (!connector.isRunning()) {
+				logger.info("Connector {} is down. Trying to restart",
+						connector.getId());
+				connector.stop();
+				connector.start();
+			}
+		}
+	}
+
+	@Override
+	protected long getRefreshInterval() {
+		return this.refreshInterval;
 	}
 }

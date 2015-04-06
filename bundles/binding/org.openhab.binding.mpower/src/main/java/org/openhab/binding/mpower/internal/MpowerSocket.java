@@ -2,18 +2,13 @@ package org.openhab.binding.mpower.internal;
 
 import java.util.Calendar;
 
-import org.joda.time.DateTime;
-import org.openhab.core.persistence.HistoricItem;
-import org.openhab.core.persistence.extensions.PersistenceExtensions;
-import org.openhab.core.types.State;
-
 /**
  * Ubiquiti mPower strip binding
  * 
  * @author magcode
  */
 public class MpowerSocket {
-	//private PersistenceExtensions service;
+	// private PersistenceExtensions service;
 	private String voltageItemName;
 	private String powerItemName;
 	private String switchItemName;
@@ -26,19 +21,16 @@ public class MpowerSocket {
 
 	public MpowerSocket() {
 
-		//updateMid(service, energyItemName);
+		// updateMid(service, energyItemName);
 	}
-/*
-	private static State updateMid(PersistenceExtensions aService,
-			String itemName) {
-		DateTime datTime = new DateTime();
-		HistoricItem item = aService.historicState(new FakeItem(itemName),
-				datTime.withHourOfDay(0).withMinuteOfHour(0));
-		State histState = item.getState();
-		histState.toString();
-		return histState;
-	}
-*/
+
+	/*
+	 * private static State updateMid(PersistenceExtensions aService, String
+	 * itemName) { DateTime datTime = new DateTime(); HistoricItem item =
+	 * aService.historicState(new FakeItem(itemName),
+	 * datTime.withHourOfDay(0).withMinuteOfHour(0)); State histState =
+	 * item.getState(); histState.toString(); return histState; }
+	 */
 	public String getVoltageItemName() {
 		return voltageItemName;
 	}
@@ -110,7 +102,5 @@ public class MpowerSocket {
 	public void setEnergyTodayItemName(String energyTodayItemName) {
 		this.energyTodayItemName = energyTodayItemName;
 	}
-
-
 
 }

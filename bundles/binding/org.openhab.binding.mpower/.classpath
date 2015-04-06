@@ -4,8 +4,9 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/async-http-client-1.9.3.jar"/>
-	<classpathentry kind="lib" path="lib/netty-3.9.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/jsch-0.1.51.jar"/>
+	<classpathentry kind="lib" path="lib/joda-time-2.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.openhab.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.openhab.core.library"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

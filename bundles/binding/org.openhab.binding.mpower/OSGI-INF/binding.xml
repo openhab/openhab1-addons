@@ -26,5 +26,4 @@
 	<reference bind="addBindingProvider" cardinality="1..n"
 		interface="org.openhab.binding.mpower.MpowerBindingProvider" name="MpowerBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
-	
 </scr:component>
