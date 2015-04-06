@@ -1,0 +1,12 @@
+sitemap haus1 label="Main Menu"
+{
+	Frame {
+		Group item=gOG1 label="Eltern" icon="firstfloor"
+		Group item=gOG2L label="Jorge" icon="firstfloor"
+		Group item=gOG2R label="Frank" icon="attic"
+		Group item=gBuero label="Buero" icon="groundfloor"
+		Group item=gKeller label="Keller" icon="cellar"	
+		Group item=Outdoor icon="garden" 
+	}
+	
+}
