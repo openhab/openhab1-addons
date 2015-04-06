@@ -6,8 +6,11 @@
 		<Class><id>0x20</id></Class>
 		<Class><id>0x31</id></Class>
 		<Class><id>0x70</id></Class>
+		<Class><id>0x74</id></Class>
+		<Class><id>0x7A</id></Class>
 		<Class><id>0x84</id></Class>
 		<Class><id>0x85</id></Class>
+		<Class><id>0x8E</id></Class>
 		<Class><id>0x9c</id></Class>
 	</CommandClasses>
 
