@@ -20,12 +20,15 @@ import org.openhab.binding.ulux.internal.ump.messages.DateTimeMessage;
 import org.openhab.binding.ulux.internal.ump.messages.EditValueMessage;
 import org.openhab.binding.ulux.internal.ump.messages.EventMessage;
 import org.openhab.binding.ulux.internal.ump.messages.IdListMessage;
+import org.openhab.binding.ulux.internal.ump.messages.LedMessage;
 import org.openhab.binding.ulux.internal.ump.messages.LuxMessage;
 import org.openhab.binding.ulux.internal.ump.messages.PageCountMessage;
 import org.openhab.binding.ulux.internal.ump.messages.PageIndexMessage;
 import org.openhab.binding.ulux.internal.ump.messages.StateMessage;
+import org.openhab.binding.ulux.internal.ump.messages.TextMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 
 /**
  * A factory for {@link UluxMessage}s.
@@ -137,10 +140,18 @@ public class UluxMessageFactory {
 		return new EditValueMessage(config.getActorId(), value);
 	}
 
+	public LedMessage createLedMessage(UluxBindingConfig config) {
+		return new LedMessage(config.getActorId()); // TODO
+	}
+
 	public PageIndexMessage createPageIndexMessage(DecimalType decimal) {
 		final byte value = decimal.byteValue();
 
 		return new PageIndexMessage(value);
+	}
+
+	public TextMessage createTextMessage(UluxBindingConfig config, StringType text) {
+		return new TextMessage(config.getActorId(), text.toString());
 	}
 
 }

@@ -20,6 +20,7 @@ import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Type;
 
@@ -84,6 +85,8 @@ public class UluxDatagramFactory {
 			message = createMessage(config, (OpenClosedType) type);
 		} else if (type instanceof StopMoveType) {
 			message = createMessage(config, (StopMoveType) type);
+		} else if (type instanceof StringType) {
+			message = createMessage(config, (StringType) type);
 		} else if (type instanceof UpDownType) {
 			message = createMessage(config, (UpDownType) type);
 		} else {
@@ -142,6 +145,10 @@ public class UluxDatagramFactory {
 		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
 
 		return null; // TODO
+	}
+
+	private UluxMessage createMessage(UluxBindingConfig config, StringType type) {
+		return messageFactory.createTextMessage(config, type);
 	}
 
 	private UluxMessage createMessage(UluxBindingConfig config, UpDownType type) {

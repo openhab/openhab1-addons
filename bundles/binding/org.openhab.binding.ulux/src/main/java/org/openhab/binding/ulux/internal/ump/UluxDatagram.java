@@ -128,4 +128,11 @@ public class UluxDatagram {
 		return this.buffer.position() > 16;
 	}
 
+	/**
+	 * Only accessible for tests!
+	 */
+	protected ByteBuffer getBuffer() {
+		return this.buffer;
+	}
+
 }
