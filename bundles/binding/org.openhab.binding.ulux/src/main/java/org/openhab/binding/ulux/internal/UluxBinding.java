@@ -209,9 +209,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 				messageHandler.handleMessage(message, response);
 			}
 
-			if (response.hasMessages()) {
-				response.send(channel);
-			}
+			response.send(channel);
 		}
 
 		buffer.clear();

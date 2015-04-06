@@ -61,6 +61,10 @@ public class UluxDatagram {
 	}
 
 	public void send(final DatagramChannel channel) {
+		if (!hasMessages()) {
+			return; // nothing to send
+		}
+
 		this.buffer.flip();
 
 		try {
