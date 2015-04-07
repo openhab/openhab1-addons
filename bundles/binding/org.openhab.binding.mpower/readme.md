@@ -9,7 +9,7 @@ The binding supports
 
 # Setup
 
-This binding requires Firmware version "MF.v2.1.4". installed on your mPower strip(s). In case you need to update, use the url 
+This binding requires Firmware version "MF.v2.1.8". installed on your mPower strip(s). In case you need to update, use the url 
 
 ```
 http://<ip of you mpower>/system.cgi
@@ -19,32 +19,32 @@ http://<ip of you mpower>/system.cgi
 In your openhab.cfg add the following lines
 
 ```
+mpower:refresh=<connection check intervall in ms>
 mpower:<smybolic name>.host=<ip of your mPower>
 mpower:<smybolic name>.user=<username>
 mpower:<smybolic name>.password=<password>
-mpower:<smybolic name>.secure=<true|false>
 mpower:<smybolic name>.refresh=<refresh intervall in ms>
 ```
 
 For multiple strips replicate this section with another symbolic name. E.g.:
 
 ```
+mpower:refresh=60000
+
 mpower:mp1.host=192.168.0.15
 mpower:mp1.user=ubnt
 mpower:mp1.password=secret
-mpower:mp1.secure=true
 mpower:mp1.refresh=10000
 
 mpower:mp2.host=192.168.0.27
 mpower:mp2.user=ubnt
 mpower:mp2.password=secret
-mpower:mp2.secure=false
 mpower:mp2.refresh=60000
 ```
 
 Remarks:
-- for the option "refresh": it defines how often the items are updated (in ms). In case the data has not changed (same voltage etc) no update will be performed.
-- for the option "secure": use values "true" or "false" to enable a HTTPS connection.
+- for the option "mpower:refresh": it defines how often the SSH connection will be checked. Best to set this value at 60000.
+- for the option "mpower:<smybolic name>.refresh": it defines how often the items are updated (in ms). In case the data has not changed (same voltage etc) no update will be performed.
 
 
 # Item Binding Configuration
