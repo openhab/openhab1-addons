@@ -242,4 +242,57 @@
 	<command-handler default="true">NoOpCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
+<feature name="ThermostatTemperature">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatTemperatureRequestReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatTemperaturePollHandler</poll-handler>
+</feature>
+<feature name="ThermostatCoolSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x6c" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x2e" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType">ThermostatCoolSetPointCommandHandler</command-handler>
+	<command-handler default="true" >NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHeatCoolSetPointPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatHeatSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x6d" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x2e" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType">ThermostatHeatSetPointCommandHandler</command-handler>
+	<command-handler default="true" >NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHeatCoolSetPointPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatHumidity">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatHumidityRequestReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHumidityPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatModeControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatModeControlReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true" command="DecimalType">ThermostatModeControlCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatFanControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatFanControlReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true" command="DecimalType">ThermostatFanControlCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatMasterControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >NoOpMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true" command="DecimalType">ThermostatMasterControlCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>     
 </xml>
