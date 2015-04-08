@@ -770,6 +770,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
+				record = new OpenHABConfigurationRecord(domain, "LastWake", "Last Wakeup", true);
+				if(wakeupCommandClass.getLastWakeup() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(wakeupCommandClass.getLastWakeup());
+				}
+				records.add(record);
+
 				record = new OpenHABConfigurationRecord(domain, "Target", "Target Node", true);
 				record.value = Integer.toString(wakeupCommandClass.getTargetNodeId());
 				records.add(record);
@@ -884,8 +893,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// Process Controller Reset requests even if the controller isn't initialised
-		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network") && action.equals("SoftReset")) {
-			zController.requestSoftReset();
+		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network")) {
+			if(action.equals("SoftReset")) {
+				zController.requestSoftReset();
+			}
+			else if(action.equals("HardReset")) {
+				zController.requestHardReset();				
+			}
 		}
 		
 		// If the controller isn't ready, then ignore any further requests

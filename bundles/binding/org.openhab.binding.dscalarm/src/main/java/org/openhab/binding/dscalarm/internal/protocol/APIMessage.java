@@ -332,7 +332,7 @@ public class APIMessage {
 						apiMessageType = APIMessageType.PARTITION_EVENT;
 						break;
 					case PartitionArmed: /*652*/
-						apiName = "Partition Armed (0=Away, 1=Stay, 2=ZEA, 3=ZES)";
+						apiName = "Partition Armed";
 						apiDescription = apiCodeReceived + ": Partition has been armed.";
 						partition = Integer.parseInt(apiMessage.substring(3, 4));
 						mode = apiMessage.substring(4);
