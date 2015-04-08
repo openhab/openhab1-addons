@@ -43,6 +43,12 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This class implements binding configuration for all items that represent
  * Integra zones/partitions/outputs state.
  * 
+ * Supported options:
+ * <ul>
+ * <li>commands_only - binding does not update state of the item, but accepts commands</li>
+ * <li>force_arm - forces arming for items that accept arming commands</li>
+ * </ul>
+ * 
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
@@ -51,6 +57,10 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 	private StateType stateType;
 	private int[] objectNumbers;
 	private Map<String, String> options;
+	
+	private enum Options {
+		COMMANDS_ONLY, FORCE_ARM
+	}
 
 	private IntegraStateBindingConfig(StateType stateType, int[] objectNumbers, Map<String, String> options) {
 		this.stateType = stateType;
@@ -124,7 +134,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 	 */
 	@Override
 	public State convertEventToState(Item item, SatelEvent event) {
-		if (!(event instanceof IntegraStateEvent) || hasOptionEnabled("COMMAND_ONLY")) {
+		if (!(event instanceof IntegraStateEvent) || hasOptionEnabled(Options.COMMANDS_ONLY)) {
 			return null;
 		}
 
@@ -167,7 +177,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 	public SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode) {
 		if (command instanceof OnOffType && this.objectNumbers.length == 1) {
 			boolean switchOn = ((OnOffType) command == OnOffType.ON);
-			boolean force_arm = hasOptionEnabled("FORCE_ARM");
+			boolean force_arm = hasOptionEnabled(Options.FORCE_ARM);
 
 			switch (this.stateType.getObjectType()) {
 			case OUTPUT:
@@ -273,7 +283,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 		return bitset;
 	}
 	
-	private boolean hasOptionEnabled(String option) {
-		return Boolean.parseBoolean(this.options.get(option.toUpperCase()));
+	private boolean hasOptionEnabled(Options option) {
+		return Boolean.parseBoolean(this.options.get(option.name()));
 	}
 }
