@@ -1762,6 +1762,15 @@
 			<Label lang="en">4-Zone Controller</Label>
 			<ConfigFile>leviton/vrcz4-m0z.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+			        <Type>1202</Type>
+			        <Id>243</Id>
+			</Reference>
+			<Model>VRCZ4-MRZ</Model>
+			<Label lang="en">4-Zone Controller</Label>
+			<ConfigFile>leviton/vrcz4-mrz.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>007e</Id>
