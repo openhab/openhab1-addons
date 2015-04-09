@@ -147,6 +147,9 @@ public class Tools {
         // the tinkerforge api can only handle 16 leds at the same time
         short maxRange = 16;
         while (range > maxRange) {
+          if (!ledlist.hasTrackingled()) {
+            ledlist.setTrackingled(startLed);
+          }
           ledlist.addLedRange(startLed, maxRange);
           startLed = startLed + maxRange;
           logger.trace("new startled {} range {}", startLed, range);
@@ -158,6 +161,9 @@ public class Tools {
       } else {
         int led = (int) Integer.parseInt(token.trim());
         logger.trace("found led {}", led);
+        if (!ledlist.hasTrackingled()) {
+          ledlist.setTrackingled(led);
+        }
         ledlist.addLed(led);
       }
     }

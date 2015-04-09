@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLEDStrip.RGBValues;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
@@ -547,14 +548,27 @@ public class LEDGroupImpl extends MinimalEObjectImpl.Container implements LEDGro
    * 
    * @generated NOT
    */
-  public void fetchSwitchState()
-  {
-    // TODO: define a marker led and ask tinkerforge device for the current state
-    // if (getColor().getHsbValue().equals(HSBType.BLACK)) {
-    // setSwitchState(OnOffValue.OFF);
-    // } else {
-    // setSwitchState(OnOffValue.ON);
-    // }
+  public void fetchSwitchState() {
+    if (ledList.getTrackingled() != null) {
+      try {
+        RGBValues rgbValues = tinkerforgeDevice.getRGBValues(ledList.getTrackingled(), (short) 1);
+        short[] r = rgbValues.r;
+        short[] g = rgbValues.g;
+        short[] b = rgbValues.b;
+        if (r[0] == 0 && g[0] == 0 && b[0] == 0) {
+          setSwitchState(OnOffValue.OFF);
+        } else {
+          setSwitchState(OnOffValue.ON);
+        }
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    } else {
+      setSwitchState(OnOffValue.UNDEF);
+    }
   }
 
   /**

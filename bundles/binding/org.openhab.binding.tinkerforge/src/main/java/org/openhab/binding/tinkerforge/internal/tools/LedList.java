@@ -17,6 +17,8 @@ public class LedList {
   private ArrayList<Integer> ledNumbers = new ArrayList<Integer>();
   // map: key is int of startled, value is range as short
   private Map<Integer, Short> ledRanges = new HashMap<Integer, Short>();
+  // the led which is used to get the current color from the bricklet
+  private Integer trackingled;
 
   public ArrayList<Integer> getLedNumbers() {
     return ledNumbers;
@@ -32,6 +34,18 @@ public class LedList {
 
   public void addLedRange(Integer startLed, Short range) {
     ledRanges.put(startLed, range);
+  }
+
+  public Integer getTrackingled() {
+    return trackingled;
+  }
+
+  public void setTrackingled(Integer trackingled) {
+    this.trackingled = trackingled;
+  }
+
+  public boolean hasTrackingled() {
+    return trackingled != null ? true : false;
   }
 
   public boolean hasLeds() {
