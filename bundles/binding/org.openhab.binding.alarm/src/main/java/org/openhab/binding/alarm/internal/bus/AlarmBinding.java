@@ -21,6 +21,7 @@ import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.AlarmState;
+import org.openhab.core.types.AlarmState.AlarmClass;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -56,7 +57,7 @@ public class AlarmBinding extends AbstractBinding<AlarmBindingProvider> implemen
 			public void staleAlarm(String itemName, AlarmCondition alarmCondition) {
 				GenericItem gItem=getGenericItem(itemName);
 				gItem.setAlarmed(new AlarmState(alarmCondition.getAlarmText(), alarmCondition.getAlarmClass()));
-				alarmItem(gItem, alarmCondition);
+				alarmItem(gItem, alarmCondition.getAlarmText(), alarmCondition.getAlarmClass(), alarmCondition.getMessageItemName());
 			}
 
 			/* (non-Javadoc)
@@ -66,7 +67,7 @@ public class AlarmBinding extends AbstractBinding<AlarmBindingProvider> implemen
 			public void delayedAlarm(String itemName, AlarmCondition alarmCondition) {
 				GenericItem gItem=getGenericItem(itemName);
 				gItem.setAlarmed(new AlarmState(alarmCondition.getAlarmText(), alarmCondition.getAlarmClass()));
-				alarmItem(gItem, alarmCondition);
+				alarmItem(gItem, alarmCondition.getAlarmText(), alarmCondition.getAlarmClass(), alarmCondition.getMessageItemName());
 
 			}
 
@@ -141,7 +142,7 @@ public class AlarmBinding extends AbstractBinding<AlarmBindingProvider> implemen
 								else {
 									logger.debug("Alarm triggered: item {}, function {} value {}", item.getName(), alarmCondition.getMatchingFunction(), newState);
 									//Not a delayed alarm, alarm now.
-									alarmItem(item, alarmCondition);
+									alarmItem(item, alarmCondition.getAlarmText(), alarmCondition.getAlarmClass(), alarmCondition.getMessageItemName());
 								}
 							}
 							else {
@@ -214,15 +215,15 @@ public class AlarmBinding extends AbstractBinding<AlarmBindingProvider> implemen
 		}
 	}
 
-	private void alarmItem(GenericItem item, AlarmCondition alarmCondition) {
-		AlarmState alarmState= new AlarmState(alarmCondition.getAlarmText(), alarmCondition.getAlarmClass());
+
+	private void alarmItem(GenericItem item, String alarmText, AlarmClass alarmClass, String messageItemName) {
+		AlarmState alarmState= new AlarmState(alarmText, alarmClass);
 
 		item.setAlarmed(alarmState);
 		eventPublisher.postAlarm(item.getName(), alarmState);
-		String messageItemName=alarmCondition.getMessageItemName();
 		if (messageItemName!=null) {
 			logger.debug("Pushing alarm to alarmitem  out={}", messageItemName);
-			eventPublisher.postUpdate(messageItemName, new StringType(alarmCondition.getAlarmText()));
+			eventPublisher.postUpdate(messageItemName, new StringType(alarmText));
 		}
 	}
 

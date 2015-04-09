@@ -94,9 +94,12 @@ public class AlarmScheduler {
 		if (mIsRunning) {
 			sLogger.debug("Stale devices detection scheduler already running");
 		}
+		else if (checkCycleInSecs<1){
+			sLogger.debug("Illegal cycle time {}. Scheduler not starting.", checkCycleInSecs);
+		}
 		else {
 			mIsRunning=true;
-			sLogger.trace("Starting stale/delayed alarm scheduler");
+			sLogger.trace("Starting stale/delayed alarm scheduler with cycle time {}", checkCycleInSecs);
 
 			sLogger.debug("Starting schedule executor.");
 			mScheduledExecutorService = Executors.newScheduledThreadPool(4);

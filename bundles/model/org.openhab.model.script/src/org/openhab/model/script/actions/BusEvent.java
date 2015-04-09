@@ -16,6 +16,8 @@ import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.types.AlarmState.AlarmClass;
+import org.openhab.core.types.AlarmState;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
@@ -102,7 +104,7 @@ public class BusEvent {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Posts a status update for a specified item to the event bus.
 	 * 
@@ -167,6 +169,112 @@ public class BusEvent {
 	}
 
 	/**
+	 * Posts an high priority alarm for a specified item to the event bus.
+	 * 
+	 * @param item the item to send the alarm for
+	 * @param alarmText the alarm text
+	 */
+	static public Object postAlarm(Item item, String alarmText) {
+		return postAlarm(item, alarmText, null);
+	}
+
+	/**
+	 * Posts an high priority alarm for a specified item to the event bus.
+	 * 
+	 * @param itemName the name of the item to send the alarm for
+	 * @param alarmText the alarm text
+	 */
+	static public Object postAlarm(String itemName, String alarmText) {
+		ItemRegistry registry = (ItemRegistry) ScriptActivator.itemRegistryTracker.getService();
+		if(registry!=null) {
+			try {
+				Item item = registry.getItem(itemName);
+				postAlarm(item, alarmText, null);
+			} catch (ItemNotFoundException e) {
+				logger.warn("Item '" + itemName + "' does not exist.");
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Posts an alarm for a specified item to the event bus.
+	 * 
+	 * @param item the item to send the alarm for
+	 * @param alarmText the alarm text
+	 * @param alarmClass the alarm class
+	 */
+	static public Object postAlarm(Item item, String alarmText, String alarmClassName) {
+		EventPublisher publisher = (EventPublisher) ScriptActivator.eventPublisherTracker.getService();
+		if (publisher!=null && item != null) {
+			AlarmClass alarmClass=AlarmClass.HIGH;
+			if (alarmClassName!=null) {
+				try {
+					alarmClass=AlarmClass.valueOf(alarmClassName);
+				}
+				catch (IllegalArgumentException e) {
+					//Ignore, use HIGH class
+				}
+			}
+			AlarmState alarmState= new AlarmState(alarmText, alarmClass);
+			publisher.postAlarm(item.getName(), alarmState);
+		}
+		return null;
+	}
+
+	/**
+	 * Posts an high priority alarm for a specified item to the event bus.
+	 * 
+	 * @param itemName the name of the item to send the alarm for
+	 * @param alarmText the alarm text
+	 */
+	static public Object postAlarm(String itemName, String alarmText, String alarmClassName) {
+		ItemRegistry registry = (ItemRegistry) ScriptActivator.itemRegistryTracker.getService();
+		if(registry!=null) {
+			try {
+				Item item = registry.getItem(itemName);
+				postAlarm(item, alarmText, alarmClassName);
+			} catch (ItemNotFoundException e) {
+				logger.warn("Item '" + itemName + "' does not exist.");
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Posts an high priority alarm for a specified item to the event bus.
+	 * 
+	 * @param item the item to send the alarm for
+	 * @param alarmText the alarm text
+	 */
+	static public Object postAlarmCancel(Item item) {
+		EventPublisher publisher = (EventPublisher) ScriptActivator.eventPublisherTracker.getService();
+		if (publisher!=null && item != null) {
+			publisher.postAlarmCancel(item.getName());
+		}
+		return null;
+	}
+
+	/**
+	 * Cancels an alarm for a specified item and posts this event on the bus.
+	 * 
+	 * @param item  the item to cancel the alarm for
+	 * @param alarmText the alarm text
+	 */
+	static public Object postAlarmCancel(String itemName) {
+		ItemRegistry registry = (ItemRegistry) ScriptActivator.itemRegistryTracker.getService();
+		if(registry!=null) {
+			try {
+				Item item = registry.getItem(itemName);
+				postAlarmCancel(item);
+			} catch (ItemNotFoundException e) {
+				logger.warn("Item '" + itemName + "' does not exist.");
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Stores the current states for a list of items in a map.
 	 * A group item is not itself put into the map, but instead all its members.
 	 * 
@@ -211,6 +319,6 @@ public class BusEvent {
 		}
 		return null;
 	}
-	
-//	static public JobKey timer(AbstractInstant instant, Object)
+
+	//	static public JobKey timer(AbstractInstant instant, Object)
 }
