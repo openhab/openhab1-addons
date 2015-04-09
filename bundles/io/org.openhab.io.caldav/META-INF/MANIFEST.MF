@@ -43,10 +43,10 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/caldavloader.xml
 Bundle-ClassPath: .,
+ lib/commons-lang3-3.3.2.jar,
  lib/httpclient-4.3.5.jar,
  lib/httpcore-4.3.2.jar,
- lib/sardine-5.3.jar,
  lib/ical4j-2.0-alpha1.jar,
- lib/commons-lang3-3.3.2.jar
+ lib/sardine-5.3.jar
 Export-Package: org.openhab.io.caldav
 Bundle-ActivationPolicy: lazy

@@ -40,6 +40,7 @@ import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -313,8 +314,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_PARSING, true);
-
-		List<DavResource> list = sardine.list(config.getUrl());
+		
+		List<DavResource> list = sardine.list(config.getUrl(), 1, false);
 
 		for (DavResource resource : list) {
 			if (resource.isDirectory()) {
@@ -335,7 +336,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			Calendar calendar = builder.build(inputStream);
 			for (CalendarComponent comp : calendar.getComponents()) {
 				LOG.trace("loading event: {}", comp);
-				if (comp instanceof VEvent) {
+				if (comp instanceof VTimeZone) {
+					
+				} else if (comp instanceof VEvent) {
 					VEvent vEvent = (VEvent) comp;
 					LOG.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
 					java.util.Calendar instance1 = java.util.Calendar
@@ -353,10 +356,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							continue;
 						}
 						
-						DateTimeZone dateTimeZone = 
-								p.getStart().getTimeZone() == null ? 
-								DateTimeZone.UTC : 
-								DateTimeZone.forID(p.getStart().getTimeZone().getID());
+						DateTimeZone dateTimeZone = defaultTimeZone;
+						if (p.getStart().getTimeZone() == null) {
+							dateTimeZone = DateTimeZone.UTC;
+						} else if (DateTimeZone.getAvailableIDs().contains(p.getStart().getTimeZone().getID())) {
+							dateTimeZone = DateTimeZone.forID(p.getStart().getTimeZone().getID());
+						}
 						
 						CalDavEvent event = new CalDavEvent(vEvent.getSummary()
 								.getValue(), 
@@ -427,7 +432,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		for (ConcurrentHashMap<String, CalDavEvent> map : this.eventCache.values()) {
 			LOG.trace("------------ list " + map.size() + " -------------");
 			for (CalDavEvent event : map.values()) {
-				LOG.info(event.getShortName());
+				LOG.trace(event.getShortName());
 			}
 			LOG.trace("------------ list end ---------");
 		}
