@@ -280,5 +280,18 @@ Example entry:
      <feature name="meter">PowerMeter</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ 
+ <device productKey="F00.00.18">
+     <model>2441TH</model>
+     <description>Insteon Thermostat</description>
+     <feature name="temperature">ThermostatTemperature</feature>
+     <feature name="coolsetpoint">ThermostatCoolSetPoint</feature>
+     <feature name="heatsetpoint">ThermostatHeatSetPoint</feature>
+     <feature name="humidity">ThermostatHumidity</feature>
+     <feature name="modecontrol">ThermostatModeControl</feature>
+     <feature name="fancontrol">ThermostatFanControl</feature>
+     <feature name="mastercontrol">ThermostatMasterControl</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
 
 </xml>

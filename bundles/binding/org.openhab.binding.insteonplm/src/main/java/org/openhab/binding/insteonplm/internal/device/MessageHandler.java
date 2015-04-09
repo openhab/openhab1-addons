@@ -709,6 +709,200 @@ public abstract class MessageHandler {
 	}
 
 	/**
+	 * Handles Thermostat replies to Set Cool SetPoint requests.
+	 */
+	public static class ThermostatSetPointMsgHandler extends  MessageHandler {
+		ThermostatSetPointMsgHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				if (msg.isExtended()) {
+					logger.info("{}: received msg for feature {}", nm(), f.getName());
+					int level = ((f.getName()).equals("ThermostatCoolSetPoint")) ? (int)(msg.getByte("userData7") & 0xff) : (int)(msg.getByte("userData8") & 0xff);
+					logger.info("{}: got SetPoint from {} of value: {}", nm(), dev.getAddress(), level);
+					f.publish(new DecimalType(level), StateChangeType.CHANGED);
+				} else {
+					logger.info("{}: received msg for feature {}", nm(), f.getName());
+					int cmd2 = (int) (msg.getByte("command2") & 0xff);
+					int level = cmd2/2;
+					logger.info("{}: got SETPOINT from {} of value: {}", nm(), dev.getAddress(), level);
+					f.publish(new DecimalType(level), StateChangeType.CHANGED);
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Handles Thermostat replies to Temperature requests.
+	 */
+	public static class ThermostatTemperatureRequestReplyHandler extends  MessageHandler {
+		ThermostatTemperatureRequestReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				int cmd2 = (int) (msg.getByte("command2") & 0xff);
+				int level = cmd2/2;
+				logger.info("{}: got TEMPERATURE from {} of value: {}", nm(), dev.getAddress(), level);
+				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), level);
+				f.publish(new DecimalType(level), StateChangeType.CHANGED);
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}	
+		
+	/**
+	 * Handles Thermostat replies to Humidity requests.
+	 */
+	public static class ThermostatHumidityRequestReplyHandler extends  MessageHandler {
+		ThermostatHumidityRequestReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				int cmd2 = (int) msg.getByte("command2");
+				logger.info("{}: got HUMIDITY from {} of value: {}", nm(), dev.getAddress(), cmd2);
+				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), cmd2);
+				f.publish(new PercentType(cmd2), StateChangeType.CHANGED);
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Handles Thermostat replies to Mode requests.
+	 */
+	public static class ThermostatModeControlReplyHandler extends  MessageHandler {
+		ThermostatModeControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				/**
+				* Cmd2 Description 										Thermostat Support 	Comments
+				* 0x04 set mode to heat and returns 04 in ACK 			yes 				On Heat
+				* 0x05 set mode to cool and returns 05 in ACK 			yes 				On Cool
+				* 0x06 set mode to manual auto and returns 06 in ACK 	yes 				Manual Auto
+				*/
+				byte cmd2 = msg.getByte("command2");
+				switch (cmd2) {
+				case 0x04:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "HEAT");
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;
+				case 0x05:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "COOL");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;
+				case 0x06:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "AUTO");
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Handles Thermostat replies to Fan requests.
+	 */
+	public static class ThermostatFanControlReplyHandler extends  MessageHandler {
+		ThermostatFanControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				/**
+				* Cmd2 Description 										Thermostat Support 	Comments
+				* 0x07 Turn fan on and returns 07 in ACK 				yes 				On Fan
+				* 0x08 Turn fan auto mode and returns 08 in ACK 		yes 				Auto Fan
+				* 0x09 Turn all off and returns 09 in ACK 				yes 				Off All
+				*/
+				byte cmd2 = msg.getByte("command2");
+				switch (cmd2) {
+				case 0x07:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "ON");
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;
+				case 0x08:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "AUTO");
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;	
+				case 0x09:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "OFF");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;	
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Handles Thermostat replies to Master requests.
+	 */
+	public static class ThermostatMasterControlReplyHandler extends  MessageHandler {
+		ThermostatMasterControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			try {
+				/**
+				* 
+				*/
+				byte cmd2 = msg.getByte("userData3");
+				switch (cmd2) {
+				case 0x00:
+					logger.info("{}: set PRIMARY Thermostat to MASTER", nm());
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;
+				case 0x01:
+					logger.info("{}: set SECONDARY Thermostat to MASTER", nm());
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;	
+				case 0x02:
+					logger.info("{}: set TERTIARY Thermostat to MASTER", nm());
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;	
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+	
+	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
 	 * @param params 
