@@ -1,6 +1,7 @@
 package org.openhab.binding.ulux.internal.ump.messages;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -22,4 +23,12 @@ public class AudioVolumeMessageTest extends AbstractCommandTest {
 		assertThat(actual, equalTo(expected));
 	}
 
+	@Test
+	public void testUpdate() throws Exception {
+		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "1:0:AudioVolume");
+
+		receiveUpdate("Ulux_AudioVolume", new PercentType(75));
+
+		assertFalse(datagram.hasMessages());
+	}
 }

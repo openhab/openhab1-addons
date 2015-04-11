@@ -145,9 +145,6 @@ public class UluxDatagramFactory {
 				message = null;
 			}
 			break;
-		case AUDIO_VOLUME:
-			message = messageFactory.createAudioVolumeMessage((DecimalType) type);
-			break;
 		case AUDIO_PLAY_LOCAL:
 			message = messageFactory.createAudioPlayLocalMessage((DecimalType) type);
 			break;
