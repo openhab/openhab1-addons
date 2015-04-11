@@ -2,6 +2,7 @@ package org.openhab.binding.ulux.internal;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.openhab.binding.ulux.internal.UluxBinding.PORT;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -18,7 +19,9 @@ public class UluxConfigurationTest {
 		final UluxConfiguration configuration = new UluxConfiguration();
 		configuration.updated(properties);
 
-		assertThat(configuration.getBindAddress(), equalTo(new InetSocketAddress("0.0.0.0", UluxBinding.PORT)));
+		// depends on local network configuration
+		// assertThat(configuration.getBindAddress(), equalTo(InetAddress.getByName("192.168.1.1")));
+		assertThat(configuration.getBindSocketAddress(), equalTo(new InetSocketAddress("0.0.0.0", PORT)));
 		assertThat(configuration.getProjectId(), equalTo((short) 1));
 		assertThat(configuration.getDesignId(), equalTo((short) 1));
 	}
@@ -34,7 +37,8 @@ public class UluxConfigurationTest {
 		final UluxConfiguration configuration = new UluxConfiguration();
 		configuration.updated(properties);
 
-		assertThat(configuration.getBindAddress(), equalTo(new InetSocketAddress("192.168.1.1", UluxBinding.PORT)));
+		assertThat(configuration.getBindAddress(), equalTo(InetAddress.getByName("192.168.1.1")));
+		assertThat(configuration.getBindSocketAddress(), equalTo(new InetSocketAddress("192.168.1.1", PORT)));
 		assertThat(configuration.getProjectId(), equalTo((short) 5));
 		assertThat(configuration.getDesignId(), equalTo((short) 8));
 		assertThat(configuration.getSwitchAddress((short) 1), equalTo(InetAddress.getByName("192.168.1.101")));

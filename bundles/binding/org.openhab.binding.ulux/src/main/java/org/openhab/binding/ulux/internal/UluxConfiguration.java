@@ -38,15 +38,15 @@ public class UluxConfiguration {
 
 	private static final String KEY_PROJECT = "projectId";
 
-	private static final String KEY_BIND_ADDRESS = "bind_address";
+	private static final String KEY_MICROPHONE_SECURITY_ID = "microphoneSecurityId";
 
-	// TODO MicrophoneSecurityID
+	private static final String KEY_BIND_ADDRESS = "bind_address";
 
 	private static final short DEFAULT_DESIGN_ID = 1;
 
 	private static final short DEFAULT_PROJECT_ID = 1;
 
-	private static final InetAddress DEFAULT_BIND_ADDRESS = null;
+	private static final int DEFAULT_MICROPHONE_SECURITY_ID = 1;
 
 	/**
 	 * Map from switch id to address.
@@ -62,12 +62,19 @@ public class UluxConfiguration {
 
 	private short projectId = DEFAULT_PROJECT_ID;
 
-	private InetAddress bindAddress = DEFAULT_BIND_ADDRESS;
+	private int microphoneSecurityId = DEFAULT_MICROPHONE_SECURITY_ID;
+
+	private InetAddress bindAddress;
+
+	private InetSocketAddress bindSocketAddress;
 
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config == null) {
 			return;
 		}
+
+		// set default values before applying configuration
+		reset();
 
 		final Enumeration<String> keys = config.keys();
 		while (keys.hasMoreElements()) {
@@ -104,6 +111,14 @@ public class UluxConfiguration {
 				} catch (NumberFormatException e) {
 					LOG.error("Illegal project id: {}", projectId);
 				}
+			} else if (key.equals(KEY_MICROPHONE_SECURITY_ID)) {
+				try {
+					final String microphoneSecurityId = (String) config.get(key);
+
+					this.microphoneSecurityId = Short.valueOf(microphoneSecurityId);
+				} catch (NumberFormatException e) {
+					LOG.error("Illegal microphone security id: {}", microphoneSecurityId);
+				}
 			} else if (key.equals(KEY_BIND_ADDRESS)) {
 				try {
 					final String bindAddress = (String) config.get(key);
@@ -116,6 +131,29 @@ public class UluxConfiguration {
 				LOG.warn("Ignoring unknown configuration: {} = {} ", key, value);
 			}
 		}
+
+		if (this.bindAddress == null) {
+			try {
+				this.bindAddress = InetAddress.getLocalHost();
+				this.bindSocketAddress = new InetSocketAddress(PORT);
+			} catch (UnknownHostException e) {
+				LOG.error("Illegal bind address: {}", bindAddress);
+			}
+		} else {
+			this.bindSocketAddress = new InetSocketAddress(this.bindAddress, PORT);
+		}
+	}
+
+	private void reset() {
+		this.bindAddress = null;
+		this.bindSocketAddress = null;
+
+		this.designId = DEFAULT_DESIGN_ID;
+		this.projectId = DEFAULT_PROJECT_ID;
+		this.microphoneSecurityId = DEFAULT_MICROPHONE_SECURITY_ID;
+
+		this.switchIds.clear();
+		this.switchAdresses.clear();
 	}
 
 	/**
@@ -150,14 +188,21 @@ public class UluxConfiguration {
 		return this.projectId;
 	}
 
+	public int getMicrophoneSecurityId() {
+		return this.microphoneSecurityId;
+	}
+
 	/**
 	 * @return never <code>null</code>
 	 */
-	public InetSocketAddress getBindAddress() {
-		if (this.bindAddress == null) {
-			return new InetSocketAddress(PORT);
-		} else {
-			return new InetSocketAddress(this.bindAddress, PORT);
-		}
+	public InetAddress getBindAddress() {
+		return this.bindAddress;
+	}
+
+	/**
+	 * @return never <code>null</code>
+	 */
+	public InetSocketAddress getBindSocketAddress() {
+		return this.bindSocketAddress;
 	}
 }

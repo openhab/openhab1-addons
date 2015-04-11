@@ -12,6 +12,10 @@ import org.openhab.core.types.Command;
 
 public class AbstractCommandTest extends AbstractMessageTest {
 
+	private UluxConfiguration configuration;
+
+	private Hashtable<String, String> configurationProperties;
+
 	private UluxGenericBindingProvider bindingProvider;
 
 	private UluxDatagramFactory datagramFactory;
@@ -20,16 +24,21 @@ public class AbstractCommandTest extends AbstractMessageTest {
 
 	@Before
 	public void beforeTest() throws Exception {
-		final Hashtable<String, String> properties = new Hashtable<String, String>();
-		properties.put("switch.1", "192.168.1.101");
+		configurationProperties = new Hashtable<String, String>();
+		configurationProperties.put("switch.1", "192.168.1.101");
 
-		final UluxConfiguration configuration = new UluxConfiguration();
-		configuration.updated(properties);
+		configuration = new UluxConfiguration();
+		configuration.updated(configurationProperties);
 
 		bindingProvider = new UluxGenericBindingProvider();
 		datagramFactory = new UluxDatagramFactory(configuration);
 
 		datagram = null;
+	}
+
+	protected final void addConfiguration(String key, String value) throws Exception {
+		configurationProperties.put(key, value);
+		configuration.updated(configurationProperties);
 	}
 
 	protected final void addBindingConfig(Item item, String bindingConfig) throws Exception {

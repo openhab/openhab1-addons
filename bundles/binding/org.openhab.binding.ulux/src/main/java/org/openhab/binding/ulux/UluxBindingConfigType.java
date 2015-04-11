@@ -18,6 +18,8 @@ public enum UluxBindingConfigType {
 
 	AUDIO,
 
+	AUDIO_RECORD,
+
 	AUDIO_VOLUME(),
 
 	DISPLAY(),

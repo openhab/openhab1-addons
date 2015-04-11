@@ -100,7 +100,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
-			this.channel.socket().bind(configuration.getBindAddress());
+			this.channel.socket().bind(configuration.getBindSocketAddress());
 		} catch (final IOException e) {
 			throw new UluxException("Could not open UDP port for listening!", e);
 		}

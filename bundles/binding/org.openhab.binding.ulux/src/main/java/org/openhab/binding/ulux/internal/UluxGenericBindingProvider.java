@@ -33,6 +33,7 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 	static {
 		TYPES.put("AmbientLight", UluxBindingConfigType.AMBIENT_LIGHT);
 		TYPES.put("Audio", UluxBindingConfigType.AUDIO);
+		TYPES.put("AudioRecord", UluxBindingConfigType.AUDIO_RECORD);
 		TYPES.put("AudioVolume", UluxBindingConfigType.AUDIO_VOLUME);
 		TYPES.put("Display", UluxBindingConfigType.DISPLAY);
 		TYPES.put("Lux", UluxBindingConfigType.LUX);

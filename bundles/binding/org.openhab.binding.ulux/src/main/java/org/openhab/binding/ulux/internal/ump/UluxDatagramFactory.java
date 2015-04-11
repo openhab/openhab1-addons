@@ -137,6 +137,8 @@ public class UluxDatagramFactory {
 			} else {
 				return null;
 			}
+		case AUDIO_RECORD:
+			return messageFactory.createAudioRecordMessage(configuration, type);
 		case DISPLAY:
 			return messageFactory.createActivateMessage(type);
 		default:

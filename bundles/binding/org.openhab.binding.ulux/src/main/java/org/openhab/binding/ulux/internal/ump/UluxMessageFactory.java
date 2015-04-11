@@ -10,11 +10,14 @@ package org.openhab.binding.ulux.internal.ump;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
+import org.openhab.binding.ulux.internal.UluxConfiguration;
 import org.openhab.binding.ulux.internal.ump.messages.ActivateMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioPlayLocalMessage;
+import org.openhab.binding.ulux.internal.ump.messages.AudioRecordMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioStopMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioVolumeMessage;
 import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
@@ -120,6 +123,13 @@ public class UluxMessageFactory {
 
 	public AudioStopMessage createAudioStopMessage(OnOffType onOff) {
 		return new AudioStopMessage();
+	}
+
+	public AudioRecordMessage createAudioRecordMessage(UluxConfiguration configuration, OnOffType onOff) {
+		final InetAddress destination = configuration.getBindAddress();
+		final int microphoneSecurityId = configuration.getMicrophoneSecurityId();
+
+		return new AudioRecordMessage(destination, microphoneSecurityId);
 	}
 
 	public AudioVolumeMessage createAudioVolumeMessage(DecimalType decimal) {

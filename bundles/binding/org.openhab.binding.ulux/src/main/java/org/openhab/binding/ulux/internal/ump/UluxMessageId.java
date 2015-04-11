@@ -117,7 +117,7 @@ public enum UluxMessageId {
 
 	/**
 	 */
-	AudioRecord("ID-Record", (byte) 0x9A),
+	AudioRecord("ID-AudioRecord", (byte) 0x9A),
 
 	/**
 	 */
