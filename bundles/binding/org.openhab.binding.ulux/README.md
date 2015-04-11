@@ -44,11 +44,12 @@ Send the index of the audio file (starting at 1) to a number item with message t
 
 `Number Ulux_Audio   "Audio"      <none> { ulux="1:0:AudioPlayLocal"}`
 
-### Stop audio playback or recording
+### Audio playback or recording status and stopping
 
-The switch only reacts to ON commands.
+If an audio file is played back or the recording function is active (which is not yet supported
+by the binding) this item switches to ON. Send an OFF if you want to stop it.
 
-`Switch Ulux_AudioStop    "Audio Stop"  <none> { ulux="1:0:AudioStop" }`
+`Switch Ulux_Audio    "Audio"  <none> { ulux="1:0:Audio" }`
 
 ### Audio volume
 

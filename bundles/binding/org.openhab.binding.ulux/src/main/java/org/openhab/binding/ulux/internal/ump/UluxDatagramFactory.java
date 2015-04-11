@@ -9,6 +9,7 @@
 package org.openhab.binding.ulux.internal.ump;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
+import static org.openhab.core.library.types.OnOffType.OFF;
 
 import java.net.InetAddress;
 
@@ -130,8 +131,12 @@ public class UluxDatagramFactory {
 		case AMBIENT_LIGHT:
 		case PROXIMITY:
 			return null; // ignore
-		case AUDIO_STOP:
-			return messageFactory.createAudioStopMessage(type);
+		case AUDIO:
+			if (type == OFF) {
+				return messageFactory.createAudioStopMessage(type);
+			} else {
+				return null;
+			}
 		case DISPLAY:
 			return messageFactory.createActivateMessage(type);
 		default:

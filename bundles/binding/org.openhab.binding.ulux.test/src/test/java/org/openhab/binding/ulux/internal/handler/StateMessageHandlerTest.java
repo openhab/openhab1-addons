@@ -51,4 +51,13 @@ public class StateMessageHandlerTest extends AbstractHandlerTest<StateMessage> {
 		verify(eventPublisher).postUpdate("Ulux_AmbientLight", OnOffType.ON);
 	}
 
+	@Test
+	public void testAudioPlaying() throws Exception {
+		addBindingConfig(new SwitchItem("Ulux_Audio"), "1:0:Audio");
+
+		handleMessage("08:01:00:00:08:00:00:00");
+
+		verify(eventPublisher).postUpdate("Ulux_Audio", OnOffType.ON);
+	}
+
 }

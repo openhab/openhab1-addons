@@ -60,6 +60,10 @@ public class StateMessage extends AbstractUluxMessage {
 		return timeRequest;
 	}
 
+	public boolean isAudioActive() {
+		return audioActive;
+	}
+
 	public boolean isDisplayActive() {
 		return this.displayActive;
 	}

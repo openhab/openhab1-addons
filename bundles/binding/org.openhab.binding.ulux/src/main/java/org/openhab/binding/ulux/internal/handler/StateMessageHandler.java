@@ -9,6 +9,7 @@
 package org.openhab.binding.ulux.internal.handler;
 
 import static org.openhab.binding.ulux.UluxBindingConfigType.AMBIENT_LIGHT;
+import static org.openhab.binding.ulux.UluxBindingConfigType.AUDIO;
 import static org.openhab.binding.ulux.UluxBindingConfigType.DISPLAY;
 import static org.openhab.binding.ulux.UluxBindingConfigType.PROXIMITY;
 
@@ -35,6 +36,13 @@ final class StateMessageHandler extends AbstractMessageHandler<StateMessage> {
 
 		if (message.isTimeRequest()) {
 			response.addMessage(new DateTimeMessage());
+		}
+
+		// audio state
+		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(AUDIO).entrySet()) {
+			final OnOffType newState = message.isAudioActive() ? OnOffType.ON : OnOffType.OFF;
+
+			this.eventPublisher.postUpdate(entry.getKey(), newState);
 		}
 
 		// display state
