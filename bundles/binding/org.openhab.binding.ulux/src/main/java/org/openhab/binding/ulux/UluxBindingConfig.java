@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.ulux;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.openhab.binding.ulux.internal.ump.messages.EventMessage;
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -21,6 +23,7 @@ public class UluxBindingConfig implements BindingConfig {
 	private short actorId;
 	private short switchId;
 	private UluxBindingConfigType type;
+	private String additionalConfiguration;
 
 	public short getActorId() {
 		return this.actorId;
@@ -46,12 +49,38 @@ public class UluxBindingConfig implements BindingConfig {
 		this.type = type;
 	}
 
+	public void setAdditionalConfiguration(String additionalConfiguration) {
+		this.additionalConfiguration = additionalConfiguration;
+	}
+
+	public EventMessage.Key getKey() {
+		if (this.type == UluxBindingConfigType.KEY) {
+			if (StringUtils.equals(additionalConfiguration, "1")) {
+				return EventMessage.Key.KEY_1;
+			}
+			if (StringUtils.equals(additionalConfiguration, "2")) {
+				return EventMessage.Key.KEY_2;
+			}
+			if (StringUtils.equals(additionalConfiguration, "3")) {
+				return EventMessage.Key.KEY_3;
+			}
+			if (StringUtils.equals(additionalConfiguration, "4")) {
+				return EventMessage.Key.KEY_4;
+			}
+		}
+
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		builder.append("switchId", this.switchId);
 		builder.append("actorId", this.actorId);
 		builder.append("type", this.type);
+		if (this.additionalConfiguration != null) {
+			builder.append("additionalConfiguration", this.additionalConfiguration);
+		}
 
 		return builder.toString();
 	}

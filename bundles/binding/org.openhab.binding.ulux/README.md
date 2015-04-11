@@ -38,6 +38,13 @@ or simply
 
 `Switch Ulux_Switch  "Switch"     <none> { ulux="1:2" }`
 
+### Key events
+
+`Switch Ulux_Key_1  "Key 1"     <none> { ulux="1:1:Key:1" }`
+`Switch Ulux_Key_2  "Key 2"     <none> { ulux="1:1:Key:2" }`
+`Switch Ulux_Key_3  "Key 3"     <none> { ulux="1:1:Key:3" }`
+`Switch Ulux_Key_4  "Key 4"     <none> { ulux="1:1:Key:4" }`
+
 ### Playing an audio file stored on the switch
 
 Send the index of the audio file (starting at 1) to a number item with message type "AudioPlayLocal". 

@@ -24,6 +24,8 @@ public enum UluxBindingConfigType {
 
 	DISPLAY(),
 
+	KEY,
+
 	LUX(),
 
 	PAGE_INDEX(),

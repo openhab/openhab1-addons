@@ -36,6 +36,7 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 		TYPES.put("AudioRecord", UluxBindingConfigType.AUDIO_RECORD);
 		TYPES.put("AudioVolume", UluxBindingConfigType.AUDIO_VOLUME);
 		TYPES.put("Display", UluxBindingConfigType.DISPLAY);
+		TYPES.put("Key", UluxBindingConfigType.KEY);
 		TYPES.put("Lux", UluxBindingConfigType.LUX);
 		TYPES.put("PageIndex", UluxBindingConfigType.PAGE_INDEX);
 		TYPES.put("Proximity", UluxBindingConfigType.PROXIMITY);
@@ -71,7 +72,7 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 
 		final String[] configParts = bindingConfig.split(":");
 
-		if (configParts.length != 2 && configParts.length != 3) {
+		if (configParts.length < 2 || configParts.length > 4) {
 			throw new BindingConfigParseException("Unexpected number of parts: " + configParts.length);
 		}
 
@@ -94,6 +95,10 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 			config.setType(TYPES.get(configParts[2]));
 		} else {
 			config.setType(UluxBindingConfigType.EDIT_VALUE);
+		}
+
+		if (configParts.length > 3) {
+			config.setAdditionalConfiguration(configParts[3]);
 		}
 
 		LOG.debug("Adding binding: {}", config);

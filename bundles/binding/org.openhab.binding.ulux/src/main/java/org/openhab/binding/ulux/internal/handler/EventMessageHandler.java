@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
+import static org.openhab.binding.ulux.UluxBindingConfigType.KEY;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.EventMessage;
 import org.openhab.binding.ulux.internal.ump.messages.EventMessage.Key;
@@ -21,16 +28,18 @@ final class EventMessageHandler extends AbstractMessageHandler<EventMessage> {
 
 	@Override
 	public void handleMessage(EventMessage message, UluxDatagram response) {
-		OnOffType key1 = message.isKeyPressed(Key.KEY_1) ? OnOffType.ON : OnOffType.OFF;
-		OnOffType key2 = message.isKeyPressed(Key.KEY_2) ? OnOffType.ON : OnOffType.OFF;
-		OnOffType key3 = message.isKeyPressed(Key.KEY_3) ? OnOffType.ON : OnOffType.OFF;
-		OnOffType key4 = message.isKeyPressed(Key.KEY_4) ? OnOffType.ON : OnOffType.OFF;
+		final Map<Key, OnOffType> keyStates = new EnumMap<Key, OnOffType>(Key.class);
+		keyStates.put(Key.KEY_1, message.isKeyPressed(Key.KEY_1) ? OnOffType.ON : OnOffType.OFF);
+		keyStates.put(Key.KEY_2, message.isKeyPressed(Key.KEY_2) ? OnOffType.ON : OnOffType.OFF);
+		keyStates.put(Key.KEY_3, message.isKeyPressed(Key.KEY_3) ? OnOffType.ON : OnOffType.OFF);
+		keyStates.put(Key.KEY_4, message.isKeyPressed(Key.KEY_4) ? OnOffType.ON : OnOffType.OFF);
 
-		// TODO
-		this.eventPublisher.postUpdate("Key_1", key1);
-		this.eventPublisher.postUpdate("Key_2", key2);
-		this.eventPublisher.postUpdate("Key_3", key3);
-		this.eventPublisher.postUpdate("Key_4", key4);
+		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(KEY).entrySet()) {
+			final String itemName = entry.getKey();
+			final UluxBindingConfig config = entry.getValue();
+
+			this.eventPublisher.postUpdate(itemName, keyStates.get(config.getKey()));
+		}
 	}
 
 }
