@@ -15,7 +15,15 @@ package org.openhab.io.caldav;
  * @since 1.7.0
  */
 public interface CalDavLoader {
+	/**
+	 * add listener to notify for event changes
+	 * @param notifier the event listener
+	 */
 	public void addListener(EventNotifier notifier);
 	
+	/**
+	 * remove listener to notify for event changes
+	 * @param notifier the event listener
+	 */
 	public void removeListener(EventNotifier notifier);
 }
