@@ -5,5 +5,6 @@
  * Date: 04.12.2014<br>
  * 
  * @see http://www.u-lux.com/files/ulux_switch_ump.pdf
+ * @see http://www.u-lux.com/files/ulux_switch_ump_en.pdf
  */
 package org.openhab.binding.ulux.internal.ump;
