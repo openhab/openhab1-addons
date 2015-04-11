@@ -112,6 +112,8 @@ public class UluxDatagramFactory {
 			return messageFactory.createPageIndexMessage(type);
 		case AUDIO_PLAY_LOCAL:
 			return messageFactory.createAudioPlayLocalMessage(type);
+		case AUDIO_VOLUME:
+			return messageFactory.createAudioVolumeMessage(type);
 		default:
 			return messageFactory.createEditValueMessage(config, type);
 		}

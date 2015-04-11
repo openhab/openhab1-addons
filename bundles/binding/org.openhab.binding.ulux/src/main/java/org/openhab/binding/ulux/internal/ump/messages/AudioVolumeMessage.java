@@ -21,13 +21,20 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class AudioVolumeMessage extends AbstractUluxMessage {
 
-	public AudioVolumeMessage(final short actorId, final ByteBuffer data) {
-		super((byte) 0x06, UluxMessageId.AudioVolume, actorId, data);
+	private static final byte MESSAGE_LENGTH = (byte) 0x06;
+
+	private byte volume;
+
+	public AudioVolumeMessage(final byte volume) {
+		super(MESSAGE_LENGTH, UluxMessageId.AudioVolume);
+
+		this.volume = volume;
 	}
 
 	@Override
 	protected void addData(final ByteBuffer buffer) {
-		// TODO
+		buffer.put(this.volume);
+		buffer.put((byte) 0x00); // reserved
 	}
 
 	@Override

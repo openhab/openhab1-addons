@@ -44,6 +44,10 @@ Send the index of the audio file (starting at 1) to a number item with message t
 
 `Number Ulux_Audio   "Audio"      <none> { ulux="1:0:AudioPlayLocal"}`
 
+### Audio volume
+
+`Dimmer Ulux_AudioVolume    "Audio Volume [%d]"  <none> { ulux="1:0:AudioVolume" }`
+
 ### Display state and switching the display on and off
 
 Send ON or OFF to a switch item of type "Display". It's probably best to configure the

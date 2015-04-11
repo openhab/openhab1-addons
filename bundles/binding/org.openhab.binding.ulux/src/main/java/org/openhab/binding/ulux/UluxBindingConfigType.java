@@ -16,6 +16,8 @@ public enum UluxBindingConfigType {
 
 	AMBIENT_LIGHT(),
 
+	AUDIO_VOLUME(),
+
 	DISPLAY(),
 
 	LUX(),

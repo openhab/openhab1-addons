@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.ump.messages.ActivateMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioPlayLocalMessage;
+import org.openhab.binding.ulux.internal.ump.messages.AudioVolumeMessage;
 import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
 import org.openhab.binding.ulux.internal.ump.messages.DateTimeMessage;
 import org.openhab.binding.ulux.internal.ump.messages.EditValueMessage;
@@ -114,6 +115,12 @@ public class UluxMessageFactory {
 		final short soundIndex = decimal.shortValue();
 
 		return new AudioPlayLocalMessage(soundIndex);
+	}
+
+	public AudioVolumeMessage createAudioVolumeMessage(DecimalType decimal) {
+		final byte volume = decimal.byteValue();
+
+		return new AudioVolumeMessage(volume);
 	}
 
 	public EditValueMessage createEditValueMessage(UluxBindingConfig config, DecimalType decimal) {
