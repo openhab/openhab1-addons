@@ -20,18 +20,20 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class AudioStopMessage extends AbstractUluxMessage {
 
+	private static final byte MESSAGE_LENGTH = (byte) 0x06;
+
 	/**
 	 * Stop normal playback or recording.
 	 */
-	private boolean stopNormal = true;
+	private boolean stopNormal = true; // TODO
 
 	/**
 	 * Stop a playing alarm.
 	 */
-	private boolean stopAlarm = true;
+	private boolean stopAlarm = true; // TODO
 
-	public AudioStopMessage(final short actorId, final ByteBuffer data) {
-		super((byte) 0x06, UluxMessageId.AudioStop, actorId, data);
+	public AudioStopMessage() {
+		super(MESSAGE_LENGTH, UluxMessageId.AudioStop);
 	}
 
 	@Override

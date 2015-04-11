@@ -44,6 +44,12 @@ Send the index of the audio file (starting at 1) to a number item with message t
 
 `Number Ulux_Audio   "Audio"      <none> { ulux="1:0:AudioPlayLocal"}`
 
+### Stop audio playback or recording
+
+The switch only reacts to ON commands.
+
+`Switch Ulux_AudioStop    "Audio Stop"  <none> { ulux="1:0:AudioStop" }`
+
 ### Audio volume
 
 `Dimmer Ulux_AudioVolume    "Audio Volume [%d]"  <none> { ulux="1:0:AudioVolume" }`

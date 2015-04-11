@@ -130,6 +130,8 @@ public class UluxDatagramFactory {
 		case AMBIENT_LIGHT:
 		case PROXIMITY:
 			return null; // ignore
+		case AUDIO_STOP:
+			return messageFactory.createAudioStopMessage(type);
 		case DISPLAY:
 			return messageFactory.createActivateMessage(type);
 		default:
