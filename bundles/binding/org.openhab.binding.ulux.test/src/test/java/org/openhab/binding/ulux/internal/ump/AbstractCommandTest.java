@@ -9,6 +9,7 @@ import org.openhab.binding.ulux.internal.UluxConfiguration;
 import org.openhab.binding.ulux.internal.UluxGenericBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 public class AbstractCommandTest extends AbstractMessageTest {
 
@@ -51,6 +52,12 @@ public class AbstractCommandTest extends AbstractMessageTest {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
 		datagram = datagramFactory.createDatagram(binding, command);
+	}
+
+	protected final void receiveUpdate(String itemName, State newState) throws Exception {
+		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
+
+		datagram = datagramFactory.createDatagram(binding, newState);
 	}
 
 	protected final byte[] toBytes(UluxDatagram datagram) {

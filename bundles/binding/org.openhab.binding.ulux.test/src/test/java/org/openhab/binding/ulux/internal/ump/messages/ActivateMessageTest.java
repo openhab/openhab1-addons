@@ -35,4 +35,13 @@ public class ActivateMessageTest extends AbstractCommandTest {
 		assertThat(actual, equalTo(expected));
 	}
 
+	@Test
+	public void testUpdate() throws Exception {
+		addBindingConfig(new SwitchItem("Ulux_Display"), "1:0:Display");
+
+		receiveUpdate("Ulux_Display", OnOffType.OFF);
+
+		assertFalse(datagram.hasMessages());
+	}
+
 }
