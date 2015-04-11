@@ -28,10 +28,13 @@ import org.openhab.binding.satel.internal.types.ZoneState;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -39,6 +42,12 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 /**
  * This class implements binding configuration for all items that represent
  * Integra zones/partitions/outputs state.
+ * 
+ * Supported options:
+ * <ul>
+ * <li>commands_only - binding does not update state of the item, but accepts commands</li>
+ * <li>force_arm - forces arming for items that accept arming commands</li>
+ * </ul>
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -48,6 +57,10 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 	private StateType stateType;
 	private int[] objectNumbers;
 	private Map<String, String> options;
+	
+	private enum Options {
+		COMMANDS_ONLY, FORCE_ARM
+	}
 
 	private IntegraStateBindingConfig(StateType stateType, int[] objectNumbers, Map<String, String> options) {
 		this.stateType = stateType;
@@ -96,7 +109,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 			break;
 		}
 
-		// parse object numbers, if provided
+		// parse object number, if provided
 		if (iterator.hasNext()) {
 			try {
 				String[] objectNumbersStr = iterator.next().split(",");
@@ -121,7 +134,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 	 */
 	@Override
 	public State convertEventToState(Item item, SatelEvent event) {
-		if (!(event instanceof IntegraStateEvent)) {
+		if (!(event instanceof IntegraStateEvent) || hasOptionEnabled(Options.COMMANDS_ONLY)) {
 			return null;
 		}
 
@@ -141,6 +154,17 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 			} else if (item instanceof NumberItem) {
 				return new DecimalType(stateEvent.statesSet());
 			}
+		} else if (this.objectNumbers.length == 2 && item instanceof RollershutterItem) {
+			// roller shutter support
+			int upBitNbr = this.objectNumbers[0] - 1;
+			int downBitNbr = this.objectNumbers[1] - 1;
+			if (stateEvent.isSet(upBitNbr)) {
+				if (! stateEvent.isSet(downBitNbr)) {
+					return UpDownType.UP;
+				}
+			} else if (stateEvent.isSet(downBitNbr)) {
+				return UpDownType.DOWN;
+			}
 		}
 
 		return null;
@@ -153,7 +177,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 	public SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode) {
 		if (command instanceof OnOffType && this.objectNumbers.length == 1) {
 			boolean switchOn = ((OnOffType) command == OnOffType.ON);
-			boolean force_arm = this.options.containsKey("FORCE_ARM");
+			boolean force_arm = hasOptionEnabled(Options.FORCE_ARM);
 
 			switch (this.stateType.getObjectType()) {
 			case OUTPUT:
@@ -203,6 +227,18 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 					break;
 				}
 			}
+		} else if (this.stateType.getObjectType() == ObjectType.OUTPUT && this.objectNumbers.length == 2) {
+			// roller shutter support
+			if (command == UpDownType.UP) {
+				byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16, 0);
+				return ControlObjectCommand.buildMessage(OutputControl.ON, outputs, userCode);
+			} else if (command == UpDownType.DOWN) {
+				byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16, 1);
+				return ControlObjectCommand.buildMessage(OutputControl.ON, outputs, userCode);
+			} else if (command == StopMoveType.STOP) {
+				byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16);
+				return ControlObjectCommand.buildMessage(OutputControl.OFF, outputs, userCode);
+			}
 		}
 
 		return null;
@@ -238,5 +274,16 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 			bitset[bitNbr / 8] |= (byte) (1 << (bitNbr % 8));
 		}
 		return bitset;
+	}
+
+	private byte[] getObjectBitset(int size, int bitToSet) {
+		byte[] bitset = new byte[size];
+		int bitNbr = this.objectNumbers[bitToSet] - 1;
+		bitset[bitNbr / 8] |= (byte) (1 << (bitNbr % 8));
+		return bitset;
+	}
+	
+	private boolean hasOptionEnabled(Options option) {
+		return Boolean.parseBoolean(this.options.get(option.name()));
 	}
 }
