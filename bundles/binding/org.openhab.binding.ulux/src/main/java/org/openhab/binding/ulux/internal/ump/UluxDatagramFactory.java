@@ -15,15 +15,11 @@ import java.net.InetAddress;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
-import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.library.types.UpDownType;
-import org.openhab.core.types.Type;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 /**
  * A factory for {@link UluxDatagram}s.
@@ -66,32 +62,63 @@ public class UluxDatagramFactory {
 	}
 
 	/**
-	 * Creates a datagram containing a message for the given command or update.
+	 * Creates a datagram containing a message for the given command.
 	 * 
 	 * @return never {@code null}
 	 */
-	public UluxDatagram createDatagram(UluxBindingConfig config, Type type) {
+	public UluxDatagram createDatagram(UluxBindingConfig config, Command type) {
 		final UluxDatagram datagram = createDatagram(config);
 		final UluxMessage message;
 
-		if (type instanceof DateTimeType) {
-			message = createMessage(config, (DateTimeType) type);
-		} else if (type instanceof DecimalType) {
-			message = createMessage(config, (DecimalType) type);
-		} else if (type instanceof IncreaseDecreaseType) {
-			message = createMessage(config, (IncreaseDecreaseType) type);
-		} else if (type instanceof OnOffType) {
-			message = createMessage(config, (OnOffType) type);
-		} else if (type instanceof OpenClosedType) {
-			message = createMessage(config, (OpenClosedType) type);
-		} else if (type instanceof StopMoveType) {
-			message = createMessage(config, (StopMoveType) type);
-		} else if (type instanceof StringType) {
-			message = createMessage(config, (StringType) type);
-		} else if (type instanceof UpDownType) {
-			message = createMessage(config, (UpDownType) type);
-		} else {
+		switch (config.getType()) {
+		case AUDIO:
+			if (type == OFF) {
+				message = messageFactory.createAudioStopMessage((OnOffType) type);
+			} else {
+				message = null;
+			}
+			break;
+		case AUDIO_PLAY_LOCAL:
+			message = messageFactory.createAudioPlayLocalMessage((DecimalType) type);
+			break;
+		case AUDIO_RECORD:
+			message = messageFactory.createAudioRecordMessage(configuration, (OnOffType) type);
+			break;
+		case AUDIO_VOLUME:
+			message = messageFactory.createAudioVolumeMessage((DecimalType) type);
+			break;
+		case DISPLAY:
+			message = messageFactory.createActivateMessage((OnOffType) type);
+			break;
+		case EDIT_VALUE:
+			if (type instanceof DecimalType) {
+				message = messageFactory.createEditValueMessage(config, (DecimalType) type);
+			} else if (type instanceof OnOffType) {
+				message = messageFactory.createEditValueMessage(config, (OnOffType) type);
+			} else if (type instanceof StringType) {
+				message = messageFactory.createTextMessage(config, (StringType) type);
+			} else {
+				// TODO IncreaseDecreaseType
+				// TODO OpenClosedType
+				// TODO StopMoveType
+				// TODO UpDownType
+				LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+				message = null;
+			}
+			break;
+		case PAGE_INDEX:
+			message = messageFactory.createPageIndexMessage((DecimalType) type);
+			break;
+		case AMBIENT_LIGHT:
+		case KEY:
+		case LUX:
+		case PROXIMITY:
+			message = null; // ignore
+			break;
+		default:
+			LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
 			message = null;
+			break;
 		}
 
 		if (message != null) {
@@ -101,71 +128,69 @@ public class UluxDatagramFactory {
 		return datagram;
 	}
 
-	private UluxMessage createMessage(UluxBindingConfig config, DateTimeType type) {
-		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+	/**
+	 * Creates a datagram containing a message for the given state update.
+	 * 
+	 * @return never {@code null}
+	 */
+	public UluxDatagram createDatagram(UluxBindingConfig config, State type) {
+		final UluxDatagram datagram = createDatagram(config);
+		final UluxMessage message;
 
-		return null; // TODO
-	}
-
-	private UluxMessage createMessage(UluxBindingConfig config, DecimalType type) {
 		switch (config.getType()) {
-		case PAGE_INDEX:
-			return messageFactory.createPageIndexMessage(type);
-		case AUDIO_PLAY_LOCAL:
-			return messageFactory.createAudioPlayLocalMessage(type);
-		case AUDIO_VOLUME:
-			return messageFactory.createAudioVolumeMessage(type);
-		default:
-			return messageFactory.createEditValueMessage(config, type);
-		}
-	}
-
-	private UluxMessage createMessage(UluxBindingConfig config, IncreaseDecreaseType type) {
-		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
-
-		return null; // TODO
-	}
-
-	private UluxMessage createMessage(UluxBindingConfig config, OnOffType type) {
-		switch (config.getType()) {
-		case AMBIENT_LIGHT:
-		case PROXIMITY:
-			return null; // ignore
 		case AUDIO:
 			if (type == OFF) {
-				return messageFactory.createAudioStopMessage(type);
+				message = messageFactory.createAudioStopMessage((OnOffType) type);
 			} else {
-				return null;
+				message = null;
 			}
+			break;
+		case AUDIO_VOLUME:
+			message = messageFactory.createAudioVolumeMessage((DecimalType) type);
+			break;
+		case AUDIO_PLAY_LOCAL:
+			message = messageFactory.createAudioPlayLocalMessage((DecimalType) type);
+			break;
 		case AUDIO_RECORD:
-			return messageFactory.createAudioRecordMessage(configuration, type);
+			message = messageFactory.createAudioRecordMessage(configuration, (OnOffType) type);
+			break;
 		case DISPLAY:
-			return messageFactory.createActivateMessage(type);
+			message = messageFactory.createActivateMessage((OnOffType) type);
+			break;
+		case EDIT_VALUE:
+			if (type instanceof DecimalType) {
+				message = messageFactory.createEditValueMessage(config, (DecimalType) type);
+			} else if (type instanceof OnOffType) {
+				message = messageFactory.createEditValueMessage(config, (OnOffType) type);
+			} else if (type instanceof StringType) {
+				message = messageFactory.createTextMessage(config, (StringType) type);
+			} else {
+				// TODO OpenClosedType
+				// TODO UpDownType
+				LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+				message = null;
+			}
+			break;
+		case PAGE_INDEX:
+			message = messageFactory.createPageIndexMessage((DecimalType) type);
+			break;
+		case AMBIENT_LIGHT:
+		case KEY:
+		case LUX:
+		case PROXIMITY:
+			message = null; // ignore
+			break;
 		default:
-			return messageFactory.createEditValueMessage(config, type);
+			LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+			message = null;
+			break;
 		}
-	}
 
-	private UluxMessage createMessage(UluxBindingConfig config, OpenClosedType type) {
-		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
+		if (message != null) {
+			datagram.addMessage(message);
+		}
 
-		return null; // TODO
-	}
-
-	private UluxMessage createMessage(UluxBindingConfig config, StopMoveType type) {
-		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
-
-		return null; // TODO
-	}
-
-	private UluxMessage createMessage(UluxBindingConfig config, StringType type) {
-		return messageFactory.createTextMessage(config, type);
-	}
-
-	private UluxMessage createMessage(UluxBindingConfig config, UpDownType type) {
-		LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
-
-		return null; // TODO
+		return datagram;
 	}
 
 }
