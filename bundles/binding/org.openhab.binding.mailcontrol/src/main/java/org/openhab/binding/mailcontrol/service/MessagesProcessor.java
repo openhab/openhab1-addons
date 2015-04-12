@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import static org.creek.mailcontrol.model.message.MessageType.ITEMS_STATE_REQUES
 import static org.creek.mailcontrol.model.message.MessageType.ITEM_COMMAND_REQUEST_MESSAGE;
 import static org.creek.mailcontrol.model.message.MessageType.ITEM_STATE_REQUEST_MESSAGE;
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Set;
 
@@ -33,39 +34,31 @@ import org.slf4j.LoggerFactory;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class MessagesProcessor <T extends Command > {
+public class MessagesProcessor<T extends Command> {
     private static final Logger logger = LoggerFactory.getLogger(MessagesProcessor.class);
-    
+
     private final MessagesSender messagesSender;
     private final GenericRequestTransformer requestTransformer;
     private final ItemCommandProcessor<T> itemCommandProcessor;
     private final ItemStateRequestProcessor itemStateRequestProcessor;
-    
-    public MessagesProcessor(MailConnector mailConnector, EventPublisher eventPublisher) {
-        this.messagesSender = new MessagesSender(mailConnector);
+
+    public MessagesProcessor(MailConnector mailConnector, EventPublisher eventPublisher, Dictionary<String, ?> config) {
+        this.messagesSender = new MessagesSender(mailConnector, config);
         this.requestTransformer = new GenericRequestTransformer();
         this.itemCommandProcessor = new ItemCommandProcessor<T>(eventPublisher);
         this.itemStateRequestProcessor = new ItemStateRequestProcessor();
     }
-    
-    public MessagesProcessor(MailConnector mailConnector, ItemCommandProcessor<T> itemCommandProcessor, 
-            ItemStateRequestProcessor itemStateRequestProcessor, GenericRequestTransformer requestTransformer) {
-        this.messagesSender = new MessagesSender(mailConnector);
-        this.requestTransformer = requestTransformer;
-        this.itemCommandProcessor = itemCommandProcessor;
-        this.itemStateRequestProcessor = new ItemStateRequestProcessor();
-    }
-    
+
     public void processReceivedMessages(Set<Object> messages) throws TransformException, ServiceException {
         logger.debug("Processing messages");
-        for (Object msg: messages) {
+        for (Object msg : messages) {
             if (msg instanceof String) {
                 logger.debug("Message: " + msg);
-                GenericMessage message = requestTransformer.transform((String)msg);
+                GenericMessage message = requestTransformer.transform((String) msg);
                 logger.debug("Processing message: " + message);
 
                 if (message.getMessageType() == ITEM_COMMAND_REQUEST_MESSAGE) {
-                    ItemCommandData itemCommand = (ItemCommandData)((ItemCommandRequestMessage)message).getItemCommand();
+                    ItemCommandData itemCommand = (ItemCommandData) ((ItemCommandRequestMessage) message).getItemCommand();
                     itemCommandProcessor.processItemCommand(itemCommand);
                 } else if (message.getMessageType() == ITEM_STATE_REQUEST_MESSAGE) {
                     ItemStateRequestMessage itemStateRequestMessage = (ItemStateRequestMessage) message;

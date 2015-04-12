@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,14 +9,9 @@
 package org.openhab.binding.mailcontrol.internal;
 
 import org.openhab.binding.mailcontrol.MailControlBindingProvider;
-import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * This class is responsible for parsing the binding configuration.
@@ -25,69 +20,17 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class MailControlGenericBindingProvider extends AbstractGenericBindingProvider implements MailControlBindingProvider {
-    // Injected by the OSGi Container through the setItemRegistry and
-    // unsetItemRegistry methods.
-    private ItemRegistry itemRegistry;
-
-    private static final Logger logger = LoggerFactory.getLogger(MailControlGenericBindingProvider.class);
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getBindingType() {
-		return "mailcontrol";
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		MailControlBindingConfig config = new MailControlBindingConfig();
-		
-		//parse bindingconfig here ...
-		
-		addBindingConfig(item, config);		
-	}
-	
-	
-	class MailControlBindingConfig implements BindingConfig {
-		// put member fields here which holds the parsed values
-	}
-	
-    /**
-     * Invoked by the OSGi Framework.
-     */
-    public void setItemRegistry(ItemRegistry itemRegistry) {
-        logger.debug("setItemRegistry: called");
-        this.itemRegistry = itemRegistry;
-    }
-
-    /**
-     * Invoked by the OSGi Framework.
-     */
-    public void unsetItemRegistry(ItemRegistry itemRegistry) {
-        logger.debug("unsetItemRegistry: called");
-        this.itemRegistry = null;
-    }
-
     /**
      * {@inheritDoc}
      */
-    public ItemRegistry getItemRegistry() {
-        return this.itemRegistry;
+    public String getBindingType() {
+        return "mailcontrol";
+    }
+
+    /**
+     * Items of any type are allowed.
+     */
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
     }
 }

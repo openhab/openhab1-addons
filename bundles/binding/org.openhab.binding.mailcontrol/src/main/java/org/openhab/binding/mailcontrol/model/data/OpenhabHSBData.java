@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,11 +27,11 @@ public class OpenhabHSBData extends OpenhabData<HSBDataType, HSBData> implements
     @Override
     public HSBType getCommandValue() {
         DecimalType h = new DecimalType(data.getHue());
-        PercentType s = new PercentType((int)data.getSaturation());
-        PercentType b = new PercentType((int)data.getBrightness());
+        PercentType s = new PercentType((int) data.getSaturation());
+        PercentType b = new PercentType((int) data.getBrightness());
         return new HSBType(h, s, b);
     }
-    
+
     @Override
     public String toString() {
         return getClass().getName() + ": [data: [" + data.toString() + "]]";

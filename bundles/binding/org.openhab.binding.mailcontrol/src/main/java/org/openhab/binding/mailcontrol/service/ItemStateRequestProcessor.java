@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,7 +43,7 @@ public class ItemStateRequestProcessor {
     public ItemStateData getItemState(String itemId) throws ServiceException {
         ItemRegistry itemRegistry = getItemRegistry();
         ItemStateData itemState = null;
-        
+
         try {
             Item item = itemRegistry.getItem(itemId);
             StateTransformable state = getState(item);
@@ -51,41 +51,41 @@ public class ItemStateRequestProcessor {
         } catch (ItemNotFoundException ex) {
             logger.info(itemId + " not found", ex);
         }
-        
+
         return itemState;
     }
 
     public List<ItemStateData> getItemStates() throws ServiceException {
         List<ItemStateData> itemStates = new ArrayList<ItemStateData>();
-        
+
         ItemRegistry itemRegistry = getItemRegistry();
-        for (Item item: itemRegistry.getItems()) {
+        for (Item item : itemRegistry.getItems()) {
             logger.debug("Item: " + item.getName() + " " + item.getState());
             StateTransformable state = getState(item);
             ItemStateData itemState = new ItemStateData(System.currentTimeMillis(), item.getName(), state);
             itemStates.add(itemState);
-         }
-        
+        }
+
         return itemStates;
     }
 
     private StateTransformable getState(Item item) {
         StateTransformable state = null;
         if (item.getState() instanceof HSBType) {
-            HSBType hsb = (HSBType)item.getState();
+            HSBType hsb = (HSBType) item.getState();
             state = new HSBData(hsb.getHue().longValue(), hsb.getHue().longValue(), hsb.getHue().longValue());
         } else if (item.getState() instanceof DateTimeType) {
-            DateTimeType dt = (DateTimeType)item.getState();
+            DateTimeType dt = (DateTimeType) item.getState();
             DateTimeDataType data = new DateTimeDataType(dt.toString());
             state = new DateTimeData(data);
         } else if (item.getState() instanceof DecimalType) {
-            
+
         } else if (item.getState() instanceof OnOffType) {
-            
+
         } else if (item.getState() instanceof OpenClosedType) {
-            
+
         } else if (item.getState() instanceof PercentType) {
-            
+
         } else if (item.getState() instanceof UpDownType) {
 
         }
@@ -101,7 +101,7 @@ public class ItemStateRequestProcessor {
                 return itemregistry;
             }
         }
-        
+
         throw new ServiceException("Cannot get ItemRegistry");
     }
 }

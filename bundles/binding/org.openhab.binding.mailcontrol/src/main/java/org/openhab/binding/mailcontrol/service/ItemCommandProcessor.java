@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class ItemCommandProcessor <T extends Command> {
+public class ItemCommandProcessor<T extends Command> {
     private static final Logger logger = LoggerFactory.getLogger(ItemCommandProcessor.class);
-    
+
     private final EventPublisher eventPublisher;
 
     public ItemCommandProcessor(EventPublisher eventPublisher) {
@@ -63,10 +63,10 @@ public class ItemCommandProcessor <T extends Command> {
 
         CommandTransformable command = itemData.getCommand();
         logger.debug("Command: " + command);
-        
+
         OpenhabCommandTransformable<T> openhabCommand = getOpenhabCommand(command);
         logger.debug("openhabCommand: " + openhabCommand);
-        
+
         T commandValue = openhabCommand.getCommandValue();
         logger.debug("commandValue: " + commandValue);
 
@@ -78,23 +78,23 @@ public class ItemCommandProcessor <T extends Command> {
         DataType dataType = command.getCommandType();
 
         if (dataType == DECIMAL) {
-            return (OpenhabCommandTransformable<T>)new OpenhabDecimalData((DecimalData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabDecimalData((DecimalData) command);
         } else if (dataType == HSB) {
-            return (OpenhabCommandTransformable<T>)new OpenhabHSBData((HSBData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabHSBData((HSBData) command);
         } else if (dataType == INCREASE_DECREASE) {
-            return (OpenhabCommandTransformable<T>)new OpenhabIncreaseDecreaseData((IncreaseDecreaseData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabIncreaseDecreaseData((IncreaseDecreaseData) command);
         } else if (dataType == ON_OFF) {
-            return (OpenhabCommandTransformable<T>)new OpenhabOnOffData((OnOffData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabOnOffData((OnOffData) command);
         } else if (dataType == OPEN_CLOSED) {
-            return (OpenhabCommandTransformable<T>)new OpenhabOpenClosedData((OpenClosedData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabOpenClosedData((OpenClosedData) command);
         } else if (dataType == PERCENT) {
-            return (OpenhabCommandTransformable<T>)new OpenhabPercentData((PercentData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabPercentData((PercentData) command);
         } else if (dataType == STOP_MOVE) {
-            return (OpenhabCommandTransformable<T>)new OpenhabStopMoveData((StopMoveData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabStopMoveData((StopMoveData) command);
         } else if (dataType == STRING) {
-            return (OpenhabCommandTransformable<T>)new OpenhabStringData((StringData)command);
-        } else /*if (StateType == UP_DOWN)*/ {
-            return (OpenhabCommandTransformable<T>)new OpenhabUpDownData((UpDownData)command);
+            return (OpenhabCommandTransformable<T>) new OpenhabStringData((StringData) command);
+        } else /* if (StateType == UP_DOWN) */{
+            return (OpenhabCommandTransformable<T>) new OpenhabUpDownData((UpDownData) command);
         }
     }
 }
