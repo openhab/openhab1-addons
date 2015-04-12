@@ -69,6 +69,13 @@ item with auto-update off as the switch immediately sends back its state.
 
 `Switch Ulux_Display "Display"    <none> { ulux="1:0:Display", autoupdate="false" }`
 
+### LEDs
+
+At the moment ON switches the specified LED to rapidly blink red. OFF returns the LED
+to its normal setting.
+
+`Switch Ulux_Led  "LED"  <none> { ulux="1:1:Led:1" }`
+
 ### Proximity sensor
 
 `Switch Ulux_Proximity  "Proximity"  <none> { ulux="1:0:Proximity" }`

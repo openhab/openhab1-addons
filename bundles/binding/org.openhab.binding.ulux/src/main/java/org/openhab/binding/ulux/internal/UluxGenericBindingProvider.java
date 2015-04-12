@@ -37,6 +37,7 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 		TYPES.put("AudioVolume", UluxBindingConfigType.AUDIO_VOLUME);
 		TYPES.put("Display", UluxBindingConfigType.DISPLAY);
 		TYPES.put("Key", UluxBindingConfigType.KEY);
+		TYPES.put("Led", UluxBindingConfigType.LED);
 		TYPES.put("Lux", UluxBindingConfigType.LUX);
 		TYPES.put("PageIndex", UluxBindingConfigType.PAGE_INDEX);
 		TYPES.put("Proximity", UluxBindingConfigType.PROXIMITY);

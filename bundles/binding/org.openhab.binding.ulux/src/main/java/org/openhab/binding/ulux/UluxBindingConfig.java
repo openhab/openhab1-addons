@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.ulux.internal.ump.messages.EventMessage;
+import org.openhab.binding.ulux.internal.ump.messages.LedMessage;
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -70,6 +71,26 @@ public class UluxBindingConfig implements BindingConfig {
 		}
 
 		return null;
+	}
+
+	public LedMessage.Led getLed() {
+		if (this.type == UluxBindingConfigType.LED) {
+			if (StringUtils.equals(additionalConfiguration, "1")) {
+				return LedMessage.Led.LED_1;
+			}
+			if (StringUtils.equals(additionalConfiguration, "2")) {
+				return LedMessage.Led.LED_2;
+			}
+			if (StringUtils.equals(additionalConfiguration, "3")) {
+				return LedMessage.Led.LED_3;
+			}
+			if (StringUtils.equals(additionalConfiguration, "4")) {
+				return LedMessage.Led.LED_4;
+			}
+		}
+
+		return null;
+
 	}
 
 	@Override

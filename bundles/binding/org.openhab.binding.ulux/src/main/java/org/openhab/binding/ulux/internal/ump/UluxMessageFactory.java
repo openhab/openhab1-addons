@@ -162,8 +162,11 @@ public class UluxMessageFactory {
 		return new EditValueMessage(config.getActorId(), value);
 	}
 
-	public LedMessage createLedMessage(UluxBindingConfig config) {
-		return new LedMessage(config.getActorId()); // TODO
+	public LedMessage createLedMessage(UluxBindingConfig config, boolean override) {
+		// TODO color
+		// TODO blinkMode
+
+		return new LedMessage(config.getActorId(), config.getLed(), override);
 	}
 
 	public PageIndexMessage createPageIndexMessage(DecimalType decimal) {

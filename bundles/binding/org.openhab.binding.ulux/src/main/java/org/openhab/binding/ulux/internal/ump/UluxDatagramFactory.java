@@ -106,6 +106,9 @@ public class UluxDatagramFactory {
 				message = null;
 			}
 			break;
+		case LED:
+			message = messageFactory.createLedMessage(config, type == OnOffType.ON);
+			break;
 		case PAGE_INDEX:
 			message = messageFactory.createPageIndexMessage((DecimalType) type);
 			break;
