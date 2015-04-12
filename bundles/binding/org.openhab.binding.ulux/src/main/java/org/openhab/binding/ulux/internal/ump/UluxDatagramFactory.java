@@ -169,6 +169,7 @@ public class UluxDatagramFactory {
 			message = messageFactory.createPageIndexMessage((DecimalType) type);
 			break;
 		case AMBIENT_LIGHT:
+		case AUDIO_VOLUME:
 		case DISPLAY:
 		case KEY:
 		case LUX:
