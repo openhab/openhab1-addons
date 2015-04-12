@@ -145,9 +145,6 @@ public class UluxDatagramFactory {
 				message = null;
 			}
 			break;
-		case AUDIO_PLAY_LOCAL:
-			message = messageFactory.createAudioPlayLocalMessage((DecimalType) type);
-			break;
 		case EDIT_VALUE:
 			if (type instanceof DecimalType) {
 				message = messageFactory.createEditValueMessage(config, (DecimalType) type);
