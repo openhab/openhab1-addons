@@ -1,8 +1,8 @@
 package org.openhab.binding.ulux.internal.ump.messages;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
 import org.junit.Test;
 import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
@@ -29,6 +29,6 @@ public class AudioVolumeMessageTest extends AbstractCommandTest {
 
 		receiveUpdate("Ulux_AudioVolume", new PercentType(75));
 
-		assertFalse(datagram.hasMessages());
+		assertThat(datagram, isEmptyDatagram());
 	}
 }
