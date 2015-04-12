@@ -152,18 +152,8 @@ public class UluxDatagramFactory {
 				message = null;
 			}
 			break;
-		case AMBIENT_LIGHT:
-		case AUDIO_VOLUME:
-		case DISPLAY:
-		case KEY:
-		case LUX:
-		case PAGE_INDEX:
-		case PROXIMITY:
-			message = null; // ignore
-			break;
 		default:
-			LOG.debug("Outgoing message '{}' for item '{}' not yet supported!", type, config);
-			message = null;
+			message = null; // ignore
 			break;
 		}
 
