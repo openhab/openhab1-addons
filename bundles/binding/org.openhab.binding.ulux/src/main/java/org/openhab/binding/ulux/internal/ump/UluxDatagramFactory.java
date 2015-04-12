@@ -162,14 +162,12 @@ public class UluxDatagramFactory {
 				message = null;
 			}
 			break;
-		case PAGE_INDEX:
-			message = messageFactory.createPageIndexMessage((DecimalType) type);
-			break;
 		case AMBIENT_LIGHT:
 		case AUDIO_VOLUME:
 		case DISPLAY:
 		case KEY:
 		case LUX:
+		case PAGE_INDEX:
 		case PROXIMITY:
 			message = null; // ignore
 			break;
