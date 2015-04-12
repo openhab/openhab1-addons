@@ -29,7 +29,7 @@ import org.openhab.core.library.items.SwitchItem;
  */
 public class CoreItemFactory implements ItemFactory {
 	
-	private static String[] ITEM_TYPES = new String[] { "Switch", "Rollershutter", "Contact", "String", "Number", "Dimmer", "DateTime", "Color", "Point" };
+	private static String[] ITEM_TYPES = new String[] { "Switch", "Rollershutter", "Contact", "String", "Number", "Dimmer", "DateTime", "Color", "Location" };
 
 	/**
 	 * @{inheritDoc}

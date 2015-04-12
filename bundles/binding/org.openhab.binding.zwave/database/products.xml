@@ -1585,6 +1585,10 @@
 				<Type>0002</Type>
 				<Id>000D</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000E</Id>
+			</Reference>			
 			<Model>PST-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
 			<ConfigFile>philio/pst02.xml</ConfigFile>
@@ -1761,6 +1765,15 @@
 			<Model>VRCZ4-M0Z</Model>
 			<Label lang="en">4-Zone Controller</Label>
 			<ConfigFile>leviton/vrcz4-m0z.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+			        <Type>1202</Type>
+			        <Id>243</Id>
+			</Reference>
+			<Model>VRCZ4-MRZ</Model>
+			<Label lang="en">4-Zone Controller</Label>
+			<ConfigFile>leviton/vrcz4-mrz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
