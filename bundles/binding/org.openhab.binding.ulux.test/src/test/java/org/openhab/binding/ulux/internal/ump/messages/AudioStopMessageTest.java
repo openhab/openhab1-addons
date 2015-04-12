@@ -32,4 +32,12 @@ public class AudioStopMessageTest extends AbstractCommandTest {
 		assertThat(actual, equalTo(expected));
 	}
 
+	@Test
+	public void testUpdate() throws Exception {
+		addBindingConfig(new SwitchItem("Ulux_Audio"), "1:0:Audio");
+
+		receiveUpdate("Ulux_Audio", OnOffType.OFF);
+
+		assertThat(datagram, isEmptyDatagram());
+	}
 }

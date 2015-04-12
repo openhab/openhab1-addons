@@ -138,13 +138,6 @@ public class UluxDatagramFactory {
 		final UluxMessage message;
 
 		switch (config.getType()) {
-		case AUDIO:
-			if (type == OFF) {
-				message = messageFactory.createAudioStopMessage((OnOffType) type);
-			} else {
-				message = null;
-			}
-			break;
 		case EDIT_VALUE:
 			if (type instanceof DecimalType) {
 				message = messageFactory.createEditValueMessage(config, (DecimalType) type);
