@@ -61,9 +61,9 @@ public class AbstractCommandTest extends AbstractMessageTest {
 	}
 
 	protected final byte[] toBytes(UluxDatagram datagram) {
-		ByteBuffer buffer = datagram.getBuffer();
+		ByteBuffer buffer = datagram.prepareBuffer();
 
-		byte[] bytes = new byte[buffer.position() - 16];
+		byte[] bytes = new byte[buffer.limit() - 16];
 
 		System.arraycopy(buffer.array(), 16, bytes, 0, bytes.length);
 

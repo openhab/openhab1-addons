@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.ulux.internal.ump;
 
+import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
 import java.io.IOException;
@@ -17,8 +18,11 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.ulux.internal.UluxBinding;
 import org.openhab.binding.ulux.internal.UluxException;
 
@@ -34,23 +38,20 @@ public class UluxDatagram {
 
 	private static final AtomicInteger PACKAGE_COUNTER = new AtomicInteger(1);
 
-	private final ByteBuffer buffer;
-
 	private final short switchId;
 
 	private final InetAddress switchAddress;
 
-	public UluxDatagram(final short switchId, final InetAddress switchAddress) {
-		this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
-		this.buffer.order(ByteOrder.LITTLE_ENDIAN);
+	private final List<UluxMessage> messages;
 
+	public UluxDatagram(final short switchId, final InetAddress switchAddress) {
 		this.switchId = switchId;
 		this.switchAddress = switchAddress;
 
-		addDescriptor();
+		this.messages = new LinkedList<UluxMessage>();
 	}
 
-	private short nextPackageId() {
+	private static short nextPackageId() {
 		final int packageId = PACKAGE_COUNTER.getAndIncrement();
 
 		if (packageId >= Short.MAX_VALUE) {
@@ -65,7 +66,7 @@ public class UluxDatagram {
 			return; // nothing to send
 		}
 
-		this.buffer.flip();
+		final ByteBuffer buffer = prepareBuffer();
 
 		try {
 			final SocketAddress target = new InetSocketAddress(this.switchAddress, UluxBinding.PORT);
@@ -78,7 +79,27 @@ public class UluxDatagram {
 		}
 	}
 
-	private void addDescriptor() {
+	/**
+	 * Only accessible for tests!
+	 */
+	protected ByteBuffer prepareBuffer() {
+		final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+		addDescriptor(buffer);
+
+		for (UluxMessage message : this.messages) {
+			buffer.put(message.getBuffer());
+		}
+
+		updateLength(buffer);
+
+		buffer.flip();
+
+		return buffer;
+	}
+
+	private void addDescriptor(ByteBuffer buffer) {
 		// magic bytes: 0x8601
 		buffer.put((byte) 0x01);
 		buffer.put((byte) 0x86);
@@ -112,27 +133,27 @@ public class UluxDatagram {
 		buffer.put((byte) 0x00);
 	}
 
-	private void updateLength() {
-		this.buffer.putShort(2, (short) this.buffer.position());
+	private void updateLength(ByteBuffer buffer) {
+		buffer.putShort(2, (short) buffer.position());
 	}
 
 	public void addMessage(final UluxMessage message) {
 		LOG.debug("Adding message to datagram: {}", message);
 
-		this.buffer.put(message.getBuffer());
-
-		updateLength();
+		this.messages.add(message);
 	}
 
 	public boolean hasMessages() {
-		return this.buffer.position() > 16;
+		return !this.messages.isEmpty();
 	}
 
-	/**
-	 * Only accessible for tests!
-	 */
-	protected ByteBuffer getBuffer() {
-		return this.buffer;
-	}
+	@Override
+	public String toString() {
+		final ToStringBuilder builder = new ToStringBuilder(this, SHORT_PREFIX_STYLE);
+		builder.append("switchId", this.switchId);
+		builder.append("switchAddress", this.switchAddress);
+		builder.append("messages", this.messages);
 
+		return builder.toString();
+	}
 }
