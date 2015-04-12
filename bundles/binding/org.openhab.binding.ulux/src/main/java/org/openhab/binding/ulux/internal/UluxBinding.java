@@ -97,7 +97,34 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 		this.configuration = new UluxConfiguration();
 		this.datagramFactory = new UluxDatagramFactory(configuration);
+	}
 
+	@Override
+	public void deactivate() {
+		LOG.info("Deactivating u::Lux binding.");
+		stopListenerThread();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updated(final Dictionary<String, ?> config) throws ConfigurationException {
+		this.configuration.updated(config);
+
+		restartListenerThread();
+	}
+
+	private void restartListenerThread() {
+		if (this.thread != null) {
+			stopListenerThread();
+		}
+		if (this.configuration.isConfigured()) {
+			startListenerThread();
+		}
+	}
+
+	private void startListenerThread() {
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
 			this.channel.socket().bind(configuration.getBindSocketAddress());
@@ -109,10 +136,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 		this.thread.start();
 	}
 
-	@Override
-	public void deactivate() {
-		LOG.info("Deactivating u::Lux binding.");
-
+	private void stopListenerThread() {
 		final Thread thread = this.thread;
 		this.thread = null;
 		thread.interrupt();
@@ -124,14 +148,6 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			LOG.warn("Error closing channel!", e);
 			// swallow exception
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void updated(final Dictionary<String, ?> config) throws ConfigurationException {
-		this.configuration.updated(config);
 	}
 
 	/**

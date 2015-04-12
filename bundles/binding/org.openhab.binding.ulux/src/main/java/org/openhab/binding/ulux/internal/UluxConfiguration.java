@@ -48,6 +48,8 @@ public class UluxConfiguration {
 
 	private static final int DEFAULT_MICROPHONE_SECURITY_ID = 1;
 
+	private boolean isConfigured;
+
 	/**
 	 * Map from switch id to address.
 	 */
@@ -142,9 +144,13 @@ public class UluxConfiguration {
 		} else {
 			this.bindSocketAddress = new InetSocketAddress(this.bindAddress, PORT);
 		}
+
+		this.isConfigured = true;
 	}
 
 	private void reset() {
+		this.isConfigured = false;
+
 		this.bindAddress = null;
 		this.bindSocketAddress = null;
 
@@ -154,6 +160,10 @@ public class UluxConfiguration {
 
 		this.switchIds.clear();
 		this.switchAdresses.clear();
+	}
+
+	public boolean isConfigured() {
+		return this.isConfigured;
 	}
 
 	/**
