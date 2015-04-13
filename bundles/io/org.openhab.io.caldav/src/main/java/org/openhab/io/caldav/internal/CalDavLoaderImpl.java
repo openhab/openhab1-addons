@@ -108,6 +108,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					if (defaultTimeZone == null) {
 						throw new ConfigurationException(PROP_TIMEZONE, "invalid timezone value: " + config.get(key));
 					}
+					LOG.debug("found timeZone: {}", defaultTimeZone);
 					continue;
 				}
 				String[] keys = key.split(":");
@@ -207,7 +208,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				eventMap.put(event.getId(), event);
 				
 				for (EventNotifier notifier : eventListenerList) {
-					notifier.eventChanged(event);
+					try {
+						notifier.eventChanged(event);
+					} catch (Exception e) {
+						LOG.error("error while invoking listener", e);
+					}
 				}
 				
 				createJob(event);
@@ -219,7 +224,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			LOG.trace("listeners for events: {}", eventListenerList.size());
 			for (EventNotifier notifier : eventListenerList) {
 				LOG.trace("notify listener... {}", notifier);
-				notifier.eventLoaded(event);
+				try {
+					notifier.eventLoaded(event);
+				} catch (Exception e) {
+					LOG.error("error while invoking listener", e);
+				}
 			}
 			createJob(event);
 		}
@@ -242,7 +251,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				timerEndMap.remove(eventId);
 			}
 			for (EventNotifier notifier : eventListenerList) {
-				notifier.eventRemoved(event);
+				try {
+					notifier.eventRemoved(event);
+				} catch (Exception e) {
+					LOG.error("error while invoking listener", e);
+				}
 			}
 		}
 	}
@@ -253,7 +266,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			public void run() {
 				LOG.info("event start for: {}", event.getShortName());
 				for (EventNotifier notifier : eventListenerList) {
-					notifier.eventBegins(event);
+					try {
+						notifier.eventBegins(event);
+					} catch (Exception e) {
+						LOG.error("error while invoking listener", e);
+					}
 				}
 				timerBeginMap.get(event.getId()).cancel();
 				timerBeginMap.remove(event.getId());
@@ -268,7 +285,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			public void run() {
 				LOG.info("event end for: {}", event.getShortName());
 				for (EventNotifier notifier : eventListenerList) {
-					notifier.eventEnds(event);
+					try {
+						notifier.eventEnds(event);
+					} catch (Exception e) {
+						LOG.error("error while invoking listener", e);
+					}
 				}
 				timerEndMap.get(event.getId()).cancel();
 				timerEndMap.remove(event.getId());
@@ -382,6 +403,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						if (vEvent.getDescription() != null) {
 							event.setContent(vEvent.getDescription().getValue());
 						}
+						LOG.trace("adding event: " + event.getShortName());
 						addEvent(event);
 						currentLoad.add(event.getId());
 					}

@@ -14,11 +14,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.caldav_command.CalDavBindingProvider;
 
 import org.openhab.core.binding.AbstractBinding;
@@ -53,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
-
+	private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 	private static final String SCOPE_END = "END";
 	private static final String SCOPE_BEGIN = "BEGIN";
 	
@@ -391,7 +392,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		} else if (type == CalDavType.DATE) {
 //			Calendar cal = Calendar.getInstance();
 //			cal.setTime(container.getChangeDate());
-			State c = new DateTimeType(container.getChangeDate().toCalendar(Locale.getDefault()));
+			State c = new DateTimeType(FORMATTER.print(container.getChangeDate()));
 			logger.debug("setting value for '{}' to: {}", itemName, c);
 			eventPublisher.postUpdate(itemName, c);
 		} else {

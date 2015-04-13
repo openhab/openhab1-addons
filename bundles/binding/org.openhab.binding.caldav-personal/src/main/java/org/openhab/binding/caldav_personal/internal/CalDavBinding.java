@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.time.format.DateTimeFormat;
@@ -49,6 +48,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	private static final String PARAM_HOME_IDENTIFIERS = "homeIdentifiers";
     private static final String PARAM_USED_CALENDARS = "usedCalendars";
 	private static final DateTimeFormatter DF = DateTimeFormat.shortDateTime();
+	private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(CalDavBinding.class);
@@ -254,14 +254,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			case DESCRIPTION: command = new StringType(event.getContent()); break;
 			case PLACE: command = new StringType(event.getLocation()); break;
 			case START: 
-//				Calendar cal = Calendar.getInstance();
-//				cal.setTime(event.getStart());
-				command = new DateTimeType(event.getStart().toCalendar(Locale.getDefault())); 
+				command = new DateTimeType(FORMATTER.print(event.getStart())); 
 				break;
 			case END: 
-//				Calendar cal2 = Calendar.getInstance();
-//				cal2.setTime(event.getEnd());
-				command = new DateTimeType(event.getEnd().toCalendar(Locale.getDefault())); 
+				command = new DateTimeType(FORMATTER.print(event.getEnd())); 
 				break;
 			case TIME:
 				String startEnd = DF.print(event.getStart()) + " - " + DF.print(event.getEnd());
