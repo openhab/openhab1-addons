@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.nest.internal.messages;
 
+import java.util.Date;
+
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -52,6 +54,9 @@ public class DataModelRequest extends AbstractRequest {
 			json = executeQuery(url);
 
 			final DataModelResponse response = JSON.readValue(json, DataModelResponse.class);
+
+			// note the time we received the data model
+			response.setLast_connection(new Date());
 
 			// sync the returned data model so its internal pointers are pointing
 			response.sync();

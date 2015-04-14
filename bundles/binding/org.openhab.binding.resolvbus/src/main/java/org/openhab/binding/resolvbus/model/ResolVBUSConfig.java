@@ -53,10 +53,11 @@ public class ResolVBUSConfig {
 		return null;
 		
 	}
-	
+
 	public ResolVBUSPacket getPacketWithDevice(String deviceAddressSource,String deviceAddressDestination) {
 		
 		List<ResolVBUSPacket> packetList = new ArrayList<ResolVBUSPacket>(getPacket());
+		
 		
 		for (ResolVBUSPacket packet : packetList) {
 			if (packet.getSource().equals("0x"+deviceAddressSource) && packet.getDestination().equals("0x"+deviceAddressDestination))
@@ -65,5 +66,4 @@ public class ResolVBUSConfig {
 		return null;
 		
 	}
-
 }

@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="VBusSpecificationResolAnsicht.xslt" ?>
 <vbusSpecification>
 	<device>
 		<address>0x0000</address>
@@ -431,7 +432,7 @@
 		<mask>0xFFFF</mask>
 	</device>
 
-	<!--MSR-65-->
+	<!--MSR-65 -->
 	<packet>
 		<destination>0x0000</destination>
 		<source>0x6521</source>
@@ -439,7 +440,7 @@
 		<field>
 			<offset>0</offset>
 			<bitSize>2</bitSize>
-			<mask/>
+			<mask />
 			<name>Temperature sensor 1</name>
 
 			<factor>0.1</factor>
@@ -448,7 +449,7 @@
 		<field>
 			<offset>2</offset>
 			<bitSize>2</bitSize>
-			<mask/>
+			<mask />
 			<name>Temperature sensor 2</name>
 
 			<factor>0.1</factor>
@@ -457,7 +458,7 @@
 		<field>
 			<offset>4</offset>
 			<bitSize>2</bitSize>
-			<mask/>
+			<mask />
 			<name>Temperature sensor 3</name>
 
 			<factor>0.1</factor>
@@ -466,7 +467,7 @@
 		<field>
 			<offset>6</offset>
 			<bitSize>2</bitSize>
-			<mask/>
+			<mask />
 			<name>Temperature sensor 4</name>
 
 			<factor>0.1</factor>
@@ -475,7 +476,7 @@
 		<field>
 			<offset>8</offset>
 			<bitSize>2</bitSize>
-			<mask/>
+			<mask />
 			<name>Temperature 5</name>
 
 			<factor>0.1</factor>
@@ -484,7 +485,7 @@
 		<field>
 			<offset>10</offset>
 			<bitSize>2</bitSize>
-			<mask/>
+			<mask />
 			<name>Temperature sensor 6</name>
 
 			<factor>0.1</factor>
@@ -503,14 +504,10 @@
 		<destination>0x0000</destination>
 		<source>0x6521</source>
 		<command>0x0200</command>
-
-
-
-
 		<field>
 			<offset>1</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 1 R1</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -518,7 +515,7 @@
 		<field>
 			<offset>4</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 2 R1</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -526,7 +523,7 @@
 		<field>
 			<offset>5</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 2 R1</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -534,7 +531,7 @@
 		<field>
 			<offset>8</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 1 R2</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -542,7 +539,7 @@
 		<field>
 			<offset>9</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 1 R2</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -550,7 +547,7 @@
 		<field>
 			<offset>12</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 2 R2</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -558,7 +555,7 @@
 		<field>
 			<offset>13</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 2 R2</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -566,7 +563,7 @@
 		<field>
 			<offset>16</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 1 R3</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -574,7 +571,7 @@
 		<field>
 			<offset>17</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 1 R3</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -582,7 +579,7 @@
 		<field>
 			<offset>20</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 2 R3</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -590,7 +587,7 @@
 		<field>
 			<offset>21</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 2 R3</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -598,7 +595,7 @@
 		<field>
 			<offset>24</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 1 R4</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -606,7 +603,7 @@
 		<field>
 			<offset>25</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 1 R4</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -614,7 +611,7 @@
 		<field>
 			<offset>28</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 2 R4</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -622,7 +619,7 @@
 		<field>
 			<offset>29</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 2 R4</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -630,7 +627,7 @@
 		<field>
 			<offset>32</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 1 R5</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -638,7 +635,7 @@
 		<field>
 			<offset>33</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 1 R5</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -646,7 +643,7 @@
 		<field>
 			<offset>36</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Pump speed 2 R5</name>
 			<factor>1</factor>
 			<unit>%</unit>
@@ -654,7 +651,7 @@
 		<field>
 			<offset>37</offset>
 			<bitSize>3</bitSize>
-			<mask/>
+			<mask />
 			<name>Runtime 2 R5</name>
 			<factor>1</factor>
 			<unit>s</unit>
@@ -662,7 +659,7 @@
 		<field>
 			<offset>40</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Offset Sensor 1</name>
 			<factor>1</factor>
 			<unit>K</unit>
@@ -670,7 +667,7 @@
 		<field>
 			<offset>41</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Offset Sensor 2</name>
 			<factor>1</factor>
 			<unit>K</unit>
@@ -678,7 +675,7 @@
 		<field>
 			<offset>42</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Offset Sensor 3</name>
 			<factor>1</factor>
 			<unit>K</unit>
@@ -686,7 +683,7 @@
 		<field>
 			<offset>43</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Offset Sensor 4</name>
 			<factor>1</factor>
 			<unit>K</unit>
@@ -694,7 +691,7 @@
 		<field>
 			<offset>44</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Offset Sensor 5</name>
 			<factor>1</factor>
 			<unit>K</unit>
@@ -702,7 +699,7 @@
 		<field>
 			<offset>45</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Offset Sensor 6</name>
 			<factor>1</factor>
 			<unit>K</unit>
@@ -710,18 +707,18 @@
 		<field>
 			<offset>46</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Sensor mask</name>
 			<factor>1</factor>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>47</offset>
 			<bitSize>1</bitSize>
-			<mask/>
+			<mask />
 			<name>Relay mask</name>
 			<factor>1</factor>
-			<unit/>
+			<unit />
 		</field>
 
 
@@ -1005,7 +1002,7 @@
 			<mask/>
 			<name>Flags</name>
 			<factor>1</factor>
-			<unit/>
+			<unit />
 		</field>
 	</packet>
 
@@ -1017,7 +1014,8 @@
 		<field>
 			<offset>0</offset>
 			<bitSize>2</bitSize>
-			<mask/><name>Temperature sensor 1</name>
+			<mask/>
+			<name>Temperature sensor 1</name>
 			<factor>0.1</factor>
 			<unit>°C</unit>
 		</field>
@@ -1031,54 +1029,56 @@
 		</field>
 		<field>
 			<offset>4</offset>
-			<bitSize>2</bitSize><mask/>
-			
+			<bitSize>2</bitSize>
+			<mask/>
 			<name>Temperature sensor 3</name>
 			<factor>1</factor>
 			<unit>°C</unit>
 		</field>
 		<field>
 			<offset>6</offset>
-			<bitSize>1</bitSize><mask/>
-			
+			<bitSize>1</bitSize>
+			<mask/>
 			<name>Pump speed relay 1</name>
 			<factor>1</factor>
 			<unit>%</unit>
 		</field>
 		<field>
 			<offset>7</offset>
-			<bitSize>1</bitSize><mask/>
-			
+			<bitSize>1</bitSize>
+			<mask/>
 			<name>Pump speed relay 2</name>
 			<factor>1</factor>
 			<unit>%</unit>
 		</field>
 		<field>
 			<offset>8</offset>
-			<bitSize>2</bitSize><mask/>
-			
+			<bitSize>2</bitSize>
+			<mask/>
 			<name>Control flags</name>
 			<factor>1</factor>
 			<unit/>
 		</field>
 		<field>
 			<offset>10</offset>
-			<bitSize>1</bitSize><mask/>
-			
+			<bitSize>1</bitSize>
+			<mask/>
 			<name>Error mask</name>
 			<factor>1</factor>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>12</offset>
-			<bitSize>2</bitSize><mask/>
+			<bitSize>2</bitSize>
+			<mask/>
 			<name>Operating hours relay 1</name>
 			<factor>1</factor>
 			<unit>h</unit>
 		</field>
 		<field>
 			<offset>14</offset>
-			<bitSize>2</bitSize><mask/>	
+			<bitSize>2</bitSize>
+			<mask/>	
 			<name>Operating hours relay 2</name>
 			<factor>1</factor>
 			<unit>h</unit>
@@ -1590,42 +1590,42 @@
 			<name>Option Kollektor Max.</name>
 			<bitSize>1</bitSize>
 			<bitPos>0</bitPos>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Kollektor Min.</name>
 			<bitSize>1</bitSize>
 			<bitPos>1</bitPos>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Kollektor Frost</name>
 			<bitSize>1</bitSize>
 			<bitPos>2</bitPos>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Röhrenkollektor</name>
 			<bitSize>1</bitSize>
 			<bitPos>3</bitPos>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option Rückkühlung</name>
 			<bitSize>1</bitSize>
 			<bitPos>4</bitPos>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>15</offset>
 			<name>Option WMZ</name>
 			<bitSize>1</bitSize>
 			<bitPos>5</bitPos>
-			<unit/>
+			<unit />
 		</field>
 		<field>
 			<offset>16</offset>
@@ -2547,7 +2547,7 @@
 		</field>
 	</packet>
 
-	<!--  DeltaSol B -->
+	<!-- DeltaSol B -->
 	<packet>
 		<destination>0x0010</destination>
 		<source>0x3231</source>
@@ -2609,7 +2609,7 @@
 		</field>
 	</packet>
 
-	<!--  DeltaSol BS -->
+	<!-- DeltaSol BS -->
 	<packet>
 		<destination>0x0010</destination>
 		<source>0x3251</source>
@@ -3071,14 +3071,16 @@
 			<name>Impulse 1 V40</name>
 			<bitSize>16</bitSize>
 			<factor>1</factor>
-			<unit> </unit>
+			<unit>
+			</unit>
 		</field>
 		<field>
 			<offset>24</offset>
 			<name>Digital Input</name>
 			<bitSize>16</bitSize>
 			<factor>1</factor>
-			<unit> </unit>
+			<unit>
+			</unit>
 		</field>
 		<field>
 			<offset>26</offset>
@@ -3517,4 +3519,2669 @@
 			<format>T</format>
 		</field>
 	</packet>
+
+<!-- ################################  neu ab hier ######################################## -->
+<!-- ################################  neu ab hier ######################################## -->
+
+
+<!-- ################################  neu ab hier ######################################## -->
+<!-- ################################  neu ab hier ######################################## -->
+
+	<!-- DiemasolC -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7751</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>temperature_T01</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>temperature_T02</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>temperature_T03</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>temperature_T04</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>temperature_T05</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>temperature_T06</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>temperature_T07</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>temperature_T08</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>temperature_T09</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>temperature_T10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>temperature_T11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>volumeflow</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>l/min</unit>
+		</field>
+
+		<field>
+			<offset>24</offset>
+			<name>speed_R01</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>speed_R02</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>speed_R03</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>0</bitPos>
+			<name>relais_R04</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>1</bitPos>
+			<name>relais_R05</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>2</bitPos>
+			<name>relais_R06</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>3</bitPos>
+			<name>relais_R07</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>4</bitPos>
+			<name>relais_R08</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>5</bitPos>
+			<name>relais_R09</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>28</offset>
+			<name>heatquantity</name>
+			<bitSize>32</bitSize>
+			<factor>0.001</factor>
+			<unit>kWh</unit>
+		</field>
+
+	</packet>
+	<!-- SKSC1/2 -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x4211</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_Sensor1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_Sensor2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_Sensor3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_Sensor4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl_Pumpe1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Drehzahl_Pumpe2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Betriebsstunden_Pumpe1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+
+
+		<field>
+			<offset>14</offset>
+			<name>Betriebsstunden_Pumpe2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+
+
+		<field>
+			<offset>16</offset>
+			<name>Waermemenge1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+
+		<field>
+			<offset>18</offset>
+			<name>Waermemenge2</name>
+			<bitSize>16</bitSize>
+			<factor>1000</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>Waermemenge3</name>
+			<bitSize>16</bitSize>
+			<factor>1000000</factor>
+			<unit>Wh</unit>
+		</field>
+
+	</packet>
+	<!-- DeltaSolC -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x4212</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>temperature_T01</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>temperature_T02</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>temperature_T03</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>temperature_T04</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>speed_R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>speed_R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>errormask</name>
+			<bitSize>8</bitSize>
+		</field>
+
+		<field>
+			<offset>11</offset>
+			<name>variante</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>operating_hours_R1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>operating_hours_R2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>waermemenge_1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>waermemenge_2</name>
+			<bitSize>16</bitSize>
+			<factor>1000</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>waermemenge_3</name>
+			<bitSize>16</bitSize>
+			<factor>1000000</factor>
+			<unit>Wh</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>systemtime</name>
+			<bitSize>15</bitSize>
+		</field>
+
+	</packet>
+	<!-- SLR -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7331</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name> Temperature_1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name> Temperature_2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name> Temperature_3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name> Temperature_4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name> Temperature_5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name> Temperature_6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name> Temperature_7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name> Temperature_8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name> Temperature_9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name> Temperature_10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name> Temperature_11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>22</offset>
+			<name> Temperature_12</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>24</offset>
+			<name> Temperature_13</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>26</offset>
+			<name> Temperature_14</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>28</offset>
+			<name> Temperature_15</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>30</offset>
+			<name> Temperature_16</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>32</offset>
+			<name> Temperature_17</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>34</offset>
+			<name> Temperature_18</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>36</offset>
+			<name> Temperature_19</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>38</offset>
+			<name> Temperature_20</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>40</offset>
+			<name> Temperature_21</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>42</offset>
+			<name> Temperature_22</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<name> Pump_R1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>45</offset>
+			<name> Pump_R2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<name> Pump_R3</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<name> Pump_R4</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>48</offset>
+			<name> Pump_R5</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>49</offset>
+			<name> Pump_R6</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>50</offset>
+			<name> Pump_R7</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>51</offset>
+			<name> Pump_R8</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>52</offset>
+			<name> Pump_R9</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>53</offset>
+			<name> Pump_R10</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>54</offset>
+			<name> Pump_R11</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>55</offset>
+			<name> Pump_R12</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>56</offset>
+			<name> Pump_R13</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>57</offset>
+			<name> Pump_R14</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>58</offset>
+			<name> Pump_R15</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>59</offset>
+			<name> Pump_R16</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>60</offset>
+			<name> Pump_R17</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>61</offset>
+			<name> Pump_R18</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>64</offset>
+			<name> Sensor_mask</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>1</unit>
+		</field>
+
+		<field>
+			<offset>68</offset>
+			<name> Sensor_mask</name>
+			<bitSize>31</bitSize>
+			<factor>2</factor>
+			<unit>1</unit>
+		</field>
+		<field>
+			<offset>72</offset>
+			<name> Error_1</name>
+			<bitSize>15</bitSize>
+		</field>
+
+		<field>
+			<offset>74</offset>
+			<name> Warning_1</name>
+			<bitSize>15</bitSize>
+		</field>
+
+		<field>
+			<offset>76</offset>
+			<name> Version_</name>
+			<bitSize>15</bitSize>
+		</field>
+
+		<field>
+			<offset>78</offset>
+			<name> System_1</name>
+			<bitSize>15</bitSize>
+		</field>
+
+		<field>
+			<offset>80</offset>
+			<name> Variant_</name>
+			<bitSize>8</bitSize>
+		</field>
+
+	</packet>
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x427B</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>temperature_T01</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>temperature_T02</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>temperature_T03</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>temperature_T04</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>speed_R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>operating_hours_R1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>speed_R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>operating_hours_R2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>unit_type</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>17</offset>
+			<name>system</name>
+			<bitSize>8</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>error_mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<bitPos>0</bitPos>
+			<name>error_S1</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<bitPos>1</bitPos>
+			<name>error_S2</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<bitPos>2</bitPos>
+			<name>error_S3</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<bitPos>3</bitPos>
+			<name>error_S4</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>systemtime</name>
+			<bitSize>15</bitSize>
+		</field>
+
+		<field>
+			<offset>24</offset>
+			<name>status_mask</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>heat_amount</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>sv_version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+
+		<field>
+			<offset>34</offset>
+			<name>variant_</name>
+			<bitSize>16</bitSize>
+		</field>
+
+	</packet>
+	<!-- Cosmo_Multi_Regler -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7821</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_Sensor_1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_Sensor_2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_Sensor_3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_Sensor_4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Temperatur_Sensor_5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Temperatur_Sensor_6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Temperatur_Sensor_7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>Temperatur_Sensor_8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Temperatur_Sensor_9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>Temperatur_Sensor_10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Einstrahlung_CS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>22</offset>
+			<name>Impulse_1_V40</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>24</offset>
+			<name>Digital_Input</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+
+
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl_Relais_1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Drehzahl_Relais_2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Drehzahl_Relais_3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Drehzahl_Relais_4</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Drehzahl_Relais_5</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Drehzahl_Relais_6</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Drehzahl_Relais_7</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Fehlermaske</name>
+			<bitSize>16</bitSize>
+		</field>
+
+		<field>
+			<offset>38</offset>
+			<name>Meldungen</name>
+			<bitSize>16</bitSize>
+		</field>
+
+		<field>
+			<offset>40</offset>
+			<name>System</name>
+			<bitSize>7</bitSize>
+		</field>
+
+		<field>
+			<offset>42</offset>
+			<name>Schema</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Vorlauf_Soll_HK1_Modul_Sensor_18</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Status_HK1_Modul</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Vorlauf_Soll_HK2_Modul_Sensor_25</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>Status_HK2_Modul</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Vorlauf_Soll_HK3_Modul_Sensor_32</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>Status_HK3_Modul</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Vorlauf_Soll_Heizkreis_Sensor_11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Status_Heizkreis</name>
+			<bitSize>16</bitSize>
+		</field>
+
+		<field>
+			<offset>62</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Jahr</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>66</offset>
+			<name>Monat</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>67</offset>
+			<name>Tag</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+
+	</packet>
+	<!-- Cosmo_Multi_WMZ -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7822</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_Vorlauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_Ruecklauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Durchfluss_Sensor_8</name>
+			<bitSize>15</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>heatquantity1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>heatquantity2</name>
+			<bitSize>16</bitSize>
+			<factor>1000</factor>
+			<unit>kWh</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>heatquantity3</name>
+			<bitSize>16</bitSize>
+			<factor>1000000</factor>
+			<unit>MWh</unit>
+		</field>
+
+	</packet>
+	<!-- DeltaSol_BX -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7421</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_Sensor_1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_Sensor_2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_Sensor_3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_Sensor_4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Temperatur_Sensor_5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Temperatur_RPS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Druck_RPS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>Temperatur_VFS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Durchfluss_VFS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Drehzahl_Relais_1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Drehzahl_Relais_2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl_Relais_3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Drehzahl_Relais_4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>PWM_1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>PWM_2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Durchfluss_VFS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>Durchfluss_V40</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+
+		<field>
+			<offset>48</offset>
+			<name>Waermemenge</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>Systemzeit</name>
+			<bitSize>16</bitSize>
+		</field>
+
+		<field>
+			<offset>56</offset>
+			<name>Datum</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Betriebssekunden_Relais_1</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Betriebssekunden_Relais_2</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Betriebssekunden_Relais_3</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Betriebssekunden_Relais_4</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Status</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>46</offset>
+			<bitPos>0</bitPos>
+			<name>Blockierschutz_1</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>1</bitPos>
+			<name>Blockierschutz_2</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>2</bitPos>
+			<name>Blockierschutz_3</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>3</bitPos>
+			<name>Blockierschutz_4</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>4</bitPos>
+			<name>Initialisierung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>5</bitPos>
+			<name>Fuellung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>6</bitPos>
+			<name>Stabilisierung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<bitPos>7</bitPos>
+			<name>Pumpenverzoegerung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>0</bitPos>
+			<name>ueberwaermeabfuhr</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>1</bitPos>
+			<name>Nachlauf</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>2</bitPos>
+			<name>Thermische_Desinfektion</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>3</bitPos>
+			<name>Systemkuehlung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>4</bitPos>
+			<name>Speicherkuehlung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>5</bitPos>
+			<name>Spreizung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>6</bitPos>
+			<name>Frostschutz</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>47</offset>
+			<bitPos>7</bitPos>
+			<name>Kollektorkuehlung</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Einheit</name>
+			<bitSize>8</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<name>Fehler</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<bitPos>0</bitPos>
+			<name>Fehler_S1</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>1</bitPos>
+			<name>Fehler_S2</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>2</bitPos>
+			<name>Fehler_S3</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>3</bitPos>
+			<name>Fehler_S4</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>4</bitPos>
+			<name>Fehler_S5</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>5</bitPos>
+			<name>Fehler_S6</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>6</bitPos>
+			<name>Fehler_S7</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<bitPos>7</bitPos>
+			<name>Fehler_S8</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>45</offset>
+			<bitPos>0</bitPos>
+			<name>Fehler_S9</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>45</offset>
+			<bitPos>1</bitPos>
+			<name>Fehler_V40</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>45</offset>
+			<bitPos>2</bitPos>
+			<name>Leckage</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>45</offset>
+			<bitPos>3</bitPos>
+			<name>ueberdruck</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>45</offset>
+			<bitPos>4</bitPos>
+			<name>Durchflussfehler</name>
+			<bitSize>1</bitSize>
+		</field>
+
+	</packet>
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7E11</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Temperatur_5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Temperatur_6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Temperatur_7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>Temperatur_8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Temperatur_9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>Temperatur_10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>Temperatur_11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>22</offset>
+			<name>Temperatur_12</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>24</offset>
+			<name>Temperatur_13</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>26</offset>
+			<name>Temperatur_14</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>28</offset>
+			<name>Temperatur_15</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>30</offset>
+			<name>Temperatur_16</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>32</offset>
+			<name>Temperatur_17</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>34</offset>
+			<name>Temperatur_18</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>36</offset>
+			<name>Temperatur_19</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>38</offset>
+			<name>Temperatur_20</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>40</offset>
+			<name>Volumenstrom_13</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<name>Volumenstrom_14</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>48</offset>
+			<name>Volumenstrom_15</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>52</offset>
+			<name>Volumenstrom_17</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>56</offset>
+			<name>Volumenstrom_18</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>60</offset>
+			<name>Volumenstrom_19</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>64</offset>
+			<name>Volumenstrom_20</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>l/h</unit>
+		</field>
+
+		<field>
+			<offset>68</offset>
+			<name>Drucksensor_17</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit>bar</unit>
+		</field>
+
+		<field>
+			<offset>70</offset>
+			<name>Drucksensor_18</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit>bar</unit>
+		</field>
+
+		<field>
+			<offset>72</offset>
+			<name>Drucksensor_19</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit>bar</unit>
+		</field>
+
+		<field>
+			<offset>74</offset>
+			<name>Drucksensor_20</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit>bar</unit>
+		</field>
+
+		<field>
+			<offset>76</offset>
+			<name>Drehzahl_1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>77</offset>
+			<name>Drehzahl_2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>78</offset>
+			<name>Drehzahl_3</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>79</offset>
+			<name>Drehzahl_4</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>80</offset>
+			<name>Drehzahl_5</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>81</offset>
+			<name>Drehzahl_6</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>82</offset>
+			<name>Drehzahl_7</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>83</offset>
+			<name>Drehzahl_8</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>84</offset>
+			<name>Drehzahl_9</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>85</offset>
+			<name>Drehzahl_10</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>86</offset>
+			<name>Drehzahl_11</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>87</offset>
+			<name>Drehzahl_12</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>88</offset>
+			<name>Drehzahl_13</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>89</offset>
+			<name>Drehzahl_14</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>92</offset>
+			<name>Systemdatum</name>
+			<bitSize>31</bitSize>
+		</field>
+
+		<field>
+			<offset>96</offset>
+			<name>Fehlermaske</name>
+			<bitSize>31</bitSize>
+		</field>
+
+	</packet>
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7E12</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_M1_S1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_M1_S2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_M1_S3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_M1_S4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Temperatur_M1_S5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Temperatur_M1_S6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Temperatur_M2_S1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>Temperatur_M2_S2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Temperatur_M2_S3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>Temperatur_M2_S4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>Temperatur_M2_S5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>22</offset>
+			<name>Temperatur_M2_S6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>24</offset>
+			<name>Temperatur_M3_S1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>26</offset>
+			<name>Temperatur_M3_S2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>28</offset>
+			<name>Temperatur_M3_S3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>30</offset>
+			<name>Temperatur_M3_S4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>32</offset>
+			<name>Temperatur_M3_S5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>34</offset>
+			<name>Temperatur_M3_S6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>36</offset>
+			<name>Temperatur_M4_S1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>38</offset>
+			<name>Temperatur_M4_S2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>40</offset>
+			<name>Temperatur_M4_S3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>42</offset>
+			<name>Temperatur_M4_S4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<name>Temperatur_M4_S5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>46</offset>
+			<name>Temperatur_M4_S6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>48</offset>
+			<name>Temperatur_M5_S1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>50</offset>
+			<name>Temperatur_M5_S2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>52</offset>
+			<name>Temperatur_M5_S3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>54</offset>
+			<name>Temperatur_M5_S4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>56</offset>
+			<name>Temperatur_M5_S5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>58</offset>
+			<name>Temperatur_M5_S6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+	</packet>
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7E21</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlauf_Soll_Temperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Betriebsstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+
+	</packet>
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7E31</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Waermemenge</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Waermemenge_heute</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Waermemenge_Woche</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+	</packet>
+	<!-- DeltaSol_ES -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x7411</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_Sensor_1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_Sensor_2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_Sensor_3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_Sensor_4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Temperatur_Sensor_5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Temperatur_Sensor_6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Temperatur_Sensor_7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>Temperatur_Sensor_8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit>m</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Einstrahlung</name>
+			<bitSize>15</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<name>Relaisbyte</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Drehzahl_1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Drehzahl_2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Drehzahl_3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<bitPos>3</bitPos>
+			<name>Relais_4</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<bitPos>4</bitPos>
+			<name>Relais_5</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>20</offset>
+			<bitPos>5</bitPos>
+			<name>Relais_6</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Schema</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>0</bitPos>
+			<name>Option:_Kollektorkühlung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>1</bitPos>
+			<name>Option:_Kollektorminimalbegrenzung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>2</bitPos>
+			<name>Option:_Frostschutzfunktion</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>3</bitPos>
+			<name>Option:_Röhrenkollektorfunktion</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>4</bitPos>
+			<name>Option:_Rückkühlung</name>
+			<bitSize>1</bitSize>
+		</field>
+
+		<field>
+			<offset>27</offset>
+			<bitPos>5</bitPos>
+			<name>Option:_Wärmemengenzählung</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Betriebsstunden_1</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Betriebsstunden_2</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Betriebsstunden_3</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Betriebsstunden_4</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Betriebsstunden_5</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Betriebsstunden_6</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>39</offset>
+			<name>Wärmemenge_1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>40</offset>
+			<name>Wärmemenge_2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>42</offset>
+			<name>Wärmemenge_3</name>
+			<bitSize>16</bitSize>
+			<factor>1000</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>44</offset>
+			<name>Wärmemenge_4</name>
+			<bitSize>16</bitSize>
+			<factor>1000000</factor>
+			<unit>Wh</unit>
+		</field>
+
+	</packet>
+	<!-- WMZ -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x4010</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Heat_kWh</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit>kWh</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Heat_Wh</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit>Wh</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Flow_rate</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit>qm/h</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Power</name>
+			<bitSize>8</bitSize>
+			<factor>10</factor>
+			<unit>W</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Flow_temperature</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Return_temperature</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Heat_MWh</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit>MWh</unit>
+		</field>
+
+		<field>
+			<offset>14</offset>
+			<name>Power2</name>
+			<bitSize>8</bitSize>
+			<factor>2560</factor>
+			<unit>W</unit>
+		</field>
+
+		<field>
+			<offset>15</offset>
+			<name>Glycol</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Pressure</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>bar</unit>
+		</field>
+
+	</packet>
+	<!-- DeltaTherm_FK -->
+	<packet>
+		<destination>0x0000</destination>
+		<source>0x5611</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur_1</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>2</offset>
+			<name>Temperatur_2</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>4</offset>
+			<name>Temperatur_3</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>6</offset>
+			<name>Temperatur_4</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit>°C</unit>
+		</field>
+
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl_Reais_1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>9</offset>
+			<name>Drehzahl_Reais_2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>10</offset>
+			<name>Mischer_Auf</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>11</offset>
+			<name>Mischer_Zu</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+
+		<field>
+			<offset>12</offset>
+			<name>Datum</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit>Tage</unit>
+		</field>
+
+		<field>
+			<offset>16</offset>
+			<name>Uhrzeit</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit>h</unit>
+		</field>
+
+		<field>
+			<offset>18</offset>
+			<name>Systemmeldung</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>m</unit>
+		</field>
+	</packet>
+
 </vbusSpecification>

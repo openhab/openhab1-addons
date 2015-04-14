@@ -59,9 +59,13 @@ public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvi
 		super.processBindingConfiguration(context, item, bindingConfig);
 		ResolVBUSBindingConfig config = new ResolVBUSBindingConfig(bindingConfig);
 		
+		if(item!=null){
 		//parse bindingconfig here ...
 		items.put(item.getName(), item);
-		addBindingConfig(item, config);		
+		addBindingConfig(item, config);
+		}else{
+			logger.warn("Item is Null");
+		}
 	}
 	
 	public String getName(String itemName) {

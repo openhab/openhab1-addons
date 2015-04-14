@@ -29,6 +29,7 @@ import org.snmp4j.smi.OctetString;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
+ * @author Jan N. Klug - modified binding to change protocol version
  * @since 0.9.0
  */
 public interface SnmpBindingProvider extends BindingProvider {
@@ -52,6 +53,17 @@ public interface SnmpBindingProvider extends BindingProvider {
 	OID getOID(String itemName);
 	OID getOID(String itemName, Command command);
 	
+    /**
+	 * Returns the configured SNMP version for the given <code>itemName</code>. If
+	 * no version has been configured version1 is returned 
+	 * instead.
+	 * 
+	 * @param itemName the Item to find version for
+	 * @return the configured version
+	 */
+	int getSnmpVersion(String itemName);
+	int getSnmpVersion(String itemName, Command command);
+    
 	/**
 	 * Returns the refresh interval to use according to <code>itemName</code>.
 	 * Is used by HTTP-In-Binding.

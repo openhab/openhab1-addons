@@ -105,6 +105,6 @@ public class SatelGenericBindingProvider extends AbstractGenericBindingProvider 
 			// throw parse exception in case of any error
 		}
 
-		throw new BindingConfigParseException(String.format("Invalid binding configuration: {}", bindingConfig));
+		throw new BindingConfigParseException(String.format("Invalid binding configuration: %s", bindingConfig));
 	}
 }

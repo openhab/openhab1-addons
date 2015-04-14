@@ -55,8 +55,8 @@ public class SysteminfoGenericBindingProvider extends
 
 		String[] configParts = bindingConfig.trim().split(":");
 
-		if (configParts.length < 2 && configParts.length > 3) {
-			throw new BindingConfigParseException("Systeminf binding must contain 2-3 parts separated by ':'");
+		if (configParts.length < 2 || configParts.length > 3) {
+			throw new BindingConfigParseException("Systeminfo binding must contain 2-3 parts separated by ':'");
 		}
 
 		String commandType = configParts[0].trim();
