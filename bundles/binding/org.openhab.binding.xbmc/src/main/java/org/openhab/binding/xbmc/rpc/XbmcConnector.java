@@ -34,6 +34,7 @@ import org.openhab.binding.xbmc.rpc.calls.SystemHibernate;
 import org.openhab.binding.xbmc.rpc.calls.SystemReboot;
 import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
 import org.openhab.binding.xbmc.rpc.calls.SystemSuspend;
+import org.openhab.binding.xbmc.rpc.calls.XBMCGetInfoBooleans;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -88,7 +89,7 @@ public class XbmcConnector {
 	// the async connection to the XBMC instance
 	private WebSocket webSocket;
 	private boolean connected = false;
-
+	
 	// the current volume
 	private BigDecimal volume = BigDecimal.ZERO;
 	
@@ -189,6 +190,7 @@ public class XbmcConnector {
 			logger.debug("[{}]: Websocket opened", xbmc.getHostname());
 			connected = true;
 			requestApplicationUpdate();
+			requestScreenSaverStateUpdate();
 			updatePlayerStatus();
 			updateProperty("System.State", OnOffType.ON);
 		}
@@ -215,6 +217,7 @@ public class XbmcConnector {
 		@Override
 		@SuppressWarnings("unchecked")
 		public void onMessage(String message) {
+			System.out.println(message);
 			logger.debug("[{}]: Message received: {}", xbmc.getHostname(), message);
 			Map<String, Object> json;
 			try {
@@ -241,6 +244,8 @@ public class XbmcConnector {
 						processApplicationStateChanged(method, json);
 					} else if (method.startsWith("System.On")) {
 						processSystemStateChanged(method, json);
+					}else if (method.startsWith("GUI.OnScreensaver")){
+						processScreensaverStateChanged(method, json);
 					}
 				}
 			} catch (Exception e) {
@@ -324,6 +329,16 @@ public class XbmcConnector {
 			}
 		});
 	}
+	
+	private void updateScreenSaverStatus(boolean screenSaverActive) {
+		if (screenSaverActive) {
+			updateProperty("Screensaver.State", OnOffType.ON);
+		} else {
+			updateProperty("Screensaver.State", OnOffType.OFF);
+		}
+	}
+
+	
 
 	public void playerPlayPause() {
 		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
@@ -472,6 +487,16 @@ public class XbmcConnector {
 			updateProperty("System.State", OnOffType.OFF);
 		} 	
 	}
+	
+	private void processScreensaverStateChanged(String method, Map<String, Object> json) {
+		System.out.println(method);
+		if ("GUI.OnScreensaverDeactivated".equals(method)) {
+			updateScreenSaverStatus(false);
+		}else if ("GUI.OnScreensaverActivated".equals(method)) {
+			updateScreenSaverStatus(true);
+		}  	
+		
+	}
 
 	private void updateState(State state) {
 		// sometimes get a Pause immediately after a Stop - so just ignore
@@ -504,6 +529,17 @@ public class XbmcConnector {
 		});
 
 	}
+	
+	public void requestScreenSaverStateUpdate(){
+		final XBMCGetInfoBooleans xbmc= new XBMCGetInfoBooleans(client,httpUri);
+		xbmc.execute(new Runnable() {
+			public void run() {
+				updateScreenSaverStatus(xbmc.isScreenSaverActive());
+			}
+		});
+		
+	}
+
 
 	/**
 	 * Request an update for the Player properties from XBMC

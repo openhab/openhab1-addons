@@ -250,6 +250,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.ping();
 				// refresh all players
 				connector.updatePlayerStatus(true);
+				// refresh screensaverupdate
+				connector.requestScreenSaverStateUpdate();
 			} else {
 				// broken connection so attempt to reconnect
 				logger.debug("Broken connection found for '{}', attempting to reconnect...", entry.getKey());
