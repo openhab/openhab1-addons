@@ -19,12 +19,17 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.xbmc.internal.XbmcHost;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationSetVolume;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
 import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
 import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
+import org.openhab.binding.xbmc.rpc.calls.PVRGetChannels;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
 import org.openhab.binding.xbmc.rpc.calls.PlayerOpen;
@@ -39,14 +44,8 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -65,6 +64,8 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
  * @since 1.5.0
  */
 public class XbmcConnector {
+
+	private static final String SCREENSAVER_STATE = "Screensaver.State";
 
 	private static final Logger logger = LoggerFactory.getLogger(XbmcConnector.class);
 
@@ -217,7 +218,6 @@ public class XbmcConnector {
 		@Override
 		@SuppressWarnings("unchecked")
 		public void onMessage(String message) {
-			System.out.println(message);
 			logger.debug("[{}]: Message received: {}", xbmc.getHostname(), message);
 			Map<String, Object> json;
 			try {
@@ -332,9 +332,9 @@ public class XbmcConnector {
 	
 	private void updateScreenSaverStatus(boolean screenSaverActive) {
 		if (screenSaverActive) {
-			updateProperty("Screensaver.State", OnOffType.ON);
+			updateProperty(SCREENSAVER_STATE, OnOffType.ON);
 		} else {
-			updateProperty("Screensaver.State", OnOffType.OFF);
+			updateProperty(SCREENSAVER_STATE, OnOffType.OFF);
 		}
 	}
 
@@ -489,7 +489,6 @@ public class XbmcConnector {
 	}
 	
 	private void processScreensaverStateChanged(String method, Map<String, Object> json) {
-		System.out.println(method);
 		if ("GUI.OnScreensaverDeactivated".equals(method)) {
 			updateScreenSaverStatus(false);
 		}else if ("GUI.OnScreensaverActivated".equals(method)) {
@@ -689,5 +688,27 @@ public class XbmcConnector {
 			}
 		}
 		return properties;
+	}
+
+	public void playerOpenPVR(String channelName,int channelgroupid) {
+		final PVRGetChannels pvrGetChannels=new PVRGetChannels(client, httpUri);
+		pvrGetChannels.setChannelgroupid(channelgroupid);
+		pvrGetChannels.setChannelName(channelName);
+		logger.debug("channelName:" +channelName);
+		pvrGetChannels.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				logger.debug("channelId:" +pvrGetChannels.getChannelId());
+				if(pvrGetChannels.getChannelId()!=null){
+					PlayerOpen playerOpen=new PlayerOpen(client, httpUri);
+					playerOpen.setChannelId(pvrGetChannels.getChannelId());
+					playerOpen.execute();
+				}
+				
+			}
+		});
+
+		
 	}
 }
