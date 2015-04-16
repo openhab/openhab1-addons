@@ -47,6 +47,7 @@ import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
@@ -59,6 +60,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
@@ -92,16 +94,7 @@ public class ConfigurationHandler {
   }
 
   private enum TypeKey {
-    servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, 
-    bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, 
-    bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c,
-    bricklet_remote_switch, bricklet_multitouch, electrode, proximity, 
-    object_temperature, ambient_temperature, bricklet_temperatureIR, 
-    bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, 
-    bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
-    voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
-    bricklet_halleffect, bricklet_joystick, joystick_button, bricklet_linear_poti, 
- dualbutton_button, dualbutton_led, lcd_button, bricklet_ledstrip, ledgroup
+    servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch, bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, bricklet_halleffect, bricklet_joystick, joystick_button, bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance
   }
 
 
@@ -231,7 +224,9 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.voltageCurrent_power.name())
         || deviceType.equals(TypeKey.bricklet_joystick.name())
         || deviceType.equals(TypeKey.bricklet_halleffect.name())
-        || deviceType.equals(TypeKey.bricklet_linear_poti.name())) {
+        || deviceType.equals(TypeKey.bricklet_linear_poti.name())
+        || deviceType.equals(TypeKey.ptc_resistance.name())
+        || deviceType.equals(TypeKey.ptc_temperature.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -252,6 +247,13 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, VoltageCurrentSubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(VoltageCurrentSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.ptc_resistance.name())
+          || deviceType.equals(TypeKey.ptc_temperature.name())) {
+        OHTFDevice<TFBaseConfiguration, PTCSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(PTCSubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else {
@@ -442,6 +444,13 @@ public class ConfigurationHandler {
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_ptc.name())) {
+      TFPTCBrickletConfiguration configuration = modelFactory.createTFPTCBrickletConfiguration();
+      OHTFDevice<TFPTCBrickletConfiguration, PTCSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(PTCSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
     } else {
       logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
@@ -461,6 +470,14 @@ public class ConfigurationHandler {
   private void fillupConfig(OHTFDevice<?, ?> ohtfDevice, Map<String, String> deviceConfig)
       throws ConfigurationException {
     String uid = deviceConfig.get(ConfigKey.uid.name());
+    if (uid == null || uid.equals("")) {
+      // das kommt hier gar nie an
+      logger.error("===== uid missing");
+      throw new ConfigurationException(deviceConfig.toString(),
+          "config is an invalid missing uid: openhab.cfg has to be fixed!");
+    } else {
+      logger.debug("*** uid is \"{}\"", uid);
+    }
     ohtfDevice.setUid(uid);
     String subid = deviceConfig.get(ConfigKey.subid.name());
     if (subid != null) {

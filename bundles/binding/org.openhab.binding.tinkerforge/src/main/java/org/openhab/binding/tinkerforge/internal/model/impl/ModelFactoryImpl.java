@@ -47,6 +47,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
+import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
@@ -55,8 +56,10 @@ import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
+import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
@@ -159,6 +162,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.REMOTE_SWITCH_C: return createRemoteSwitchC();
       case ModelPackage.MBRICKLET_HUMIDITY: return createMBrickletHumidity();
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
+      case ModelPackage.MBRICKLET_SOLID_STATE_RELAY: return createMBrickletSolidStateRelay();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A: return createMBrickletIndustrialDual020mA();
+      case ModelPackage.MBRICKLET_PTC: return createMBrickletPTC();
+      case ModelPackage.PTC_TEMPERATURE: return createPTCTemperature();
+      case ModelPackage.PTC_RESISTANCE: return createPTCResistance();
+      case ModelPackage.PTC_CONNECTED: return createPTCConnected();
       case ModelPackage.MBRICKLET_TEMPERATURE: return createMBrickletTemperature();
       case ModelPackage.MBRICKLET_TEMPERATURE_IR: return createMBrickletTemperatureIR();
       case ModelPackage.OBJECT_TEMPERATURE: return createObjectTemperature();
@@ -181,6 +190,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE: return createOHTFSubDeviceAdminDevice();
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
+      case ModelPackage.TFPTC_BRICKLET_CONFIGURATION: return createTFPTCBrickletConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
@@ -263,6 +273,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createDualButtonButtonSubIdsFromString(eDataType, initialValue);
       case ModelPackage.JOYSTICK_SUB_IDS:
         return createJoystickSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.PTC_SUB_IDS:
+        return createPTCSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -341,6 +353,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletLinearPotiFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
         return createTinkerBrickletDualButtonFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_PTC:
+        return createTinkerBrickletPTCFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A:
+        return createTinkerBrickletIndustrialDual020mAFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_SOLID_STATE_RELAY:
+        return createTinkerBrickletSolidStateRelayFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -418,6 +436,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertDualButtonButtonSubIdsToString(eDataType, instanceValue);
       case ModelPackage.JOYSTICK_SUB_IDS:
         return convertJoystickSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.PTC_SUB_IDS:
+        return convertPTCSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -496,6 +516,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletLinearPotiToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
         return convertTinkerBrickletDualButtonToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_PTC:
+        return convertTinkerBrickletPTCToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A:
+        return convertTinkerBrickletIndustrialDual020mAToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_SOLID_STATE_RELAY:
+        return convertTinkerBrickletSolidStateRelayToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -1040,6 +1066,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public TFPTCBrickletConfiguration createTFPTCBrickletConfiguration()
+  {
+    TFPTCBrickletConfigurationImpl tfptcBrickletConfiguration = new TFPTCBrickletConfigurationImpl();
+    return tfptcBrickletConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFServoConfiguration createTFServoConfiguration()
   {
     TFServoConfigurationImpl tfServoConfiguration = new TFServoConfigurationImpl();
@@ -1198,6 +1235,72 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletDistanceIRImpl mBrickletDistanceIR = new MBrickletDistanceIRImpl();
     return mBrickletDistanceIR;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletSolidStateRelay createMBrickletSolidStateRelay()
+  {
+    MBrickletSolidStateRelayImpl mBrickletSolidStateRelay = new MBrickletSolidStateRelayImpl();
+    return mBrickletSolidStateRelay;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIndustrialDual020mA createMBrickletIndustrialDual020mA()
+  {
+    MBrickletIndustrialDual020mAImpl mBrickletIndustrialDual020mA = new MBrickletIndustrialDual020mAImpl();
+    return mBrickletIndustrialDual020mA;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletPTC createMBrickletPTC()
+  {
+    MBrickletPTCImpl mBrickletPTC = new MBrickletPTCImpl();
+    return mBrickletPTC;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PTCTemperature createPTCTemperature()
+  {
+    PTCTemperatureImpl ptcTemperature = new PTCTemperatureImpl();
+    return ptcTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PTCResistance createPTCResistance()
+  {
+    PTCResistanceImpl ptcResistance = new PTCResistanceImpl();
+    return ptcResistance;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PTCConnected createPTCConnected()
+  {
+    PTCConnectedImpl ptcConnected = new PTCConnectedImpl();
+    return ptcConnected;
   }
 
   /**
@@ -1661,6 +1764,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertJoystickSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PTCSubIds createPTCSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    PTCSubIds result = PTCSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertPTCSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -2655,6 +2780,66 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletDualButtonToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletPTC createTinkerBrickletPTCFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletPTC)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletPTCToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIndustrialDual020mA createTinkerBrickletIndustrialDual020mAFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIndustrialDual020mA)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletIndustrialDual020mAToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletSolidStateRelay createTinkerBrickletSolidStateRelayFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletSolidStateRelay)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletSolidStateRelayToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

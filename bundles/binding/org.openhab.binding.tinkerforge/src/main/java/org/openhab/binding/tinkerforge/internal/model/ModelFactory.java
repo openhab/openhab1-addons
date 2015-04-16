@@ -458,6 +458,15 @@ public interface ModelFactory extends EFactory
   TFNullConfiguration createTFNullConfiguration();
 
   /**
+   * Returns a new object of class '<em>TFPTC Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFPTC Bricklet Configuration</em>'.
+   * @generated
+   */
+  TFPTCBrickletConfiguration createTFPTCBrickletConfiguration();
+
+  /**
    * Returns a new object of class '<em>TF Servo Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -591,6 +600,60 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletDistanceIR createMBrickletDistanceIR();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Solid State Relay</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Solid State Relay</em>'.
+   * @generated
+   */
+  MBrickletSolidStateRelay createMBrickletSolidStateRelay();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Industrial Dual020m A</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Dual020m A</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDual020mA createMBrickletIndustrialDual020mA();
+
+  /**
+   * Returns a new object of class '<em>MBricklet PTC</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet PTC</em>'.
+   * @generated
+   */
+  MBrickletPTC createMBrickletPTC();
+
+  /**
+   * Returns a new object of class '<em>PTC Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>PTC Temperature</em>'.
+   * @generated
+   */
+  PTCTemperature createPTCTemperature();
+
+  /**
+   * Returns a new object of class '<em>PTC Resistance</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>PTC Resistance</em>'.
+   * @generated
+   */
+  PTCResistance createPTCResistance();
+
+  /**
+   * Returns a new object of class '<em>PTC Connected</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>PTC Connected</em>'.
+   * @generated
+   */
+  PTCConnected createPTCConnected();
 
   /**
    * Returns a new object of class '<em>MBricklet Temperature</em>'.

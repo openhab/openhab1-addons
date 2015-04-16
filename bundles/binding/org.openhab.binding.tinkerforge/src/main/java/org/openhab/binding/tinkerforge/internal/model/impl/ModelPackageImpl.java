@@ -90,6 +90,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
@@ -97,8 +98,10 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
@@ -134,6 +137,13 @@ import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
 import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCNoiseRejectionFilter;
+import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
+import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCWireMode;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.Proximity;
@@ -159,6 +169,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
@@ -195,6 +206,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
+import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
@@ -203,8 +215,10 @@ import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
+import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
@@ -737,6 +751,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass tfptcBrickletConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfServoConfigurationEClass = null;
 
   /**
@@ -857,6 +878,55 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletDistanceIREClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletSolidStateRelayEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletIndustrialDual020mAEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletPTCEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcTemperatureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcResistanceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcConnectedEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1088,6 +1158,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum joystickSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum ptcSubIdsEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1424,6 +1501,27 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletDualButtonEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletPTCEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletIndustrialDual020mAEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletSolidStateRelayEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1918,7 +2016,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_Timeout()
+  public EAttribute getMBrickd_ConnectedCounter()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(8);
   }
@@ -1928,9 +2026,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickd_Timeout()
+  {
+    return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getMBrickd_Mdevices()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(9);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(10);
   }
 
   /**
@@ -1940,7 +2048,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EReference getMBrickd_Ecosystem()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(10);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(11);
   }
 
   /**
@@ -3998,6 +4106,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getTFPTCBrickletConfiguration()
+  {
+    return tfptcBrickletConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFPTCBrickletConfiguration_NoiseRejectionFilter()
+  {
+    return (EAttribute)tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFPTCBrickletConfiguration_WireMode()
+  {
+    return (EAttribute)tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFServoConfiguration()
   {
     return tfServoConfigurationEClass;
@@ -4711,6 +4849,186 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletDistanceIR__Init()
   {
     return mBrickletDistanceIREClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletSolidStateRelay()
+  {
+    return mBrickletSolidStateRelayEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletSolidStateRelay_DeviceType()
+  {
+    return (EAttribute)mBrickletSolidStateRelayEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletSolidStateRelay__Init()
+  {
+    return mBrickletSolidStateRelayEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletIndustrialDual020mA()
+  {
+    return mBrickletIndustrialDual020mAEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletIndustrialDual020mA_DeviceType()
+  {
+    return (EAttribute)mBrickletIndustrialDual020mAEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletIndustrialDual020mA__Init()
+  {
+    return mBrickletIndustrialDual020mAEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletPTC()
+  {
+    return mBrickletPTCEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletPTC_DeviceType()
+  {
+    return (EAttribute)mBrickletPTCEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletPTC__Init()
+  {
+    return mBrickletPTCEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCDevice()
+  {
+    return ptcDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCTemperature()
+  {
+    return ptcTemperatureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCTemperature_DeviceType()
+  {
+    return (EAttribute)ptcTemperatureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCTemperature_Threshold()
+  {
+    return (EAttribute)ptcTemperatureEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCResistance()
+  {
+    return ptcResistanceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCResistance_DeviceType()
+  {
+    return (EAttribute)ptcResistanceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCResistance_Threshold()
+  {
+    return (EAttribute)ptcResistanceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCConnected()
+  {
+    return ptcConnectedEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCConnected_DeviceType()
+  {
+    return (EAttribute)ptcConnectedEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -5658,6 +5976,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getPTCSubIds()
+  {
+    return ptcSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -6138,6 +6466,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletPTC()
+  {
+    return tinkerBrickletPTCEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletIndustrialDual020mA()
+  {
+    return tinkerBrickletIndustrialDual020mAEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletSolidStateRelay()
+  {
+    return tinkerBrickletSolidStateRelayEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -6300,6 +6658,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickdEClass, MBRICKD__IS_CONNECTED);
     createEAttribute(mBrickdEClass, MBRICKD__AUTO_RECONNECT);
     createEAttribute(mBrickdEClass, MBRICKD__RECONNECTED);
+    createEAttribute(mBrickdEClass, MBRICKD__CONNECTED_COUNTER);
     createEAttribute(mBrickdEClass, MBRICKD__TIMEOUT);
     createEReference(mBrickdEClass, MBRICKD__MDEVICES);
     createEReference(mBrickdEClass, MBRICKD__ECOSYSTEM);
@@ -6597,6 +6956,31 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR__THRESHOLD);
     createEOperation(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR___INIT);
 
+    mBrickletSolidStateRelayEClass = createEClass(MBRICKLET_SOLID_STATE_RELAY);
+    createEAttribute(mBrickletSolidStateRelayEClass, MBRICKLET_SOLID_STATE_RELAY__DEVICE_TYPE);
+    createEOperation(mBrickletSolidStateRelayEClass, MBRICKLET_SOLID_STATE_RELAY___INIT);
+
+    mBrickletIndustrialDual020mAEClass = createEClass(MBRICKLET_INDUSTRIAL_DUAL020M_A);
+    createEAttribute(mBrickletIndustrialDual020mAEClass, MBRICKLET_INDUSTRIAL_DUAL020M_A__DEVICE_TYPE);
+    createEOperation(mBrickletIndustrialDual020mAEClass, MBRICKLET_INDUSTRIAL_DUAL020M_A___INIT);
+
+    mBrickletPTCEClass = createEClass(MBRICKLET_PTC);
+    createEAttribute(mBrickletPTCEClass, MBRICKLET_PTC__DEVICE_TYPE);
+    createEOperation(mBrickletPTCEClass, MBRICKLET_PTC___INIT);
+
+    ptcDeviceEClass = createEClass(PTC_DEVICE);
+
+    ptcTemperatureEClass = createEClass(PTC_TEMPERATURE);
+    createEAttribute(ptcTemperatureEClass, PTC_TEMPERATURE__DEVICE_TYPE);
+    createEAttribute(ptcTemperatureEClass, PTC_TEMPERATURE__THRESHOLD);
+
+    ptcResistanceEClass = createEClass(PTC_RESISTANCE);
+    createEAttribute(ptcResistanceEClass, PTC_RESISTANCE__DEVICE_TYPE);
+    createEAttribute(ptcResistanceEClass, PTC_RESISTANCE__THRESHOLD);
+
+    ptcConnectedEClass = createEClass(PTC_CONNECTED);
+    createEAttribute(ptcConnectedEClass, PTC_CONNECTED__DEVICE_TYPE);
+
     mBrickletTemperatureEClass = createEClass(MBRICKLET_TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__DEVICE_TYPE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__THRESHOLD);
@@ -6705,6 +7089,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(ohConfigEClass, OH_CONFIG___GET_CONFIG_BY_OH_ID__STRING);
 
     tfNullConfigurationEClass = createEClass(TF_NULL_CONFIGURATION);
+
+    tfptcBrickletConfigurationEClass = createEClass(TFPTC_BRICKLET_CONFIGURATION);
+    createEAttribute(tfptcBrickletConfigurationEClass, TFPTC_BRICKLET_CONFIGURATION__NOISE_REJECTION_FILTER);
+    createEAttribute(tfptcBrickletConfigurationEClass, TFPTC_BRICKLET_CONFIGURATION__WIRE_MODE);
 
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
@@ -6820,6 +7208,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonLedSubIdsEEnum = createEEnum(DUAL_BUTTON_LED_SUB_IDS);
     dualButtonButtonSubIdsEEnum = createEEnum(DUAL_BUTTON_BUTTON_SUB_IDS);
     joystickSubIdsEEnum = createEEnum(JOYSTICK_SUB_IDS);
+    ptcSubIdsEEnum = createEEnum(PTC_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -6861,6 +7250,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     brickletJoystickEDataType = createEDataType(BRICKLET_JOYSTICK);
     tinkerBrickletLinearPotiEDataType = createEDataType(TINKER_BRICKLET_LINEAR_POTI);
     tinkerBrickletDualButtonEDataType = createEDataType(TINKER_BRICKLET_DUAL_BUTTON);
+    tinkerBrickletPTCEDataType = createEDataType(TINKER_BRICKLET_PTC);
+    tinkerBrickletIndustrialDual020mAEDataType = createEDataType(TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A);
+    tinkerBrickletSolidStateRelayEDataType = createEDataType(TINKER_BRICKLET_SOLID_STATE_RELAY);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -7374,6 +7766,72 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletSolidStateRelay());
+    g1.getETypeArguments().add(g2);
+    mBrickletSolidStateRelayEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSwitchActor());
+    mBrickletSolidStateRelayEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletIndustrialDual020mA());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletPTC());
+    g1.getETypeArguments().add(g2);
+    mBrickletPTCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFPTCBrickletConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletPTCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getPTCDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletPTCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletPTC());
+    g1.getETypeArguments().add(g2);
+    ptcDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPTCDevice());
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPTCDevice());
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPTCDevice());
+    ptcConnectedEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    ptcConnectedEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletTemperature());
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
@@ -7565,6 +8023,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     ohtfSubDeviceAdminDeviceEClass.getEGenericSuperTypes().add(g1);
     tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfptcBrickletConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -7617,9 +8076,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickd_Host(), theEcorePackage.getEString(), "host", "localhost", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Port(), theEcorePackage.getEInt(), "port", "4223", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Authkey(), theEcorePackage.getEString(), "authkey", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickd_IsConnected(), theEcorePackage.getEBoolean(), "isConnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_IsConnected(), this.getDigitalValue(), "isConnected", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_AutoReconnect(), theEcorePackage.getEBoolean(), "autoReconnect", "true", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Reconnected(), theEcorePackage.getEBoolean(), "reconnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_ConnectedCounter(), this.getMDecimalValue(), "connectedCounter", "0", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Timeout(), theEcorePackage.getEInt(), "timeout", "2500", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType();
@@ -7990,6 +8450,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletDistanceIR__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletSolidStateRelayEClass, MBrickletSolidStateRelay.class, "MBrickletSolidStateRelay", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletSolidStateRelay_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_solidstaterelay", 0, 1, MBrickletSolidStateRelay.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletSolidStateRelay__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletIndustrialDual020mAEClass, MBrickletIndustrialDual020mA.class, "MBrickletIndustrialDual020mA", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletIndustrialDual020mA_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_industrialdual020ma", 0, 1, MBrickletIndustrialDual020mA.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletIndustrialDual020mA__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletPTCEClass, MBrickletPTC.class, "MBrickletPTC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletPTC_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ptc", 0, 1, MBrickletPTC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletPTC__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(ptcDeviceEClass, PTCDevice.class, "PTCDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(ptcTemperatureEClass, PTCTemperature.class, "PTCTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPTCTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "ptc_temperature", 0, 1, PTCTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPTCTemperature_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "2", 0, 1, PTCTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ptcResistanceEClass, PTCResistance.class, "PTCResistance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPTCResistance_DeviceType(), theEcorePackage.getEString(), "deviceType", "ptc_resistance", 0, 1, PTCResistance.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPTCResistance_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "2", 0, 1, PTCResistance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ptcConnectedEClass, PTCConnected.class, "PTCConnected", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPTCConnected_DeviceType(), theEcorePackage.getEString(), "deviceType", "ptc_connected", 0, 1, PTCConnected.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletTemperatureEClass, MBrickletTemperature.class, "MBrickletTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_temperature", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletTemperature_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -8135,6 +8623,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEOperation(op, g1);
 
     initEClass(tfNullConfigurationEClass, TFNullConfiguration.class, "TFNullConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(tfptcBrickletConfigurationEClass, TFPTCBrickletConfiguration.class, "TFPTCBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFPTCBrickletConfiguration_NoiseRejectionFilter(), theEcorePackage.getEShortObject(), "noiseRejectionFilter", null, 0, 1, TFPTCBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFPTCBrickletConfiguration_WireMode(), theEcorePackage.getEShortObject(), "wireMode", null, 0, 1, TFPTCBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -8384,6 +8876,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_YPOSITION);
     addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_BUTTON);
 
+    initEEnum(ptcSubIdsEEnum, PTCSubIds.class, "PTCSubIds");
+    addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_TEMPERATURE);
+    addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_RESISTANCE);
+    addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_CONNECTED);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -8424,6 +8921,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(brickletJoystickEDataType, BrickletJoystick.class, "BrickletJoystick", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLinearPotiEDataType, BrickletLinearPoti.class, "TinkerBrickletLinearPoti", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletDualButtonEDataType, BrickletDualButton.class, "TinkerBrickletDualButton", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletPTCEDataType, BrickletPTC.class, "TinkerBrickletPTC", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletIndustrialDual020mAEDataType, BrickletIndustrialDual020mA.class, "TinkerBrickletIndustrialDual020mA", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletSolidStateRelayEDataType, BrickletSolidStateRelay.class, "TinkerBrickletSolidStateRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

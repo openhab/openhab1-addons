@@ -39,6 +39,8 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,7 @@ import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSoundIntensity;
@@ -92,9 +95,10 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getHost <em>Host</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getPort <em>Port</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getAuthkey <em>Authkey</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isIsConnected <em>Is Connected</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isAutoReconnect <em>Auto Reconnect</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isReconnected <em>Reconnected</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getConnectedCounter <em>Connected Counter</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getTimeout <em>Timeout</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getMdevices <em>Mdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem <em>Ecosystem</em>}</li>
@@ -206,24 +210,24 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
   protected String authkey = AUTHKEY_EDEFAULT;
 
   /**
-   * The default value of the '{@link #isIsConnected() <em>Is Connected</em>}' attribute.
+   * The default value of the '{@link #getIsConnected() <em>Is Connected</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isIsConnected()
+   * @see #getIsConnected()
    * @generated
    * @ordered
    */
-  protected static final boolean IS_CONNECTED_EDEFAULT = false;
+  protected static final HighLowValue IS_CONNECTED_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #isIsConnected() <em>Is Connected</em>}' attribute.
+   * The cached value of the '{@link #getIsConnected() <em>Is Connected</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isIsConnected()
+   * @see #getIsConnected()
    * @generated
    * @ordered
    */
-  protected boolean isConnected = IS_CONNECTED_EDEFAULT;
+  protected HighLowValue isConnected = IS_CONNECTED_EDEFAULT;
 
   /**
    * The default value of the '{@link #isAutoReconnect() <em>Auto Reconnect</em>}' attribute.
@@ -264,6 +268,26 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * @ordered
    */
   protected boolean reconnected = RECONNECTED_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getConnectedCounter() <em>Connected Counter</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConnectedCounter()
+   * @generated
+   * @ordered
+   */
+  protected static final DecimalValue CONNECTED_COUNTER_EDEFAULT = (DecimalValue)ModelFactory.eINSTANCE.createFromString(ModelPackage.eINSTANCE.getMDecimalValue(), "0");
+
+  /**
+   * The cached value of the '{@link #getConnectedCounter() <em>Connected Counter</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConnectedCounter()
+   * @generated
+   * @ordered
+   */
+  protected DecimalValue connectedCounter = CONNECTED_COUNTER_EDEFAULT;
 
   /**
    * The default value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
@@ -438,7 +462,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * <!-- end-user-doc -->
    * @generated
    */
-  public boolean isIsConnected()
+  public HighLowValue getIsConnected()
   {
     return isConnected;
   }
@@ -448,9 +472,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setIsConnected(boolean newIsConnected)
+  public void setIsConnected(HighLowValue newIsConnected)
   {
-    boolean oldIsConnected = isConnected;
+    HighLowValue oldIsConnected = isConnected;
     isConnected = newIsConnected;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__IS_CONNECTED, oldIsConnected, isConnected));
@@ -500,6 +524,29 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     reconnected = newReconnected;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__RECONNECTED, oldReconnected, reconnected));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DecimalValue getConnectedCounter()
+  {
+    return connectedCounter;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setConnectedCounter(DecimalValue newConnectedCounter)
+  {
+    DecimalValue oldConnectedCounter = connectedCounter;
+    connectedCounter = newConnectedCounter;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__CONNECTED_COUNTER, oldConnectedCounter, connectedCounter));
   }
 
   /**
@@ -697,7 +744,6 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     @Override
     public void connected(short connectReason) {
       logger.debug("{} Connected listener was called.", LoggerConstants.TFINIT);
-      setIsConnected(true);
       if (connectReason == IPConnection.CONNECT_REASON_AUTO_RECONNECT) {
         setReconnected(true);
       }
@@ -716,6 +762,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         TinkerforgeErrorHandler.handleError(getLogger(),
             TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
       }
+      setIsConnected(HighLowValue.HIGH);
+      Integer counternew = connectedCounter.intValue() + 1;
+      setConnectedCounter(new DecimalValue(counternew));
     }
   }
 
@@ -740,7 +789,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void disconnected(short connectReason) {
 			modelLock.lock();
 			try {
-				setIsConnected(false);
+				setIsConnected(HighLowValue.LOW);
 				ArrayList<String> deviceUidList = new ArrayList<String>();
 				for (MDevice<?> mDevice : mdevices) {
 					deviceUidList.add(mDevice.getUid());
@@ -946,6 +995,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletDualButton");
               mDevice = factory.createMBrickletDualButton();
               mDevice.setDeviceIdentifier(BrickletDualButton.DEVICE_IDENTIFIER);
+      } else if (deviceIdentifier == BrickletPTC.DEVICE_IDENTIFIER) {
+        logger.debug("addDevice BrickletPTC");
+        mDevice = factory.createMBrickletPTC();
+        mDevice.setDeviceIdentifier(BrickletPTC.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());
@@ -1082,11 +1135,13 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__AUTHKEY:
         return getAuthkey();
       case ModelPackage.MBRICKD__IS_CONNECTED:
-        return isIsConnected();
+        return getIsConnected();
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return isAutoReconnect();
       case ModelPackage.MBRICKD__RECONNECTED:
         return isReconnected();
+      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
+        return getConnectedCounter();
       case ModelPackage.MBRICKD__TIMEOUT:
         return getTimeout();
       case ModelPackage.MBRICKD__MDEVICES:
@@ -1124,13 +1179,16 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         setAuthkey((String)newValue);
         return;
       case ModelPackage.MBRICKD__IS_CONNECTED:
-        setIsConnected((Boolean)newValue);
+        setIsConnected((HighLowValue)newValue);
         return;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         setAutoReconnect((Boolean)newValue);
         return;
       case ModelPackage.MBRICKD__RECONNECTED:
         setReconnected((Boolean)newValue);
+        return;
+      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
+        setConnectedCounter((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout((Integer)newValue);
@@ -1180,6 +1238,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__RECONNECTED:
         setReconnected(RECONNECTED_EDEFAULT);
         return;
+      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
+        setConnectedCounter(CONNECTED_COUNTER_EDEFAULT);
+        return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout(TIMEOUT_EDEFAULT);
         return;
@@ -1214,11 +1275,13 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__AUTHKEY:
         return AUTHKEY_EDEFAULT == null ? authkey != null : !AUTHKEY_EDEFAULT.equals(authkey);
       case ModelPackage.MBRICKD__IS_CONNECTED:
-        return isConnected != IS_CONNECTED_EDEFAULT;
+        return IS_CONNECTED_EDEFAULT == null ? isConnected != null : !IS_CONNECTED_EDEFAULT.equals(isConnected);
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return autoReconnect != AUTO_RECONNECT_EDEFAULT;
       case ModelPackage.MBRICKD__RECONNECTED:
         return reconnected != RECONNECTED_EDEFAULT;
+      case ModelPackage.MBRICKD__CONNECTED_COUNTER:
+        return CONNECTED_COUNTER_EDEFAULT == null ? connectedCounter != null : !CONNECTED_COUNTER_EDEFAULT.equals(connectedCounter);
       case ModelPackage.MBRICKD__TIMEOUT:
         return timeout != TIMEOUT_EDEFAULT;
       case ModelPackage.MBRICKD__MDEVICES:
@@ -1281,6 +1344,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     result.append(autoReconnect);
     result.append(", reconnected: ");
     result.append(reconnected);
+    result.append(", connectedCounter: ");
+    result.append(connectedCounter);
     result.append(", timeout: ");
     result.append(timeout);
     result.append(')');

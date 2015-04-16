@@ -49,6 +49,9 @@ import com.tinkerforge.BrickletLEDStrip
 import com.tinkerforge.BrickletJoystick
 import com.tinkerforge.BrickletLinearPoti
 import com.tinkerforge.BrickletDualButton
+import com.tinkerforge.BrickletPTC
+import com.tinkerforge.BrickletIndustrialDual020mA
+import com.tinkerforge.BrickletSolidStateRelay
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -100,6 +103,9 @@ type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type BrickletJoystick wraps BrickletJoystick
 type TinkerBrickletLinearPoti wraps BrickletLinearPoti
 type TinkerBrickletDualButton wraps BrickletDualButton
+type TinkerBrickletPTC wraps BrickletPTC
+type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
+type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -124,9 +130,10 @@ class MBrickd {
 	String host = "localhost"
 	int port = "4223"
 	String authkey
-	boolean isConnected = "false"
+	DigitalValue isConnected
 	boolean autoReconnect = "true"
 	boolean reconnected = "false"
+	MDecimalValue connectedCounter = "0"
 	int timeout = "2500"
 	
 	op void connect() 
@@ -539,6 +546,43 @@ class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>,
 	op void init(){}
 }
 
+class MBrickletSolidStateRelay extends MDevice<TinkerBrickletSolidStateRelay>,
+	 MSwitchActor {
+	readonly String deviceType = "bricklet_solidstaterelay"
+	op void init(){}
+}
+
+class MBrickletIndustrialDual020mA extends MDevice<TinkerBrickletIndustrialDual020mA>,
+	MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	readonly String deviceType = "bricklet_industrialdual020ma"
+	op void init(){}
+}
+
+class MBrickletPTC extends MDevice<TinkerBrickletPTC>,
+	MTFConfigConsumer<TFPTCBrickletConfiguration>, MSubDeviceHolder<PTCDevice> {
+	readonly String deviceType = "bricklet_ptc"
+	op void init(){}
+}
+
+interface PTCDevice extends MSubDevice<MBrickletPTC> {
+}
+
+class PTCTemperature extends PTCDevice, MSensor<MDecimalValue>,
+	MTFConfigConsumer<TFBaseConfiguration>, CallbackListener{
+	readonly String deviceType = "ptc_temperature"
+	BigDecimal threshold = "2"
+}
+
+class PTCResistance extends PTCDevice, MSensor<MDecimalValue>,
+	MTFConfigConsumer<TFBaseConfiguration>, CallbackListener{
+	readonly String deviceType = "ptc_resistance"
+	BigDecimal threshold = "2"
+}
+
+class PTCConnected extends PTCDevice, MSensor<DigitalValue> {
+	readonly String deviceType = "ptc_connected"
+}
+
 class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, 
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
@@ -704,6 +748,11 @@ class OHConfig {
 }
 
 class TFNullConfiguration extends TFConfig {
+}
+
+class TFPTCBrickletConfiguration extends TFConfig {
+	Short noiseRejectionFilter
+	Short wireMode
 }
 
 class TFBaseConfiguration extends TFConfig {
@@ -916,4 +965,8 @@ enum DualButtonButtonSubIds {
 
 enum JoystickSubIds {
 	joystick_xposition, joystick_yposition, joystick_button
+}
+
+enum PTCSubIds {
+	ptc_temperature, ptc_resistance, ptc_connected
 }
