@@ -384,12 +384,21 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							dateTimeZone = DateTimeZone.forID(p.getStart().getTimeZone().getID());
 						}
 						
+						org.joda.time.DateTime eventStart = new org.joda.time.DateTime(p.getRangeStart(), dateTimeZone);
+						org.joda.time.DateTime eventEnd = new org.joda.time.DateTime(p.getRangeEnd(), dateTimeZone);
+						if (eventStart.getSecondOfDay() != 0) {
+							eventStart = eventStart.toDateTime(defaultTimeZone);
+						}
+						if (eventEnd.getSecondOfDay() != 0) {
+							eventEnd = eventEnd.toDateTime(defaultTimeZone);
+						}
+						
 						CalDavEvent event = new CalDavEvent(vEvent.getSummary()
 								.getValue(), 
 								vEvent.getUid().getValue(),
 								config.getKey(), 
-								new org.joda.time.DateTime(p.getRangeStart(), dateTimeZone), 
-								new org.joda.time.DateTime(p.getRangeEnd(), dateTimeZone)
+								eventStart, 
+								eventEnd
 						);
 						if (vEvent.getLastModified() != null) {
 							event.setLastChanged(new org.joda.time.DateTime(vEvent.getLastModified().getDate()));
