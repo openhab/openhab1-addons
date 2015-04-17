@@ -113,9 +113,11 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		if (jsonPayload == null)
 			return;
 
-		// only interested in 'location' publishes
+		// only interested in 'location' or 'transition' publishes
 		String type = jsonPayload.get("_type");
-		if (StringUtils.isEmpty(type) || !type.equals("location"))
+		if (StringUtils.isEmpty(type))
+			return;
+		if (!type.equals("location") && !type.equals("transition"))
 			return;
 
 		// process all items being monitored on this topic
