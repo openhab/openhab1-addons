@@ -101,7 +101,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
-	private int errReconnectThreshold = 0;
+	private int errReconnectThreshold = 1;
 	
 	private int waitTimeout = -1;
 
