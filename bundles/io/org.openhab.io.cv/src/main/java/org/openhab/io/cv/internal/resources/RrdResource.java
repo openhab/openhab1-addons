@@ -255,7 +255,7 @@ public class RrdResource {
 		buffer.append("[");
 		for (Long time : data.keySet()) {
 			// change to microseconds
-			buffer.append("[\"" + time + "\",");
+			buffer.append("[" + time + ",");
 			buffer.append("[");
 			buffer.append("\""+StringUtils.join(data.get(time), "\",\"")+"\"");
 			buffer.append("]],");
