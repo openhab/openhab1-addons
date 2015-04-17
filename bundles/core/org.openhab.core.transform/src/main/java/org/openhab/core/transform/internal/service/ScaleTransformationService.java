@@ -33,7 +33,7 @@ public class ScaleTransformationService extends LocalizableTransformationService
 	static final Logger logger = LoggerFactory.getLogger(ScaleTransformationService.class);
 
 	/** RegEx to extract a scale definition */
-	private static final Pattern limits_pattern = Pattern.compile("(\\[|\\])(.*)\\,(.*)(\\[|\\])\\=(.*)");
+	private static final Pattern limits_pattern = Pattern.compile("((\\[|\\])(.*)\\,(.*)(\\[|\\])|-)\\=(.*)");
 
 	/**
 	 * <p>
@@ -69,6 +69,9 @@ public class ScaleTransformationService extends LocalizableTransformationService
 		String strLine;
 		while ((strLine = br.readLine()) != null) {
 			Matcher matcher = limits_pattern.matcher(strLine);
+			if (matcher.group(1).equals("-"))
+					result = matcher.group(1);
+					break;
 			if (matcher.matches() && (matcher.groupCount()==5)) {
 				double minLimit = Double.parseDouble(matcher.group(2));
 				double maxLimit = Double.parseDouble(matcher.group(3));
