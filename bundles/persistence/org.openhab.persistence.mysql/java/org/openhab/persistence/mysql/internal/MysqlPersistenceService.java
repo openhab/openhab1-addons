@@ -186,7 +186,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			tableName = new String("Item" + rowId);
 			logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
 		} catch (SQLException e) {
-			logger.error("mySQL: Could not create table for item '{}': ", itemName, e.getMessage());
+			logger.error("mySQL: Could not create item for '{}' in table 'Items' with statement '{}': {}", itemName, sqlCmd, e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
