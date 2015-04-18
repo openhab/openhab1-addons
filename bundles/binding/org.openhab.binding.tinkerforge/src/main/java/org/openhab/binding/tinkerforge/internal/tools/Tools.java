@@ -44,6 +44,10 @@ public class Tools {
     return calculate(value, new BigDecimal("1000"));
   }
 
+  public static DecimalValue calculate1000000(int value) {
+    return calculate(value, new BigDecimal("1000000"));
+  }
+
   public static DecimalValue calculate100(int value) {
     return calculate(value, new BigDecimal("100"));
   }

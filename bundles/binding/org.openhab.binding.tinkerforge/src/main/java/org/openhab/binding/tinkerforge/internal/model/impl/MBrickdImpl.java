@@ -59,6 +59,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
+import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
@@ -995,10 +996,14 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletDualButton");
               mDevice = factory.createMBrickletDualButton();
               mDevice.setDeviceIdentifier(BrickletDualButton.DEVICE_IDENTIFIER);
-      } else if (deviceIdentifier == BrickletPTC.DEVICE_IDENTIFIER) {
-        logger.debug("addDevice BrickletPTC");
-        mDevice = factory.createMBrickletPTC();
-        mDevice.setDeviceIdentifier(BrickletPTC.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletPTC.DEVICE_IDENTIFIER) {
+              logger.debug("addDevice BrickletPTC");
+              mDevice = factory.createMBrickletPTC();
+              mDevice.setDeviceIdentifier(BrickletPTC.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDual020mA.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrialDual020mA");
+              mDevice = factory.createMBrickletIndustrialDual020mA();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDual020mA.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

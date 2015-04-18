@@ -164,6 +164,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
       case ModelPackage.MBRICKLET_SOLID_STATE_RELAY: return createMBrickletSolidStateRelay();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A: return createMBrickletIndustrialDual020mA();
+      case ModelPackage.DUAL020M_ADEVICE: return createDual020mADevice();
       case ModelPackage.MBRICKLET_PTC: return createMBrickletPTC();
       case ModelPackage.PTC_TEMPERATURE: return createPTCTemperature();
       case ModelPackage.PTC_RESISTANCE: return createPTCResistance();
@@ -191,6 +192,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TFPTC_BRICKLET_CONFIGURATION: return createTFPTCBrickletConfiguration();
+      case ModelPackage.TF_INDUSTRIAL_DUAL020M_ACONFIGURATION: return createTFIndustrialDual020mAConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
@@ -275,6 +277,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createJoystickSubIdsFromString(eDataType, initialValue);
       case ModelPackage.PTC_SUB_IDS:
         return createPTCSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.INDUSTRIAL_DUAL020M_ASUB_IDS:
+        return createIndustrialDual020mASubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -438,6 +442,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertJoystickSubIdsToString(eDataType, instanceValue);
       case ModelPackage.PTC_SUB_IDS:
         return convertPTCSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.INDUSTRIAL_DUAL020M_ASUB_IDS:
+        return convertIndustrialDual020mASubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -1077,6 +1083,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public TFIndustrialDual020mAConfiguration createTFIndustrialDual020mAConfiguration()
+  {
+    TFIndustrialDual020mAConfigurationImpl tfIndustrialDual020mAConfiguration = new TFIndustrialDual020mAConfigurationImpl();
+    return tfIndustrialDual020mAConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFServoConfiguration createTFServoConfiguration()
   {
     TFServoConfigurationImpl tfServoConfiguration = new TFServoConfigurationImpl();
@@ -1257,6 +1274,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletIndustrialDual020mAImpl mBrickletIndustrialDual020mA = new MBrickletIndustrialDual020mAImpl();
     return mBrickletIndustrialDual020mA;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Dual020mADevice createDual020mADevice()
+  {
+    Dual020mADeviceImpl dual020mADevice = new Dual020mADeviceImpl();
+    return dual020mADevice;
   }
 
   /**
@@ -1786,6 +1814,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertPTCSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialDual020mASubIds createIndustrialDual020mASubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    IndustrialDual020mASubIds result = IndustrialDual020mASubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIndustrialDual020mASubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

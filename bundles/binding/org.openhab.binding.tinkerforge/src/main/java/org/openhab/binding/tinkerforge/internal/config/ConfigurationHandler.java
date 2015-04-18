@@ -35,6 +35,7 @@ import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
 import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
@@ -57,6 +58,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
@@ -94,7 +96,17 @@ public class ConfigurationHandler {
   }
 
   private enum TypeKey {
-    servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch, bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, bricklet_halleffect, bricklet_joystick, joystick_button, bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance
+    servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, 
+    bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, 
+    bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c, 
+    bricklet_remote_switch, bricklet_multitouch, electrode, proximity, object_temperature,
+    ambient_temperature, bricklet_temperatureIR, bricklet_soundintensity, 
+    bricklet_moisture, bricklet_distanceUS, bricklet_voltageCurrent, 
+    voltageCurrent_voltage, voltageCurrent_current, voltageCurrent_power, bricklet_tilt, 
+    io4_actuator, io4sensor, bricklet_io4, bricklet_halleffect, bricklet_joystick, 
+    joystick_button, bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, 
+    bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
+    industrial020ma_sensor, bricklet_industrialdual020ma
   }
 
 
@@ -226,7 +238,8 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.bricklet_halleffect.name())
         || deviceType.equals(TypeKey.bricklet_linear_poti.name())
         || deviceType.equals(TypeKey.ptc_resistance.name())
-        || deviceType.equals(TypeKey.ptc_temperature.name())) {
+        || deviceType.equals(TypeKey.ptc_temperature.name())
+        || deviceType.equals(TypeKey.industrial020ma_sensor.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -254,6 +267,12 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, PTCSubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(PTCSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.industrial020ma_sensor.name())) {
+        OHTFDevice<TFBaseConfiguration, IndustrialDual020mASubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDual020mASubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else {
@@ -449,6 +468,14 @@ public class ConfigurationHandler {
       OHTFDevice<TFPTCBrickletConfiguration, PTCSubIds> ohtfDevice =
           modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(PTCSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_industrialdual020ma.name())) {
+      TFIndustrialDual020mAConfiguration configuration =
+          modelFactory.createTFIndustrialDual020mAConfiguration();
+      OHTFDevice<TFIndustrialDual020mAConfiguration, IndustrialDual020mASubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDual020mASubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {

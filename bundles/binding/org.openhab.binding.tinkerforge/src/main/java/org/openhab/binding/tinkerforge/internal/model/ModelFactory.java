@@ -467,6 +467,15 @@ public interface ModelFactory extends EFactory
   TFPTCBrickletConfiguration createTFPTCBrickletConfiguration();
 
   /**
+   * Returns a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
+   * @generated
+   */
+  TFIndustrialDual020mAConfiguration createTFIndustrialDual020mAConfiguration();
+
+  /**
    * Returns a new object of class '<em>TF Servo Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -618,6 +627,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletIndustrialDual020mA createMBrickletIndustrialDual020mA();
+
+  /**
+   * Returns a new object of class '<em>Dual020m ADevice</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual020m ADevice</em>'.
+   * @generated
+   */
+  Dual020mADevice createDual020mADevice();
 
   /**
    * Returns a new object of class '<em>MBricklet PTC</em>'.

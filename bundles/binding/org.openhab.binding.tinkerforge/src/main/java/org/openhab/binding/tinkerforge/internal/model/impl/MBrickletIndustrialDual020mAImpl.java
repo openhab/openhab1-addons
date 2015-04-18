@@ -2,37 +2,38 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletIndustrialDual020mA;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.eclipse.emf.ecore.util.InternalEList;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
-
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletIndustrialDual020mA;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -52,9 +53,8 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getMsubdevices <em>Msubdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
@@ -254,14 +254,14 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
+   * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getSensorValue()
+   * @see #getMsubdevices()
    * @generated
    * @ordered
    */
-  protected DecimalValue sensorValue;
+  protected EList<Dual020mADevice> msubdevices;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -271,27 +271,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * @generated
    * @ordered
    */
-  protected TFBaseConfiguration tfConfig;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected TFIndustrialDual020mAConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -614,9 +594,13 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
-  public DecimalValue getSensorValue()
+  public EList<Dual020mADevice> getMsubdevices()
   {
-    return sensorValue;
+    if (msubdevices == null)
+    {
+      msubdevices = new EObjectContainmentWithInverseEList<Dual020mADevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+    }
+    return msubdevices;
   }
 
   /**
@@ -624,20 +608,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(DecimalValue newSensorValue)
-  {
-    DecimalValue oldSensorValue = sensorValue;
-    sensorValue = newSensorValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE, oldSensorValue, sensorValue));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TFBaseConfiguration getTfConfig()
+  public TFIndustrialDual020mAConfiguration getTfConfig()
   {
     return tfConfig;
   }
@@ -647,9 +618,9 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetTfConfig(TFBaseConfiguration newTfConfig, NotificationChain msgs)
+  public NotificationChain basicSetTfConfig(TFIndustrialDual020mAConfiguration newTfConfig, NotificationChain msgs)
   {
-    TFBaseConfiguration oldTfConfig = tfConfig;
+    TFIndustrialDual020mAConfiguration oldTfConfig = tfConfig;
     tfConfig = newTfConfig;
     if (eNotificationRequired())
     {
@@ -664,7 +635,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTfConfig(TFBaseConfiguration newTfConfig)
+  public void setTfConfig(TFIndustrialDual020mAConfiguration newTfConfig)
   {
     if (newTfConfig != tfConfig)
     {
@@ -685,78 +656,90 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
-  public long getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getDeviceType()
   {
     return deviceType;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
-  public void fetchSensorValue()
+  public void initSubDevices()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    Dual020mADevice sensor0 = ModelFactory.eINSTANCE.createDual020mADevice();
+    sensor0.setSensorNum((short) 0);
+    sensor0.setUid(getUid());
+    String subIdsensor0 = "sensor0";
+    sensor0.setSubId(subIdsensor0);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdsensor0);
+    sensor0.init();
+    sensor0.setMbrick(this);
+
+    Dual020mADevice sensor1 = ModelFactory.eINSTANCE.createDual020mADevice();
+    sensor1.setSensorNum((short) 1);
+    sensor1.setUid(getUid());
+    String subIdsensor1 = "sensor1";
+    sensor1.setSubId(subIdsensor1);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdsensor1);
+    sensor1.init();
+    sensor1.setMbrick(this);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void init()
   {
-    
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletIndustrialDual020mAImpl.class);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = new BrickletIndustrialDual020mA(getUid(), getIpConnection());
+    Short sampleRate = null;
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("sampleRate"))) {
+        Short sampleRateFromConfig = tfConfig.getSampleRate();
+        if (sampleRateFromConfig != 0 || sampleRateFromConfig != 1 || sampleRateFromConfig != 2
+            || sampleRateFromConfig != 3) {
+          logger.error(
+              "sampleRate must be 0, 1, 2, or 3. \"{}\" is configured. Falling back to default",
+              sampleRateFromConfig);
+        } else {
+          sampleRate = sampleRateFromConfig;
+        }
+      }
+    }
+    if (sampleRate != null) {
+      try {
+        tinkerforgeDevice.setSampleRate(sampleRate);
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -764,6 +747,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -773,6 +757,8 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
+        return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -789,6 +775,8 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     {
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
         return basicSetBrickd(null, msgs);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
+        return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
         return basicSetTfConfig(null, msgs);
     }
@@ -843,12 +831,10 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
         return getName();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
         return getBrickd();
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE:
-        return getSensorValue();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
+        return getMsubdevices();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
         return getTfConfig();
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__DEVICE_TYPE:
         return getDeviceType();
     }
@@ -860,6 +846,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -898,14 +885,12 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE:
-        setSensorValue((DecimalValue)newValue);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
+        getMsubdevices().clear();
+        getMsubdevices().addAll((Collection<? extends Dual020mADevice>)newValue);
         return;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)newValue);
-        return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
+        setTfConfig((TFIndustrialDual020mAConfiguration)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -954,14 +939,11 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
         setBrickd((MBrickd)null);
         return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE:
-        setSensorValue((DecimalValue)null);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
+        getMsubdevices().clear();
         return;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)null);
-        return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setTfConfig((TFIndustrialDual020mAConfiguration)null);
         return;
     }
     super.eUnset(featureID);
@@ -999,12 +981,10 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__BRICKD:
         return getBrickd() != null;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE:
-        return sensorValue != null;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES:
+        return msubdevices != null && !msubdevices.isEmpty();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG:
         return tfConfig != null;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
@@ -1019,11 +999,11 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1032,14 +1012,6 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1054,11 +1026,11 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__SENSOR_VALUE;
+        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1067,14 +1039,6 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
       switch (baseFeatureID)
       {
         case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1089,22 +1053,15 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A___FETCH_SENSOR_VALUE;
+        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A___INIT_SUB_DEVICES;
         default: return -1;
       }
     }
     if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {
@@ -1127,8 +1084,8 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A___INIT:
         init();
         return null;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A___FETCH_SENSOR_VALUE:
-        fetchSensorValue();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A___INIT_SUB_DEVICES:
+        initSubDevices();
         return null;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL020M_A___ENABLE:
         enable();
@@ -1171,10 +1128,6 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", sensorValue: ");
-    result.append(sensorValue);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(')');

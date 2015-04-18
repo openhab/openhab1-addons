@@ -45,6 +45,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
@@ -61,6 +62,7 @@ import org.openhab.binding.tinkerforge.internal.model.IO4Device;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
@@ -165,6 +167,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
@@ -758,6 +761,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass tfIndustrialDual020mAConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfServoConfigurationEClass = null;
 
   /**
@@ -892,6 +902,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletIndustrialDual020mAEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dual020mADeviceEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1165,6 +1182,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum ptcSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum industrialDual020mASubIdsEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -4136,6 +4160,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getTFIndustrialDual020mAConfiguration()
+  {
+    return tfIndustrialDual020mAConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFIndustrialDual020mAConfiguration_SampleRate()
+  {
+    return (EAttribute)tfIndustrialDual020mAConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFServoConfiguration()
   {
     return tfServoConfigurationEClass;
@@ -4909,6 +4953,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletIndustrialDual020mA__Init()
   {
     return mBrickletIndustrialDual020mAEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDual020mADevice()
+  {
+    return dual020mADeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDual020mADevice_DeviceType()
+  {
+    return (EAttribute)dual020mADeviceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDual020mADevice_Threshold()
+  {
+    return (EAttribute)dual020mADeviceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDual020mADevice_SensorNum()
+  {
+    return (EAttribute)dual020mADeviceEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -5986,6 +6070,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getIndustrialDual020mASubIds()
+  {
+    return industrialDual020mASubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -6964,6 +7058,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletIndustrialDual020mAEClass, MBRICKLET_INDUSTRIAL_DUAL020M_A__DEVICE_TYPE);
     createEOperation(mBrickletIndustrialDual020mAEClass, MBRICKLET_INDUSTRIAL_DUAL020M_A___INIT);
 
+    dual020mADeviceEClass = createEClass(DUAL020M_ADEVICE);
+    createEAttribute(dual020mADeviceEClass, DUAL020M_ADEVICE__DEVICE_TYPE);
+    createEAttribute(dual020mADeviceEClass, DUAL020M_ADEVICE__THRESHOLD);
+    createEAttribute(dual020mADeviceEClass, DUAL020M_ADEVICE__SENSOR_NUM);
+
     mBrickletPTCEClass = createEClass(MBRICKLET_PTC);
     createEAttribute(mBrickletPTCEClass, MBRICKLET_PTC__DEVICE_TYPE);
     createEOperation(mBrickletPTCEClass, MBRICKLET_PTC___INIT);
@@ -7094,6 +7193,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(tfptcBrickletConfigurationEClass, TFPTC_BRICKLET_CONFIGURATION__NOISE_REJECTION_FILTER);
     createEAttribute(tfptcBrickletConfigurationEClass, TFPTC_BRICKLET_CONFIGURATION__WIRE_MODE);
 
+    tfIndustrialDual020mAConfigurationEClass = createEClass(TF_INDUSTRIAL_DUAL020M_ACONFIGURATION);
+    createEAttribute(tfIndustrialDual020mAConfigurationEClass, TF_INDUSTRIAL_DUAL020M_ACONFIGURATION__SAMPLE_RATE);
+
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
@@ -7209,6 +7311,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonButtonSubIdsEEnum = createEEnum(DUAL_BUTTON_BUTTON_SUB_IDS);
     joystickSubIdsEEnum = createEEnum(JOYSTICK_SUB_IDS);
     ptcSubIdsEEnum = createEEnum(PTC_SUB_IDS);
+    industrialDual020mASubIdsEEnum = createEEnum(INDUSTRIAL_DUAL020M_ASUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -7775,16 +7878,28 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTinkerBrickletIndustrialDual020mA());
     g1.getETypeArguments().add(g2);
     mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(this.getMDecimalValue());
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getDual020mADevice());
     g1.getETypeArguments().add(g2);
     mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
-    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g2 = createEGenericType(this.getTFIndustrialDual020mAConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletIndustrialDual020mA());
+    g1.getETypeArguments().add(g2);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
-    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletPTC());
     g1.getETypeArguments().add(g2);
@@ -8024,6 +8139,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ohtfSubDeviceAdminDeviceEClass.getEGenericSuperTypes().add(g1);
     tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfptcBrickletConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfIndustrialDual020mAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -8460,6 +8576,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletIndustrialDual020mA__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(dual020mADeviceEClass, Dual020mADevice.class, "Dual020mADevice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDual020mADevice_DeviceType(), theEcorePackage.getEString(), "deviceType", "industrial020ma_sensor", 0, 1, Dual020mADevice.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDual020mADevice_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "1", 0, 1, Dual020mADevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDual020mADevice_SensorNum(), theEcorePackage.getEShort(), "sensorNum", null, 0, 1, Dual020mADevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletPTCEClass, MBrickletPTC.class, "MBrickletPTC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletPTC_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ptc", 0, 1, MBrickletPTC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -8627,6 +8748,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(tfptcBrickletConfigurationEClass, TFPTCBrickletConfiguration.class, "TFPTCBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFPTCBrickletConfiguration_NoiseRejectionFilter(), theEcorePackage.getEShortObject(), "noiseRejectionFilter", null, 0, 1, TFPTCBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFPTCBrickletConfiguration_WireMode(), theEcorePackage.getEShortObject(), "wireMode", null, 0, 1, TFPTCBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfIndustrialDual020mAConfigurationEClass, TFIndustrialDual020mAConfiguration.class, "TFIndustrialDual020mAConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFIndustrialDual020mAConfiguration_SampleRate(), theEcorePackage.getEShortObject(), "sampleRate", null, 0, 1, TFIndustrialDual020mAConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -8880,6 +9004,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_TEMPERATURE);
     addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_RESISTANCE);
     addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_CONNECTED);
+
+    initEEnum(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.class, "IndustrialDual020mASubIds");
+    addEEnumLiteral(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.SENSOR0);
+    addEEnumLiteral(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.SENSOR1);
 
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

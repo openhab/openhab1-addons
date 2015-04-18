@@ -4,6 +4,7 @@ package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletIndustrialDual020mA;
 
+import java.math.BigDecimal;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**
@@ -19,10 +20,10 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIndustrialDual020mA()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIndustrialDual020mA> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIndustrialDual020mA> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.Dual020mADevice> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration>"
  * @generated
  */
-public interface MBrickletIndustrialDual020mA extends MDevice<BrickletIndustrialDual020mA>, MSensor<DecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
+public interface MBrickletIndustrialDual020mA extends MDevice<BrickletIndustrialDual020mA>, MSubDeviceHolder<Dual020mADevice>, MTFConfigConsumer<TFIndustrialDual020mAConfiguration>
 {
 
   /**

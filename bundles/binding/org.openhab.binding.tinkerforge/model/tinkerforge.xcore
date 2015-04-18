@@ -553,9 +553,16 @@ class MBrickletSolidStateRelay extends MDevice<TinkerBrickletSolidStateRelay>,
 }
 
 class MBrickletIndustrialDual020mA extends MDevice<TinkerBrickletIndustrialDual020mA>,
-	MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	MSubDeviceHolder<Dual020mADevice>, MTFConfigConsumer<TFIndustrialDual020mAConfiguration> {
 	readonly String deviceType = "bricklet_industrialdual020ma"
 	op void init(){}
+}
+
+class Dual020mADevice extends MSubDevice<MBrickletIndustrialDual020mA>, 
+	MSensor<MDecimalValue>, CallbackListener, MTFConfigConsumer<TFBaseConfiguration> {
+	readonly String deviceType = "industrial020ma_sensor"
+	BigDecimal threshold = "1"
+	short sensorNum
 }
 
 class MBrickletPTC extends MDevice<TinkerBrickletPTC>,
@@ -753,6 +760,10 @@ class TFNullConfiguration extends TFConfig {
 class TFPTCBrickletConfiguration extends TFConfig {
 	Short noiseRejectionFilter
 	Short wireMode
+}
+
+class TFIndustrialDual020mAConfiguration extends TFConfig {
+	Short sampleRate
 }
 
 class TFBaseConfiguration extends TFConfig {
@@ -969,4 +980,8 @@ enum JoystickSubIds {
 
 enum PTCSubIds {
 	ptc_temperature, ptc_resistance, ptc_connected
+}
+
+enum IndustrialDual020mASubIds {
+	sensor0, sensor1
 }
