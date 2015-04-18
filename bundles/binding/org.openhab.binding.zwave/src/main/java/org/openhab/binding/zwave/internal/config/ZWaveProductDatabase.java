@@ -154,9 +154,8 @@ public class ZWaveProductDatabase {
 	}
 
 	public List<ZWaveDbProduct> GetProducts() {
-		if (selManufacturer == null) {
-			return Collections.emptyList();
-		}
+		if (selManufacturer == null)
+			return null;
 
 		return selManufacturer.Product;
 	}
@@ -168,9 +167,8 @@ public class ZWaveProductDatabase {
 	 * @return true if the manufacturer was found
 	 */
 	public boolean FindManufacturer(int manufacturerId) {
-		if (database == null) {
+		if (database == null)
 			return false;
-		}
 
 		selManufacturer = null;
 		selProduct = null;

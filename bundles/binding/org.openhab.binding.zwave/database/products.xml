@@ -1585,22 +1585,9 @@
 				<Type>0002</Type>
 				<Id>000D</Id>
 			</Reference>
-			<Reference>
-				<Type>0002</Type>
-				<Id>000E</Id>
-			</Reference>			
 			<Model>PST-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
 			<ConfigFile>philio/pst02.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0002</Type>
-				<Id>0002</Id>
-			</Reference>			
-			<Model>PST-02A</Model>
-			<Label lang="en">Slim Multi-Sensor</Label>
-			<ConfigFile>philio/pst02a.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1611,16 +1598,6 @@
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
 			<ConfigFile>philio/pan04_1.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0001</Type>
-				<Id>0012</Id>
-			</Reference>
-			<Model>PAN04-1B</Model>
-			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
-			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
-			<ConfigFile>philio/pan04_1b.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1686,10 +1663,6 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
-			</Reference>
-			<Reference>
-				<Type>0400</Type>
-				<Id>0001</Id>
 			</Reference>
 			<Model>RPi Controller</Model>
 			<Label lang="en">RPi ZWave Controller</Label>
