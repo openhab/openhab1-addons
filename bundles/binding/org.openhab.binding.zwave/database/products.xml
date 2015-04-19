@@ -447,6 +447,14 @@
 	        <Label lang="en">Outdoor Lighting Control Module</Label>
 	        <ConfigFile>ge/45604.xml</ConfigFile>
         </Product>
+		<Product>
+	        <Reference>
+		        <Type>4944</Type>
+		        <Id>3031</Id>
+	        </Reference>
+	        <Model>12724</Model>
+	        <Label lang="en">Lighting Control Dimmer Switch</Label>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
