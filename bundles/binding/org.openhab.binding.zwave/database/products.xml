@@ -17,6 +17,15 @@
 		<Name>Linear</Name>
 		<Product>
 			<Reference>
+				<Type>5257</Type>
+				<Id>3533</Id>
+			</Reference>
+			<Model>WS15Z-1</Model>
+			<Label lang="en">Wall Mounted Switch</Label>
+			<ConfigFile>linear/wsz15-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4457</Type>
 				<Id>3034</Id>
 			</Reference>
