@@ -58,12 +58,12 @@ public final class M_Message extends Message {
 			for (int i = 0; i < roomCount; i++) {
 
 				int position = bytes[byteOffset++];
-				String name = "";
-
-				int nameLength = (int) bytes[byteOffset++] & 0xff; 
-				for (int char_idx = 0; char_idx < nameLength; char_idx++) {
-					name += (char) bytes[byteOffset++];
-				}
+				
+				int nameLength = (int) bytes[byteOffset++] & 0xff;
+				byte[] data = new byte[nameLength];
+				System.arraycopy(bytes, byteOffset, data, 0, nameLength);
+				byteOffset += nameLength;
+				String name = new String(data, "UTF-8");
 
 				String rfAddress = Utils.toHex(((int)bytes[byteOffset] & 0xff), ((int)bytes[byteOffset+1] & 0xff), ((int)bytes[byteOffset + 2] & 0xff));
 				byteOffset += 3;
@@ -88,12 +88,10 @@ public final class M_Message extends Message {
 				}
 
 				int nameLength = (int)bytes[byteOffset++] & 0xff;
-
-				String deviceName = "";
-
-				for (int char_idx = 0;	 char_idx < nameLength; char_idx++) {
-					deviceName += (char)bytes[byteOffset++];
-				}
+				byte[] data = new byte[nameLength];
+				System.arraycopy(bytes, byteOffset, data, 0, nameLength);
+				byteOffset += nameLength;
+				String deviceName = new String(data, "UTF-8");
 
 				int roomId = (int)bytes[byteOffset++] & 0xff;
 				devices.add(new DeviceInformation(deviceType, serialNumber, rfAddress, deviceName, roomId));	
