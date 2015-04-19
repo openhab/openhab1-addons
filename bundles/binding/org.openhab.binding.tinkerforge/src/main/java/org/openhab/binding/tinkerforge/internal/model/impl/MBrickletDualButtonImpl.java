@@ -17,11 +17,10 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonRightLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
@@ -53,6 +52,7 @@ import com.tinkerforge.IPConnection;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -259,6 +259,26 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
    * @ordered
    */
   protected EList<DualButtonDevice> msubdevices;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_dualbutton";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -571,13 +591,24 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * 
    * @generated NOT
    */
   public void initSubDevices()
   {
-    DualButtonLeftButton leftButton = ModelFactory.eINSTANCE.createDualButtonLeftButton();
+    DualButtonButton leftButton = ModelFactory.eINSTANCE.createDualButtonButton();
+    leftButton.setPosition(DualButtonDevicePosition.LEFT);
     leftButton.setUid(getUid());
     String subIdLeftButton = "dualbutton_leftbutton";
     leftButton.setSubId(subIdLeftButton);
@@ -585,7 +616,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     leftButton.init();
     leftButton.setMbrick(this);
 
-    DualButtonRightButton rightButton = ModelFactory.eINSTANCE.createDualButtonRightButton();
+    DualButtonButton rightButton = ModelFactory.eINSTANCE.createDualButtonButton();
+    rightButton.setPosition(DualButtonDevicePosition.RIGHT);
     rightButton.setUid(getUid());
     String subIdRightButton = "dualbutton_rightbutton";
     rightButton.setSubId(subIdRightButton);
@@ -593,7 +625,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     rightButton.init();
     rightButton.setMbrick(this);
 
-    DualButtonLeftLed leftLed = ModelFactory.eINSTANCE.createDualButtonLeftLed();
+    DualButtonLed leftLed = ModelFactory.eINSTANCE.createDualButtonLed();
+    leftLed.setPosition(DualButtonDevicePosition.LEFT);
     leftLed.setUid(getUid());
     String subidLeftLed = "dualbutton_leftled";
     leftLed.setSubId(subidLeftLed);
@@ -601,7 +634,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     leftLed.init();
     leftLed.setMbrick(this);
 
-    DualButtonRightLed rightLed = ModelFactory.eINSTANCE.createDualButtonRightLed();
+    DualButtonLed rightLed = ModelFactory.eINSTANCE.createDualButtonLed();
+    rightLed.setPosition(DualButtonDevicePosition.RIGHT);
     rightLed.setUid(getUid());
     String subIdRightLed = "dualbutton_rightled";
     rightLed.setSubId(subIdRightLed);
@@ -626,8 +660,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
    * 
    * @generated NOT
    */
-  public void enable()
-  {
+  public void enable() {
     tinkerforgeDevice = new BrickletDualButton(getUid(), getIpConnection());
   }
 
@@ -730,6 +763,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         return getBrickd();
       case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
         return getMsubdevices();
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_TYPE:
+        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -870,6 +905,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -988,6 +1025,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
+    result.append(", deviceType: ");
+    result.append(deviceType);
     result.append(')');
     return result.toString();
   }

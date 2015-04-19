@@ -15,9 +15,12 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
@@ -30,24 +33,27 @@ import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Dual Button Left Led</b></em>'.
+ * An implementation of the model object '<em><b>Dual Button Led</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftLedImpl#getDigitalState <em>Digital State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDigitalState <em>Digital State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getPosition <em>Position</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implements DualButtonLeftLed
+public class DualButtonLedImpl extends MinimalEObjectImpl.Container implements DualButtonLed
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -58,6 +64,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected static final Logger LOGGER_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -67,6 +74,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected Logger logger = LOGGER_EDEFAULT;
+
   /**
    * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -76,6 +84,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected static final String UID_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -85,6 +94,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
   /**
    * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -94,6 +104,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected static final boolean POLL_EDEFAULT = true;
+
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -103,6 +114,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected boolean poll = POLL_EDEFAULT;
+
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -112,6 +124,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected static final AtomicBoolean ENABLED_A_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -121,6 +134,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected AtomicBoolean enabledA = ENABLED_A_EDEFAULT;
+
   /**
    * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -130,6 +144,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected static final String SUB_ID_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -139,6 +154,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String subId = SUB_ID_EDEFAULT;
+
   /**
    * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -148,6 +164,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected static final HighLowValue DIGITAL_STATE_EDEFAULT = null;
+
   /**
    * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -157,7 +174,59 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected HighLowValue digitalState = DIGITAL_STATE_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected DualButtonLEDConfiguration tfConfig;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "dualbutton_led";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPosition()
+   * @generated
+   * @ordered
+   */
+  protected static final DualButtonDevicePosition POSITION_EDEFAULT = DualButtonDevicePosition.LEFT;
+
+  /**
+   * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPosition()
+   * @generated
+   * @ordered
+   */
+  protected DualButtonDevicePosition position = POSITION_EDEFAULT;
+
   private BrickletDualButton tinkerforgeDevice;
+
   private StateListener listener;
 
   /**
@@ -165,7 +234,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  protected DualButtonLeftLedImpl()
+  protected DualButtonLedImpl()
   {
     super();
   }
@@ -178,7 +247,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.DUAL_BUTTON_LEFT_LED;
+    return ModelPackage.Literals.DUAL_BUTTON_LED;
   }
 
   /**
@@ -201,7 +270,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -224,7 +293,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__UID, oldUid, uid));
   }
 
   /**
@@ -247,7 +316,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__POLL, oldPoll, poll));
   }
 
   /**
@@ -270,7 +339,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -293,7 +362,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -303,7 +372,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    */
   public MBrickletDualButton getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK) return null;
+    if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_LED__MBRICK) return null;
     return (MBrickletDualButton)eContainer();
   }
 
@@ -314,7 +383,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    */
   public NotificationChain basicSetMbrick(MBrickletDualButton newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DUAL_BUTTON_LED__MBRICK, msgs);
     return msgs;
   }
 
@@ -325,7 +394,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
    */
   public void setMbrick(MBrickletDualButton newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_LED__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -338,7 +407,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -361,7 +430,101 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     HighLowValue oldDigitalState = digitalState;
     digitalState = newDigitalState;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE, oldDigitalState, digitalState));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE, oldDigitalState, digitalState));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLEDConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(DualButtonLEDConfiguration newTfConfig, NotificationChain msgs)
+  {
+    DualButtonLEDConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(DualButtonLEDConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DUAL_BUTTON_LED__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DUAL_BUTTON_LED__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDeviceType(String newDeviceType)
+  {
+    String oldDeviceType = deviceType;
+    deviceType = newDeviceType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__DEVICE_TYPE, oldDeviceType, deviceType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonDevicePosition getPosition()
+  {
+    return position;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPosition(DualButtonDevicePosition newPosition)
+  {
+    DualButtonDevicePosition oldPosition = position;
+    position = newPosition == null ? POSITION_EDEFAULT : newPosition;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LED__POSITION, oldPosition, position));
   }
 
   /**
@@ -372,7 +535,11 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   public void turnDigital(HighLowValue digitalState)
   {
     try {
-      tinkerforgeDevice.setSelectedLEDState(BrickletDualButton.LED_LEFT,
+      short led =
+          position == DualButtonDevicePosition.LEFT
+              ? BrickletDualButton.LED_LEFT
+              : BrickletDualButton.LED_RIGHT;
+      tinkerforgeDevice.setSelectedLEDState(led,
           getState4Value(digitalState));
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -382,17 +549,16 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     }
   }
 
-
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * 
    * @generated NOT
    */
-  public void fetchDigitalValue()
-  {
+  public void fetchDigitalValue() {
     try {
       LEDState ledState = tinkerforgeDevice.getLEDState();
-      setDigitalState(getValue4State(ledState.ledL));
+      short led = position == DualButtonDevicePosition.LEFT ? ledState.ledL : ledState.ledR;
+      setDigitalState(getValue4State(led));
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -409,7 +575,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(DualButtonLeftLedImpl.class);
+    logger = LoggerFactory.getLogger(DualButtonLedImpl.class);
   }
 
   /**
@@ -420,43 +586,54 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   public void enable()
   {
     tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+
+    boolean autotoggle = false;
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("autotoggle"))) {
+        autotoggle = tfConfig.isAutotoggle();
+      }
+    }
+    logger.trace("autotoggle for {} is {}", position, autotoggle);
+    try {
+      short ledstate;
+      short led;
+      LEDState ledState = tinkerforgeDevice.getLEDState();
+      if (position == DualButtonDevicePosition.LEFT) {
+        ledstate = ledState.ledL;
+        led = BrickletDualButton.LED_LEFT;
+      } else {
+        ledstate = ledState.ledR;
+        led = BrickletDualButton.LED_RIGHT;
+      }
+      if (!autotoggle) {
+        logger.trace("autotoggle is off for led {}", led);
+        if (ledstate == BrickletDualButton.LED_STATE_AUTO_TOGGLE_OFF) {
+          tinkerforgeDevice.setSelectedLEDState(led, BrickletDualButton.LED_STATE_OFF);
+          logger.trace("setting led {} to off", led);
+        } else if (ledstate == BrickletDualButton.LED_STATE_AUTO_TOGGLE_ON) {
+          tinkerforgeDevice.setSelectedLEDState(led, BrickletDualButton.LED_STATE_ON);
+          logger.trace("setting led {} to on", led);
+        }
+      } else {
+        logger.trace("autotoggle is on for led {}", led);
+        if (ledstate == BrickletDualButton.LED_STATE_OFF) {
+          tinkerforgeDevice.setSelectedLEDState(led, BrickletDualButton.LED_STATE_AUTO_TOGGLE_OFF);
+          logger.trace("setting led {} to off", led);
+        } else if (ledstate == BrickletDualButton.LED_STATE_ON) {
+          tinkerforgeDevice.setSelectedLEDState(led, BrickletDualButton.LED_STATE_AUTO_TOGGLE_ON);
+          logger.trace("setting led {} to on", led);
+        }
+      }
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+
     listener = new StateListener();
     tinkerforgeDevice.addStateChangedListener(listener);
     fetchDigitalValue();
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  private class StateListener implements BrickletDualButton.StateChangedListener {
-
-    @Override
-    public void stateChanged(short buttonL, short buttonR, short ledL, short ledR) {
-      HighLowValue value = getValue4State(ledL);
-      setDigitalState(value);
-    }
-
-  }
-
-  private HighLowValue getValue4State(short state) {
-    HighLowValue value = HighLowValue.UNDEF;
-    if (state == BrickletDualButton.LED_STATE_AUTO_TOGGLE_OFF
-        || state == BrickletDualButton.LED_STATE_AUTO_TOGGLE_ON) {
-      value = HighLowValue.UNDEF;
-    } else if (state == BrickletDualButton.LED_STATE_ON) {
-      value = HighLowValue.HIGH;
-    } else if (state == BrickletDualButton.LED_STATE_OFF) {
-      value = HighLowValue.LOW;
-    }
-    return value;
-  }
-
-  private short getState4Value(HighLowValue value) {
-    return value == HighLowValue.LOW
-        ? BrickletDualButton.LED_STATE_OFF
-        : BrickletDualButton.LED_STATE_ON;
   }
 
   /**
@@ -473,8 +650,51 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private class StateListener implements BrickletDualButton.StateChangedListener {
+
+    @Override
+    public void stateChanged(short buttonL, short buttonR, short ledL, short ledR) {
+      HighLowValue newValue; // = getValue4State(ledL);
+      if (position == DualButtonDevicePosition.LEFT) {
+        newValue = getValue4State(ledL);
+      } else {
+        newValue = getValue4State(ledR);
+      }
+      if (newValue != digitalState) {
+        setDigitalState(newValue);
+        logger.trace("listener {} value changed to: {}", position, newValue);
+      } else {
+        logger.trace("listener {} omitting unchanged value: {}", position, newValue);
+      }
+    }
+
+  }
+
+  private HighLowValue getValue4State(short state) {
+    HighLowValue value = HighLowValue.UNDEF;
+    if (state == BrickletDualButton.LED_STATE_ON
+        || state == BrickletDualButton.LED_STATE_AUTO_TOGGLE_ON) {
+      value = HighLowValue.HIGH;
+    } else if (state == BrickletDualButton.LED_STATE_OFF
+        || state == BrickletDualButton.LED_STATE_AUTO_TOGGLE_OFF) {
+      value = HighLowValue.LOW;
+    }
+    return value;
+  }
+
+  private short getState4Value(HighLowValue value) {
+    return value == HighLowValue.LOW
+        ? BrickletDualButton.LED_STATE_OFF
+        : BrickletDualButton.LED_STATE_ON;
+  }
+
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -482,7 +702,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetMbrick((MBrickletDualButton)otherEnd, msgs);
@@ -500,8 +720,10 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         return basicSetMbrick(null, msgs);
+      case ModelPackage.DUAL_BUTTON_LED__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -516,7 +738,7 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -532,20 +754,26 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LED__LOGGER:
         return getLogger();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__UID:
+      case ModelPackage.DUAL_BUTTON_LED__UID:
         return getUid();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__POLL:
+      case ModelPackage.DUAL_BUTTON_LED__POLL:
         return isPoll();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LED__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LED__SUB_ID:
         return getSubId();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         return getMbrick();
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE:
+      case ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE:
         return getDigitalState();
+      case ModelPackage.DUAL_BUTTON_LED__TF_CONFIG:
+        return getTfConfig();
+      case ModelPackage.DUAL_BUTTON_LED__DEVICE_TYPE:
+        return getDeviceType();
+      case ModelPackage.DUAL_BUTTON_LED__POSITION:
+        return getPosition();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -560,26 +788,35 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LED__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__UID:
+      case ModelPackage.DUAL_BUTTON_LED__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__POLL:
+      case ModelPackage.DUAL_BUTTON_LED__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LED__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LED__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         setMbrick((MBrickletDualButton)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE:
+      case ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE:
         setDigitalState((HighLowValue)newValue);
+        return;
+      case ModelPackage.DUAL_BUTTON_LED__TF_CONFIG:
+        setTfConfig((DualButtonLEDConfiguration)newValue);
+        return;
+      case ModelPackage.DUAL_BUTTON_LED__DEVICE_TYPE:
+        setDeviceType((String)newValue);
+        return;
+      case ModelPackage.DUAL_BUTTON_LED__POSITION:
+        setPosition((DualButtonDevicePosition)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -595,26 +832,35 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LED__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__UID:
+      case ModelPackage.DUAL_BUTTON_LED__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__POLL:
+      case ModelPackage.DUAL_BUTTON_LED__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LED__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LED__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         setMbrick((MBrickletDualButton)null);
         return;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE:
+      case ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE:
         setDigitalState(DIGITAL_STATE_EDEFAULT);
+        return;
+      case ModelPackage.DUAL_BUTTON_LED__TF_CONFIG:
+        setTfConfig((DualButtonLEDConfiguration)null);
+        return;
+      case ModelPackage.DUAL_BUTTON_LED__DEVICE_TYPE:
+        setDeviceType(DEVICE_TYPE_EDEFAULT);
+        return;
+      case ModelPackage.DUAL_BUTTON_LED__POSITION:
+        setPosition(POSITION_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -630,20 +876,26 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LED__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__UID:
+      case ModelPackage.DUAL_BUTTON_LED__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__POLL:
+      case ModelPackage.DUAL_BUTTON_LED__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LED__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LED__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LED__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE:
+      case ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE:
         return DIGITAL_STATE_EDEFAULT == null ? digitalState != null : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
+      case ModelPackage.DUAL_BUTTON_LED__TF_CONFIG:
+        return tfConfig != null;
+      case ModelPackage.DUAL_BUTTON_LED__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.DUAL_BUTTON_LED__POSITION:
+        return position != POSITION_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -660,7 +912,15 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE: return ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE;
+        case ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE: return ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DUAL_BUTTON_LED__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -679,7 +939,15 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE: return ModelPackage.DUAL_BUTTON_LEFT_LED__DIGITAL_STATE;
+        case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE: return ModelPackage.DUAL_BUTTON_LED__DIGITAL_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.DUAL_BUTTON_LED__TF_CONFIG;
         default: return -1;
       }
     }
@@ -698,8 +966,15 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     {
       switch (baseOperationID)
       {
-        case ModelPackage.DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE: return ModelPackage.DUAL_BUTTON_LEFT_LED___TURN_DIGITAL__HIGHLOWVALUE;
-        case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE: return ModelPackage.DUAL_BUTTON_LEFT_LED___FETCH_DIGITAL_VALUE;
+        case ModelPackage.DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE: return ModelPackage.DUAL_BUTTON_LED___TURN_DIGITAL__HIGHLOWVALUE;
+        case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE: return ModelPackage.DUAL_BUTTON_LED___FETCH_DIGITAL_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -716,19 +991,19 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (operationID)
     {
-      case ModelPackage.DUAL_BUTTON_LEFT_LED___TURN_DIGITAL__HIGHLOWVALUE:
+      case ModelPackage.DUAL_BUTTON_LED___TURN_DIGITAL__HIGHLOWVALUE:
         turnDigital((HighLowValue)arguments.get(0));
         return null;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED___FETCH_DIGITAL_VALUE:
+      case ModelPackage.DUAL_BUTTON_LED___FETCH_DIGITAL_VALUE:
         fetchDigitalValue();
         return null;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED___INIT:
+      case ModelPackage.DUAL_BUTTON_LED___INIT:
         init();
         return null;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED___ENABLE:
+      case ModelPackage.DUAL_BUTTON_LED___ENABLE:
         enable();
         return null;
-      case ModelPackage.DUAL_BUTTON_LEFT_LED___DISABLE:
+      case ModelPackage.DUAL_BUTTON_LED___DISABLE:
         disable();
         return null;
     }
@@ -758,8 +1033,12 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
     result.append(subId);
     result.append(", digitalState: ");
     result.append(digitalState);
+    result.append(", deviceType: ");
+    result.append(deviceType);
+    result.append(", position: ");
+    result.append(position);
     result.append(')');
     return result.toString();
   }
 
-} //DualButtonLeftLedImpl
+} //DualButtonLedImpl
