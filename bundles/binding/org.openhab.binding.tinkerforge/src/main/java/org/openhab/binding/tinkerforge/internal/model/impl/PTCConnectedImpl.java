@@ -3,48 +3,51 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletPTC;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Dual Button Device</b></em>'.
+ * An implementation of the model object '<em><b>PTC Connected</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonDeviceImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonDeviceImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonDeviceImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonDeviceImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonDeviceImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonDeviceImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implements DualButtonDevice
+public class PTCConnectedImpl extends MinimalEObjectImpl.Container implements PTCConnected
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -147,11 +150,43 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSensorValue()
+   * @generated
+   * @ordered
+   */
+  protected HighLowValue sensorValue;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "ptc_connected";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  private BrickletPTC tinkerforgeDevice;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected DualButtonDeviceImpl()
+  protected PTCConnectedImpl()
   {
     super();
   }
@@ -164,7 +199,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.DUAL_BUTTON_DEVICE;
+    return ModelPackage.Literals.PTC_CONNECTED;
   }
 
   /**
@@ -187,7 +222,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_DEVICE__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -210,7 +245,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_DEVICE__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__UID, oldUid, uid));
   }
 
   /**
@@ -233,7 +268,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_DEVICE__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__POLL, oldPoll, poll));
   }
 
   /**
@@ -256,7 +291,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_DEVICE__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -279,7 +314,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_DEVICE__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -287,10 +322,10 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public MBrickletDualButton getMbrick()
+  public MBrickletPTC getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_DEVICE__MBRICK) return null;
-    return (MBrickletDualButton)eContainer();
+    if (eContainerFeatureID() != ModelPackage.PTC_CONNECTED__MBRICK) return null;
+    return (MBrickletPTC)eContainer();
   }
 
   /**
@@ -298,9 +333,9 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetMbrick(MBrickletDualButton newMbrick, NotificationChain msgs)
+  public NotificationChain basicSetMbrick(MBrickletPTC newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DUAL_BUTTON_DEVICE__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.PTC_CONNECTED__MBRICK, msgs);
     return msgs;
   }
 
@@ -309,9 +344,9 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setMbrick(MBrickletDualButton newMbrick)
+  public void setMbrick(MBrickletPTC newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_DEVICE__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.PTC_CONNECTED__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -324,43 +359,90 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_DEVICE__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__MBRICK, newMbrick, newMbrick));
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
+   */
+  public HighLowValue getSensorValue()
+  {
+    return sensorValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSensorValue(HighLowValue newSensorValue)
+  {
+    HighLowValue oldSensorValue = sensorValue;
+    sensorValue = newSensorValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.PTC_CONNECTED__SENSOR_VALUE, oldSensorValue, sensorValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSensorValue()
+  {
+    try {
+      boolean sensorConnected = tinkerforgeDevice.isSensorConnected();
+      HighLowValue newValue = sensorConnected ? HighLowValue.LOW : HighLowValue.HIGH;
+      setSensorValue(newValue);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(PTCConnectedImpl.class);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -373,10 +455,10 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
+      case ModelPackage.PTC_CONNECTED__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
-        return basicSetMbrick((MBrickletDualButton)otherEnd, msgs);
+        return basicSetMbrick((MBrickletPTC)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -391,7 +473,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
+      case ModelPackage.PTC_CONNECTED__MBRICK:
         return basicSetMbrick(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -407,7 +489,7 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
+      case ModelPackage.PTC_CONNECTED__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -423,18 +505,22 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__LOGGER:
+      case ModelPackage.PTC_CONNECTED__LOGGER:
         return getLogger();
-      case ModelPackage.DUAL_BUTTON_DEVICE__UID:
+      case ModelPackage.PTC_CONNECTED__UID:
         return getUid();
-      case ModelPackage.DUAL_BUTTON_DEVICE__POLL:
+      case ModelPackage.PTC_CONNECTED__POLL:
         return isPoll();
-      case ModelPackage.DUAL_BUTTON_DEVICE__ENABLED_A:
+      case ModelPackage.PTC_CONNECTED__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.DUAL_BUTTON_DEVICE__SUB_ID:
+      case ModelPackage.PTC_CONNECTED__SUB_ID:
         return getSubId();
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
+      case ModelPackage.PTC_CONNECTED__MBRICK:
         return getMbrick();
+      case ModelPackage.PTC_CONNECTED__SENSOR_VALUE:
+        return getSensorValue();
+      case ModelPackage.PTC_CONNECTED__DEVICE_TYPE:
+        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -449,23 +535,26 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__LOGGER:
+      case ModelPackage.PTC_CONNECTED__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__UID:
+      case ModelPackage.PTC_CONNECTED__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__POLL:
+      case ModelPackage.PTC_CONNECTED__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__ENABLED_A:
+      case ModelPackage.PTC_CONNECTED__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__SUB_ID:
+      case ModelPackage.PTC_CONNECTED__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
-        setMbrick((MBrickletDualButton)newValue);
+      case ModelPackage.PTC_CONNECTED__MBRICK:
+        setMbrick((MBrickletPTC)newValue);
+        return;
+      case ModelPackage.PTC_CONNECTED__SENSOR_VALUE:
+        setSensorValue((HighLowValue)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -481,23 +570,26 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__LOGGER:
+      case ModelPackage.PTC_CONNECTED__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__UID:
+      case ModelPackage.PTC_CONNECTED__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__POLL:
+      case ModelPackage.PTC_CONNECTED__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__ENABLED_A:
+      case ModelPackage.PTC_CONNECTED__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__SUB_ID:
+      case ModelPackage.PTC_CONNECTED__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
-        setMbrick((MBrickletDualButton)null);
+      case ModelPackage.PTC_CONNECTED__MBRICK:
+        setMbrick((MBrickletPTC)null);
+        return;
+      case ModelPackage.PTC_CONNECTED__SENSOR_VALUE:
+        setSensorValue((HighLowValue)null);
         return;
     }
     super.eUnset(featureID);
@@ -513,20 +605,81 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE__LOGGER:
+      case ModelPackage.PTC_CONNECTED__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.DUAL_BUTTON_DEVICE__UID:
+      case ModelPackage.PTC_CONNECTED__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.DUAL_BUTTON_DEVICE__POLL:
+      case ModelPackage.PTC_CONNECTED__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.DUAL_BUTTON_DEVICE__ENABLED_A:
+      case ModelPackage.PTC_CONNECTED__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.DUAL_BUTTON_DEVICE__SUB_ID:
+      case ModelPackage.PTC_CONNECTED__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.DUAL_BUTTON_DEVICE__MBRICK:
+      case ModelPackage.PTC_CONNECTED__MBRICK:
         return getMbrick() != null;
+      case ModelPackage.PTC_CONNECTED__SENSOR_VALUE:
+        return sensorValue != null;
+      case ModelPackage.PTC_CONNECTED__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+  {
+    if (baseClass == MSensor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.PTC_CONNECTED__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+  {
+    if (baseClass == MSensor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.PTC_CONNECTED__SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
+  {
+    if (baseClass == MSensor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.PTC_CONNECTED___FETCH_SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
   /**
@@ -539,13 +692,16 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
   {
     switch (operationID)
     {
-      case ModelPackage.DUAL_BUTTON_DEVICE___INIT:
+      case ModelPackage.PTC_CONNECTED___FETCH_SENSOR_VALUE:
+        fetchSensorValue();
+        return null;
+      case ModelPackage.PTC_CONNECTED___INIT:
         init();
         return null;
-      case ModelPackage.DUAL_BUTTON_DEVICE___ENABLE:
+      case ModelPackage.PTC_CONNECTED___ENABLE:
         enable();
         return null;
-      case ModelPackage.DUAL_BUTTON_DEVICE___DISABLE:
+      case ModelPackage.PTC_CONNECTED___DISABLE:
         disable();
         return null;
     }
@@ -573,8 +729,12 @@ public class DualButtonDeviceImpl extends MinimalEObjectImpl.Container implement
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
+    result.append(", sensorValue: ");
+    result.append(sensorValue);
+    result.append(", deviceType: ");
+    result.append(deviceType);
     result.append(')');
     return result.toString();
   }
 
-} //DualButtonDeviceImpl
+} //PTCConnectedImpl

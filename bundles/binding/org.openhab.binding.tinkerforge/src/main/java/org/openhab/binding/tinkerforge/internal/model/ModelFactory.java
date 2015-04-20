@@ -89,40 +89,22 @@ public interface ModelFactory extends EFactory
   MBrickletDualButton createMBrickletDualButton();
 
   /**
-   * Returns a new object of class '<em>Dual Button Left Button</em>'.
+   * Returns a new object of class '<em>Dual Button Button</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Left Button</em>'.
+   * @return a new object of class '<em>Dual Button Button</em>'.
    * @generated
    */
-  DualButtonLeftButton createDualButtonLeftButton();
+  DualButtonButton createDualButtonButton();
 
   /**
-   * Returns a new object of class '<em>Dual Button Right Button</em>'.
+   * Returns a new object of class '<em>Dual Button Led</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Right Button</em>'.
+   * @return a new object of class '<em>Dual Button Led</em>'.
    * @generated
    */
-  DualButtonRightButton createDualButtonRightButton();
-
-  /**
-   * Returns a new object of class '<em>Dual Button Left Led</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Left Led</em>'.
-   * @generated
-   */
-  DualButtonLeftLed createDualButtonLeftLed();
-
-  /**
-   * Returns a new object of class '<em>Dual Button Right Led</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Dual Button Right Led</em>'.
-   * @generated
-   */
-  DualButtonRightLed createDualButtonRightLed();
+  DualButtonLed createDualButtonLed();
 
   /**
    * Returns a new object of class '<em>MBricklet Linear Poti</em>'.
@@ -276,6 +258,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletLEDStrip createMBrickletLEDStrip();
+
+  /**
+   * Returns a new object of class '<em>LED Group</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>LED Group</em>'.
+   * @generated
+   */
+  LEDGroup createLEDGroup();
 
   /**
    * Returns a new object of class '<em>Digital Actor IO16</em>'.
@@ -467,6 +458,24 @@ public interface ModelFactory extends EFactory
   TFNullConfiguration createTFNullConfiguration();
 
   /**
+   * Returns a new object of class '<em>TFPTC Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TFPTC Bricklet Configuration</em>'.
+   * @generated
+   */
+  TFPTCBrickletConfiguration createTFPTCBrickletConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
+   * @generated
+   */
+  TFIndustrialDual020mAConfiguration createTFIndustrialDual020mAConfiguration();
+
+  /**
    * Returns a new object of class '<em>TF Servo Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -539,6 +548,42 @@ public interface ModelFactory extends EFactory
   DimmableConfiguration createDimmableConfiguration();
 
   /**
+   * Returns a new object of class '<em>Button Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Button Configuration</em>'.
+   * @generated
+   */
+  ButtonConfiguration createButtonConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Dual Button LED Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button LED Configuration</em>'.
+   * @generated
+   */
+  DualButtonLEDConfiguration createDualButtonLEDConfiguration();
+
+  /**
+   * Returns a new object of class '<em>LED Strip Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>LED Strip Configuration</em>'.
+   * @generated
+   */
+  LEDStripConfiguration createLEDStripConfiguration();
+
+  /**
+   * Returns a new object of class '<em>LED Group Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>LED Group Configuration</em>'.
+   * @generated
+   */
+  LEDGroupConfiguration createLEDGroupConfiguration();
+
+  /**
    * Returns a new object of class '<em>MServo</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -564,6 +609,69 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletDistanceIR createMBrickletDistanceIR();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Solid State Relay</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Solid State Relay</em>'.
+   * @generated
+   */
+  MBrickletSolidStateRelay createMBrickletSolidStateRelay();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Industrial Dual020m A</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Dual020m A</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDual020mA createMBrickletIndustrialDual020mA();
+
+  /**
+   * Returns a new object of class '<em>Dual020m ADevice</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual020m ADevice</em>'.
+   * @generated
+   */
+  Dual020mADevice createDual020mADevice();
+
+  /**
+   * Returns a new object of class '<em>MBricklet PTC</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet PTC</em>'.
+   * @generated
+   */
+  MBrickletPTC createMBrickletPTC();
+
+  /**
+   * Returns a new object of class '<em>PTC Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>PTC Temperature</em>'.
+   * @generated
+   */
+  PTCTemperature createPTCTemperature();
+
+  /**
+   * Returns a new object of class '<em>PTC Resistance</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>PTC Resistance</em>'.
+   * @generated
+   */
+  PTCResistance createPTCResistance();
+
+  /**
+   * Returns a new object of class '<em>PTC Connected</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>PTC Connected</em>'.
+   * @generated
+   */
+  PTCConnected createPTCConnected();
 
   /**
    * Returns a new object of class '<em>MBricklet Temperature</em>'.
