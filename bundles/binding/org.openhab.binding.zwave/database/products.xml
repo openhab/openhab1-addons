@@ -380,6 +380,15 @@
 			<Label lang="en">Wall Mount Accessory Switch</Label>
 			<ConfigFile>evolve/ltm-5.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3034</Id>
+			</Reference>
+			<Model>LRM-AS</Model>
+			<Label lang="en">Wall Mounted Dimmer</Label>
+			<ConfigFile>evolve/lrm-as.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
