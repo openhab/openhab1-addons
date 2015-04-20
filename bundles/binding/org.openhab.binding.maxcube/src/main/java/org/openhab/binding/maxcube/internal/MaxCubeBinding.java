@@ -190,59 +190,59 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				Message message;
 				try {
 					message = processRawMessage(raw);
-
+					if (message == null) {
+						continue;
+					}
 					message.debug(logger);
 
-					if (message != null) {
-						if (message.getType() == MessageType.M) {
-							M_Message msg = (M_Message) message;
-							for (DeviceInformation di : msg.devices) {
-								Configuration c = null;
-								for (Configuration conf : configurations) {
-									if (conf.getSerialNumber().equalsIgnoreCase(di.getSerialNumber())) {
-										c = conf;
-										break;
-									}
-								}
-
-								if (c != null) {
-									configurations.remove(c);
-								}
-
-								c = Configuration.create(di);
-								configurations.add(c);
-
-								c.setRoomId(di.getRoomId());
-							}
-						} else if (message.getType() == MessageType.C) {
+					if (message.getType() == MessageType.M) {
+						M_Message msg = (M_Message) message;
+						for (DeviceInformation di : msg.devices) {
 							Configuration c = null;
 							for (Configuration conf : configurations) {
-								if (conf.getSerialNumber().equalsIgnoreCase(((C_Message) message).getSerialNumber())) {
+								if (conf.getSerialNumber().equalsIgnoreCase(di.getSerialNumber())) {
 									c = conf;
 									break;
 								}
 							}
 
-							if (c == null) {
-								configurations.add(Configuration.create(message));
-							} else {
-								c.setValues((C_Message) message);
+							if (c != null) {
+								configurations.remove(c);
 							}
-						} else if (message.getType() == MessageType.S) {
-							sMessageProcessing((S_Message)message);
-							cont=false;
-						} else if (message.getType() == MessageType.L) {
-							((L_Message) message).updateDevices(devices, configurations);
-							
-							logger.debug("{} devices found.", devices.size());
-							
-							// the L message is the last one, while the reader
-							// would hang trying to read a new line and
-							// eventually the
-							// cube will fail to establish
-							// new connections for some time
-							cont = false;
+
+							c = Configuration.create(di);
+							configurations.add(c);
+
+							c.setRoomId(di.getRoomId());
 						}
+					} else if (message.getType() == MessageType.C) {
+						Configuration c = null;
+						for (Configuration conf : configurations) {
+							if (conf.getSerialNumber().equalsIgnoreCase(((C_Message) message).getSerialNumber())) {
+								c = conf;
+								break;
+							}
+						}
+
+						if (c == null) {
+							configurations.add(Configuration.create(message));
+						} else {
+							c.setValues((C_Message) message);
+						}
+					} else if (message.getType() == MessageType.S) {
+						sMessageProcessing((S_Message)message);
+						cont=false;
+					} else if (message.getType() == MessageType.L) {
+						((L_Message) message).updateDevices(devices, configurations);
+						
+						logger.debug("{} devices found.", devices.size());
+						
+						// the L message is the last one, while the reader
+						// would hang trying to read a new line and
+						// eventually the
+						// cube will fail to establish
+						// new connections for some time
+						cont = false;
 					}
 				} catch (Exception e) {
 					logger.info("Failed to process message received by MAX! protocol.");
@@ -257,8 +257,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				for (String itemName : provider.getItemNames()) {
 					String serialNumber = provider.getSerialNumber(itemName);
 
-					Device device = findDevice(serialNumber, devices);
-
+					Device device = findDevice(serialNumber, devices);					
 					if (device == null) {
 						logger.info("Cannot find MAX!cube device with serial number '{}'", serialNumber);
 
@@ -271,40 +270,73 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							}
 							logger.debug(sb.toString());
 						}
+						
 						continue;
 					}
+					
 					//all devices have a battery state, so this is type-independent
 					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.battery().isChargeUpdated()) {
 						eventPublisher.postUpdate(itemName, device.battery().getCharge());
 					} else if  (provider.getBindingType(itemName) != BindingType.BATTERY) {
-					switch (device.getType()) {
-						case HeatingThermostatPlus:
-						case HeatingThermostat:
-							if (provider.getBindingType(itemName) == BindingType.VALVE
-									&& ((HeatingThermostat) device).isValvePositionUpdated()) {
-								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
+						switch (device.getType()) {
+							case HeatingThermostatPlus:
+							case HeatingThermostat:
+								if (provider.getBindingType(itemName) == BindingType.VALVE && ((HeatingThermostat) device).isValvePositionUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.BOOSTVALVE && ((HeatingThermostat) device).isBoostValvePositionUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getBoostValvePosition());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.DECALCIFICATION && ((HeatingThermostat) device).isDecalcificationDateUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getDecalcificationDate());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.VALVEMAXIMUM && ((HeatingThermostat) device).isMaxValvePositionUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getMaxValvePosition());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.VALVEOFFSET && ((HeatingThermostat) device).isValveOffsetUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValveOffset());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.TEMPOFFSET && ((HeatingThermostat) device).isTemperatureOffsetUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureOffset());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.TEMPOPENWINDOW && ((HeatingThermostat) device).isTemperatureOpenWindowUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureOpenWindow());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.DURATIONOPENWINDOW && ((HeatingThermostat) device).isDurationOpenWindowUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getDurationOpenWindow());
+									break;
+								} else if (provider.getBindingType(itemName) == BindingType.BOOSTDURATION && ((HeatingThermostat) device).isBoostDurationUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getBoostDuration());
+									break;
+								}
+								//omitted break, fall through
+							case WallMountedThermostat: // and also HeatingThermostat
+								if (device != null && provider.getBindingType(itemName) == BindingType.MODE && ((HeatingThermostat) device).isModeUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
+								} else if (device != null && provider.getBindingType(itemName) == BindingType.ACTUAL && ((HeatingThermostat) device).isTemperatureActualUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
+								} else if (provider.getBindingType(itemName) == BindingType.TEMPCOMFORT && ((HeatingThermostat) device).isTemperatureComfortUpdated()) {
+										eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureComfort());
+								} else if (provider.getBindingType(itemName) == BindingType.TEMPECO && ((HeatingThermostat) device).isTemperatureEcoUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureEco());
+								} else if (provider.getBindingType(itemName) == BindingType.TEMPSETPOINTMAX && ((HeatingThermostat) device).isTemperatureSetpointMaxUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpointMax());
+								} else if (provider.getBindingType(itemName) == BindingType.TEMPSETPOINTMIN && ((HeatingThermostat) device).isTemperatureSetpointMinUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpointMin());
+								} else if (device != null && ((HeatingThermostat) device).isTemperatureSetpointUpdated() && provider.getBindingType(itemName) == null) {
+										eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
+								} else if (provider.getBindingType(itemName) == BindingType.PROGRAMDATA && ((HeatingThermostat) device).isProgramDataUpdated()) {
+									eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getProgramData());
+								} 
 								break;
-							}
-							//omitted break, fall through
-						case WallMountedThermostat: // and also HeatingThermostat
-							if (provider.getBindingType(itemName) == BindingType.MODE
-									&& ((HeatingThermostat) device).isModeUpdated()) {
-								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
-							} else if (provider.getBindingType(itemName) == BindingType.ACTUAL
-									&& ((HeatingThermostat) device).isTemperatureActualUpdated()) {
-								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
-							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated() && provider.getBindingType(itemName) == null){
-								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
-							}
-							break;
-						case ShutterContact:
-							if(((ShutterContact) device).isShutterStateUpdated()){
-								eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
-							}
-							break;
-						default:
-							// no further devices supported yet
-					}
+							case ShutterContact:
+								if(((ShutterContact) device).isShutterStateUpdated()){
+									eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
+								}
+								break;
+							default:
+								// no further devices supported yet
+						}
 					}
 				}
 			}
