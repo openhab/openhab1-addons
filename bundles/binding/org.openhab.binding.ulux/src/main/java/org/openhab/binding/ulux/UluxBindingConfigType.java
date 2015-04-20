@@ -36,6 +36,8 @@ public enum UluxBindingConfigType {
 
 	AUDIO_PLAY_LOCAL(),
 
-	EDIT_VALUE();
+	EDIT_VALUE(),
+
+	VIDEO;
 
 }

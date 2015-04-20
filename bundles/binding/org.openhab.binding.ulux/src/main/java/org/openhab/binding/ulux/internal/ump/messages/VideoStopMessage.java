@@ -19,12 +19,17 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class VideoStopMessage extends AbstractUluxMessage {
 
-	public VideoStopMessage(final short actorId, final ByteBuffer data) {
-		super((byte) 0x06, UluxMessageId.VideoStop, actorId, data);
+	public VideoStopMessage() {
+		super((byte) 0x0C, UluxMessageId.VideoStop);
 	}
 
 	@Override
 	protected void addData(final ByteBuffer buffer) {
+		// stop flags, not used at the moment, always 0x00000000
+		buffer.putInt(0x00000000);
+
+		// sequence id
+		buffer.putInt(0x00000001); // TODO
 	}
 
 	@Override

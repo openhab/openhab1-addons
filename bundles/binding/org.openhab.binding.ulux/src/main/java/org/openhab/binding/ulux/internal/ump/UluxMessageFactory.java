@@ -31,6 +31,8 @@ import org.openhab.binding.ulux.internal.ump.messages.PageCountMessage;
 import org.openhab.binding.ulux.internal.ump.messages.PageIndexMessage;
 import org.openhab.binding.ulux.internal.ump.messages.StateMessage;
 import org.openhab.binding.ulux.internal.ump.messages.TextMessage;
+import org.openhab.binding.ulux.internal.ump.messages.VideoStartMessage;
+import org.openhab.binding.ulux.internal.ump.messages.VideoStopMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -177,6 +179,14 @@ public class UluxMessageFactory {
 
 	public TextMessage createTextMessage(UluxBindingConfig config, StringType text) {
 		return new TextMessage(config.getActorId(), text.toString());
+	}
+
+	public VideoStartMessage createVideoStartMessage() {
+		return new VideoStartMessage();
+	}
+
+	public VideoStopMessage createVideoStopMessage() {
+		return new VideoStopMessage();
 	}
 
 }

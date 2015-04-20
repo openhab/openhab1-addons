@@ -43,6 +43,7 @@ public class UluxGenericBindingProvider extends AbstractGenericBindingProvider i
 		TYPES.put("Proximity", UluxBindingConfigType.PROXIMITY);
 		TYPES.put("AudioPlayLocal", UluxBindingConfigType.AUDIO_PLAY_LOCAL);
 		TYPES.put("EditValue", UluxBindingConfigType.EDIT_VALUE);
+		TYPES.put("Video", UluxBindingConfigType.VIDEO);
 	}
 
 	/**

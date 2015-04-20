@@ -19,12 +19,17 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class VideoStartMessage extends AbstractUluxMessage {
 
-	public VideoStartMessage(final short actorId, final ByteBuffer data) {
-		super((byte) 0x06, UluxMessageId.VideoStart, actorId, data);
+	public VideoStartMessage() {
+		super((byte) 0x0C, UluxMessageId.VideoStart);
 	}
 
 	@Override
 	protected void addData(final ByteBuffer buffer) {
+		// start flags, not used at the moment, always 0x00000000
+		buffer.putInt(0x00000000);
+
+		// sequence id
+		buffer.putInt(0x00000001); // TODO
 	}
 
 	@Override

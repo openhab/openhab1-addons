@@ -10,6 +10,7 @@ package org.openhab.binding.ulux.internal.ump;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 import static org.openhab.core.library.types.OnOffType.OFF;
+import static org.openhab.core.library.types.OnOffType.ON;
 
 import java.net.InetAddress;
 
@@ -111,6 +112,13 @@ public class UluxDatagramFactory {
 			break;
 		case PAGE_INDEX:
 			message = messageFactory.createPageIndexMessage((DecimalType) type);
+			break;
+		case VIDEO:
+			if (type == ON) {
+				message = messageFactory.createVideoStartMessage();
+			} else {
+				message = messageFactory.createVideoStopMessage();
+			}
 			break;
 		case AMBIENT_LIGHT:
 		case KEY:
