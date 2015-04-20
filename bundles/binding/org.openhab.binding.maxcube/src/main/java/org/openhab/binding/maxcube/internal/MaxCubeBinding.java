@@ -191,9 +191,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				try {
 					message = processRawMessage(raw);
 
-					message.debug(logger);
-
 					if (message != null) {
+						message.debug(logger);
 						if (message.getType() == MessageType.M) {
 							M_Message msg = (M_Message) message;
 							for (DeviceInformation di : msg.devices) {
@@ -334,7 +333,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
 
-			if (serialNumber.equals(null)) {
+			if (StringUtils.isBlank(serialNumber)) {
 				continue;
 			}
 
