@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
  * 
- * @author gitbock
+ * @author Boris Bock 
  * @since 0.1.0
  */
 public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064BindingProvider> {

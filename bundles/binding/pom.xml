@@ -140,14 +140,11 @@
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
-<<<<<<< Updated upstream
     <module>org.openhab.binding.ecobee</module>
     <module>org.openhab.binding.nest</module>
     <module>org.openhab.binding.satel</module>
     <module>org.openhab.binding.plex</module>
-=======
     <module>org.openhab.binding.fritzboxtr064</module>
->>>>>>> Stashed changes
   </modules>
 
 </project>

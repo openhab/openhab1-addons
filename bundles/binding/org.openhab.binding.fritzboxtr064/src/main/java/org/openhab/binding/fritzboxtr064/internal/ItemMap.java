@@ -5,7 +5,7 @@ package org.openhab.binding.fritzboxtr064.internal;
  * based on the config string of the item. config string is like the key of an item mapping
  * Item Mappings must be created manually to support desired fbox tr064 functions.
  * 
- * @author gitbock
+ * @author Boris Bock
  *
  */
 public class ItemMap{

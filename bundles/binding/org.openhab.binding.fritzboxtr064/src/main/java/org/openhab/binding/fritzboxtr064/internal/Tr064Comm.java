@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * Controls communication and parsing for TR064 communication with
  * FritzBox
  * 
- * @author gitbock
+ * @author Boris Bock
  *
  */
 public class Tr064Comm {
