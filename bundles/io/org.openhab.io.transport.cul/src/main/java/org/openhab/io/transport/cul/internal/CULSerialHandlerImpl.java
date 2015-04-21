@@ -115,35 +115,37 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 			Map<String, ?> properties) {
 		super(deviceName, mode);
 
+		if(properties==null) return;
+		
 		final String configuredBaudRate = (String) properties.get(KEY_BAUDRATE);
-		if (StringUtils.isNotBlank(configuredBaudRate)) {
-			try {
-				int tmpBaudRate = Integer.parseInt(configuredBaudRate);
-				if(validBaudrateMap.contains(tmpBaudRate)) {
-					baudRate = tmpBaudRate;
-				} else {
-					log.error(
-							"Error parsing config parameter '{}'. Value = {} is not a valid baudrate. Value must be in [75, 110, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]",
-							KEY_BAUDRATE, tmpBaudRate);
-				}
-				log.info("Update config, {} = {}", KEY_BAUDRATE, baudRate);
-			} catch (NumberFormatException e) {
-				log.error(
-						"Error parsing config parameter '{}' to integer. Value = {}",
-						KEY_BAUDRATE, configuredBaudRate);
-			}
+		Integer tmpBaudRate=baudrateFromConfig(configuredBaudRate);
+		if(tmpBaudRate!=null){
+			baudRate=tmpBaudRate;
+			log.info("Update config, {} = {}", KEY_BAUDRATE, baudRate);
+		}
+		
+		
+		final String configuredParity = (String) properties.get(KEY_PARITY);
+		
+		Integer parsedParityNumber=parityFromConfig(configuredParity);	
+		if(parsedParityNumber!=null){
+			parityMode=parsedParityNumber;
+			log.info("Update config, {} = {} ({})", KEY_PARITY,
+				convertParityModeToString(parityMode), parityMode);
 		}
 
-		final String configuredParity = (String) properties.get(KEY_PARITY);
+	}
+
+	private Integer parityFromConfig(final String configuredParity) {
 		if (StringUtils.isNotBlank(configuredParity)) {
 			try {
 				if (isValidParity(configuredParity)) {
-					parityMode = validParitiesMap.get(configuredParity
+					return validParitiesMap.get(configuredParity
 							.toUpperCase());
-				} else {
+				} else { // allow literal parity assignment?
 					int parsedParityNumber = Integer.parseInt(configuredParity);
 					if (isValidParity(parsedParityNumber)) {
-						parityMode = parsedParityNumber;
+						return parsedParityNumber;
 					} else {
 						log.error(
 								"The configured '{}' value is invalid. The value '{}' has to be one of {}.",
@@ -151,13 +153,38 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 								validParitiesMap.keySet());
 					}
 				}
-				log.info("Update config, {} = {} ({})", KEY_PARITY,
-						convertParityModeToString(parityMode), parityMode);
 			} catch (NumberFormatException e) {
 				log.error("Error parsing config key '{}'. Use one of {}.",
 						KEY_PARITY, validParitiesMap.keySet());
 			}
 		}
+		return null;
+	}
+
+	/**
+	 * calculate baudrate from config String
+	 * @param configuredBaudRate
+	 * @return baud Rate or null if failed
+	 */
+	private Integer baudrateFromConfig(final String configuredBaudRate) {
+		if (StringUtils.isNotBlank(configuredBaudRate)) {
+			try {
+				int tmpBaudRate = Integer.parseInt(configuredBaudRate);
+				if(validBaudrateMap.contains(tmpBaudRate)) {
+					return tmpBaudRate;
+				} else {
+					log.error(
+							"Error parsing config parameter '{}'. Value = {} is not a valid baudrate. Value must be in [75, 110, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]",
+							KEY_BAUDRATE, tmpBaudRate);
+				}
+			} catch (NumberFormatException e) {
+				log.error(
+						"Error parsing config parameter '{}' to integer. Value = {}",
+						KEY_BAUDRATE, configuredBaudRate);
+			}
+			
+		}
+		return null;
 
 	}
 
@@ -287,12 +314,24 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 			return false;
 		}
 
-		boolean baudRateEquals = mapContainsEqualValueByKey(properties,
-				KEY_BAUDRATE, baudRate);
-		boolean parityEquals = mapContainsEqualValueByKey(properties,
-				KEY_PARITY, parityMode);
+		
+		parityFromConfig(KEY_BAUDRATE);
+		
+		// check baudrate
+		if(properties.containsKey(KEY_BAUDRATE)){
+			Integer configured=baudrateFromConfig((String) properties.get(KEY_BAUDRATE));
+			if(configured==null) return false;
+			if(!configured.equals(baudRate)) return false;
+		}
+		
+		// check parity
+		if(properties.containsKey(KEY_PARITY)){
+			Integer configured=parityFromConfig((String) properties.get(KEY_PARITY));
+			if(configured==null) return false;
+			if(!configured.equals(parityMode)) return false;
+		}
 
-		return baudRateEquals && parityEquals;
+		return true;
 	}
 
 	/**
