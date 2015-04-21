@@ -188,7 +188,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 			if (asdu.length==0) {
 				return;
 			}
-			for (String itemName : getItemNames(destination)) {
+			String [] itemList = getItemNames(destination);
+			if (itemList.length == 0) {
+				logger.debug("Received telegram for unknown group address {}", destination.toString());
+			}
+			for (String itemName : itemList) {
 				Iterable<Datapoint> datapoints = getDatapoints(itemName, destination);
 				if (datapoints != null) {
 					for (Datapoint datapoint : datapoints) {
@@ -208,7 +212,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 							}								
 
 							logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
-							return;
 						}
 						else {
 							final char[] hexCode = "0123456789ABCDEF".toCharArray();
@@ -221,12 +224,10 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 
 							logger.debug("Ignoring KNX bus data: couldn't transform to an openHAB type (not supported). Destination='{}', datapoint='{}', data='{}'",
 									new Object[] {destination.toString(), datapoint.toString(), sb.toString() });
-							return;
 						}
 					}
 				}
 			}
-			logger.debug("Received telegram for unknown group address {}", destination.toString());
 		} catch(RuntimeException re) {
 			logger.error("Error while receiving event from KNX bus: " + re.toString());
 		}
