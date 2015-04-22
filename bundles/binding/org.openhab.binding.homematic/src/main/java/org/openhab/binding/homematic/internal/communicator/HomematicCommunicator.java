@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.homematic.internal.communicator;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TimerTask;
 
 import org.openhab.binding.homematic.internal.common.HomematicContext;
@@ -30,6 +33,7 @@ import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.binding.homematic.internal.util.DelayedExecutor;
+import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
@@ -59,6 +63,9 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	private long lastEventTime = System.currentTimeMillis();
 	private long lastReconnectTime = System.currentTimeMillis();
 	private HomematicPublisher publisher = new HomematicPublisher();
+
+	private Set<BindingConfig> sentPressEvents = Collections.synchronizedSet(new HashSet<BindingConfig>());
+
 	/**
 	 * Starts the communicator and initializes everything.
 	 */
@@ -90,7 +97,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				homematicClient.registerCallback();
 
 				scheduleFirstRefresh();
-				
+
 				lastReconnectTime = System.currentTimeMillis();
 			} catch (Exception e) {
 				logger.error("Could not start Homematic communicator: " + e.getMessage(), e);
@@ -169,31 +176,35 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 
 		final Event event = new Event(bindingConfig, value);
 
-		if (context.getStateHolder().isDatapointReloadInProgress() && !isVariable) {
-			context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
-		}
+		if (sentPressEvents.remove(event.getBindingConfig())) {
+			logger.debug("Echo PRESS_* event detected, ignoring: {}", event.getBindingConfig());
+		} else {
+			if (context.getStateHolder().isDatapointReloadInProgress() && !isVariable) {
+				context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
+			}
 
-		event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
-		if (event.getHmValueItem() != null) {
-			event.getHmValueItem().setValue(event.getNewValue());
+			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
+			if (event.getHmValueItem() != null) {
+				event.getHmValueItem().setValue(event.getNewValue());
 
-			new ProviderItemIterator().iterate(event.getBindingConfig(), new ProviderItemIteratorCallback() {
+				new ProviderItemIterator().iterate(event.getBindingConfig(), new ProviderItemIteratorCallback() {
 
-				@Override
-				public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
-					State state = converter.convertFromBinding(event.getHmValueItem());
-					context.getEventPublisher().postUpdate(item.getName(), state);
-					if (state == OnOffType.ON) {
-						executeBindingAction(providerBindingConfig);
-						if (event.isPressValueItem()) {
-							itemDisabler.add(providerBindingConfig);
+					@Override
+					public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
+						State state = converter.convertFromBinding(event.getHmValueItem());
+						context.getEventPublisher().postUpdate(item.getName(), state);
+						if (state == OnOffType.ON) {
+							executeBindingAction(providerBindingConfig);
+							if (event.isPressValueItem()) {
+								itemDisabler.add(providerBindingConfig);
+							}
 						}
 					}
-				}
-			});
+				});
 
-		} else {
-			logger.warn("Can't find {}, value is not published to openHAB!", event.getBindingConfig());
+			} else {
+				logger.warn("Can't find {}, value is not published to openHAB!", event.getBindingConfig());
+			}
 		}
 	}
 
@@ -289,10 +300,10 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	 */
 	private void publishToHomematicServer(Event event) throws HomematicClientException {
 		if (event.isPressValueItem()) {
-			logger.debug("PRESS_* items are not published to the Homematic server: {}", event.getBindingConfig());
+			sentPressEvents.add(event.getBindingConfig());
 		}
 
-		else if (!event.getHmValueItem().isWriteable()) {
+		if (!event.getHmValueItem().isWriteable()) {
 			logger.warn("Datapoint/Variable is not writeable, item is not published to the Homematic server: {}",
 					event.getBindingConfig());
 		}
@@ -380,7 +391,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	public long getLastEventTime() {
 		return lastEventTime;
 	}
-	
+
 	/**
 	 * Returns the timestamp from the last Homematic server reconnect.
 	 */
