@@ -13,6 +13,9 @@ Import-Package: com.google.common.base,
  com.google.common.collect,
  org.apache.commons.collections,
  org.apache.commons.collections.list,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.params,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.openhab.core.binding,
@@ -34,6 +37,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
 Bundle-ClassPath: .,
- lib/httpclient-4.3.3.jar,
- lib/httpcore-4.3.2.jar,
  lib/commons-logging-1.1.3.jar
