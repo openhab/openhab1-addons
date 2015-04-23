@@ -96,7 +96,8 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 		
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, cfgEvent.getParameter().getValue());
 		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}({}), endpoint = {}, ignoring event.",
+					event.getNodeId(), item.getName(), item.getClass().getSimpleName(), event.getEndpoint());
 			return;
 		}
 
