@@ -180,11 +180,11 @@
 			<Label lang="en">Endpoint 3</Label>
 			<Help lang="en">Multi-Channel Command is a good way to control relay1 and relay2 of PAN04 individually. The endpoint3 of PAN04 is related to both relay1 and relay2. In some condition it becomes redundant in Multi-Channel Command Class.</Help>
 			<Item>
-				<Value>0</Value>
+				<Value>1</Value>
 				<Label lang="en">Exists</Label>
 			</Item>
 			<Item>
-				<Value>1</Value>
+				<Value>2</Value>
 				<Label lang="en">Doesn't Exist</Label>
 			</Item>
 		</Parameter>
