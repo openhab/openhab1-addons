@@ -24,6 +24,14 @@ public class PageIndexMessageTest extends AbstractCommandTest {
 	}
 
 	@Test
+	public void testRequest() throws Exception {
+		byte[] actual = toBytes(new PageIndexMessage());
+		byte[] expected = toBytes("04:2e:00:00");
+
+		assertThat(actual, equalTo(expected));
+	}
+
+	@Test
 	public void testUpdate() throws Exception {
 		addBindingConfig(new NumberItem("Ulux_Page"), "1:0:PageIndex");
 

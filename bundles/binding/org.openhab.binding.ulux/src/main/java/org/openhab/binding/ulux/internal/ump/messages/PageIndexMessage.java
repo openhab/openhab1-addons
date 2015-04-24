@@ -21,7 +21,14 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class PageIndexMessage extends AbstractUluxMessage {
 
+	private static final byte INVALID_PAGE = -1;
+
 	private final byte pageIndex;
+
+	public PageIndexMessage() {
+		super((byte) 0x04, UluxMessageId.PageIndex);
+		this.pageIndex = INVALID_PAGE;
+	}
 
 	public PageIndexMessage(final byte pageIndex) {
 		super((byte) 0x06, UluxMessageId.PageIndex);
@@ -32,15 +39,15 @@ public class PageIndexMessage extends AbstractUluxMessage {
 		super((byte) 0x06, UluxMessageId.PageIndex, actorId, data);
 
 		this.pageIndex = data.get();
-
-		// reserved
-		data.get();
+		data.get(); // reserved
 	}
 
 	@Override
 	protected void addData(final ByteBuffer buffer) {
-		buffer.put(this.pageIndex);
-		buffer.put((byte) 0); // reserved, always 0
+		if (this.pageIndex != INVALID_PAGE) {
+			buffer.put(this.pageIndex);
+			buffer.put((byte) 0); // reserved, always 0
+		}
 	}
 
 	public byte getPageIndex() {
