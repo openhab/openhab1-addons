@@ -21,16 +21,14 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class PageCountMessage extends AbstractUluxMessage {
 
-	private static final byte MESSAGE_LENGTH = (byte) 0x04;
-
-	private static final UluxMessageId MESSAGE_ID = UluxMessageId.PageCount;
-
-	private static final short ACTOR_ID = (short) 0;
-
 	private byte pageCount;
 
+	public PageCountMessage() {
+		super((byte) 0x04, UluxMessageId.PageCount);
+	}
+
 	public PageCountMessage(final ByteBuffer data) {
-		super(MESSAGE_LENGTH, MESSAGE_ID, ACTOR_ID, data);
+		super((byte) 0x06, UluxMessageId.PageCount, (short) 0, data);
 	}
 
 	@Override

@@ -26,4 +26,12 @@ public class PageCountMessageTest extends AbstractMessageTest {
 		assertThat(message.getPageCount(), equalTo((byte) 2));
 	}
 
+	@Test
+	public void testRequest() throws Exception {
+		byte[] actual = toBytes(new PageCountMessage());
+		byte[] expected = toBytes("04:0e:00:00");
+
+		assertThat(actual, equalTo(expected));
+	}
+
 }
