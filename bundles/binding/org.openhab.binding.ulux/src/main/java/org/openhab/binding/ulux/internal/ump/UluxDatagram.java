@@ -108,8 +108,8 @@ public class UluxDatagram {
 		buffer.put((byte) 0x10);
 		buffer.put((byte) 0x00);
 
-		// protocol version: v2.06
-		buffer.put((byte) 0x06);
+		// protocol version: v2.24
+		buffer.put((byte) 0x18);
 		buffer.put((byte) 0x02);
 
 		// package id
@@ -120,8 +120,8 @@ public class UluxDatagram {
 		buffer.put((byte) 0x01);
 		buffer.put((byte) 0x00);
 
-		// firmware version, v1.23
-		buffer.put((byte) 0x23);
+		// firmware version, v1.48
+		buffer.put((byte) 0x30);
 		buffer.put((byte) 0x01);
 
 		// switch id
