@@ -28,18 +28,24 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class LedMessage extends AbstractUluxMessage {
 
-	private static final byte MESSAGE_LENGTH = (byte) 0x08;
-
-	private final EnumMap<Led, BigInteger> ledState = new EnumMap<Led, BigInteger>(Led.class);
+	private final EnumMap<Led, BigInteger> ledState;
 
 	/**
-	 * Creates a message to set the state of the actor's LEDs.
-	 * 
-	 * @param override
+	 * Creates a message to query the state of an actor's LEDs.
+	 */
+	public LedMessage(short actorId) {
+		super((byte) 0x04, UluxMessageId.LED, actorId);
+
+		this.ledState = null;
+	}
+
+	/**
+	 * Creates a message to set the state of an actor's LEDs.
 	 */
 	public LedMessage(short actorId, Led led, boolean override) {
-		super(MESSAGE_LENGTH, UluxMessageId.LED, actorId);
+		super((byte) 0x08, UluxMessageId.LED, actorId);
 
+		this.ledState = new EnumMap<Led, BigInteger>(Led.class);
 		this.ledState.put(LED_1, BigInteger.ZERO);
 		this.ledState.put(LED_2, BigInteger.ZERO);
 		this.ledState.put(LED_3, BigInteger.ZERO);
@@ -49,6 +55,16 @@ public class LedMessage extends AbstractUluxMessage {
 		setOverride(led, override);
 		setColor(led, Color.COLOR_RED);
 		setBlinkMode(led, BlinkMode.BLINK_FAST);
+	}
+
+	public LedMessage(short actorId, ByteBuffer data) {
+		super((byte) 0x08, UluxMessageId.LED, actorId, data);
+
+		this.ledState = new EnumMap<Led, BigInteger>(Led.class);
+		this.ledState.put(LED_1, BigInteger.valueOf(data.get() & 0xFF));
+		this.ledState.put(LED_2, BigInteger.valueOf(data.get() & 0xFF));
+		this.ledState.put(LED_3, BigInteger.valueOf(data.get() & 0xFF));
+		this.ledState.put(LED_4, BigInteger.valueOf(data.get() & 0xFF));
 	}
 
 	public void setOverride(Led led, boolean override) {
@@ -63,18 +79,34 @@ public class LedMessage extends AbstractUluxMessage {
 		this.ledState.put(led, state);
 	}
 
+	public Color getColor(Led led) {
+		BigInteger ledState = this.ledState.get(led);
+		ledState = ledState.clearBit(3);
+		ledState = ledState.clearBit(4);
+		ledState = ledState.clearBit(5);
+		ledState = ledState.clearBit(6);
+		ledState = ledState.clearBit(7);
+
+		if (ledState.shortValue() == 0x00) {
+			return Color.COLOR_OFF;
+		}
+		if (ledState.shortValue() == 0x01) {
+			return Color.COLOR_RED;
+		}
+
+		return Color.COLOR_RED; // TODO
+	}
+
 	public void setColor(Led led, Color color) {
 		BigInteger state = this.ledState.get(led);
 
 		switch (color) {
 		case COLOR_OFF: // 0x00
-			state = state.clearBit(3);
 			state = state.clearBit(2);
 			state = state.clearBit(1);
 			state = state.clearBit(0);
 			break;
 		case COLOR_RED: // 0x01
-			state = state.clearBit(3);
 			state = state.clearBit(2);
 			state = state.clearBit(1);
 			state = state.setBit(0);
@@ -100,6 +132,10 @@ public class LedMessage extends AbstractUluxMessage {
 		}
 
 		this.ledState.put(led, state);
+	}
+
+	public BlinkMode getBlinkMode(Led led) {
+		return BlinkMode.BLINK_NONE; // TODO
 	}
 
 	public void setBlinkMode(Led led, BlinkMode blinkMode) {
@@ -139,18 +175,25 @@ public class LedMessage extends AbstractUluxMessage {
 		this.ledState.put(led, state);
 	}
 
+	public byte getState(Led led) {
+		return this.ledState.get(led).byteValue();
+	}
+
 	@Override
 	protected void addData(final ByteBuffer buffer) {
-		buffer.put((byte) this.ledState.get(LED_1).shortValue());
-		buffer.put((byte) this.ledState.get(LED_2).shortValue());
-		buffer.put((byte) this.ledState.get(LED_3).shortValue());
-		buffer.put((byte) this.ledState.get(LED_4).shortValue());
+		if (this.ledState != null) {
+			buffer.put((byte) (this.ledState.get(LED_1).byteValue() & 0xFF));
+			buffer.put((byte) (this.ledState.get(LED_2).byteValue() & 0xFF));
+			buffer.put((byte) (this.ledState.get(LED_3).byteValue() & 0xFF));
+			buffer.put((byte) (this.ledState.get(LED_4).byteValue() & 0xFF));
+		}
 	}
 
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();
 		builder.appendSuper(super.toString());
+		builder.append("ledState", this.ledState);
 
 		return builder.toString();
 	}

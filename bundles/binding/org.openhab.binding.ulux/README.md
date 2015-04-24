@@ -71,10 +71,9 @@ item with auto-update off as the switch immediately sends back its state.
 
 ### LEDs
 
-At the moment ON switches the specified LED to rapidly blink red. OFF returns the LED
-to its normal setting.
+Color and blink mode are specified by number, e.g. 49 is a rapidly blinking red.
 
-`Switch Ulux_Led  "LED"  <none> { ulux="1:1:Led:1" }`
+`Number Ulux_Led  "LED"  <none> { ulux="1:1:Led:1" }`
 
 ### Proximity sensor
 

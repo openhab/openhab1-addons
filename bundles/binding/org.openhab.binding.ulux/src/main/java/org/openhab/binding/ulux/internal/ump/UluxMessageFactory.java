@@ -78,6 +78,9 @@ public class UluxMessageFactory {
 		case IdList:
 			message = new IdListMessage(actorId, data);
 			break;
+		case LED:
+			message = new LedMessage(actorId, data);
+			break;
 		case Lux:
 			message = new LuxMessage(actorId, data);
 			break;
