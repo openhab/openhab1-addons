@@ -15,7 +15,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.ulux.internal.ump.UluxMessageId;
 
 /**
- * Message to query the state flags.
+ * Message to query or transmit the state flags.
  * 
  * @author Andreas Brenk
  * @since 1.7.0
@@ -34,8 +34,12 @@ public class StateMessage extends AbstractUluxMessage {
 	private boolean i2cTemperatureValid;
 	private boolean i2cHumidityValid;
 
+	public StateMessage() {
+		super((byte) 0x04, UluxMessageId.State);
+	}
+
 	public StateMessage(final short actorId, final ByteBuffer data) {
-		super((byte) 0x04, UluxMessageId.State, actorId, data);
+		super((byte) 0x08, UluxMessageId.State, actorId, data);
 
 		final BigInteger stateFlags = BigInteger.valueOf(data.getInt());
 

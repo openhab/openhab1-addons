@@ -12,6 +12,14 @@ import org.openhab.core.library.types.OnOffType;
 public class StateMessageHandlerTest extends AbstractHandlerTest<StateMessage> {
 
 	@Test
+	public void testRequest() throws Exception {
+		byte[] actual = toBytes(new StateMessage());
+		byte[] expected = toBytes("04:01:00:00");
+
+		assertThat(actual, equalTo(expected));
+	}
+
+	@Test
 	public void testInitRequest() throws Exception {
 		handleMessage("08:01:00:00:60:00:00:00");
 
