@@ -24,6 +24,14 @@ public class AudioVolumeMessageTest extends AbstractCommandTest {
 	}
 
 	@Test
+	public void testRequest() throws Exception {
+		byte[] actual = toBytes(new AudioVolumeMessage());
+		byte[] expected = toBytes("04:91:00:00");
+
+		assertThat(actual, equalTo(expected));
+	}
+
+	@Test
 	public void testUpdate() throws Exception {
 		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "1:0:AudioVolume");
 

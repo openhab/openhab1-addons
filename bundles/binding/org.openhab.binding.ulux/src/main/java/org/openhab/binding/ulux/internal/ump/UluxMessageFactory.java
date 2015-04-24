@@ -60,6 +60,9 @@ public class UluxMessageFactory {
 		// 'ID-I2C-IN2 (0x74)'
 
 		switch (messageId) {
+		case AudioVolume:
+			message = new AudioVolumeMessage(actorId, data);
+			break;
 		case State:
 			message = new StateMessage(actorId, data);
 			break;

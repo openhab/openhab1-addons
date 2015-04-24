@@ -9,6 +9,7 @@
 package org.openhab.binding.ulux.internal.handler;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
+import static org.openhab.binding.ulux.internal.ump.UluxMessageId.AudioVolume;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Control;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.EditValue;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Event;
@@ -39,6 +40,7 @@ public class UluxMessageHandlerFacade {
 
 	public UluxMessageHandlerFacade(Collection<UluxBindingProvider> providers) {
 		messageHandlers = new EnumMap<UluxMessageId, AbstractMessageHandler<?>>(UluxMessageId.class);
+		messageHandlers.put(AudioVolume, new AudioVolumeMessageHandler());
 		messageHandlers.put(Control, new ControlMessageHandler());
 		messageHandlers.put(EditValue, new EditValueMessageHandler());
 		messageHandlers.put(Event, new EventMessageHandler());

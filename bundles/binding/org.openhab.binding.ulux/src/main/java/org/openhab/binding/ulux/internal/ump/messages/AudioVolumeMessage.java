@@ -21,26 +21,46 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  */
 public class AudioVolumeMessage extends AbstractUluxMessage {
 
-	private static final byte MESSAGE_LENGTH = (byte) 0x06;
+	private static final byte INVALID_VOLUME = -1;
 
-	private byte volume;
+	private final byte volume;
+
+	public AudioVolumeMessage() {
+		super((byte) 0x04, UluxMessageId.AudioVolume);
+
+		this.volume = INVALID_VOLUME;
+	}
 
 	public AudioVolumeMessage(final byte volume) {
-		super(MESSAGE_LENGTH, UluxMessageId.AudioVolume);
+		super((byte) 0x06, UluxMessageId.AudioVolume);
 
 		this.volume = volume;
 	}
 
+	public AudioVolumeMessage(short actorId, ByteBuffer data) {
+		super((byte) 0x06, UluxMessageId.AudioVolume, actorId, data);
+
+		this.volume = data.get();
+		data.get(); // reserved
+	}
+
 	@Override
 	protected void addData(final ByteBuffer buffer) {
-		buffer.put(this.volume);
-		buffer.put((byte) 0x00); // reserved
+		if (this.volume != INVALID_VOLUME) {
+			buffer.put(this.volume);
+			buffer.put((byte) 0x00); // reserved
+		}
+	}
+
+	public byte getVolume() {
+		return this.volume;
 	}
 
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();
 		builder.appendSuper(super.toString());
+		builder.append("volume", this.volume);
 
 		return builder.toString();
 	}
