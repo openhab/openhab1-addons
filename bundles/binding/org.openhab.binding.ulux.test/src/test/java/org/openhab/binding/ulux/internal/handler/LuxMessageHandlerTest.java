@@ -10,11 +10,6 @@ import org.openhab.core.types.UnDefType;
 
 public class LuxMessageHandlerTest extends AbstractHandlerTest<LuxMessage> {
 
-	@Override
-	protected AbstractMessageHandler<LuxMessage> createMessageHandler() {
-		return new LuxMessageHandler();
-	}
-
 	@Test
 	public void testInvalid() throws Exception {
 		addBindingConfig(new SwitchItem("Ulux_Lux"), "1:0:Lux");

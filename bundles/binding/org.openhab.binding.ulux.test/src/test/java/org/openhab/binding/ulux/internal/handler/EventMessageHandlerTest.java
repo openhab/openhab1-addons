@@ -9,11 +9,6 @@ import org.openhab.core.library.types.OnOffType;
 
 public class EventMessageHandlerTest extends AbstractHandlerTest<EventMessage> {
 
-	@Override
-	protected AbstractMessageHandler<EventMessage> createMessageHandler() {
-		return new EventMessageHandler();
-	}
-
 	@Test
 	public void testNoKeyPressed() throws Exception {
 		addBindingConfig(new SwitchItem("Key_1"), "1:1:Key:1");

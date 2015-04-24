@@ -24,7 +24,7 @@ public abstract class AbstractHandlerTest<T extends UluxMessage> extends Abstrac
 
 	private UluxGenericBindingProvider bindingProvider;
 
-	private AbstractMessageHandler<T> handler;
+	private UluxMessageHandlerFacade messageHandlerFacade;
 
 	@Mock
 	protected EventPublisher eventPublisher;
@@ -43,15 +43,13 @@ public abstract class AbstractHandlerTest<T extends UluxMessage> extends Abstrac
 
 		bindingProvider = new UluxGenericBindingProvider();
 
-		handler = createMessageHandler();
-		handler.setEventPublisher(eventPublisher);
-		handler.setItemRegistry(itemRegistry);
-		handler.setProviders(Collections.<UluxBindingProvider> singleton(bindingProvider));
+		messageHandlerFacade = new UluxMessageHandlerFacade(
+				Collections.<UluxBindingProvider> singleton(bindingProvider));
+		messageHandlerFacade.setEventPublisher(eventPublisher);
+		messageHandlerFacade.setItemRegistry(itemRegistry);
 
 		response = null;
 	}
-
-	protected abstract AbstractMessageHandler<T> createMessageHandler();
 
 	@After
 	public void afterTest() {
@@ -71,7 +69,7 @@ public abstract class AbstractHandlerTest<T extends UluxMessage> extends Abstrac
 
 		response = new UluxDatagram((short) 1, InetAddress.getByName("127.0.0.1"));
 
-		handler.handleMessage(message, response);
+		messageHandlerFacade.handleMessage(message, response);
 	}
 
 }

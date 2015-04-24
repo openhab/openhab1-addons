@@ -9,11 +9,6 @@ import org.openhab.core.library.types.DecimalType;
 
 public class PageIndexMessageHandlerTest extends AbstractHandlerTest<PageIndexMessage> {
 
-	@Override
-	protected AbstractMessageHandler<PageIndexMessage> createMessageHandler() {
-		return new PageIndexMessageHandler();
-	}
-
 	@Test
 	public void testNoConfig() throws Exception {
 		handleMessage("06:2e:00:00:00:00");

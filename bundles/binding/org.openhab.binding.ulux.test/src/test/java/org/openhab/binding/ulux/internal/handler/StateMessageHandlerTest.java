@@ -11,11 +11,6 @@ import org.openhab.core.library.types.OnOffType;
 
 public class StateMessageHandlerTest extends AbstractHandlerTest<StateMessage> {
 
-	@Override
-	protected AbstractMessageHandler<StateMessage> createMessageHandler() {
-		return new StateMessageHandler();
-	}
-
 	@Test
 	public void testInitRequest() throws Exception {
 		handleMessage("08:01:00:00:60:00:00:00");

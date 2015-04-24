@@ -9,11 +9,6 @@ import org.openhab.core.library.types.DecimalType;
 
 public class LedMessageHandlerTest extends AbstractHandlerTest<LedMessage> {
 
-	@Override
-	protected AbstractMessageHandler<LedMessage> createMessageHandler() {
-		return new LedMessageHandler();
-	}
-
 	@Test
 	public void testUpdate() throws Exception {
 		addBindingConfig(new NumberItem("Ulux_Led"), "1:1:Led:2");

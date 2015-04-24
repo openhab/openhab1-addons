@@ -9,11 +9,6 @@ import org.openhab.core.library.types.DecimalType;
 
 public class AudioVolumeMessageHandlerTest extends AbstractHandlerTest<AudioVolumeMessage> {
 
-	@Override
-	protected AbstractMessageHandler<AudioVolumeMessage> createMessageHandler() {
-		return new AudioVolumeMessageHandler();
-	}
-
 	@Test
 	public void testNoConfig() throws Exception {
 		handleMessage("06:91:00:00:4B:00");

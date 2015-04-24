@@ -16,11 +16,6 @@ import org.openhab.core.library.types.UpDownType;
 
 public class EditValueMessageHandlerTest extends AbstractHandlerTest<EditValueMessage> {
 
-	@Override
-	protected AbstractMessageHandler<EditValueMessage> createMessageHandler() {
-		return new EditValueMessageHandler();
-	}
-
 	@Test
 	public void testColorItem() throws Exception {
 		addBindingConfig(new ColorItem("Ulux_Color"), "1:1:EditValue");
