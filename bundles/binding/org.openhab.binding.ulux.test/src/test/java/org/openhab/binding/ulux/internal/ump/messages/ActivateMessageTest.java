@@ -2,7 +2,7 @@ package org.openhab.binding.ulux.internal.ump.messages;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
@@ -41,7 +41,7 @@ public class ActivateMessageTest extends AbstractUluxMessageTest {
 
 		receiveUpdate("Ulux_Display", OnOffType.OFF);
 
-		assertThat(datagram, isEmptyDatagram());
+		assertTrue(datagramList.isEmpty());
 	}
 
 }

@@ -161,9 +161,11 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			}
 
 			final UluxBindingConfig binding = provider.getBinding(itemName);
-			final UluxDatagram datagram = datagramFactory.createDatagram(binding, command);
+			final List<UluxDatagram> datagramList = datagramFactory.createDatagram(binding, command);
 
-			datagram.send(this.channel);
+			for (UluxDatagram datagram : datagramList) {
+				datagram.send(this.channel);
+			}
 		}
 	}
 
@@ -178,9 +180,11 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			}
 
 			final UluxBindingConfig binding = provider.getBinding(itemName);
-			final UluxDatagram datagram = datagramFactory.createDatagram(binding, newState);
+			final List<UluxDatagram> datagramList = datagramFactory.createDatagram(binding, newState);
 
-			datagram.send(this.channel);
+			for (UluxDatagram datagram : datagramList) {
+				datagram.send(this.channel);
+			}
 		}
 	}
 

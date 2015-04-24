@@ -13,6 +13,8 @@ import static org.openhab.core.library.types.OnOffType.OFF;
 import static org.openhab.core.library.types.OnOffType.ON;
 
 import java.net.InetAddress;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
@@ -63,12 +65,13 @@ public class UluxDatagramFactory {
 	}
 
 	/**
-	 * Creates a datagram containing a message for the given command.
+	 * Creates a list of datagrams for the given command.
 	 * 
 	 * @return never {@code null}
 	 */
-	public UluxDatagram createDatagram(UluxBindingConfig config, Command type) {
-		final UluxDatagram datagram = createDatagram(config);
+	public List<UluxDatagram> createDatagram(UluxBindingConfig config, Command type) {
+		final List<UluxDatagram> datagramList = new LinkedList<UluxDatagram>();
+
 		final UluxMessage message;
 
 		switch (config.getType()) {
@@ -133,19 +136,22 @@ public class UluxDatagramFactory {
 		}
 
 		if (message != null) {
+			final UluxDatagram datagram = createDatagram(config);
 			datagram.addMessage(message);
+
+			datagramList.add(datagram);
 		}
 
-		return datagram;
+		return datagramList;
 	}
 
 	/**
-	 * Creates a datagram containing a message for the given state update.
+	 * Creates a list of datagrams for the given state update.
 	 * 
 	 * @return never {@code null}
 	 */
-	public UluxDatagram createDatagram(UluxBindingConfig config, State type) {
-		final UluxDatagram datagram = createDatagram(config);
+	public List<UluxDatagram> createDatagram(UluxBindingConfig config, State type) {
+		final List<UluxDatagram> datagramList = new LinkedList<UluxDatagram>();
 		final UluxMessage message;
 
 		switch (config.getType()) {
@@ -169,10 +175,13 @@ public class UluxDatagramFactory {
 		}
 
 		if (message != null) {
+			final UluxDatagram datagram = createDatagram(config);
 			datagram.addMessage(message);
+
+			datagramList.add(datagram);
 		}
 
-		return datagram;
+		return datagramList;
 	}
 
 }

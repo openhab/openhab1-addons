@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.junit.After;
@@ -55,6 +56,11 @@ public abstract class AbstractUluxMessageTest {
 
 	/**
 	 * Set by {@link #receiveCommand(String, Command)} or {@link #receiveUpdate(String, State)}.
+	 */
+	protected List<UluxDatagram> datagramList;
+
+	/**
+	 * The only datagram in {@link #datagramList} if its size is 1.
 	 */
 	protected UluxDatagram datagram;
 
@@ -107,13 +113,19 @@ public abstract class AbstractUluxMessageTest {
 	protected final void receiveCommand(String itemName, Command command) throws Exception {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
-		datagram = datagramFactory.createDatagram(binding, command);
+		datagramList = datagramFactory.createDatagram(binding, command);
+		if (datagramList.size() == 1) {
+			datagram = datagramList.get(0);
+		}
 	}
 
 	protected final void receiveUpdate(String itemName, State newState) throws Exception {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
-		datagram = datagramFactory.createDatagram(binding, newState);
+		datagramList = datagramFactory.createDatagram(binding, newState);
+		if (datagramList.size() == 1) {
+			datagram = datagramList.get(0);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
