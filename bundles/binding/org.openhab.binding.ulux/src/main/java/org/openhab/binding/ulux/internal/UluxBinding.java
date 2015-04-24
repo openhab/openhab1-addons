@@ -18,6 +18,9 @@ import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.DatagramChannel;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingProvider;
@@ -65,6 +68,8 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 	private volatile Thread thread;
 
+	private ExecutorService executorService;
+
 	public UluxBinding() {
 		messageHandler = new UluxMessageHandlerFacade(this.providers);
 		messageParser = new UluxMessageParser();
@@ -98,12 +103,20 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 		this.configuration = new UluxConfiguration();
 		this.datagramFactory = new UluxDatagramFactory(configuration);
+		this.executorService = Executors.newCachedThreadPool();
 	}
 
 	@Override
 	public void deactivate() {
 		LOG.info("Deactivating u::Lux binding.");
 		stopListenerThread();
+
+		try {
+			this.executorService.shutdown();
+			this.executorService.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	/**
@@ -206,12 +219,9 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 	public void run() {
 		final Thread currentThread = Thread.currentThread();
 
-		final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-		buffer.order(ByteOrder.LITTLE_ENDIAN);
-
 		while (this.thread == currentThread) {
 			try {
-				doRun(buffer);
+				doRun();
 			} catch (final ClosedByInterruptException e) {
 				// normal behavior during shutdown
 			} catch (final Exception e) {
@@ -223,27 +233,34 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 	/**
 	 * This method waits for a datagram to arrive, parses it into a message and reacts accordingly.
 	 */
-	private void doRun(final ByteBuffer buffer) throws Exception {
+	private void doRun() throws Exception {
+		final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+
 		final InetSocketAddress source = (InetSocketAddress) this.channel.receive(buffer);
 
 		if (source != null) {
 			LOG.debug("Received datagram from: {}", source);
 
-			final InetAddress sourceAddress = source.getAddress();
-			final short switchId = this.configuration.getSwitchId(sourceAddress);
-			final UluxDatagram response = this.datagramFactory.createDatagram(switchId, sourceAddress);
+			this.executorService.execute(new Runnable() {
 
-			final List<UluxMessage> messages = messageParser.parse(buffer);
-			for (UluxMessage message : messages) {
-				LOG.debug("Processing incoming message: {}", message);
+				@Override
+				public void run() {
+					final InetAddress sourceAddress = source.getAddress();
+					final short switchId = configuration.getSwitchId(sourceAddress);
+					final UluxDatagram response = datagramFactory.createDatagram(switchId, sourceAddress);
 
-				messageHandler.handleMessage(message, response);
-			}
+					final List<UluxMessage> messages = messageParser.parse(buffer);
+					for (UluxMessage message : messages) {
+						LOG.debug("Processing incoming message: {}", message);
 
-			response.send(channel);
+						messageHandler.handleMessage(message, response);
+					}
+
+					response.send(channel);
+				}
+			});
 		}
-
-		buffer.clear();
 	}
 
 }

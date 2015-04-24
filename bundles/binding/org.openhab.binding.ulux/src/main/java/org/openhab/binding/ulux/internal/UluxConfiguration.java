@@ -16,9 +16,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.cm.ConfigurationException;
 
@@ -53,12 +53,12 @@ public class UluxConfiguration {
 	/**
 	 * Map from switch id to address.
 	 */
-	private final Map<Short, InetAddress> switchAdresses = new HashMap<Short, InetAddress>();
+	private final Map<Short, InetAddress> switchAdresses = new ConcurrentHashMap<Short, InetAddress>();
 
 	/**
 	 * Map from switch address to id.
 	 */
-	private final Map<InetAddress, Short> switchIds = new HashMap<InetAddress, Short>();
+	private final Map<InetAddress, Short> switchIds = new ConcurrentHashMap<InetAddress, Short>();
 
 	private short designId = DEFAULT_DESIGN_ID;
 
