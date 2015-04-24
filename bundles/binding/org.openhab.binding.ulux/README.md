@@ -93,3 +93,10 @@ ON if it's bright, OFF if it's dark.
 
 `Number Ulux_Value   "Value [%d]" <none> { ulux="1:1:EditValue" }`
 
+### Displaying an image on the switch
+
+Send an url, e.g. http://www.openhab.org/images/openhab-logo-square.png or
+file:///opt/openhab/webapps/images/app-icon.png, to a String item:
+
+`String Ulux_Image   "Image"  <none> { ulux="1:0:Image" }`
+

@@ -34,7 +34,7 @@ import org.openhab.binding.ulux.internal.UluxException;
  */
 public class UluxDatagram {
 
-	private static final int BUFFER_SIZE = 1024;
+	private static final int BUFFER_SIZE = 2048;
 
 	private static final AtomicInteger PACKAGE_COUNTER = new AtomicInteger(1);
 
@@ -99,9 +99,13 @@ public class UluxDatagram {
 		return buffer;
 	}
 
+	protected byte getMagicByte() {
+		return (byte) 0x01;
+	}
+
 	private void addDescriptor(ByteBuffer buffer) {
-		// magic bytes: 0x8601
-		buffer.put((byte) 0x01);
+		// magic bytes: 0x8601 (standard datagram) or 0x8602 (video datagram)
+		buffer.put(getMagicByte());
 		buffer.put((byte) 0x86);
 
 		// length: e.g. 0x0010 = 16 Bytes

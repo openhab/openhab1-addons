@@ -19,6 +19,7 @@ import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Lux;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.PageCount;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.PageIndex;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.State;
+import static org.openhab.binding.ulux.internal.ump.UluxMessageId.VideoState;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -51,6 +52,7 @@ public class UluxMessageHandlerFacade {
 		messageHandlers.put(PageCount, new PageCountMessageHandler());
 		messageHandlers.put(PageIndex, new PageIndexMessageHandler());
 		messageHandlers.put(State, new StateMessageHandler());
+		messageHandlers.put(VideoState, new VideoStateMessageHandler());
 
 		for (AbstractMessageHandler<?> messageHandler : messageHandlers.values()) {
 			messageHandler.setProviders(providers);

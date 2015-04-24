@@ -32,7 +32,9 @@ import org.openhab.binding.ulux.internal.ump.messages.PageIndexMessage;
 import org.openhab.binding.ulux.internal.ump.messages.StateMessage;
 import org.openhab.binding.ulux.internal.ump.messages.TextMessage;
 import org.openhab.binding.ulux.internal.ump.messages.VideoStartMessage;
+import org.openhab.binding.ulux.internal.ump.messages.VideoStateMessage;
 import org.openhab.binding.ulux.internal.ump.messages.VideoStopMessage;
+import org.openhab.binding.ulux.internal.ump.messages.VideoStreamMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -92,6 +94,9 @@ public class UluxMessageFactory {
 			break;
 		case EditValue:
 			message = new EditValueMessage(actorId, data);
+			break;
+		case VideoState:
+			message = new VideoStateMessage(actorId, data);
 			break;
 		default:
 			message = null;
@@ -191,8 +196,16 @@ public class UluxMessageFactory {
 		return new VideoStartMessage();
 	}
 
+	public VideoStateMessage createVideoStateMessage() {
+		return new VideoStateMessage();
+	}
+
 	public VideoStopMessage createVideoStopMessage() {
 		return new VideoStopMessage();
+	}
+
+	public VideoStreamMessage createVideoStreamMessage(short startLine, short lineCount, int[] videoData) {
+		return new VideoStreamMessage(startLine, lineCount, videoData);
 	}
 
 }

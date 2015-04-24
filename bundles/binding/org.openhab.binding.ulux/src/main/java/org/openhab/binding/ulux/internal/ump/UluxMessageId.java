@@ -129,7 +129,11 @@ public enum UluxMessageId {
 
 	/**
 	 */
-	VideoStop("ID-VideoStop", (byte) 0xA3);
+	VideoStop("ID-VideoStop", (byte) 0xA3),
+
+	/**
+	 */
+	VideoStream("XX-VideoStream", (byte) 0xFF);
 
 	/**
 	 * Map from raw byte value to logical message id.

@@ -12,12 +12,22 @@ import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 import static org.openhab.core.library.types.OnOffType.OFF;
 import static org.openhab.core.library.types.OnOffType.ON;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import org.openhab.binding.ulux.UluxBindingConfig;
+import org.openhab.binding.ulux.UluxBindingConfigType;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
+import org.openhab.binding.ulux.internal.ump.messages.VideoStreamMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -110,6 +120,9 @@ public class UluxDatagramFactory {
 				message = null;
 			}
 			break;
+		case IMAGE:
+			message = messageFactory.createVideoStartMessage();
+			break;
 		case LED:
 			message = messageFactory.createLedMessage(config, type == OnOffType.ON);
 			break;
@@ -140,6 +153,10 @@ public class UluxDatagramFactory {
 			datagram.addMessage(message);
 
 			datagramList.add(datagram);
+		}
+
+		if (config.getType() == UluxBindingConfigType.IMAGE) {
+			addVideoDatagrams(datagramList, config, ((StringType) type).toString());
 		}
 
 		return datagramList;
@@ -184,4 +201,65 @@ public class UluxDatagramFactory {
 		return datagramList;
 	}
 
+	private void addVideoDatagrams(List<UluxDatagram> datagramList, UluxBindingConfig config, String imageName) {
+		final short switchId = config.getSwitchId();
+		final InetAddress switchAddress = this.configuration.getSwitchAddress(switchId);
+
+		if (imageName.length() == 0) {
+			return;
+		}
+
+		final BufferedImage originalImage;
+		try {
+			originalImage = ImageIO.read(new URL(imageName));
+		} catch (IOException e) {
+			LOG.error("Cannot read image!", e);
+			return;
+		}
+
+		// TODO query switch
+		int resizedWidth = 176;
+		int resizedHeight = 184;
+
+		BufferedImage resizedImage = new BufferedImage(resizedWidth, resizedHeight, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = resizedImage.createGraphics();
+		g.setComposite(AlphaComposite.Src);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.drawImage(originalImage, 0, 0, 176, 184, null);
+		g.dispose();
+
+		final int[] videoData = resizedImage.getRGB(0, 0, resizedWidth, resizedHeight, null, 0, resizedWidth);
+
+		final int maxPixelPerMessage = 704;
+
+		int width = 176;
+		int height = 184;
+
+		final int linesPerMessage = maxPixelPerMessage / width;
+		final int pixelPerMessage = linesPerMessage * width;
+		final int numberOfMessages = height / linesPerMessage + (height % linesPerMessage == 0 ? 0 : 1);
+
+		for (short messageNumber = 0; messageNumber < numberOfMessages; messageNumber++) {
+			final int[] frameData = new int[pixelPerMessage];
+			final int videoDataPosition = messageNumber * pixelPerMessage;
+			final int startLine = (short) (messageNumber * linesPerMessage);
+			boolean lastMessage = (messageNumber == numberOfMessages - 1);
+
+			final int lineCount;
+			if (lastMessage && (height % linesPerMessage != 0)) {
+				lineCount = (height - startLine) % linesPerMessage;
+			} else {
+				lineCount = linesPerMessage;
+			}
+
+			System.arraycopy(videoData, videoDataPosition, frameData, 0, frameData.length);
+
+			final VideoStreamMessage message = this.messageFactory.createVideoStreamMessage((short) startLine,
+					(short) lineCount, frameData);
+
+			datagramList.add(new UluxVideoDatagram(switchId, switchAddress, message));
+		}
+	}
 }

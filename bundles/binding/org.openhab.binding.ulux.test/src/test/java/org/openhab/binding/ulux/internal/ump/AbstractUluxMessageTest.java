@@ -4,11 +4,15 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -25,6 +29,8 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+
+import com.google.common.io.Files;
 
 /**
  * Base class for tests of u::Lux Message Protocol functionality.
@@ -172,6 +178,20 @@ public abstract class AbstractUluxMessageTest {
 		}
 
 		return bytes;
+	}
+
+	protected final byte[] toBytes(File file) throws IOException {
+		final StringBuilder data = new StringBuilder();
+
+		final List<String> lines = Files.readLines(file, Charset.forName("UTF-8"));
+		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
+			data.append(iterator.next());
+			if (iterator.hasNext()) {
+				data.append(":");
+			}
+		}
+
+		return toBytes(data);
 	}
 
 	protected final String toString(byte[] bytes) {

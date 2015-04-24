@@ -26,6 +26,7 @@ import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagramFactory;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.binding.ulux.internal.ump.UluxMessageParser;
+import org.openhab.binding.ulux.internal.ump.UluxVideoDatagram;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
@@ -164,6 +165,16 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			final List<UluxDatagram> datagramList = datagramFactory.createDatagram(binding, command);
 
 			for (UluxDatagram datagram : datagramList) {
+				if (datagram instanceof UluxVideoDatagram) {
+					try {
+						// If we don't sleep here the switch seems to drop some packages...
+						// TODO use a Timer for this
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
+				}
+
 				datagram.send(this.channel);
 			}
 		}

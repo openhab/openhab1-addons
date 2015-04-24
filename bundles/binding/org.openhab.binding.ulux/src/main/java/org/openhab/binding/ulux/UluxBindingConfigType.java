@@ -24,6 +24,8 @@ public enum UluxBindingConfigType {
 
 	DISPLAY(),
 
+	IMAGE,
+
 	KEY,
 
 	LED,
