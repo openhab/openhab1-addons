@@ -3,11 +3,11 @@ package org.openhab.binding.ulux.internal.handler;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.messages.EventMessage;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 
-public class EventMessageHandlerTest extends AbstractHandlerTest<EventMessage> {
+public class EventMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testNoKeyPressed() throws Exception {

@@ -5,13 +5,11 @@ import static org.junit.Assert.assertThat;
 import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
 
-public class LedMessageTest extends AbstractCommandTest {
+public class LedMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOn() throws Exception {
@@ -41,5 +39,5 @@ public class LedMessageTest extends AbstractCommandTest {
 
 		assertThat(datagram, isEmptyDatagram());
 	}
-	
+
 }

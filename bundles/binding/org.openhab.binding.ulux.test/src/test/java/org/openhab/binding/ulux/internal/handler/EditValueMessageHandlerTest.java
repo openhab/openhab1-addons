@@ -3,7 +3,7 @@ package org.openhab.binding.ulux.internal.handler;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.messages.EditValueMessage;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -14,7 +14,7 @@ import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.UpDownType;
 
-public class EditValueMessageHandlerTest extends AbstractHandlerTest<EditValueMessage> {
+public class EditValueMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testColorItem() throws Exception {

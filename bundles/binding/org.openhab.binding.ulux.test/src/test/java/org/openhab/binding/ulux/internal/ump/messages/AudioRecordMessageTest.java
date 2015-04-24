@@ -4,13 +4,12 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 
-public class AudioRecordMessageTest extends AbstractCommandTest {
+public class AudioRecordMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommand() throws Exception {

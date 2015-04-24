@@ -5,11 +5,11 @@ import static org.junit.Assert.assertThat;
 import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 
-public class AudioPlayLocalMessageTest extends AbstractCommandTest {
+public class AudioPlayLocalMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void outgoingDefaults() {

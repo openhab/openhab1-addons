@@ -3,12 +3,12 @@ package org.openhab.binding.ulux.internal.handler;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.messages.LuxMessage;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.UnDefType;
 
-public class LuxMessageHandlerTest extends AbstractHandlerTest<LuxMessage> {
+public class LuxMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testInvalid() throws Exception {

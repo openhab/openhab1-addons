@@ -5,11 +5,11 @@ import static org.junit.Assert.assertThat;
 import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.types.PercentType;
 
-public class AudioVolumeMessageTest extends AbstractCommandTest {
+public class AudioVolumeMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommand() throws Exception {

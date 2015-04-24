@@ -7,9 +7,9 @@ import static org.openhab.binding.ulux.internal.ump.UluxMessageId.EditValue;
 import java.nio.ByteBuffer;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractMessageTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 
-public class EditValueMessageTest extends AbstractMessageTest {
+public class EditValueMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testIncoming() {

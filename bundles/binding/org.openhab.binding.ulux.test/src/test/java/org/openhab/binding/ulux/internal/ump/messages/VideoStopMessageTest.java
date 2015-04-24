@@ -5,14 +5,14 @@ import static org.junit.Assert.assertThat;
 import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 
-public class VideoStopMessageTest extends AbstractCommandTest {
+public class VideoStopMessageTest extends AbstractUluxMessageTest {
 
 	// testCommandOn() see VideoStartMessageTest
-	
+
 	@Test
 	public void testCommandOff() throws Exception {
 		addBindingConfig(new SwitchItem("Ulux_Video"), "1:0:Video");

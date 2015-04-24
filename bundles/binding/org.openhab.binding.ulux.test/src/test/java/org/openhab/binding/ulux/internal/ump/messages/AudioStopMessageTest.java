@@ -5,11 +5,11 @@ import static org.junit.Assert.assertThat;
 import static org.openhab.binding.ulux.internal.EmptyDatagramMatcher.isEmptyDatagram;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 
-public class AudioStopMessageTest extends AbstractCommandTest {
+public class AudioStopMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOn() throws Exception {

@@ -3,11 +3,11 @@ package org.openhab.binding.ulux.internal.handler;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.messages.LedMessage;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 
-public class LedMessageHandlerTest extends AbstractHandlerTest<LedMessage> {
+public class LedMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {

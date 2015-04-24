@@ -4,11 +4,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractCommandTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.types.StringType;
 
-public class TextMessageTest extends AbstractCommandTest {
+public class TextMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommand() throws Exception {

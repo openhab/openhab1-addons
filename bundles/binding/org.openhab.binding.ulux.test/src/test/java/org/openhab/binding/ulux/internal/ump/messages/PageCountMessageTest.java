@@ -7,9 +7,9 @@ import static org.openhab.binding.ulux.internal.ump.UluxMessageId.PageCount;
 import java.nio.ByteBuffer;
 
 import org.junit.Test;
-import org.openhab.binding.ulux.internal.ump.AbstractMessageTest;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 
-public class PageCountMessageTest extends AbstractMessageTest {
+public class PageCountMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testIncoming() {

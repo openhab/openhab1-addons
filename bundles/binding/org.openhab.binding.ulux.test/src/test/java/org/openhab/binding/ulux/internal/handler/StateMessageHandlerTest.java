@@ -5,11 +5,12 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
+import org.openhab.binding.ulux.internal.ump.AbstractUluxMessageTest;
 import org.openhab.binding.ulux.internal.ump.messages.StateMessage;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 
-public class StateMessageHandlerTest extends AbstractHandlerTest<StateMessage> {
+public class StateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testRequest() throws Exception {

@@ -24,7 +24,7 @@ import org.openhab.binding.ulux.internal.ump.messages.StateMessage;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-public class UluxMessageParserTest extends AbstractMessageTest {
+public class UluxMessageParserTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void test() {
