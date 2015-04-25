@@ -34,7 +34,7 @@ public class AudioPlayLocalMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new NumberItem("Ulux_Audio"), "1:0:AudioPlayLocal");
+		addBindingConfig(new NumberItem("Ulux_Audio"), "{switchId=1, type='AUDIO_PLAY_LOCAL'}");
 
 		receiveUpdate("Ulux_Audio", new DecimalType(2));
 

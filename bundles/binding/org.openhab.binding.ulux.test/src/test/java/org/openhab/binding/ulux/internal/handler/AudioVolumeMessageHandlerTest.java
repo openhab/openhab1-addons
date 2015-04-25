@@ -18,7 +18,7 @@ public class AudioVolumeMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testVolume75() throws Exception {
-		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "1:0:AudioVolume");
+		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "{switchId=1, type='AUDIO_VOLUME'}");
 
 		handleMessage("06:91:00:00:4B:00");
 

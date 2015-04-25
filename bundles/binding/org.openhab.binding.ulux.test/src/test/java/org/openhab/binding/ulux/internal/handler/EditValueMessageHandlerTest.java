@@ -18,7 +18,7 @@ public class EditValueMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testColorItem() throws Exception {
-		addBindingConfig(new ColorItem("Ulux_Color"), "1:1:EditValue");
+		addBindingConfig(new ColorItem("Ulux_Color"), "{switchId=1, actorId=1, type='EDIT_VALUE'}");
 
 		handleMessage("06:42:01:00:01:00");
 
@@ -27,7 +27,7 @@ public class EditValueMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testDimmerItem() throws Exception {
-		addBindingConfig(new DimmerItem("Ulux_Dimmer"), "1:1:EditValue");
+		addBindingConfig(new DimmerItem("Ulux_Dimmer"), "{switchId=1, actorId=1, type='EDIT_VALUE'}");
 
 		handleMessage("06:42:01:00:01:00");
 
@@ -36,7 +36,7 @@ public class EditValueMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testNumberItem() throws Exception {
-		addBindingConfig(new NumberItem("Ulux_Number"), "1:1:EditValue");
+		addBindingConfig(new NumberItem("Ulux_Number"), "{switchId=1, actorId=1, type='EDIT_VALUE'}");
 
 		handleMessage("06:42:01:00:15:00");
 
@@ -45,7 +45,7 @@ public class EditValueMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testRollershutterItem() throws Exception {
-		addBindingConfig(new RollershutterItem("Ulux_Rollershutter"), "1:1:EditValue");
+		addBindingConfig(new RollershutterItem("Ulux_Rollershutter"), "{switchId=1, actorId=1, type='EDIT_VALUE'}");
 
 		handleMessage("06:42:01:00:01:00");
 
@@ -54,7 +54,7 @@ public class EditValueMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testSwitchItem() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Switch"), "1:1:EditValue");
+		addBindingConfig(new SwitchItem("Ulux_Switch"), "{switchId=1, actorId=1, type='EDIT_VALUE'}");
 
 		handleMessage("06:42:01:00:01:00");
 

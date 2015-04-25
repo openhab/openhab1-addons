@@ -13,7 +13,7 @@ public class ActivateMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOn() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Display"), "1:0:Display");
+		addBindingConfig(new SwitchItem("Ulux_Display"), "{switchId=1, type='DISPLAY'}");
 
 		receiveCommand("Ulux_Display", OnOffType.ON);
 
@@ -25,7 +25,7 @@ public class ActivateMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOff() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Display"), "1:0:Display");
+		addBindingConfig(new SwitchItem("Ulux_Display"), "{switchId=1, type='DISPLAY'}");
 
 		receiveCommand("Ulux_Display", OnOffType.OFF);
 
@@ -37,7 +37,7 @@ public class ActivateMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Display"), "1:0:Display");
+		addBindingConfig(new SwitchItem("Ulux_Display"), "{switchId=1, type='DISPLAY'}");
 
 		receiveUpdate("Ulux_Display", OnOffType.OFF);
 

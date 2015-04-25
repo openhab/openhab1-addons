@@ -12,7 +12,7 @@ public class TextMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommand() throws Exception {
-		addBindingConfig(new StringItem("Ulux_Text"), "1:1:EditValue");
+		addBindingConfig(new StringItem("Ulux_Text"), "{switchId=1, actorId=1, type='EDIT_VALUE'}");
 
 		receiveCommand("Ulux_Text", new StringType("Example"));
 

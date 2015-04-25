@@ -13,7 +13,7 @@ public class AudioStopMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOn() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Audio"), "1:0:Audio");
+		addBindingConfig(new SwitchItem("Ulux_Audio"), "{switchId=1, type='AUDIO'}");
 
 		receiveCommand("Ulux_Audio", OnOffType.ON);
 
@@ -22,7 +22,7 @@ public class AudioStopMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOff() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Audio"), "1:0:Audio");
+		addBindingConfig(new SwitchItem("Ulux_Audio"), "{switchId=1, type='AUDIO'}");
 
 		receiveCommand("Ulux_Audio", OnOffType.OFF);
 
@@ -34,7 +34,7 @@ public class AudioStopMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Audio"), "1:0:Audio");
+		addBindingConfig(new SwitchItem("Ulux_Audio"), "{switchId=1, type='AUDIO'}");
 
 		receiveUpdate("Ulux_Audio", OnOffType.OFF);
 

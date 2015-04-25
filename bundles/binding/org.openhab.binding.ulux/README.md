@@ -32,71 +32,67 @@ The configuration string consists of switch id, actor id and message name (defau
 
 Send ON or OFF to a switch item with message type "EditValue" (which is the default).
 
-`Switch Ulux_Switch  "Switch"     <none> { ulux="1:2:EditValue" }`
-
-or simply
-
-`Switch Ulux_Switch  "Switch"     <none> { ulux="1:2" }`
+`Switch Ulux_Switch  "Switch"     <none> { ulux="{switchId=1, actorId=2, type='EDIT_VALUE'}" }`
 
 ### Key events
 
-`Switch Ulux_Key_1  "Key 1"     <none> { ulux="1:1:Key:1" }`
-`Switch Ulux_Key_2  "Key 2"     <none> { ulux="1:1:Key:2" }`
-`Switch Ulux_Key_3  "Key 3"     <none> { ulux="1:1:Key:3" }`
-`Switch Ulux_Key_4  "Key 4"     <none> { ulux="1:1:Key:4" }`
+`Switch Ulux_Key_1  "Key 1"     <none> { ulux="{switchId=1, actorId=1, type='KEY', additionalConfiguration='1'}" }`
+`Switch Ulux_Key_2  "Key 2"     <none> { ulux="{switchId=1, actorId=1, type='KEY', additionalConfiguration='2'}" }`
+`Switch Ulux_Key_3  "Key 3"     <none> { ulux="{switchId=1, actorId=1, type='KEY', additionalConfiguration='3'}" }`
+`Switch Ulux_Key_4  "Key 4"     <none> { ulux="{switchId=1, actorId=1, type='KEY', additionalConfiguration='4'}" }`
 
 ### Playing an audio file stored on the switch
 
 Send the index of the audio file (starting at 1) to a number item with message type "AudioPlayLocal". 
 
-`Number Ulux_Audio   "Audio"      <none> { ulux="1:0:AudioPlayLocal"}`
+`Number Ulux_Audio   "Audio"      <none> { ulux="{switchId=1, type='AUDIO_PLAY_LOCAL'}"}`
 
 ### Audio playback or recording status and stopping
 
 If an audio file is played back or the recording function is active (which is not yet supported
 by the binding) this item switches to ON. Send an OFF if you want to stop it.
 
-`Switch Ulux_Audio    "Audio"  <none> { ulux="1:0:Audio" }`
+`Switch Ulux_Audio    "Audio"  <none> { ulux="{switchId=1, type='AUDIO'" }`
 
 ### Audio volume
 
-`Dimmer Ulux_AudioVolume    "Audio Volume [%d]"  <none> { ulux="1:0:AudioVolume" }`
+`Dimmer Ulux_AudioVolume    "Audio Volume [%d]"  <none> { ulux="{switchId=1, type='AUDIO_VOLUME'}" }`
 
 ### Display state and switching the display on and off
 
 Send ON or OFF to a switch item of type "Display". It's probably best to configure the
 item with auto-update off as the switch immediately sends back its state.
 
-`Switch Ulux_Display "Display"    <none> { ulux="1:0:Display", autoupdate="false" }`
+`Switch Ulux_Display "Display"    <none> { ulux="{switchId=1, type='DISPLAY'}", autoupdate="false" }`
 
 ### LEDs
 
 Color and blink mode are specified by number, e.g. 49 is a rapidly blinking red.
 
-`Number Ulux_Led  "LED"  <none> { ulux="1:1:Led:1" }`
+`Number Ulux_Led  "LED"  <none> { ulux="{switchId=1, actorId=1, type='LED', additionalConfiguration='1'}" }`
 
 ### Proximity sensor
 
-`Switch Ulux_Proximity  "Proximity"  <none> { ulux="1:0:Proximity" }`
+`Switch Ulux_Proximity  "Proximity"  <none> { ulux="{switchId=1, type='PROXIMITY'}" }`
 
 ### Ambient light sensor
 
 ON if it's bright, OFF if it's dark.
 
-`Switch Ulux_AmbientLight  "Ambient light"  <none> { ulux="1:0:AmbientLight" }`
+`Switch Ulux_AmbientLight  "Ambient light"  <none> { ulux="{switchId=1, type='AMBIENT_LIGHT'}" }`
 
 ### The page displayed on the switch
 
-`Number Ulux_Page    "Page [%d]"  <none> { ulux="1:0:PageIndex" }`
+`Number Ulux_Page    "Page [%d]"  <none> { ulux="{switchId=1, type='PAGE_INDEX'}" }`
 
 ### Displaying a decimal value, e.g. temperature
 
-`Number Ulux_Value   "Value [%d]" <none> { ulux="1:1:EditValue" }`
+`Number Ulux_Value   "Value [%d]" <none> { ulux="{switchId=1, actorId=1, type='EDIT_VALUE'}" }`
 
 ### Displaying an image on the switch
 
 Send an url, e.g. http://www.openhab.org/images/openhab-logo-square.png or
 file:///opt/openhab/webapps/images/app-icon.png, to a String item:
 
-`String Ulux_Image   "Image"  <none> { ulux="1:0:Image" }`
+`String Ulux_Image   "Image"  <none> { ulux="{switchId=1, type='IMAGE'}" }`
 

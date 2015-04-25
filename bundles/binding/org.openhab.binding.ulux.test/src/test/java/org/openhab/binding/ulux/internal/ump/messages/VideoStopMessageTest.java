@@ -15,7 +15,7 @@ public class VideoStopMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOff() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Video"), "1:0:Video");
+		addBindingConfig(new SwitchItem("Ulux_Video"), "{switchId=1, type='VIDEO'}");
 
 		receiveCommand("Ulux_Video", OnOffType.OFF);
 
@@ -27,7 +27,7 @@ public class VideoStopMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Video"), "1:0:Video");
+		addBindingConfig(new SwitchItem("Ulux_Video"), "{switchId=1, type='VIDEO'}");
 
 		receiveUpdate("Ulux_Video", OnOffType.OFF);
 

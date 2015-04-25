@@ -14,7 +14,7 @@ public class AudioRecordMessageTest extends AbstractUluxMessageTest {
 	@Test
 	public void testCommand() throws Exception {
 		addConfiguration("bind_address", "192.168.1.1");
-		addBindingConfig(new SwitchItem("Ulux_AudioRecord"), "1:0:AudioRecord");
+		addBindingConfig(new SwitchItem("Ulux_AudioRecord"), "{switchId=1, type='AUDIO_RECORD'}");
 
 		receiveCommand("Ulux_AudioRecord", OnOffType.ON);
 
@@ -27,7 +27,7 @@ public class AudioRecordMessageTest extends AbstractUluxMessageTest {
 	@Test
 	public void testUpdate() throws Exception {
 		addConfiguration("bind_address", "192.168.1.1");
-		addBindingConfig(new SwitchItem("Ulux_AudioRecord"), "1:0:AudioRecord");
+		addBindingConfig(new SwitchItem("Ulux_AudioRecord"), "{switchId=1, type='AUDIO_RECORD'}");
 
 		receiveUpdate("Ulux_AudioRecord", OnOffType.ON);
 

@@ -18,7 +18,7 @@ public class PageIndexMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testPage2() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Page"), "1:0:PageIndex");
+		addBindingConfig(new SwitchItem("Ulux_Page"), "{switchId=1, type='PAGE_INDEX'}");
 
 		handleMessage("06:2e:00:00:02:00");
 

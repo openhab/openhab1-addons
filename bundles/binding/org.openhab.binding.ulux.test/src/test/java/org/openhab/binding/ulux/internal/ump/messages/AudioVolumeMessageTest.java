@@ -13,7 +13,7 @@ public class AudioVolumeMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommand() throws Exception {
-		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "1:0:AudioVolume");
+		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "{switchId=1, type='AUDIO_VOLUME'}");
 
 		receiveCommand("Ulux_AudioVolume", new PercentType(75));
 
@@ -33,7 +33,7 @@ public class AudioVolumeMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "1:0:AudioVolume");
+		addBindingConfig(new DimmerItem("Ulux_AudioVolume"), "{switchId=1, type='AUDIO_VOLUME'}");
 
 		receiveUpdate("Ulux_AudioVolume", new PercentType(75));
 

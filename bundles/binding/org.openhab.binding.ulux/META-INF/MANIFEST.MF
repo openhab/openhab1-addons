@@ -36,5 +36,6 @@ Export-Package: org.openhab.binding.ulux
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/gson-2.3.1.jar
 Require-Bundle: org.openhab.io.rest.lib

@@ -12,7 +12,7 @@ public class LuxMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testInvalid() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Lux"), "1:0:Lux");
+		addBindingConfig(new SwitchItem("Ulux_Lux"), "{switchId=1, type='LUX'}");
 
 		handleMessage("08:03:00:00:00:00:00:00");
 
@@ -21,7 +21,7 @@ public class LuxMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testValid() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Lux"), "1:0:Lux");
+		addBindingConfig(new SwitchItem("Ulux_Lux"), "{switchId=1, type='LUX'}");
 
 		handleMessage("08:03:00:00:13:02:01:00");
 

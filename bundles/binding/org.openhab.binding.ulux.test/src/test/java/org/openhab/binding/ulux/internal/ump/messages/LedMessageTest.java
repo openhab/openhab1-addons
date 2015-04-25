@@ -13,7 +13,7 @@ public class LedMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommandOn() throws Exception {
-		addBindingConfig(new NumberItem("Ulux_Led"), "1:1:Led:2");
+		addBindingConfig(new NumberItem("Ulux_Led"), "{switchId=1, actorId=1, type='LED', additionalConfiguration='2'}");
 
 		receiveCommand("Ulux_Led", new DecimalType(49));
 
@@ -33,7 +33,7 @@ public class LedMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new NumberItem("Ulux_Led"), "1:1:Led:2");
+		addBindingConfig(new NumberItem("Ulux_Led"), "{switchId=1, actorId=1, type='LED', additionalConfiguration='2'}");
 
 		receiveUpdate("Ulux_Led", new DecimalType(5));
 

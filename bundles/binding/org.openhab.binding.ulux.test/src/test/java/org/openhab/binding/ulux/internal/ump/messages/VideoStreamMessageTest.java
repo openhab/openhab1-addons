@@ -16,7 +16,7 @@ public class VideoStreamMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testImage() throws Exception {
-		addBindingConfig(new StringItem("Ulux_Image"), "1:0:Image");
+		addBindingConfig(new StringItem("Ulux_Image"), "{switchId=1, type='IMAGE'}");
 
 		receiveCommand("Ulux_Image", new StringType("http://www.openhab.org/assets/images/openhab-logo-square.png"));
 

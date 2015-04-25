@@ -30,7 +30,7 @@ public class StateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testDisplayActive() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Display"), "1:0:Display");
+		addBindingConfig(new SwitchItem("Ulux_Display"), "{switchId=1, type='DISPLAY'}");
 
 		handleMessage("08:01:00:00:04:00:00:00");
 
@@ -39,7 +39,7 @@ public class StateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testProximityDetected() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Proximity"), "1:0:Proximity");
+		addBindingConfig(new SwitchItem("Ulux_Proximity"), "{switchId=1, type='PROXIMITY'}");
 
 		handleMessage("08:01:00:00:02:00:00:00");
 
@@ -48,7 +48,7 @@ public class StateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testAmbientLight() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_AmbientLight"), "1:0:AmbientLight");
+		addBindingConfig(new SwitchItem("Ulux_AmbientLight"), "{switchId=1, type='AMBIENT_LIGHT'}");
 
 		handleMessage("08:01:00:00:01:00:00:00");
 
@@ -57,7 +57,7 @@ public class StateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testAudioPlaying() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Audio"), "1:0:Audio");
+		addBindingConfig(new SwitchItem("Ulux_Audio"), "{switchId=1, type='AUDIO'}");
 
 		handleMessage("08:01:00:00:08:00:00:00");
 

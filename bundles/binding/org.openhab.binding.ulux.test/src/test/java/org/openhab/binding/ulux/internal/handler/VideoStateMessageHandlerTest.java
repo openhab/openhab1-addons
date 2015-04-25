@@ -18,7 +18,7 @@ public class VideoStateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testVideoActive() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Video"), "1:0:Video");
+		addBindingConfig(new SwitchItem("Ulux_Video"), "{switchId=1, type='VIDEO'}");
 
 		handleMessage("10:A1:00:00:01:00:00:00:00:00:00:00:00:00:00:00");
 
@@ -27,7 +27,7 @@ public class VideoStateMessageHandlerTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testVideoPossible() throws Exception {
-		addBindingConfig(new SwitchItem("Ulux_Video"), "1:0:Video");
+		addBindingConfig(new SwitchItem("Ulux_Video"), "{switchId=1, type='VIDEO'}");
 
 		handleMessage("10:A1:00:00:02:00:00:00:00:00:00:00:00:00:00:00");
 

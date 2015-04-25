@@ -13,7 +13,7 @@ public class PageIndexMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testCommand() throws Exception {
-		addBindingConfig(new NumberItem("Ulux_Page"), "1:0:PageIndex");
+		addBindingConfig(new NumberItem("Ulux_Page"), "{switchId=1, type='PAGE_INDEX'}");
 
 		receiveCommand("Ulux_Page", new DecimalType(2));
 
@@ -33,7 +33,7 @@ public class PageIndexMessageTest extends AbstractUluxMessageTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		addBindingConfig(new NumberItem("Ulux_Page"), "1:0:PageIndex");
+		addBindingConfig(new NumberItem("Ulux_Page"), "{switchId=1, type='PAGE_INDEX'}");
 
 		receiveUpdate("Ulux_Page", new DecimalType(2));
 
