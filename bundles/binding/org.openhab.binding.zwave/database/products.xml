@@ -1202,6 +1202,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0202</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Model>FGS222</Model>
+			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
+			<ConfigFile>fibaro/fgs222.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0700</Type>
 				<Id>1000</Id>
 			</Reference>
