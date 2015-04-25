@@ -26,14 +26,17 @@ import org.openhab.binding.pilight.internal.communication.Device;
 import org.openhab.binding.pilight.internal.communication.DeviceType;
 import org.openhab.binding.pilight.internal.communication.Status;
 import org.openhab.binding.pilight.internal.communication.Values;
+import org.openhab.binding.pilight.internal.types.PilightContactType;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
@@ -79,6 +82,8 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			if (!configs.isEmpty()) {
 				if (type.equals(DeviceType.SWITCH) || type.equals(DeviceType.DIMMER)) {
 					processSwitchEvent(configs, status);
+				} else if (type.equals(DeviceType.CONTACT)) {
+					processContactEvent(configs, status);
 				} else if (type.equals(DeviceType.VALUE)) {
 					processValueEvent(configs, status);
 				}
@@ -131,6 +136,15 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			
 			state = new PercentType(dimLevel);
 		}
+		
+		for (PilightBindingConfig config : configs) {
+			eventPublisher.postUpdate(config.getItemName(), state);
+		}
+	}
+	
+	private void processContactEvent(List<PilightBindingConfig> configs, Status status) {
+		String stateString = status.getValues().get("state").toUpperCase();
+		State state = PilightContactType.valueOf(stateString).toOpenClosedType();
 		
 		for (PilightBindingConfig config : configs) {
 			eventPublisher.postUpdate(config.getItemName(), state);
@@ -302,6 +316,9 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 						return new PercentType(0);
 				}
 				
+				return state;
+			} else if (bindingConfig.getItemType().equals(ContactItem.class)) {
+				OpenClosedType state = PilightContactType.valueOf(dev.getState().toUpperCase()).toOpenClosedType();
 				return state;
 			} else if (bindingConfig.getItemType().equals(StringItem.class) || bindingConfig.getItemType().equals(NumberItem.class)) {
 				String property = bindingConfig.getProperty();

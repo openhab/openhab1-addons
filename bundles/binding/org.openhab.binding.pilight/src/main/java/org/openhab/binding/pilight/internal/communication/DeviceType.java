@@ -24,4 +24,6 @@ public class DeviceType {
 	
 	public static Integer VALUE = 3;
 
+	public static Integer CONTACT = 6;
+
 }
