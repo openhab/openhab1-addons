@@ -1975,7 +1975,7 @@
 				<Id>010c</Id>
 			</Reference>
 			<Model>WWA-02</Model>
-			<Label lang="en">Wireless Water & Temperature Alarm</Label>
+			<Label lang="en">Wireless Water and Temperature Alarm</Label>
 			<ConfigFile>fortrezz/wwa02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
