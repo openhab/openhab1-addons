@@ -1969,6 +1969,15 @@
 			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0063</Type>
+				<Id>010c</Id>
+			</Reference>
+			<Model>WWA-02</Model>
+			<Label lang="en">Wireless Water and Temperature Alarm</Label>
+			<ConfigFile>fortrezz/wwa02.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>008a</Id>
