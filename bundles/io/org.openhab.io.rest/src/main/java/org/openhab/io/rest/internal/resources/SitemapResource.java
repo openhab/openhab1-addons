@@ -261,7 +261,7 @@ public class SitemapResource {
 		bean.label = sitemap.getLabel();
 
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
+    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
     }
     
