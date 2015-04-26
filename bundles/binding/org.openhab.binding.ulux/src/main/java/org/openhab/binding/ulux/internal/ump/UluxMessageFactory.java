@@ -175,11 +175,11 @@ public class UluxMessageFactory {
 		return new EditValueMessage(config.getActorId(), value);
 	}
 
-	public LedMessage createLedMessage(UluxBindingConfig config, boolean override) {
+	public LedMessage createLedMessage(UluxBindingConfig config, DecimalType decimal) {
 		// TODO color
 		// TODO blinkMode
 
-		return new LedMessage(config.getActorId(), config.getLed(), override);
+		return new LedMessage(config.getActorId(), config.getLed(), decimal.byteValue());
 	}
 
 	public PageIndexMessage createPageIndexMessage(DecimalType decimal) {

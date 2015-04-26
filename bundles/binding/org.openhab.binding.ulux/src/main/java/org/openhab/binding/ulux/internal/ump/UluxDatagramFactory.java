@@ -124,7 +124,7 @@ public class UluxDatagramFactory {
 			message = messageFactory.createVideoStartMessage();
 			break;
 		case LED:
-			message = messageFactory.createLedMessage(config, type == OnOffType.ON);
+			message = messageFactory.createLedMessage(config, (DecimalType) type);
 			break;
 		case PAGE_INDEX:
 			message = messageFactory.createPageIndexMessage((DecimalType) type);

@@ -42,7 +42,7 @@ public class LedMessage extends AbstractUluxMessage {
 	/**
 	 * Creates a message to set the state of an actor's LEDs.
 	 */
-	public LedMessage(short actorId, Led led, boolean override) {
+	public LedMessage(short actorId, Led led, byte state) {
 		super((byte) 0x08, UluxMessageId.LED, actorId);
 
 		this.ledState = new EnumMap<Led, BigInteger>(Led.class);
@@ -51,10 +51,7 @@ public class LedMessage extends AbstractUluxMessage {
 		this.ledState.put(LED_3, BigInteger.ZERO);
 		this.ledState.put(LED_4, BigInteger.ZERO);
 
-		// TODO
-		setOverride(led, override);
-		setColor(led, Color.COLOR_RED);
-		setBlinkMode(led, BlinkMode.BLINK_FAST);
+		this.ledState.put(led, BigInteger.valueOf(state));
 	}
 
 	public LedMessage(short actorId, ByteBuffer data) {
