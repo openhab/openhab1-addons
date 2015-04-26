@@ -47,16 +47,22 @@ Send the index of the audio file (starting at 1) to a number item with message t
 
 `Number Ulux_Audio   "Audio"      <none> { ulux="{switchId=1, type='AUDIO_PLAY_LOCAL'}"}`
 
-### Audio playback or recording status and stopping
-
-If an audio file is played back or the recording function is active (which is not yet supported
-by the binding) this item switches to ON. Send an OFF if you want to stop it.
-
-`Switch Ulux_Audio    "Audio"  <none> { ulux="{switchId=1, type='AUDIO'" }`
-
 ### Audio volume
 
 `Dimmer Ulux_AudioVolume    "Audio Volume [%d]"  <none> { ulux="{switchId=1, type='AUDIO_VOLUME'}" }`
+
+### Audio playback or recording status and stopping
+
+If an audio file is played back or the recording function is active this item
+switches to ON. Send an OFF if you want to stop it.
+
+`Switch Ulux_Audio    "Audio"  <none> { ulux="{switchId=1, type='AUDIO'" }`
+
+### Audio recording
+
+Send ON to start recording and writing the stream to the specified file. Send OFF to stop.
+
+`Switch Ulux_AudioRecord "Audio Record" <none> { ulux="{switchId=17, type='AUDIO_RECORD', additionalConfiguration='/tmp/ulux.wav'}" }`
 
 ### Display state and switching the display on and off
 

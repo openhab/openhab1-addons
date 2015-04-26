@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.ulux.internal;
 
+import static org.openhab.binding.ulux.internal.UluxBinding.AUDIO_PORT;
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 import static org.openhab.binding.ulux.internal.UluxBinding.PORT;
 
@@ -67,6 +68,8 @@ public class UluxConfiguration {
 	private int microphoneSecurityId = DEFAULT_MICROPHONE_SECURITY_ID;
 
 	private InetAddress bindAddress;
+
+	private InetSocketAddress audioSocketAddress;
 
 	private InetSocketAddress bindSocketAddress;
 
@@ -137,11 +140,13 @@ public class UluxConfiguration {
 		if (this.bindAddress == null) {
 			try {
 				this.bindAddress = InetAddress.getLocalHost();
+				this.audioSocketAddress = new InetSocketAddress(AUDIO_PORT);
 				this.bindSocketAddress = new InetSocketAddress(PORT);
 			} catch (UnknownHostException e) {
 				LOG.error("Illegal bind address: {}", bindAddress);
 			}
 		} else {
+			this.audioSocketAddress = new InetSocketAddress(this.bindAddress, AUDIO_PORT);
 			this.bindSocketAddress = new InetSocketAddress(this.bindAddress, PORT);
 		}
 
@@ -214,5 +219,13 @@ public class UluxConfiguration {
 	 */
 	public InetSocketAddress getBindSocketAddress() {
 		return this.bindSocketAddress;
+	}
+
+	/**
+	 * @return never <code>null</code>
+	 */
+	public InetSocketAddress getAudioSocketAddress() {
+		return this.audioSocketAddress;
+
 	}
 }

@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingProvider;
+import org.openhab.binding.ulux.internal.audio.AudioSource;
 import org.openhab.binding.ulux.internal.handler.UluxMessageHandlerFacade;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagramFactory;
@@ -50,7 +51,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 	private static final int BUFFER_SIZE = 1024;
 
-	// private static final int AUDIO_PORT = 0x88A4;
+	public static final int AUDIO_PORT = 0x88A4;
 
 	// private static final int MANAGEMENT_PORT = 0x88A8;
 
@@ -69,6 +70,8 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 	private volatile Thread thread;
 
 	private ExecutorService executorService;
+
+	private AudioSource audioSource;
 
 	public UluxBinding() {
 		messageHandler = new UluxMessageHandlerFacade(this.providers);
@@ -104,6 +107,8 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 		this.configuration = new UluxConfiguration();
 		this.datagramFactory = new UluxDatagramFactory(configuration);
 		this.executorService = Executors.newCachedThreadPool();
+
+		this.audioSource = new AudioSource(configuration, providers);
 	}
 
 	@Override
@@ -148,6 +153,8 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 		this.thread = new Thread(this);
 		this.thread.start();
+
+		this.audioSource.start();
 	}
 
 	private void stopListenerThread() {
@@ -162,6 +169,8 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			LOG.warn("Error closing channel!", e);
 			// swallow exception
 		}
+
+		this.audioSource.stop();
 	}
 
 	/**

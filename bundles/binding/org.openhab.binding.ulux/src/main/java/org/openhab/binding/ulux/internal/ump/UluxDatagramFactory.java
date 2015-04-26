@@ -87,7 +87,7 @@ public class UluxDatagramFactory {
 		switch (config.getType()) {
 		case AUDIO:
 			if (type == OFF) {
-				message = messageFactory.createAudioStopMessage((OnOffType) type);
+				message = messageFactory.createAudioStopMessage();
 			} else {
 				message = null;
 			}
@@ -96,7 +96,11 @@ public class UluxDatagramFactory {
 			message = messageFactory.createAudioPlayLocalMessage((DecimalType) type);
 			break;
 		case AUDIO_RECORD:
-			message = messageFactory.createAudioRecordMessage(configuration, (OnOffType) type);
+			if (type == ON) {
+				message = messageFactory.createAudioRecordMessage(configuration);
+			} else {
+				message = messageFactory.createAudioStopMessage();
+			}
 			break;
 		case AUDIO_VOLUME:
 			message = messageFactory.createAudioVolumeMessage((DecimalType) type);

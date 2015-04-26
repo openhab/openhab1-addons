@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.ulux;
 
+import java.io.File;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -90,7 +92,14 @@ public class UluxBindingConfig implements BindingConfig {
 		}
 
 		return null;
+	}
 
+	public File getFile() {
+		if (this.type == UluxBindingConfigType.AUDIO_RECORD && additionalConfiguration != null) {
+			return new File(additionalConfiguration);
+		}
+
+		return null;
 	}
 
 	@Override

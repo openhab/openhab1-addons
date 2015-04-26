@@ -134,11 +134,11 @@ public class UluxMessageFactory {
 		return new AudioPlayLocalMessage(soundIndex);
 	}
 
-	public AudioStopMessage createAudioStopMessage(OnOffType onOff) {
+	public AudioStopMessage createAudioStopMessage() {
 		return new AudioStopMessage();
 	}
 
-	public AudioRecordMessage createAudioRecordMessage(UluxConfiguration configuration, OnOffType onOff) {
+	public AudioRecordMessage createAudioRecordMessage(UluxConfiguration configuration) {
 		final InetAddress destination = configuration.getBindAddress();
 		final int microphoneSecurityId = configuration.getMicrophoneSecurityId();
 
