@@ -233,6 +233,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createNoSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
         return createIndustrialDigitalInSubIDsFromString(eDataType, initialValue);
+      case ModelPackage.INDUSTRIAL_DIGITAL_OUT_SUB_IDS:
+        return createIndustrialDigitalOutSubIDsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_QUAD_RELAY_IDS:
         return createIndustrialQuadRelayIDsFromString(eDataType, initialValue);
       case ModelPackage.SERVO_SUB_IDS:
@@ -398,6 +400,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertNoSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
         return convertIndustrialDigitalInSubIDsToString(eDataType, instanceValue);
+      case ModelPackage.INDUSTRIAL_DIGITAL_OUT_SUB_IDS:
+        return convertIndustrialDigitalOutSubIDsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_QUAD_RELAY_IDS:
         return convertIndustrialQuadRelayIDsToString(eDataType, instanceValue);
       case ModelPackage.SERVO_SUB_IDS:
@@ -1880,6 +1884,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertIndustrialDigitalInSubIDsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialDigitalOutSubIDs createIndustrialDigitalOutSubIDsFromString(EDataType eDataType, String initialValue)
+  {
+    IndustrialDigitalOutSubIDs result = IndustrialDigitalOutSubIDs.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIndustrialDigitalOutSubIDsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
