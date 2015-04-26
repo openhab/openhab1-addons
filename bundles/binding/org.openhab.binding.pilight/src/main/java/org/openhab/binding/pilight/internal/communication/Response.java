@@ -9,19 +9,29 @@
 package org.openhab.binding.pilight.internal.communication;
 
 /**
- * Different types of devices in pilight 
+ * Response to a connection or state change request     
  * 
  * @author Jeroen Idserda
- * @since 1.0
+ * @since 1.7
  */
-public class DeviceType {
+public class Response {
 	
-	public static Integer SERVER = -1;
+	public static final String SUCCESS = "success";
 	
-	public static Integer SWITCH = 1;
+	public static final String FAILURE = "failure";
 	
-	public static Integer DIMMER = 2;
+	private String status;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
-	public static Integer VALUE = 3;
+	public boolean isSuccess() {
+		return SUCCESS.equals(status);
+	}
 
 }

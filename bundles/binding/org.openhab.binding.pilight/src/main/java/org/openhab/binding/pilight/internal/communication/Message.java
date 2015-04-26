@@ -9,34 +9,31 @@
 package org.openhab.binding.pilight.internal.communication;
 
 /**
- * This message is sent when we want to change the state of a device in pilight. 
- * 
- * {@link http://www.pilight.org/development/api/#controller}
+ * Wrapper for the {@code Config} object 
  * 
  * @author Jeroen Idserda
- * @since 1.0
+ * @since 1.7
  */
-public class Update {
+public class Message {
 	
-	public static String SEND = "send";
+	private Config config;
 	
 	private String message;
-	
-	private Code code;
-	
+
+	public Config getConfig() {
+		return config;
+	}
+
+	public void setConfig(Config config) {
+		this.config = config;
+	}
+
 	public String getMessage() {
 		return message;
 	}
-	
+
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
-	public Code getCode() {
-		return code;
-	}
-	
-	public void setCode(Code code) {
-		this.code = code;
-	}
+
 }
