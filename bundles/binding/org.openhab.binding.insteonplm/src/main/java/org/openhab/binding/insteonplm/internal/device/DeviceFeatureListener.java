@@ -8,7 +8,10 @@
  */
  package org.openhab.binding.insteonplm.internal.device;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.openhab.binding.insteonplm.InsteonPLMActiveBinding;
 import org.openhab.core.types.State;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
@@ -33,13 +36,17 @@ public class DeviceFeatureListener {
 	private String			m_itemName = null;
 	private EventPublisher 	m_eventPublisher = null;
 	private HashMap<String, String>	m_parameters = new HashMap<String, String>();
-	private HashMap<Class<?>, State> m_state = new HashMap<Class<?>, State>(); 
+	private HashMap<Class<?>, State> m_state = new HashMap<Class<?>, State>();
+	private ArrayList<InsteonAddress> m_relatedDevices = new ArrayList<InsteonAddress>();
+	private InsteonPLMActiveBinding	m_binding = null;
+	private final static int TIME_DELAY_POLL_RELATED_MSEC = 5000;
 	/**
 	 * Constructor
 	 * @param item name of the item that is listening 
 	 * @param eventPublisher the publisher to use for publishing on the openhab bus
 	 */
-	public DeviceFeatureListener(String item, EventPublisher eventPublisher) {
+	public DeviceFeatureListener(InsteonPLMActiveBinding binding, String item, EventPublisher eventPublisher) {
+		m_binding = binding;
 		m_itemName = item;
 		m_eventPublisher = eventPublisher;
 	}
@@ -69,6 +76,7 @@ public class DeviceFeatureListener {
 	 */
 	public void setParameters(HashMap<String,String> p) {
 		m_parameters = p;
+		updateRelatedDevices();
 	}
 	
 	/**
@@ -125,7 +133,41 @@ public class DeviceFeatureListener {
 				publishState = OnOffType.ON;
 			}
 		}
-
+		pollRelatedDevices();
 		m_eventPublisher.postUpdate(m_itemName, publishState);
+	}
+	/**
+	 * Extracts related devices from the parameter list and
+	 * stores them for faster access later.
+	 */
+	
+	private void updateRelatedDevices() {
+		String d = m_parameters.get("related");
+		if (d == null) return;
+		String [] devs = d.split("\\+");
+		for (String dev : devs) {
+			InsteonAddress a = InsteonAddress.s_parseAddress(dev);
+			if (a == null) {
+				logger.error("invalid insteon address: {}", a);
+				continue;
+			}
+			m_relatedDevices.add(a);
+		}
+	}
+	/**
+	 * polls all devices that are related to this item
+	 * by the "related" keyword
+	 */
+	private void pollRelatedDevices() {
+		for (InsteonAddress a : m_relatedDevices) {
+			logger.debug("polling related device {} in {} ms",
+					a, TIME_DELAY_POLL_RELATED_MSEC);
+			InsteonDevice d = m_binding.getDevice(a);
+			if (d != null) {
+				d.doPoll(TIME_DELAY_POLL_RELATED_MSEC);
+			} else {
+				logger.warn("device {} related to item {} is not configured!", a, m_itemName);
+			}
+		}
 	}
 }
