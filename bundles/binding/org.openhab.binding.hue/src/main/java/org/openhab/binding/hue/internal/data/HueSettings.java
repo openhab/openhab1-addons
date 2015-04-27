@@ -9,6 +9,7 @@
 package org.openhab.binding.hue.internal.data;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -56,6 +57,19 @@ public class HueSettings {
 	}
 
 	/**
+	 * Return the keys of lights connected to Hue hub
+	 * 
+	 * @return the keys of lights connected to Hue hub
+	 */
+	public Set<String> getKeys() {
+		if (settingsData == null) {
+			logger.error("Hue bridge settings not initialized correctly.");
+			return null;
+		}
+		return settingsData.node("lights").getKeys();
+	}
+	
+	/**
 	 * Determines whether the given bulb is turned on.
 	 * 
 	 * @param deviceNumber
@@ -90,20 +104,6 @@ public class HueSettings {
 				.node(Integer.toString(deviceNumber)).node("state").value("reachable");
 	}
 	
-	
-	/**
-	 * Determine amount of lights connected to Hue hub
-	 * 
-	 * @return amount of lights connected to Hue hub
-	 */
-	public int getCount() {
-		if (settingsData == null) {
-			logger.error("Hue bridge settings not initialized correctly.");
-			return -1;
-		}
-		return settingsData.node("lights").count();
-	}
-
 	/**
 	 * Determines the color temperature of the given bulb.
 	 * 
@@ -223,6 +223,10 @@ public class HueSettings {
 			return dataMap.size();
 		}
 
+		protected Set<String> getKeys(){
+			return dataMap.keySet();
+		}
+		
 		/**
 		 * @param valueName
 		 *            The name of the child node.
