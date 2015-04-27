@@ -18,14 +18,15 @@ import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.DatagramChannel;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingProvider;
-import org.openhab.binding.ulux.internal.audio.AudioSource;
+import org.openhab.binding.ulux.internal.audio.AudioChannel;
 import org.openhab.binding.ulux.internal.handler.UluxMessageHandlerFacade;
+import org.openhab.binding.ulux.internal.ump.UluxAudioDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagramFactory;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
@@ -70,9 +71,9 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 	private volatile Thread thread;
 
-	private ExecutorService executorService;
+	private ScheduledExecutorService executorService;
 
-	private AudioSource audioSource;
+	private AudioChannel audioChannel;
 
 	public UluxBinding() {
 		messageHandler = new UluxMessageHandlerFacade(this.providers);
@@ -107,9 +108,10 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 		this.configuration = new UluxConfiguration();
 		this.datagramFactory = new UluxDatagramFactory(configuration);
-		this.executorService = Executors.newCachedThreadPool();
+		// this.executorService = Executors.newCachedThreadPool();
+		this.executorService = Executors.newScheduledThreadPool(1);
 
-		this.audioSource = new AudioSource(configuration, providers);
+		this.audioChannel = new AudioChannel(configuration, providers);
 	}
 
 	@Override
@@ -155,7 +157,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 		this.thread = new Thread(this);
 		this.thread.start();
 
-		this.audioSource.start();
+		this.audioChannel.start();
 	}
 
 	private void stopListenerThread() {
@@ -171,7 +173,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			// swallow exception
 		}
 
-		this.audioSource.stop();
+		this.audioChannel.stop();
 	}
 
 	/**
@@ -187,7 +189,19 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			final UluxBindingConfig binding = provider.getBinding(itemName);
 			final List<UluxDatagram> datagramList = datagramFactory.createDatagram(binding, command);
 
-			for (UluxDatagram datagram : datagramList) {
+			for (final UluxDatagram datagram : datagramList) {
+				if (datagram instanceof UluxAudioDatagram) {
+					UluxAudioDatagram audioDatagram = (UluxAudioDatagram) datagram;
+					long delay = (audioDatagram.getIndex() + 1) * 20; // 20 = 1000ms / AUDIO_FRAME_RATE
+					this.executorService.schedule(new Runnable() {
+
+						@Override
+						public void run() {
+							datagram.send(audioChannel.getChannel());
+						}
+					}, delay, TimeUnit.MILLISECONDS);
+				}
+
 				if (datagram instanceof UluxVideoDatagram) {
 					try {
 						// If we don't sleep here the switch seems to drop some packages...

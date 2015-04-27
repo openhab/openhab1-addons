@@ -17,6 +17,7 @@ import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
 import org.openhab.binding.ulux.internal.ump.messages.ActivateMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioPlayLocalMessage;
+import org.openhab.binding.ulux.internal.ump.messages.AudioPlayRemoteMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioRecordMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioStopMessage;
 import org.openhab.binding.ulux.internal.ump.messages.AudioVolumeMessage;
@@ -132,6 +133,10 @@ public class UluxMessageFactory {
 		final short soundIndex = decimal.shortValue();
 
 		return new AudioPlayLocalMessage(soundIndex);
+	}
+
+	public AudioPlayRemoteMessage createAudioPlayRemoteMessage() {
+		return new AudioPlayRemoteMessage();
 	}
 
 	public AudioStopMessage createAudioStopMessage() {

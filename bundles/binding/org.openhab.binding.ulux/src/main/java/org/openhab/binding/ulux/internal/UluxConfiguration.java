@@ -189,7 +189,7 @@ public class UluxConfiguration {
 	 */
 	public short getSwitchId(InetAddress switchAddress) {
 		if (!this.switchIds.containsKey(switchAddress)) {
-			throw new NoSuchElementException();
+			throw new NoSuchElementException("No switch with address " + switchAddress + " configured!");
 		}
 
 		return this.switchIds.get(switchAddress);

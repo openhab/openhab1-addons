@@ -3,9 +3,9 @@ package org.openhab.binding.ulux.internal.audio;
 import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 import static javax.sound.sampled.AudioSystem.write;
 import static org.openhab.binding.ulux.UluxBindingConfigType.AUDIO_RECORD;
-import static org.openhab.binding.ulux.internal.audio.AudioSource.AUDIO_FORMAT;
-import static org.openhab.binding.ulux.internal.audio.AudioSource.AUDIO_FRAME_SIZE;
-import static org.openhab.binding.ulux.internal.audio.AudioSource.AUDIO_TYPE;
+import static org.openhab.binding.ulux.internal.audio.AudioReceiver.AUDIO_FORMAT;
+import static org.openhab.binding.ulux.internal.audio.AudioReceiver.AUDIO_FRAME_SIZE;
+import static org.openhab.binding.ulux.internal.audio.AudioReceiver.AUDIO_TYPE;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +52,7 @@ public class AudioSink implements Runnable {
 		return src;
 	}
 
+	// TODO
 	public void stop() {
 		final Thread thread = this.thread;
 		this.thread = null;
@@ -91,7 +92,7 @@ public class AudioSink implements Runnable {
 			for (final String itemName : provider.getItemNames()) {
 				final UluxBindingConfig binding = provider.getBinding(itemName);
 
-				if (binding.getType() == AUDIO_RECORD) {
+				if (binding.getType() == AUDIO_RECORD && binding.getSwitchId() == switchId) {
 					outputFile = binding.getFile();
 				}
 			}

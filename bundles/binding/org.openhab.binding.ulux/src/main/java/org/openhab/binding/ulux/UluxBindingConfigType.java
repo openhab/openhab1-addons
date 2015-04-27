@@ -38,6 +38,8 @@ public enum UluxBindingConfigType {
 
 	AUDIO_PLAY_LOCAL(),
 
+	AUDIO_PLAY_REMOTE,
+
 	EDIT_VALUE(),
 
 	VIDEO;

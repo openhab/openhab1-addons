@@ -9,6 +9,7 @@
 package org.openhab.binding.ulux.internal.ump;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
+import static org.openhab.binding.ulux.internal.audio.AudioReceiver.AUDIO_FRAME_SIZE;
 import static org.openhab.core.library.types.OnOffType.OFF;
 import static org.openhab.core.library.types.OnOffType.ON;
 
@@ -23,10 +24,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
-import org.openhab.binding.ulux.UluxBindingConfigType;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
+import org.openhab.binding.ulux.internal.UluxException;
 import org.openhab.binding.ulux.internal.ump.messages.VideoStreamMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -95,6 +98,9 @@ public class UluxDatagramFactory {
 		case AUDIO_PLAY_LOCAL:
 			message = messageFactory.createAudioPlayLocalMessage((DecimalType) type);
 			break;
+		case AUDIO_PLAY_REMOTE:
+			message = messageFactory.createAudioPlayRemoteMessage();
+			break;
 		case AUDIO_RECORD:
 			if (type == ON) {
 				message = messageFactory.createAudioRecordMessage(configuration);
@@ -159,8 +165,16 @@ public class UluxDatagramFactory {
 			datagramList.add(datagram);
 		}
 
-		if (config.getType() == UluxBindingConfigType.IMAGE) {
+		switch (config.getType()) {
+		case AUDIO_PLAY_REMOTE:
+			addAudioDatagrams(datagramList, config, ((StringType) type).toString());
+			break;
+		case IMAGE:
 			addVideoDatagrams(datagramList, config, ((StringType) type).toString());
+			break;
+		default:
+			// nothing to do
+			break;
 		}
 
 		return datagramList;
@@ -203,6 +217,29 @@ public class UluxDatagramFactory {
 		}
 
 		return datagramList;
+	}
+
+	private void addAudioDatagrams(List<UluxDatagram> datagramList, UluxBindingConfig config, String audioUrl) {
+		final short switchId = config.getSwitchId();
+		final InetAddress switchAddress = this.configuration.getSwitchAddress(switchId);
+
+		try {
+			final AudioInputStream audio = AudioSystem.getAudioInputStream(new URL(audioUrl));
+
+			// TODO conversion
+			// AudioSystem.getAudioInputStream(AUDIO_FORMAT, audio);
+
+			int bytesRead = 0;
+			for (short index = 0; bytesRead > -1; index++) {
+				byte[] audioFrame = new byte[AUDIO_FRAME_SIZE];
+				bytesRead = audio.read(audioFrame);
+
+				datagramList.add(new UluxAudioDatagram(switchId, switchAddress, index, audioFrame));
+			}
+		} catch (Exception e) {
+			LOG.error("Cannot read audio!", e);
+			throw new UluxException("Cannot read audio!", e);
+		}
 	}
 
 	private void addVideoDatagrams(List<UluxDatagram> datagramList, UluxBindingConfig config, String imageName) {
