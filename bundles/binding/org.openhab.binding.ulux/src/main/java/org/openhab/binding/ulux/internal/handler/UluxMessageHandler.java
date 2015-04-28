@@ -8,8 +8,8 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 
 /**
  * @author Andreas Brenk
@@ -17,6 +17,6 @@ import org.openhab.binding.ulux.internal.ump.UluxMessage;
  */
 interface UluxMessageHandler<T extends UluxMessage> {
 
-	void handleMessage(T message, UluxDatagram response);
+	void handleMessage(T message, UluxMessageDatagram response);
 
 }

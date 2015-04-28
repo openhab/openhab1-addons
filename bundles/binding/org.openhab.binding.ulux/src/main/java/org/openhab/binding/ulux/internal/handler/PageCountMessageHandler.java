@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.PageCountMessage;
 
 /**
@@ -18,7 +18,7 @@ import org.openhab.binding.ulux.internal.ump.messages.PageCountMessage;
 final class PageCountMessageHandler extends AbstractMessageHandler<PageCountMessage> {
 
 	@Override
-	public void handleMessage(PageCountMessage message, UluxDatagram response) {
+	public void handleMessage(PageCountMessage message, UluxMessageDatagram response) {
 		// nothing to do
 	}
 

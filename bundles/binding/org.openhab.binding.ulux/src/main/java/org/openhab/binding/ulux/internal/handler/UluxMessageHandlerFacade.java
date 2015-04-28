@@ -26,8 +26,8 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.openhab.binding.ulux.UluxBindingProvider;
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessageId;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
@@ -72,7 +72,7 @@ public class UluxMessageHandlerFacade {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends UluxMessage> void handleMessage(T message, UluxDatagram response) {
+	public <T extends UluxMessage> void handleMessage(T message, UluxMessageDatagram response) {
 		final UluxMessageHandler<T> messageHandler = (UluxMessageHandler<T>) messageHandlers
 				.get(message.getMessageId());
 

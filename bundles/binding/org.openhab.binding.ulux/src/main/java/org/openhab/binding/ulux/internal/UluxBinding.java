@@ -29,6 +29,7 @@ import org.openhab.binding.ulux.internal.handler.UluxMessageHandlerFacade;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagramFactory;
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessageParser;
 import org.openhab.binding.ulux.internal.ump.UluxVideoDatagram;
 import org.openhab.core.binding.AbstractBinding;
@@ -257,7 +258,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 				public void run() {
 					final InetAddress sourceAddress = source.getAddress();
 					final short switchId = configuration.getSwitchId(sourceAddress);
-					final UluxDatagram response = datagramFactory.createDatagram(switchId, sourceAddress);
+					final UluxMessageDatagram response = datagramFactory.createMessageDatagram(switchId, sourceAddress);
 
 					final List<UluxMessage> messages = messageParser.parse(buffer);
 					for (UluxMessage message : messages) {

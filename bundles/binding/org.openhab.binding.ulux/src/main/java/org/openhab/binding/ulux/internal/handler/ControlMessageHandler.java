@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
 
 /**
@@ -18,7 +18,7 @@ import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
 final class ControlMessageHandler extends AbstractMessageHandler<ControlMessage> {
 
 	@Override
-	public void handleMessage(ControlMessage message, UluxDatagram response) {
+	public void handleMessage(ControlMessage message, UluxMessageDatagram response) {
 		// TODO backgroundLight
 		// TODO lockMode
 	}

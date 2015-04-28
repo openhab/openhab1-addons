@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.EventMessage;
 import org.openhab.binding.ulux.internal.ump.messages.EventMessage.Key;
 import org.openhab.core.library.types.OnOffType;
@@ -27,7 +27,7 @@ import org.openhab.core.library.types.OnOffType;
 final class EventMessageHandler extends AbstractMessageHandler<EventMessage> {
 
 	@Override
-	public void handleMessage(EventMessage message, UluxDatagram response) {
+	public void handleMessage(EventMessage message, UluxMessageDatagram response) {
 		final Map<Key, OnOffType> keyStates = new EnumMap<Key, OnOffType>(Key.class);
 		keyStates.put(Key.KEY_1, message.isKeyPressed(Key.KEY_1) ? OnOffType.ON : OnOffType.OFF);
 		keyStates.put(Key.KEY_2, message.isKeyPressed(Key.KEY_2) ? OnOffType.ON : OnOffType.OFF);

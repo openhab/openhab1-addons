@@ -13,7 +13,7 @@ import static org.openhab.binding.ulux.UluxBindingConfigType.LUX;
 import java.util.Map.Entry;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.LuxMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.UnDefType;
@@ -25,7 +25,7 @@ import org.openhab.core.types.UnDefType;
 final class LuxMessageHandler extends AbstractMessageHandler<LuxMessage> {
 
 	@Override
-	public void handleMessage(LuxMessage message, UluxDatagram response) {
+	public void handleMessage(LuxMessage message, UluxMessageDatagram response) {
 		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(LUX).entrySet()) {
 			final String itemName = entry.getKey();
 

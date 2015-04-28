@@ -19,7 +19,7 @@ import org.openhab.binding.ulux.internal.ump.messages.VideoStreamMessage;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-public class UluxVideoDatagram extends UluxDatagram {
+public class UluxVideoDatagram extends UluxMessageDatagram {
 
 	public UluxVideoDatagram(short switchId, InetAddress switchAddress, VideoStreamMessage message) {
 		super(switchId, switchAddress);

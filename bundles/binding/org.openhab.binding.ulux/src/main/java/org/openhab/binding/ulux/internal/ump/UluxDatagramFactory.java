@@ -58,8 +58,8 @@ public class UluxDatagramFactory {
 	 * 
 	 * @return never {@code null}
 	 */
-	public UluxDatagram createDatagram(short switchId, InetAddress sourceAddress) {
-		return new UluxDatagram(switchId, sourceAddress);
+	public UluxMessageDatagram createMessageDatagram(short switchId, InetAddress sourceAddress) {
+		return new UluxMessageDatagram(switchId, sourceAddress);
 	}
 
 	/**
@@ -67,11 +67,11 @@ public class UluxDatagramFactory {
 	 * 
 	 * @return never {@code null}
 	 */
-	public UluxDatagram createDatagram(UluxBindingConfig config) {
+	public UluxMessageDatagram createMessageDatagram(UluxBindingConfig config) {
 		final short switchId = config.getSwitchId();
 		final InetAddress switchAddress = this.configuration.getSwitchAddress(switchId);
 
-		return createDatagram(switchId, switchAddress);
+		return createMessageDatagram(switchId, switchAddress);
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class UluxDatagramFactory {
 		}
 
 		if (message != null) {
-			final UluxDatagram datagram = createDatagram(config);
+			final UluxMessageDatagram datagram = createMessageDatagram(config);
 			datagram.addMessage(message);
 
 			datagramList.add(datagram);
@@ -196,7 +196,7 @@ public class UluxDatagramFactory {
 		}
 
 		if (message != null) {
-			final UluxDatagram datagram = createDatagram(config);
+			final UluxMessageDatagram datagram = createMessageDatagram(config);
 			datagram.addMessage(message);
 
 			datagramList.add(datagram);

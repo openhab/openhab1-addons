@@ -11,7 +11,7 @@ package org.openhab.binding.ulux.internal.handler;
 import java.util.Map.Entry;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.EditValueMessage;
 import org.openhab.core.types.Command;
 
@@ -22,7 +22,7 @@ import org.openhab.core.types.Command;
 final class EditValueMessageHandler extends AbstractMessageHandler<EditValueMessage> {
 
 	@Override
-	public void handleMessage(EditValueMessage message, UluxDatagram response) {
+	public void handleMessage(EditValueMessage message, UluxMessageDatagram response) {
 		final short actorId = message.getActorId();
 		final short value = message.getValue();
 

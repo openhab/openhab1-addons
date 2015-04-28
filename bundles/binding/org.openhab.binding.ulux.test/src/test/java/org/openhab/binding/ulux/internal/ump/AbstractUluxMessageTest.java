@@ -73,7 +73,7 @@ public abstract class AbstractUluxMessageTest {
 	/**
 	 * Set by {@link #handleMessage(String)}.
 	 */
-	protected UluxDatagram response;
+	protected UluxMessageDatagram response;
 
 	@Before
 	public void beforeTest() throws Exception {
@@ -142,7 +142,7 @@ public abstract class AbstractUluxMessageTest {
 	protected final void handleMessage(String data) throws Exception {
 		final UluxMessage message = parseMessage(toBuffer(data));
 
-		response = new UluxDatagram((short) 1, InetAddress.getByName("127.0.0.1"));
+		response = datagramFactory.createMessageDatagram((short) 1, InetAddress.getByName("127.0.0.1"));
 
 		messageHandlerFacade.handleMessage(message, response);
 	}

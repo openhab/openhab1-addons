@@ -13,7 +13,7 @@ import static org.openhab.binding.ulux.UluxBindingConfigType.AUDIO_VOLUME;
 import java.util.Map.Entry;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.AudioVolumeMessage;
 import org.openhab.core.library.types.PercentType;
 
@@ -24,7 +24,7 @@ import org.openhab.core.library.types.PercentType;
 final class AudioVolumeMessageHandler extends AbstractMessageHandler<AudioVolumeMessage> {
 
 	@Override
-	public void handleMessage(AudioVolumeMessage message, UluxDatagram response) {
+	public void handleMessage(AudioVolumeMessage message, UluxMessageDatagram response) {
 		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(AUDIO_VOLUME).entrySet()) {
 			final String itemName = entry.getKey();
 

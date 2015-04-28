@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.IdListMessage;
 
 /**
@@ -18,7 +18,7 @@ import org.openhab.binding.ulux.internal.ump.messages.IdListMessage;
 final class IdListMessageHandler extends AbstractMessageHandler<IdListMessage> {
 
 	@Override
-	public void handleMessage(IdListMessage message, UluxDatagram response) {
+	public void handleMessage(IdListMessage message, UluxMessageDatagram response) {
 		// nothing to do
 	}
 

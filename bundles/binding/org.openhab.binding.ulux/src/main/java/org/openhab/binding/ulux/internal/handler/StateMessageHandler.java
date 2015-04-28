@@ -16,7 +16,7 @@ import static org.openhab.binding.ulux.UluxBindingConfigType.PROXIMITY;
 import java.util.Map.Entry;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
-import org.openhab.binding.ulux.internal.ump.UluxDatagram;
+import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
 import org.openhab.binding.ulux.internal.ump.messages.DateTimeMessage;
 import org.openhab.binding.ulux.internal.ump.messages.StateMessage;
@@ -29,7 +29,7 @@ import org.openhab.core.library.types.OnOffType;
 final class StateMessageHandler extends AbstractMessageHandler<StateMessage> {
 
 	@Override
-	public void handleMessage(StateMessage message, UluxDatagram response) {
+	public void handleMessage(StateMessage message, UluxMessageDatagram response) {
 		if (message.isInitRequest()) {
 			response.addMessage(new ControlMessage());
 		}
