@@ -23,7 +23,9 @@ import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingProvider;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
 import org.openhab.binding.ulux.internal.UluxGenericBindingProvider;
+import org.openhab.binding.ulux.internal.handler.UluxCommandHandler;
 import org.openhab.binding.ulux.internal.handler.UluxMessageHandlerFacade;
+import org.openhab.binding.ulux.internal.handler.UluxStateUpdateHandler;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
@@ -49,8 +51,11 @@ public abstract class AbstractUluxMessageTest {
 
 	private UluxGenericBindingProvider bindingProvider;
 
-	// TODO private
-	protected UluxDatagramFactory datagramFactory;
+	private UluxDatagramFactory datagramFactory;
+
+	private UluxCommandHandler commandHandler;
+
+	private UluxStateUpdateHandler stateUpdateHandler;
 
 	private UluxMessageHandlerFacade messageHandlerFacade;
 
@@ -86,6 +91,8 @@ public abstract class AbstractUluxMessageTest {
 
 		bindingProvider = new UluxGenericBindingProvider();
 		datagramFactory = new UluxDatagramFactory(configuration);
+		commandHandler = new UluxCommandHandler(configuration, datagramFactory);
+		stateUpdateHandler = new UluxStateUpdateHandler(configuration, datagramFactory);
 
 		messageHandlerFacade = new UluxMessageHandlerFacade(
 				Collections.<UluxBindingProvider> singleton(bindingProvider));
@@ -119,7 +126,7 @@ public abstract class AbstractUluxMessageTest {
 	protected final void receiveCommand(String itemName, Command command) throws Exception {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
-		datagramList = datagramFactory.createDatagram(binding, command);
+		datagramList = commandHandler.handleCommand(binding, command);
 		if (datagramList.size() == 1) {
 			datagram = datagramList.get(0);
 		}
@@ -128,7 +135,7 @@ public abstract class AbstractUluxMessageTest {
 	protected final void receiveUpdate(String itemName, State newState) throws Exception {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
-		datagramList = datagramFactory.createDatagram(binding, newState);
+		datagramList = stateUpdateHandler.handleUpdate(binding, newState);
 		if (datagramList.size() == 1) {
 			datagram = datagramList.get(0);
 		}

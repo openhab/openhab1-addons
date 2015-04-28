@@ -25,7 +25,9 @@ import java.util.concurrent.TimeUnit;
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingProvider;
 import org.openhab.binding.ulux.internal.audio.AudioChannel;
+import org.openhab.binding.ulux.internal.handler.UluxCommandHandler;
 import org.openhab.binding.ulux.internal.handler.UluxMessageHandlerFacade;
+import org.openhab.binding.ulux.internal.handler.UluxStateUpdateHandler;
 import org.openhab.binding.ulux.internal.ump.UluxAudioDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagramFactory;
@@ -59,6 +61,10 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 
 	public static final int PORT = 0x88AC;
 
+	private final UluxCommandHandler commandHandler;
+
+	private final UluxStateUpdateHandler stateUpdateHandler;
+
 	private final UluxMessageHandlerFacade messageHandler;
 
 	private final UluxMessageParser messageParser;
@@ -76,6 +82,12 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 	private AudioChannel audioChannel;
 
 	public UluxBinding() {
+		this.configuration = new UluxConfiguration();
+
+		this.datagramFactory = new UluxDatagramFactory(configuration);
+		this.commandHandler = new UluxCommandHandler(configuration, datagramFactory);
+		this.stateUpdateHandler = new UluxStateUpdateHandler(configuration, datagramFactory);
+
 		messageHandler = new UluxMessageHandlerFacade(this.providers);
 		messageParser = new UluxMessageParser();
 	}
@@ -106,8 +118,6 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 	public void activate() {
 		LOG.info("Activating u::Lux binding.");
 
-		this.configuration = new UluxConfiguration();
-		this.datagramFactory = new UluxDatagramFactory(configuration);
 		// this.executorService = Executors.newCachedThreadPool();
 		this.executorService = Executors.newScheduledThreadPool(1);
 
@@ -187,7 +197,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			}
 
 			final UluxBindingConfig binding = provider.getBinding(itemName);
-			final List<UluxDatagram> datagramList = datagramFactory.createDatagram(binding, command);
+			final List<UluxDatagram> datagramList = commandHandler.handleCommand(binding, command);
 
 			for (final UluxDatagram datagram : datagramList) {
 				if (datagram instanceof UluxAudioDatagram) {
@@ -228,7 +238,7 @@ public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements
 			}
 
 			final UluxBindingConfig binding = provider.getBinding(itemName);
-			final List<UluxDatagram> datagramList = datagramFactory.createDatagram(binding, newState);
+			final List<UluxDatagram> datagramList = stateUpdateHandler.handleUpdate(binding, newState);
 
 			for (UluxDatagram datagram : datagramList) {
 				datagram.send(this.channel);
