@@ -6,19 +6,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
-import org.openhab.binding.ulux.internal.ump.messages.PageCountMessage;
+import org.openhab.binding.ulux.internal.ump.messages.IdListMessage;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class PageCountMessageHandler extends AbstractMessageHandler<PageCountMessage> {
+public final class IdListMessageHandler extends AbstractMessageHandler<IdListMessage> {
 
 	@Override
-	public void handleMessage(PageCountMessage message, UluxMessageDatagram response) {
+	public void handleMessage(IdListMessage message, UluxMessageDatagram response) {
 		// nothing to do
 	}
 

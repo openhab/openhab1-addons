@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
@@ -37,7 +37,7 @@ import org.openhab.core.types.Command;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMessageHandler<T> {
+public abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMessageHandler<T> {
 
 	protected Collection<UluxBindingProvider> providers;
 

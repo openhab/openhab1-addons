@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.openhab.binding.ulux.UluxBindingConfigType.KEY;
 
@@ -24,7 +24,7 @@ import org.openhab.core.library.types.OnOffType;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class EventMessageHandler extends AbstractMessageHandler<EventMessage> {
+public final class EventMessageHandler extends AbstractMessageHandler<EventMessage> {
 
 	@Override
 	public void handleMessage(EventMessage message, UluxMessageDatagram response) {

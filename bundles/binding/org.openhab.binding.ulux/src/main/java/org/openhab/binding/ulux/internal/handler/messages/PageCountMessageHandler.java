@@ -6,21 +6,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
-import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
+import org.openhab.binding.ulux.internal.ump.messages.PageCountMessage;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class ControlMessageHandler extends AbstractMessageHandler<ControlMessage> {
+public final class PageCountMessageHandler extends AbstractMessageHandler<PageCountMessage> {
 
 	@Override
-	public void handleMessage(ControlMessage message, UluxMessageDatagram response) {
-		// TODO backgroundLight
-		// TODO lockMode
+	public void handleMessage(PageCountMessage message, UluxMessageDatagram response) {
+		// nothing to do
 	}
 
 }

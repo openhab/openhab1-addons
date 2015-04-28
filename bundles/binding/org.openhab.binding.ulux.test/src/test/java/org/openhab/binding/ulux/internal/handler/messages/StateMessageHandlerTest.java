@@ -1,4 +1,4 @@
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;

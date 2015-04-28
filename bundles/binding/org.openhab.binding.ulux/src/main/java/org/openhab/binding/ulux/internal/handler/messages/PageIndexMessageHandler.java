@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.openhab.binding.ulux.UluxBindingConfigType.PAGE_INDEX;
 import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
@@ -22,7 +22,7 @@ import org.openhab.core.library.types.DecimalType;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class PageIndexMessageHandler extends AbstractMessageHandler<PageIndexMessage> {
+public final class PageIndexMessageHandler extends AbstractMessageHandler<PageIndexMessage> {
 
 	@Override
 	public void handleMessage(PageIndexMessage message, UluxMessageDatagram response) {

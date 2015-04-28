@@ -6,20 +6,21 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
-import org.openhab.binding.ulux.internal.ump.messages.IdListMessage;
+import org.openhab.binding.ulux.internal.ump.messages.ControlMessage;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class IdListMessageHandler extends AbstractMessageHandler<IdListMessage> {
+public final class ControlMessageHandler extends AbstractMessageHandler<ControlMessage> {
 
 	@Override
-	public void handleMessage(IdListMessage message, UluxMessageDatagram response) {
-		// nothing to do
+	public void handleMessage(ControlMessage message, UluxMessageDatagram response) {
+		// TODO backgroundLight
+		// TODO lockMode
 	}
 
 }

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.openhab.binding.ulux.UluxBindingConfigType.LUX;
 
@@ -22,7 +22,7 @@ import org.openhab.core.types.UnDefType;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class LuxMessageHandler extends AbstractMessageHandler<LuxMessage> {
+public final class LuxMessageHandler extends AbstractMessageHandler<LuxMessage> {
 
 	@Override
 	public void handleMessage(LuxMessage message, UluxMessageDatagram response) {

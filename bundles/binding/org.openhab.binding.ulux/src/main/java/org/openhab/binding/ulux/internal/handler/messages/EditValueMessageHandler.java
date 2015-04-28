@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import java.util.Map.Entry;
 
@@ -19,7 +19,7 @@ import org.openhab.core.types.Command;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class EditValueMessageHandler extends AbstractMessageHandler<EditValueMessage> {
+public final class EditValueMessageHandler extends AbstractMessageHandler<EditValueMessage> {
 
 	@Override
 	public void handleMessage(EditValueMessage message, UluxMessageDatagram response) {

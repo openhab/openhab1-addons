@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import org.openhab.binding.ulux.internal.ump.UluxMessage;
 import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
@@ -15,7 +15,7 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-interface UluxMessageHandler<T extends UluxMessage> {
+public interface UluxMessageHandler<T extends UluxMessage> {
 
 	void handleMessage(T message, UluxMessageDatagram response);
 

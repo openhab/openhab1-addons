@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ulux.internal.handler;
+package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.openhab.binding.ulux.UluxBindingConfigType.VIDEO;
 
@@ -21,7 +21,7 @@ import org.openhab.core.library.types.OnOffType;
  * @author Andreas Brenk
  * @since 1.7.0
  */
-final class VideoStateMessageHandler extends AbstractMessageHandler<VideoStateMessage> {
+public final class VideoStateMessageHandler extends AbstractMessageHandler<VideoStateMessage> {
 
 	@Override
 	public void handleMessage(VideoStateMessage message, UluxMessageDatagram response) {
