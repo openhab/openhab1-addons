@@ -9,7 +9,6 @@
 package org.openhab.binding.ulux.internal;
 
 import static org.openhab.binding.ulux.internal.UluxBinding.AUDIO_PORT;
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 import static org.openhab.binding.ulux.internal.UluxBinding.PORT;
 
 import java.net.InetAddress;
@@ -22,6 +21,8 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.cm.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains the u:Lux binding configuration from {@code openhab.cfg}.
@@ -30,6 +31,8 @@ import org.osgi.service.cm.ConfigurationException;
  * @since 1.7.0
  */
 public class UluxConfiguration {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxConfiguration.class);
 
 	private static final String KEY_SERVICE_PID = "service.pid";
 

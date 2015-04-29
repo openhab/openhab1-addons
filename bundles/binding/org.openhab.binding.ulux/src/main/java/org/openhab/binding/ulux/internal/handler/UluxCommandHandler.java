@@ -1,6 +1,5 @@
 package org.openhab.binding.ulux.internal.handler;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 import static org.openhab.binding.ulux.internal.audio.AudioReceiver.AUDIO_FRAME_SIZE;
 import static org.openhab.core.library.types.OnOffType.OFF;
 import static org.openhab.core.library.types.OnOffType.ON;
@@ -34,9 +33,12 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UluxCommandHandler extends AbstractEventHandler<Command> {
 
+	private static final Logger LOG = LoggerFactory.getLogger(UluxCommandHandler.class);
 
 	public UluxCommandHandler(UluxConfiguration configuration, UluxMessageFactory messageFactory,
 			UluxDatagramFactory datagramFactory) {

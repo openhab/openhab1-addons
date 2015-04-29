@@ -9,7 +9,6 @@
 package org.openhab.binding.ulux.internal.ump;
 
 import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -25,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.ulux.internal.UluxBinding;
 import org.openhab.binding.ulux.internal.UluxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link UluxDatagram} contains zero or more {@link UluxMessage}s.
@@ -33,6 +34,8 @@ import org.openhab.binding.ulux.internal.UluxException;
  * @since 1.7.0
  */
 public class UluxMessageDatagram implements UluxDatagram {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxMessageDatagram.class);
 
 	private static final int BUFFER_SIZE = 2048;
 
@@ -72,7 +75,7 @@ public class UluxMessageDatagram implements UluxDatagram {
 		try {
 			final SocketAddress target = new InetSocketAddress(this.switchAddress, UluxBinding.PORT);
 
-			LOG.debug("Sending datagram to switch {}.", target);
+			LOG.debug("Sending message datagram to switch {}.", target);
 
 			channel.send(buffer, target);
 		} catch (final IOException e) {

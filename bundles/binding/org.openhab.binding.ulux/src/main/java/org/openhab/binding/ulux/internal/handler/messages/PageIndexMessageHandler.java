@@ -9,7 +9,6 @@
 package org.openhab.binding.ulux.internal.handler.messages;
 
 import static org.openhab.binding.ulux.UluxBindingConfigType.PAGE_INDEX;
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 
 import java.util.Map.Entry;
 
@@ -26,8 +25,6 @@ public final class PageIndexMessageHandler extends AbstractMessageHandler<PageIn
 
 	@Override
 	public void handleMessage(PageIndexMessage message, UluxMessageDatagram response) {
-		LOG.debug("Page {}", message.getPageIndex());
-
 		for (Entry<String, UluxBindingConfig> entry : getBindingConfigs(PAGE_INDEX).entrySet()) {
 			final String itemName = entry.getKey();
 

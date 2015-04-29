@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.ulux.internal.ump;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
-
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
@@ -39,6 +37,8 @@ import org.openhab.binding.ulux.internal.ump.messages.VideoStreamMessage;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A factory for {@link UluxMessage}s.
@@ -47,6 +47,8 @@ import org.openhab.core.library.types.StringType;
  * @since 1.7.0
  */
 public class UluxMessageFactory {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxMessageFactory.class);
 
 	/**
 	 * Creates a message with the specified id for the incoming data buffer.

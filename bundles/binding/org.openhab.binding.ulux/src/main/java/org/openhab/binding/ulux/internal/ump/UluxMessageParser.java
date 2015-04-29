@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.ulux.internal.ump;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collections;
@@ -17,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openhab.binding.ulux.internal.UluxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The message parser class allows the binding to convert a raw byte buffer into a list of messages.
@@ -25,6 +25,8 @@ import org.openhab.binding.ulux.internal.UluxException;
  * @since 1.7.0
  */
 public class UluxMessageParser {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxMessageParser.class);
 
 	private final UluxMessageFactory messageFactory;
 

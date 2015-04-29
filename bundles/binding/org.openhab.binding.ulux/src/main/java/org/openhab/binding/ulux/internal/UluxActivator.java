@@ -8,16 +8,18 @@
  */
 package org.openhab.binding.ulux.internal;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
 public final class UluxActivator implements BundleActivator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxActivator.class);
 
 	private static BundleContext context;
 
@@ -36,7 +38,7 @@ public final class UluxActivator implements BundleActivator {
 	@Override
 	public void start(final BundleContext bc) throws Exception {
 		context = bc;
-		LOG.debug("u::Lux binding has been started.");
+		LOG.debug("u::Lux binding has been started");
 	}
 
 	/**
@@ -45,7 +47,7 @@ public final class UluxActivator implements BundleActivator {
 	@Override
 	public void stop(final BundleContext bc) throws Exception {
 		context = null;
-		LOG.debug("u::Lux binding has been stopped.");
+		LOG.debug("u::Lux binding has been stopped");
 	}
 
 }

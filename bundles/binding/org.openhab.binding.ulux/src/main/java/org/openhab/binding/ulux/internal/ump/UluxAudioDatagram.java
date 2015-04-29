@@ -11,12 +11,16 @@ import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 
 import org.openhab.binding.ulux.internal.UluxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
 public class UluxAudioDatagram implements UluxDatagram {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxAudioDatagram.class);
 
 	private static final int BUFFER_SIZE = 904;
 
@@ -38,6 +42,8 @@ public class UluxAudioDatagram implements UluxDatagram {
 		final ByteBuffer buffer = prepareBuffer();
 
 		try {
+			LOG.debug("Sending audio datagram to switch {}.", this.switchSocket);
+
 			channel.send(buffer, this.switchSocket);
 		} catch (final IOException e) {
 			throw new UluxException("Could not send audio frame to switch!", e);

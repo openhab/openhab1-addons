@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.ulux.internal.handler.messages;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,12 +30,16 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
 public abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMessageHandler<T> {
+
+	private final Logger LOG = LoggerFactory.getLogger(AbstractMessageHandler.class);
 
 	protected Collection<UluxBindingProvider> providers;
 

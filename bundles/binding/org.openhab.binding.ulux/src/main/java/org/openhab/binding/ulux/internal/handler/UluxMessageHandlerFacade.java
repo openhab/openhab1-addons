@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.ulux.internal.handler;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.AudioVolume;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.Control;
 import static org.openhab.binding.ulux.internal.ump.UluxMessageId.EditValue;
@@ -44,12 +43,16 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxMessageId;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Brenk
  * @since 1.7.0
  */
 public class UluxMessageHandlerFacade {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UluxMessageHandlerFacade.class);
 
 	private final Map<UluxMessageId, AbstractMessageHandler<?>> messageHandlers;
 
