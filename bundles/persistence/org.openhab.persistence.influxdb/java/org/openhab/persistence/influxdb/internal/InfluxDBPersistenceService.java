@@ -27,6 +27,7 @@ import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -480,7 +481,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
           return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
               ? OpenClosedType.CLOSED
               : OpenClosedType.OPEN;
-        }
+        } else if (item instanceof StringItem)  {
+        	return item.getState();        
+    	}
       } catch (ItemNotFoundException e) {
         logger.warn("Could not find item '{}' in registry", itemName);
       }
