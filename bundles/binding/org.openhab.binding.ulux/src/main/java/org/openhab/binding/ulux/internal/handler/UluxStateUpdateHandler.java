@@ -1,9 +1,7 @@
 package org.openhab.binding.ulux.internal.handler;
 
-import static org.openhab.binding.ulux.internal.UluxBinding.LOG;
-
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
@@ -16,19 +14,16 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class UluxStateUpdateHandler {
+public class UluxStateUpdateHandler extends AbstractEventHandler<State> {
 
-	private final UluxDatagramFactory datagramFactory;
+	private static final Logger LOG = LoggerFactory.getLogger(UluxStateUpdateHandler.class);
 
-	@SuppressWarnings("unused")
-	private final UluxConfiguration configuration;
-
-	private final UluxMessageFactory messageFactory = new UluxMessageFactory();
-
-	public UluxStateUpdateHandler(UluxConfiguration configuration, UluxDatagramFactory datagramFactory) {
-		this.configuration = configuration;
-		this.datagramFactory = datagramFactory;
+	public UluxStateUpdateHandler(UluxConfiguration configuration, UluxMessageFactory messageFactory,
+			UluxDatagramFactory datagramFactory) {
+		super(configuration, messageFactory, datagramFactory);
 	}
 
 	/**
@@ -36,8 +31,8 @@ public class UluxStateUpdateHandler {
 	 * 
 	 * @return never {@code null}
 	 */
-	public List<UluxDatagram> handleUpdate(UluxBindingConfig config, State type) {
-		final List<UluxDatagram> datagramList = new LinkedList<UluxDatagram>();
+	public Queue<UluxDatagram> handleEvent(UluxBindingConfig config, State type) {
+		final Queue<UluxDatagram> datagramList = new ConcurrentLinkedQueue<UluxDatagram>();
 		final UluxMessage message;
 
 		switch (config.getType()) {
@@ -69,5 +64,4 @@ public class UluxStateUpdateHandler {
 
 		return datagramList;
 	}
-
 }

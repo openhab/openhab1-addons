@@ -12,8 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
@@ -35,17 +35,12 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 
-public class UluxCommandHandler {
+public class UluxCommandHandler extends AbstractEventHandler<Command> {
 
-	private final UluxDatagramFactory datagramFactory;
 
-	private final UluxMessageFactory messageFactory = new UluxMessageFactory();
-
-	private final UluxConfiguration configuration;
-
-	public UluxCommandHandler(UluxConfiguration configuration, UluxDatagramFactory datagramFactory) {
-		this.configuration = configuration;
-		this.datagramFactory = datagramFactory;
+	public UluxCommandHandler(UluxConfiguration configuration, UluxMessageFactory messageFactory,
+			UluxDatagramFactory datagramFactory) {
+		super(configuration, messageFactory, datagramFactory);
 	}
 
 	/**
@@ -53,8 +48,9 @@ public class UluxCommandHandler {
 	 * 
 	 * @return never {@code null}
 	 */
-	public List<UluxDatagram> handleCommand(UluxBindingConfig config, Command type) {
-		final List<UluxDatagram> datagramList = new LinkedList<UluxDatagram>();
+	@Override
+	public Queue<UluxDatagram> handleEvent(UluxBindingConfig config, Command type) {
+		final Queue<UluxDatagram> datagramList = new ConcurrentLinkedQueue<UluxDatagram>();
 
 		final UluxMessage message;
 
@@ -151,9 +147,9 @@ public class UluxCommandHandler {
 		return datagramList;
 	}
 
-	private void addAudioDatagrams(List<UluxDatagram> datagramList, UluxBindingConfig config, String audioUrl) {
+	private void addAudioDatagrams(Queue<UluxDatagram> datagramList, UluxBindingConfig config, String audioUrl) {
 		final short switchId = config.getSwitchId();
-		final InetAddress switchAddress = this.configuration.getSwitchAddress(switchId);
+		final InetAddress switchAddress = configuration.getSwitchAddress(switchId);
 
 		try {
 			final AudioInputStream audio = AudioSystem.getAudioInputStream(new URL(audioUrl));
@@ -174,9 +170,9 @@ public class UluxCommandHandler {
 		}
 	}
 
-	private void addVideoDatagrams(List<UluxDatagram> datagramList, UluxBindingConfig config, String imageName) {
+	private void addVideoDatagrams(Queue<UluxDatagram> datagramList, UluxBindingConfig config, String imageName) {
 		final short switchId = config.getSwitchId();
-		final InetAddress switchAddress = this.configuration.getSwitchAddress(switchId);
+		final InetAddress switchAddress = configuration.getSwitchAddress(switchId);
 
 		if (imageName.length() == 0) {
 			return;
@@ -229,10 +225,11 @@ public class UluxCommandHandler {
 
 			System.arraycopy(videoData, videoDataPosition, frameData, 0, frameData.length);
 
-			final VideoStreamMessage message = this.messageFactory.createVideoStreamMessage((short) startLine,
+			final VideoStreamMessage message = messageFactory.createVideoStreamMessage((short) startLine,
 					(short) lineCount, frameData);
 
 			datagramList.add(new UluxVideoDatagram(switchId, switchAddress, message));
 		}
 	}
+
 }

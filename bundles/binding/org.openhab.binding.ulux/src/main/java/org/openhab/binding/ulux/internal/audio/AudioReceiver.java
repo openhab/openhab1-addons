@@ -1,5 +1,8 @@
 package org.openhab.binding.ulux.internal.audio;
 
+import static com.google.common.io.Closeables.closeQuietly;
+import static org.openhab.binding.ulux.UluxBindingConfigType.AUDIO_RECORD;
+
 import java.io.IOException;
 import java.io.PipedOutputStream;
 import java.net.InetAddress;
@@ -12,6 +15,7 @@ import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
 
+import org.openhab.binding.ulux.UluxBindingConfig;
 import org.openhab.binding.ulux.UluxBindingProvider;
 import org.openhab.binding.ulux.internal.UluxConfiguration;
 import org.slf4j.Logger;
@@ -47,6 +51,29 @@ public class AudioReceiver {
 		this.configuration = configuration;
 		this.providers = providers;
 		this.pipeMap = new HashMap<Short, PipedOutputStream>();
+	}
+
+	public void start() {
+		for (final UluxBindingProvider provider : providers) {
+			for (final String itemName : provider.getItemNames()) {
+				final UluxBindingConfig binding = provider.getBinding(itemName);
+				final short switchId = binding.getSwitchId();
+
+				if (binding.getType() == AUDIO_RECORD) {
+					try {
+						preparePipe(switchId);
+					} catch (IOException e) {
+						LOG.error("Cannot prepare audio stream for switch " + switchId + "!", e);
+					}
+				}
+			}
+		}
+	}
+
+	public void stop() {
+		for (PipedOutputStream stream : this.pipeMap.values()) {
+			closeQuietly(stream);
+		}
 	}
 
 	public void receive(final ByteBuffer input) throws Exception {

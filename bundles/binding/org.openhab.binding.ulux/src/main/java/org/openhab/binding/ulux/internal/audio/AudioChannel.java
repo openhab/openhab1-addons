@@ -23,6 +23,8 @@ public class AudioChannel implements Runnable {
 
 	private final UluxConfiguration configuration;
 
+	private final Collection<UluxBindingProvider> providers;
+
 	private volatile Thread listenerThread;
 
 	private DatagramChannel channel;
@@ -31,10 +33,13 @@ public class AudioChannel implements Runnable {
 
 	public AudioChannel(UluxConfiguration configuration, Collection<UluxBindingProvider> providers) {
 		this.configuration = configuration;
-		this.audioSource = new AudioReceiver(configuration, providers);
+		this.providers = providers;
 	}
 
 	public void start() {
+		this.audioSource = new AudioReceiver(configuration, providers);
+		this.audioSource.start();
+
 		try {
 			this.channel = DatagramChannel.open(StandardProtocolFamily.INET);
 			this.channel.socket().bind(configuration.getAudioSocketAddress());
@@ -44,6 +49,8 @@ public class AudioChannel implements Runnable {
 
 		this.listenerThread = new Thread(this, "u::Lux audio listener");
 		this.listenerThread.start();
+
+		// TODO AudioReceiver?
 	}
 
 	public void stop() {
@@ -58,6 +65,8 @@ public class AudioChannel implements Runnable {
 			LOG.warn("Error closing channel!", e);
 			// swallow exception
 		}
+
+		this.audioSource.stop();
 	}
 
 	public DatagramChannel getChannel() {

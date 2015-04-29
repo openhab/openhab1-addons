@@ -20,15 +20,15 @@ public class VideoStreamMessageTest extends AbstractUluxMessageTest {
 
 		receiveCommand("Ulux_Image", new StringType("http://www.openhab.org/assets/images/openhab-logo-square.png"));
 
-		byte[] actual = toBytes(datagramList.get(0));
+		byte[] actual = toBytes(datagramList.poll());
 		byte[] expected = toBytes("0C:A2:00:00:00:00:00:00:01:00:00:00");
 
 		assertThat(actual, equalTo(expected));
 
-		assertThat(datagramList.size(), equalTo(47));
+		assertThat(datagramList.size(), equalTo(46));
 
-		for (int i = 1; i < datagramList.size(); i++) {
-			final UluxDatagram datagram = datagramList.get(i);
+		for (int i = 1; !datagramList.isEmpty(); i++) {
+			final UluxDatagram datagram = datagramList.poll();
 
 			assertThat(datagram, isVideoDatagram());
 

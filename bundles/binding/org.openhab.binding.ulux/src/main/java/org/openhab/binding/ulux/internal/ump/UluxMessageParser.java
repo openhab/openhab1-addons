@@ -26,7 +26,11 @@ import org.openhab.binding.ulux.internal.UluxException;
  */
 public class UluxMessageParser {
 
-	private UluxMessageFactory messageFactory = new UluxMessageFactory();
+	private final UluxMessageFactory messageFactory;
+
+	public UluxMessageParser(UluxMessageFactory messageFactory) {
+		this.messageFactory = messageFactory;
+	}
 
 	/**
 	 * Parses the given buffer into a list of messages.

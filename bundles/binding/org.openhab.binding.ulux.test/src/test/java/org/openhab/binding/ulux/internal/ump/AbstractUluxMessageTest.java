@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 import org.junit.After;
@@ -51,6 +52,8 @@ public abstract class AbstractUluxMessageTest {
 
 	private UluxGenericBindingProvider bindingProvider;
 
+	private UluxMessageFactory messageFactory;
+
 	private UluxDatagramFactory datagramFactory;
 
 	private UluxCommandHandler commandHandler;
@@ -68,7 +71,7 @@ public abstract class AbstractUluxMessageTest {
 	/**
 	 * Set by {@link #receiveCommand(String, Command)} or {@link #receiveUpdate(String, State)}.
 	 */
-	protected List<UluxDatagram> datagramList;
+	protected Queue<UluxDatagram> datagramList;
 
 	/**
 	 * The only datagram in {@link #datagramList} if its size is 1.
@@ -90,16 +93,18 @@ public abstract class AbstractUluxMessageTest {
 		configuration.updated(configurationProperties);
 
 		bindingProvider = new UluxGenericBindingProvider();
+
+		messageFactory = new UluxMessageFactory();
 		datagramFactory = new UluxDatagramFactory(configuration);
-		commandHandler = new UluxCommandHandler(configuration, datagramFactory);
-		stateUpdateHandler = new UluxStateUpdateHandler(configuration, datagramFactory);
+		commandHandler = new UluxCommandHandler(configuration, messageFactory, datagramFactory);
+		stateUpdateHandler = new UluxStateUpdateHandler(configuration, messageFactory, datagramFactory);
 
 		messageHandlerFacade = new UluxMessageHandlerFacade(
 				Collections.<UluxBindingProvider> singleton(bindingProvider));
 		messageHandlerFacade.setEventPublisher(eventPublisher);
 		messageHandlerFacade.setItemRegistry(itemRegistry);
 
-		parser = new UluxMessageParser();
+		parser = new UluxMessageParser(messageFactory);
 
 		response = null;
 		datagram = null;
@@ -126,18 +131,18 @@ public abstract class AbstractUluxMessageTest {
 	protected final void receiveCommand(String itemName, Command command) throws Exception {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
-		datagramList = commandHandler.handleCommand(binding, command);
+		datagramList = commandHandler.handleEvent(binding, command);
 		if (datagramList.size() == 1) {
-			datagram = datagramList.get(0);
+			datagram = datagramList.peek();
 		}
 	}
 
 	protected final void receiveUpdate(String itemName, State newState) throws Exception {
 		final UluxBindingConfig binding = this.bindingProvider.getBinding(itemName);
 
-		datagramList = stateUpdateHandler.handleUpdate(binding, newState);
+		datagramList = stateUpdateHandler.handleEvent(binding, newState);
 		if (datagramList.size() == 1) {
-			datagram = datagramList.get(0);
+			datagram = datagramList.peek();
 		}
 	}
 

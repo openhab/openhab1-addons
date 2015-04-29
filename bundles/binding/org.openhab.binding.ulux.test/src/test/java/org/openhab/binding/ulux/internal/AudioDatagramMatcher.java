@@ -4,26 +4,26 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
+import org.openhab.binding.ulux.internal.ump.UluxAudioDatagram;
 import org.openhab.binding.ulux.internal.ump.UluxDatagram;
-import org.openhab.binding.ulux.internal.ump.UluxVideoDatagram;
 
-public class VideoDatagramMatcher extends BaseMatcher<UluxDatagram> {
+public class AudioDatagramMatcher extends BaseMatcher<UluxDatagram> {
 
-	public VideoDatagramMatcher() {
+	public AudioDatagramMatcher() {
 	}
 
 	@Override
 	public boolean matches(Object item) {
-		return item instanceof UluxVideoDatagram;
+		return item instanceof UluxAudioDatagram;
 	}
 
 	@Override
 	public void describeTo(Description description) {
-		description.appendText(UluxVideoDatagram.class.getName());
+		description.appendText(UluxAudioDatagram.class.getName());
 	}
 
 	@Factory
-	public static Matcher<UluxDatagram> isVideoDatagram() {
-		return new VideoDatagramMatcher();
+	public static Matcher<UluxDatagram> isAudioDatagram() {
+		return new AudioDatagramMatcher();
 	}
 }

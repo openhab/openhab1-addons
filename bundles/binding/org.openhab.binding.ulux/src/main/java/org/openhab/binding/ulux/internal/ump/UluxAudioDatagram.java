@@ -33,10 +33,6 @@ public class UluxAudioDatagram implements UluxDatagram {
 		this.switchSocket = new InetSocketAddress(this.switchAddress, AUDIO_PORT);
 	}
 
-	public short getIndex() {
-		return this.index;
-	}
-
 	@Override
 	public void send(DatagramChannel channel) {
 		final ByteBuffer buffer = prepareBuffer();
