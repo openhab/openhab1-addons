@@ -299,5 +299,11 @@ Example entry:
      <feature name="mastercontrol">ThermostatMasterControl</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
-
+ 
+ <device productKey="F00.00.19">
+     <model>2457D2</model>
+     <description>LampLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
 </xml>
