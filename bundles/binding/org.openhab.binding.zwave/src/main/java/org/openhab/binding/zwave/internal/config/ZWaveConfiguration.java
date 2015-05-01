@@ -66,6 +66,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	private TimerTask timerTask = null;
 	
+	private final String MAX_VERSION = "255.255";
+	
 	private PendingConfiguration PendingCfg = new PendingConfiguration();
 
 	/**
@@ -143,7 +145,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 4:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), MAX_VERSION) == false) {
 					break;
 				}
 
@@ -162,7 +164,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 5:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), MAX_VERSION) == false) {
 					break;
 				}
 
@@ -491,7 +493,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = "Unknown";
 					}
 					else {
-						record.value = Double.toString(versionCommandClass.getProtocolVersion());
+						record.value = versionCommandClass.getProtocolVersion();
 					}
 					records.add(record);
 
@@ -500,7 +502,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = "Unknown";
 					}
 					else {
-						record.value = Double.toString(versionCommandClass.getApplicationVersion());
+						record.value = versionCommandClass.getApplicationVersion();
 					}
 					records.add(record);
 				}
@@ -768,6 +770,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
+				record = new OpenHABConfigurationRecord(domain, "LastWake", "Last Wakeup", true);
+				if(wakeupCommandClass.getLastWakeup() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(wakeupCommandClass.getLastWakeup());
+				}
+				records.add(record);
+
 				record = new OpenHABConfigurationRecord(domain, "Target", "Target Node", true);
 				record.value = Integer.toString(wakeupCommandClass.getTargetNodeId());
 				records.add(record);
@@ -882,8 +893,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// Process Controller Reset requests even if the controller isn't initialised
-		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network") && action.equals("SoftReset")) {
-			zController.requestSoftReset();
+		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network")) {
+			if(action.equals("SoftReset")) {
+				zController.requestSoftReset();
+			}
+			else if(action.equals("HardReset")) {
+				zController.requestHardReset();				
+			}
 		}
 		
 		// If the controller isn't ready, then ignore any further requests

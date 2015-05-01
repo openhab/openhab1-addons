@@ -3,9 +3,9 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import java.math.BigDecimal;
+
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->

@@ -203,7 +203,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			if (bulb < 6) {
 				if (command.compareTo(oldPercent) > 0) {
 					int repeatCount = (command.intValue() - oldPercent.intValue()) / 10;
-					for(int i = 0; i <= repeatCount; i++) {
+					for(int i = 0; i < repeatCount; i++) {
 						Thread.sleep(100);
 						if(BindingType.brightness.equals(type) && bulb < 6) {
 							sendIncrease(bulb, rgbwSteps, bridgeId);
@@ -218,7 +218,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					}
 				} else if (command.compareTo(oldPercent) < 0) {
 					int repeatCount = (oldPercent.intValue() - command.intValue()) / 10;
-					for(int i = 0; i <= repeatCount; i++) {
+					for(int i = 0; i < repeatCount; i++) {
 						Thread.sleep(100);
 						if(BindingType.brightness.equals(type) && bulb < 6) {
 							sendDecrease(bulb, rgbwSteps, bridgeId);

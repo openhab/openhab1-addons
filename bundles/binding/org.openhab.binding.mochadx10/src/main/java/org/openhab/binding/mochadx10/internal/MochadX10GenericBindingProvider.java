@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.mochadx10.MochadX10BindingProvider;
+import org.openhab.binding.mochadx10.commands.MochadX10Address;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li><code>{mochadx10="a12"}</code> - Connects to X10 module with address 'a12' and use powerline (default) as transmission method.</li>
  * <li><code>{mochadx10="m3:rf"}</code> - Connects to X10 module with address 'm3' and use rf as transmission method.</li>
+ * <li><code>{mochadx10="h8:dim"}</code> - Connects to X10 module with address 'h8' and use the 'dim' command as dim method.</li>
  * </ul>
  * @author Jack Sleuters
  * @since 1.7.0
@@ -44,11 +46,6 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 
 	static final Logger logger = LoggerFactory.getLogger(MochadX10GenericBindingProvider.class);
 
-	/**
-	 * The regular expression that specifies an X10 address
-	 */
-	private static final Pattern X10_ADDRESS_PATTERN = Pattern.compile("[a-p]([1-9]|1[0-6])");
-	
 	@Override
 	public String getBindingType() {
 		return "mochadx10";
@@ -73,67 +70,30 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
+		String bindingConfigLc = bindingConfig.toLowerCase();
+		
+		super.processBindingConfiguration(context, item, bindingConfigLc);
 
-		super.processBindingConfiguration(context, item, bindingConfig);
+		if (bindingConfigLc != null) {
+			String address 		  = getAddress(bindingConfigLc);
+			String transmitMethod = getTransmitMethod(bindingConfigLc);
+			String dimMethod      = getDimMethod(bindingConfigLc);
+			
+			if (address != null) {
+				if (transmitMethod == null) transmitMethod = "pl";
+				if (dimMethod == null) dimMethod = "xdim";
 
-		try {
-			if (bindingConfig != null) {
-				String[] configParts = bindingConfig.split(":");
-				String address = null;
-				String transmitMethod = "pl"; // the default
-				
-				switch (configParts.length) {
-					case 2:
-						transmitMethod = configParts[1]; // intentional fall-through
-					case 1: 
-						address = configParts[0];
-						break;
-						
-					default:
-						logger.warn("bindingConfig should only contain x10 address and optional transmission method (item=" + item
-								+ ") -> processing bindingConfig aborted!");
-						return;				
-				}
-				
-				validateAddress(address);
-				validateTransmitMethod(transmitMethod);
-				
-				BindingConfig mochadX10BindingConfig = (BindingConfig) new MochadX10BindingConfig(item.getClass(), transmitMethod, address);
+				BindingConfig mochadX10BindingConfig = (BindingConfig) new MochadX10BindingConfig(item.getName(), item.getClass(), transmitMethod, dimMethod, address);
+
 				addBindingConfig(item, mochadX10BindingConfig);
-			} else {
-				throw new BindingConfigParseException("No binding config specified (item=" + item
+			}
+			else {
+				throw new BindingConfigParseException("No address specified, bindingConfig is invalid (item=" + item
 						+ ") -> processing bindingConfig aborted!");
 			}
-		} catch ( ArrayIndexOutOfBoundsException e ) {
-			throw new BindingConfigParseException("bindingConfig is invalid (item=" + item
+		} else {
+			throw new BindingConfigParseException("No binding config specified (item=" + item
 					+ ") -> processing bindingConfig aborted!");
-		}
-	}
-
-	/**
-	 * Check whether the specified transmit method is valid.
-	 * 
-	 * @param transmitMethod
-	 * @throws BindingConfigParseException
-	 */
-	private void validateTransmitMethod(String transmitMethod) throws BindingConfigParseException {
-		String lowerCaseTransmitMethod = transmitMethod.toLowerCase();
-		if ( !(lowerCaseTransmitMethod.equals("pl") || lowerCaseTransmitMethod.equals("rf")) ) {
-			throw new BindingConfigParseException("The specified transmit method '" + transmitMethod + "' is not a valid transmission method.");
-		}
-	}
-
-	/**
-	 * Check whether the specified address is a valid x10 address
-	 * 
-	 * @param address
-	 * @throws BindingConfigParseException
-	 */
-	private void validateAddress(String address) throws BindingConfigParseException {
-		Matcher matcher = X10_ADDRESS_PATTERN.matcher(address.toLowerCase());
-
-		if ( !matcher.matches() ) {
-			throw new BindingConfigParseException("The specified address '" + address + "' is not a valid X10 address.");
 		}
 	}
 
@@ -141,7 +101,8 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 	public MochadX10BindingConfig getItemConfig(String itemName) {
 		return (MochadX10BindingConfig) bindingConfigs.get(itemName);
 	}
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -151,5 +112,64 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 			inBindings.add(itemName);
 		}
 		return inBindings;
+	}
+
+	/**
+	 * Retrieve the X10 address from a bindingConfig string
+	 * 
+	 * @param bindingConfig
+	 * @return  if an X10 address is found, a string representing the address, otherwise null
+	 */
+	private String getAddress(String bindingConfig) {
+		String[] strings = bindingConfig.split(":");
+		
+		for (String s: strings) {
+			Matcher matcher = MochadX10Address.X10_ADDRESS_PATTERN.matcher(s);
+			if (matcher.matches()) {
+				return s;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Retrieve the transmitMethod from a bindingConfig string
+	 * 
+	 * @param bindingConfig
+	 * @return  if a transmitMethod is found, a string representing the transmitMethod, otherwise null
+	 */
+	private String getTransmitMethod(String bindingConfig) {
+		String[] strings = bindingConfig.split(":");
+		
+		Pattern tmPattern = Pattern.compile("(pl)|(rf)");
+		for (String s: strings) {
+			Matcher matcher = tmPattern.matcher(s);
+			if (matcher.matches()) {
+				return s;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Retrieve the dim method from a bindingConfig string
+	 * 
+	 * @param bindingConfig
+	 * @return  if a dim method is found, a string representing the dim method, otherwise null
+	 */
+	private String getDimMethod(String msg) {
+		String[] strings = msg.split(":");
+		
+		Pattern dimPattern = Pattern.compile("(dim)|(xdim)");
+		for (String s: strings) {
+			Matcher matcher = dimPattern.matcher(s);
+			if (matcher.matches()) {
+				return s;
+			}
+		}
+		
+		return null;
 	}
 }

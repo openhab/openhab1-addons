@@ -106,6 +106,7 @@
 											<path>var/lib/openhab/workspace</path>
 											<path>var/lib/openhab/persistence/db4o</path>
 											<path>var/lib/openhab/persistence/rrd4j</path>
+											<path>var/lib/openhab/persistence/mapdb</path>
 											<path>var/log/openhab</path>
 										</paths>
 										<mapper>
@@ -517,7 +518,13 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.harmonyhub</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.alarmdecoder</artifactId>
@@ -1160,9 +1167,15 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
+	        <dependency>
+                        <groupId>org.openhab.binding</groupId>
+                        <artifactId>org.openhab.binding.networkupstools</artifactId>
+                        <version>${project.version}</version>
+                        <type>jar</type>
+                </dependency>
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
-			<artifactId>org.openhab.binding.networkupstools</artifactId>
+			<artifactId>org.openhab.binding.plex</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1181,6 +1194,18 @@
 		<dependency> 
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.satel</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency> 
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.ebus</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency> 
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.harmonyhub</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1212,6 +1237,12 @@
 		<dependency>
 			<groupId>org.openhab.io</groupId>
 			<artifactId>org.openhab.io.gcal</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.io</groupId>
+			<artifactId>org.openhab.io.harmonyhub</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1329,6 +1360,12 @@
 		<dependency>
 			<groupId>org.openhab.persistence</groupId>
 			<artifactId>org.openhab.persistence.jpa</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.persistence</groupId>
+			<artifactId>org.openhab.persistence.mapdb</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>

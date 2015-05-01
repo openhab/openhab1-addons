@@ -2,7 +2,6 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
-import java.math.BigDecimal;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**
