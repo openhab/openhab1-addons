@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,7 +50,7 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 		ZWaveNode node = zController.getNode(nodeId);
 		if(node == null) {
 			logger.error("NODE {}: Routing information for unknown node", nodeId);
-			transactionComplete = true;
+			incomingMessage.setTransactionCanceled();
 			return false;
 		}
 
@@ -75,13 +75,13 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 			for (Integer neighborNode : node.getNeighbors()) {
 				neighbors += " " + neighborNode;
 			}
-			logger.debug("Node {}: {}", nodeId, neighbors);
+			logger.debug("NODE {}: {}", nodeId, neighbors);
 		}
 
 		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
 				ZWaveNetworkEvent.State.Success));
 
-		transactionComplete = true;
-		return false;
+		checkTransactionComplete(lastSentMessage, incomingMessage);
+		return true;
 	}
 }

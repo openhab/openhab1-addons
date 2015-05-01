@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles scene activation messages
@@ -27,6 +28,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("sceneActivationCommandClass")
 public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBasicCommandClass.class);
 	
 	private static final int SCENEACTIVATION_SET = 0x01;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
@@ -57,7 +59,7 @@ public class XMPP {
 		try {
 			XMPPConnection conn = XMPPConnect.getConnection();
 
-			ChatManager chatmanager = conn.getChatManager();
+			ChatManager chatmanager = ChatManager.getInstanceFor(conn);
 			Chat newChat = chatmanager.createChat(to, null);
 
 			try {
@@ -69,7 +71,9 @@ public class XMPP {
 				logger.debug("Sent message '{}' to '{}'.", message, to);
 				success = true;
 			} catch (XMPPException e) {
-				System.out.println("Error Delivering block");
+				logger.warn("Error Delivering block", e);
+			} catch (NotConnectedException e) {
+				logger.warn("Error Delivering block", e);
 			}
 		} catch (NotInitializedException e) {
 			logger.warn("Could not send XMPP message as connection is not correctly initialized!");
@@ -100,7 +104,7 @@ public class XMPP {
 
 			if (attachmentUrl == null) {
 				// send a normal message without an attachment
-				ChatManager chatmanager = conn.getChatManager();
+				ChatManager chatmanager = ChatManager.getInstanceFor(conn);
 				Chat newChat = chatmanager.createChat(to, new MessageListener() {
 					public void processMessage(Chat chat, Message message) {
 						logger.debug("Received message on XMPP: {}", message.getBody());
@@ -112,6 +116,8 @@ public class XMPP {
 					success = true;
 				} catch (XMPPException e) {
 					logger.error("Error sending message '{}'", message, e);
+				} catch (NotConnectedException e) {
+					logger.error("Error sending message '{}'", message, e);
 				}
 			} else {
 				// Create the file transfer manager
@@ -120,17 +126,19 @@ public class XMPP {
 				// Create the outgoing file transfer
 				OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(to);
 
+				InputStream is = null;
 				try {
 					URL url = new URL(attachmentUrl);
 					// Send the file
-					InputStream is = url.openStream();
+					is = url.openStream();
 					OutgoingFileTransfer.setResponseTimeout(10000);
 					transfer.sendStream(is, url.getFile(), is.available(), message);
-					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", new String[] { message, attachmentUrl, to });
-					is.close();
+					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", (Object[]) new String[] { message, attachmentUrl, to });
 					success = true;
 				} catch (IOException e) {
 					logger.error("Could not open url '{}' for sending it via XMPP", attachmentUrl, e);
+				} finally {
+					IOUtils.closeQuietly(is);
 				}
 			}
 		} catch (NotInitializedException e) {
@@ -165,7 +173,9 @@ public class XMPP {
 				logger.debug("Sent message '{}' to multi user chat.", message);
 				success = true;
 			} catch (XMPPException e) {
-				System.out.println("Error Delivering block");
+				logger.warn("Error Delivering block", e);
+			} catch (NotConnectedException e) {
+				logger.warn("Error Delivering block", e);
 			}
 		} catch (NotInitializedException e) {
 			logger.warn("Could not send XMPP message as connection is not correctly initialized!");

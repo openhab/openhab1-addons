@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,7 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}
-	
+
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
@@ -48,9 +48,10 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 			logger.error("NODE {}: AssignReturnRoute command failed.", nodeId);
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
+			incomingMessage.setTransactionCanceled();
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 
 		logger.debug("NODE {}: Got AssignReturnRoute request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
-			logger.error("NODE {}: Assign return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			logger.error("NODE {}: Assign return routes failed.", nodeId);
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
 		}
@@ -67,7 +68,9 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Success));
 		}
-		
-		return false;
+
+		checkTransactionComplete(lastSentMessage, incomingMessage);
+
+		return true;
 	}
 }

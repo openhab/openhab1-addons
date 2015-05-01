@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,7 +33,7 @@ public class Parser {
 	private static final Pattern pattern = Pattern
 			.compile("^\\s+([a-z\\s._]+)[:=]\\s*<?\"?([^>\"]+)\"?>?$");
 	private static final Pattern volumePattern = Pattern
-			.compile("^0:\\s*([0-9]+)%\\s*1:\\s*([0-9]+)%.*$");
+			.compile("^(0|front-left|mono):(\\s[0-9]+\\s/\\s)?\\s*([0-9]+)%\\s*(/\\s[\\-0-9]+,[0-9]{2}\\sdB,\\s*)?(1|front-right)?:?(\\s[0-9]+\\s/\\s)?\\s*([0-9]+)?%?\\s*(/\\s[\\-0-9]+,[0-9]{2}\\sdB)?.*$");
 	private static final Pattern fallBackPattern = Pattern
 			.compile("^([0-9]+)([a-z\\s._]+)[:=]\\s*<?\"?([^>\"]+)\"?>?$");
 	private static final Pattern numberValuePattern = Pattern
@@ -303,7 +303,7 @@ public class Parser {
 	public static List<SourceOutput> parseSourceOutputs(String raw,
 			PulseaudioClient client) {
 		List<SourceOutput> items = new ArrayList<SourceOutput>();
-		System.out.println(raw);
+//		System.out.println(raw);
 		String[] parts = raw.split("index: ");
 		if (parts.length <= 1)
 			return items;
@@ -369,8 +369,12 @@ public class Parser {
 	private static int parseVolume(String vol) {
 		Matcher matcher = volumePattern.matcher(vol);
 		if (matcher.find()) {
-			return Math.round((Integer.valueOf(matcher.group(1)) + Integer
-					.valueOf(matcher.group(2))) / 2);
+			if (matcher.group(7)==null) {
+				return Integer.valueOf(matcher.group(3));
+			} else {
+				return Math.round((Integer.valueOf(matcher.group(3)) + Integer
+					.valueOf(matcher.group(7))) / 2);
+			}
 		}
 		return 0;
 	}

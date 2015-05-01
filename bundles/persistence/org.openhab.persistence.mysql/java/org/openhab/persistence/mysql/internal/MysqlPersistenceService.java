@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,12 @@
  */
 package org.openhab.persistence.mysql.internal;
 
-import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -46,10 +46,11 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
@@ -96,6 +97,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
+	private PersistentStateRestorer persistentStateRestorer;
 
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
@@ -108,11 +110,12 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private Map<String, String> sqlTables = new HashMap<String, String>();
 	private Map<String, String> sqlTypes = new HashMap<String, String>();
 
+	
 	public void activate() {
 		// Initialise the type array
-		sqlTypes.put("COLORITEM", "CHAR(25)");
+		sqlTypes.put("COLORITEM", "VARCHAR(70)");
 		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", "DATETIME(3)");
+		sqlTypes.put("DATETIMEITEM", "DATETIME");
 		sqlTypes.put("DIMMERITEM", "TINYINT");
 		sqlTypes.put("GROUPITEM", "DOUBLE");
 		sqlTypes.put("NUMBERITEM", "DOUBLE");
@@ -132,6 +135,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = null;
+	}
+	
+	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = persistentStateRestorer;
+	}
+	
+	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = null;
 	}
 
 	/**
@@ -175,7 +186,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			tableName = new String("Item" + rowId);
 			logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
 		} catch (SQLException e) {
-			logger.error("mySQL: Could not create table for item '{}': ", itemName, e.getMessage());
+			errCnt++;
+			logger.error("mySQL: Could not create entry for '{}' in table 'Items' with statement '{}': {}", itemName, sqlCmd, e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
@@ -212,6 +224,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 					+ " in SQL database.");
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
+			errCnt++;
+			
 			logger.error("mySQL: Could not create table for item '" + itemName + "' with statement '" + sqlCmd + "': "
 					+ e.getMessage());			
 		} finally {
@@ -235,6 +249,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				statement = connection.createStatement();
 				statement.executeUpdate(sqlCmd);	
 			} catch (Exception e) {
+				errCnt++;
+				
 				logger.error("mySQL: Could not remove index for item '" + itemName + "' with statement '" + sqlCmd + "': "
 						+ e.getMessage());			
 			} finally {
@@ -269,8 +285,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// If we still didn't manage to connect, then return!
 		if (!isConnected()) {
 			logger.warn(
-					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
-					item);
+					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
+					item,errCnt,errReconnectThreshold);
 			return;
 		}
 
@@ -339,6 +355,18 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @return true if connection has been established, false otherwise
 	 */
 	private boolean isConnected() {
+		//Check if connection is valid
+		try {
+			if (connection!= null && !connection.isValid(5000)) {
+				errCnt++;
+				logger.error("mySQL: Connection is not valid!");
+			}
+		} catch (SQLException e) {
+			errCnt++;
+			
+			logger.error("mySQL: Error while checking connection: {}", e);
+		}
+		
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
@@ -493,6 +521,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			initialized = true;
 			
 			logger.debug("mySQL configuration complete.");
+			persistentStateRestorer.initializeItems(getName());
 		}
 
 	}

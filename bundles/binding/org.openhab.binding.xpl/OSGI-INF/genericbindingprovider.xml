@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2014, openHAB.org and others.
+    Copyright (c) 2010-2015, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -9,11 +9,11 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.xpl.genericbindingprovider">
-   <implementation class="org.openhab.binding.xpl.internal.xPLGenericBindingProvider"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.xpl.genericbindingprovider">
+   <implementation class="org.openhab.binding.xpl.internal.XplGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.xpl.xPLBindingProvider"/>
+      <provide interface="org.openhab.binding.xpl.XplBindingProvider"/>
    </service>
    
 </scr:component>

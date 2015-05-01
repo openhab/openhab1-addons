@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,6 @@ package org.openhab.binding.maxcube.internal.message;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
-
 import org.junit.Before;
 import org.openhab.binding.maxcube.internal.Utils;
 
@@ -29,7 +28,7 @@ public class S_CommandTest {
 	
 	@Test
 	public void PrefixTest() {
-		S_Command scmd = new S_Command("00FE30", 1, 20.0);
+		S_Command scmd = new S_Command("00FE30", 1, ThermostatModeType.MANUAL, 20.0);
 		
 		String commandStr = scmd.getCommandString();
 		
@@ -41,7 +40,7 @@ public class S_CommandTest {
 	
 	@Test
 	public void BaseCommandTest() {
-		S_Command scmd = new S_Command("00FE30", 1, 20.0);
+		S_Command scmd = new S_Command("00FE30", 1, ThermostatModeType.MANUAL, 20.0);
 		
 		String commandStr = scmd.getCommandString();
 		

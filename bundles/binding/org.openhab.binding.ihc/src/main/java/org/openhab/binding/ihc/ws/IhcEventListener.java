@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,17 +25,25 @@ public interface IhcEventListener extends EventListener {
 	/**
 	 * Event for receive status update from IHC controller.
 	 * 
-	 * @param data
-	 *            Received data.
+	 * @param status
+	 *            Received status update from controller.
 	 */
 	void statusUpdateReceived(EventObject event, WSControllerState status);
 
 	/**
 	 * Event for receive resource value updates from IHC controller.
 	 * 
-	 * @param data
-	 *            Received data.
+	 * @param value
+	 *            Received value update from controller.
 	 */
 	void resourceValueUpdateReceived(EventObject event, WSResourceValue value);
+	
+	/**
+	 * Event for fatal error on communication to IHC controller.
+	 * 
+	 * @param e
+	 *            IhcException occurred.
+	 */
+	void errorOccured(EventObject event, IhcExecption e);
 	
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.io.transport.cul;
+
+import java.util.Map;
 
 /**
  * An interface representing a culfw based device. Can only be obtained via
@@ -57,4 +59,12 @@ public interface CULHandler {
 	 * @return number of 10ms transmit credits remaining
 	 */
 	public int getCredit10ms();
+
+
+	/**
+	 * Checks if all properties which are used by the CULHandler implementation are equal
+	 *
+	 * @return true if all are equal
+	 */
+	public boolean arePropertiesEqual(Map<String, ?> properties);
 }

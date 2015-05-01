@@ -12,7 +12,6 @@
       <directory>openhabhome</directory>
 	  <useDefaultExcludes>false</useDefaultExcludes>
 	  <excludes>
-		<exclude>**/drools/**</exclude>
 		<exclude>**/webapps/greent/**</exclude>
 		<exclude>**/demo*.*</exclude>
 	  	<exclude>**/persistence/*.persist</exclude>

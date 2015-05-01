@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -178,8 +178,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				logger.debug("milight: item is of type rgb");
 				if (command instanceof HSBType) {
 					sendColor(command, bridgeId, bulb);
-				}				
-				if (command instanceof PercentType) {
+				} else if (command instanceof PercentType) {
 					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);
 				}
 	        }
@@ -204,7 +203,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			if (bulb < 6) {
 				if (command.compareTo(oldPercent) > 0) {
 					int repeatCount = (command.intValue() - oldPercent.intValue()) / 10;
-					for(int i = 0; i <= repeatCount; i++) {
+					for(int i = 0; i < repeatCount; i++) {
 						Thread.sleep(100);
 						if(BindingType.brightness.equals(type) && bulb < 6) {
 							sendIncrease(bulb, rgbwSteps, bridgeId);
@@ -219,7 +218,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 					}
 				} else if (command.compareTo(oldPercent) < 0) {
 					int repeatCount = (oldPercent.intValue() - command.intValue()) / 10;
-					for(int i = 0; i <= repeatCount; i++) {
+					for(int i = 0; i < repeatCount; i++) {
 						Thread.sleep(100);
 						if(BindingType.brightness.equals(type) && bulb < 6) {
 							sendDecrease(bulb, rgbwSteps, bridgeId);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import org.openhab.binding.zwave.internal.ZWaveActivator;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -40,9 +39,8 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class ZWaveNodeSerializer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNodeSerializer.class);
-	private static final String FOLDER_NAME = "etc/zwave";
 	private final XStream stream = new XStream(new StaxDriver());
-	private final String versionedFolderName;
+	private String folderName = "etc/zwave";
 
 	/**
 	 * Constructor. Creates a new instance of the {@link ZWaveNodeSerializer}
@@ -50,13 +48,20 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNodeSerializer() {
 		logger.trace("Initializing ZWaveNodeSerializer.");
-		this.versionedFolderName = String.format("%s/%d.%d/", FOLDER_NAME, 
-				ZWaveActivator.getVersion().getMajor(), ZWaveActivator.getVersion().getMinor());
 
-		File folder = new File(versionedFolderName);
+		// Change the folder for OH2
+		// ConfigConstants.getUserDataFolder();
+		final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
+		final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
+		if (eshUserDataFolder != null) {
+		    folderName = eshUserDataFolder + "/zwave";
+		}
+
+		final File folder = new File(folderName);
+
 		// create path for serialization.
 		if (!folder.exists()) {
-			logger.debug("Creating directory {}", versionedFolderName);
+			logger.debug("Creating directory {}", folderName);
 			folder.mkdirs();
 		}
 		stream.processAnnotations(ZWaveNode.class);
@@ -88,7 +93,15 @@ public class ZWaveNodeSerializer {
 	 */
 	public void SerializeNode(ZWaveNode node) {
 		synchronized (stream) {
-			File file = new File(this.versionedFolderName, String.format("node%d.xml", node.getNodeId()));
+			// Don't serialise if the stage is not at least finished static
+			// If we do serialise when we haven't completed the static stages
+			// then when the binding starts it will have incomplete information!
+			if(node.getNodeInitializationStage().isStaticComplete() == false) {
+				logger.debug("NODE {}: Serialise aborted as static stages not complete", node.getNodeId());
+				return;
+			}
+
+			File file = new File(this.folderName, String.format("node%d.xml", node.getNodeId()));
 			BufferedWriter writer = null;
 
 			logger.debug("NODE {}: Serializing to file {}", node.getNodeId(), file.getPath());
@@ -98,13 +111,14 @@ public class ZWaveNodeSerializer {
 				stream.marshal(node, new PrettyPrintWriter(writer));
 				writer.flush();
 			} catch (IOException e) {
-				logger.error("NODE {}: There was an error writing the node config to a file: {}", node.getNodeId(), e.getMessage());
+				logger.error("NODE {}: Error serializing to file: {}", node.getNodeId(), e.getMessage());
 			} finally {
-				if (writer != null)
+				if (writer != null) {
 					try {
 						writer.close();
 					} catch (IOException e) {
 					}
+				}
 			}
 		}
 	}
@@ -118,13 +132,13 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNode DeserializeNode(int nodeId) {
 		synchronized (stream) {
-			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+			File file = new File(this.folderName, String.format("node%d.xml", nodeId));
 			BufferedReader reader = null;
 
-			logger.debug("NODE {}: Deserializing from file {}", nodeId, file.getPath());
+			logger.debug("NODE {}: Serializing from file {}", nodeId, file.getPath());
 
 			if (!file.exists()) {
-				logger.debug("NODE {}: Deserializing from file {} failed, file does not exist.", nodeId, file.getPath());
+				logger.debug("NODE {}: Error serializing from file: file does not exist.", nodeId);
 				return null;
 			}
 
@@ -132,7 +146,7 @@ public class ZWaveNodeSerializer {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 				return (ZWaveNode)stream.fromXML(reader);
 			} catch (IOException e) {
-				logger.error("NODE {}: There was an error reading the node config from a file: {}", nodeId, e.getMessage());
+				logger.error("NODE {}: Error serializing from file: {}", nodeId, e.getMessage());
 			} finally {
 				if (reader != null)
 					try {
@@ -152,7 +166,7 @@ public class ZWaveNodeSerializer {
 	 */
 	public boolean DeleteNode(int nodeId) {
 		synchronized (stream) {
-			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+			File file = new File(this.folderName, String.format("node%d.xml", nodeId));
 
 			return file.delete();
 		}

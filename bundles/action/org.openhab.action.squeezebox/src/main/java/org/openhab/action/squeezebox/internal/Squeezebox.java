@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -339,6 +339,18 @@ public class Squeezebox {
 			squeezeServer.powerOff(playerId);
 		}
 		logger.trace("*****DONE SPEECH****** Player: '{}'", playerId);
+		return true;
+	}
+	
+	@ActionDoc(text = "Issues an arbitrary command to a player", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean squeezeboxPlayerCommand(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
+			@ParamDoc(name = "command", text = "A command to send to the player") String command) {
+	    	SqueezePlayer player = getPlayer(playerId);
+
+	    	if (player == null) return false;
+
+		squeezeServer.playerCommand(playerId, command);
 		return true;
 	}
 	

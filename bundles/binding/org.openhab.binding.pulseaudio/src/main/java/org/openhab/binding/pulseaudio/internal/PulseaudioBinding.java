@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -68,17 +68,20 @@ import org.slf4j.LoggerFactory;
  * @author Tobias Bräutigam
  * @since 1.2.0
  */
-public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingProvider> implements ManagedService {
+public class PulseaudioBinding extends
+		AbstractActiveBinding<PulseaudioBindingProvider> implements
+		ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(PulseaudioBinding.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(PulseaudioBinding.class);
 
 	public Map<String, PulseaudioServerConfig> serverConfigCache = new HashMap<String, PulseaudioServerConfig>();
 
 	private Hashtable<String, PulseaudioClient> clients = new Hashtable<String, PulseaudioClient>();
-	
+
 	/**
-	 * the refresh interval which is used to poll the pulseaudio servers
-	 * (e.g. recording state; defaults to 60000ms)
+	 * the refresh interval which is used to poll the pulseaudio servers (e.g.
+	 * recording state; defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
 
@@ -86,21 +89,24 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 	 * RegEx to validate a pulseaudio server config
 	 * <code>'^(.*?)\\.(host|port)$'</code>
 	 */
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
-	
-	
-	public void activate(ComponentContext componentContext) {
+	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern
+			.compile("^(.*?)\\.(host|port)$");
+
+	@Override
+	public void activate() {
+		super.activate();
+		setProperlyConfigured(true);
 		logger.debug("pulseaudio binding activated");
 	}
 
-	public void deactivate(ComponentContext componentContext) {
+	@Override
+	public void deactivate() {
 		logger.debug("pulseaudio binding deactivated");
 		for (PulseaudioClient client : clients.values()) {
 			client.disconnect();
 		}
 	}
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,12 +121,6 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 	@Override
 	protected String getName() {
 		return "Pulseaudio Monitor Service";
-	}
-
-	@Override
-	public void activate() {
-		super.activate();
-		setProperlyConfigured(true);
 	}
 
 	@Override
@@ -152,13 +152,13 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 		}
 
 		PulseaudioClient client = clients.get(serverId);
-		if (client==null) {
+		if (client == null) {
 			// try to reconnect if the server is configured
 			if (serverConfigCache.containsKey(serverId)) {
 				connect(serverId, serverConfigCache.get(serverId));
 				client = clients.get(serverId);
 			}
-		}		
+		}
 		if (client == null) {
 			logger.warn(
 					"does't find matching pulseaudio client [itemName={}, serverId={}]",
@@ -231,7 +231,8 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 						break;
 					case ID:
 					case MODULE_ID:
-						// the id or module-id of an audio-item cannot be changed
+						// the id or module-id of an audio-item cannot be
+						// changed
 						break;
 					case VOLUME:
 						if (((OnOffType) command).equals(OnOffType.ON)) {
@@ -263,27 +264,31 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 						// no action here
 						break;
 					case SLAVE_SINKS:
-						if (audioItem instanceof Sink && ((Sink)audioItem).isCombinedSink()) {
-							// change the slave sinks of the given combined sink to the new value
-							Sink mainSink = (Sink)audioItem;
+						if (audioItem instanceof Sink
+								&& ((Sink) audioItem).isCombinedSink()) {
+							// change the slave sinks of the given combined sink
+							// to the new value
+							Sink mainSink = (Sink) audioItem;
 							ArrayList<Sink> slaveSinks = new ArrayList<Sink>();
-							for (String slaveSinkName : StringUtils.split(command.toString(),",")) {
+							for (String slaveSinkName : StringUtils.split(
+									command.toString(), ",")) {
 								Sink slaveSink = client.getSink(slaveSinkName);
-								if (slaveSink!=null) {
+								if (slaveSink != null) {
 									slaveSinks.add(slaveSink);
 								}
 							}
-							logger.debug(slaveSinks.size()+" slave sinks");
-							if (slaveSinks.size()>0) {
-								
-								client.setCombinedSinkSlaves(mainSink, slaveSinks);
+							logger.debug(slaveSinks.size() + " slave sinks");
+							if (slaveSinks.size() > 0) {
+
+								client.setCombinedSinkSlaves(mainSink,
+										slaveSinks);
 							}
 						}
 						break;
 					}
 				}
 			}
-			
+
 			if (!updateState.equals(UnDefType.UNDEF))
 				eventPublisher.postUpdate(itemName, updateState);
 		} else if (command instanceof StringType) {
@@ -302,21 +307,23 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 	 * @return the matching binding provider or <code>null</code> if no binding
 	 *         provider could be found
 	 */
-	private PulseaudioBindingProvider findFirstMatchingBindingProvider(String itemName, Command command) {
+	private PulseaudioBindingProvider findFirstMatchingBindingProvider(
+			String itemName, Command command) {
 
 		PulseaudioBindingProvider firstMatchingProvider = null;
 		Class<? extends Item> itemClass = mapCommandToItemType(command);
 
 		for (PulseaudioBindingProvider provider : this.providers) {
-			
+
 			String audioItemName = provider.getItemName(itemName);
 			Class<? extends Item> itemType = provider.getItemType(itemName);
-			
+
 			if (itemClass.equals(itemType)) {
 				// StringItems do not need an audioItemName
 				firstMatchingProvider = provider;
 				break;
-			} else if (audioItemName != null && itemType != null && itemType.isAssignableFrom(itemClass)) {
+			} else if (audioItemName != null && itemType != null
+					&& itemType.isAssignableFrom(itemClass)) {
 				firstMatchingProvider = provider;
 				break;
 			}
@@ -337,7 +344,9 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 		} else if (command instanceof StringType) {
 			return StringItem.class;
 		} else {
-			logger.warn("No explicit mapping found for command type '{}' - return StringItem.class instead", command.getClass().getSimpleName());
+			logger.warn(
+					"No explicit mapping found for command type '{}' - return StringItem.class instead",
+					command.getClass().getSimpleName());
 			return StringItem.class;
 		}
 	}
@@ -352,8 +361,8 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 	private void connect(String serverId, PulseaudioServerConfig serverConfig) {
 		if (serverConfig.host != null && serverConfig.port > 0) {
 			try {
-				clients.put(serverId, 
-					new PulseaudioClient(serverConfig.host, serverConfig.port));
+				clients.put(serverId, new PulseaudioClient(serverConfig.host,
+						serverConfig.port));
 				boolean isConnected = clients.get(serverId).isConnected();
 				if (isConnected) {
 					logger.info(
@@ -368,7 +377,8 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 				}
 			} catch (IOException ioe) {
 				logger.error("Couldn't connect to Pulsaudio server [Host '"
-					+ serverConfig.host + "' Port '" + serverConfig.port + "']: ", ioe.getLocalizedMessage());
+						+ serverConfig.host + "' Port '" + serverConfig.port
+						+ "']: ", ioe.getLocalizedMessage());
 			}
 		} else {
 			logger.warn(
@@ -404,7 +414,8 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 					}
 				}
 
-				if (itemType.isAssignableFrom(GroupItem.class) || itemType.isAssignableFrom(StringItem.class)) {
+				if (itemType.isAssignableFrom(GroupItem.class)
+						|| itemType.isAssignableFrom(StringItem.class)) {
 					// GroupItems/StringItems should not receive any updated
 					// directly
 					continue;
@@ -440,35 +451,14 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 
 				if (audioItem != null) {
 					// item found
-					if (itemType.isAssignableFrom(DimmerItem.class)) {
-						value = new PercentType(audioItem.getVolume());
-					} else if (itemType.isAssignableFrom(NumberItem.class)) {
-						if (commandType == null) {
-							// when no other pulseaudioCommand specified, we use
-							// VOLUME
-							value = new DecimalType(audioItem.getVolume());
-						} else {
-							// NumberItems can only handle VOLUME, MODULE_ID and ID command types
-							switch (commandType) {
-							case VOLUME:
-								value = new DecimalType(audioItem.getVolume());
-								break;
-							case ID:
-								value = new DecimalType(audioItem.getId());
-								break;
-							case MODULE_ID:
-								if (audioItem.getModule()!=null)
-									value = new DecimalType(audioItem.getModule().getId());
-								break;
-							}
-						}
-					} else if (itemType.isAssignableFrom(SwitchItem.class)) {
+					if (itemType.isAssignableFrom(SwitchItem.class)) {
 						if (commandType == null) {
 							// Check if item is unmuted and running
 							if (!audioItem.isMuted()
 									&& audioItem.getState() != null
-									&& audioItem.getState().equals(
-											AbstractAudioDeviceConfig.State.RUNNING)) {
+									&& audioItem
+											.getState()
+											.equals(AbstractAudioDeviceConfig.State.RUNNING)) {
 								value = OnOffType.ON;
 							} else {
 								value = OnOffType.OFF;
@@ -487,27 +477,54 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 							case SUSPENDED:
 							case IDLE:
 								try {
-								value = audioItem.getState() != null
-										&& audioItem.getState().equals(
-												AbstractAudioDeviceConfig.State.valueOf(commandType.name())) ? OnOffType.ON
-										: OnOffType.OFF;
+									value = audioItem.getState() != null
+											&& audioItem
+													.getState()
+													.equals(AbstractAudioDeviceConfig.State
+															.valueOf(commandType
+																	.name())) ? OnOffType.ON
+											: OnOffType.OFF;
+								} catch (IllegalArgumentException e) {
+									logger.warn("no corresponding AbstractAudioDeviceConfig.State found for "
+											+ commandType.name());
 								}
-								catch (IllegalArgumentException e) {
-									logger.warn("no corresponding AbstractAudioDeviceConfig.State found for "+commandType.name());
-								}
+								break;
+							}
+						}
+					} else if (itemType.isAssignableFrom(DimmerItem.class)) {
+						value = new PercentType(audioItem.getVolume());
+					} else if (itemType.isAssignableFrom(NumberItem.class)) {
+						if (commandType == null) {
+							// when no other pulseaudioCommand specified, we use
+							// VOLUME
+							value = new DecimalType(audioItem.getVolume());
+						} else {
+							// NumberItems can only handle VOLUME, MODULE_ID and
+							// ID command types
+							switch (commandType) {
+							case VOLUME:
+								value = new DecimalType(audioItem.getVolume());
+								break;
+							case ID:
+								value = new DecimalType(audioItem.getId());
+								break;
+							case MODULE_ID:
+								if (audioItem.getModule() != null)
+									value = new DecimalType(audioItem
+											.getModule().getId());
 								break;
 							}
 						}
 					} else if (itemType.isAssignableFrom(StringItem.class)) {
 						if (commandType == null) {
 							value = new StringType(audioItem.toString());
-						}
-						else if (audioItem instanceof Sink) {
-							Sink sink = (Sink)audioItem;
+						} else if (audioItem instanceof Sink) {
+							Sink sink = (Sink) audioItem;
 							switch (commandType) {
 							case SLAVE_SINKS:
 								if (sink.isCombinedSink()) {
-									value = new StringType(StringUtils.join(sink.getCombinedSinkNames(),","));
+									value = new StringType(StringUtils.join(
+											sink.getCombinedSinkNames(), ","));
 								}
 								break;
 							}
@@ -535,8 +552,9 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-	
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
+
 		if (config != null) {
 			Enumeration keys = config.keys();
 			while (keys.hasMoreElements()) {
@@ -547,11 +565,12 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 				if ("service.pid".equals(key)) {
 					continue;
 				}
-				
+
 				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 				if (!matcher.matches()) {
-					logger.debug("given pulseaudio-config-key '" + key
-						+ "' does not follow the expected pattern '<serverId>.<host|port>'");
+					logger.debug("given pulseaudio-config-key '"
+							+ key
+							+ "' does not follow the expected pattern '<serverId>.<host|port>'");
 					continue;
 				}
 
@@ -575,15 +594,15 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 				} else if ("port".equals(configKey)) {
 					serverConfig.port = Integer.valueOf(value);
 				} else {
-					throw new ConfigurationException(
-						configKey, "the given configKey '" + configKey + "' is unknown");
+					throw new ConfigurationException(configKey,
+							"the given configKey '" + configKey
+									+ "' is unknown");
 				}
 			}
 			connectAllPulseaudioServers();
 		}
 	}
-	
-	
+
 	/**
 	 * Internal data structure which carries the connection details of one
 	 * Pulseaudio server (there could be several)
@@ -602,5 +621,5 @@ public class PulseaudioBinding extends AbstractActiveBinding<PulseaudioBindingPr
 		}
 
 	}
-	
+
 }

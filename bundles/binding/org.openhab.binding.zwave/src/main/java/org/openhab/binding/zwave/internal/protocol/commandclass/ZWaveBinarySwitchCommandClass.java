@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -18,12 +19,12 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Binary Switch command class. Binary switches can be turned
@@ -36,12 +37,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("binarySwitchCommandClass")
 public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements ZWaveBasicCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySwitchCommandClass.class);
 	
 	private static final int SWITCH_BINARY_SET = 0x01;
 	private static final int SWITCH_BINARY_GET = 0x02;
 	private static final int SWITCH_BINARY_REPORT = 0x03;
-	
+
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveBinarySwitchCommandClass class.
 	 * @param node the node this command class belongs to
@@ -80,14 +87,13 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 				processSwitchBinaryReport(serialMessage, offset, endpoint);
 				break;
 			case SWITCH_BINARY_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn("Command {} not implemented.", command);
 				return;
 			case SWITCH_BINARY_REPORT:
 				logger.trace("Process Switch Binary Report");
 				processSwitchBinaryReport(serialMessage, offset, endpoint);
 				
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
-					this.getNode().advanceNodeStage(NodeStage.DONE);
+				dynamicDone = true;
 				break;
 			default:
 			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -106,7 +112,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	protected void processSwitchBinaryReport(SerialMessage serialMessage, int offset,
 			int endpoint) {
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
-		logger.debug(String.format("Switch Binary report from nodeId = %d, value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug(String.format("NODE %d: Switch Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 		this.getController().notifyEventListeners(zEvent);
 	}
@@ -116,7 +122,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
-		logger.debug("Creating new message for application command SWITCH_BINARY_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command SWITCH_BINARY_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
@@ -125,14 +131,19 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
-	
+
 	/**
 	 * Gets a SerialMessage with the SWITCH_BINARY_SET command 
 	 * @param the level to set. 0 is mapped to off, > 0 is mapped to on.
 	 * @return the serial message
 	 */
 	public SerialMessage setValueMessage(int level) {
-		logger.debug("Creating new message for application command SWITCH_BINARY_SET for node {}", this.getNode().getNodeId());
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+
+		logger.debug("NODE {}: Creating new message for application command SWITCH_BINARY_SET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
@@ -144,15 +155,25 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
     	return result;		
 	}
 	
+	@Override
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		
-		result.add(getValueMessage());
-		
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 }

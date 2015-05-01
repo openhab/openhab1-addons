@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -305,7 +305,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	public String getHttpMethod(String itemName, Command command) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
-		return config != null && config.get(command) != null ? config.get(command).httpMethod : null;
+		return config != null && getConfigElement(config, command) != null ? getConfigElement(config, command).httpMethod : null;
 	}
 
 	/**
@@ -313,7 +313,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	public String getUrl(String itemName, Command command) {
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
-		return config != null && config.get(command) != null ? config.get(command).url : null;
+		return config != null && getConfigElement(config, command) != null ? getConfigElement(config, command).url : null;
 	}
 	
 	/**
@@ -321,7 +321,7 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	public Properties getHttpHeaders(String itemName, Command command){
 		HttpBindingConfig config = (HttpBindingConfig) bindingConfigs.get(itemName);
-		return config != null && config.get(command) != null ? config.get(command).headers : null;
+		return config != null && getConfigElement(config, command) != null ? getConfigElement(config, command).headers : null;
 	}
 	
 	/**
@@ -371,7 +371,18 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		}
 		return inBindings;
 	}
-
+	
+	private HttpBindingConfigElement getConfigElement(HttpBindingConfig config, Command command) {
+		if (config.get(command) != null) {
+			return config.get(command);
+		}
+		
+		if (!CHANGED_COMMAND_KEY.equals(command)) {
+			return config.get(WILDCARD_COMMAND_KEY);
+		}
+		
+		return null;
+ 	}
 	
 	/**
 	 * This is an internal data structure to map commands to 

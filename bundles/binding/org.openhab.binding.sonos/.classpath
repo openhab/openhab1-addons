@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="lib/cling-core-1.0.5.jar" sourcepath="/Users/kgoderis/Documents/Eclipse/karelgoderis-irtrans3/bundles/binding/org.openhab.binding.sonos/lib/cling-core-1.0.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cling-core-1.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/teleal-common-1.0.13.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cling-support-1.0.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>

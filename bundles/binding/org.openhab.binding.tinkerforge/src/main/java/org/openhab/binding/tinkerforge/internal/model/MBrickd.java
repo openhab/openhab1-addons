@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,9 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 
 /**
@@ -33,9 +36,11 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIpConnection <em>Ip Connection</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getHost <em>Host</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getPort <em>Port</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isIsConnected <em>Is Connected</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect <em>Auto Reconnect</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getConnectedCounter <em>Connected Counter</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout <em>Timeout</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getMdevices <em>Mdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getEcosystem <em>Ecosystem</em>}</li>
@@ -155,8 +160,33 @@ public interface MBrickd extends EObject
   void setPort(int value);
 
   /**
+   * Returns the value of the '<em><b>Authkey</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Authkey</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Authkey</em>' attribute.
+   * @see #setAuthkey(String)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickd_Authkey()
+   * @model unique="false"
+   * @generated
+   */
+  String getAuthkey();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getAuthkey <em>Authkey</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Authkey</em>' attribute.
+   * @see #getAuthkey()
+   * @generated
+   */
+  void setAuthkey(String value);
+
+  /**
    * Returns the value of the '<em><b>Is Connected</b></em>' attribute.
-   * The default value is <code>"false"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Is Connected</em>' attribute isn't clear,
@@ -164,22 +194,22 @@ public interface MBrickd extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Is Connected</em>' attribute.
-   * @see #setIsConnected(boolean)
+   * @see #setIsConnected(HighLowValue)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickd_IsConnected()
-   * @model default="false" unique="false"
+   * @model unique="false" dataType="org.openhab.binding.tinkerforge.internal.model.DigitalValue"
    * @generated
    */
-  boolean isIsConnected();
+  HighLowValue getIsConnected();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isIsConnected <em>Is Connected</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getIsConnected <em>Is Connected</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Is Connected</em>' attribute.
-   * @see #isIsConnected()
+   * @see #getIsConnected()
    * @generated
    */
-  void setIsConnected(boolean value);
+  void setIsConnected(HighLowValue value);
 
   /**
    * Returns the value of the '<em><b>Auto Reconnect</b></em>' attribute.
@@ -234,6 +264,33 @@ public interface MBrickd extends EObject
    * @generated
    */
   void setReconnected(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Connected Counter</b></em>' attribute.
+   * The default value is <code>"0"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Connected Counter</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Connected Counter</em>' attribute.
+   * @see #setConnectedCounter(DecimalValue)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickd_ConnectedCounter()
+   * @model default="0" unique="false" dataType="org.openhab.binding.tinkerforge.internal.model.MDecimalValue"
+   * @generated
+   */
+  DecimalValue getConnectedCounter();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getConnectedCounter <em>Connected Counter</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Connected Counter</em>' attribute.
+   * @see #getConnectedCounter()
+   * @generated
+   */
+  void setConnectedCounter(DecimalValue value);
 
   /**
    * Returns the value of the '<em><b>Timeout</b></em>' attribute.

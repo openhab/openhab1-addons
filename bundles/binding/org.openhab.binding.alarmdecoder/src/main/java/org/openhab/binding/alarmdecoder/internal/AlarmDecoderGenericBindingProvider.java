@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package org.openhab.binding.alarmdecoder.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.openhab.binding.alarmdecoder.AlarmDecoderBindingProvider;
@@ -17,6 +18,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -83,12 +85,14 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if ((item instanceof NumberItem) || (item instanceof ContactItem) || (item instanceof StringItem)) {
+		// TODO: should parse, then do type checking based on binding config string!
+		if ((item instanceof NumberItem) || (item instanceof ContactItem) || (item instanceof StringItem)
+				|| (item instanceof SwitchItem)) {
 			return;
 		}
 		throw new BindingConfigParseException("item '" + item.getName()
 			+ "' is of type '" + item.getClass().getSimpleName()
-			+ "', only Number, Contact, or String item types are allowed. Check your *.items configuration");
+			+ "', only Number, Contact, String, or Switch item types are allowed. Check your *.items configuration");
 	}
 	
 
@@ -100,41 +104,79 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
 		HashMap<String, String> params = new HashMap<String, String>();
-		String[] parts = s_parseConfigString(bindingConfig, params);
-		
-		ADMsgType mt = ADMsgType.s_fromString(parts[0]);
-		
-		HashMap<String, ArrayList<AlarmDecoderBindingConfig>> addrToItemsMap = m_itemMap.get(mt.getValue());
-		ArrayList<AlarmDecoderBindingConfig> bcl = addrToItemsMap.get(parts[1]);
-		if (bcl == null) {
-			// don't have this address mapped to anything yet, start a new item list
-			bcl = new ArrayList<AlarmDecoderBindingConfig>();
-			addrToItemsMap.put(parts[1], bcl);
+		String[] parts = s_parseConfigString(item.getName(), bindingConfig, params);
+		AlarmDecoderBindingConfig bc = null;
+		if (parts[0].equals("SEND")) {
+			// binding for sending commands
+			if (!(parts.length == 2)) {
+				throw new BindingConfigParseException("invalid SEND item config: " + bindingConfig);
+			}
+			bc = new AlarmDecoderBindingConfig(item, params);
+		} else {
+			// binding for receiving messages
+			ADMsgType mt = ADMsgType.s_fromString(parts[0]);
+			HashMap<String, ArrayList<AlarmDecoderBindingConfig>> addrToItemsMap = m_itemMap.get(mt.getValue());
+			ArrayList<AlarmDecoderBindingConfig> bcl = addrToItemsMap.get(parts[1]);
+			if (bcl == null) {
+				// don't have this address mapped to anything yet, start a new item list
+				bcl = new ArrayList<AlarmDecoderBindingConfig>();
+				addrToItemsMap.put(parts[1], bcl);
+			} else {
+				// without this line a new binding configuration is entered whenever
+				// the .items file is edited
+				removeExisting(bcl, item);
+			}
+			bc = new AlarmDecoderBindingConfig(item, mt, parts[1], parts[2], params);
+			bcl.add(bc);
 		}
-		AlarmDecoderBindingConfig bc = new AlarmDecoderBindingConfig(item.getName(), mt, parts[1], parts[2], params);
-		bcl.add(bc);
 		addBindingConfig(item, bc);
-
 		m_itemsToConfig.put(item.getName(), bc);
 		logger.trace("processing item \"{}\" read from .items file with cfg string {}",
 				item.getName(), bindingConfig);
 	}
 	
 	/**
+	 * Removes existing item configurations
+	 * @param bcl array list of binding configs to be checked
+	 * @param item item to be checked for
+	 */
+	private static void removeExisting(ArrayList<AlarmDecoderBindingConfig> bcl, Item item) {
+		for (Iterator<AlarmDecoderBindingConfig> it = bcl.iterator(); it.hasNext();) {
+			AlarmDecoderBindingConfig bc = it.next();
+			if (bc.getItemName().equals(item.getName())) {
+				it.remove();
+			}
+		}
+	}
+	
+	/**
 	 * Parses binding configuration string
 	 * @param bindingConfig
-	 * @return array with [type, address, feature + parameters]
-	 * @throws BindingConfigParseException
+	 * @return array with ["SEND", "TEXT"], or [type, address, feature + parameters]
+	 * @throws BindingConfigParseException if invalid binding string is found
 	 */
 	
-	static private String[] s_parseConfigString(String bindingConfig,
+	static private String[] s_parseConfigString(String itemName, String bindingConfig,
 			HashMap<String, String> map) throws BindingConfigParseException {
-		//
-		String shouldBe = "should be MSGType:ADDRESS#feature,param=foo e.g. RFX:0923844#data,bit=5";
-		//
+		String shouldBe = "should be MSGType:ADDRESS#feature,param=foo or SEND#sendstring";
 		String[] segments = bindingConfig.split("#");
 		if (segments.length != 2)
 			throw new BindingConfigParseException("invalid item format: " + bindingConfig + ", " + shouldBe);
+		if (segments[0].equals("SEND")) {
+			String [] params = segments[1].split(",");
+			s_parseParameters(itemName, params, 0, map);
+			return (segments);
+		} else if (ADMsgType.s_containsValidMsgType(segments[0])) {
+			return s_parseMsgConfigString(itemName, bindingConfig, map);
+		} 
+		throw new BindingConfigParseException("invalid item format: " + bindingConfig + ", " + shouldBe);
+	}
+	
+	static private String[] s_parseMsgConfigString(String itemName, String bindingConfig,
+			HashMap<String, String> map) throws BindingConfigParseException {
+		//
+		String shouldBe = "should be MSGType:ADDRESS#feature,param=foo e.g. RFX:0923844#data,bit=5";
+		String[] segments = bindingConfig.split("#");
 		String[] dev = segments[0].split(":");
 		
 		if (dev.length != 2) {
@@ -151,18 +193,23 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 		
 		String [] params = segments[1].split(",");
 		String feature = params[0];
-		for (int i = 1; i < params.length; i++) {
+		s_parseParameters(itemName, params, 1, map);
+	
+		String [] retval = {type, addr, feature};
+
+		return retval;
+	
+	}
+	static private void s_parseParameters(String itemName, String [] params, int offset,
+			HashMap<String, String> map) {
+		for (int i = offset; i < params.length; i++) {
 			String [] kv = params[i].split("=");
 			if (kv.length == 2) {
 				map.put(kv[0],  kv[1]);
 			} else {
-				logger.error("parameter {} does not have format a=b", params[i]);
+				logger.error("{} param {} does not have format a=b", itemName, params[i]);
 			}
 		}
-
-		String [] retval = {type, addr, feature};
-
-		return retval;
 	}
 	/**
 	 * Address validator

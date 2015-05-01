@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>RGBWE27ZW</Model>
+	<Label lang="en">Zipato RGBW bulb</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x33</id>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x98</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x7a</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Color temperature</Label>
+			<Help lang="en">Configuration option 1 is used to adjust color temperature. Values range from 0 to 100 where 0 means full cold white and 100 means full warm white.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Default>16</Default>
+			<Minimum>0</Minimum>
+			<Maximum>31</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Shock sensor sensitivity</Label>
+			<Help lang="en">Configuration option 2 is used to adjust shock sensor sensitivity. Values range from 0 to 31 where 0 means minimum sensitivity and 31 means maximum sensitivity.</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>7</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Lifeline</Label>
+		</Group>
+	</Associations>
+</Product>

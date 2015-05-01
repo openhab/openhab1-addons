@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -217,6 +217,25 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
 			case DISK_WRITE_BYTES:
 				state = new DecimalType(formatBytes(sigar.getDiskUsage(target).getWriteBytes(), units));
 				break;
+			
+			case FS_USED:
+				state = new DecimalType(formatBytes(sigar.getFileSystemUsage(target).getUsed() * 1024, units));
+				break;
+			case FS_FREE:
+				state = new DecimalType(formatBytes(sigar.getFileSystemUsage(target).getFree() * 1024, units));
+				break;
+			case FS_TOTAL:
+				state = new DecimalType(formatBytes(sigar.getFileSystemUsage(target).getTotal() * 1024, units));
+				break;
+			case FS_USE_PERCENT:
+				state = new DecimalType(sigar.getFileSystemUsage(target).getUsePercent() * 100);
+				break;
+			case FS_FILES:
+				state = new DecimalType(sigar.getFileSystemUsage(target).getFiles());
+				break;
+			case FS_FREE_FILES:
+				state = new DecimalType(sigar.getFileSystemUsage(target).getFreeFiles());
+				break;
 
 			case DIR_USAGE:
 				state = new DecimalType(formatBytes(sigar.getDirUsage(target).getDiskUsage(), units));
@@ -412,6 +431,7 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
 			}
 			
 			logger.debug("valid disk names: {}", Arrays.toString(disks.toArray()));
+
 		} catch (SigarException e) {
 			logger.error("System monitor error: {}", e);
 		}

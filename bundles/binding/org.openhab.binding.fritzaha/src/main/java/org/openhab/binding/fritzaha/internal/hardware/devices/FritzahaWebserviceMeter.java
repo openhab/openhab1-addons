@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.fritzaha.internal.hardware.devices;
 import org.openhab.binding.fritzaha.internal.hardware.FritzahaWebInterface;
 import org.openhab.binding.fritzaha.internal.hardware.callbacks.FritzahaReauthCallback;
 import org.openhab.binding.fritzaha.internal.hardware.callbacks.FritzahaWebserviceUpdateNumberCallback;
+import org.openhab.binding.fritzaha.internal.hardware.callbacks.FritzahaWebserviceUpdateXmlCallback;
 import org.openhab.binding.fritzaha.internal.hardware.interfaces.FritzahaOutletMeter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,16 +65,23 @@ public class FritzahaWebserviceMeter implements FritzahaOutletMeter {
 	public void updateMeterValue(String itemName, FritzahaWebInterface webIface) {
 		String valueType;
 		if (type == MeterType.POWER) {
-			valueType = "power";
+			valueType = "getswitchpower";
 		} else if (type == MeterType.ENERGY) {
-			valueType = "energy";
+			valueType = "getswitchenergy";
+		} else if (type == MeterType.TEMPERATURE) {
+			valueType = "getdevicelistinfos";
 		} else
 			return;
 		logger.debug("Getting " + valueType + " value for AIN " + id);
 		String path = "webservices/homeautoswitch.lua";
-		String args = "switchcmd=getswitch" + valueType + "&ain=" + id;
-		webIface.asyncGet(path, args, new FritzahaWebserviceUpdateNumberCallback(path, args, type, webIface,
-				FritzahaReauthCallback.Method.GET, 1, itemName));
+		String args = "switchcmd=" + valueType + "&ain=" + id;
+		if( type.equals(MeterType.TEMPERATURE) ) {
+			webIface.asyncGet(path, args, new FritzahaWebserviceUpdateXmlCallback(path, args, type, webIface,
+					FritzahaReauthCallback.Method.GET, 1, itemName, id));
+		} else {
+			webIface.asyncGet(path, args, new FritzahaWebserviceUpdateNumberCallback(path, args, type, webIface,
+					FritzahaReauthCallback.Method.GET, 1, itemName));
+		}
 	}
 
 	/**

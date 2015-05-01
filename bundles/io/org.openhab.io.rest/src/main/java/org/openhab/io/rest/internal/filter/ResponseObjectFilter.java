@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,62 +38,60 @@ public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(ResponseObjectFilter.class);
 	
 	@Override
-	public BroadcastAction filter(Object arg0, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+	public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, Object originalMessage, Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		
-		try {	
-			// websocket and HTTP streaming
-			if(ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && originalMessage instanceof Item) {
-				return new BroadcastAction(ACTION.CONTINUE,  getSingleResponseObject((PageBean)message, (Item)originalMessage, request)	);
-			}
+		// websocket and HTTP streaming
+		if(ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && originalMessage instanceof Item) {
+			return new BroadcastAction(ACTION.CONTINUE,  getSingleResponseObject((PageBean)message, (Item)originalMessage, request)	);
+		}
 			
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return new BroadcastAction(ACTION.ABORT,  message);
-		} 
 		// pass message to next filter
 		return new BroadcastAction(ACTION.CONTINUE,  message);
 	}
 	
 	private Object getSingleResponseObject(PageBean pageBean, Item item, HttpServletRequest request) {
-		WidgetListBean responseBeam ;
 		if(pageBean!=null) {
-			responseBeam = new WidgetListBean( getItemsOnPage(pageBean.widgets, item));
-	    	return responseBeam;
-	    	
+	    	return new WidgetListBean( getItemsOnPage(pageBean.widgets, item));
     	}
 		return null;
 	}
 	
-	private List <WidgetBean> getItemsOnPage(List<WidgetBean> widgets, Item searchItem){
-		List <WidgetBean> foundWidgets = new ArrayList <WidgetBean>();
-		try{
-		for(WidgetBean widget : widgets) {	
-			if(widget.item !=null && widget.item.name.equals(searchItem.getName())){
-				foundWidgets.add(widget);
-			}
-			else{
-				if (!widget.widgets.isEmpty()){
-					List <WidgetBean> tmpWidgets =  getItemsOnPage(widget.widgets, searchItem);
-					if(!tmpWidgets.isEmpty()) {
-						foundWidgets.addAll(tmpWidgets); }
-					
+	private List<WidgetBean> getItemsOnPage(List<WidgetBean> widgets,
+			Item searchItem) {
+		List<WidgetBean> foundWidgets = new ArrayList<WidgetBean>();
+		try {
+			for (WidgetBean widget : widgets) {
+				if (widget.item != null
+						&& widget.item.name.equals(searchItem.getName())) {
+					foundWidgets.add(widget);
+				} else {
+					if (!widget.widgets.isEmpty()) {
+						List<WidgetBean> tmpWidgets = getItemsOnPage(
+								widget.widgets, searchItem);
+						if (!tmpWidgets.isEmpty()) {
+							foundWidgets.addAll(tmpWidgets);
+						}
+
+					}
+				}
+
+				if (widget.linkedPage != null
+						&& widget.linkedPage.widgets != null) {
+					List<WidgetBean> tmpWidgets = getItemsOnPage(
+							widget.linkedPage.widgets, searchItem);
+					if (!tmpWidgets.isEmpty()) {
+						foundWidgets.addAll(tmpWidgets);
+					}
 				}
 			}
-			
-			if (widget.linkedPage != null && widget.linkedPage.widgets != null) {
-				List <WidgetBean> tmpWidgets =  getItemsOnPage(widget.linkedPage.widgets, searchItem);
-				if(!tmpWidgets.isEmpty()) {
-					foundWidgets.addAll(tmpWidgets); }
-			}			
-		}
-		}catch (Exception e){
-			logger.error(e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 		}
 		return foundWidgets;
 	}

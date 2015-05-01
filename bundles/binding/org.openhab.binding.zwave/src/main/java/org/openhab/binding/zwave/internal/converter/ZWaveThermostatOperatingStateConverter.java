@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.zwave.internal.converter;
 
 import java.util.Map;
@@ -44,18 +52,11 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatOperatingStateCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
-		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-
-		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-			return;
-		}
-
-		this.getController().sendData(serialMessage);
+		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
+		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 	}
 
 	/**
@@ -67,7 +68,7 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {} endpoint = {}, ignoring event.",  event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 
@@ -84,7 +85,7 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 	void receiveCommand(Item item, Command command, ZWaveNode node,
 			ZWaveThermostatOperatingStateCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
-		logger.warn("We do not take commands: item = {}, node = {} endpoint = {}, ignoring.", item.getName(), node.getNodeId(), endpointId);
+		logger.warn("NODE {}: We do not take commands: item = {}, endpoint = {}, ignoring.", node.getNodeId(), item.getName(), endpointId);
 	}
 
 	/**

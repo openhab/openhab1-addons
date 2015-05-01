@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import org.openhab.binding.zwave.internal.converter.state.BinaryDecimalTypeConve
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBasicCommandClass;
@@ -59,8 +60,9 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveBasicCo
 	}
 
 	@Override
-	void executeRefresh(ZWaveNode node, ZWaveBasicCommandClass commandClass, int endpointId,
+	SerialMessage executeRefresh(ZWaveNode node, ZWaveBasicCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
+		return null;
 	}
 
 	@Override

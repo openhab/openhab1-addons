@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -243,6 +243,13 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 				} else {
 					logger.error("Group function 'NOT OR' requires two arguments. Using Equality instead.");
 				}
+			case COUNT:
+				if (args.size() == 1) {
+					groupFunction = new ArithmeticGroupFunction.Count(args.get(0));
+					break;
+				} else {
+					logger.error("Group function 'COUNT' requires one argument. Using Equality instead.");
+				}
 			case AVG:
 				groupFunction = new ArithmeticGroupFunction.Avg();
 				break;
@@ -340,6 +347,10 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 					localReader.validateItemType(item, config);
 					localReader.processBindingConfiguration(modelName, item, config);
 				} catch (BindingConfigParseException e) {
+					logger.error("Binding configuration of type '" + bindingType
+						+ "' of item ‘" + item.getName() + "‘ could not be parsed correctly.", e);
+				} catch (Exception e) {
+					// Catch badly behaving binding exceptions and continue processing
 					logger.error("Binding configuration of type '" + bindingType
 						+ "' of item ‘" + item.getName() + "‘ could not be parsed correctly.", e);
 				}

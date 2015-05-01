@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,9 +20,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.atmosphere.cpr.Broadcaster;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.cv.CVApplication;
+import org.openhab.io.cv.internal.ReturnType;
 import org.openhab.io.cv.internal.resources.beans.SuccessBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,20 +57,26 @@ public class WriteResource {
     		@QueryParam("v") String value,
     		@QueryParam("ts") long timestamp,
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for item '{}'.", new String[] { uriInfo.getPath(), itemName });
+		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for item '{}'.", uriInfo.getPath(), itemName);
 		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
 		if(responseType!=null) {
-			Item item = ReadResource.getItem(itemName);
-			boolean commandSend = false;
-			if (item!=null) {
-				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
-				if (command!=null) {
-					CVApplication.getEventPublisher().postCommand(item.getName(),command);
-					commandSend = true;
+			try {
+				ReturnType rt = new ReturnType(itemName);
+				Item item = rt.getItem();
+			
+				boolean commandSend = false;
+				if (item!=null) {
+					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
+					if (command!=null) {
+						CVApplication.getEventPublisher().postCommand(item.getName(),command);
+						commandSend = true;
+					}
 				}
+		    	return Response.ok(getSuccessBean(commandSend),responseType).build();
 			}
-	    	return Response.ok(getSuccessBean(commandSend),responseType).build();
-	    	
+			catch (ItemNotFoundException e) {
+				return Response.notAcceptable(null).build();
+			}
 		} else {
 			return Response.notAcceptable(null).build();
 		}

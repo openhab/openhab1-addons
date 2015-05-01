@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.persistence.rrd4j.internal.charts;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -177,11 +178,11 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		}
 		if(item instanceof NumberItem) {
 			// we only draw a line
-			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.datasource(Integer.toString(counter), RRD4jService.DB_FOLDER + File.separator + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
 			graphDef.line(Integer.toString(counter), color, label, 2);
 		} else {
 			// we draw a line and fill the area beneath it with a transparent color
-			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.datasource(Integer.toString(counter), RRD4jService.DB_FOLDER + File.separator + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
 			Color areaColor = AREACOLORS[counter%LINECOLORS.length];
 			
 			graphDef.area(Integer.toString(counter), areaColor);

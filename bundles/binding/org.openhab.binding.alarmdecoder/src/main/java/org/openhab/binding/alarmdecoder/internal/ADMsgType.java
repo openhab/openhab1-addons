@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,6 +60,18 @@ public enum ADMsgType {
 	 */
 	public static boolean s_isValid(String s) {
 		return (s_fromString(s).isValid());
+	}
+	
+	/**
+	 * Test if string contains a valid message type
+	 * @param s string to test
+	 * @return true if string contains a valid message type
+	 */
+	public static boolean s_containsValidMsgType(String s) {
+		for (String t: s_strToType.keySet()) {
+			if (s.contains(t)) return true;
+		}
+		return (false);
 	}
 	
 	/** hash map from string to type */

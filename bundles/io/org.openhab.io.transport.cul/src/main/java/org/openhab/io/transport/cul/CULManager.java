@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,7 +77,7 @@ public class CULManager {
 
 			if (openDevices.containsKey(deviceName)) {
 				CULHandler handler = openDevices.get(deviceName);
-				if (handler.getCULMode() == mode) {
+				if ((handler.getCULMode() == mode)  && (handler.arePropertiesEqual(properties))){
 					logger.debug("Device " + deviceName + " is already open in mode " + mode.toString()
 							+ ", returning already openend handler");
 					return handler;

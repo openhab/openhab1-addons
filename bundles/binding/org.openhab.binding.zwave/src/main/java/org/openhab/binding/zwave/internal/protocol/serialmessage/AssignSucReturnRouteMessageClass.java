@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,7 +54,7 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 		}
 		
 		checkTransactionComplete(lastSentMessage, incomingMessage);
-		return false;
+		return true;
 	}
 
 	@Override
@@ -68,11 +68,13 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 					Integer.toHexString(incomingMessage.getMessagePayloadByte(1)));
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
+
+			return false;
 		} else {
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Success));
-		}
 
-		return false;
+			return true;
+		}
 	}
 }

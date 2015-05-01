@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,8 +55,8 @@ public class SysteminfoGenericBindingProvider extends
 
 		String[] configParts = bindingConfig.trim().split(":");
 
-		if (configParts.length < 2 && configParts.length > 3) {
-			throw new BindingConfigParseException("Systeminf binding must contain 2-3 parts separated by ':'");
+		if (configParts.length < 2 || configParts.length > 3) {
+			throw new BindingConfigParseException("Systeminfo binding must contain 2-3 parts separated by ':'");
 		}
 
 		String commandType = configParts[0].trim();

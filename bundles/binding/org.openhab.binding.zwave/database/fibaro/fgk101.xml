@@ -76,7 +76,7 @@
 		<Parameter>
 			<Index>5</Index>
 			<Type>list</Type>
-			<Default>255</Default>
+			<Default>-1</Default>
 			<Size>1</Size>
 			<Label lang="en">Type of transmitted control frame for association
 				group 1
@@ -106,7 +106,7 @@
 				<Label lang="en">ALARM WATER</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">BASIC_SET</Label>
 			</Item>
 			<Help lang="en">Type of transmitted control frame for association
@@ -171,7 +171,9 @@
 				are always sent.]]>
 			</Help>
 		</Parameter>
-
+<!-- 
+The following 2 parameters don't exist in most versions. If we find they exist in some version
+that I can't currently find, then we need to add them as a different version
 		<Parameter>
 			<Index>10</Index>
 			<Type>byte</Type>
@@ -212,7 +214,7 @@
 				]]>
 			</Help>
 		</Parameter>
-
+ -->
 		<Parameter>
 			<Index>12</Index>
 			<Type>byte</Type>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,9 @@ public class HeatPumpActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		HeatPumpActivator.context = bundleContext;
-		logger.debug("Novelan HeatPump binding has been started.");
+		if(logger.isDebugEnabled()){
+			logger.debug("Novelan HeatPump binding has been started.");
+		}
 	}
 
 	/**
@@ -44,7 +46,9 @@ public class HeatPumpActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		HeatPumpActivator.context = null;
-		logger.debug("Novelan HeatPump binding has been stopped.");
+		if(logger.isDebugEnabled()){		
+			logger.debug("Novelan HeatPump binding has been stopped.");
+		}
 	}
 
 }

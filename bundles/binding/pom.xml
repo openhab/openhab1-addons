@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.binding.lgtv</module>
     <module>org.openhab.binding.bluetooth</module>
     <module>org.openhab.binding.knx</module>
     <module>org.openhab.binding.knx.test</module>
@@ -48,7 +49,10 @@
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
+	<module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
+    <module>org.openhab.binding.samsungac</module>
+    <module>org.openhab.binding.samsungac.test</module>
     <module>org.openhab.binding.samsungtv</module>
     <module>org.openhab.binding.pulseaudio</module>
     <module>org.openhab.binding.homematic</module>
@@ -69,6 +73,8 @@
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
+    <module>org.openhab.binding.pilight</module>
+    <module>org.openhab.binding.pilight.test</module>
     <module>org.openhab.binding.fritzaha</module>
     <module>org.openhab.binding.tinkerforge</module>
     <module>org.openhab.binding.nibeheatpump</module>
@@ -109,6 +115,7 @@
     <module>org.openhab.binding.iec6205621meter</module>
     <module>org.openhab.binding.freebox</module>
     <module>org.openhab.binding.xbmc</module>
+    <module>org.openhab.binding.mios</module>
     <module>org.openhab.binding.daikin</module>
     <module>org.openhab.binding.jointspace</module>
     <module>org.openhab.binding.oceanic</module>
@@ -117,8 +124,24 @@
     <module>org.openhab.binding.energenie</module>
     <module>org.openhab.binding.maxcul</module>
     <module>org.openhab.binding.wemo</module>
+    <module>org.openhab.binding.weather</module>
     <module>org.openhab.binding.ekey</module>
     <module>org.openhab.binding.alarmdecoder</module>
+    <module>org.openhab.binding.davis</module>
+    <module>org.openhab.binding.xpl</module>
+    <module>org.openhab.binding.dscalarm</module>
+    <module>org.openhab.binding.benqprojector</module>
+    <module>org.openhab.binding.ehealth</module>
+    <module>org.openhab.binding.anel</module>
+    <module>org.openhab.binding.enigma2</module>
+    <module>org.openhab.binding.enigma2.test</module>
+    <module>org.openhab.binding.bticino</module>
+    <module>org.openhab.binding.zibase</module>
+    <module>org.openhab.binding.wago</module>
+    <module>org.openhab.binding.networkupstools</module>
+    <module>org.openhab.binding.ecobee</module>
+    <module>org.openhab.binding.nest</module>
+    <module>org.openhab.binding.satel</module>
+	<module>org.openhab.binding.souliss</module>
   </modules>
-
 </project>

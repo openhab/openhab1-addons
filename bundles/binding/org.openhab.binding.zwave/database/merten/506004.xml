@@ -21,7 +21,7 @@
 			<Maximum>127</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Switching/dimming/shutters</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		<Parameter>
 			<Index>4</Index>
@@ -31,7 +31,7 @@
 			<Maximum>127</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Switching single-surface</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		<Parameter>
 			<Index>44</Index>
@@ -41,7 +41,7 @@
 			<Maximum>127</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Doorbell function</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 		<Parameter>
 			<Index>52</Index>
@@ -50,8 +50,8 @@
 			<Minimum>0</Minimum>
 			<Maximum>127</Maximum>
 			<Size>1</Size>
-			<Label lang="en">Move shutter single-surface</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Label lang="en">LOWER shutter as long as button is pressed</Label>
+			<Help lang="en"></Help>
 		</Parameter>
 		<Parameter>
 			<Index>54</Index>
@@ -61,7 +61,7 @@
 			<Maximum>127</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Move shutter single-surface</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Help lang="en">Direction of movement changes after each switching process</Help>
 		</Parameter>
 		<Parameter>
 			<Index>55</Index>
@@ -71,7 +71,7 @@
 			<Maximum>127</Maximum>
 			<Size>1</Size>
 			<Label lang="en">RAISE shutter as long as button is pressed</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Help lang="en"></Help>
 		</Parameter>
 
 	</Configuration>

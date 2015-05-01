@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,6 @@
 package org.openhab.binding.ecotouch.internal;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -94,6 +93,71 @@ public class EcoTouchConnector {
 	public int getValue(String tag) throws Exception {
 		// request values
 		String url = "http://" + ip + "/cgi/readTags?n=1&t1=" + tag;
+		StringBuilder body = null;
+		int loginAttempt = 0;
+		while (loginAttempt < 2) {
+			try {
+				URLConnection connection = new URL(url).openConnection();
+				if (cookies != null) {
+					for (String cookie : cookies) {
+						connection.addRequestProperty("Cookie",
+								cookie.split(";", 2)[0]);
+					}
+				}
+				InputStream response = connection.getInputStream();
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(response));
+				body = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					body.append(line + "\n");
+				}
+				if (body.toString().contains("#" + tag)) {
+					// succeeded
+					break;
+				}
+				// s.th. went wrong; try to log in
+				throw new Exception();
+			} catch (Exception e) {
+				login();
+				loginAttempt++;
+			}
+		}
+
+		if (body == null || !body.toString().contains("#" + tag)) {
+			// failed
+			logger.debug("Cannot get value for tag '" + tag
+					+ "' from Waterkotte EcoTouch.");
+			throw new Exception("invalid response from EcoTouch");
+		}
+
+		// ok, the body now contains s.th. like
+		// #A30 S_OK
+		// 192 223
+
+		Matcher m = response_pattern.matcher(body.toString());
+		boolean b = m.find();
+		if (!b) {
+			// ill formatted response
+			logger.debug("ill formatted response: '" + body + "'");
+			throw new Exception("invalid response from EcoTouch");
+		}
+
+		return Integer.parseInt(m.group(3));
+	}
+	
+	/**
+	 * Set a value
+	 * 
+	 * @param tag
+	 *            The register to set (e.g. "A1")
+	 * @param value
+	 *            The 16-bit integer to set the register to
+	 * @return value This value is a 16-bit integer.
+	 */
+	public int setValue(String tag, int value) throws Exception {
+		// set value
+		String url = "http://" + ip + "/cgi/writeTags?returnValue=true&n=1&t1=" + tag + "&v1=" + value;
 		StringBuilder body = null;
 		int loginAttempt = 0;
 		while (loginAttempt < 2) {

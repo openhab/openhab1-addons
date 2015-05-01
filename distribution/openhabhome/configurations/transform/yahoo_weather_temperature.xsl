@@ -6,7 +6,7 @@
 	<xsl:output indent="yes" method="xml" encoding="UTF-8" omit-xml-declaration="yes" />
 
 	<xsl:template match="/">
-		<xsl:value-of select="//item/yweather:condition/@temp" />
+		<xsl:value-of select="//yweather:condition/@temp" />
 	</xsl:template>
 
 </xsl:stylesheet>

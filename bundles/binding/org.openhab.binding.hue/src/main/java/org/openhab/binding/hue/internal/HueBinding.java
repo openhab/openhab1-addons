@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -94,6 +94,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			// Observation : If the power of a hue lamp is removed, the status is not updated in hue hub.
 			// The heartbeat functionality should fix this, but 
 			HueSettings settings = activeBridge.getSettings();
+			if (settings == null) {
+				logger.debug("Hue settings were null, maybe misconfigured bridge IP.");
+				return;
+			}
 			for (int i = 1; i <= settings.getCount(); i++) {
 				HueBulb bulb = bulbCache.get(i);
 				if (bulb == null) {
