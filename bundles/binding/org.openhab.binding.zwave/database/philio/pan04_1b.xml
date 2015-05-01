@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>PAN04-1B</Model>
+	<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
+	<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">W meter report period</Label>
+			<Label lang="de">W Zähler Berichtsperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 720),
+							the device will report its instant power consumption every 1 hour to Z-Wave Controller.
+							Unit: 5 seconds, Range: 1-32767</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 720),
+							sendet das Gerät denn aktuellen Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 5 Sekunden,  Wertebereich 1-32767</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>6</Default>
+			<Size>2</Size>
+			<Label lang="en">kWh meter report period</Label>
+			<Label lang="de">kWh Messperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 6),
+							the device will report its total power consumption every 1 hour to Z-Wave Controller.
+							Unit: 10 minutes, Range: 1-32767</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 6),
+							sendet das Gerät denn gesamthaften Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 10 Minuten, Wertebereich 1-32767</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Selected Relay</Label>
+			<Label lang="de">Selektiertes Relais</Label>
+			<Help lang="en">If Controller not using Multi_Channel command class
+							to access the Relay endpoint of PAN04, you may configure
+							the endpoint value to react the Basic Command Class</Help>
+			<Help lang="de">Wenn der Controller die Multi_Channel command class nicht unterstützt,
+							kann durch die Endpunktselektion das Relais gewählt werden,
+							welches auf die Basic Command Class reagiert</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Relay 1</Label>
+				<Label lang="de">Relais 1</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Relay 2</Label>
+				<Label lang="de">Relais 2</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Relay 1 + 2</Label>
+				<Label lang="de">Relais 1 + 2</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch mode</Label>
+			<Label lang="de">Schaltertyp</Label>
+			<Help lang="en">Change the external switch mode</Help>
+			<Help lang="de">Externer Schaltertyp ändern</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Edge mode</Label>
+				<Label lang="de">Schalter ein-aus</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Pulse mode</Label>
+				<Label lang="de">Taster</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Edge-Toggle mode</Label>
+				<Label lang="de">Schalter ein-aus-ein</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>short</Type>
+			<Default>750</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of Current for Load Caution</Label>
+			<Label lang="de">Schwellwert für Strom-Last Warnung </Label>
+			<Help lang="en">If threshold is reached, a meter report will be generated.	
+							Unit: 0.01A, Range: 1-10000</Help>
+			<Help lang="de">Bei Überschreiten des Schwellwertes wird ein Strommessbericht generiert.
+							Einheit 0.01A, Wertebereich: 1-10000</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Default>10000</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold for Total Energy Consumption Caution</Label>
+			<Label lang="de">Schwellwert für Gesammtverbrauch [Einheit kWh])</Label>
+			<Help lang="en">If threshold is reached, a meter report will be generated.
+							Unit: kWh, Range: 1-10000</Help>
+			<Help lang="de">Bei Überschreiten des Schwellwertes wird ein Strommessbericht generiert.
+							Einheit: kWh, Wertebereich: 1-10000</Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore Switch State Mode</Label>
+			<Label lang="de">Modus für die Wiederherstellung des Schalterzustandes</Label>
+			<Help lang="en">At power on after a power loss this switch state is restored in the chosen way.</Help>
+			<Help lang="de">Beim Wiedereinschalten nach Stromausfall wird der Schalterzustand auf diese Weise 
+							wiederhergestellt.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+				<Label lang="de">Ausgeschaltet</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last switch state</Label>
+				<Label lang="de">Letzter Schalterzustand</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">On</Label>
+				<Label lang="de">Eingeschaltet</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Auto Off Timer</Label>
+			<Label lang="de">Automatischer Abschalt-Timer</Label>
+			<Help lang="en">Defines the time beginning with switching on the PAN04 after which 
+							it will switch off. 
+							Unit: seconds, Range: 0-32767</Help>
+			<Help lang="de">Definiert die Zeit ab Einschalten des PAN04, nach der dieser Abschaltet. 
+							Einheit: Sekunden, Wertebereich: 0-32767</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF Off Command Mode</Label>
+			<Label lang="de">RF-Aus-Kommando-Modus</Label>
+			<Help lang="en">Defines how a received switch off command BASIC_SET - BINARY_SWITCH_SET - 
+							SWITCH_ALL_OFF is interpreted.</Help>
+			<Help lang="de">Definiert, wie ein empfangenes Abschalt-Kommando BASIC_SET - BINARY_SWITCH_SET - 
+							SWITCH_ALL_OFF interpretiert wird.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+				<Label lang="de">Ausschalten</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+				<Label lang="de">Ignorieren</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Toggle</Label>
+				<Label lang="de">Umschalten</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch On</Label>
+				<Label lang="de">Einschalten</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Existence of Endpoint 3</Label>
+			<Label lang="de">Existenz von Endpunkt 3</Label>
+			<Help lang="en">For Multi-Channel commands, enpoint 3 is related to both relay 1 and relay 2.
+							In some cases this endpoint might be redundant. Endpoint 3 can then be hidden.</Help>
+			<Help lang="de">Für Multi-Channel Befehle bezieht sich Endpunkt 3 sowohl auf Relais 1, als 
+							auch auf Relais 2. In manchen Fällen kann das Überflüssig sein. Enpunkt 3 
+							kann dann versteckt werden.</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Endpoint 3 exists</Label>
+				<Label lang="de">Endpunkt 3 existiert</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">No Endpoint 3</Label>
+				<Label lang="de">Kein Endpunkt 3</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Relay 1 + 2</Label>
+			<Label lang="de">Relais 1 + 2</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Relay 1</Label>
+			<Label lang="de">Relais 1</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Relay 2</Label>
+			<Label lang="de">Relais 2</Label>
+		</Group>
+	</Associations>
+</Product>
