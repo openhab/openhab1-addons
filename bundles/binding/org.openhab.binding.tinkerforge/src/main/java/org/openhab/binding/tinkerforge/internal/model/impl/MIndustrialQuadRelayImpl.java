@@ -187,7 +187,7 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "industrial_quad_relay";
+  protected static final String DEVICE_TYPE_EDEFAULT = "quad_relay";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
