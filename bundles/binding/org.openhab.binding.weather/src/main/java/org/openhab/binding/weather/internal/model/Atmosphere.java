@@ -60,7 +60,8 @@ public class Atmosphere {
 	private Integer ozone;
 	
 	@ProviderMappings({ 
-		@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV")
+		@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV"),
+		@Provider(name = ProviderName.WORLDWEATHERONLINE, property = "uvIndex")
 	})
 	private Integer uvIndex;
 
@@ -155,7 +156,7 @@ public class Atmosphere {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("humidity", humidity)
 				.append("visibility", visibility).append("pressure", pressure).append("pressureTrend", pressureTrend)
-				.append("ozone", ozone).toString();
+				.append("ozone", ozone).append("uvIndex", uvIndex).toString();
 	}
 
 }

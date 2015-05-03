@@ -32,7 +32,7 @@ public interface MIndustrialQuadRelay extends MInSwitchActor, MSubDevice<MIndust
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
-   * The default value is <code>"industrial_quad_relay"</code>.
+   * The default value is <code>"quad_relay"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Device Type</em>' attribute isn't clear,
@@ -41,7 +41,7 @@ public interface MIndustrialQuadRelay extends MInSwitchActor, MSubDevice<MIndust
    * <!-- end-user-doc -->
    * @return the value of the '<em>Device Type</em>' attribute.
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMIndustrialQuadRelay_DeviceType()
-   * @model default="industrial_quad_relay" unique="false" changeable="false"
+   * @model default="quad_relay" unique="false" changeable="false"
    * @generated
    */
   String getDeviceType();

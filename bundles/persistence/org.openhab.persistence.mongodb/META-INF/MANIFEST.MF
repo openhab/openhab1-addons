@@ -18,6 +18,6 @@ Import-Package: org.apache.commons.io,
  org.osgi.service.cm,
  org.slf4j
 Bundle-ClassPath: .,
- lib/mongo-java-driver-2.12.0.jar
+ lib/mongo-java-driver-2.13.1.jar
 Service-Component: OSGI-INF/mongodb.xml
 Bundle-Activator: org.openhab.persistence.mongodb.internal.MongoDBPersistenceServiceActivator

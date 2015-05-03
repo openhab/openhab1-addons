@@ -35,9 +35,9 @@ public interface PilightBindingProvider extends BindingProvider {
 	 * can be bound to multiple items in openHAB. 
 	 * 
 	 * @param instance Name of the pilight instance 
-	 * @param location Location of the device in pilight
 	 * @param device Name of the device in pilight
 	 * @return The binding configs for the pilight references or empty list if not found
 	 */
-	public List<PilightBindingConfig> getBindingConfigs(String instance, String location, String device);
+	public List<PilightBindingConfig> getBindingConfigs(String instance, String device);
+	
 }

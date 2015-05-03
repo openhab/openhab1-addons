@@ -57,6 +57,10 @@
     <command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
     <poll-handler>DefaultPollHandler</poll-handler>
 </feature>
+<feature name="KeyPadButtonGroup">
+	<message-dispatcher>DefaultGroupDispatcher</message-dispatcher>
+	<poll-handler>LEDBitPollHandler</poll-handler>
+</feature>
 <feature name="KeyPadButton2">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
@@ -64,7 +68,6 @@
 	<message-handler cmd="0x13" button="2" group="2">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="2" group="2">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton3">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -73,7 +76,6 @@
 	<message-handler cmd="0x13" button="3" group="3">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="3" group="3">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton4">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -82,7 +84,6 @@
 	<message-handler cmd="0x13" button="4" group="4">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="4" group="4">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton5">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -91,7 +92,6 @@
 	<message-handler cmd="0x13" button="5" group="5">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="5" group="5">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton6">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -100,7 +100,6 @@
 	<message-handler cmd="0x13" button="6" group="6">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="6" group="6">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton7">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -109,7 +108,6 @@
 	<message-handler cmd="0x13" button="7" group="7">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="7" group="7">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton8">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -118,7 +116,6 @@
 	<message-handler cmd="0x13" button="8" group="8">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="8" group="8">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>	
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="GenericLastTime" statusFeature="true">
 	<message-dispatcher>PassThroughDispatcher</message-dispatcher>

@@ -23,6 +23,7 @@
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.gpio</module>
+    <module>org.openhab.io.harmonyhub</module>
     <module>org.openhab.io.monitor</module>
     <module>org.openhab.io.multimedia</module>
     <module>org.openhab.io.multimedia.tts.freetts</module>
