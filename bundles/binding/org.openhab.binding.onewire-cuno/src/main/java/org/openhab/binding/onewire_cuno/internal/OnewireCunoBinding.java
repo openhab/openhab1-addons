@@ -15,9 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire_cuno.OnewireCunoBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.openhab.io.transport.cul.CULCommunicationException;
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Robert Delbrück
  * @since 1.7.0
  */
-public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBindingProvider>
+public class OnewireCunoBinding extends AbstractBinding<OnewireCunoBindingProvider>
 		implements ManagedService, CULListener {
 
 	private static final Logger logger = LoggerFactory
@@ -57,11 +56,6 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 
 	private CULHandler cul;
 
-	/**
-	 * the refresh interval which is used to poll values from the FS20 server
-	 * (optional, defaults to 60000ms)
-	 */
-	private long refreshInterval = 60000;
 
 	public OnewireCunoBinding() {
 	}
@@ -95,40 +89,9 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 		CULManager.close(cul);
 	}
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
 
 	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected String getName() {
-		return "Onewire (Cuno) Refresh Service";
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void execute() {
-		// Nothing to do here
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// nothing to do
-	}
-
-	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config)
@@ -137,20 +100,12 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 		if (config != null) {
 			logger.trace("parsing config...");
 
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
 			String deviceName = (String) config.get(KEY_DEVICE_NAME);
 			logger.trace("reading devicename: {}", deviceName);
 			if (!StringUtils.isEmpty(deviceName)) {
 				setNewDeviceName(deviceName);
 			} else {
 				logger.error("No device name configured");
-				setProperlyConfigured(false);
 				throw new ConfigurationException(KEY_DEVICE_NAME,
 						"The device name can't be empty");
 			}
@@ -160,11 +115,9 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 						.get(KEY_HMS_EMULATION) + "");
 			} catch (Exception e) {
 				logger.error(KEY_HMS_EMULATION + " is invalid: {}", config.get(KEY_HMS_EMULATION));
-				setProperlyConfigured(false);
 				throw new ConfigurationException(KEY_HMS_EMULATION,
 						"cannot detect boolean value for '" + KEY_HMS_EMULATION + "'");
 			}
-			setProperlyConfigured(true);
 			
 			setupOnewire();
 		} else {
@@ -172,6 +125,9 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 		}
 	}
 	
+	/**
+	 * configures the onewire module
+	 */
 	private void setupOnewire() {
 		try {
 			// Reset Onewire Bus
@@ -219,6 +175,9 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 		}
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public void dataReceived(String data) {
 		lock.lock();
@@ -277,6 +236,9 @@ public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBinding
 		}
 	}
 	
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public void error(Exception e) {
 		logger.error("Error while communicating with CUL", e);

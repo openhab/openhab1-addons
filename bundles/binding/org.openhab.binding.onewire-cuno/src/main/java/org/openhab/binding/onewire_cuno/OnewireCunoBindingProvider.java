@@ -12,13 +12,25 @@ import org.openhab.binding.onewire_cuno.internal.OnewireCunoBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * Provides methods for item configuration
+ * 
  * @author Robert Delbrück
  * @since 1.7.0
  */
 public interface OnewireCunoBindingProvider extends BindingProvider {
 
-	public OnewireCunoBindingConfig getConfigForItemName(String itemName);
+	/**
+	 * returns the item config for the given itemname
+	 * @param itemName itemname to return config for
+	 * @return item configuration
+	 */
+	OnewireCunoBindingConfig getConfigForItemName(String itemName);
 
-	public OnewireCunoBindingConfig getConfigForAddress(String address);
+	/**
+	 * return the item config for a given address
+	 * @param address address to return config for
+	 * @return item configuration
+	 */
+	OnewireCunoBindingConfig getConfigForAddress(String address);
 
 }

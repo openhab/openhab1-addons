@@ -39,7 +39,7 @@ public class OnewireCunoGenericBindingProvider extends AbstractGenericBindingPro
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
@@ -52,11 +52,6 @@ public class OnewireCunoGenericBindingProvider extends AbstractGenericBindingPro
 							+ item.getClass().getSimpleName()
 							+ "', only NumberItems are allowed - please check your *.items configuration");
 		}
-
-		if (bindingConfig.length() != 4) {
-			throw new BindingConfigParseException(
-					"The configured address must consist of just 2 bytes housecode");
-		}
 	}
 
 	/**
@@ -66,6 +61,12 @@ public class OnewireCunoGenericBindingProvider extends AbstractGenericBindingPro
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
+		
+		if (bindingConfig.length() != 4) {
+			throw new BindingConfigParseException(
+					"The configured address must consist of just 2 bytes housecode");
+		}
+		
 		OnewireCunoBindingConfig config = new OnewireCunoBindingConfig(bindingConfig, item);
 
 		// parse bindingconfig here ...
@@ -74,6 +75,9 @@ public class OnewireCunoGenericBindingProvider extends AbstractGenericBindingPro
 		addBindingConfig(item, config);
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public OnewireCunoBindingConfig getConfigForItemName(String itemName) {
 		if (super.bindingConfigs.containsKey(itemName)) {
@@ -82,6 +86,9 @@ public class OnewireCunoGenericBindingProvider extends AbstractGenericBindingPro
 		return null;
 	}
 
+	/**
+	 * @{inheritDoc}
+	 */
 	@Override
 	public OnewireCunoBindingConfig getConfigForAddress(String address) {
 		return addressMap.get(address);
