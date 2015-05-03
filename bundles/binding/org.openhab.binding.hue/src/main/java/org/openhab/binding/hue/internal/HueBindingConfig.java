@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
  * 
  * <ul>
  * <li>The device number the bulb has on the Hue bridge. The bulbs should have
- * numbers from 1 up to the number of connected bulbs.</li>
+ * numbers from 1 up to the number of connected bulbs.
+ * (Since the option to delete items on the bridge the assumption of continuous sequence 
+ * of item numbers is no longer correct, but this is now handled in HueBinding execute correctly)</li>
  * <li>The binding type of the hue item</li>
  * <ul>
  * <li>Switch</li>

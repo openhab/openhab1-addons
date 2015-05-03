@@ -48,19 +48,37 @@ public class HueBulb {
 
 	private Client client;
 
+    /**
+     * Constructor for the HueBulb.
+     *
+     * This constructor fetches the current settings for the bulb from the bridge
+     *
+     * @param connectedBridge
+     *            The bridge the bulb is connected to.
+     * @param deviceNumber
+     *            The number under which the bulb is filed in the bridge.
+     */
+	public HueBulb(HueBridge connectedBridge, int deviceNumber) {
+		this(connectedBridge, deviceNumber, connectedBridge.getSettings());
+	}
+	
 	/**
 	 * Constructor for the HueBulb.
+     *
+     * This constructor reuses already fetched settings to reduce the load of creating a bulb.
 	 * 
 	 * @param connectedBridge
 	 *            The bridge the bulb is connected to.
-	 * @param deviceNumber
-	 *            The number under which the bulb is filed in the bridge.
+     * @param deviceNumber
+     *            The number under which the bulb is filed in the bridge.
+     * @param settings
+     *            The settings data from the bridge.
 	 */
-	public HueBulb(HueBridge connectedBridge, int deviceNumber) {
+	public HueBulb(HueBridge connectedBridge, int deviceNumber, HueSettings settings) {
 		this.bridge = connectedBridge;
 		this.deviceNumber = deviceNumber;
-		getStatus(this.bridge.getSettings());
-
+		getStatus(settings);
+        
 		this.client = Client.create();
 		this.client.setReadTimeout(1000);
 		this.client.setConnectTimeout(2000);
@@ -259,6 +277,7 @@ public class HueBulb {
 	private void executeMessage(String message) {
 		String targetURL = bridge.getUrl() + "lights/" + deviceNumber + "/state";
 		WebResource webResource = client.resource(targetURL);
+
 		ClientResponse response = webResource.type("application/json").put(
 				ClientResponse.class, message);
 
