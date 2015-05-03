@@ -11,7 +11,7 @@ Bundle-ManifestVersion: 2
 Bundle-Description: This is the CalDAV-Command binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
- org.apache.commons.lang.math;version="2.6.0",
+ org.apache.commons.lang.math,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.format,

@@ -9,6 +9,9 @@
 package org.openhab.binding.caldav_command.internal;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -95,22 +98,16 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		this.calDavLoader = null;
 	}
 	
-	public void activate() {
-		
-	}
+	public void activate() { }
 	
-	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
-	}
+	public void deactivate() { }
 
 	
 	@Override
 	public void updated(Dictionary<String, ?> properties)
 			throws ConfigurationException {
-		if (properties == null) {
-			logger.warn("no configuration found");
-		} else {
+		if (properties != null) {
+			logger.debug("reading configuration data...");
 			String read = (String) properties.get(KEY_READ_CALENDARS);
 			if (read != null) {
 				for (String value : read.split(",")) {
@@ -121,21 +118,26 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	private String parseContent(String content, String scope) {
-		StringBuilder out = new StringBuilder();
+		try {
+			StringBuilder out = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new StringReader(content));
 		
-		String[] lines = content.split("\n");
-		for (String line : lines) {
-			line = line.trim();
-			
-			if (line.startsWith(scope)) {
-				if (out.length() > 0) {
-					out.append(",");
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+				
+				if (line.startsWith(scope)) {
+					if (out.length() > 0) {
+						out.append(",");
+					}
+					out.append(line.substring(scope.length() + 1));
 				}
-				out.append(line.substring(scope.length() + 1));
 			}
+			return out.toString();
+		} catch (IOException e) {
+			logger.error("cannot parse event content", e);
+			return "";
 		}
-		
-		return out.toString();
 	}
 	
 	private CalDavBindingProvider getCalDavBindingProvider() {
@@ -390,8 +392,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			logger.debug("setting value for '{}' to: {}", itemName, c);
 			eventPublisher.postCommand(itemName, c);
 		} else if (type == CalDavType.DATE) {
-//			Calendar cal = Calendar.getInstance();
-//			cal.setTime(container.getChangeDate());
 			State c = new DateTimeType(FORMATTER.print(container.getChangeDate()));
 			logger.debug("setting value for '{}' to: {}", itemName, c);
 			eventPublisher.postUpdate(itemName, c);

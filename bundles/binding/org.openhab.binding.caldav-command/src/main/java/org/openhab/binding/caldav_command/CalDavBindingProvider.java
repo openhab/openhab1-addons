@@ -14,11 +14,23 @@ import org.openhab.binding.caldav_command.internal.CalDavNextEventConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * Binding provider for the calDAV command
  * @author Robert Delbrück
  * @since 1.7.0
  */
 public interface CalDavBindingProvider extends BindingProvider {
+	/**
+	 * returns the config for a given itemname
+	 * @param item itemname for which the config should be returned
+	 * @return the calDAV item configuration
+	 */
 	CalDavNextEventConfig getConfig(String item);
+	
+	/**
+	 * returns the calDAV config for an itemname to which should be listened
+	 * @param item item to which should be listened
+	 * @return the calDAV configurations for the requested item
+	 */
 	List<CalDavNextEventConfig> getConfigForListenerItem(String item);
 	
 }
