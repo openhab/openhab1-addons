@@ -7,6 +7,7 @@ import org.openhab.binding.chromecast.internal.ChromeCastGenericBindingProvider.
 import org.openhab.binding.chromecast.internal.Constants;
 import org.openhab.binding.chromecast.internal.Helper;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -35,12 +36,16 @@ public class StatusUpdater implements IUpdater {
 		
 		try{
 			State state = null;
-			if(mediaStatus != null && mediaStatus.idleReason != null && STATE_MAP.containsKey(mediaStatus.idleReason)){
-				Helper.createState(itemConfig.getType(), String.valueOf(STATE_MAP.get(mediaStatus.idleReason)));
-			}else {
-				Application application = status.getRunningApp();
-				if(!Constants.APP_DEFAULT.equals(application.name.toLowerCase())){
+			Application application = status.getRunningApp();
+			if(!Constants.APP_DEFAULT.equals(application.name.toLowerCase())){
+				if (itemConfig.getType().isAssignableFrom(SwitchItem.class)) {
+					state = OnOffType.ON;
+				} else {
 					state = Helper.createState(itemConfig.getType(), String.valueOf(Constants.STATE_PLAYING));
+				}
+			} else {
+				if (itemConfig.getType().isAssignableFrom(SwitchItem.class)) {
+					state = OnOffType.OFF;
 				} else {
 					state = Helper.createState(itemConfig.getType(), String.valueOf(Constants.STATE_IDLE));
 				}
@@ -50,7 +55,6 @@ public class StatusUpdater implements IUpdater {
 				eventPublisher.postUpdate(itemConfig.getItemName(), state);
 			}
 			
-			logger.info("State updated to " + mediaStatus.playerState);
 		}catch (Exception e){
 			logger.error("Status update failed " + e.getMessage());
 		}
