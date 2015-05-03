@@ -73,9 +73,9 @@ public class ChromeCastBinding extends AbstractActiveBinding<ChromeCastBindingPr
 	
 	/** 
 	 * the refresh interval which is used to poll values from the ChromeCast
-	 * server (optional, defaults to 60000ms)
+	 * server (optional, defaults to 5000ms)
 	 */
-	private long refreshInterval = 30000;
+	private long refreshInterval = 5000;
 	
 	
 	public ChromeCastBinding() {
