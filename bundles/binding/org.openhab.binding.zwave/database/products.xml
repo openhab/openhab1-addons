@@ -17,6 +17,15 @@
 		<Name>Linear</Name>
 		<Product>
 			<Reference>
+				<Type>5257</Type>
+				<Id>3533</Id>
+			</Reference>
+			<Model>WS15Z-1</Model>
+			<Label lang="en">Wall Mounted Switch</Label>
+			<ConfigFile>linear/wsz15-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4457</Type>
 				<Id>3034</Id>
 			</Reference>
@@ -371,6 +380,15 @@
 			<Label lang="en">Wall Mount Accessory Switch</Label>
 			<ConfigFile>evolve/ltm-5.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3034</Id>
+			</Reference>
+			<Model>LRM-AS</Model>
+			<Label lang="en">Wall Mounted Dimmer</Label>
+			<ConfigFile>evolve/lrm-as.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
@@ -437,6 +455,14 @@
 	        <Model>45604</Model>
 	        <Label lang="en">Outdoor Lighting Control Module</Label>
 	        <ConfigFile>ge/45604.xml</ConfigFile>
+        </Product>
+		<Product>
+	        <Reference>
+		        <Type>4944</Type>
+		        <Id>3031</Id>
+	        </Reference>
+	        <Model>12724</Model>
+	        <Label lang="en">Lighting Control Dimmer Switch</Label>
         </Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -621,6 +647,14 @@
 			<Model>Z-Stick S2</Model>
 			<Label lang="en">Z-Wave USB Controller</Label>
 			<ConfigFile>aeon/zss2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0201</Type>
+				<Id>005a</Id>
+			</Reference>
+			<Model>Z-Stick Gen-5</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
 		</Product>
 		<Product>
 			<Reference>
@@ -1176,6 +1210,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0202</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Model>FGS222</Model>
+			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
+			<ConfigFile>fibaro/fgs222.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0700</Type>
 				<Id>1000</Id>
 			</Reference>
@@ -1585,9 +1628,22 @@
 				<Type>0002</Type>
 				<Id>000D</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000E</Id>
+			</Reference>			
 			<Model>PST-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
 			<ConfigFile>philio/pst02.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>			
+			<Model>PST-02A</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/pst02a.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1598,6 +1654,16 @@
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
 			<ConfigFile>philio/pan04_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0012</Id>
+			</Reference>
+			<Model>PAN04-1B</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
+			<ConfigFile>philio/pan04_1b.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1663,6 +1729,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0001</Id>
 			</Reference>
 			<Model>RPi Controller</Model>
 			<Label lang="en">RPi ZWave Controller</Label>
@@ -1906,6 +1976,15 @@
 			<Model>SSA3</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0063</Type>
+				<Id>010c</Id>
+			</Reference>
+			<Model>WWA-02</Model>
+			<Label lang="en">Wireless Water and Temperature Alarm</Label>
+			<ConfigFile>fortrezz/wwa02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

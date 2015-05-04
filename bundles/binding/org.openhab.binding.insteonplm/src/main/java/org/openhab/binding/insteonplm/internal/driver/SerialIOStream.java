@@ -45,7 +45,11 @@ public class SerialIOStream extends IOStream {
 			 * /dev/ttyUSB*, and will so not find symlinks. The
 			 *  setProperty() call below helps 
 			 */
-			System.setProperty("gnu.io.rxtx.SerialPorts", m_devName);
+			String ports = System.getProperty("gnu.io.rxtx.SerialPorts");
+			String sp = ((ports == null) ? "" : (ports + ":")) + m_devName;
+			// note: calling setProperty() is not threadsafe, in particular if
+			// multiple bindings use the serial port
+			System.setProperty("gnu.io.rxtx.SerialPorts", sp);
 			CommPortIdentifier ci =
 					CommPortIdentifier.getPortIdentifier(m_devName);
 			CommPort cp = ci.open(m_appName, 1000);
