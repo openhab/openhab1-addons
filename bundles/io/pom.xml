@@ -31,6 +31,7 @@
     <module>org.openhab.io.multimedia.tts.macintalk</module>
     <module>org.openhab.io.multimedia.tts.marytts</module>
     <module>org.openhab.io.multimedia.tts.speechdispatcher</module>
+    <module>org.openhab.io.myopenhab</module>
     <module>org.openhab.io.net</module>
     <module>org.openhab.io.net.test</module>
     <module>org.openhab.io.rest</module>
