@@ -59,7 +59,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	// Caches all bulbs controlled to prevent the recreation of the bulbs which
 	// triggers a rereading of the settings from the bridge which is very
 	// expensive.
-	private HashMap<Integer, HueBulb> bulbCache = new HashMap<Integer, HueBulb>();
+	private HashMap<String, HueBulb> bulbCache = new HashMap<String, HueBulb>();
 
 	/**
 	 * Default constructor for the Hue binding.
@@ -103,11 +103,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			Set<String> keys = settings.getKeys();
 			for(String key: keys){				
 				try{
-					int deviceNumber = Integer.parseInt(key);
-					HueBulb bulb = bulbCache.get(deviceNumber);
+					HueBulb bulb = bulbCache.get(key);
 					if (bulb == null) {
-						bulb = new HueBulb(activeBridge, deviceNumber, settings);
-						bulbCache.put(deviceNumber, bulb);
+						bulb = new HueBulb(activeBridge, key, settings);
+						bulbCache.put(key, bulb);
 					}
 					bulb.getStatus(settings);
 				}catch(NumberFormatException e){
@@ -122,7 +121,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 					HueBindingConfig deviceConfig = getConfigForItemName(hueItemName);
 					
 					if (deviceConfig != null) {
-						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
+						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceId());
 						if (bulb != null) {
 						
 							// Enhancement: only send a postUpdate for items that have changed.
@@ -207,10 +206,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			return;
 		}
 
-		HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
+		HueBulb bulb = bulbCache.get(deviceConfig.getDeviceId());
 		if (bulb == null) {
-			bulb = new HueBulb(bridge, deviceConfig.getDeviceNumber());
-			bulbCache.put(deviceConfig.getDeviceNumber(), bulb);
+			bulb = new HueBulb(bridge, deviceConfig.getDeviceId());
+			bulbCache.put(deviceConfig.getDeviceId(), bulb);
 		}
 
 		if (command instanceof OnOffType) {

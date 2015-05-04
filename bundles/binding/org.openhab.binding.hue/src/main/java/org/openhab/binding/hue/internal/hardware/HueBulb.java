@@ -38,7 +38,7 @@ public class HueBulb {
 	}
 
 	private HueBridge bridge = null;
-	private int deviceNumber = 1;
+	private String deviceId;
 	private boolean isOn = false;
 	private boolean isReachable = false;
 	private int brightness = 0; // possible values are 0 - 255
@@ -48,37 +48,23 @@ public class HueBulb {
 
 	private Client client;
 
-    /**
-     * Constructor for the HueBulb.
-     *
-     * This constructor fetches the current settings for the bulb from the bridge
-     *
-     * @param connectedBridge
-     *            The bridge the bulb is connected to.
-     * @param deviceNumber
-     *            The number under which the bulb is filed in the bridge.
-     */
-	public HueBulb(HueBridge connectedBridge, int deviceNumber) {
-		this(connectedBridge, deviceNumber, connectedBridge.getSettings());
+	public HueBulb(HueBridge connectedBridge, String deviceId) {
+		this(connectedBridge, deviceId, connectedBridge.getSettings());
 	}
 	
 	/**
 	 * Constructor for the HueBulb.
-     *
-     * This constructor reuses already fetched settings to reduce the load of creating a bulb.
 	 * 
 	 * @param connectedBridge
 	 *            The bridge the bulb is connected to.
-     * @param deviceNumber
-     *            The number under which the bulb is filed in the bridge.
-     * @param settings
-     *            The settings data from the bridge.
+	 * @param deviceNumber
+	 *            The number under which the bulb is filed in the bridge.
 	 */
-	public HueBulb(HueBridge connectedBridge, int deviceNumber, HueSettings settings) {
+	public HueBulb(HueBridge connectedBridge, String deviceId, HueSettings settings) {
 		this.bridge = connectedBridge;
-		this.deviceNumber = deviceNumber;
+		this.deviceId = deviceId;
 		getStatus(settings);
-        
+
 		this.client = Client.create();
 		this.client.setReadTimeout(1000);
 		this.client.setConnectTimeout(2000);
@@ -89,12 +75,16 @@ public class HueBulb {
 	 * @param HueSettings retrieved from hub
 	 */
 	public void getStatus(HueSettings settings){
-		this.isOn = settings.isBulbOn(this.deviceNumber);
-		this.isReachable = settings.isReachable(this.deviceNumber);
-		this.colorTemperature = settings.getColorTemperature(this.deviceNumber);
-		this.brightness = settings.getBrightness(this.deviceNumber);
-		this.hue = settings.getHue(this.deviceNumber);
-		this.saturation = settings.getSaturation(this.deviceNumber);
+		if(settings.isValidId(deviceId)){
+			this.isOn = settings.isBulbOn(this.deviceId);
+			this.isReachable = settings.isReachable(this.deviceId);
+			this.colorTemperature = settings.getColorTemperature(this.deviceId);
+			this.brightness = settings.getBrightness(this.deviceId);
+			this.hue = settings.getHue(this.deviceId);
+			this.saturation = settings.getSaturation(this.deviceId);			
+		}else{
+			logger.warn("Not a valid id on the bridge: " + deviceId);
+		}
 	}
 
 	/**
@@ -275,7 +265,7 @@ public class HueBulb {
 	 *            bulb.
 	 */
 	private void executeMessage(String message) {
-		String targetURL = bridge.getUrl() + "lights/" + deviceNumber + "/state";
+		String targetURL = bridge.getUrl() + "lights/" + deviceId + "/state";
 		WebResource webResource = client.resource(targetURL);
 
 		ClientResponse response = webResource.type("application/json").put(
