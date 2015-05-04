@@ -5,12 +5,8 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- ********************************************************************************************************
- * openHAP binding for octoller (www.octoller.com)
- * (c) Joerg Plenert
- ********************************************************************************************************
  */
+
 package org.openhab.binding.octoller.internal;
 
 import org.osgi.framework.BundleActivator;
@@ -20,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Extension of the default OSGi bundle activator
+ * Extension of the default OSGi bundle activator for openHAB binding for octoller (www.octoller.com)
  * 
  * @author JPlenert
  * @since 1.5.1

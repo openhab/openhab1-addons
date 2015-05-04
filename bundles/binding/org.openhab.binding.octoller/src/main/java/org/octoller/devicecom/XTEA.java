@@ -1,18 +1,11 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- ********************************************************************************************************
- * openHAP binding for octoller (www.octoller.com)
- * Preperation for use without octoller-Gateway
- * (c) Joerg Plenert
- ********************************************************************************************************
  */
-
 
 package org.octoller.devicecom;
 
@@ -20,8 +13,17 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
+/**
+ * Implementation of the XTEA algorithm for data encryption to octoller device
+ * 
+ * @author JPlenert
+ * @since 1.5.1
+ * openHAB binding for octoller (www.octoller.com)
+ * Only for preperation for use without octoller-Gateway
+ */
 class XTEA
 {
+	
 	static int delta = 0x9E3779B9;
 	
 	static void encipher(int num_cycles, int[] v, int[] k) throws Exception
@@ -55,6 +57,12 @@ class XTEA
 		v[0] = v0; v[1] = v1;
 	}
 	
+	/**
+	 * Converts bytes into an integer (e.g. for the key creation)
+	 * @param b
+	 * @param offset
+	 * @return
+	 */
 	public static int byteArrayToInt(byte[] b, int offset) 
 	{
 	    final ByteBuffer bb = ByteBuffer.wrap(b, offset, 4);
@@ -62,6 +70,12 @@ class XTEA
 	    return bb.getInt();
 	}
 
+	
+	/**
+	 * Converts an int to a byte array
+	 * @param i
+	 * @return
+	 */
 	public static byte[] intToByteArray(int i) 
 	{
 	    final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
@@ -70,6 +84,18 @@ class XTEA
 	    return bb.array();
 	}
 	
+	/**
+	 * Crypts data using XTEA algorithm
+	 * @param key 
+	 * 				key for crypt (int[4]) 
+	 * @param data
+	 * 				data to crypt
+	 * @param offset
+	 * 				offset in data
+	 * @param dataLen
+	 * 				length of data to crypt
+	 * @throws Exception
+	 */
 	public static void XTEACrypt(int[] key, byte[] data, int offset, int dataLen) throws Exception
 	{
 		int pos;
@@ -94,6 +120,18 @@ class XTEA
 		}
 	}
 	
+	/**
+	 * Decrypts data using XTEA alogrithm
+	 * @param key 
+	 * 				key for decrypt (int[4]) 
+	 * @param data
+	 * 				data to decrypt
+	 * @param offset
+	 * 				offset in data
+	 * @param dataLen
+	 * 				length of data to decrypt
+	 * @throws Exception
+	 */
 	public static void XTEADecrypt(int[] key, byte[] data, int offset, int dataLen) throws Exception
 	{
 		int pos;
@@ -118,4 +156,5 @@ class XTEA
 			keyUse[2] ^= cryptValues[1];
 		}
 	}
+	
 }

@@ -144,6 +144,7 @@
     <module>org.openhab.binding.nest</module>
     <module>org.openhab.binding.satel</module>
     <module>org.openhab.binding.plex</module>
+    <module>org.openhab.binding.octoller</module>
   </modules>
 
 </project>

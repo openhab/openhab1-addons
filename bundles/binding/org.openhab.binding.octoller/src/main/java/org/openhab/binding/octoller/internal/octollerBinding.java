@@ -1,16 +1,12 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- ********************************************************************************************************
- * openHAP binding for octoller (www.octoller.com)
- * (c) Joerg Plenert
- ********************************************************************************************************
  */
+
 package org.openhab.binding.octoller.internal;
 
 import java.io.IOException;
@@ -38,6 +34,7 @@ import org.octoller.devicecom.*;
 /**
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
+ * For openHAB binding for octoller (www.octoller.com)
  * 
  * @author JPlenert
  * @since 1.5.1
