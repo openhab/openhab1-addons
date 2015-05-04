@@ -126,7 +126,7 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 		SerialMessage serialMessage = node.encapsulate(commandClass.getResetMessage(), commandClass, endpointId);
 		
 		if (serialMessage == null) {
-			logger.warn("NODE {}: Meter reset not supported for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
+			logger.warn("NODE {}: Meter reset not supported for item = {}, endpoint = {}, ignoring event.", node.getNodeId(), item.getName(), endpointId);
 			return;
 		}
 		
