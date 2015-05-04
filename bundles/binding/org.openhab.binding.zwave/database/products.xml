@@ -650,6 +650,14 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0201</Type>
+				<Id>005a</Id>
+			</Reference>
+			<Model>Z-Stick Gen-5</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0036</Id>
 			</Reference>
