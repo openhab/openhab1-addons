@@ -22,7 +22,6 @@
     <module>org.openhab.binding.knx.test</module>
     <module>org.openhab.binding.serial</module>
     <module>org.openhab.binding.onewire</module>
-	<module>org.openhab.binding.onewire-cuno</module>
     <module>org.openhab.binding.wol</module>
     <module>org.openhab.binding.networkhealth</module>
     <module>org.openhab.binding.exec</module>
