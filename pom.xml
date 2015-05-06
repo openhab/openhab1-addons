@@ -47,7 +47,7 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
     
     <properties>
-        <tycho-version>0.19.0</tycho-version>
+        <tycho-version>0.22.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wagon.version>1.0-beta-2</wagon.version>

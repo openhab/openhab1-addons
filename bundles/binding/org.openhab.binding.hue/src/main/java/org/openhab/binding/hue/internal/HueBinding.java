@@ -11,6 +11,7 @@ package org.openhab.binding.hue.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hue.HueBindingProvider;
@@ -58,7 +59,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	// Caches all bulbs controlled to prevent the recreation of the bulbs which
 	// triggers a rereading of the settings from the bridge which is very
 	// expensive.
-	private HashMap<Integer, HueBulb> bulbCache = new HashMap<Integer, HueBulb>();
+	private HashMap<String, HueBulb> bulbCache = new HashMap<String, HueBulb>();
 
 	/**
 	 * Default constructor for the Hue binding.
@@ -93,18 +94,24 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			// Get settings and update the bulbs
 			// Observation : If the power of a hue lamp is removed, the status is not updated in hue hub.
 			// The heartbeat functionality should fix this, but 
+			logger.debug("Start Hue data refresh");
 			HueSettings settings = activeBridge.getSettings();
 			if (settings == null) {
-				logger.debug("Hue settings were null, maybe misconfigured bridge IP.");
+				logger.warn("Hue settings were null, maybe misconfigured bridge IP.");
 				return;
 			}
-			for (int i = 1; i <= settings.getCount(); i++) {
-				HueBulb bulb = bulbCache.get(i);
-				if (bulb == null) {
-					bulb = new HueBulb(activeBridge, i);
-					bulbCache.put(i, bulb);
+			Set<String> keys = settings.getKeys();
+			for(String key: keys){				
+				try{
+					HueBulb bulb = bulbCache.get(key);
+					if (bulb == null) {
+						bulb = new HueBulb(activeBridge, key, settings);
+						bulbCache.put(key, bulb);
+					}
+					bulb.getStatus(settings);
+				}catch(NumberFormatException e){
+					logger.warn("lights index {} is not a number", key);
 				}
-				bulb.getStatus(settings);
 			}
 			
 			// Update the items that are linked with the bulbs.
@@ -114,7 +121,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 					HueBindingConfig deviceConfig = getConfigForItemName(hueItemName);
 					
 					if (deviceConfig != null) {
-						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
+						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceId());
 						if (bulb != null) {
 						
 							// Enhancement: only send a postUpdate for items that have changed.
@@ -160,6 +167,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 					}
 				}
 			}
+			logger.debug("Done Hue data refresh.");
 		}
 	}
 	
@@ -198,10 +206,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			return;
 		}
 
-		HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
+		HueBulb bulb = bulbCache.get(deviceConfig.getDeviceId());
 		if (bulb == null) {
-			bulb = new HueBulb(bridge, deviceConfig.getDeviceNumber());
-			bulbCache.put(deviceConfig.getDeviceNumber(), bulb);
+			bulb = new HueBulb(bridge, deviceConfig.getDeviceId());
+			bulbCache.put(deviceConfig.getDeviceId(), bulb);
 		}
 
 		if (command instanceof OnOffType) {

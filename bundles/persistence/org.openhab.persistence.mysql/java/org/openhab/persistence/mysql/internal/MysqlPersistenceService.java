@@ -186,7 +186,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			tableName = new String("Item" + rowId);
 			logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
 		} catch (SQLException e) {
-			logger.error("mySQL: Could not create table for item '{}': ", itemName, e.getMessage());
+			errCnt++;
+			logger.error("mySQL: Could not create entry for '{}' in table 'Items' with statement '{}': {}", itemName, sqlCmd, e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
@@ -223,6 +224,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 					+ " in SQL database.");
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
+			errCnt++;
+			
 			logger.error("mySQL: Could not create table for item '" + itemName + "' with statement '" + sqlCmd + "': "
 					+ e.getMessage());			
 		} finally {
@@ -246,6 +249,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				statement = connection.createStatement();
 				statement.executeUpdate(sqlCmd);	
 			} catch (Exception e) {
+				errCnt++;
+				
 				logger.error("mySQL: Could not remove index for item '" + itemName + "' with statement '" + sqlCmd + "': "
 						+ e.getMessage());			
 			} finally {
@@ -280,8 +285,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// If we still didn't manage to connect, then return!
 		if (!isConnected()) {
 			logger.warn(
-					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
-					item);
+					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
+					item,errCnt,errReconnectThreshold);
 			return;
 		}
 
@@ -350,6 +355,18 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @return true if connection has been established, false otherwise
 	 */
 	private boolean isConnected() {
+		//Check if connection is valid
+		try {
+			if (connection!= null && !connection.isValid(5000)) {
+				errCnt++;
+				logger.error("mySQL: Connection is not valid!");
+			}
+		} catch (SQLException e) {
+			errCnt++;
+			
+			logger.error("mySQL: Error while checking connection: {}", e);
+		}
+		
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
