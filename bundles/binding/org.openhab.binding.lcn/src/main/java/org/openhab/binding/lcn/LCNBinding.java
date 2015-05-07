@@ -110,8 +110,6 @@ public class LCNBinding<P extends LCNBindingProvider> extends AbstractActiveBind
 	private long dataRequestTimeout = 2000;
 	/**Timer for pings in seconds.*/
 	private int pingTimer = 600;
-//	/**The maximum write operations that be be commenced per cycle, 0 = unlimited.*/
-//	private int writeLimit = 0;
 	
 	/**HashMap for 'old' modules, for which data has to be requested on a regular basis.*/
 	private LCNRequestList requestModules = new LCNRequestList();
