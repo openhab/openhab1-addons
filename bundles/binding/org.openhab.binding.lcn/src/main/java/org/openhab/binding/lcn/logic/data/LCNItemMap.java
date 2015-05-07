@@ -18,6 +18,7 @@ import org.openhab.core.types.Command;
 /**
  * This class maps ItemBindings on openHAB commands.
  * It also keeps track about possible uninitialized items within the map.
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *

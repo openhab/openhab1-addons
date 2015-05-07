@@ -19,6 +19,7 @@ import org.openhab.binding.lcn.logic.data.LCNSyntax.VarModifier;
  * This class is not only used to represent the Modules, but also their input.
  * Basically it is a interim representation of LCNShort Command, LCN Commands and LCN Input,
  * this allows us to compare all three types and figure out in how far they are related.
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *
@@ -134,6 +135,9 @@ public class LCNInputModule extends LCNModule {
 			
 		}
 		
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public boolean equals(Object o) {
 			
@@ -707,25 +711,6 @@ public class LCNInputModule extends LCNModule {
 		return null;
 		
 	}
-	
-//	/**
-//	 * Determines whether two LCNInputModules have similar data types.
-//	 * @param mod The LCNInputModule to compare to.
-//	 * @return True if the data types are similar, false otherwise.
-//	 */
-//	public boolean similarDataType(LCNInputModule mod) {
-//		
-//		boolean result = false;
-//		DataType temp = this.datatype;
-//		
-//		if (temp == mod.datatype || ((temp == DataType.T || temp == DataType.V || temp == DataType.TR || temp == DataType.L || temp == DataType.LO || temp == DataType.A || temp == DataType.VO || temp == DataType.W || temp == DataType.M || temp == DataType.CO) 
-//				&& (mod.datatype == DataType.T || mod.datatype == DataType.V || mod.datatype == DataType.TR || mod.datatype == DataType.L || mod.datatype == DataType.LO || mod.datatype == DataType.A || mod.datatype == DataType.VO || mod.datatype == DataType.W || mod.datatype == DataType.M || mod.datatype == DataType.CO))) {
-//			result = true;
-//		}
-//		
-//		return result;
-//		
-//	}
 	
 	/**
 	 * Generates a key that depends solely on the actual underlying LCN Module.

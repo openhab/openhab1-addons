@@ -531,13 +531,9 @@ public class LCNParser {
 							result += addHeader(isModule, subterms, homeSegment)
 								+ cmd.name();
 							String temp = subterms.get(0);
-							//try {
-							//	result += LEDTestAction.getLEDTestAction(temp).name();
-							//} catch (IllegalArgumentException exc) {
 								subterms.add(0, temp);
 								result += addParameter(subterms, 1, 12, 3);
-								result += LEDAction.getLEDAction(subterms.get(0)).name();
-							//}												
+								result += LEDAction.getLEDAction(subterms.get(0)).name();											
 							break;
 							
 						case SMT:
@@ -594,7 +590,6 @@ public class LCNParser {
 										result += addStringParameter(subterms, 1, 1, getOperatorCharset());
 										result += addParameter(String.valueOf(parseWithModToLCNStep(Double.valueOf(subterms.get(0).replaceAll("\\,", "\\.")), modifier)), 2000, 4);
 									} else {
-										//result += addParameter(subterms, 1, 2999, 4);
 										result += addParameter(String.valueOf(parseWithModToLCN(Double.valueOf(subterms.get(0).replaceAll("\\,", "\\.")), modifier)), 2999, 4);
 									}
 								//If the control action does not need any further parameters:
@@ -614,7 +609,6 @@ public class LCNParser {
 									+ cmd.name()
 									+ Threshold.getThreshold(subterms.get(0)).name()
 									+ addParameter(String.valueOf(parseWithModToLCNStep(Double.valueOf(subterms.get(0).replaceAll("\\,", "\\.")), modifier)), 1000, 4);
-									//+ ThresholdAction.getThresholdAction(subterms.get(0)).name()
 									String op = addStringParameter(subterms, 1, 1, getOperatorCharset());
 									if (op.equals("+")) {
 										result += "A";
@@ -636,7 +630,6 @@ public class LCNParser {
 									+ cmd.name().substring(0, cmd.name().length() - 1) //remove the internal identifier for old commands.
 									+ Threshold.getThreshold(subterms.get(0)).name()
 									+ addParameter(String.valueOf(parseWithModToLCNStep(Double.valueOf(subterms.get(0).replaceAll("\\,", "\\.")), modifier)), 1000, 4);
-									//+ ThresholdAction.getThresholdAction(subterms.get(0)).name();
 								String op = addStringParameter(subterms, 1, 1, getOperatorCharset());
 								if (op.equals("+")) {
 									result += "A";
@@ -1228,7 +1221,6 @@ public class LCNParser {
 				if (subs.get(0).equals(Command.MW.toString())) {
 					
 					mod.type = LCNInputModule.ModuleType.DATA;
-					//mod.datatype = LCNSyntax.DataType.getDataType(subs[3]);
 					mod.datatype = DataType.V;
 					
 					if (LCNSyntax.DataType.getDataType(subs.get(3)) == DataType.S) {
@@ -2514,73 +2506,6 @@ public class LCNParser {
 		
 		return Double.parseDouble(result);
 		
-	}
-
-	
-	public static void main(String[] args) {
-		try {
-			
-			//System.out.println(LCNParser.parse("ON.0.HALLO.1.VAR.222"));
-			//System.out.println(LCNParser.parse("RAW.012.asd.123123."));
-			
-			LCNParser.parse("ON.0.2.2");
-			
-			LCNInputModule m1 = LCNParser.reverseParse("MOVE_THRESHOLD_OLD.0.23.CURRENT.10.+.1----", "");
-			LCNInputModule m2 = LCNParser.parseInput("=M000023.S1005200020000300004000050000010", "");
-			LCNUtil.printModule(m1);
-			LCNUtil.printModule(m2);
-			System.out.println(m1.sValue);
-			System.out.println(m2.getThreshold(0, (int)m1.value).value);
-			
-			m1 = LCNParser.reverseParse("VAR_ADD.0.11.1.10", "");
-			m2 = LCNParser.parseInput("%M000011.01236", "");
-			LCNInputModule m3 = LCNParser.reverseParse("VAR_VALUE.0.11.VAR.1", "");
-			
-			System.out.println(m1.equals(m2, 0));
-			System.out.println(m3.equals(m2, 0));
-			LCNUtil.printModule(m1);
-			LCNUtil.printModule(m2);
-			LCNUtil.printModule(m3);
-			
-			System.out.println(LCNParser.parse("ON.0.23.2"));
-			m1 = LCNParser.reverseParse("VAR_ADD.0.11.1.10", "");
-			System.out.println(m1.modifier);
-			System.out.println(LCNParser.parse("GET_COUPLER"));
-			
-			m1 = LCNParser.reverseParse("VAR_VALUE.0.5.VAR.3.CO2", "");
-			m2 = LCNParser.reverseParse("VAR_VALUE.0.8.VAR.2", "");
-			
-			LCNUtil.printModule(m1);
-			LCNUtil.printModule(m2);
-			
-			m1 = LCNParser.reverseParse("SETPOINT_VALUE.0.8.REGULATOR1.ACTIVATE.CELSIUS", "");
-			
-			LCNUtil.printModule(m1);
-			
-			m1 = LCNParser.reverseParse("VAR_ADD.0.11.1.10", "");
-			m2 = LCNParser.reverseParse("VAR_ADD.0.11.1.10.CELSIUS", "");
-			
-			LCNUtil.printModule(m1);
-			LCNUtil.printModule(m2);
-			
-			m1 = LCNParser.reverseParse("THRESHOLD_VALUE.0.23.1.CELSIUS", "");
-			m2 = LCNParser.reverseParse("THRESHOLD_VALUE.0.23.1", "");
-			
-			System.out.println("---");
-			LCNUtil.printModule(m1);
-			LCNUtil.printModule(m2);
-			
-			System.out.println(LCNParser.parse("MOVE_THRESHOLD_OLD.0.23.CURRENT.10.+.1----.CELSIUS", "160B12"));
-			
-			
-			m1 = LCNParser.reverseParse("VAR_VALUE.0.8.VAR.2", "");
-			System.out.println(LCNParser.moduleToDataRequest(m1, 0));
-			System.out.println(LCNParser.moduleToNewDataRequest(m1, 0));
-			
-		} catch (LCNParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 }

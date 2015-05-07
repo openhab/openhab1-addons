@@ -12,6 +12,7 @@ package org.openhab.binding.lcn.logic.data;
 /**
  * Simple (abstract) data class, which represents a LCN module and its current state.
  * Defines some basic data structures, which are used by the LCNInputModule.
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *

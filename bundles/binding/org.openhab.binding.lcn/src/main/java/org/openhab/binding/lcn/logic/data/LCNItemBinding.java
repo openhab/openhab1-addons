@@ -17,6 +17,7 @@ import org.openhab.core.types.State;
 /**
  * This class represents a single Item, Connection tuple with additional information about the underlying LCNCommand.
  * Also contains information whether this item has been initialized yet (i.e. a request to the module has been sent).
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *

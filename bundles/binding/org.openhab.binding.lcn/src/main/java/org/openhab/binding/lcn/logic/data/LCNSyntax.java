@@ -11,6 +11,7 @@ package org.openhab.binding.lcn.logic.data;
 /**
  * This class defines most of the LCNSyntax, its identifiers etc.
  * It should (can) not be instantiated.
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *

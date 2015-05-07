@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Represents a list of LCNInputModules that require repeated status requests in order to be maintained.
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *

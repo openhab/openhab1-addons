@@ -82,6 +82,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class handles all necessary traffic from and to LCNModules.
  * It implements the actual Binding which is later used via openHAB.
+ * 
  * @author Patrik Pastuschek
  * @since 1.7.0
  *
@@ -1344,8 +1345,6 @@ public class LCNBinding<P extends LCNBindingProvider> extends AbstractActiveBind
 								if (null != newState) {
 									eventPublisher.postUpdate(items.get(i), newState);
 									break;
-								} else {
-									//logger.debug("Unable to update state of item {}", items.get(i));
 								}
 							
 							}
@@ -1993,12 +1992,11 @@ public class LCNBinding<P extends LCNBindingProvider> extends AbstractActiveBind
 										firmwares.get(LCNInputModule.generateKey(this.requestModules.get(k), homeSegment)));
 								
 								if (!out.equals(request)) {
-									//quickInternalCommand(request, output.lCNChannel, output.moduleKey, true);
 									fireJob(mod);
 								}
 								
 							} catch (LCNParserException e) {
-								//e.printStackTrace();
+								//just catch
 							}
 						
 						}
@@ -2076,7 +2074,6 @@ public class LCNBinding<P extends LCNBindingProvider> extends AbstractActiveBind
 			sched = StdSchedulerFactory.getDefaultScheduler();
 			sched.triggerJob(JobKey.jobKey(RequestJob.getJobKey(mod), RequestJob.getJobGroup()));
 		} catch (SchedulerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
