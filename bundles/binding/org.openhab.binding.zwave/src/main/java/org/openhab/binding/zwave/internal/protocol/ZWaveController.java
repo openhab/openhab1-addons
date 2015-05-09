@@ -508,7 +508,16 @@ public class ZWaveController {
 		}
 		logger.info("Disconnected from serial port");
 	}
-	
+
+	/**
+	 * Removes the node, and restarts the initialisation sequence
+	 * @param nodeId
+	 */
+	public void reinitialiseNode(int nodeId) {
+		this.zwaveNodes.remove(nodeId);
+		addNode(nodeId);
+	}
+
 	/**
 	 * Add a node to the controller
 	 * @param nodeId the node number to add

@@ -314,6 +314,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Add the action buttons
 				record.addAction("Heal", "Heal Node");
+				record.addAction("Initialise", "Reinitialise Node");
 				
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
@@ -961,6 +962,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// Write the node to disk
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.SerializeNode(node);
+				}
+
+				if (action.equals("Initialise")) {
+					logger.debug("NODE {}: re-initialising node", nodeId);
+
+					// Delete the saved XML
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(nodeId);
+					
+					this.zController.reinitialiseNode(nodeId);
 				}
 
 				if (action.equals("Delete")) {
