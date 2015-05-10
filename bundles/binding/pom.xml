@@ -145,6 +145,7 @@
     <module>org.openhab.binding.satel</module>
     <module>org.openhab.binding.harmonyhub</module>
     <module>org.openhab.binding.plex</module>
+    <module>org.openhab.binding.mailcontrol</module>
   </modules>
 
 </project>
