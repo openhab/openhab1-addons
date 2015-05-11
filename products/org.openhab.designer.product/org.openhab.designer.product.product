@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Designer" uid="org.openhab.designer.product" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="1.6.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="openHAB Designer" uid="org.openhab.designer.product" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="1.6.3.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.openhab.designer.core/icons/openhab400.png"/>
@@ -15,7 +15,7 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../addons -DnoRules=true -Xmx256m -XX:PermSize=128M</vmArgs>
+      <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../addons -DnoRules=true -Xmx256m -XX:PermSize=128M -Dorg.eclipse.swt.browser.DefaultType=mozilla</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -30,10 +30,8 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>

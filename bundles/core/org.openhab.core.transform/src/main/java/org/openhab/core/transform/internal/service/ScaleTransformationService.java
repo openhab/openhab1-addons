@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -95,10 +95,14 @@ public class ScaleTransformationService implements TransformationService {
 				double maxLimit = Double.parseDouble(matcher.group(3));
 
 				// a bit of a trick to include/exclude limits of the segment
-				if (matcher.group(1).equals(']'))
-					minLimit = minLimit - 0.0000000001;
-				if (matcher.group(1).equals('['))
+				if (matcher.group(1).equals("]"))
 					minLimit = minLimit + 0.0000000001;
+				if (matcher.group(1).equals("["))
+					minLimit = minLimit - 0.0000000001;
+				if (matcher.group(4).equals("]"))
+					maxLimit = maxLimit + 0.0000000001;
+				if (matcher.group(4).equals("["))
+					maxLimit = maxLimit - 0.0000000001;
 
 				if ((minLimit < value) && (value < maxLimit)) {
 					result = matcher.group(5);

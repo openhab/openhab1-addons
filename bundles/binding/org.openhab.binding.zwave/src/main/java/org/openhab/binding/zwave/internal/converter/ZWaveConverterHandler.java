@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -72,6 +72,8 @@ public class ZWaveConverterHandler {
 		converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
 		converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
 		converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
+		converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
+
 		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 		
 		// add preferred command classes per Item class here
@@ -107,41 +109,21 @@ public class ZWaveConverterHandler {
 	 * @return the {@link ZWaveCommandClass} that can be used to get a converter suitable to do the conversion.
 	 */
 	private ZWaveCommandClass resolveConverter(Item item, ZWaveNode node, int endpointId) {
-		if(item == null)
+		if(item == null) {
 			return null;
-
-		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = null;
-		ZWaveCommandClass result = null;
-		
-		if (endpointId != 1)
-			multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)node.getCommandClass(CommandClass.MULTI_INSTANCE);
+		}
 
 		if (!preferredCommandClasses.containsKey(item.getClass())) {
 			logger.warn("No preferred command classes found for item class = {}", item.getClass().toString());
 			return null;
 		}
-		
+
 		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {
-			if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 2) {
-				ZWaveEndpoint endpoint = multiInstanceCommandClass.getEndpoint(endpointId);
-				
-				if (endpoint != null) { 
-					result = endpoint.getCommandClass(commandClass);
-				} 
-			}
+			ZWaveCommandClass result = node.resolveCommandClass(commandClass, endpointId);
 			
-			if (result == null)
-				result = node.getCommandClass(commandClass);
-			
-			if (result == null)
-				continue;
-			
-			if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 1 &&
-					result.getInstances() < endpointId)
-				continue;
-			
-			if (converters.containsKey(commandClass))
+			if (result != null && converters.containsKey(commandClass)) {
 				return result;
+			}
 		}
 		
 		logger.warn("No matching command classes found for item class = {}, node id = {}, endpoint id = {}", 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,6 +40,9 @@ public class ZWaveEndpoint {
 	 * @param endpointId the endpoint ID.
 	 */
 	public ZWaveEndpoint(int endpointId) {
+		if (endpointId == 0) {
+			throw new IllegalArgumentException("Endpoint number cannot be 0");
+		}
 		this.endpointId = endpointId;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN,
 				Generic.NOT_KNOWN, Specific.NOT_USED);

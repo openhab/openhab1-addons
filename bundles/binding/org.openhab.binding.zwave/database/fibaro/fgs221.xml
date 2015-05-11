@@ -37,7 +37,7 @@
 				<Label lang="en">ALL ON active / ALL OFF disabled</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">ALL ON active / ALL OFF active</Label>
 			</Item>
 			<Help lang="en">Activate/Deactive ALL ON/OFF</Help>
@@ -307,10 +307,6 @@
 			<Default>600</Default>
 			<Size>2</Size>
 			<Label lang="en">ALARM FLASHING alarm time</Label>			
-			<Item>
-				<Value>0</Value>
-				<Label lang="en"></Label>
-			</Item>
 			<Help lang="en">Amount of time (ms) the device keeps on flashing after receipt of Alarm Frame</Help>
 		</Parameter>
 		

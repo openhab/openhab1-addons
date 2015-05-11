@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,9 +24,6 @@ import org.osgi.service.cm.ConfigurationException;
  * # Hostname / IP address of the Homematic CCU or Homegear server
  * homematic:host=
  *
- * # The communication with the Homematic server. xml for xmlrpc or bin for the lightweight binrpc, (optional, default is bin).
- * # homematic:rpc=
- * 
  * # Hostname / IP address for the callback server (optional, default is auto-discovery)
  * # This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). 
  * # homematic:callback.host=

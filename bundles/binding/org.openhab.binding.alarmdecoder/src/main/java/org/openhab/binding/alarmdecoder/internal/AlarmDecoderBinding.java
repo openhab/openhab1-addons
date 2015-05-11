@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,10 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -25,12 +27,16 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import org.openhab.binding.alarmdecoder.AlarmDecoderBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
@@ -64,11 +70,13 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	/** Interval between attempts to reestablish the connection	 */
 	private long refreshInterval = 10000;
 
-	private BufferedReader m_reader = null;
-	private Socket	m_socket = null;
-	private SerialPort m_port = null;
-	private Thread m_thread = null;
-	private MsgReader m_msgReader = null;
+	private BufferedReader	m_reader = null;
+	private	BufferedWriter	m_writer = null;
+	private Socket			m_socket = null;
+	private SerialPort 		m_port = null;
+	private Thread 			m_thread = null;
+	private MsgReader 		m_msgReader = null;
+	private boolean			m_acceptCommands = false;
 	private static HashMap<String, ADMsgType> s_startToMsgType = new HashMap<String, ADMsgType>();
 	// pretty disgusting to have a separate hash map to keep track of which
 	// items have been updated. But where else to put per-item state?
@@ -145,6 +153,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			if (reconn != null && reconn.trim().length() > 0) {
 				refreshInterval = Long.parseLong(reconn);
 			}
+			String acceptCommands = (String) config.get("send_commands_and_compromise_security");
+			if (acceptCommands != null && acceptCommands.equalsIgnoreCase("true")) {
+				logger.info("accepting commands!");
+				m_acceptCommands = true;
+			}
 			setProperlyConfigured(true);
 		} catch (ConfigurationException e) {
 			logger.error("configuration error: {} ", e.getMessage(), e);
@@ -155,7 +168,35 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.warn("binding does not support sending commands yet!");
+		if (!m_acceptCommands) {
+			logger.warn("sending commands is disabled, enable it in openhab.cfg!");
+			return;
+		}
+		String param = "INVALID";
+		if (command instanceof OnOffType) {
+			OnOffType cmd = (OnOffType) command;
+			param = cmd.equals(OnOffType.ON) ? "ON" : "OFF";
+		} else if (command instanceof DecimalType) {
+			param = ((DecimalType) command).toString();
+		} else {
+			logger.error("item {} only accepts DecimalType and OnOffType", itemName);
+			return;
+		}
+		try {
+			ArrayList<AlarmDecoderBindingConfig> bcl = getItems(itemName);
+			for (AlarmDecoderBindingConfig bc: bcl) {
+				String sendStr = bc.getParameters().get(param);
+				if (sendStr == null) {
+					logger.error("{} has no mapping for command {}!", itemName, param);
+				} else {
+					String s = sendStr.replace("POUND", "#");
+					m_writer.write(s);
+					m_writer.flush();
+				}
+			}
+		} catch (IOException e) {
+			logger.error("write to serial port failed: ", e);
+		}
 	}
 	
 	private synchronized void connect() {
@@ -165,6 +206,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			if (m_tcpHostName != null && m_tcpPort > 0) {
 				m_socket = new Socket(m_tcpHostName, m_tcpPort);
 				m_reader = new BufferedReader(new InputStreamReader(m_socket.getInputStream()));
+				m_writer = new BufferedWriter(new OutputStreamWriter(m_socket.getOutputStream()));
 				logger.info("connected to {}:{}", m_tcpHostName, m_tcpPort);
 				startMsgReader();
 			} else if (this.m_serialDeviceName != null) {
@@ -185,7 +227,6 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 				}
 				m_port.setSerialPortParams(19200, SerialPort.DATABITS_8,
 						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-				//m_port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 				m_port.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 				m_port.disableReceiveFraming();
 				m_port.disableReceiveThreshold();
@@ -239,7 +280,9 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			for (Iterator<String> item = items.iterator(); item.hasNext();) {
 				String s = item.next();
 				AlarmDecoderBindingConfig c =	provider.getBindingConfig(s);
-				m_unupdatedItems.put(s, c);
+				synchronized (m_unupdatedItems) {
+					m_unupdatedItems.put(s, c);
+				}
 			}
 		}
 	}
@@ -308,25 +351,26 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 		}
 	}
 	private void parseKeypadMessage(String msg) throws MessageParseException {
-		String parts[] = msg.split(",");
-		if (parts.length != 4) {
+		List<String> parts = splitMsg(msg);
+		if (parts.size() != 4) {
 			throw new MessageParseException("got invalid keypad msg");
 		}
-		if (parts[0].length() != 22) {
-			throw new MessageParseException("bad keypad status length : " + parts[0].length());
+		if (parts.get(0).length() != 22) {
+			throw new MessageParseException("bad keypad status length : " +
+					parts.get(0).length());
 		}
 		try {
-			int numeric = Integer.parseInt(parts[1]);
-			int upper = Integer.parseInt(parts[0].substring(1,6), 2);
-			int nbeeps = Integer.parseInt(parts[0].substring(6,7));
-			int lower = Integer.parseInt(parts[0].substring(7,17), 2);
+			int numeric = Integer.parseInt(parts.get(1));
+			int upper = Integer.parseInt(parts.get(0).substring(1,6), 2);
+			int nbeeps = Integer.parseInt(parts.get(0).substring(6,7));
+			int lower = Integer.parseInt(parts.get(0).substring(7,17), 2);
 			int status = ((upper & 0x1F) << 13)  | ((nbeeps & 0x3) << 10) | lower;
 			ArrayList<AlarmDecoderBindingConfig> bcl = getItems(ADMsgType.KPM, null, null);
 			for (AlarmDecoderBindingConfig c : bcl) {
 				if (c.hasFeature("zone")) {
 					updateItem(c, new DecimalType(numeric));
 				} else if (c.hasFeature("text")) {
-					updateItem(c, new StringType(parts[3]));
+					updateItem(c, new StringType(parts.get(3)));
 				}  else if (c.hasFeature("beeps")) {
 					updateItem(c, new DecimalType(nbeeps));
 				}  else if (c.hasFeature("status")) {
@@ -357,15 +401,24 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			throw new MessageParseException("keypad msg contains invalid number: " + e.getMessage());
 		}
 	}
-
+	private
+	List<String> splitMsg(String msg) {
+		List<String> l = new ArrayList<String>();
+		Pattern regex = Pattern.compile("[^\\,\"]+|\"[^\"]*\"");
+			Matcher regexMatcher = regex.matcher(msg);
+			while (regexMatcher.find()) l.add(regexMatcher.group());
+		return l;
+	}
 	
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		super.bindingChanged(provider, itemName);
 		logger.trace("binding changed for {}", itemName);
 		AlarmDecoderBindingConfig c = ((AlarmDecoderBindingProvider)provider).getBindingConfig(itemName);
-		// careful, the config reference c is a null pointer!
-		m_unupdatedItems.put(itemName, c);
+		// careful, the config reference could be a null pointer!
+		synchronized (m_unupdatedItems) {
+			m_unupdatedItems.put(itemName, c);
+		}
 	}
 	
 
@@ -377,29 +430,33 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	 */
 	private void setUnupdatedItemsToDefault() {
 		logger.trace("setting {} unupdated items to default", m_unupdatedItems.size());
-		while (!m_unupdatedItems.isEmpty()) {
-			// cannot use the config in the hash map, since it is null
-			String itemName = m_unupdatedItems.keySet().iterator().next();
-			ArrayList<AlarmDecoderBindingConfig> al = getItems(itemName);
-			for (AlarmDecoderBindingConfig bc : al) {
-				switch (bc.getMsgType()) {
-				case RFX:
-					if (bc.hasFeature("data")) {
-						updateItem(bc, new DecimalType(0));
-					} else if (bc.hasFeature("contact")) {
+		synchronized (m_unupdatedItems) {
+			while (!m_unupdatedItems.isEmpty()) {
+				// cannot use the config in the hash map, since it is null
+				String itemName = m_unupdatedItems.keySet().iterator().next();
+				ArrayList<AlarmDecoderBindingConfig> al = getItems(itemName);
+				for (AlarmDecoderBindingConfig bc : al) {
+					switch (bc.getMsgType()) {
+					case RFX:
+						if (bc.hasFeature("data")) {
+							updateItem(bc, new DecimalType(0));
+						} else if (bc.hasFeature("contact")) {
+							updateItem(bc, OpenClosedType.CLOSED);
+						}
+						break;
+					case EXP:
+					case REL:
 						updateItem(bc, OpenClosedType.CLOSED);
+						break;
+					case INVALID:
+					default:
+						m_unupdatedItems.remove(itemName);
+						break;
 					}
-					break;
-				case EXP:
-				case REL:
-					updateItem(bc, OpenClosedType.CLOSED);
-					break;
-				default:
-					break;
 				}
 			}
+			m_unupdatedItems.clear();
 		}
-		m_unupdatedItems.clear();
 	}
 
 	/**
@@ -468,13 +525,18 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	 * @param state new state of item
 	 */
 	private void updateItem(AlarmDecoderBindingConfig bc, State state) {
-		if (bc.getMsgType() != ADMsgType.KPM) {
-			logger.debug("updating item: {} to state {}", bc.getItemName(), state);
-		} else {
-			logger.trace("updating item: {} to state {}", bc.getItemName(), state);
+		synchronized(m_unupdatedItems) {
+			m_unupdatedItems.remove(bc.getItemName());
+			if (!bc.getState().equals(state)) {
+				if (bc.getMsgType() != ADMsgType.KPM) {
+					logger.debug("updating item: {} to state {}", bc.getItemName(), state);
+				} else {
+					logger.trace("updating item: {} to state {}", bc.getItemName(), state);
+				}
+				eventPublisher.postUpdate(bc.getItemName(), state);
+				bc.setState(state);
+			}
 		}
-		m_unupdatedItems.remove(bc.getItemName());
-		eventPublisher.postUpdate(bc.getItemName(), state);
 	}
 	/**
 	 * Finds all items that refer to a given message type, address, and feature

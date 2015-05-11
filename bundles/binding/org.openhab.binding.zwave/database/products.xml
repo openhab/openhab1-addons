@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -57,6 +57,15 @@
                         <Model>RF9540-N</Model>
                         <Label lang="en">All Load Dimmer Light Switch</Label>
                         <ConfigFile>cooper/rf9540n.xml</ConfigFile>
+                </Product>
+                <Product>
+                        <Reference>
+                                <Type>4441</Type>
+                                <Id>0000</Id>
+                        </Reference>
+                        <Model>RF9542-Z</Model>
+                        <Label lang="en">Dimmer Accessory Switch</Label>
+                        <ConfigFile>cooper/rf9542z.xml</ConfigFile>
                 </Product>
                 <Product>
                         <Reference>
@@ -178,6 +187,16 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AD131</Model>
+			<Label lang="en">Dimmer Plugin</Label>
+			<Label lang="de">Dimmer Zwischenstecker</Label>
+			<ConfigFile>everspring/ad131.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0103</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -246,6 +265,10 @@
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>
 			<Label lang="de">Tür/Fenster Kontakt</Label>
@@ -313,6 +336,15 @@
 		<Name>Reitz Group</Name>
 		<Product>
 			<Reference>
+				<Type>3001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054375</Model>
+			<Label lang="en">Schuko Plug Switch</Label>
+			<ConfigFile>reitz/054375.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -370,6 +402,15 @@
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>5082xx</Model>
+			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
+			<ConfigFile>merten/5082xx.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0077</Id>
@@ -422,6 +463,15 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0019</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>DSD37-ZW</Model>
+			<Label lang="en">Range Extender</Label>
+			<ConfigFile>aeon/dsd37-zw.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -469,7 +519,7 @@
 			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
-			</Reference>			
+			</Reference>
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
@@ -558,6 +608,15 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>001C</Id>
+			</Reference>
+			<Model>HEM-G2</Model>
+			<Label lang="en">Home Energy Meter G2</Label>
+			<ConfigFile>aeon/hemg2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -571,6 +630,10 @@
 				<Type>1E12</Type>
 				<Id>015E</Id>
 			</Reference>
+			<Reference>
+				<Type>1E12</Type>
+				<Id>015C</Id>
+			</Reference>
 			<Model>CT30</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct30.xml</ConfigFile>
@@ -579,6 +642,10 @@
 			<Reference>
 				<Type>6401</Type>
 				<Id>0015</Id>
+			</Reference>
+			<Reference>
+				<Type>6401</Type>
+				<Id>106</Id>
 			</Reference>
 			<Model>CT100</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
@@ -924,10 +991,19 @@
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
 			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
 	<Manufacturer>
 		<Id>014A</Id>
 		<Name>Ecolink</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>PIR</Model>
+			<Label lang="en">Z-Wave PIR Motion Sensor</Label>
+			<ConfigFile>eco/pir1.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -937,7 +1013,7 @@
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
 	<Manufacturer>
 		<Id>001E</Id>
 		<Name>Homeseer</Name>
@@ -1041,6 +1117,15 @@
 			<Model>TZ68</Model>
 			<Label lang="en">Wall Plug</Label>
 			<ConfigFile>tkb/tz68.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>TSM02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>tkb/tsm02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1185,6 +1270,10 @@
 				<Type>0301</Type>
 				<Id>0209</Id>
 			</Reference>
+			<Reference>
+				<Type>301</Type>
+				<Id>0334</Id>
+            </Reference>
 			<Model>VRS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
@@ -1210,6 +1299,15 @@
 			<Model>DZS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/dzs15-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1b03</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>DZMX1-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/dzmx1-1lz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1237,7 +1335,7 @@
 			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
 			<ConfigFile>remotec/zxt120.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
 	<Manufacturer>
 		<Id>159</Id>
 		<Name>Qubino</Name>
@@ -1250,5 +1348,90 @@
 			<Label lang="en">Flush 1 relay</Label>
 			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHBA</Model>
+			<Label lang="en">Flush 2 relays</Label>
+			<ConfigFile>qubino/zmnhba.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHDA</Model>
+			<Label lang="en">Flush dimmer</Label>
+			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>97</Id>
+		<Name>Wintop</Name>
+		<Product>
+			<Reference>
+				<Type>1188</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>ITEMP</Model>
+			<Label lang="en">Contact and temp sensor</Label>
+			<ConfigFile>wintop/itemp.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>6131</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>WTRFID</Model>
+			<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
+			<ConfigFile>wintop/wtrfid.xml</ConfigFile>
+		</Product>
+
+	</Manufacturer>
+	<Manufacturer>
+		<Id>84</Id>
+		<Name>Fortrezz</Name>
+		<Product>
+			<Reference>
+				<Type>453</Type>
+				<Id>110</Id>
+			</Reference>
+			<Model>MIMOlite</Model>
+			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
+			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0313</Type>
+				<Id>0108</Id>
+			</Reference>
+			<Model>SSA1/SSA2</Model>
+			<Label lang="en">Siren and Strobe Alarm</Label>
+			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>008a</Id>
+		<Name>BeNext</Name>
+		<Product>
+			<Reference>
+				<Type>000d</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0018</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

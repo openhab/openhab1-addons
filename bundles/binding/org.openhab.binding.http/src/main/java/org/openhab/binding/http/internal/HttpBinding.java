@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
@@ -88,6 +89,24 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	public HttpBinding() {
 	}
 	
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		lastUpdateMap.remove(itemName);
+		synchronized(itemCacheLock) {
+		   itemCache.remove(itemName);
+		}
+		super.bindingChanged(provider, itemName);
+	}
+
+	@Override
+	public void allBindingsChanged(BindingProvider provider) {
+		lastUpdateMap.clear();
+		synchronized(itemCacheLock) {
+			itemCache.clear();
+		}
+		super.allBindingsChanged(provider);
+	}
+
 	/**
      * @{inheritDoc}
      */

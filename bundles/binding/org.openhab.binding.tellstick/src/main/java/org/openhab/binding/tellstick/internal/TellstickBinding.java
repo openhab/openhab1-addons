@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tellstick.internal;
 
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,8 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jna.Platform;
+
 /**
  * This class coordinates between the events in openHAB and the Tellstick
  * device. It uses a JNA bridge to talk to the C api of the tellstick.
@@ -45,18 +48,11 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 
 	private static final Logger logger = LoggerFactory.getLogger(TellstickBinding.class);
 	/**
-	 * Default update interval from tellstick
-	 */
-	private static final int UPDATE_FROM_TELLSTICK_INTERVAL = 600000;
-
-	/**
 	 * Max time without receiving any events.
 	 */
 	private static final int MAX_IDLE_BEFORE_RESTART = 600000;
 
 	private int restartTimeout;
-
-	private int updateFromTellstickInterval;
 
 	private long lastRefresh = 0;
 
@@ -140,29 +136,40 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
-		this.updateFromTellstickInterval = UPDATE_FROM_TELLSTICK_INTERVAL;
 		this.restartTimeout = MAX_IDLE_BEFORE_RESTART;
+		String libraryPath = null;
+		if (Platform.isWindows()) {
+			libraryPath = "C:/Program Files/Telldus/;C:/Program Files (x86)/Telldus/";			
+		}
 
 		logger.info("Called with config " + config);
 		if (config != null) {
 			String maxIdle = (String) config.get("max_idle");
-			String updateInterval = (String) config.get("update_interval");
+			String confLibraryPath = (String) config.get("library_path");
 			if (maxIdle != null) {
 				this.restartTimeout = Integer.valueOf(maxIdle);
 			}
-			if (updateInterval != null) {
-				this.updateFromTellstickInterval = Integer.valueOf(updateInterval);
+			if (confLibraryPath != null) {
+				libraryPath = confLibraryPath;
 			}
+		
+		}
+		
+		if (libraryPath != null) {
+			logger.info("Loading "+JNA.library+" from "+libraryPath);
+			System.setProperty("jna.library.path", libraryPath);
+		} else {
+			logger.info("Loading "+JNA.library+" from system default paths");
 		}
 		resetTellstick();
 		setProperlyConfigured(true);
 	}
 
-	private TellstickBindingConfig findTellstickBindingConfig(int itemId, TellstickValueSelector valueSel) {
+	private TellstickBindingConfig findTellstickBindingConfig(int itemId, TellstickValueSelector valueSel, String protocol) {
 
 		TellstickBindingConfig matchingConfig = null;
 		for (TellstickBindingProvider provider : this.providers) {
-			TellstickBindingConfig config = provider.getTellstickBindingConfig(itemId, valueSel);
+			TellstickBindingConfig config = provider.getTellstickBindingConfig(itemId, valueSel, protocol);
 			if (config != null) {
 				matchingConfig = config;
 				break;
@@ -196,7 +203,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		logger.debug("Got deviceEvent for " + device + " name:" + device + " method" + event.getMethod());
 		if (device != null) {
 			State cmd = resolveCommand(event.getMethod(), event.getData());
-			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null);
+			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null, null);
 			if (conf != null) {
 				sendToOpenHab(conf.getItemName(), cmd);
 			} else {
@@ -238,26 +245,37 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 
 		private State getCommand(TellstickSensorEvent event, double dValue, TellstickValueSelector selector) {
 			State cmd = null;
-			if (event.getDataType() == DataType.TEMPERATURE) {
-				switch (selector) {
-				case MOTION:
-					cmd = OnOffType.ON;
-					break;
-				default:
-					cmd = new DecimalType(dValue);
-				}
-			} else if (event.getDataType() == DataType.HUMIDITY) {
-				switch (selector) {
-				case BATTERY_LEVEL:
-					cmd = new DecimalType(dValue);
-					break;
+			switch (event.getDataType()) {
+				case TEMPERATURE:
+					switch (selector) {
+					case MOTION:
+						cmd = OnOffType.ON;
+						break;
+					default:
+						cmd = new DecimalType(dValue);
+					}
+				break;
 				case HUMIDITY:
+					switch (selector) {
+					case BATTERY_LEVEL:
+						cmd = new DecimalType(dValue);
+						break;
+					case HUMIDITY:
+					default:
+						double val = Math.min(100, dValue);
+						cmd = new PercentType((int) val);
+	
+					}
+				break;
+				case WINDAVERAGE:
+				case WINDDIRECTION:
+				case WINDGUST:	
+					cmd = new DecimalType(dValue);
+					break;
 				default:
-					double val = Math.min(100, dValue);
-					cmd = new PercentType((int) val);
-
-				}
-			}
+					logger.warn("Event of type " + event.getDataType() + " does not have a mapping");
+				
+			}  
 			return cmd;
 		}
 
@@ -270,6 +288,15 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			case HUMIDITY:
 				result = TellstickValueSelector.HUMIDITY;
 				break;
+			case WINDAVERAGE:
+				result = TellstickValueSelector.WIND_AVG;
+				break;
+			case WINDDIRECTION:
+				result = TellstickValueSelector.WIND_DIRECTION;
+				break;
+			case WINDGUST:
+				result = TellstickValueSelector.WIND_GUST;
+				break;
 			default:
 				logger.warn("Sensor of type " + dataType + " not supported");
 			}
@@ -279,21 +306,22 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		@Override
 		public void onRequest(TellstickSensorEvent sensorEvent) {
 			controller.setLastSend(System.currentTimeMillis());
-
-			String thisMsg = sensorEvent.getProtocol() + sensorEvent.getModel() + sensorEvent.getSensorId()
+			Calendar cal = Calendar.getInstance();
+			String thisMsg = cal.get(Calendar.MINUTE) + sensorEvent.getProtocol() + sensorEvent.getModel() + sensorEvent.getSensorId()
 					+ sensorEvent.getData();
 			String prevMessage = prevMessages.get(sensorEvent.getDataType());
 			if (!thisMsg.equals(prevMessage)) {
 				prevMessages.put(sensorEvent.getDataType(), thisMsg);
+				TellstickValueSelector sensorBindingType = getSensorBindingType(sensorEvent.getDataType());
 				TellstickBindingConfig device = findTellstickBindingConfig(sensorEvent.getSensorId(),
-						getSensorBindingType(sensorEvent.getDataType()));
-				logger.debug("Got sensorEvent for " + sensorEvent.getSensorId() + " name:" + device + " value:"
+						sensorBindingType,sensorEvent.getProtocol());
+				logger.debug("Got sensorEvent for " + sensorEvent.getSensorId() +" type "+sensorBindingType+" proto "+sensorEvent.getProtocol()+ " name:" + device + " value:"
 						+ sensorEvent.getData());
 				if (device != null) {
 					handleSensorEvent(sensorEvent, device);
 				}
 			} else {
-				logger.debug("Ignored message for " + sensorEvent.getSensorId() + " value:" + sensorEvent.getData());
+				logger.debug("Ignored duplicate message for " + sensorEvent.getSensorId() + " value:" + sensorEvent.getData());
 			}
 		}
 
@@ -308,7 +336,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			resetTellstick();
 
 		}
-		if ((System.currentTimeMillis() - lastRefresh) > updateFromTellstickInterval) {
+		if (lastRefresh <= 0) {
+			//Only read from tellstick once, the status is sometimes wrong.
 			refreshFromTellstick();
 		}
 	}
@@ -331,12 +360,14 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	private void resetTellstick() {
 		logger.warn("Will do a reinit of listeners, no message received for " + restartTimeout / 1000 + " seconds");
 		try {
+			
 			deRegisterListeners();
 			logger.info("Listeners removed");
 			resetTelldusProvider();
 			logger.info("Telldus reset");
 			registerListeners();
 			logger.info("Listeners restarted");
+			controller.setLastSend(System.currentTimeMillis());
 		} catch (Exception e) {
 			logger.error("Failed to reset listener", e);
 		}

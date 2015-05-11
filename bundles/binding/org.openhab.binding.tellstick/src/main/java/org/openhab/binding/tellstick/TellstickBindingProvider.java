@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,7 +38,7 @@ public interface TellstickBindingProvider extends BindingProvider {
 	 * @param valueSel
 	 * @return The config.
 	 */
-	TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel);
+	TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel, String protocol);
 
 	/**
 	 * Get a device given its name.

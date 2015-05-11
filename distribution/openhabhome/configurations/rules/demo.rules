@@ -105,6 +105,7 @@ when
 then	
 	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
 	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
+	logInfo("Weather","Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
 end
 
 /** shows how to use sensor values from the past */
@@ -161,9 +162,7 @@ then
   postUpdate(Weather_LastUpdate, new DateTimeType())
 end
 
-/** 
- * This rule will be used to test Scale transformation service
- */
+// This rule will be used to test Scale transformation service
 rule "Compute humidex"
 when Item Weather_Temperature changed or
 	 Item Weather_Humidity changed 

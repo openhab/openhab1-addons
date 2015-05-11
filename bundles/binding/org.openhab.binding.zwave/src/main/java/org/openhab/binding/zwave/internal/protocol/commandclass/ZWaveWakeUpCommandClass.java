@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -183,7 +183,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 				// if this node has not gone through it's query stages yet, and there
 				// are no initialization packets on the wake-up queue, restart initialization.
-				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().getNodeStage() == NodeStage.DEAD)) {
+				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().isDead() == true)) {
 					logger.info("NODE {}: Got Wake Up Notification from node, continuing initialization.", this.getNode().getNodeId());
 					
 					this.getNode().setNodeStage(NodeStage.WAKEUP);

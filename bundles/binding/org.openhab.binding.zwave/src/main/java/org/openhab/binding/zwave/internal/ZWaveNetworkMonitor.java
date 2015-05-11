@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -253,7 +253,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// fully optimize the network, this is required
 		for (ZWaveNode node : zController.getNodes()) {
 			// Ignore devices that haven't initialized yet - unless they are
-			// DEAD.
+			// DEAD or FAILED.
 			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
@@ -299,7 +299,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 					continue;
 				if (oldestNode == null) {
 					oldestNode = node;
-				} else if (node.getLastUpdated().getTime() < oldestNode.getLastUpdated().getTime()) {
+				} else if (node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
 					oldestNode = node;
 				}
 			}
@@ -388,6 +388,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			healing.failState = healing.state;
 			healing.state = HealState.FAILED;
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
 			return;
 		}
 
@@ -481,18 +488,20 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 		case SAVE:
 			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
-			// Save the XML file. This serialises the data we've just updated
-			// (neighbors etc)
-			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-			nodeSerializer.SerializeNode(healing.node);
-
 			healing.state = HealState.DONE;
 
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
 			break;
 		default:
 			break;
 		}
+		healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
 	}
 
 	/**
@@ -603,16 +612,22 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			switch (statusEvent.getState()) {
 			case Dead:
+			case Failed:
 				ZWaveNode node = zController.getNode(statusEvent.getNodeId());
 				if (node == null) {
 					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
 					return;
 				}
 
+				// If this is a DEAD notification, then ask the controller if it's really FAILED
+				if(statusEvent.getState() == ZWaveNodeStatusEvent.State.Dead) {
+					zController.requestIsFailedNode(node.getNodeId());
+				}
+
 				// The node is dead, but we may have already started a Heal
 				// If so, don't start it again!
 				if (!isNodeHealing(node.getNodeId())) {
-					logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
+					logger.debug("NODE {}: {} node - requesting network heal.", node.getNodeId(), statusEvent.getState());
 
 					healNode(node.getNodeId());
 
@@ -624,7 +639,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 					node.resetResendCount();
 				} else {
-					logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
+					logger.debug("NODE {}: {} node - already healing.", node.getNodeId(), statusEvent.getState());
 				}
 				break;
 			case Alive:

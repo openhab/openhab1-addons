@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -280,8 +280,17 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
-						if (chunks.length == 2) {
+						if (chunks.length >= 2) {
 							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
+						}
+						if (chunks.length >= 3) {
+							((ModbusSerialSlave) modbusSlave).setDatabits(Integer.valueOf(chunks[2]));
+						}
+						if (chunks.length >= 4) {
+							((ModbusSerialSlave) modbusSlave).setParity(chunks[3]);
+						}
+						if (chunks.length == 5) {
+							((ModbusSerialSlave) modbusSlave).setStopbits(Integer.valueOf(chunks[4]));
 						}
 					}
 				} else if ("start".equals(configKey)) {

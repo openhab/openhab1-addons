@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.netatmo.internal.NetatmoException;
+import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 
 /**
  * Queries the Netatmo API for the measures of a single device or module.
@@ -81,8 +82,8 @@ public class MeasurementRequest extends AbstractRequest {
 	 *            the name of a supported measure, e.g. "Temperature" or
 	 *            "Humidity"
 	 */
-	public void addMeasure(final String measure) {
-		this.measures.add(measure);
+	public void addMeasure(final NetatmoMeasureType measureType) {
+		this.measures.add(measureType.getMeasure());
 	}
 
 	@Override
@@ -91,8 +92,9 @@ public class MeasurementRequest extends AbstractRequest {
 		String json = null;
 
 		try {
+			
 			json = executeQuery(url);
-
+			
 			final MeasurementResponse response = JSON.readValue(json,
 					MeasurementResponse.class);
 

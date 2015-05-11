@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,14 +35,9 @@ public final class TellstickActivator implements BundleActivator {
 		context = bc;
 		logger.debug("Tellstick binding has been started." + Thread.currentThread());
 		try {
-			if (Platform.isWindows()) {
-				System.setProperty("jna.library.path", "C:/Program Files/Telldus/;C:/Program Files (x86)/Telldus/");
-			}
-
 			TellstickDevice.setSupportedMethods(JNA.CLibrary.TELLSTICK_BELL | JNA.CLibrary.TELLSTICK_TURNOFF
 					| JNA.CLibrary.TELLSTICK_TURNON | JNA.CLibrary.TELLSTICK_DIM | JNA.CLibrary.TELLSTICK_LEARN
 					| JNA.CLibrary.TELLSTICK_EXECUTE | JNA.CLibrary.TELLSTICK_STOP);
-			JNA.CLibrary.INSTANCE.tdInit();
 		} catch (Exception e) {
 			logger.error("Failed to init ", e);
 			throw e;

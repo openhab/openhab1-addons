@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,7 @@ package org.openhab.binding.knx.internal.connection;
 
 /**
  * This interface should be implemented by classes that need to be informed when
- * a KNX connection has been established.
+ * a KNX connection has been established or was lost.
  * 
  * @author Andrea Giacosi
  * @author Kai Kreuzer
@@ -19,7 +19,12 @@ package org.openhab.binding.knx.internal.connection;
 public interface KNXConnectionListener {
 	
 	/**
-	 * The callback method that is used to notify listeners about a successfull KNX connection
+	 * The callback method that is used to notify listeners about a successful KNX connection
 	 */
 	void connectionEstablished();
+
+	/**
+	 * The callback method that is used to notify listeners about a lost KNX connection
+	 */
+	void connectionLost();
 }
