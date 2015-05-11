@@ -247,7 +247,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 					if(datapoint.getName().equals(itemName)) {
 						logger.debug("Initializing read of item {}.", itemName);
 						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-							logger.warn("Clouldn't add to KNX bus reader scheduler (bindingChanged)",datapoint);
+							logger.warn("Couldn't add to KNX bus reader scheduler (bindingChanged, datapoint='{}')",datapoint);
 						}
 						break;
 					}
@@ -273,7 +273,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 					int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
 					if (autoRefreshTimeInSecs>0) {
 						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-							logger.warn("Clouldn't add to KNX bus reader scheduler (allBindingsChanged)",datapoint);
+							logger.warn("Couldn't add to KNX bus reader scheduler (allBindingsChanged, datapoint='{}')",datapoint);
 						}
 					}
 				}
@@ -296,7 +296,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 				int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
 				if (autoRefreshTimeInSecs>0) {
 					if (!mKNXBusReaderScheduler.scheduleRead(datapoint, autoRefreshTimeInSecs)) {
-						logger.warn("Clouldn't add to KNX bus reader scheduler (connectionEstablished)",datapoint);
+						logger.warn("Couldn't add to KNX bus reader scheduler (connectionEstablished, datapoint='{}')",datapoint);
 					}
 				}
 			}
