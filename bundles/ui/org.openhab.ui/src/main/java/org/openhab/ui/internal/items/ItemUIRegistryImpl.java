@@ -30,6 +30,7 @@ import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.LocationItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -195,6 +196,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		}
 		if (itemType.equals(StringItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
+		}
+		if (itemType.equals(LocationItem.class)) {
+			return SitemapFactory.eINSTANCE.createMapview();
 		}
 		if (itemType.equals(DateTimeItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();

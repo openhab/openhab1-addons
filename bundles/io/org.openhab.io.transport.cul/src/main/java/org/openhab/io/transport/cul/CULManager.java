@@ -77,7 +77,7 @@ public class CULManager {
 
 			if (openDevices.containsKey(deviceName)) {
 				CULHandler handler = openDevices.get(deviceName);
-				if (handler.getCULMode() == mode) {
+				if ((handler.getCULMode() == mode)  && (handler.arePropertiesEqual(properties))){
 					logger.debug("Device " + deviceName + " is already open in mode " + mode.toString()
 							+ ", returning already openend handler");
 					return handler;

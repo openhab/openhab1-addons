@@ -34,13 +34,14 @@ public class DSMRGenericBindingProvider extends AbstractGenericBindingProvider
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		// TODO: More advanced checking based on bindingConfig is possible
-		if (!(item instanceof NumberItem) && !(item instanceof StringItem) && !(item instanceof DateTimeItem)) {
+		if (!(item instanceof NumberItem) && !(item instanceof StringItem)
+				&& !(item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
@@ -84,8 +85,7 @@ public class DSMRGenericBindingProvider extends AbstractGenericBindingProvider
 	 * <p>
 	 * The binding configuration consists only of the OBIS item.
 	 * <p>
-	 * Binding configuration for an openHAB Item looks like:
-	 * dsmr="<OBIS item>"
+	 * Binding configuration for an openHAB Item looks like: dsmr="<OBIS item>"
 	 * 
 	 * @author M. Volaart
 	 * @since 1.7.0

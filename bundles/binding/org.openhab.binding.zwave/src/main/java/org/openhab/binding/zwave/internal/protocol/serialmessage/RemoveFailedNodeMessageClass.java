@@ -53,7 +53,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 		logger.debug("Got RemoveFailedNode response.");
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		switch(incomingMessage.getMessagePayloadByte(1)) {
+		switch(incomingMessage.getMessagePayloadByte(0)) {
 			case FAILED_NODE_REMOVE_STARTED:
 				logger.debug("NODE {}: Remove failed node successfully placed on stack.", nodeId);
 				break;
@@ -66,7 +66,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 				transactionComplete = true;
 				break;
 			case FAILED_NODE_NOT_FOUND:
-				logger.error("NODE {}: Remove failed node failed as node not found on controllers failed list!", nodeId);
+				logger.error("NODE {}: Remove failed node failed as node not found!", nodeId);
 				transactionComplete = true;
 				break;
 			case FAILED_NODE_REMOVE_PROCESS_BUSY:

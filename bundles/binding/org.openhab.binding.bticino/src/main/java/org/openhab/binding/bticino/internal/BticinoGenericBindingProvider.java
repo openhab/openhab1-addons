@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.State;
@@ -49,17 +50,16 @@ public class BticinoGenericBindingProvider extends
 	/**
 	 * @{inheritDoc
 	 */
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-		if (!(item instanceof SwitchItem || item instanceof RollershutterItem)) {
+		if (!(item instanceof SwitchItem || item instanceof RollershutterItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
 							+ "', this Item is not allowed - please check your *.items configuration"
-							+ ", only SwitchItem and RollershutterItem are allowed / supported for now");
+							+ ", only SwitchItem, RollershutterItem and NumberItem are allowed / supported for now");
 		}
 	}
 

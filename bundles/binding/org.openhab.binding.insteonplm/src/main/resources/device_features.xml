@@ -57,6 +57,10 @@
     <command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
     <poll-handler>DefaultPollHandler</poll-handler>
 </feature>
+<feature name="KeyPadButtonGroup">
+	<message-dispatcher>DefaultGroupDispatcher</message-dispatcher>
+	<poll-handler>LEDBitPollHandler</poll-handler>
+</feature>
 <feature name="KeyPadButton2">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
@@ -64,7 +68,6 @@
 	<message-handler cmd="0x13" button="2" group="2">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="2" group="2">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton3">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -73,7 +76,6 @@
 	<message-handler cmd="0x13" button="3" group="3">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="3" group="3">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton4">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -82,7 +84,6 @@
 	<message-handler cmd="0x13" button="4" group="4">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="4" group="4">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton5">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -91,7 +92,6 @@
 	<message-handler cmd="0x13" button="5" group="5">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="5" group="5">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton6">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -100,7 +100,6 @@
 	<message-handler cmd="0x13" button="6" group="6">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="6" group="6">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton7">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -109,7 +108,6 @@
 	<message-handler cmd="0x13" button="7" group="7">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="7" group="7">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton8">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
@@ -118,7 +116,6 @@
 	<message-handler cmd="0x13" button="8" group="8">LightOffSwitchHandler</message-handler>
 	<message-handler cmd="0x19" button="8" group="8">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>	
-	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="GenericLastTime" statusFeature="true">
 	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
@@ -180,7 +177,7 @@
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11" group="1">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x13" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x2e">HiddenDooorSensorDataReplyHandler</message-handler>
+	<message-handler cmd="0x2e">HiddenDoorSensorDataReplyHandler</message-handler>
 	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
@@ -242,4 +239,57 @@
 	<command-handler default="true">NoOpCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
+<feature name="ThermostatTemperature">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatTemperatureRequestReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatTemperaturePollHandler</poll-handler>
+</feature>
+<feature name="ThermostatCoolSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x6c" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x2e" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType">ThermostatCoolSetPointCommandHandler</command-handler>
+	<command-handler default="true" >NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHeatCoolSetPointPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatHeatSetPoint">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x6d" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler cmd="0x2e" >ThermostatSetPointMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType">ThermostatHeatSetPointCommandHandler</command-handler>
+	<command-handler default="true" >NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHeatCoolSetPointPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatHumidity">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatHumidityRequestReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>ThermostatHumidityPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatModeControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatModeControlReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true" command="DecimalType">ThermostatModeControlCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatFanControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >ThermostatFanControlReplyHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true" command="DecimalType">ThermostatFanControlCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="ThermostatMasterControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >NoOpMsgHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true" command="DecimalType">ThermostatMasterControlCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>     
 </xml>

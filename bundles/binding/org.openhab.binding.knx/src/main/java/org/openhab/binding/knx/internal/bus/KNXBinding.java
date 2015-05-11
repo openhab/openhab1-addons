@@ -10,6 +10,7 @@ package org.openhab.binding.knx.internal.bus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private List<String> ignoreEventList = new ArrayList<String>();
+	private List<String> ignoreEventList = Collections.synchronizedList(new ArrayList<String>());
 
 	private KNXBusReaderScheduler mKNXBusReaderScheduler = new KNXBusReaderScheduler();
 
@@ -117,8 +118,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 
 	private boolean isEcho(String itemName, Type type) {
 		String ignoreEventListKey = itemName + type.toString();
-		if (ignoreEventList.contains(ignoreEventListKey)) {
-			ignoreEventList.remove(ignoreEventListKey);
+		if (ignoreEventList.remove(ignoreEventListKey)) {
 			logger.trace("We received this event (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, type.toString());
 			return true;
 		}
@@ -188,7 +188,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 			if (asdu.length==0) {
 				return;
 			}
-			for (String itemName : getItemNames(destination)) {
+			String [] itemList = getItemNames(destination);
+			if (itemList.length == 0) {
+				logger.debug("Received telegram for unknown group address {}", destination.toString());
+			}
+			for (String itemName : itemList) {
 				Iterable<Datapoint> datapoints = getDatapoints(itemName, destination);
 				if (datapoints != null) {
 					for (Datapoint datapoint : datapoints) {
@@ -208,7 +212,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 							}								
 
 							logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
-							return;
 						}
 						else {
 							final char[] hexCode = "0123456789ABCDEF".toCharArray();
@@ -221,12 +224,10 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 
 							logger.debug("Ignoring KNX bus data: couldn't transform to an openHAB type (not supported). Destination='{}', datapoint='{}', data='{}'",
 									new Object[] {destination.toString(), datapoint.toString(), sb.toString() });
-							return;
 						}
 					}
 				}
 			}
-			logger.debug("Received telegram for unknown group address {}", destination.toString());
 		} catch(RuntimeException re) {
 			logger.error("Error while receiving event from KNX bus: " + re.toString());
 		}
@@ -246,8 +247,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 					if(datapoint.getName().equals(itemName)) {
 						logger.debug("Initializing read of item {}.", itemName);
 						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-							logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+							logger.warn("Clouldn't add to KNX bus reader scheduler (bindingChanged)",datapoint);
 						}
+						break;
 					}
 				}
 			}
@@ -271,7 +273,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 					int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
 					if (autoRefreshTimeInSecs>0) {
 						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-							logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+							logger.warn("Clouldn't add to KNX bus reader scheduler (allBindingsChanged)",datapoint);
 						}
 					}
 				}
@@ -294,7 +296,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 				int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
 				if (autoRefreshTimeInSecs>0) {
 					if (!mKNXBusReaderScheduler.scheduleRead(datapoint, autoRefreshTimeInSecs)) {
-						logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+						logger.warn("Clouldn't add to KNX bus reader scheduler (connectionEstablished)",datapoint);
 					}
 				}
 			}

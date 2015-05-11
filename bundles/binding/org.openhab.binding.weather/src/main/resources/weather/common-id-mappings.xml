@@ -156,6 +156,7 @@
   </common-id-mapping>
   <common-id-mapping id="scattered-thunder">
     <provider name="Yahoo" ids="37"/>
+    <provider name="Wunderground" icons="chancetstorms"/>
   </common-id-mapping>
   <common-id-mapping id="scattered-showers">
     <provider name="Yahoo" ids="39"/>

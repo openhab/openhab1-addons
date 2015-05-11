@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WWA-02</Model>
+	<Label lang="en">Wireless Water and Temperature Alarm</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x22</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Label lang="en">Low Temperature Trigger Point</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Default>70</Default>
+			<Size>1</Size>
+			<Label lang="en">High Temperature Trigger Point</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+	</Configuration>
+	
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Water and Temperature Alarms</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Water Alarms</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Temperature Alarms</Label>
+		</Group>
+	</Associations>
+</Product>

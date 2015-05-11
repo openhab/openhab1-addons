@@ -9,21 +9,28 @@
 # Description:       Start / Stop openHAB server
 ### END INIT INFO
 
-# Author: Theo Weiss <theo.weiss@gmail.com>
+# Author: openHAB <openhab@openhab.org>
 #
 
-PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+OPENHAB_INST_DIR="/usr/share/openhab"
 
 DESC="openHAB server"
 NAME=openhab
-OPENHAB_CONF_DIR="/etc/openhab"
-OPENHAB_DIR="/usr/share/openhab"
-OPENHAB_LOG_DIR="/var/log/openhab"
-OPENHAB_WORKSPACE_DIR="/var/lib/openhab/workspace"
 JAVA="/usr/bin/java"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
+SETOWNER=yes
+
+# read defaults
+include="${OPENHAB_INST_DIR}/bin/openhab.in.sh"
+if [ -r "$include" ]; then
+	. "$include"
+else
+	echo "Error $include not found or not readable" >&2
+	exit 1
+fi
 
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.2-14) to ensure that this file is present
@@ -38,11 +45,13 @@ if [ ! -r "$LAUNCHER" ]; then
 	exit 5
 fi
 
-# Read configuration variable file if it is present
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
-
 if [ x"${OPENHAB_JAVA}" != x ]; then
 	JAVA="${OPENHAB_JAVA}"
+fi
+
+if [ ! -x "${JAVA}" ]; then
+	log_failure_msg "no java executable found at ${JAVA}"
+	exit 2
 fi
 
 if [ x"${USER_AND_GROUP}" != x ]; then
@@ -60,21 +69,6 @@ if [ x"${USER_AND_GROUP}" != x ]; then
 	if ! getent group "${GROUP}" > /dev/null 2>&1; then
 		log_failure_msg "runtime group doesn't exists"
 		exit 2
-	fi
-
-	# Check whether the specified user is member of "openhab" group
-	USER_ID=`id --user ${USER}`
-	if [ "${USER_ID}" != "0" ]; then
-		MEMBER_OF=`id --groups --name "${USER}" | tr " " "\n"`
-		for MEMBER_OF_GROUP in ${MEMBER_OF}; do
-			if [ "${MEMBER_OF_GROUP}" = "openhab" ]; then
-				IS_MEMBER="true"
-			fi
-		done
-		if [ "${IS_MEMBER}" != "true" ]; then
-			log_failure_msg "runtime user isn't member of 'openhab' group"
-			exit 2
-		fi
 	fi
 
 	EXTRA_ARGS="-c "${USER_AND_GROUP}" --umask 002 --background --make-pidfile --chdir ${OPENHAB_DIR}"
@@ -99,6 +93,7 @@ JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
  -Dopenhab.configfile="${OPENHAB_CONF_DIR}/configurations/openhab.cfg" \
  -Dopenhab.configdir="${OPENHAB_CONF_DIR}/configurations" \
  -Dopenhab.logdir="${OPENHAB_LOG_DIR}" \
+ -Dsmarthome.userdata="${OPENHAB_USER_DATA_DIR}"
  -Djetty.home="${OPENHAB_DIR}" \
  -Djetty.port.ssl=${HTTPS_PORT} \
  -Djetty.config="${OPENHAB_CONF_DIR}/jetty" \
@@ -126,7 +121,7 @@ if [ x"${OPENHAB_ARGS}" != x ]; then
 	JAVA_ARGS_DEFAULT="${JAVA_ARGS_DEFAULT} ${OPENHAB_ARGS}"
 fi
 
-if (echo ${DEBUG} | grep -qi "^yes$"); then
+if echo ${DEBUG} | grep -qi "^yes$"; then
 	JAVA_ARGS_DEFAULT="${DEBUG_ARGS} ${JAVA_ARGS_DEFAULT}"
 else
 	JAVA_ARGS_DEFAULT="-Dlogback.configurationFile=${OPENHAB_CONF_DIR}/logback.xml ${JAVA_ARGS_DEFAULT}"
@@ -135,6 +130,7 @@ fi
 case "$1" in
   start)
         log_daemon_msg "Starting $DESC" "$NAME"
+		${OPENHAB_INST_DIR}/bin/setpermissions.sh > /dev/null
 		if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
 			--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
 		then

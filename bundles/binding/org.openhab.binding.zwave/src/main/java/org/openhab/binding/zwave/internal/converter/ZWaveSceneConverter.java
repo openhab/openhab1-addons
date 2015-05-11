@@ -14,6 +14,7 @@ import org.openhab.binding.zwave.internal.converter.state.BinaryDecimalTypeConve
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSceneActivationCommandClass;
@@ -59,8 +60,9 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneAc
 	}
 
 	@Override
-	void executeRefresh(ZWaveNode node, ZWaveSceneActivationCommandClass commandClass, int endpointId,
+	SerialMessage executeRefresh(ZWaveNode node, ZWaveSceneActivationCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
+		return null;
 	}
 
 	@Override

@@ -6,7 +6,10 @@
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x30</id></Class>
-		<Class><id>0x31</id></Class>
+		<Class>
+			<id>0x31</id>
+            <isGetSupported>false</isGetSupported>
+		</Class>
 		<Class><id>0x70</id></Class>
 		<Class><id>0x72</id></Class>
 		<Class><id>0x80</id></Class>
@@ -20,6 +23,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Sensor report type on Get without endpoint</Label>
 			<Label lang="de">Berichtstyp bei GET ohne Sensorendpunkt</Label>
 			<Item>
@@ -48,6 +52,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Wake up for 10 minutes when batteries are inserted</Label>
 			<Label lang="de">Beim einsetzen der Batterien für 10 Minuten aufwecken</Label>
 			<Item>
@@ -96,6 +101,7 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Command to send when movement</Label>
 			<Item>
 				<Value>1</Value>

@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.binding.openhab.samsungac.communicator.AirConditioner;
 import org.binding.openhab.samsungac.communicator.SsdpDiscovery;
 import org.openhab.binding.samsungac.SamsungAcBindingProvider;
@@ -20,6 +21,7 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -99,6 +101,8 @@ public class SamsungAcBinding extends
 		String cmd = null;
 		switch (property) {
 		case AC_FUN_POWER:
+		case AC_ADD_SPI:
+		case AC_ADD_AUTOCLEAN:
 			cmd = "ON".equals(command.toString()) ? "On" : "Off";
 			break;
 		case AC_FUN_WINDLEVEL:
@@ -114,8 +118,7 @@ public class SamsungAcBinding extends
 			cmd = DirectionEnum.getFromValue(command).toString();
 			break;
 		case AC_FUN_TEMPSET:
-			cmd = command.toString();
-			break;
+		case AC_FUN_ERROR:
 		default:
 			cmd = command.toString();
 			break;
@@ -159,11 +162,11 @@ public class SamsungAcBinding extends
 		return null;
 	}
 
-	private String getItemName(CommandEnum property) {
+	private String getItemName(String acName, CommandEnum property) {
 		for (BindingProvider provider : providers) {
 			if (provider instanceof SamsungAcBindingProvider) {
 				SamsungAcBindingProvider acProvider = (SamsungAcBindingProvider) provider;
-				return acProvider.getItemName(property);
+				return acProvider.getItemName(acName, property);
 			}
 		}
 		return null;
@@ -176,9 +179,18 @@ public class SamsungAcBinding extends
 			throws ConfigurationException {
 		Enumeration<String> keys = config.keys();
 
+		String refreshIntervalString = (String) config.get("refresh");
+		if (StringUtils.isNotBlank(refreshIntervalString)) {
+			refreshInterval = Long.parseLong(refreshIntervalString);
+			logger.info("Refresh interval set to " + refreshIntervalString + " ms");
+		} else {
+			logger.info("No refresh interval configured, using default: " + refreshInterval + " ms");
+		}
+		
 		Map<String, AirConditioner> hosts = new HashMap<String, AirConditioner>();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
+			logger.debug("Configuration key is: " + key);
 			if ("service.pid".equals(key)) {
 				continue;
 			}
@@ -236,8 +248,9 @@ public class SamsungAcBinding extends
 		for (Map.Entry<String, AirConditioner> entry : nameHostMapper
 				.entrySet()) {
 			AirConditioner host = entry.getValue();
+			String acName = entry.getKey();
 			if (host.isConnected()) {
-				getAndUpdateStatusForAirConditioner(host);
+				getAndUpdateStatusForAirConditioner(acName, host);
 			} else {
 				reconnectToAirConditioner(entry.getKey(), host);
 			}
@@ -258,9 +271,10 @@ public class SamsungAcBinding extends
 		}
 	}
 
-	private void getAndUpdateStatusForAirConditioner(AirConditioner host) {
+	private void getAndUpdateStatusForAirConditioner(String acName, AirConditioner host) {
 		Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
 		try {
+			logger.debug("Getting status for ac: '" + acName + "'");
 			status = host.getStatus();
 		} catch (Exception e) {
 			logger.debug("Could not get status.. returning..");
@@ -268,7 +282,8 @@ public class SamsungAcBinding extends
 		}
 		
 		for (CommandEnum cmd : status.keySet()) {
-			String item = getItemName(cmd);
+			logger.debug("Trying to find item for: " + acName + " and cmd: " + cmd.toString());
+			String item = getItemName(acName, cmd);
 			String value = status.get(cmd);
 			if (item != null && value != null) {
 				updateItemWithValue(cmd, item, value);
@@ -283,6 +298,8 @@ public class SamsungAcBinding extends
 			postUpdate(item, DecimalType.valueOf(value));
 			break;
 		case AC_FUN_POWER:
+		case AC_ADD_SPI:
+		case AC_ADD_AUTOCLEAN:
 			postUpdate(
 					item,
 					value.toUpperCase().equals("ON") ? OnOffType.ON
@@ -312,9 +329,9 @@ public class SamsungAcBinding extends
 							.toString(DirectionEnum
 									.valueOf(value).value)));
 			break;
+		case AC_FUN_ERROR:
 		default:
-			logger.debug("Not implementation for updating: '"
-					+ cmd + "'");
+			postUpdate(item, StringType.valueOf(value));
 			break;
 		}
 	}
@@ -323,6 +340,8 @@ public class SamsungAcBinding extends
 		if (item != null && state != null) {
 			logger.debug(item + " gets updated to: " + state);
 			eventPublisher.postUpdate(item, state);
+		} else {
+			logger.debug("Could not update item: '" + item + "' with state: '" + state.toString() + "'");
 		}
 	}
 
