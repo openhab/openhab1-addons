@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -206,13 +207,21 @@ public class RuleTriggerManager {
 							ChangedEventTrigger ct = (ChangedEventTrigger) t;						
 							if(ct.getItem().equals(item.getName())) {
 								if(ct.getOldState()!=null) {
-									State triggerOldState = TypeParser.parseState(item.getAcceptedDataTypes(), ct.getOldState());
+									String stateString = ct.getOldState();
+									if (stateString.startsWith("\"") && stateString.endsWith("\"") && (item instanceof StringItem)) {
+										stateString = stateString.substring(1,stateString.length()-1);
+									}
+									State triggerOldState = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
 									if(!oldState.equals(triggerOldState)) {
 										continue;
 									}								
 								}
 								if(ct.getNewState()!=null) {
-									State triggerNewState = TypeParser.parseState(item.getAcceptedDataTypes(), ct.getNewState());
+									String stateString = ct.getNewState();
+									if (stateString.startsWith("\"") && stateString.endsWith("\"") && (item instanceof StringItem)) {
+										stateString = stateString.substring(1,stateString.length()-1);
+									}
+									State triggerNewState = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
 									if(!newState.equals(triggerNewState)) {
 										continue;
 									}								
