@@ -56,7 +56,10 @@ public class SoulissTServiceNODE_TIMESTAMP extends SoulissGenericTypical {
 	 */
 	@Override
 	public State getOHState() {
+		if (timestamp!=null) 
 		return DateTimeType.valueOf(timestamp);
+		else 
+			return null;
 
 	}
 }

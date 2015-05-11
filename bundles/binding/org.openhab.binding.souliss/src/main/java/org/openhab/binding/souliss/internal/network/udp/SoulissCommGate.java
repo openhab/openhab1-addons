@@ -92,6 +92,39 @@ public class SoulissCommGate {
 		send(datagramSocket, MACACOframe, soulissNodeIPAddressOnLAN);
 
 	}
+	
+	/*
+	 * T31 send force frame with command and setpoint float 
+	 */
+	public static void sendFORCEFrameT31SetPoint(DatagramSocket datagramSocket,
+			String soulissNodeIPAddressOnLAN, int IDNode, int slot,
+			short shortCommand, Short byte1, Short byte2) {
+		ArrayList<Byte> MACACOframe = new ArrayList<Byte>();
+		MACACOframe.add((byte) ConstantsUDP.Souliss_UDP_function_force);
+
+		// PUTIN, STARTOFFEST, NUMBEROF
+		MACACOframe.add((byte) 0x0);// PUTIN
+		MACACOframe.add((byte) 0x0);// PUTIN
+
+		MACACOframe.add((byte) (IDNode));// Start Offset
+		MACACOframe.add((byte) ((byte) slot + 5)); // Number Of byte of payload= command + set byte
+		
+		for (int i = 0; i <= slot - 1; i++) {
+			MACACOframe.add((byte) 00); // pongo a zero i byte precedenti lo
+										// slot da modificare
+		}
+		MACACOframe.add((byte) shortCommand);// PAYLOAD
+	
+		MACACOframe.add((byte) 0x0);// Empty - Temperature Measured Value
+		MACACOframe.add((byte) 0x0);// Empty - Temperature Measured Value
+		MACACOframe.add(byte1.byteValue());// Temperature Setpoint Value
+		MACACOframe.add(byte2.byteValue());// Temperature Setpoint Value
+
+		logger.debug("sendFORCEFrame - {}, soulissNodeIPAddressOnLAN: {}",
+				MaCacoToString(MACACOframe), soulissNodeIPAddressOnLAN);
+		send(datagramSocket, MACACOframe, soulissNodeIPAddressOnLAN);
+
+	}
 
 	public static void sendDBStructFrame(DatagramSocket socket,
 			String soulissNodeIPAddressOnLAN) {

@@ -19,6 +19,7 @@ import org.openhab.binding.souliss.internal.network.typicals.SoulissGenericTypic
 import org.openhab.binding.souliss.internal.network.typicals.SoulissNetworkParameter;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT16;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT1A;
+import org.openhab.binding.souliss.internal.network.typicals.SoulissT31;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTServiceUpdater;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTypicals;
 
@@ -213,10 +214,12 @@ public class UDPSoulissDecoder {
 						iNumBytes = 0;
 					}
 					float val = 0;
+					// ***** T1A *****
 					if (typ.getType() == 0x1A) {
 						short sVal = getByteAtSlot(mac, slot);
 						((SoulissT1A) typ).setState(sVal);
 						bDecoded_forLOG = true;
+						// ***** T19 *****
 					} else if (typ.getType() == 0x19) {
 						// set value of T19 at number of second slot
 						short sVal = getByteAtSlot(mac, slot + 1);
@@ -233,7 +236,7 @@ public class UDPSoulissDecoder {
 						typ.setState(val);
 						bDecoded_forLOG = true;
 					} else if (iNumBytes == 4) {
-						// T16 RGB
+						// ***** T16 RGB *****
 						val = getByteAtSlot(mac, slot);
 						typ.setState(val);
 						((SoulissT16) typ).setStateRED(getByteAtSlot(mac,
@@ -242,6 +245,40 @@ public class UDPSoulissDecoder {
 								slot + 2));
 						((SoulissT16) typ).setStateBLU(getByteAtSlot(mac,
 								slot + 3));
+						bDecoded_forLOG = true;
+					} else if (iNumBytes == 5) {
+						// ***** T31 *****
+						// *******************
+						// SLOT 0: Control State
+						short sVal = getByteAtSlot(mac, slot);
+						((SoulissT31) typ).setRawCommandState(sVal);
+						/*
+						 * The control state bit meaning follow as: 
+						 * BIT 0 Not used 
+						 * BIT 1 (0 Heating OFF , 1 Heating ON) 
+						 * BIT 2 (0 Cooling OFF , 1 Cooling ON) 
+						 * BIT 3 (0 Fan 1 OFF , 1 Fan 1 ON) 
+						 * BIT 4 (0 Fan 2 OFF , 1 Fan 2 ON) 
+						 * BIT 5 (0	Fan 3 OFF , 1 Fan 3 ON) 
+						 * BIT 6 (0 Manual Mode , 1 Automatic Mode for Fan) 
+						 * BIT 7 (0 Heating Mode, 1 Cooling Mode)
+						 */
+
+						((SoulissT31) typ).heating.setState(getBitState(sVal, 1));
+						((SoulissT31) typ).cooling.setState(getBitState(sVal, 2));
+						((SoulissT31) typ).fanLow.setState(getBitState(sVal, 3));
+						((SoulissT31) typ).fanMed.setState(getBitState(sVal, 4));
+						((SoulissT31) typ).fanHigh.setState(getBitState(sVal, 5));
+						((SoulissT31) typ).fanAutoMode.setState(getBitState(sVal, 6));
+						((SoulissT31) typ).heatingCoolingModeValue.setState(getBitState(sVal, 7));
+
+
+						// SLOT 1-2: Temperature Measured Value
+						val = getFloatAtSlot(mac, slot + 1);
+						((SoulissT31) typ).setMeasuredValue(val);
+						// SLOT 3-4: Temperature Setpoint Value
+						val = getFloatAtSlot(mac, slot + 3);
+						((SoulissT31) typ).setSetpointValue(val);
 						bDecoded_forLOG = true;
 					}
 					// non esegue per healt e timestamp, perchè il LOG viene
@@ -257,7 +294,18 @@ public class UDPSoulissDecoder {
 									((SoulissT16) typ).getStateRED(),
 									((SoulissT16) typ).getStateGREEN(),
 									((SoulissT16) typ).getStateBLU());
-						else if (bDecoded_forLOG) {
+						else if (iNumBytes == 5) {
+							// T31 Thermostat
+							logger.debug(
+									"decodeStateRequest: {} ({}). Thermostat= {}, Temp.Measured= {}, Temp.SetPoint= {}",
+									typ.getName(),
+									Short.valueOf(typ.getType()),
+									((SoulissT31) typ).getRawCommandState(),
+									((SoulissT31) typ)
+											.getTemperatureMeasuredValue(),
+									((SoulissT31) typ).getSetpointValue());
+
+						} else if (bDecoded_forLOG) {
 							if (typ.getType() == 0x1A) {
 								logger.debug(
 										"decodeStateRequest: {} (0x{}) = {}",
@@ -304,6 +352,16 @@ public class UDPSoulissDecoder {
 			// healths.add(Short.valueOf(mac.get(i)));
 			SoulissTServiceUpdater.updateHEALTY(soulissTypicalsRecipients,
 					i - 5, Short.valueOf(mac.get(i)));
+		}
+	}
+
+	public short getBitState(short vRaw, int iBit) {
+		final int MASK_BIT_1 = 0x1;
+
+		if (((vRaw >>> iBit) & MASK_BIT_1) == 0) {
+			return 0;
+		} else {
+			return 1;
 		}
 	}
 }

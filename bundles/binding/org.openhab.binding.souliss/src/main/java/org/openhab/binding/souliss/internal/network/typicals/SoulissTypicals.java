@@ -42,6 +42,7 @@ public class SoulissTypicals {
 	 */
 	public void addTypical(String sItem, SoulissGenericTypical typical) {
 			int iBit = 0;
+			String sUseOfSlot = "";
 			if (typical.getType() == Constants.Souliss_T1A) {
 				logger.info("Add Item: {} - Typ: {}, Node:{}, Slot: {}, Bit: {}", sItem , Integer.toHexString(typical.getType()), typical.getSoulissNodeID(), typical.getSlot(),((SoulissT1A) typical).getBit());  
 				
@@ -50,18 +51,18 @@ public class SoulissTypicals {
 				logger.info("Add Item: {} - Typ: {}, Node: {}, Slot: {}",sItem, Integer.toHexString(typical.getType()),typical.getSoulissNodeID(), typical.getSlot()); 
 			}
 			typical.setName(sItem);
-			// Index is : node + slot + iBit
+			// Index is : node + slot + iBit + sUseOfSlot
 			logger.info("hashTableItemToAddress <-- [key: {} - value: {} - iBit {}]", sItem, String.valueOf(typical.getSoulissNodeID()),String.valueOf(typical.getSlot())); 
 			hashTableItemToAddress.put(
 					sItem,
 					String.valueOf(typical.getSoulissNodeID())
-							+ String.valueOf(typical.getSlot()) + iBit);
+							+ String.valueOf(typical.getSlot()) + iBit + sUseOfSlot);
 			// Index is : item
 			logger.info("hashTableAddressToTypicals <-- [key: {} - value: {}]",typical.getSoulissNodeID()+ String.valueOf(typical.getSlot()) + iBit, typical); 
-			
+	
 			hashTableAddressToTypicals
 					.put(String.valueOf(typical.getSoulissNodeID())
-							+ String.valueOf(typical.getSlot()) + iBit, typical);
+							+ String.valueOf(typical.getSlot()) + iBit + sUseOfSlot, typical);
 }
 
 	/**
@@ -88,7 +89,7 @@ public class SoulissTypicals {
 		return hashTableAddressToTypicals.get(String.valueOf(getSoulissNodeID)
 				+ String.valueOf(iSlot) + iBit);
 	}
-
+	
 	/**
 	 * Add a souliss' typical in the hash table using ITEM as index
 	 * 

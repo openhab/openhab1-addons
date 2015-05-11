@@ -10,7 +10,6 @@ package org.openhab.binding.souliss.internal;
 
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
@@ -26,13 +25,17 @@ import org.openhab.binding.souliss.internal.network.typicals.SoulissT16;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT19;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT21;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT22;
+import org.openhab.binding.souliss.internal.network.typicals.SoulissT31;
 import org.openhab.binding.souliss.internal.network.typicals.StateTraslator;
 
 import org.openhab.binding.souliss.internal.network.typicals.SoulissNetworkParameter;
+import org.openhab.binding.souliss.internal.network.udp.HalfFloatUtils;
 import org.openhab.binding.souliss.internal.network.udp.SendDispatcher;
 import org.openhab.binding.souliss.internal.network.udp.UDPServerThread;
 
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
@@ -183,6 +186,39 @@ public class SoulissBinding<E> extends
 			T22.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),
 					command.toString()));
 			break;
+			
+		case Constants.Souliss_T31:
+			SoulissT31 T31 = (SoulissT31) T;
+			//Setpoint
+			if(itemName.equals(T31.getsItemNameSetpointValue())){
+				if(command instanceof DecimalType){
+					int uu=HalfFloatUtils.fromFloat(((DecimalType) command).floatValue());
+					byte B2 = (byte) (uu>>8);
+					byte B1 = (byte) uu;
+					//setpoint command
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(), Constants.Souliss_T31_Use_Of_Slot_SETPOINT_COMMAND), B1,B2); 
+				}
+			}
+			// Set As Measured 
+			else if(itemName.equals(T31.setAsMeasured.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_SETASMEASURED + "_" + command.toString()));
+				} else if(itemName.equals(T31.heatingCoolingModeValue.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_HEATING_COOLING+ "_" + command.toString()));
+				} else if(itemName.equals(T31.fanAutoMode.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANAUTOMODE+ "_" + command.toString()));
+				} else if(itemName.equals(T31.fanOff.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANOFF+ "_" + command.toString()));
+				} else if(itemName.equals(T31.fanLow.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANLOW+ "_" + command.toString()));
+				} else if(itemName.equals(T31.fanMed.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANMED+ "_" + command.toString()));
+				} else if(itemName.equals(T31.fanHigh.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANHIGH+ "_" + command.toString()));
+				} else if(itemName.equals(T31.shutdown.getName())){
+					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_SHUTDOWN+ "_" + command.toString()));
+				} 
+			break;
+			
 		default:
 			logger.debug("Typical Unknown");
 		}
@@ -292,7 +328,6 @@ public class SoulissBinding<E> extends
 				healty = new RefreshHEALTY(UDP_Server.getSocket(),
 						SoulissNetworkParameter.IPAddressOnLAN);
 			} catch (IOException e) {
-				e.printStackTrace();
 				logger.error(e.getMessage());
 			}
 		}
@@ -353,5 +388,7 @@ public class SoulissBinding<E> extends
 	@Override
 	protected String getName() {
 		return "Souliss Refresh Service";	}
+
+
 
 }

@@ -48,7 +48,7 @@ public class UDPServerThread extends Thread {
 
 	public void run() {
 
-		while (!bExit) {
+		while (true) {
 			try {
 				byte[] buf = new byte[256];
 
@@ -65,11 +65,8 @@ public class UDPServerThread extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error(e.getMessage());
-				bExit = true;
 			}
 		}
-
-		SoulissNetworkParameter.datagramsocket.close();
 	}
 
 	public DatagramSocket getSocket() {

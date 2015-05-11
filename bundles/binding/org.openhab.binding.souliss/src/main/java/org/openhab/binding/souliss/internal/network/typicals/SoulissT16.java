@@ -34,6 +34,7 @@ public class SoulissT16 extends SoulissGenericTypical {
 
 	public void setStateRED(int stateRED) {
 		this.stateRED = stateRED;
+		setUpdatedTrue();
 	}
 
 	public int getStateGREEN() {
@@ -42,6 +43,7 @@ public class SoulissT16 extends SoulissGenericTypical {
 
 	public void setStateGREEN(int stateGREEN) {
 		this.stateGREEN = stateGREEN;
+		setUpdatedTrue();
 	}
 
 	public int getStateBLU() {
@@ -50,6 +52,7 @@ public class SoulissT16 extends SoulissGenericTypical {
 
 	public void setStateBLU(int stateBLU) {
 		this.stateBLU = stateBLU;
+		setUpdatedTrue();
 	}
 
 	public SoulissT16(DatagramSocket _datagramsocket,

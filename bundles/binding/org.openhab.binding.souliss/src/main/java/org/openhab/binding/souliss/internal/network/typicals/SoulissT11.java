@@ -41,6 +41,7 @@ public class SoulissT11 extends SoulissGenericTypical {
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
 		this.setType(Constants.Souliss_T11);
+		//Note is the name of OH Type
 		this.setNote(sOHType);
 	}
 

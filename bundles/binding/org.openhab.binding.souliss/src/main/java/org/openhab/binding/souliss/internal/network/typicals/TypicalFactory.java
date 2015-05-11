@@ -25,7 +25,7 @@ public class TypicalFactory {
 
 	public static SoulissGenericTypical getClass(short soulissType,
 			DatagramSocket _datagramsocket, String sSoulissNodeIPAddressOnLAN,
-			int iIDNodo, int iSlot, String sOHType, byte iBit) {
+			int iIDNodo, int iSlot, String sOHType, byte iBit, String sUseSlot) {
 
 		SoulissGenericTypical T = null;
 
@@ -67,6 +67,10 @@ public class TypicalFactory {
 			break;
 		case Constants.Souliss_T22:
 			T = new SoulissT22(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
+			break;
+		case Constants.Souliss_T31:
+			T = new SoulissT31(_datagramsocket, sSoulissNodeIPAddressOnLAN,
 					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T52_TemperatureSensor:

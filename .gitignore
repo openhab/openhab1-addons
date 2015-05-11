@@ -13,3 +13,8 @@ distribution/openhabhome/*.zip
 distribution/openhabhome/etc/rrd4j/*.rrd
 *.xml_gen
 *.xml_gen
+/distribution/openhabhome/configurations/rules
+/distribution/openhabhome/configurations/scripts
+/distribution/openhabhome/configurations/sitemaps
+/distribution/openhabhome/configurations/items
+/distribution/openhabhome/configurations/persistence
