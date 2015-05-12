@@ -147,6 +147,7 @@
     <module>org.openhab.binding.harmonyhub</module>
     <module>org.openhab.binding.plex</module>
     <module>org.openhab.binding.mochadx10</module>
+    <module>org.openhab.binding.denon</module>
   </modules>
 
 </project>
