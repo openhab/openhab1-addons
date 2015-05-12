@@ -371,7 +371,7 @@ class MIndustrialQuadRelayBricklet extends
 
 class MIndustrialQuadRelay extends MInSwitchActor, 
 				MSubDevice<MIndustrialQuadRelayBricklet>{
-	readonly String deviceType = "industrial_quad_relay"
+	readonly String deviceType = "quad_relay"
 }
 
 class MBrickletIndustrialDigitalIn4 extends 
@@ -383,15 +383,19 @@ class MBrickletIndustrialDigitalIn4 extends
 
 class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, 
 		MSensor<DigitalValue> {
+	readonly String deviceType = "digital_4in"
 }
 
 class MBrickletIndustrialDigitalOut4 extends MDevice<MTinkerBrickletIndustrialDigitalOut4>,
         MSubDeviceHolder<DigitalActorDigitalOut4>{
+	readonly String deviceType = "bricklet_industrial_digital_4out"
 }
 
 class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustrialDigitalOut4> {
     int pin
+    readonly String deviceType = "digital_4out"
 }
+
 
 class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegmentDisplay4x7>{
     readonly String deviceType = "bricklet_segmentdisplay4x7"
@@ -886,6 +890,10 @@ enum NoSubIds {
 
 enum IndustrialDigitalInSubIDs {
 	IN0, IN1, IN2,IN3
+}
+
+enum IndustrialDigitalOutSubIDs {
+	OUT0, OUT1, OUT2, OUT3
 }
 
 enum IndustrialQuadRelayIDs {
