@@ -148,6 +148,7 @@
     <module>org.openhab.binding.plex</module>
     <module>org.openhab.binding.mochadx10</module>
     <module>org.openhab.binding.denon</module>
+    <module>org.openhab.binding.mailcontrol</module>
   </modules>
 
 </project>
