@@ -89,7 +89,6 @@ public class Port {
 	public synchronized boolean isModemDBComplete() { return (m_modemDBComplete); }
 	public boolean 			isRunning() 	{ return m_running; }
 	public InsteonAddress	getAddress()	{ return m_modem.getAddress(); }
-	public InsteonDevice	getModem()		{ return m_modem.getDevice(); }
 	public String			getDeviceName()	{ return m_devName; }
 	public Driver			getDriver()		{ return m_driver; }
 
@@ -218,16 +217,10 @@ public class Port {
 		public void run() {
 			logger.debug("starting reader...");
 			byte[] buffer = new byte[2 * m_readSize];
-			int len = -1;
-			try	{
-				while ((len = m_ioStream.in().read(buffer, 0, m_readSize)) > -1) {
-					m_msgFactory.addData(buffer, len);
-					processMessages();
-				}
-			} catch (IOException e)	{
-				e.printStackTrace();
-				logger.error("got read IOException on port {}, port is now disabled!", m_logName);
-			}            
+			for (int len = -1; (len = m_ioStream.read(buffer, 0, m_readSize)) > 0;) {
+				m_msgFactory.addData(buffer, len);
+				processMessages();
+			}
 		}
 		
 		private void processMessages() {
@@ -330,11 +323,11 @@ public class Port {
 						// slow down the modem traffic with the following statement:
 						// Thread.sleep(500);
 						synchronized (m_reader.getRequestReplyLock()) {
-							m_ioStream.out().write(msg.getData());
+							m_ioStream.write(msg.getData());
 							while (m_reader.waitForReply()) {
 								Thread.sleep(WAIT_TIME);
 								logger.trace("retransmitting msg: {}", msg);
-								m_ioStream.out().write(msg.getData());
+								m_ioStream.write(msg.getData());
 							}
 							
 						}
@@ -345,9 +338,6 @@ public class Port {
 					}
 				} catch (InterruptedException e) {
 					logger.error("got interrupted exception in write thread:", e);
-				} catch (IOException e) {
-					logger.error("got i/o exception in write thread:", e);
-					try { Thread.sleep(30000);} catch (InterruptedException ie) {	}
 				} catch (Exception e) {
 					logger.error("got exception in write thread:", e);
 				}
@@ -359,7 +349,7 @@ public class Port {
 	 */
 	class Modem implements MsgListener {
 		private InsteonDevice m_device = null;
-		InsteonAddress getAddress() { return m_device.getAddress(); }
+		InsteonAddress getAddress() { return (m_device == null) ? new InsteonAddress() : (m_device.getAddress()); }
 		InsteonDevice getDevice() { return m_device; }
 		@Override
 		public void msg(Msg msg, String fromPort) {
