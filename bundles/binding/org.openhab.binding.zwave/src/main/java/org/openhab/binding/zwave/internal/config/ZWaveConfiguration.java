@@ -321,9 +321,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.addAction("Delete", "Delete Node");
 				}
 				records.add(record);
-
-				// This needs to be removed - temporary only until it's added to initialisation code.
-				record.addAction("Version", "Version Info");
 			}
 			return records;
 		}
@@ -977,20 +974,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
-				}
-
-				// This is temporary
-				// It should be in the startup code, but that needs refactoring
-				if (action.equals("Version")) {
-					logger.debug("NODE {}: Get node version", nodeId);
-					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-							.getCommandClass(CommandClass.VERSION);
-					if (versionCommandClass == null) {
-						return;
-					}
-
-					// Request the version report for this node
-					this.zController.sendData(versionCommandClass.getVersionMessage());
 				}
 
 				// Return here as afterwards we assume there are more elements
