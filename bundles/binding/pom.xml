@@ -72,6 +72,7 @@
     <module>org.openhab.binding.mqttitude</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
+    <module>org.openhab.binding.systeminfo.test</module>
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.pilight</module>
     <module>org.openhab.binding.pilight.test</module>
