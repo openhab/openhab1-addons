@@ -22,18 +22,22 @@ import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
 import org.influxdb.dto.Serie;
+import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.PointType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
@@ -46,7 +50,6 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import retrofit.RetrofitError;
 
 /**
@@ -72,6 +75,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private static final String DIGITAL_VALUE_OFF = "0";
   private static final String DIGITAL_VALUE_ON = "1";
   private static final String VALUE_COLUMN_NAME = "value";
+  private static final String DIGITAL_VALUE_CLOSED = "CLOSED";
+  private static final String DIGITAL_VALUE_OPEN = "OPEN";  
   private ItemRegistry itemRegistry;
   private InfluxDB influxDB;
   private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceService.class);
@@ -416,24 +421,31 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   /**
    * Converts {@link State} to objects fitting into influxdb values.
    * 
-   * @param state to be converted
-   * @return integer or double value for DecimalType and PercentType, an integer for DateTimeType
-   *         and 0 or 1 for OnOffType and OpenClosedType.
+   * @param 	state to be converted
+   * @return 	integer or double value for DecimalType and PercentType, 
+   * 			0 or 1 for OnOffType and OpenClosedType,
+   *         	SortedMap<String, PrimitiveType> for HSBType,
+   *         	integer for DateTimeType,
+   *         	SortedMap<String, PrimitiveType> for PointType
    */
   private Object stateToObject(State state) {
     Object value;
-    if (state instanceof PercentType) {
-      value = convertBigDecimalToNum(((PercentType) state).toBigDecimal());
-    } else if (state instanceof DecimalType) {
-      value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
-    } else if (state instanceof DateTimeType) {
-      value = ((DateTimeType) state).getCalendar().getTime().getTime();
+    if (state instanceof DecimalType) {
+    	value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
+    } else if (state instanceof PercentType) {
+        value = convertBigDecimalToNum(((PercentType) state).toBigDecimal());
     } else if (state instanceof OnOffType) {
-      value = (OnOffType) state == OnOffType.ON ? 1 : 0;
+    	value = (OnOffType) state == OnOffType.ON ? 1 : 0;
     } else if (state instanceof OpenClosedType) {
-      value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
+    	value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
+    } else if (state instanceof HSBType) {
+    	value = ((HSBType) state).getConstituents();
+    } else if (state instanceof DateTimeType) {
+    	value = ((DateTimeType) state).getCalendar().getTime().getTime();
+    } else if (state instanceof PointType) {
+    	value = ((PointType) state).getConstituents();
     } else {
-      value = state.toString();
+    	value = state.toString();
     }
     return value;
   }
@@ -446,16 +458,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    */
   private String stateToString(State state) {
     String value;
-    if (state instanceof PercentType) {
-      value = ((PercentType) state).toBigDecimal().toString();
-    } else if (state instanceof DateTimeType) {
-      value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
-    } else if (state instanceof DecimalType) {
-      value = ((DecimalType) state).toBigDecimal().toString();
+    if (state instanceof DecimalType) {
+    	value = ((DecimalType) state).toBigDecimal().toString();
+    } else if (state instanceof PercentType) {
+    	value = ((PercentType) state).toBigDecimal().toString();
     } else if (state instanceof OnOffType) {
-      value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
+    	value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
+    } else if (state instanceof OpenClosedType) {
+    	value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_OPEN : DIGITAL_VALUE_CLOSED;  
+    } else if (state instanceof HSBType) {
+    	value = ((HSBType) state).getConstituents().toString();
+    } else if (state instanceof DateTimeType) {
+    	value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
+    } else if (state instanceof PointType) {
+    	value = ((PointType) state).getConstituents().toString();
     } else {
-      value = state.toString();
+    	value = state.toString();
     }
     return value;
   }
@@ -466,48 +484,87 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * 
    * @param value to be converted to a {@link State}
    * @param itemName name of the {@link Item} to get the {@link State} for
-   * @return
+   * @return the state of the item represented by the itemName parameter, 
+   * 			else the string value of the Object parameter
    */
   private State objectToState(Object value, String itemName) {
     String valueStr = String.valueOf(value);
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
-        if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-          return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
-              ? OnOffType.OFF
-              : OnOffType.ON;
+        
+        if (item instanceof ColorItem || item instanceof DimmerItem) {
+        	return item.getState();
+        } else if (item instanceof SwitchItem) {
+        	return convertToSwitchOutput(valueStr).equals(DIGITAL_VALUE_OFF)
+        		? OnOffType.OFF
+                : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-          return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
-              ? OpenClosedType.CLOSED
-              : OpenClosedType.OPEN;
-        } else if (item instanceof StringItem)  {
-        	return item.getState();        
-    	}
+        	return (convertToContactOutput(valueStr).equals(DIGITAL_VALUE_CLOSED))
+                ? OpenClosedType.CLOSED
+                : OpenClosedType.OPEN;
+        } else if (item instanceof GenericItem) {
+        	return item.getState();
+        }
       } catch (ItemNotFoundException e) {
-        logger.warn("Could not find item '{}' in registry", itemName);
+    	  logger.warn("Could not find item '{}' in registry", itemName);
       }
     }
-    // just return a DecimalType as a fallback
-    return new DecimalType(valueStr);
+    // just return a StringType as a fallback
+    return new StringType(valueStr);
   }
 
   /**
-   * Maps a string value which expresses a {@link BigDecimal.ZERO } to DIGITAL_VALUE_OFF, all others
-   * to DIGITAL_VALUE_ON
    * 
-   * @param value to be mapped
-   * @return
+   * @param 	switchValue				database value representing a SwitchItem state
+   * @return	DIGITAL_VALUE_ON		if input "on" (ignore case) or a non-zero number
+   * 			DIGITAL_VALUE_OFF		all other cases
    */
-  private String string2DigitalValue(String value) {
-    BigDecimal num = new BigDecimal(value);
-    if (num.compareTo(BigDecimal.ZERO) == 0) {
-      logger.trace("digitalvalue {}", DIGITAL_VALUE_OFF);
-      return DIGITAL_VALUE_OFF;
-    } else {
-      logger.trace("digitalvalue {}", DIGITAL_VALUE_ON);
-      return DIGITAL_VALUE_ON;
-    }
+  private String convertToSwitchOutput(String switchValue) {
+	  // input may be numeric (0, 1, 99.999) or string ("on", "OfF", "asdf"), so can we parse it as an int?
+	  try {
+		  int valueAsInt = Integer.parseInt(switchValue);
+		  if (valueAsInt != 0) {
+			  logger.trace("contactValue {}", DIGITAL_VALUE_ON);
+			  return DIGITAL_VALUE_ON;
+		  }
+	  } catch (NumberFormatException e) {
+		  // input is not an integer
+		  if ("on".equalsIgnoreCase(switchValue)) {
+			  logger.trace("contactValue {}", DIGITAL_VALUE_ON);
+			  return DIGITAL_VALUE_ON;
+		  }
+	  }
+	  
+	  // to reach here we either have a number that is zero, or a string that is not "on"	  
+	  logger.trace("contactValue {}", DIGITAL_VALUE_OFF);
+	  return DIGITAL_VALUE_OFF;
   }
-
+  
+  /**
+   * 
+   * @param 	contactValue			database value representing a ContactItem state
+   * @return	DIGITAL_VALUE_OPEN		if input "open" (ignore case) or a non-zero number
+   * 			DIGITAL_VALUE_CLOSED	all other cases
+   */
+  private String convertToContactOutput(String contactValue) {
+	  // input may be numeric (0, 1, 99.999) or string ("open", "ClOsEd", "asdf"), so can we parse it as an int?
+	  try {
+		  int valueAsInt = Integer.parseInt(contactValue);
+		  if (valueAsInt != 0) {
+			  logger.trace("contactValue {}", DIGITAL_VALUE_OPEN);
+			  return DIGITAL_VALUE_OPEN;
+		  }
+	  } catch (NumberFormatException e) {
+		  // input is not an integer
+		  if ("open".equalsIgnoreCase(contactValue)) {
+			  logger.trace("contactValue {}", DIGITAL_VALUE_OPEN);
+			  return DIGITAL_VALUE_OPEN;
+		  }
+	  }
+	  
+	  // to reach here we either have a number that is zero, or a string that is not "open"	  
+	  logger.trace("contactValue {}", DIGITAL_VALUE_CLOSED);
+	  return DIGITAL_VALUE_CLOSED;
+  }
 }
