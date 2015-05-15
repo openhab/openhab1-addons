@@ -31,6 +31,8 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 /**
  * This class in mainly used for receiving internal command and to send them to
  * the Panasonic TV.
@@ -52,6 +54,11 @@ public class PanasonicTVBinding extends
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
+	
+	/**
+	 * Listening port of the TV
+	 */
+	private final int tvPort = 55000;
 
 	public PanasonicTVBinding() {
 	}
@@ -170,16 +177,14 @@ public class PanasonicTVBinding extends
 			return 0;
 		}
 
-		int port = 55000;
-
 		try {
-			Socket client = new Socket(tvIp, port);
+			Socket client = new Socket(tvIp, tvPort);
 
 			BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(
 					client.getOutputStream(), "UTF8"));
 
 			String header = "POST /nrc/control_0/ HTTP/1.1\r\n";
-			header = header + "Host: " + tvIp + ":55000\r\n";
+			header = header + "Host: " + tvIp + ":" + tvPort +"\r\n";
 			header = header
 					+ "SOAPACTION: \"urn:panasonic-com:service:p00NetworkControl:1#X_SendKey\"\r\n";
 			header = header + "Content-Type: text/xml; charset=\"utf-8\"\r\n";
