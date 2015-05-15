@@ -662,8 +662,17 @@
 				<Id>0036</Id>
 			</Reference>
 			<Model>DSB54</Model>
-			<Label lang="en">Recessed Door/Window sensor</Label>
+			<Label lang="en">Recessed Door/Window Sensor</Label>
 			<ConfigFile>aeon/dsb54.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>DSB54</Model>
+			<Label lang="en">Recessed Door/Window Sensor ()Gen5)</Label>
+			<ConfigFile>aeon/dsb54-gen5.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
