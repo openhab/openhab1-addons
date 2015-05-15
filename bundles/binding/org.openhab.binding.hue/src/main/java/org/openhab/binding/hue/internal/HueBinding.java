@@ -144,7 +144,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 							if (deviceConfig.getType().equals(BindingType.brightness)) {
 								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
 									// Only postUpdate when bulb is on, otherwise dimmer item is not retaining state and shows to max brightness value
-									PercentType newPercent = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
+									PercentType newPercent = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double) HueBulb.MAX_BRIGHTNESS));
 									if ((deviceConfig.itemStatePercentType == null) || (deviceConfig.itemStatePercentType.equals(newPercent) == false)) {
 										eventPublisher.postUpdate(hueItemName, newPercent);
 										deviceConfig.itemStatePercentType = newPercent;
@@ -154,8 +154,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
 									// Only postUpdate when bulb is on, otherwise color item is not retaining state and shows to max brightness value
 									DecimalType decimalHue = new DecimalType(bulb.getHue() / (double)182);
-									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
-									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double)255));
+									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double) HueBulb.MAX_BRIGHTNESS));
+									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double) HueBulb.MAX_SATURATION));
 									HSBType newHsb = new HSBType(decimalHue, percentSaturation, percentBrightness);
 									if ((deviceConfig.itemStateHSBType == null) || (deviceConfig.itemStateHSBType.equals(newHsb) == false)) {
 										eventPublisher.postUpdate(hueItemName, newHsb);
@@ -234,7 +234,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 				int resultingValue = bulb.decreaseBrightness(deviceConfig.getStepSize());
 				eventPublisher.postUpdate(itemName, new PercentType(resultingValue));
 			} else if ((command instanceof PercentType) && !(command instanceof HSBType)) {
-				bulb.setBrightness((int)Math.round((double)255 / (double)100 * ((PercentType) command).intValue()));
+				bulb.setBrightness((int)Math.round((double)HueBulb.MAX_BRIGHTNESS / (double)100 * ((PercentType) command).intValue()));
 			}
 		}
 
