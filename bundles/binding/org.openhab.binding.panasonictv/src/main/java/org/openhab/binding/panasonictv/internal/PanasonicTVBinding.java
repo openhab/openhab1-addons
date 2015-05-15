@@ -113,15 +113,6 @@ public class PanasonicTVBinding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		logger.debug("internalReceiveUpdate() for item: " + itemName
-				+ " with state: " + newState.toString());
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 
