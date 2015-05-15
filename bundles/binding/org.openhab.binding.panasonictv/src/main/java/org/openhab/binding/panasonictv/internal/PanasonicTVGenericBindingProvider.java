@@ -147,8 +147,6 @@ public class PanasonicTVGenericBindingProvider extends
 
 	@Override
 	public PanasonicTVBindingConfig getBindingConfigForItem(String item) {
-		// TODO Auto-generated method stub
-		
 		PanasonicTVBindingConfig config = (PanasonicTVBindingConfig)bindingConfigs.get(item);
 		
 		return config;
