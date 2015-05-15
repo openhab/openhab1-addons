@@ -61,7 +61,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Weather getWeather(LocationConfig locationConfig) {
+	public Weather getWeather(LocationConfig locationConfig) throws Exception {
 		Weather weather = new Weather(getProviderName());
 		executeRequest(weather, prepareUrl(getWeatherUrl(), locationConfig), locationConfig);
 
@@ -97,7 +97,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 	/**
 	 * Executes the http request and parses the returned stream.
 	 */
-	private void executeRequest(Weather weather, String url, LocationConfig locationConfig) {
+	private void executeRequest(Weather weather, String url, LocationConfig locationConfig) throws Exception {
 		GetMethod get = null;
 		try {
 			logger.trace("{}[{}]: request : {}", getProviderName(), locationConfig.getLocationId(), url);
@@ -135,10 +135,10 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 			} else {
 				setLastUpdate(weather);
 			}
-
 		} catch (Exception ex) {
-			logger.error(getProviderName() + ": " + ex.getMessage(), ex);
+			logger.error(getProviderName() + ": " + ex.getMessage());
 			weather.setError(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+			throw ex;
 		} finally {
 			if (get != null) {
 				get.releaseConnection();
