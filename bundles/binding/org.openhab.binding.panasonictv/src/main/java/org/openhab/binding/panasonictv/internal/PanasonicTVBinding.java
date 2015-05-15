@@ -151,21 +151,24 @@ public class PanasonicTVBinding extends
 	private int sendCommand(PanasonicTVBindingConfig config) {
 		String command = config.getCommand().toUpperCase();
 
-		final String soaprequest_skeleton = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
-				"<s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\">" +
-				"<X_KeyEvent>NRC_%s</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+		final String soaprequest_skeleton = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+				+ "<s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\">"
+				+ "<X_KeyEvent>NRC_%s</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
 		String soaprequest = "";
 
-		if (config.getCommand().toUpperCase().startsWith("HDMI"))
+		if (config.getCommand().toUpperCase().startsWith("HDMI")) {
 			soaprequest = String.format(soaprequest_skeleton, command);
-		else
+		} else {
 			soaprequest = String.format(soaprequest_skeleton, command
 					+ "-ONOFF");
+		}
 
 		String tvIp = registeredTVs.get(config.getTv());
 
 		if ((tvIp == null) || tvIp.isEmpty())
+		{
 			return 0;
+		}
 
 		int port = 55000;
 
