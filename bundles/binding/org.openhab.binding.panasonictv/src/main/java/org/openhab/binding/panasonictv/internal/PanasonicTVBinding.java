@@ -137,7 +137,7 @@ public class PanasonicTVBinding extends
 			}
 
 			if (registeredTVs.isEmpty()) {
-				setProperlyConfigured(true);
+				setProperlyConfigured(false);
 				logger.debug("No TV was registered in config file");
 			} else
 				setProperlyConfigured(true);
