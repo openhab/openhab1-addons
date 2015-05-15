@@ -61,8 +61,6 @@ public class PanasonicTVBinding extends
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
 	}
 
 	/**
