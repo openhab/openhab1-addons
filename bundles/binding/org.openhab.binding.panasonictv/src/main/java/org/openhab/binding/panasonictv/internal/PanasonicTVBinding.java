@@ -149,7 +149,7 @@ public class PanasonicTVBinding extends
 	 * 
 	 * @return HTTP response code from the TV (should be 200)
 	 */
-	int sendCommand(PanasonicTVBindingConfig config) {
+	private int sendCommand(PanasonicTVBindingConfig config) {
 		String command = config.getCommand().toUpperCase();
 
 		String soaprequest = "";
