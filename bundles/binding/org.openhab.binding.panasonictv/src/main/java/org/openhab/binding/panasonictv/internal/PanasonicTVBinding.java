@@ -145,8 +145,6 @@ public class PanasonicTVBinding extends
 	}
 
 	/**
-	 * @author André Heuer
-	 *
 	 * This methods sends the command to the TV
 	 * 
 	 * @return HTTP response code from the TV (should be 200)
