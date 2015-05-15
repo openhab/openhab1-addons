@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.panasonictv.PanasonicTVBindingConfig;
 import org.openhab.binding.panasonictv.PanasonicTVBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class PanasonicTVBinding extends
-		AbstractActiveBinding<PanasonicTVBindingProvider> implements
+		AbstractBinding<PanasonicTVBindingProvider> implements
 		ManagedService {
 
 	private Map<String, String> registeredTVs = new HashMap<String, String>();
@@ -67,22 +67,6 @@ public class PanasonicTVBinding extends
 	}
 
 	public void deactivate() {
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected String getName() {
-		return "PanansonicTV Binding";
 	}
 
 	/**
@@ -143,10 +127,8 @@ public class PanasonicTVBinding extends
 			}
 
 			if (registeredTVs.isEmpty()) {
-				setProperlyConfigured(false);
 				logger.debug("No TV was registered in config file");
-			} else
-				setProperlyConfigured(true);
+			}
 		}
 	}
 
@@ -220,10 +202,5 @@ public class PanasonicTVBinding extends
 					+ e.getStackTrace());
 		}
 		return 0;
-	}
-
-	@Override
-	protected void execute() {
-
 	}
 }
