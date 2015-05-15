@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This class in mainly used for receiving internal command and to send them
+ * to the Panasonic TV.
  * 
  * @author André Heuer
  * @since 1.7.0
