@@ -131,9 +131,6 @@ public class PanasonicTVGenericBindingProvider extends
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		// System.out.println("process Binding config: " + context + ", item: "
-		// + item + ", Binding config: " + bindingConfig);
-
 		String[] configs = bindingConfig.split(":");
 		if (configs.length < 2) {
 			logger.debug("Invalid item config for item '" + item.getName()
