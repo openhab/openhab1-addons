@@ -84,9 +84,6 @@ public class PanasonicTVBinding extends
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() for item: " + itemName
 				+ " with command: " + command.toString());
 
