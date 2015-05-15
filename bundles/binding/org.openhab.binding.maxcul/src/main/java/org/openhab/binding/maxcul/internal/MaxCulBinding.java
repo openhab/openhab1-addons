@@ -10,6 +10,7 @@ package org.openhab.binding.maxcul.internal;
 
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -242,7 +243,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
 				logger.debug("Setting up device " + deviceString);
-				setupDevice(deviceString);
+				setupDevice(deviceString, config);
 				if (cul == null)
 					throw new ConfigurationException("device",
 							"Configuration failed. Unable to access CUL device "
@@ -254,14 +255,15 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 		}
 	}
 
-	private void setupDevice(String device) {
+	private void setupDevice(String device, Dictionary<String, ?> config) {
 		if (cul != null) {
 			CULManager.close(cul);
 		}
 		try {
 			accessDevice = device;
 			logger.debug("Opening CUL device on " + accessDevice);
-			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
+			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX,
+					convertDictionaryToMap(config));
 			messageHandler = new MaxCulMsgHandler(this.srcAddr, cul,
 					super.providers);
 			messageHandler.registerMaxCulBindingMessageProcessor(this);
@@ -270,6 +272,26 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			cul = null;
 			accessDevice = null;
 		}
+	}
+
+	private Map<String, Object> convertDictionaryToMap(
+			Dictionary<String, ?> config) {
+
+		Map<String, Object> myMap = new HashMap<String, Object>();
+		
+		if (config == null) {
+			return null;
+		}
+		if (config.size() == 0) {
+			return myMap;
+		}
+
+		Enumeration<String> allKeys = config.keys();
+		while (allKeys.hasMoreElements()) {
+			String key = allKeys.nextElement();
+			myMap.put(key, config.get(key));
+		}
+		return myMap;
 	}
 
 	private Collection<MaxCulBindingConfig> getBindingsBySerial(String serial) {
@@ -287,8 +309,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 		return bindingConfigs;
 	}
 
-	private void updateCreditMonitors()
-	{
+	private void updateCreditMonitors() {
 		/* find and update credit monitor binding if it exists */
 		int credit10ms = messageHandler.getCreditStatus();
 		for (MaxCulBindingProvider provider : super.providers) {
@@ -301,7 +322,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			}
 		}
 	}
-	
+
 	@Override
 	public void maxCulMsgReceived(String data, boolean isBroadcast) {
 		logger.debug("Received data from CUL: " + data);

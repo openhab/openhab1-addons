@@ -19,10 +19,10 @@
 			<Index>1</Index>
 			<Type>short</Type>
 			<Minimum>1</Minimum>
-			<Maximum>15300</Maximum>
-			<Default>180</Default>
+			<Maximum>255</Maximum>
+			<Default>3</Default>
 			<Size>1</Size>
-			<Label lang="en">On time in seconds</Label>
+			<Label lang="en">On time in minutes</Label>
 			<Help lang="en">Delay before sending OFF</Help>
 		</Parameter>
 	</Configuration>
@@ -33,6 +33,7 @@
 			<Maximum>5</Maximum>
 			<Label lang="en">Control Command</Label>
 			<Help lang="en"><![CDATA[Control Command when trip]]></Help>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>

@@ -38,6 +38,7 @@ public class GetControllerCapabilitiesMessageClass extends ZWaveCommandProcessor
 	private boolean isSUC = false;
 
 	public SerialMessage doRequest() {
+		logger.debug("Creating GET_CONTROLLER_CAPABILITIES message");
 		return new SerialMessage(SerialMessageClass.GetControllerCapabilities, SerialMessageType.Request, SerialMessageClass.GetControllerCapabilities, SerialMessagePriority.High);
 	}
 	

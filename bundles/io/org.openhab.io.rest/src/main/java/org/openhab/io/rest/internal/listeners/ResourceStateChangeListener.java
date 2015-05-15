@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.BroadcastFilter;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
+import org.atmosphere.cpr.BroadcasterConfig;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
@@ -33,6 +35,8 @@ import org.openhab.io.rest.internal.filter.PollingDelayFilter;
 import org.openhab.io.rest.internal.filter.ResponseObjectFilter;
 import org.openhab.io.rest.internal.filter.SendPageUpdateFilter;
 import org.openhab.io.rest.internal.resources.ItemResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is an abstract super class which adds Broadcaster config, lifecycle and filters to its derived classes and registers listeners to subscribed resources.   
@@ -41,6 +45,8 @@ import org.openhab.io.rest.internal.resources.ItemResource;
  * @since 0.9.0
  */
 abstract public class ResourceStateChangeListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
 
 	final static long CACHE_TIME = 300 * 1000; // 5 mins
 	
@@ -73,43 +79,58 @@ abstract public class ResourceStateChangeListener {
 		return cachedEntries;
 	}
 	
+	/**
+	 * Configure what cache we want to use
+	 * @param config
+	 */
+	public void configureCache(BroadcasterConfig config){
+		config.setBroadcasterCache(new UUIDBroadcasterCache());
+		config.getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+		config.getBroadcasterCache().start();
+	}
+	
 	public void registerItems(){
 		StartCacheExecutor();
-	        broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache()); 
-	        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
-	        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
+		BroadcasterConfig config = broadcaster.getBroadcasterConfig();
 		
-	        broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
-			
+		configureCache(config);
+
+		addBroadcastFilter(config, new PerRequestBroadcastFilter() {
+
 			@Override
-			public BroadcastAction filter(Object originalMessage, Object message) {
-				return new BroadcastAction(ACTION.CONTINUE,  message);
+			public BroadcastAction filter(String broadcasterId,
+					Object originalMessage, Object message) {
+				return new BroadcastAction(message);
 			}
 
 			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+			public BroadcastAction filter(String broadcasterId,
+					AtmosphereResource resource, Object originalMessage,
+					Object message) {
 				HttpServletRequest request = null;
 				BroadcastAction result = null;
 				try {
-				 request = resource.getRequest();
-				 Object responce = getResponseObject(request);
-				 result = new BroadcastAction(ACTION.CONTINUE,  responce);
+					request = resource.getRequest();
+					Object response = getResponseObject(request);
+					result = new BroadcastAction(ACTION.CONTINUE, response);
 				} catch (Exception e) {
-					result = new BroadcastAction(ACTION.ABORT,  getResponseObject(request));					
+					result = new BroadcastAction(ACTION.ABORT,
+							getResponseObject(request));
 				}
-				 return result;
+				return result;
 			}
+
 		});
 		
-		broadcaster.getBroadcasterConfig().addFilter(new PollingDelayFilter());
-		broadcaster.getBroadcasterConfig().addFilter(new SendPageUpdateFilter());
-		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
-		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
-		
+		addBroadcastFilter(config, new PollingDelayFilter());
+		addBroadcastFilter(config, new SendPageUpdateFilter());
+		addBroadcastFilter(config, new DuplicateBroadcastProtectionFilter());
+		addBroadcastFilter(config, new ResponseObjectFilter());
+				
 		stateChangeListener = new StateChangeListener() {
 			// don't react on update events
 			public void stateUpdated(Item item, State state) {
-				broadcaster.broadcast(item);
+//				broadcaster.broadcast(item);
 				// if the group has a base item and thus might calculate its state
 				// as a DecimalType or other, we also consider it to be necessary to
 				// send an update to the client as the label of the item might have changed,
@@ -143,6 +164,14 @@ abstract public class ResourceStateChangeListener {
 		};
 		
 		registerStateChangeListenerOnRelevantItems(broadcaster.getID(), stateChangeListener);
+	}
+
+
+	private void addBroadcastFilter(BroadcasterConfig config,
+			BroadcastFilter filter) {
+		if (!config.addFilter(filter) && logger.isDebugEnabled()) {
+			logger.debug("Could not add filter '{}'", filter.getClass().getName());
+		}
 	}
 	
 	public void unregisterItems(){

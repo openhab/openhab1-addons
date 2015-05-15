@@ -78,7 +78,7 @@ public class HeatPumpGenericBindingProvider extends AbstractGenericBindingProvid
 			addBindingConfig(item, config);
 		}
 		else {
-			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+			logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
 		}
 	}
 
@@ -108,6 +108,10 @@ public class HeatPumpGenericBindingProvider extends AbstractGenericBindingProvid
 		}
 		return itemNames.toArray(new String[itemNames.size()]);
 	}
+	
+	public HeatPumpBindingConfig getHeatPumpBindingConfig(String itemName){
+		return (HeatPumpBindingConfig)bindingConfigs.get(itemName);
+	}	
 	
 	
 	static class HeatPumpBindingConfig implements BindingConfig {

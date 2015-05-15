@@ -46,7 +46,7 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">B&O IR support</Label>			
+			<Label lang="en">B&amp;O IR support</Label>			
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">disabled</Label>
@@ -55,7 +55,7 @@
 				<Value>1</Value>
 				<Label lang="en">enabled</Label>
 			</Item>
-			<Help lang="en">B&O IR support is disabled if 0 otherwise enabled.</Help>
+			<Help lang="en">B&amp;O IR support is disabled if 0 otherwise enabled.</Help>
 		</Parameter>
 
 		<Parameter>

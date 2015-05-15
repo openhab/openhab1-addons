@@ -99,9 +99,9 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Index>12</Index>
 			<Type>byte</Type>
 			<Minimum>0</Minimum>
-			<Maximum>1000</Maximum>
-			<Default>50</Default>
-			<Size>2</Size>
+			<Maximum>100</Maximum>
+			<Default>20</Default>
+			<Size>1</Size>
 			<Label lang="en">Insensitiveness to temperature changes.</Label>
 			<Help lang="en"><![CDATA[]]></Help>
 		</Parameter>

@@ -151,7 +151,7 @@ public class UnitUtils {
 			case MPH:
 				return kmhToMph(value);
 			case INCHES:
-				if ("athmosphere.pressure".equals(bindingConfig.getWeatherProperty())) {
+				if ("atmosphere.pressure".equals(bindingConfig.getWeatherProperty())) {
 					return millibarToInches(value);
 				} else if ("precipitation.snow".equals(bindingConfig.getWeatherProperty())) {
 					return millimetersToInches(centimeterToMillimeter(value));

@@ -22,11 +22,13 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,14 +54,17 @@ public class ZWaveNode {
 	private ZWaveController controller;
 	@XStreamOmitField
 	private ZWaveNodeStageAdvancer nodeStageAdvancer;
+	@XStreamOmitField
+	private ZWaveNodeState nodeState;
 
-	private int homeId;
-	private int nodeId;
-	private int version;
+	@XStreamConverter(HexToIntegerConverter.class)
+	private int homeId = Integer.MAX_VALUE;
+	private int nodeId = Integer.MAX_VALUE;
+	private int version = Integer.MAX_VALUE;
 	
 	private String name;
 	private String location;
-	
+
 	@XStreamConverter(HexToIntegerConverter.class)
 	private int manufacturer = Integer.MAX_VALUE;
 	@XStreamConverter(HexToIntegerConverter.class)
@@ -74,13 +79,10 @@ public class ZWaveNode {
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
-	private Date lastSent;
-	private Date lastReceived;
+	private Date lastSent = null;
+	private Date lastReceived = null;
 
-	@XStreamOmitField
-	private Date queryStageTimeStamp;
-	@XStreamOmitField
-	private volatile NodeStage nodeStage;
+	private boolean applicationUpdateReceived = false;
 
 	@XStreamOmitField
 	private int resendCount = 0;
@@ -96,8 +98,6 @@ public class ZWaveNode {
 	@XStreamOmitField
 	private int retryCount = 0;
 
-	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
-	
 	/**
 	 * Constructor. Creates a new instance of the ZWaveNode class.
 	 * @param homeId the home ID to use.
@@ -105,27 +105,30 @@ public class ZWaveNode {
 	 * @param controller the wave controller instance
 	 */
 	public ZWaveNode(int homeId, int nodeId, ZWaveController controller) {
+		nodeState = ZWaveNodeState.ALIVE;
 		this.homeId = homeId;
 		this.nodeId = nodeId;
 		this.controller = controller;
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
-		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
-		this.lastSent = null;
-		this.lastReceived = null;
 	}
 
 	/**
-	 * Configures the node after it's been restored from file
+	 * Configures the node after it's been restored from file.
+	 * NOTE: XStream doesn't run any default constructor. So, any initialisation
+	 * made in a constructor, or statically, won't be performed!!!
+	 * Set defaults here if it's important!!!
 	 * @param controller the wave controller instance
 	 */
 	public void setRestoredFromConfigfile(ZWaveController controller) {
+		nodeState = ZWaveNodeState.ALIVE;
+
 		this.controller = controller;
-		
+
 		// Create the initialisation advancer and tell it we've loaded from file
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.nodeStageAdvancer.setRestoredFromConfigfile();
-		this.nodeStage = NodeStage.EMPTYNODE;
+		nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.EMPTYNODE);
 	}
 
 	/**
@@ -191,14 +194,13 @@ public class ZWaveNode {
 	public void setHealState(String healState) {
 		this.healState = healState;
 	}
-	
+
 	/**
-	 * Gets whether the node is dead or failed.
-	 * In either case, the device is not considered functioning
+	 * Gets whether the node is dead.
 	 * @return
 	 */
 	public boolean isDead() {
-		if(this.nodeStage == NodeStage.DEAD || this.nodeStage == NodeStage.FAILED) {
+		if(nodeState == ZWaveNodeState.DEAD || nodeState == ZWaveNodeState.FAILED) {
 			return true;
 		}
 		else {
@@ -208,24 +210,45 @@ public class ZWaveNode {
 
 	/**
 	 * Sets the node to be 'undead'.
-	 * @return
 	 */
-	public void setAlive(){
-		if(this.nodeStageAdvancer.isInitializationComplete()) {
-			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
-			this.nodeStage = NodeStage.DONE;
+	public void setNodeState(ZWaveNodeState state) {
+		// Make sure we only handle real state changes
+		if(state == nodeState) {
+			return;
+		}
+
+		switch(state) {
+		case ALIVE:
+			logger.debug("NODE {}: Node has risen from the DEAD. Init stage is {}:{}.", nodeId,
+					this.getNodeInitializationStage().toString());			
+	
+			// Reset the resend counter
+			this.resendCount = 0;
+			break;
+
+		case DEAD:
+			// If the node is failed, then we don't allow transitions to DEAD
+			// The only valid state change from FAILED is to ALIVE
+			if(nodeState == ZWaveNodeState.FAILED) {
+				return;
+			}
+		case FAILED:
+			this.deadCount++;
+			this.deadTime = Calendar.getInstance().getTime();
+			logger.debug("NODE {}: Node is DEAD.", this.nodeId);
+			break;
+		}
+
+		// Don't alert state changes while we're still initialising
+		if(nodeStageAdvancer.isInitializationComplete() == true) {
+			ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeState.DEAD);
+			controller.notifyEventListeners(zEvent);
 		}
 		else {
-			this.nodeStage = NodeStage.DYNAMIC;
-			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);
+			logger.debug("NODE {}: Initialisation incomplete, not signalling state change.", this.nodeId);				
 		}
 
-		// Reset the resend counter
-		this.resendCount = 0;
-
-		// Alert anyone who wants to know...
-		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Alive);
-		controller.notifyEventListeners(zEvent);
+		nodeState = state;
 	}
 	
 	/**
@@ -333,13 +356,21 @@ public class ZWaveNode {
 	}
 
 	/**
+	 * Gets the node state.
+	 * @return the nodeState
+	 */
+	public ZWaveNodeState getNodeState() {
+		return this.nodeState;
+	}
+
+	/**
 	 * Gets the node stage.
 	 * @return the nodeStage
 	 */
-	public NodeStage getNodeStage() {
-		return nodeStage;
+	public ZWaveNodeInitStage getNodeInitializationStage() {
+		return this.nodeStageAdvancer.getCurrentStage();
 	}
-	
+
 	/**
 	 * Gets the initialization state
 	 * @return true if initialization has been completed
@@ -353,8 +384,8 @@ public class ZWaveNode {
 	 * Sets the node stage.
 	 * @param nodeStage the nodeStage to set
 	 */
-	public void setNodeStage(NodeStage nodeStage) {
-		this.nodeStage = nodeStage;
+	public void setNodeStage(ZWaveNodeInitStage nodeStage) {
+		nodeStageAdvancer.setCurrentStage(nodeStage);
 	}
 
 	/**
@@ -371,6 +402,26 @@ public class ZWaveNode {
 	 */
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+
+	/**
+	 * Gets the node application firmware version
+	 * @return the version
+	 */
+	public String getApplicationVersion() {
+		ZWaveVersionCommandClass versionCmdClass = (ZWaveVersionCommandClass) this.getCommandClass(CommandClass.VERSION);
+		if(versionCmdClass == null) {
+			return "0.0";
+		}
+
+		String appVersion = versionCmdClass.getApplicationVersion();
+		if(appVersion == null) {
+			logger.trace("NODE {}: App version requested but version is unknown", this.getNodeId());
+			return "0.0";
+		}
+		
+		return appVersion;
 	}
 
 	/**
@@ -394,37 +445,18 @@ public class ZWaveNode {
 	 * @return the queryStageTimeStamp
 	 */
 	public Date getQueryStageTimeStamp() {
-		return queryStageTimeStamp;
-	}
-
-	/**
-	 * Sets the time stamp the node was last queried.
-	 * @param queryStageTimeStamp the queryStageTimeStamp to set
-	 */
-	public void setQueryStageTimeStamp(Date queryStageTimeStamp) {
-		this.queryStageTimeStamp = queryStageTimeStamp;
+		return this.nodeStageAdvancer.getQueryStageTimeStamp();
 	}
 
 	/**
 	 * Increments the resend counter.
 	 * On three increments the node stage is set to DEAD and no
 	 * more messages will be sent.
+	 * This is only used for SendData messages.
 	 */
 	public void incrementResendCount() {
 		if (++resendCount >= 3) {
-			this.nodeStage = NodeStage.DEAD;
-			this.deadCount++;
-			this.deadTime = Calendar.getInstance().getTime();
-			this.queryStageTimeStamp = Calendar.getInstance().getTime();
-			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
-
-			if(nodeStageAdvancer.isInitializationComplete() == true) {
-				ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
-				controller.notifyEventListeners(zEvent);
-			}
-			else {
-				logger.debug("NODE {}: Initialisation incomplete, not signalling DEAD node.", this.nodeId);				
-			}
+			setNodeState(ZWaveNodeState.DEAD);
 		}
 		this.retryCount++;
 	}
@@ -438,7 +470,7 @@ public class ZWaveNode {
 	public void resetResendCount() {
 		this.resendCount = 0;
 		if (this.nodeStageAdvancer.isInitializationComplete() && this.isDead() == false) {
-			this.nodeStage = NodeStage.DONE;
+			nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DONE);
 		}
 	}
 
@@ -498,6 +530,16 @@ public class ZWaveNode {
 	}
 	
 	/**
+	 * Removes a command class from the node.
+	 * This is used to remove classes that a node may report it supports
+	 * but it doesn't respond to.
+	 * @param commandClass The command class key
+	 */
+	public void removeCommandClass(CommandClass commandClass) {
+		supportedCommandClasses.remove(commandClass);
+	}
+
+	/**
 	 * Resolves a command class for this node. First endpoint is checked. 
 	 * If endpoint == 0 or (endpoint != 1 and version of the multi instance 
 	 * command == 1) then return a supported command class on the node itself. 
@@ -544,17 +586,12 @@ public class ZWaveNode {
 		
 		return null;
 	}
-	
+
 	/**
-	 * Advances the initialization stage for this node. 
-	 * Every node follows a certain path through it's 
-	 * initialization phase. These stages are visited one by
-	 * one to finally end up with a completely built node structure
-	 * through querying the controller / node.
+	 * Initialise the node
 	 */
-	public void advanceNodeStage(NodeStage targetStage) {
-		// call the advanceNodeStage method on the advancer.
-		this.nodeStageAdvancer.advanceNodeStage(targetStage);
+	public void initialiseNode() {
+		this.nodeStageAdvancer.startInitialisation();		
 	}
 
 	/**
@@ -571,8 +608,9 @@ public class ZWaveNode {
 			ZWaveCommandClass commandClass, int endpointId) {
 		ZWaveMultiInstanceCommandClass multiInstanceCommandClass;
 		
-		if (serialMessage == null)
+		if (serialMessage == null) {
 			return null;
+		}
 		
 		// no encapsulation necessary.
 		if (endpointId == 0) {
@@ -600,7 +638,7 @@ public class ZWaveNode {
 			}
 		}
 
-		logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+		logger.warn("NODE {}: Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
 		return null;
 	}
 
@@ -727,5 +765,23 @@ public class ZWaveNode {
 	 */
 	public int getSendCount() {
 		return sendCount;
+	}
+
+	/**
+	 * Gets the applicationUpdateReceived flag.
+	 * This is set to indicate that we have received the required information from the device
+	 * @return true if information received
+	 */
+	public boolean getApplicationUpdateReceived() {
+		return applicationUpdateReceived;
+	}
+
+	/**
+	 * Sets the applicationUpdateReceived flag.
+	 * This is set to indicate that we have received the required information from the device
+	 * @param received true if received
+	 */
+	public void setApplicationUpdateReceived(boolean received) {
+		applicationUpdateReceived = received;
 	}
 }

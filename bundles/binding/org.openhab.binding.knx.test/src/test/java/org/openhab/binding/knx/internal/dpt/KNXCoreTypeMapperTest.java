@@ -10,14 +10,11 @@ package org.openhab.binding.knx.internal.dpt;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assume.*;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.library.types.*;
 import org.openhab.core.types.Type;
@@ -984,7 +981,8 @@ public class KNXCoreTypeMapperTest {
 		 * 
 		 */
 		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "00:00:00");
+		String today=String.format(Locale.US, "%1$ta", Calendar.getInstance());
+		testToDPTValue(dpt, type, today+", 00:00:00");
 
 		/*
 		 * Set day to Monday, 0 hours, 0 minutes and 0 seconds January 5th, 1970 was a Monday
@@ -1514,142 +1512,100 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		TimeZone defaultTimeZone = TimeZone.getDefault();
+		assertNull("KNXCoreTypeMapper.toType() should return null (no-day)",
+				testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
 
-		TimeZone[] timeZones = {defaultTimeZone, TimeZone.getTimeZone("America/New_York"), TimeZone.getTimeZone("Europe/Berlin"), TimeZone.getTimeZone("Asia/Shanghai")};
+		assertNull("KNXCoreTypeMapper.toType() should return null (illegal date)",
+				testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
 
-		try {
-			Field field = DPTXlatorDateTime.class.getDeclaredField("c");
-			field.setAccessible(true);
+		/* 
+		 * Reference testcase
+		 * Monday, January 1st, 1900 01:02:03, Fault: Normal (no fault), Working Day: Bank day (No working day), Working Day Field: valid,
+		 * Year Field valid, Months and Day fields valid, Day of week field valid, Hour of day, Minutes and Seconds fields valid,
+		 * Standard Summer Time: Time = UT+X, Quality of Clock: clock without ext. sync signal
+		 */
+		Type type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x00, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 01:02:03");
 
-			for (TimeZone timeZone : timeZones) {
-				/*
-				 *  DPTXlatorDateTime initialized it's calendar in a static method only once, including timezone.
-				 *  Crude solution: we're trying to reset that classes static private field, such that the default timezone will be evaluated again.
-				 *  Should this throw a NoSuchFieldException, IllegalAccessException or SecurityException, then we'll just skip this test.  
-				 */
-				field.set(null, null);
+		/* 
+		 * Reference testcase + Fault: Fault => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (faulty clock)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x80, 0x00 }, DateTimeType.class));
 
-				TimeZone.setDefault(timeZone);
+		/* 
+		 * Reference testcase + Year Field invalid => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (date but no year)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x10, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Months and Day fields invalid => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (date but no day and month)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x08, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Year, Months and Day fields invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x18, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 01:02:03");
+		/* 
+		 * Reference testcase + Year , Months and Day fields invalid + Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x1C, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 01:02:03");
+		/* 
+		 * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x3C, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 01:02:03");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3E, 0x00 }, DateTimeType.class));
 
-				assertNull("KNXCoreTypeMapper.toType() should return null (no-day)",
-						testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid, Standard Summer Time: Time = UT+X+1
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time, but summertime flag)", type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3F, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + day of week=Any day, Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+		/* 
+		 * Reference testcase + day of week=Any day, Day of week field invalid, working day, working day field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x60, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
 
-				assertNull("KNXCoreTypeMapper.toType() should return null (illegal date)",
-						testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
-
-				/* 
-				 * Reference testcase
-				 * Monday, January 1st, 1900 01:02:03, Fault: Normal (no fault), Working Day: Bank day (No working day), Working Day Field: valid,
-				 * Year Field valid, Months and Day fields valid, Day of week field valid, Hour of day, Minutes and Seconds fields valid,
-				 * Standard Summer Time: Time = UT+X, Quality of Clock: clock without ext. sync signal
-				 */
-				Type type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x00, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1900-01-01 01:02:03");
-
-				/* 
-				 * Reference testcase + Fault: Fault => not supported
-				 */
-				assertNull("KNXCoreTypeMapper.toType() should return null (faulty clock)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x80, 0x00 }, DateTimeType.class));
-
-				/* 
-				 * Reference testcase + Year Field invalid => not supported
-				 */
-				assertNull("KNXCoreTypeMapper.toType() should return null (date but no year)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x10, 0x00 }, DateTimeType.class));
-				/* 
-				 * Reference testcase + Months and Day fields invalid => not supported
-				 */
-				assertNull("KNXCoreTypeMapper.toType() should return null (date but no day and month)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x08, 0x00 }, DateTimeType.class));
-				/* 
-				 * Reference testcase + Year, Months and Day fields invalid
-				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x18, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1970-01-01 01:02:03");
-				/* 
-				 * Reference testcase + Year , Months and Day fields invalid + Day of week field invalid
-				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x1C, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1970-01-01 01:02:03");
-				/* 
-				 * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
-				 * Working day field invalid
-				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x3C, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1970-01-01 01:02:03");
-				/* 
-				 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
-				 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid
-				 */
-				assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3E, 0x00 }, DateTimeType.class));
-
-				/* 
-				 * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
-				 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid, Standard Summer Time: Time = UT+X+1
-				 */
-				assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time, but summertime flag)", type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3F, 0x00 }, DateTimeType.class));
-				/* 
-				 * Reference testcase + day of week=Any day, Day of week field invalid
-				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1900-01-01 00:00:00");
-				/* 
-				 * Reference testcase + Day of week field invalid
-				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1900-01-01 00:00:00");
-				/* 
-				 * Reference testcase + day of week=Any day, Day of week field invalid, working day, working day field invalid
-				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x60, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1900-01-01 00:00:00");
-
-				/* 
-				 * December 31st, 2155 day of week=Any day, Day of week field invalid
-				 */
-				type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x17, 0x3B, 0x3B, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "2155-12-31 23:59:59");
-				/* 
-				 * December 31st, 2155, 24:00:00, day of week=Any day, Day of week field invalid
-				 * 
-				 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
-				 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
-				 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
-				 */
-				type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "2155-12-31 23:59:59");
-				/* 
-				 * December 31st, 2014 24:00:00, day of week=Any day, Day of week field invalid
-				 * 
-				 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
-				 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
-				 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
-				 */
-				type=testToType(dpt, new byte[] { (byte) 0x72, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "2014-12-31 23:59:59");
-			}
-			
-			field.set(null, null);
-			TimeZone.setDefault(defaultTimeZone);
-		}
-		catch (IllegalArgumentException e) {
-			//Shouldn't be thrown, since field.set() set's a static field
-			fail();
-		}
-		catch (IllegalAccessException e) {
-			//Stop test and ignore
-			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: IllegalAccessException");
-			assumeNoException(e);
-		}
-		catch (NoSuchFieldException e) {
-			//Stop test and ignore if the field is not existing anymore
-			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: NoSuchFieldException");
-			assumeNoException(e);
-		}
-		catch (SecurityException e) {
-			//Stop test and ignore
-			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: SecurityException");
-			assumeNoException(e);
-		}
+		/* 
+		 * December 31st, 2155 day of week=Any day, Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x17, 0x3B, 0x3B, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+		/* 
+		 * December 31st, 2155, 24:00:00, day of week=Any day, Day of week field invalid
+		 * 
+		 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
+		 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
+		 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+		/* 
+		 * December 31st, 2014 24:00:00, day of week=Any day, Day of week field invalid
+		 * 
+		 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
+		 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
+		 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0x72, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2014-12-31 23:59:59");
 	}
 
 	/**
@@ -1671,63 +1627,23 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		TimeZone defaultTimeZone = TimeZone.getDefault();
 
-		TimeZone[] timeZones = {defaultTimeZone, TimeZone.getTimeZone("America/New_York"), TimeZone.getTimeZone("Europe/Berlin"), TimeZone.getTimeZone("Asia/Shanghai")};
+		Calendar c = Calendar.getInstance();
+		c.set(2014, 7, 31);
 
-		try {
-			Field field = DPTXlatorDateTime.class.getDeclaredField("c");
-			field.setAccessible(true);
+		if (c.get(Calendar.DST_OFFSET)>0) {
+			//Should be null since we have a DST timezone but non-DST data: should be rejected
+			assertNull(testToType(dpt, testDataNoDST, DateTimeType.class));
 
-			for (TimeZone timeZone : timeZones) {
-				/*
-				 *  DPTXlatorDateTime initialized it's calendar in a static method only once, including timezone.
-				 *  Crude solution: we're trying to reset that classes static private field, such that the default timezone will be evaluated again.
-				 *  Should this throw a NoSuchFieldException, IllegalAccessException or SecurityException, then we'll just skip this test.  
-				 */
-				field.set(null, null);
-
-				TimeZone.setDefault(timeZone);
-
-				Calendar c = Calendar.getInstance();
-				c.set(2014, 7, 31);
-
-				if (c.get(Calendar.DST_OFFSET)>0) {
-					//Should be null since we have a DST timezone but non-DST data: should be rejected
-					assertNull(testToType(dpt, testDataNoDST, DateTimeType.class));
-
-					Type type = testToType(dpt, testDataDST, DateTimeType.class);
-					testToDPTValue(dpt, type, "2014-07-31 00:00:00");
-				}
-				else {
-					//Should be null since we don't have a non-DST timezone but DST data: should be rejected
-					assertNull(testToType(dpt, testDataDST, DateTimeType.class));
-
-					Type type = testToType(dpt, testDataNoDST, DateTimeType.class);
-					testToDPTValue(dpt, type, "2014-07-31 00:00:00");
-				}
-			}
-			field.set(null, null);
-			TimeZone.setDefault(defaultTimeZone);
+			Type type = testToType(dpt, testDataDST, DateTimeType.class);
+			testToDPTValue(dpt, type, "2014-07-31 00:00:00");
 		}
-		catch (IllegalArgumentException e) {
-			//Shouldn't be thrown, since field.set() set's a static field
-			fail();
-		}
-		catch (IllegalAccessException e) {
-			//Stop test and ignore
-			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: IllegalAccessException");
-			assumeNoException(e);
-		}
-		catch (NoSuchFieldException e) {
-			//Stop test and ignore if the field is not existing anymore
-			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: NoSuchFieldException");
-			assumeNoException(e);
-		}
-		catch (SecurityException e) {
-			//Stop test and ignore
-			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: SecurityException");
-			assumeNoException(e);
+		else {
+			//Should be null since we don't have a non-DST timezone but DST data: should be rejected
+			assertNull(testToType(dpt, testDataDST, DateTimeType.class));
+
+			Type type = testToType(dpt, testDataNoDST, DateTimeType.class);
+			testToDPTValue(dpt, type, "2014-07-31 00:00:00");
 		}
 	}
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>SwiidInter</Model>
+    <Label lang="en">Z-Wave Cord Switch</Label>
+    <CommandClasses>
+    	<Class><id>0x20</id></Class>
+    	<Class><id>0x25</id></Class>
+    	<Class><id>0x27</id></Class>
+    	<Class><id>0x72</id></Class>
+    	<Class><id>0x85</id></Class>
+    	<Class><id>0x86</id></Class>
+    </CommandClasses>
+    <Configuration>
+    	<Parameter>
+    		<Index>1</Index>
+    		<Type>list</Type>
+    		<Default>255</Default>
+    		<Size>1</Size>
+			<Label lang="en">Switch All</Label>
+			<Item>
+    			<Value>0</Value>
+    			<Label lang="en">Disabled</Label>
+    		</Item>
+    		<Item>
+				<Value>1</Value>
+    			<Label lang="en">Switch on only</Label>
+    		</Item>
+			<Item>
+    			<Value>2</Value>
+    			<Label lang="en">Switch off only</Label>
+    		</Item>
+    		<Item>
+    			<Value>255</Value>
+    			<Label lang="en">Fully enabled (Default)</Label>
+    		</Item>
+    	</Parameter>
+    </Configuration>
+    <Associations>
+    	<Group>
+    		<Index>1</Index>
+    		<Maximum>5</Maximum>
+    		<Label lang="en">Group 1</Label>
+    	</Group>
+    	<Group>
+    		<Index>2</Index>
+    		<Maximum>5</Maximum>
+    		<Label lang="en">Group 2</Label>
+    		<SetToController>true</SetToController>
+    	</Group>
+    </Associations>
+</Product>

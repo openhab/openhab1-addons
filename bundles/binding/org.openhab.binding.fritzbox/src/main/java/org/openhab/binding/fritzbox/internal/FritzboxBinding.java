@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
  * and outgoing calls, as well as for connections and disconnections.
  * 
  * @author Kai Kreuzer
+ * @author Jan N. Klug
  * @since 0.7.0
  */
 public class FritzboxBinding extends
@@ -78,11 +79,15 @@ public class FritzboxBinding extends
 				"ctlmgr_ctl w dect settings/enabled");
 		commandMap.put(FritzboxBindingProvider.TYPE_WLAN,
 				"ctlmgr_ctl w wlan settings/ap_enabled");
+		commandMap.put(FritzboxBindingProvider.TYPE_GUEST_WLAN,
+				"ctlmgr_ctl w wlan settings/guest_ap_enabled");
 
 		queryMap.put(FritzboxBindingProvider.TYPE_DECT,
 				"ctlmgr_ctl r dect settings/enabled");
 		queryMap.put(FritzboxBindingProvider.TYPE_WLAN,
 				"ctlmgr_ctl r wlan settings/ap_enabled");
+		queryMap.put(FritzboxBindingProvider.TYPE_GUEST_WLAN,
+				"ctlmgr_ctl r wlan settings/guest_ap_enabled");
 	}
 
 	@Override
@@ -248,6 +253,8 @@ public class FritzboxBinding extends
 					"ctlmgr_ctl w dect settings/enabled");
 			commandMap.put(FritzboxBindingProvider.TYPE_WLAN,
 					"ctlmgr_ctl w wlan settings/ap_enabled");
+			commandMap.put(FritzboxBindingProvider.TYPE_GUEST_WLAN,
+					"ctlmgr_ctl w wlan settings/guest_ap_enabled");
 		}
 
 		public TelnetCommandThread(String type, Command command) {
@@ -445,7 +452,11 @@ public class FritzboxBinding extends
 									}
 								}
 							} catch (IOException e) {
-								logger.error("Lost connection to FritzBox", e);
+								if (interrupted) {
+									logger.info("Lost connection to Fritzbox because of interrupt");
+								} else {
+									logger.error("Lost connection to FritzBox", e);
+								}
 								break;
 							}
 						}
@@ -467,7 +478,7 @@ public class FritzboxBinding extends
 			event.timestamp = sections[0];
 			event.eventType = sections[1];
 			event.connectionId = sections[2];
-
+			
 			if (event.eventType.equals("RING")) {
 				event.externalNo = sections[3];
 				event.internalNo = sections[4];
@@ -519,7 +530,6 @@ public class FritzboxBinding extends
 						.getItemNamesForType(bindingType)) {
 					Class<? extends Item> itemType = provider
 							.getItemType(itemName);
-
 					org.openhab.core.types.State state = null;
 					if (event.eventType.equals("DISCONNECT")) {
 						state = itemType.isAssignableFrom(SwitchItem.class) ? OnOffType.OFF
