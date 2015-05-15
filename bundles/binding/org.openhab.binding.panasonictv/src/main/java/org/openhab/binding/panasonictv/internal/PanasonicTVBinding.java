@@ -26,15 +26,14 @@ import org.openhab.binding.panasonictv.PanasonicTVBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class in mainly used for receiving internal command and to send them
- * to the Panasonic TV.
+ * This class in mainly used for receiving internal command and to send them to
+ * the Panasonic TV.
  * 
  * @author André Heuer
  * @since 1.7.0
@@ -152,16 +151,16 @@ public class PanasonicTVBinding extends
 	private int sendCommand(PanasonicTVBindingConfig config) {
 		String command = config.getCommand().toUpperCase();
 
+		final String soaprequest_skeleton = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+				"<s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\">" +
+				"<X_KeyEvent>NRC_%s</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
 		String soaprequest = "";
 
 		if (config.getCommand().toUpperCase().startsWith("HDMI"))
-			soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
-					+ command
-					+ "</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+			soaprequest = String.format(soaprequest_skeleton, command);
 		else
-			soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
-					+ command
-					+ "-ONOFF</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+			soaprequest = String.format(soaprequest_skeleton, command
+					+ "-ONOFF");
 
 		String tvIp = registeredTVs.get(config.getTv());
 
