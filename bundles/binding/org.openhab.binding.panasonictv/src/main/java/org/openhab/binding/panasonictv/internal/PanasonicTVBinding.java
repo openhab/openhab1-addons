@@ -214,7 +214,7 @@ public class PanasonicTVBinding extends
 
 			return Integer.parseInt(response.split(" ")[1]);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Exception during communication to the TV: " + e.getStackTrace());
 		} catch (Exception e) {
 			logger.error("Exception in binding during execution of command: "
 					+ e.getStackTrace());
