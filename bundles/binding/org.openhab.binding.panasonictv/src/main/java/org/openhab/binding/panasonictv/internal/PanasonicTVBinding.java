@@ -23,24 +23,25 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.panasonictv.PanasonicTVBindingConfig;
 import org.openhab.binding.panasonictv.PanasonicTVBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This class in mainly used for receiving internal command and to send them to
+ * the Panasonic TV.
  * 
  * @author André Heuer
  * @since 1.7.0
  */
 public class PanasonicTVBinding extends
-		AbstractActiveBinding<PanasonicTVBindingProvider> implements
+		AbstractBinding<PanasonicTVBindingProvider> implements
 		ManagedService {
 
 	private Map<String, String> registeredTVs = new HashMap<String, String>();
@@ -53,6 +54,11 @@ public class PanasonicTVBinding extends
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
+	
+	/**
+	 * Listening port of the TV
+	 */
+	private final int tvPort = 55000;
 
 	public PanasonicTVBinding() {
 	}
@@ -61,24 +67,6 @@ public class PanasonicTVBinding extends
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected String getName() {
-		return "PanansonicTV Binding";
 	}
 
 	/**
@@ -86,9 +74,6 @@ public class PanasonicTVBinding extends
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() for item: " + itemName
 				+ " with command: " + command.toString());
 
@@ -112,15 +97,6 @@ public class PanasonicTVBinding extends
 			eventPublisher.postUpdate(itemName, OnOffType.OFF);
 		}
 
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		logger.debug("internalReceiveUpdate() for item: " + itemName
-				+ " with state: " + newState.toString());
 	}
 
 	/**
@@ -151,49 +127,46 @@ public class PanasonicTVBinding extends
 			}
 
 			if (registeredTVs.isEmpty()) {
-				setProperlyConfigured(true);
 				logger.debug("No TV was registered in config file");
-			} else
-				setProperlyConfigured(true);
+			}
 		}
 	}
 
 	/**
-	 * @author André Heuer
-	 *
 	 * This methods sends the command to the TV
 	 * 
 	 * @return HTTP response code from the TV (should be 200)
 	 */
-	int sendCommand(PanasonicTVBindingConfig config) {
+	private int sendCommand(PanasonicTVBindingConfig config) {
 		String command = config.getCommand().toUpperCase();
 
+		final String soaprequest_skeleton = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+				+ "<s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\">"
+				+ "<X_KeyEvent>NRC_%s</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
 		String soaprequest = "";
 
-		if (config.getCommand().toUpperCase().startsWith("HDMI"))
-			soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
-					+ command
-					+ "</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
-		else
-			soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
-					+ command
-					+ "-ONOFF</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+		if (config.getCommand().toUpperCase().startsWith("HDMI")) {
+			soaprequest = String.format(soaprequest_skeleton, command);
+		} else {
+			soaprequest = String.format(soaprequest_skeleton, command
+					+ "-ONOFF");
+		}
 
 		String tvIp = registeredTVs.get(config.getTv());
 
 		if ((tvIp == null) || tvIp.isEmpty())
+		{
 			return 0;
-
-		int port = 55000;
+		}
 
 		try {
-			Socket client = new Socket(tvIp, port);
+			Socket client = new Socket(tvIp, tvPort);
 
 			BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(
 					client.getOutputStream(), "UTF8"));
 
 			String header = "POST /nrc/control_0/ HTTP/1.1\r\n";
-			header = header + "Host: " + tvIp + ":55000\r\n";
+			header = header + "Host: " + tvIp + ":" + tvPort +"\r\n";
 			header = header
 					+ "SOAPACTION: \"urn:panasonic-com:service:p00NetworkControl:1#X_SendKey\"\r\n";
 			header = header + "Content-Type: text/xml; charset=\"utf-8\"\r\n";
@@ -223,16 +196,11 @@ public class PanasonicTVBinding extends
 
 			return Integer.parseInt(response.split(" ")[1]);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Exception during communication to the TV: " + e.getStackTrace());
 		} catch (Exception e) {
 			logger.error("Exception in binding during execution of command: "
 					+ e.getStackTrace());
 		}
 		return 0;
-	}
-
-	@Override
-	protected void execute() {
-
 	}
 }

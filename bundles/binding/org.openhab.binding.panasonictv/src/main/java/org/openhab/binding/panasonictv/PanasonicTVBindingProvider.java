@@ -11,9 +11,18 @@ package org.openhab.binding.panasonictv;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * This interface defines a method for retrieving the binding configuration by an item name.
+ * 
  * @author Andre Heuer
  * @since 1.7.0
  */
 public interface PanasonicTVBindingProvider extends BindingProvider {
+
+	/**
+	 * This method returns the item configuration based on the item name
+	 * 
+	 * @param item The name of the item
+	 * @return Item/Binding configuration for the given item
+	 */
 	PanasonicTVBindingConfig getBindingConfigForItem(String item);
 }
