@@ -20,8 +20,6 @@ import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.binding.weather.internal.utils.PropertyUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.model.sitemap.SitemapFactory;
-import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,10 +150,7 @@ public class WeatherTokenResolver implements TokenResolver {
 			return item.getState().toString();
 		}
 
-		Widget w = SitemapFactory.eINSTANCE.createText();
-		w.setLabel(itemUIRegistry.getLabel(token.itemName));
-		w.setItem(token.itemName);
-		String label = itemUIRegistry.getLabel(w);
+		String label = itemUIRegistry.getFormattedLabel(item);
 
 		if (SUFFIX_ITEM_STATE.equals(token.itemSuffix)) {
 			return StringUtils.substringBetween(label, "[", "]");

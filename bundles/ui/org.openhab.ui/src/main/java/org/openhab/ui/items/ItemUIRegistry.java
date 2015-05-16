@@ -9,6 +9,7 @@
 package org.openhab.ui.items;
 
 import org.eclipse.emf.common.util.EList;
+import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.LinkableWidget;
@@ -43,6 +44,23 @@ public interface ItemUIRegistry extends ItemRegistry, ItemUIProvider {
 	 * @return the label to use for the widget
 	 */
 	public String getLabel(Widget w);
+
+	/**
+	 * Retrieves the formatted label for an item.
+	 * 
+	 * This first checks, if there is a label defined in the sitemap. If not, it
+	 * checks all item UI providers for a label. If no label can be found, it is
+	 * set to an empty string.
+	 * 
+	 * If the label contains a "[%format]" section, i.e.
+	 * “[%s]" for a string or "[%.3f]" for a decimal, this is replaced by the
+	 * current value of the item and padded by a "<span>" element.
+	 * 
+	 * @param item
+	 *            the item to format the label for
+	 * @return the formatted label
+	 */
+	public String getFormattedLabel(Item item);
 
 	/**
 	 * Retrieves the icon name for a widget.
