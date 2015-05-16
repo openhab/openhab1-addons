@@ -15,6 +15,7 @@ import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerT
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.SHUTDOWN;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CREATE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -200,6 +201,10 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			if (item instanceof GenericItem) {
 				GenericItem genericItem = (GenericItem) item;
 				genericItem.addStateChangeListener(this);
+				if(triggerManager!=null) {
+					Iterable<Rule> rules = triggerManager.getRules(CREATE, item);
+					executeRules(rules);
+				}
 			}
 		}
 

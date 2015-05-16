@@ -10,6 +10,7 @@ package org.openhab.model.rule.internal.engine;
 
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CHANGE;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.COMMAND;
+import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CREATE;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.SHUTDOWN;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
 import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.TIMER;
@@ -31,6 +32,7 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.rule.rules.ChangedEventTrigger;
+import org.openhab.model.rule.rules.CreatedEventTrigger;
 import org.openhab.model.rule.rules.CommandEventTrigger;
 import org.openhab.model.rule.rules.EventTrigger;
 import org.openhab.model.rule.rules.Rule;
@@ -72,6 +74,7 @@ public class RuleTriggerManager {
 	public enum TriggerTypes {
 		UPDATE,		// fires whenever a status update is received for an item 
 		CHANGE, 	// same as UPDATE, but only fires if the current item state is changed by the update 
+		CREATE,		// fires whenever an item is created
 		COMMAND, 	// fires whenever a command is received for an item
 		STARTUP, 	// fires when the rule engine bundle starts and once as soon as all required items are available
 		SHUTDOWN,	// fires when the rule engine bundle is stopped
@@ -81,6 +84,7 @@ public class RuleTriggerManager {
 	// lookup maps for different triggering conditions
 	private Map<String, Set<Rule>> updateEventTriggeredRules = Maps.newHashMap();
 	private Map<String, Set<Rule>> changedEventTriggeredRules = Maps.newHashMap();
+	private Map<String, Set<Rule>> createdEventTriggeredRules = Maps.newHashMap();
 	private Map<String, Set<Rule>> commandEventTriggeredRules = Maps.newHashMap();
 	private List<Rule> systemStartupTriggeredRules = Lists.newArrayList();
 	private List<Rule> systemShutdownTriggeredRules = Lists.newArrayList();
@@ -106,13 +110,14 @@ public class RuleTriggerManager {
 	public Iterable<Rule> getRules(TriggerTypes type) {
 		Iterable<Rule> result;
 		switch(type) {
-			case STARTUP:  result = systemStartupTriggeredRules; break;
-			case SHUTDOWN: result = systemShutdownTriggeredRules; break;
-			case TIMER:    result = timerEventTriggeredRules; break;
-			case UPDATE:   result = Iterables.concat(updateEventTriggeredRules.values()); break;
-			case CHANGE:   result = Iterables.concat(changedEventTriggeredRules.values()); break;
-			case COMMAND:  result = Iterables.concat(commandEventTriggeredRules.values()); break;
-			default:       result = Sets.newHashSet();
+			case STARTUP:	result = systemStartupTriggeredRules; break;
+			case SHUTDOWN:	result = systemShutdownTriggeredRules; break;
+			case TIMER:		result = timerEventTriggeredRules; break;
+			case UPDATE:	result = Iterables.concat(updateEventTriggeredRules.values()); break;
+			case CHANGE:	result = Iterables.concat(changedEventTriggeredRules.values()); break;
+			case CREATE:	result = Iterables.concat(createdEventTriggeredRules.values()); break;
+			case COMMAND:	result = Iterables.concat(commandEventTriggeredRules.values()); break;
+			default:		result = Sets.newHashSet();
 		}
 		return result;
 	}
@@ -127,6 +132,17 @@ public class RuleTriggerManager {
 	 */
 	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, State state) {
 		return internalGetRules(triggerType, item, null, state);
+	}
+	
+	/**
+	 * Returns all rules for which the trigger condition is true for the given type and item .
+	 * 
+	 * @param triggerType
+	 * @param item
+	 * @return all rules for which the trigger condition is true
+	 */
+	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item) {
+		return internalGetRules(triggerType, item, null, null);
 	}
 
 	/**
@@ -160,6 +176,7 @@ public class RuleTriggerManager {
 			case SHUTDOWN: return systemShutdownTriggeredRules;
 			case UPDATE:   return updateEventTriggeredRules.get(itemName);
 			case CHANGE:   return changedEventTriggeredRules.get(itemName);
+			case CREATE:   return createdEventTriggeredRules.get(itemName);
 			case COMMAND:  return commandEventTriggeredRules.get(itemName);
 			default:       return Sets.newHashSet();
 		}
@@ -175,6 +192,18 @@ public class RuleTriggerManager {
 		case STARTUP:  return systemStartupTriggeredRules;
 		case SHUTDOWN: return systemShutdownTriggeredRules;
 		case TIMER :   return timerEventTriggeredRules;
+		case CREATE:   
+			for(Rule rule : rules) {
+				for(EventTrigger t : rule.getEventtrigger()) {
+					if (t instanceof CreatedEventTrigger) {
+						CreatedEventTrigger ct = (CreatedEventTrigger) t;
+						if (ct.getItem().equals(item.getName())) {
+							result.add(rule);
+						}
+					}
+				}
+			}
+			break;
 		case UPDATE:   
 			if(newType instanceof State) {
 				State state = (State) newType;
@@ -256,6 +285,7 @@ public class RuleTriggerManager {
 			case SHUTDOWN: 	systemShutdownTriggeredRules.clear(); break;
 			case UPDATE:   	updateEventTriggeredRules.clear(); break;
 			case CHANGE:   	changedEventTriggeredRules.clear(); break;
+			case CREATE:	createdEventTriggeredRules.clear(); break;
 			case COMMAND:  	commandEventTriggeredRules.clear(); break;
 			case TIMER:    	for(Rule rule : timerEventTriggeredRules) {
 								removeTimerRule(rule);
@@ -272,6 +302,7 @@ public class RuleTriggerManager {
 		clear(SHUTDOWN);
 		clear(UPDATE);
 		clear(CHANGE);
+		clear(CREATE);
 		clear(COMMAND);
 		clear(TIMER);
 	}
@@ -312,6 +343,14 @@ public class RuleTriggerManager {
 					changedEventTriggeredRules.put(ceTrigger.getItem(), rules);
 				}
 				rules.add(rule);
+			} else if(t instanceof CreatedEventTrigger) {
+				CreatedEventTrigger ceTrigger = (CreatedEventTrigger) t;
+				Set<Rule> rules = createdEventTriggeredRules.get(ceTrigger.getItem());
+				if(rules==null) {
+					rules = new HashSet<Rule>();
+					createdEventTriggeredRules.put(ceTrigger.getItem(), rules);
+				}
+				rules.add(rule);
 			} else if(t instanceof TimerTrigger) {
 				timerEventTriggeredRules.add(rule);
 				try {
@@ -335,6 +374,7 @@ public class RuleTriggerManager {
 			case SHUTDOWN: 	systemShutdownTriggeredRules.remove(rule); break;
 			case UPDATE:   	updateEventTriggeredRules.remove(rule); break;
 			case CHANGE:   	changedEventTriggeredRules.remove(rule); break;
+			case CREATE:	createdEventTriggeredRules.remove(rule); break;
 			case COMMAND:  	commandEventTriggeredRules.remove(rule); break;
 			case TIMER:    	timerEventTriggeredRules.remove(rule); 
 							removeTimerRule(rule);
@@ -361,6 +401,7 @@ public class RuleTriggerManager {
 	public void removeRuleModel(RuleModel ruleModel) {
 		removeRules(UPDATE, updateEventTriggeredRules.values(), ruleModel);
 		removeRules(CHANGE, changedEventTriggeredRules.values(), ruleModel);
+		removeRules(CREATE, createdEventTriggeredRules.values(), ruleModel);
 		removeRules(COMMAND, commandEventTriggeredRules.values(), ruleModel);
 		removeRules(STARTUP, Collections.singletonList(systemStartupTriggeredRules), ruleModel);
 		removeRules(SHUTDOWN, Collections.singletonList(systemShutdownTriggeredRules), ruleModel);		

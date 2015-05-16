@@ -27,6 +27,7 @@ EventTrigger:
 	UpdateEventTrigger |
 	CommandEventTrigger |
 	ChangedEventTrigger |
+	CreatedEventTrigger |
 	TimerTrigger |
 	SystemTrigger
 ;
@@ -41,7 +42,11 @@ UpdateEventTrigger:
 
 ChangedEventTrigger:
 	'Item' item=ItemName 'changed' ('from' oldState=ValidState)? ('to' newState=ValidState)?
-;		
+;
+
+CreatedEventTrigger:
+	'Item' item=ItemName 'created'
+;			
 
 TimerTrigger:
 	'Time' 'cron' cron=STRING |
