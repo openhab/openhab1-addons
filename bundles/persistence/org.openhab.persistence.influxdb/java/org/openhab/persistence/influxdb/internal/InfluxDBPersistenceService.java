@@ -525,13 +525,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 	  try {
 		  int valueAsInt = Integer.parseInt(switchValue);
 		  if (valueAsInt != 0) {
-			  logger.trace("contactValue {}", DIGITAL_VALUE_ON);
+			  logger.trace("switchValue {}", DIGITAL_VALUE_ON);
 			  return DIGITAL_VALUE_ON;
 		  }
 	  } catch (NumberFormatException e) {
 		  // input is not an integer
 		  if ("on".equalsIgnoreCase(switchValue)) {
-			  logger.trace("contactValue {}", DIGITAL_VALUE_ON);
+			  logger.trace("switchValue {}", DIGITAL_VALUE_ON);
 			  return DIGITAL_VALUE_ON;
 		  }
 	  }
