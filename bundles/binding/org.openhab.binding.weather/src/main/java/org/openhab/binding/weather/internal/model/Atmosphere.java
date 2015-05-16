@@ -52,6 +52,9 @@ public class Atmosphere {
 	})
 	private Double pressure;
 
+	@ProviderMappings({ 
+		@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.pressure_trend", converter = ConverterType.PRESSURE_TREND)
+	})
 	private String pressureTrend;
 
 	@ProviderMappings({ 
