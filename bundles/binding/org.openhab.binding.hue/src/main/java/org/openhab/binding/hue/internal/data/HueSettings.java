@@ -144,7 +144,7 @@ public class HueSettings {
 	 * 
 	 * @param deviceId
 	 *            The bulb id the bridge has filed the bulb under.
-	 * @return The brightness as a value from 0 - 255
+	 * @return The brightness as a value from 0 - {@link HueBulb#MAX_BRIGHTNESS}
 	 */
 	public int getBrightness(String deviceId) {
 		if (settingsData == null) {
@@ -184,7 +184,7 @@ public class HueSettings {
 	 * 
 	 * @param deviceId
 	 *            The bulb id the bridge has filed the bulb under.
-	 * @return The saturation as a value from 0 - 254
+	 * @return The saturation as a value from 0 - {@link HueBulb#MAX_BRIGHTNESS}
 	 */
 	public int getSaturation(String deviceId) {
 		if (settingsData == null) {
