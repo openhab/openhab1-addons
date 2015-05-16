@@ -224,7 +224,7 @@ implements ManagedService {
 						service, interval);
 				upnpService.getControlPoint().execute(callback);
 			} else {
-				logger.info("A non-Sonos device ({}) is found and will be ignored",device.getDisplayString());
+				logger.debug("A non-Sonos device ({}) is found and will be ignored",device.getDisplayString());
 			}
 		}
 
