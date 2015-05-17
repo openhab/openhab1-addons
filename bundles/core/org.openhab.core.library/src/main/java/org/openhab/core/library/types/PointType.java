@@ -73,13 +73,7 @@ public class PointType implements ComplexType, Command, State {
 				if (elements.length == 3) {
 					setAltitude(new DecimalType(elements[2]));
 				}
-			} else {
-				throw new IllegalArgumentException(value
-						+ " is not a valid PointType syntax");
 			}
-		} else {
-			throw new IllegalArgumentException(
-					"Constructor argument must not be null");
 		}
 	}
 
@@ -132,7 +126,8 @@ public class PointType implements ComplexType, Command, State {
 
 	@Override
 	public String toString() {
-		return latitude + "," + longitude + "," + altitude;
+		return String.format("%1$.2f°N, %2$.2f°W, %2$.2f m", latitude,
+				longitude, altitude);
 	}
 
 	@Override

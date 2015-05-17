@@ -449,7 +449,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     } else if (state instanceof DateTimeType) {
       value = ((DateTimeType) state).toString();
     } else if (state instanceof PointType) {
-      value = ((PointType) state).toString();
+      value = removeLabelsFromPointType(((PointType) state).toString());
     } else {
       value = state.toString();
     }
@@ -475,7 +475,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     } else if (state instanceof DateTimeType) {
       value = ((DateTimeType) state).toString();
     } else if (state instanceof PointType) {
-      value = ((PointType) state).toString();
+      value = removeLabelsFromPointType(((PointType) state).toString());
     } else {
       value = state.toString();
     }
@@ -536,5 +536,32 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
   }  
   
-  
+  /**
+   * the toString() method of the PointType.java class returned labelled figures; this method strips the labels
+   * 
+   * @param   labelledString
+   * @return  the labelledString minus the labels
+   */
+  private String removeLabelsFromPointType(String labelledString) {
+	String output = null;
+	
+    if (!labelledString.isEmpty()) {
+      String[] elements = labelledString.split(",");
+	  if (elements.length >= 2) {
+		if (elements[0].endsWith("°N")) {
+		  output = elements[0].substring(0, elements[0].length() - 2);
+		}
+		if (elements[1].endsWith("°E")) {
+	      output += elements[1].substring(0, elements[1].length() - 2);
+		}
+		
+		if (elements.length == 3) {
+		  if (elements[2].endsWith(" m")) {
+			output += elements[2].substring(0, elements[2].length() - 2);
+		  }
+		}
+	  }
+	}
+    return output;
+  }
 }
