@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,16 +23,34 @@ public enum DSCAlarmItemType{
 	PANEL_MESSAGE("panel_message"),
 	PANEL_COMMAND("panel_command"),
 	PANEL_SYSTEM_ERROR("panel_system_error"),
-	PANEL_TIME_DATE("panel_time_date"),
+
+	PANEL_TIME("panel_time"),
+	PANEL_TIME_STAMP("panel_time_stamp"),
+	PANEL_TIME_BROADCAST("panel_time_broadcast"),
+
+	PANEL_FIRE_KEY_ALARM("panel_fire_key_alarm"),
+	PANEL_PANIC_KEY_ALARM("panel_panic_key_alarm"),
+	PANEL_AUX_KEY_ALARM("panel_aux_key_alarm"),
+	PANEL_AUX_INPUT_ALARM("panel_aux_input_alarm"),
 	
 	PARTITION_STATUS("partition_status"),
 	PARTITION_ARM_MODE("partition_arm_mode"),
+
+	PARTITION_ARMED("partition_armed"),
+	PARTITION_ENTRY_DELAY("partition_entry_delay"),
+	PARTITION_EXIT_DELAY("partition_exit_delay"),
+	PARTITION_IN_ALARM("partition_in_alarm"),
 	
 	ZONE_GENERAL_STATUS("zone_general_status"),
 	ZONE_ALARM_STATUS("zone_alarm_status"),
 	ZONE_TAMPER_STATUS("zone_tamper_status"),
 	ZONE_FAULT_STATUS("zone_fault_status"),
 	ZONE_BYPASS_MODE("zone_bypass_mode"),
+
+	ZONE_IN_ALARM("zone_in_alarm"),
+	ZONE_TAMPER("zone_tamper"),
+	ZONE_FAULT("zone_fault"),
+	ZONE_TRIPPED("zone_tripped"),
 	
 	KEYPAD_READY_LED("keypad_ready_led"),
 	KEYPAD_ARMED_LED("keypad_armed_led"),

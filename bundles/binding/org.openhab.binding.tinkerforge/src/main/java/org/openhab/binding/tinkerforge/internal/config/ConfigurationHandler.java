@@ -1,8 +1,9 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
- * 
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.config;
@@ -27,9 +28,22 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
@@ -38,6 +52,7 @@ import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
@@ -47,9 +62,11 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
@@ -85,13 +102,17 @@ public class ConfigurationHandler {
   private enum TypeKey {
     servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, 
     bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, 
-    bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c,
-    bricklet_remote_switch, bricklet_multitouch, electrode, proximity, 
-    object_temperature, ambient_temperature, bricklet_temperatureIR, 
-    bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, 
-    bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
-    voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
-    bricklet_halleffect
+    bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c, 
+    bricklet_remote_switch, bricklet_multitouch, electrode, proximity, object_temperature,
+    ambient_temperature, bricklet_temperatureIR, bricklet_soundintensity, 
+    bricklet_moisture, bricklet_distanceUS, bricklet_voltageCurrent, 
+    voltageCurrent_voltage, voltageCurrent_current, voltageCurrent_power, bricklet_tilt, 
+    io4_actuator, io4sensor, bricklet_io4, bricklet_halleffect, bricklet_joystick, 
+    joystick_button, joystick_xposition, joystick_yposition,
+    bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, 
+    bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
+    industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
+    digital_4in, digital_4out
   }
 
 
@@ -219,7 +240,12 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.voltageCurrent_voltage.name())
         || deviceType.equals(TypeKey.voltageCurrent_current.name())
         || deviceType.equals(TypeKey.voltageCurrent_power.name())
-        || deviceType.equals(TypeKey.bricklet_halleffect)) {
+        || deviceType.equals(TypeKey.bricklet_joystick.name())
+        || deviceType.equals(TypeKey.bricklet_halleffect.name())
+        || deviceType.equals(TypeKey.bricklet_linear_poti.name())
+        || deviceType.equals(TypeKey.ptc_resistance.name())
+        || deviceType.equals(TypeKey.ptc_temperature.name())
+        || deviceType.equals(TypeKey.industrial020ma_sensor.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -240,6 +266,19 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, VoltageCurrentSubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(VoltageCurrentSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.ptc_resistance.name())
+          || deviceType.equals(TypeKey.ptc_temperature.name())) {
+        OHTFDevice<TFBaseConfiguration, PTCSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(PTCSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.industrial020ma_sensor.name())) {
+        OHTFDevice<TFBaseConfiguration, IndustrialDual020mASubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDual020mASubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else {
@@ -390,6 +429,102 @@ public class ConfigurationHandler {
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(VoltageCurrentSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.dualbutton_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, DualButtonButtonSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(DualButtonButtonSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.dualbutton_led.name())) {
+      logger.debug("setting DualButtonLEDConfiguration device_type {}", deviceType);
+      DualButtonLEDConfiguration configuration = modelFactory.createDualButtonLEDConfiguration();
+      OHTFDevice<DualButtonLEDConfiguration, DualButtonLedSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(DualButtonLedSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.joystick_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, JoystickSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(JoystickSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.lcd_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, LCDButtonSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LCDButtonSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_ledstrip.name())) {
+      LEDStripConfiguration configuration = modelFactory.createLEDStripConfiguration();
+      OHTFDevice<LEDStripConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.ledgroup.name())) {
+      LEDGroupConfiguration configuration = modelFactory.createLEDGroupConfiguration();
+      OHTFSubDeviceAdminDevice<LEDGroupConfiguration, NoSubIds> ohtfDevice =
+          modelFactory.createOHTFSubDeviceAdminDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_ptc.name())) {
+      TFPTCBrickletConfiguration configuration = modelFactory.createTFPTCBrickletConfiguration();
+      OHTFDevice<TFPTCBrickletConfiguration, PTCSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(PTCSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_industrialdual020ma.name())) {
+      TFIndustrialDual020mAConfiguration configuration =
+          modelFactory.createTFIndustrialDual020mAConfiguration();
+      OHTFDevice<TFIndustrialDual020mAConfiguration, IndustrialDual020mASubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDual020mASubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.dual_relay.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          DualRelaySubIds.values());
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      OHTFDevice<?, DualRelaySubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(DualRelaySubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.quad_relay.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          IndustrialQuadRelayIDs.values());
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      OHTFDevice<?, IndustrialQuadRelayIDs> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialQuadRelayIDs.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.joystick_xposition.name())
+        || deviceType.equals(TypeKey.joystick_yposition.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          JoystickSubIds.values());
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      OHTFDevice<?, JoystickSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(JoystickSubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.digital_4in.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          IndustrialDigitalInSubIDs.values());
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      OHTFDevice<?, IndustrialDigitalInSubIDs> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDigitalInSubIDs.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.digital_4out.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          IndustrialDigitalOutSubIDs.values());
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      OHTFDevice<?, IndustrialDigitalOutSubIDs> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDigitalOutSubIDs.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
     } else {
       logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
@@ -409,6 +544,14 @@ public class ConfigurationHandler {
   private void fillupConfig(OHTFDevice<?, ?> ohtfDevice, Map<String, String> deviceConfig)
       throws ConfigurationException {
     String uid = deviceConfig.get(ConfigKey.uid.name());
+    if (uid == null || uid.equals("")) {
+      // das kommt hier gar nie an
+      logger.error("===== uid missing");
+      throw new ConfigurationException(deviceConfig.toString(),
+          "config is an invalid missing uid: openhab.cfg has to be fixed!");
+    } else {
+      logger.debug("*** uid is \"{}\"", uid);
+    }
     ohtfDevice.setUid(uid);
     String subid = deviceConfig.get(ConfigKey.subid.name());
     if (subid != null) {
@@ -416,6 +559,7 @@ public class ConfigurationHandler {
         throw new ConfigurationException(subid, String.format(
             "\"%s\" is an invalid subId: openhab.cfg has to be fixed!", subid));
       }
+      logger.trace("fillupConfig ohtfDevice subid {}", subid);
       ohtfDevice.setSubid(subid);
     }
     if (ohConfig.getConfigByTFId(uid, subid) != null) {
@@ -454,9 +598,10 @@ public class ConfigurationHandler {
           if (feature.getName().equals(property)) {
             logger.trace("{} feature type {}", LoggerConstants.CONFIG, feature.getEType()
                 .getInstanceClassName());
-            logger.debug("configuring feature: {} for uid {}", feature.getName(), uid);
+            logger.debug("configuring feature: {} for uid {} subid {}", feature.getName(), uid,
+                subid);
             String className = feature.getEType().getInstanceClassName();
-            if (className.equals("int")) {
+            if (className.equals("int") || className.equals("java.lang.Integer")) {
               tfConfig.eSet(feature, Integer.parseInt(deviceConfig.get(property)));
             } else if (className.equals("short") || className.equals("java.lang.Short")) {
               tfConfig.eSet(feature, Short.parseShort(deviceConfig.get(property)));

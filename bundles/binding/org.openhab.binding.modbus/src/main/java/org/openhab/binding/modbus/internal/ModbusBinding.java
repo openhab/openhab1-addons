@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,6 +29,7 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -51,11 +52,13 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	
 	private static final Logger logger = LoggerFactory.getLogger(ModbusBinding.class);
 
+	private static final String UDP_PREFIX = "udp";
 	private static final String TCP_PREFIX = "tcp";
 	private static final String SERIAL_PREFIX = "serial";
 
+	private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype|rawdatamultiplier|writemultipleregisters";
 	private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN =
-		Pattern.compile("^("+TCP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(connection|id|pollInterval|start|length|type|valuetype)$");
+		Pattern.compile("^("+TCP_PREFIX+"|"+UDP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(" + VALID_COFIG_KEYS + ")$");
 
 	/** Stores instances of all the slaves defined in cfg file */
 	private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<String, ModbusSlave>();
@@ -105,20 +108,30 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	protected void internalUpdateItem(String slaveName, InputRegister[] registers,
 			String itemName) {
 		for (ModbusBindingProvider provider : providers) {
-			if (provider.providesBindingFor(itemName)) {
-				ModbusBindingConfig config = provider.getConfig(itemName);
-				if (config.slaveName.equals(slaveName)) {
-					String slaveValueType = modbusSlaves.get(slaveName).getValueType();
+			if ( !provider.providesBindingFor(itemName) ) {
+				continue;
+			}
+			ModbusBindingConfig config = provider.getConfig(itemName);
+			if ( !config.slaveName.equals(slaveName)) {
+				continue;
+			}
 
-					State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
-					if (config.getItem() instanceof SwitchItem) {
-						newState = newState.equals(DecimalType.ZERO) ? OnOffType.OFF : OnOffType.ON;
-					}
+			String slaveValueType = modbusSlaves.get(slaveName).getValueType();
+			double rawDataMultiplier = modbusSlaves.get(slaveName).getRawDataMultiplier();
 
-					State currentState = config.getItemState();
-					if (! newState.equals(currentState))
-						eventPublisher.postUpdate(itemName, newState);
-				}
+			State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
+			/* receive data manipulation */
+			if (config.getItem() instanceof SwitchItem) {
+				newState = newState.equals(DecimalType.ZERO) ? OnOffType.OFF : OnOffType.ON;
+			}
+			if (( rawDataMultiplier != 1 ) && (config.getItem() instanceof NumberItem)) {
+				double tmpValue = (double)((DecimalType)newState).doubleValue() * rawDataMultiplier;
+				newState =  new DecimalType( String.valueOf(tmpValue) );
+			}
+
+			State currentState = config.getItemState();
+			if (! newState.equals(currentState)) {
+				eventPublisher.postUpdate(itemName, newState);
 			}
 		}
 	}
@@ -224,7 +237,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		// remove all known items if configuration changed
 		modbusSlaves.clear();
-
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 			while (keys.hasMoreElements()) {
@@ -245,8 +257,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					} else if ("writemultipleregisters".equals(key)) {
 						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
 					} else {
-						logger.debug("given modbus-slave-config-key '" + key
-							+ "' does not follow the expected pattern 'pollInterval' or '<slaveId>.<connection|id|start|length|type>'");
+						logger.debug("given modbus-slave-config-key '{}' does not follow the expected pattern or 'serial.<slaveId>.<{}>'", 
+								key, VALID_COFIG_KEYS);
 					}
 					continue;
 				}
@@ -260,11 +272,14 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				if (modbusSlave == null) {
 					if (matcher.group(1).equals(TCP_PREFIX)) {
 						modbusSlave = new ModbusTcpSlave(slave);
+					} else if (matcher.group(1).equals(UDP_PREFIX)) {
+						modbusSlave = new ModbusUdpSlave(slave);
 					} else if (matcher.group(1).equals(SERIAL_PREFIX)) {
 						modbusSlave = new ModbusSerialSlave(slave);
 					} else {
 						throw new ConfigurationException(slave, "the given slave type '" + slave + "' is unknown");
 					}
+					logger.debug("modbusSlave '{}' instanciated", slave);
 					modbusSlaves.put(slave,modbusSlave);
 				}
 
@@ -273,12 +288,16 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				
 				if ("connection".equals(configKey)) {
 					String[] chunks = value.split(":");
-					if (modbusSlave instanceof ModbusTcpSlave) {
-						((ModbusTcpSlave) modbusSlave).setHost(chunks[0]);
+					if (modbusSlave instanceof ModbusIPSlave) {
+						// expecting: 
+						//		<devicePort>:<port>
+						((ModbusIPSlave) modbusSlave).setHost(chunks[0]);
 						if (chunks.length == 2) {
-							((ModbusTcpSlave) modbusSlave).setPort(Integer.valueOf(chunks[1]));
+							((ModbusIPSlave) modbusSlave).setPort(Integer.valueOf(chunks[1]));
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
+						// expecting: 
+						//		<devicePort>[:<baudRate>:<dataBits>:<parity>:<stopBits>:<encoding>]
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
 						if (chunks.length >= 2) {
 							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
@@ -289,8 +308,11 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						if (chunks.length >= 4) {
 							((ModbusSerialSlave) modbusSlave).setParity(chunks[3]);
 						}
-						if (chunks.length == 5) {
-							((ModbusSerialSlave) modbusSlave).setStopbits(Integer.valueOf(chunks[4]));
+						if (chunks.length >= 5) {
+							((ModbusSerialSlave) modbusSlave).setStopbits(Double.valueOf(chunks[4]));
+						}
+						if (chunks.length == 6) {
+							((ModbusSerialSlave) modbusSlave).setEncoding(chunks[5]);
 						}
 					}
 				} else if ("start".equals(configKey)) {
@@ -311,12 +333,15 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					} else {
 						throw new ConfigurationException(configKey, "the given value type '" + value + "' is invalid");
 					}
+				} else if ("rawdatamultiplier".equals(configKey)) {
+					modbusSlave.setRawDataMultiplier(Double.valueOf(value.toString()) );
 				} else {
 					throw new ConfigurationException(configKey,
 						"the given configKey '" + configKey + "' is unknown");
 				}
 			}
 
+			logger.debug("config looked good, proceeding with slave-connections");
 			// connect instances to modbus slaves
 			for (ModbusSlave slave : modbusSlaves.values()) {
 				slave.connect();

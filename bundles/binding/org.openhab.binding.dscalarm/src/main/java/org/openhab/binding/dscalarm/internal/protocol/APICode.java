@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.binding.dscalarm.internal.protocol;
 
 import java.util.HashMap;
@@ -146,7 +145,9 @@ public enum APICode {
     SoftwareVersion("908"),
     CommandOutputPressed("912"),
     MasterCodeRequired("921"),
-    InstallersCodeRequired("922");
+    InstallersCodeRequired("922"),
+
+    UnknownCode("-1");
 
 	private String code;
 
@@ -189,9 +190,17 @@ public enum APICode {
 	 * @return enum value
 	 */
 	public static APICode getAPICodeValue(String code) {
+		APICode apiCode;
+		
 		if (codeToAPICodeValue == null) {
 			initMapping();
 		}
-		return codeToAPICodeValue.get(code);
+		
+		apiCode = codeToAPICodeValue.get(code);
+		
+		if(apiCode == null)
+			apiCode = UnknownCode;
+		
+		return apiCode;
 	}
 }

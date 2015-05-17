@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,11 +37,10 @@ public class CVBroadcasterCache extends UUIDBroadcasterCache {
     private final static Logger logger = LoggerFactory.getLogger(CVBroadcasterCache.class);
     
     @Override
-	public List<Object> retrieveFromCache(String broadcasterId,
-			AtmosphereResource r) {
+	public List<Object> retrieveFromCache(String broadcasterId, String uuid) {
 		List<Object> result = new ArrayList<Object>();
 		ItemStateListBean response = new ItemStateListBean(new ItemListBean());
-		for (Object cacheMessage : super.retrieveFromCache(broadcasterId, r)) {
+		for (Object cacheMessage : super.retrieveFromCache(broadcasterId, uuid)) {
 			if (cacheMessage instanceof ItemStateListBean) {
 				ItemStateListBean cachedStateList = (ItemStateListBean) cacheMessage;
 				// add states to the response (maybe a comparison is needed here
@@ -87,10 +86,8 @@ public class CVBroadcasterCache extends UUIDBroadcasterCache {
 			}
 			result.add(response);
 		}
-		if (logger.isTraceEnabled()) {
-			logger.trace("Retrieved for AtmosphereResource {} cached messages {}",
-				r.uuid(), response.stateList.entries);
-		}
+		logger.trace("Retrieved for AtmosphereResource {} cached messages {}",
+				uuid, response.stateList.entries);
 		return result;
 	}
     

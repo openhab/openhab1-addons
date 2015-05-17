@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
@@ -26,7 +27,6 @@ import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Abstract base class for all CULHandler which brings some convenience
  * regarding registering listeners and detecting forbidden messages.
@@ -34,9 +34,11 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.4.0
  */
-public abstract class AbstractCULHandler implements CULHandler, CULHandlerInternal {
+public abstract class AbstractCULHandler implements CULHandler,
+		CULHandlerInternal {
 
-	private final static Logger log = LoggerFactory.getLogger(AbstractCULHandler.class);
+	private final static Logger log = LoggerFactory
+			.getLogger(AbstractCULHandler.class);
 
 	/**
 	 * Thread which sends all queued commands to the CUL.
@@ -125,6 +127,9 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 	}
 
 	@Override
+	public abstract boolean arePropertiesEqual(Map<String, ?> properties);
+
+	@Override
 	public void registerListener(CULListener listener) {
 		if (listener != null) {
 			listeners.add(listener);
@@ -175,10 +180,10 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 	}
 
 	@Override
-	public void sendWithoutCheck(String message) throws CULCommunicationException {
+	public void sendWithoutCheck(String message)
+			throws CULCommunicationException {
 		sendQueue.add(message);
 	}
-
 
 	/**
 	 * Checks if the message would alter the RF mode of this device.
@@ -204,7 +209,8 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 	 */
 	protected void notifyDataReceived(String data) {
 		for (final CULListener listener : listeners) {
-			receiveExecutor.execute(new NotifyDataReceivedRunner(listener, data));
+			receiveExecutor
+					.execute(new NotifyDataReceivedRunner(listener, data));
 		}
 	}
 
@@ -214,20 +220,21 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 		}
 	}
 
-	
 	/**
 	 * read and process next line from underlying transport.
-	 * @throws CULCommunicationException if 
+	 *
+	 * @throws CULCommunicationException
+	 *             if
 	 */
-	protected void processNextLine() throws CULCommunicationException  {
+	protected void processNextLine() throws CULCommunicationException {
 		try {
 			String data = br.readLine();
-			if(data==null){
-				String msg="EOF encountered for "+deviceName;
+			if (data == null) {
+				String msg = "EOF encountered for " + deviceName;
 				log.error(msg);
 				throw new CULCommunicationException(msg);
 			}
-			
+
 			log.debug("Received raw message from CUL: " + data);
 			if ("EOB".equals(data)) {
 				log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
@@ -235,38 +242,38 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 			} else if ("LOVF".equals(data)) {
 				log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
 				return;
-			} else if (data.matches("^\\d+\\s+\\d+"))
-			{					
+			} else if (data.matches("^\\d+\\s+\\d+")) {
 				processCreditReport(data);
 				return;
 			}
 			notifyDataReceived(data);
 			requestCreditReport();
-						
+
 		} catch (IOException e) {
-			log.error("Exception while reading from CUL port "+deviceName, e);
+			log.error("Exception while reading from CUL port " + deviceName, e);
 			notifyError(e);
-			
+
 			throw new CULCommunicationException(e);
-		}				
+		}
 	}
 
 	/**
 	 * process data received from credit report
+	 *
 	 * @param data
 	 */
 	private void processCreditReport(String data) {
 		// Credit report received
-		String[] report = data.split(" ");					
-		credit10ms = Integer.parseInt(report[report.length-1]);
-		log.debug("credit10ms = "+credit10ms);
+		String[] report = data.split(" ");
+		credit10ms = Integer.parseInt(report[report.length - 1]);
+		log.debug("credit10ms = " + credit10ms);
 	}
-	
 
 	/**
-	 * get the remaining send time on channel as seen at the last send/receive event.
+	 * get the remaining send time on channel as seen at the last send/receive
+	 * event.
 	 * 
-	 * @return  remaining send time in 10ms units
+	 * @return remaining send time in 10ms units
 	 */
 	public int getCredit10ms() {
 		return credit10ms;
@@ -292,8 +299,9 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 	 * @param message
 	 * @throws CULCommunicationException
 	 */
-	private  void writeMessage(String message) throws CULCommunicationException {
-		log.debug("Sending raw message to CUL "+deviceName+":  '"+ message+"'");
+	private void writeMessage(String message) throws CULCommunicationException {
+		log.debug("Sending raw message to CUL " + deviceName + ":  '" + message
+				+ "'");
 		if (bw == null) {
 			log.error("Can't write message, BufferedWriter is NULL");
 		}
@@ -302,11 +310,11 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 				bw.write(message);
 				bw.flush();
 			} catch (IOException e) {
-				log.error("Can't write to CUL "+deviceName, e);
+				log.error("Can't write to CUL " + deviceName, e);
 			}
-			
+
 			requestCreditReport();
 		}
-	
+
 	}
 }

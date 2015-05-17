@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,14 +13,19 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Dictionary;
+import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.novelanheatpump.HeatPumpBindingProvider;
 import org.openhab.binding.novelanheatpump.HeatpumpCommandType;
+import org.openhab.binding.novelanheatpump.HeatpumpCoolingOperationMode;
+import org.openhab.binding.novelanheatpump.HeatpumpOperationMode;
 import org.openhab.binding.novelanheatpump.i18n.Messages;
+import org.openhab.binding.novelanheatpump.internal.HeatPumpGenericBindingProvider.HeatPumpBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -39,6 +44,27 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	
 	private static final Logger logger = LoggerFactory.getLogger(HeatPumpBinding.class);
 	private static final SimpleDateFormat sdateformat = new SimpleDateFormat("dd.MM.yy HH:mm"); //$NON-NLS-1$
+	
+	/** Parameter code for heating operation mode */
+	public static int PARAM_HEATING_OPERATION_MODE = 3;
+	/** Parameter code for heating temperature */
+	public static int PARAM_HEATING_TEMPERATURE = 1;
+	/** Parameter code for warmwater operation mode */
+	public static int PARAM_WARMWATER_OPERATION_MODE = 4;
+	/** Parameter code for warmwater temperature */
+	public static int PARAM_WARMWATER_TEMPERATURE = 2;
+	/** Parameter code for cooling operation mode */
+	public static int PARAM_COOLING_OPERATION_MODE = 108;
+	/** Parameter code for cooling release temperature */
+	public static int PARAM_COOLING_RELEASE_TEMP = 110;
+	/** Parameter code for target temp MK1 */
+	public static int PARAM_COOLING_INLET_TEMP = 132;
+	/** Parameter code for start cooling after hours*/
+	public static int PARAM_COOLING_START = 850;
+	/** Parameter code for stop cooling after hours */
+	public static int PARAM_COOLING_STOP = 851;
+	
+	
 
 	/** Default refresh interval (currently 1 minute) */
 	private long refreshInterval = 60000L;
@@ -131,6 +157,21 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 			handleEventType(new StringType(heatpumpState), HeatpumpCommandType.TYPE_HEATPUMP_STATE);
 			String heatpumpExtendedState = getExtendeStateString(heatpumpValues) + ": " + formatHours(heatpumpValues[120]); //$NON-NLS-1$
 			handleEventType(new StringType(heatpumpExtendedState), HeatpumpCommandType.TYPE_HEATPUMP_EXTENDED_STATE);
+
+
+			//read all parameters
+			int[] heatpumpParams = connector.getParams();
+
+			handleEventType(new DecimalType((double) heatpumpParams[PARAM_HEATING_TEMPERATURE] / 10.), HeatpumpCommandType.TYPE_HEATING_TEMPERATURE);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_HEATING_OPERATION_MODE]), HeatpumpCommandType.TYPE_HEATING_OPERATION_MODE);
+			handleEventType(new DecimalType((double) heatpumpParams[PARAM_WARMWATER_TEMPERATURE] / 10.), HeatpumpCommandType.TYPE_WARMWATER_TEMPERATURE);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_WARMWATER_OPERATION_MODE]), HeatpumpCommandType.TYPE_WARMWATER_OPERATION_MODE);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_OPERATION_MODE]), HeatpumpCommandType.TYPE_COOLING_OPERATION_MODE);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_RELEASE_TEMP] / 10.), HeatpumpCommandType.TYPE_COOLING_RELEASE_TEMPERATURE);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_INLET_TEMP] / 10.), HeatpumpCommandType.TYPE_COOLING_INLET_TEMP);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_START] / 10.), HeatpumpCommandType.TYPE_COOLING_START_AFTER_HOURS);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_STOP] / 10.), HeatpumpCommandType.TYPE_COOLING_STOP_AFTER_HOURS);
+			
 
 		} catch (UnknownHostException e) {
 			logger.warn("the given hostname '{}' of the Novela heatpump is unknown", ip);
@@ -251,7 +292,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 			returnValue = Messages.HeatPumpBinding_ZWE_OPERATION;
 			break;
 		default:
-			logger.info("found new value for reverse engineering !!!! No idea what the heatpump will do in state "+heatpumpValues[119]); //$NON-NLS-1$
+			logger.info("found new value for reverse engineering !!!! No idea what the heatpump will do in state {}.",heatpumpValues[119]); //$NON-NLS-1$
 			returnValue = Messages.HeatPumpBinding_UNKNOWN;
 
 		}
@@ -285,7 +326,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 			returnValue = Messages.HeatPumpBinding_DEFROSTING;
 			break;
 		default:
-			logger.info("found new value for reverse engineering !!!! No idea what the heatpump will do in state "+heatpumpValues[117]); //$NON-NLS-1$
+			logger.info("found new value for reverse engineering !!!! No idea what the heatpump will do in state {}.",heatpumpValues[117]); //$NON-NLS-1$
 			returnValue = Messages.HeatPumpBinding_UNKNOWN;
 
 		}
@@ -301,5 +342,172 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	protected String getName() {
 		return "Heatpump Refresh Service";
 	}
+	
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command){
+		HeatPumpGenericBindingProvider provider = findFirstProvider();
+		if(provider != null){
+			HeatPumpBindingConfig bindingConfig = provider.getHeatPumpBindingConfig(itemName);
+			HeatpumpCommandType commandType =bindingConfig.getType();
+			switch(commandType){
+				case TYPE_HEATING_OPERATION_MODE:
+					if(command instanceof DecimalType){
+						int value = ((DecimalType)command).intValue();
+						HeatpumpOperationMode mode = HeatpumpOperationMode.fromValue(value);
+						if(mode != null){
+							if(sendParamToHeatpump(PARAM_HEATING_OPERATION_MODE, mode.getValue())){
+								logger.info("Heatpump heating operation mode set to {}.", mode.name());
+							}
+							
+						}else{
+							logger.warn("Headpump heating operation mode with value {} is unknown.", value);
+						}
+					}else{
+						logger.warn("Headpump heating operation mode item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_HEATING_TEMPERATURE:
+					if(command instanceof DecimalType){
+						float temperature = ((DecimalType)command).floatValue();
+						int value = (int)(temperature * 10.);
+						if(sendParamToHeatpump(PARAM_HEATING_TEMPERATURE, value)){
+							logger.info("Heatpump heating temeprature set to {}.", temperature);							
+						}
+					}else{
+						logger.warn("Headpump heating temperature item {} must be from type:{}.",itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_WARMWATER_OPERATION_MODE:
+					if(command instanceof DecimalType){
+						int value = ((DecimalType)command).intValue();
+						HeatpumpOperationMode mode = HeatpumpOperationMode.fromValue(value);
+						if(mode != null){
+							if(sendParamToHeatpump(PARAM_WARMWATER_OPERATION_MODE, mode.getValue())){
+								logger.info("Heatpump warmwater operation mode set to: {}. ", mode.name());
+							}
+							
+						}else{
+							logger.warn("Headpump warmwater operation mode with value {} is unknown.", value);
+						}
+					}else{
+						logger.warn("Headpump warmwater operation mode item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_WARMWATER_TEMPERATURE:
+					if(command instanceof DecimalType){
+						float temperature = ((DecimalType)command).floatValue();
+						int value = (int)(temperature * 10.);
+						if(sendParamToHeatpump(PARAM_WARMWATER_TEMPERATURE, value)){
+							logger.info("Heatpump warmwater temeprature set to {}.", temperature);							
+						}
+					}else{
+						logger.warn("Headpump warmwater temperature item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_COOLING_OPERATION_MODE:
+					if(command instanceof DecimalType){
+						int value = ((DecimalType)command).intValue();
+						HeatpumpCoolingOperationMode mode = HeatpumpCoolingOperationMode.fromValue(value);
+						if(mode != null){
+							if(sendParamToHeatpump(PARAM_COOLING_OPERATION_MODE, mode.getValue())){
+								logger.info("Heatpump cooling operation mode set to {}.", mode.name());
+							}
+							
+						}else{
+							logger.warn("Headpump cooling operation mode with value {} is unknown.", value);
+						}
+					}else{
+						logger.warn("Headpump cooling operation mode item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_COOLING_RELEASE_TEMPERATURE:
+					if(command instanceof DecimalType){
+						float temperature = ((DecimalType)command).floatValue();
+						int value = (int)(temperature * 10.);
+						if(sendParamToHeatpump(PARAM_COOLING_RELEASE_TEMP, value)){
+							logger.info("Heatpump cooling release temeprature set to {}.", temperature);							
+						}
+					}else{
+						logger.warn("Headpump cooling release temperature item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_COOLING_INLET_TEMP:
+					if(command instanceof DecimalType){
+						float temperature = ((DecimalType)command).floatValue();
+						int value = (int)(temperature * 10.);
+						if(sendParamToHeatpump(PARAM_COOLING_INLET_TEMP, value)){
+							logger.info("Heatpump cooling target temp MK1 set to {}.", temperature);							
+						}
+					}else{
+						logger.warn("Headpump cooling target temp MK1 item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_COOLING_START_AFTER_HOURS:
+					if(command instanceof DecimalType){
+						float hours = ((DecimalType)command).floatValue();
+						int value = (int)(hours * 10.);
+						if(sendParamToHeatpump(PARAM_COOLING_START, value)){
+							logger.info("Heatpump cooling start after hours set to {}.", hours);							
+						}
+					}else{
+						logger.warn("Headpump cooling start after hours item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_COOLING_STOP_AFTER_HOURS:
+					if(command instanceof DecimalType){
+						float hours = ((DecimalType)command).floatValue();
+						int value = (int)(hours * 10.);
+						if(sendParamToHeatpump(PARAM_COOLING_STOP, value)){
+							logger.info("Heatpump cooling stop after hours set to {}.", hours);							
+						}
+					}else{
+						logger.warn("Headpump cooling stop after hours item {} must be from type: {}.", itemName, DecimalType.class.getSimpleName());						
+					}
+					break;
+					
+				default:
+			}
+		}
+		
+	}
+
+	/**
+	 * Set a parameter on the Novela heatpump.
+	 * 
+	 * @param param
+	 * @param value
+	 */
+	private boolean sendParamToHeatpump(int param, int value) {
+		HeatpumpConnector connector = new HeatpumpConnector(ip);
+		try {
+			connector.connect();
+			return connector.setParam(param, value);
+		} catch (UnknownHostException e) {
+			logger.warn("the given hostname '{}' of the Novela heatpump is unknown", ip);
+			return false;
+		} catch (IOException e) {
+			logger.warn("couldn't establish network connection [host '{}']", ip);
+			return false;
+		} finally {
+			if (connector != null) {
+				connector.disconnect();
+			}
+		}
+	}
+
+	/**
+	 * Finds the binding provider.
+	 * @return
+	 */
+	private HeatPumpGenericBindingProvider findFirstProvider() {
+		Iterator<HeatPumpBindingProvider> it = providers.iterator();
+		while(it.hasNext()){
+			HeatPumpBindingProvider provider = it.next();
+			if(provider instanceof HeatPumpGenericBindingProvider){
+				return (HeatPumpGenericBindingProvider)provider; 
+			}
+		}
+		return null;
+	}	
 
 }

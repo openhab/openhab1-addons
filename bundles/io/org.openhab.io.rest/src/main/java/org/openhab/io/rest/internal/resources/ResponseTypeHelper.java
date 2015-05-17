@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -62,12 +62,14 @@ public class ResponseTypeHelper {
 	 * @return boolean
 	 */
 	public static boolean isStreamingTransport(HttpServletRequest request) {
-        String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
-		String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
-		if(HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.STREAMING_TRANSPORT.equalsIgnoreCase(transport) || HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(upgrade)) {
-		        return true;
+		final String transport = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
+		final String upgrade = request.getHeader(HeaderConfig.WEBSOCKET_UPGRADE);
+		if (HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(transport)
+				|| HeaderConfig.STREAMING_TRANSPORT.equalsIgnoreCase(transport)
+				|| HeaderConfig.WEBSOCKET_TRANSPORT.equalsIgnoreCase(upgrade)) {
+			return true;
 		} else {
-		        return false;
+			return false;
 		}
 	}
 

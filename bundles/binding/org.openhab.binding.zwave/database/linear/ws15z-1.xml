@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WS15Z-1</Model>
+	<Label lang="en">Wall Mounted Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x2b</id>
+		</Class>
+		<Class>
+			<id>0x2c</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Help lang="en">The WD500Z-1 will flicker its LED when it is
+				transmitting to any of its groups. This can be changed if desired.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">On when load is on</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Off when load is on</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Help lang="en">To change the top of the switch to OFF and the bottom
+				to ON change parameter to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Top-ON, Bottom-OFF </Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Bottom-ON, Top-OFF</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+</Product>

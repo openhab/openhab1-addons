@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,9 +32,11 @@ import org.openhab.binding.netatmo.internal.messages.MeasurementResponse;
 import org.openhab.binding.netatmo.internal.messages.NetatmoError;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenRequest;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenResponse;
-import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PointType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -43,35 +45,35 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Binding that gets measurements from the Netatmo API every couple of minutes.
- * 
+ *
  * @author Andreas Brenk
  * @author Thomas.Eichstaedt-Engelen
+ * @author Gaël L'hopital
  * @since 1.4.0
  */
 public class NetatmoBinding extends
 		AbstractActiveBinding<NetatmoBindingProvider> implements ManagedService {
-	
+
 	private static final String DEFAULT_USER_ID = "DEFAULT_USER";
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(NetatmoBinding.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(NetatmoBinding.class);
 
 	protected static final String CONFIG_CLIENT_ID = "clientid";
 	protected static final String CONFIG_CLIENT_SECRET = "clientsecret";
 	protected static final String CONFIG_REFRESH = "refresh";
 	protected static final String CONFIG_REFRESH_TOKEN = "refreshtoken";
-	
-	private static DeviceListResponse deviceListResponse = null;
-	private static DeviceListRequest deviceListRequest = null;
-	
+
 	/**
 	 * The refresh interval which is used to poll values from the Netatmo server
 	 * (optional, defaults to 300000ms)
 	 */
 	private long refreshInterval = 300000;
 
+	private PointType stationPosition = null;
+
 	private Map<String, OAuthCredentials> credentialsCache = new HashMap<String, OAuthCredentials>();
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,7 +89,7 @@ public class NetatmoBinding extends
 	protected long getRefreshInterval() {
 		return this.refreshInterval;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -96,7 +98,7 @@ public class NetatmoBinding extends
 	protected void execute() {
 		logger.debug("Querying Netatmo API");
 		for (String userid : credentialsCache.keySet()) {
-			
+
 			OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
 			if (oauthCredentials.noAccessToken()) {
 				// initial run after a restart, so get an access token first
@@ -108,43 +110,123 @@ public class NetatmoBinding extends
 					processDeviceList(oauthCredentials);
 				}
 
-				Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = processMeasurements(oauthCredentials);
+				DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials);
 				for (final NetatmoBindingProvider provider : this.providers) {
 					for (final String itemName : provider.getItemNames()) {
 						final String deviceId = provider.getDeviceId(itemName);
 						final String moduleId = provider.getModuleId(itemName);
-						final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
-						
+						final NetatmoMeasureType measureType = provider
+								.getMeasureType(itemName);
+
 						State state = null;
 						switch (measureType) {
-							case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
-									final String requestKey = createKey(deviceId, moduleId);
-									state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
-									break;
-							case BATTERYVP: case RFSTATUS:
-								for (Module module : deviceListResponse.getModules()) {
-									if (module.getId().equals(moduleId)) {
-										switch (measureType) {
-											case BATTERYVP: state = new DecimalType(module.getBatteryVp()); break;
-											case RFSTATUS: state = new DecimalType(module.getRfStatus()); break;
-										}
-									}
-								}
-								break;
-							case ALTITUDE: case LATITUDE: case LONGITUDE: case WIFISTATUS:
-								for (Device device : deviceListResponse.getDevices()) {
+						case MODULENAME:
+							if (moduleId == null) // we're on the main device
+								for (Device device : oauthCredentials.deviceListResponse
+										.getDevices()) {
 									if (device.getId().equals(deviceId)) {
-										switch (measureType) {
-											case ALTITUDE: state = new DecimalType(device.getAltitude()); break;
-											case LATITUDE: state = new DecimalType(device.getLatitude()); break;
-											case LONGITUDE: state = new DecimalType(device.getLongitude()); break;
-											case WIFISTATUS: state = new DecimalType(device.getWifiStatus()); break;
-										}
+										state = new StringType(
+												device.getModuleName());
+										break;
 									}
 								}
-								break;
+							else {
+								for (Module module : oauthCredentials.deviceListResponse
+										.getModules()) {
+									if (module.getId().equals(moduleId)) {
+										state = new StringType(
+												module.getModuleName());
+										break;
+									}
+								}
+							}
+							break;
+						case TIMESTAMP:
+							state = deviceMeasureValueMap.timeStamp;
+							break;
+						case TEMPERATURE:
+						case CO2:
+						case HUMIDITY:
+						case NOISE:
+						case PRESSURE:
+						case RAIN:
+							final String requestKey = createKey(deviceId,
+									moduleId);
+							final BigDecimal value = deviceMeasureValueMap.get(
+									requestKey).get(measureType.getMeasure());
+							// Protect that sometimes Netatmo returns null where
+							// numeric value is awaited (issue #1848)
+							if (value != null) {
+								state = new DecimalType(value);
+							}
+							break;
+						case BATTERYVP:
+						case RFSTATUS:
+							for (Module module : oauthCredentials.deviceListResponse
+									.getModules()) {
+								if (module.getId().equals(moduleId)) {
+									switch (measureType) {
+									case BATTERYVP:
+										state = new DecimalType(
+												module.getBatteryLevel());
+										break;
+									case RFSTATUS:
+										state = new DecimalType(
+												module.getRfLevel());
+										break;
+									case MODULENAME:
+										state = new StringType(
+												module.getModuleName());
+										break;
+									}
+								}
+							}
+							break;
+						case ALTITUDE:
+						case LATITUDE:
+						case LONGITUDE:
+						case WIFISTATUS:
+						case COORDINATE:
+						case STATIONNAME:
+							for (Device device : oauthCredentials.deviceListResponse
+									.getDevices()) {
+								if (stationPosition == null) {
+									stationPosition = new PointType(
+											new DecimalType(
+													device.getLatitude()),
+											new DecimalType(device
+													.getLongitude()),
+											new DecimalType(device
+													.getAltitude()));
+								}
+								if (device.getId().equals(deviceId)) {
+									switch (measureType) {
+									case LATITUDE:
+										state = stationPosition.getLatitude();
+										break;
+									case LONGITUDE:
+										state = stationPosition.getLongitude();
+										break;
+									case ALTITUDE:
+										state = stationPosition.getAltitude();
+										break;
+									case WIFISTATUS:
+										state = new DecimalType(
+												device.getWifiLevel());
+										break;
+									case COORDINATE:
+										state = stationPosition;
+										break;
+									case STATIONNAME:
+										state = new StringType(
+												device.getStationName());
+										break;
+									}
+								}
+							}
+							break;
 						}
-						
+
 						if (state != null) {
 							this.eventPublisher.postUpdate(itemName, state);
 						}
@@ -156,9 +238,20 @@ public class NetatmoBinding extends
 		}
 	}
 
-	private Map<String, Map<String, BigDecimal>> processMeasurements(OAuthCredentials oauthCredentials) {
-		Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String,BigDecimal>>();
-		
+	static class DeviceMeasureValueMap extends
+			HashMap<String, Map<String, BigDecimal>> {
+
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+		DateTimeType timeStamp = null;
+	}
+
+	private DeviceMeasureValueMap processMeasurements(
+			OAuthCredentials oauthCredentials) {
+		DeviceMeasureValueMap deviceMeasureValueMap = new DeviceMeasureValueMap();
+
 		for (final MeasurementRequest request : createMeasurementRequests()) {
 			final MeasurementResponse response = request.execute();
 
@@ -177,23 +270,21 @@ public class NetatmoBinding extends
 
 				break; // abort processing measurement requests
 			} else {
-				processMeasurementResponse(request, response, deviceMeasureValueMap);
+				processMeasurementResponse(request, response,
+						deviceMeasureValueMap);
 			}
 		}
-		
+
 		return deviceMeasureValueMap;
 	}
-	
 
 	private void processDeviceList(OAuthCredentials oauthCredentials) {
-		final DeviceListRequest request = new DeviceListRequest(oauthCredentials.accessToken);
-		final DeviceListResponse response = request.execute();
+		logger.debug("Request: {}", oauthCredentials.deviceListRequest);
+		logger.debug("Response: {}", oauthCredentials.deviceListResponse);
 
-		logger.debug("Request: {}", request);
-		logger.debug("Response: {}", response);
-
-		if (response.isError()) {
-			final NetatmoError error = response.getError();
+		if (oauthCredentials.deviceListResponse.isError()) {
+			final NetatmoError error = oauthCredentials.deviceListResponse
+					.getError();
 
 			if (error.isAccessTokenExpired()) {
 				oauthCredentials.refreshAccessToken();
@@ -204,7 +295,7 @@ public class NetatmoBinding extends
 
 			return; // abort processing
 		} else {
-			processDeviceListResponse(response);
+			processDeviceListResponse(oauthCredentials.deviceListResponse);
 			oauthCredentials.firstExecution = false;
 		}
 	}
@@ -253,7 +344,8 @@ public class NetatmoBinding extends
 			for (final String itemName : provider.getItemNames()) {
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
+				final NetatmoMeasureType measureType = provider
+						.getMeasureType(itemName);
 
 				final Set<String> measurements;
 
@@ -280,7 +372,7 @@ public class NetatmoBinding extends
 						+ device.getModuleName() + ")\n");
 			}
 		}
-		
+
 		for (Entry<String, Set<String>> entry : moduleMeasurements.entrySet()) {
 			final String moduleId = entry.getKey();
 			final Module module = moduleMap.get(moduleId);
@@ -292,7 +384,8 @@ public class NetatmoBinding extends
 			}
 		}
 		if (message.length() > 0) {
-			message.insert(0,"The following Netatmo measurements are not yet configured:\n");
+			message.insert(0,
+					"The following Netatmo measurements are not yet configured:\n");
 			logger.info(message.toString());
 		}
 	}
@@ -304,39 +397,49 @@ public class NetatmoBinding extends
 	 */
 	private Collection<MeasurementRequest> createMeasurementRequests() {
 		final Map<String, MeasurementRequest> requests = new HashMap<String, MeasurementRequest>();
-		
+
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
 
 				final String userid = provider.getUserid(itemName);
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
-				
+				final NetatmoMeasureType measureType = provider
+						.getMeasureType(itemName);
+
 				final String requestKey = createKey(deviceId, moduleId);
-				
+
 				switch (measureType) {
-					case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
-						OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
-						if (oauthCredentials != null) {
-							if (!requests.containsKey(requestKey)) {
-								requests.put(requestKey, 
-									new MeasurementRequest(oauthCredentials.accessToken, deviceId, moduleId));
-							}
-							requests.get(requestKey).addMeasure(measureType);
-							break;
+				case TEMPERATURE:
+				case CO2:
+				case HUMIDITY:
+				case NOISE:
+				case PRESSURE:
+				case RAIN:
+					OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+					if (oauthCredentials != null) {
+						if (!requests.containsKey(requestKey)) {
+							requests.put(requestKey, new MeasurementRequest(
+									oauthCredentials.accessToken, deviceId,
+									moduleId));
 						}
-					default:
+						requests.get(requestKey).addMeasure(measureType);
 						break;
-				}	
+					}
+				default:
+					break;
+				}
 			}
 		}
-		
+
 		return requests.values();
 	}
-	
-	private void processMeasurementResponse(final MeasurementRequest request, final MeasurementResponse response, Map<String, Map<String, BigDecimal>> deviceMeasureValueMap) {
-		final List<BigDecimal> values = response.getBody().get(0).getValues().get(0);
+
+	private void processMeasurementResponse(final MeasurementRequest request,
+			final MeasurementResponse response,
+			DeviceMeasureValueMap deviceMeasureValueMap) {
+		final List<BigDecimal> values = response.getBody().get(0).getValues()
+				.get(0);
 		final Map<String, BigDecimal> valueMap = new HashMap<String, BigDecimal>();
 
 		int index = 0;
@@ -347,15 +450,18 @@ public class NetatmoBinding extends
 		}
 
 		deviceMeasureValueMap.put(request.getKey(), valueMap);
+		deviceMeasureValueMap.timeStamp = new DateTimeType(
+				response.getTimeStamp());
 	}
-	
+
 	/**
 	 * Returns the cached {@link OAuthCredentials} for the given {@code userid}.
 	 * If their is no such cached {@link OAuthCredentials} element, the cache is
-	 * searched with the {@code DEFAULT_USER}. If there is still no cached element
-	 * found {@code NULL} is returned.
-	 *  
-	 * @param userid the userid to find the {@link OAuthCredentials}
+	 * searched with the {@code DEFAULT_USER}. If there is still no cached
+	 * element found {@code NULL} is returned.
+	 * 
+	 * @param userid
+	 *            the userid to find the {@link OAuthCredentials}
 	 * @return the cached {@link OAuthCredentials} or {@code NULL}
 	 */
 	private OAuthCredentials getOAuthCredentials(String userid) {
@@ -365,37 +471,40 @@ public class NetatmoBinding extends
 			return credentialsCache.get(DEFAULT_USER_ID);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updated(final Dictionary<String, ?> config) throws ConfigurationException {
+	public void updated(final Dictionary<String, ?> config)
+			throws ConfigurationException {
 		if (config != null) {
-			
-			final String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
+
+			final String refreshIntervalString = (String) config
+					.get(CONFIG_REFRESH);
 			if (isNotBlank(refreshIntervalString)) {
 				this.refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-			
+
 			Enumeration<String> configKeys = config.keys();
 			while (configKeys.hasMoreElements()) {
-				String configKey = (String) configKeys.nextElement();
-				
+				String configKey = configKeys.nextElement();
+
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
-				if (CONFIG_REFRESH.equals(configKey) || "service.pid".equals(configKey)) {
+				if (CONFIG_REFRESH.equals(configKey)
+						|| "service.pid".equals(configKey)) {
 					continue;
 				}
 
 				String userid;
 				String configKeyTail;
-				
+
 				if (configKey.contains(".")) {
 					String[] keyElements = configKey.split("\\.");
 					userid = keyElements[0];
 					configKeyTail = keyElements[1];
-					
+
 				} else {
 					userid = DEFAULT_USER_ID;
 					configKeyTail = configKey;
@@ -411,24 +520,21 @@ public class NetatmoBinding extends
 
 				if (CONFIG_CLIENT_ID.equals(configKeyTail)) {
 					credentials.clientId = value;
-				}
-				else if (CONFIG_CLIENT_SECRET.equals(configKeyTail)) {
-					credentials.clientSecret= value;
-				}
-				else if (CONFIG_REFRESH_TOKEN.equals(configKeyTail)) {
+				} else if (CONFIG_CLIENT_SECRET.equals(configKeyTail)) {
+					credentials.clientSecret = value;
+				} else if (CONFIG_REFRESH_TOKEN.equals(configKeyTail)) {
 					credentials.refreshToken = value;
-				}
-				else {
-					throw new ConfigurationException(
-						configKey, "the given configKey '" + configKey + "' is unknown");
+				} else {
+					throw new ConfigurationException(configKey,
+							"the given configKey '" + configKey
+									+ "' is unknown");
 				}
 			}
-			
+
 			setProperlyConfigured(true);
 		}
 	}
-	
-	
+
 	/**
 	 * This internal class holds the different crendentials necessary for the
 	 * OAuth2 flow to work. It also provides basic methods to refresh the access
@@ -438,12 +544,13 @@ public class NetatmoBinding extends
 	 * @since 1.6.0
 	 */
 	static class OAuthCredentials {
-		
+
 		/**
 		 * The client id to access the Netatmo API. Normally set in
 		 * <code>openhab.cfg</code>.
 		 * 
-		 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
+		 * @see <a
+		 *      href="http://dev.netatmo.com/doc/authentication/usercred">Client
 		 *      Credentials</a>
 		 */
 		String clientId;
@@ -452,7 +559,8 @@ public class NetatmoBinding extends
 		 * The client secret to access the Netatmo API. Normally set in
 		 * <code>openhab.cfg</code>.
 		 * 
-		 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
+		 * @see <a
+		 *      href="http://dev.netatmo.com/doc/authentication/usercred">Client
 		 *      Credentials</a>
 		 */
 		String clientSecret;
@@ -469,8 +577,8 @@ public class NetatmoBinding extends
 		String refreshToken;
 
 		/**
-		 * The access token to access the Netatmo API. Automatically renewed from
-		 * the API using the refresh token.
+		 * The access token to access the Netatmo API. Automatically renewed
+		 * from the API using the refresh token.
 		 * 
 		 * @see <a
 		 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh
@@ -478,29 +586,32 @@ public class NetatmoBinding extends
 		 * @see #refreshAccessToken()
 		 */
 		String accessToken;
-		
+
+		DeviceListResponse deviceListResponse = null;
+		DeviceListRequest deviceListRequest = null;
+
 		boolean firstExecution = true;
-		
+
 		public boolean noAccessToken() {
 			return this.accessToken == null;
 		}
-		
+
 		public void refreshAccessToken() {
 			logger.debug("Refreshing access token.");
 
-			final RefreshTokenRequest request = 
-				new RefreshTokenRequest(this.clientId, this.clientSecret, this.refreshToken);
+			final RefreshTokenRequest request = new RefreshTokenRequest(
+					this.clientId, this.clientSecret, this.refreshToken);
 			logger.debug("Request: {}", request);
 
 			final RefreshTokenResponse response = request.execute();
 			logger.debug("Response: {}", response);
 
 			this.accessToken = response.getAccessToken();
-			
+
 			deviceListRequest = new DeviceListRequest(this.accessToken);
 			deviceListResponse = deviceListRequest.execute();
 		}
-		
+
 	}
 
 }

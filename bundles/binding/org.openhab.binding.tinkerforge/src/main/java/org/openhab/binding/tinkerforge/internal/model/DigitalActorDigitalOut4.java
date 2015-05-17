@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getPin <em>Pin</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -56,4 +57,20 @@ public interface DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrick
    * @generated
    */
   void setPin(int value);
+
+  /**
+   * Returns the value of the '<em><b>Device Type</b></em>' attribute.
+   * The default value is <code>"digital_4out"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Device Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Device Type</em>' attribute.
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActorDigitalOut4_DeviceType()
+   * @model default="digital_4out" unique="false" changeable="false"
+   * @generated
+   */
+  String getDeviceType();
 } // DigitalActorDigitalOut4

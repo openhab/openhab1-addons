@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.zwave.internal.converter;
 
 import java.util.Map;
@@ -44,18 +52,11 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatOperatingStateCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-			return;
-		}
-
-		this.getController().sendData(serialMessage);
+		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 	}
 
 	/**

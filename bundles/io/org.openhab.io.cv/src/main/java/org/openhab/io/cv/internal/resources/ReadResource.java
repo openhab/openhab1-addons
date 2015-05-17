@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.io.cv.internal.resources;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,7 +16,6 @@ import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -30,19 +30,18 @@ import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.jersey.SuspendResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.io.cv.CVApplication;
+import org.openhab.core.types.State;
+import org.openhab.io.cv.internal.ReturnType;
 import org.openhab.io.cv.internal.broadcaster.CometVisuBroadcaster;
 import org.openhab.io.cv.internal.listeners.ItemStateChangeListener;
 import org.openhab.io.cv.internal.resources.beans.GroupItemBean;
 import org.openhab.io.cv.internal.resources.beans.ItemBean;
 import org.openhab.io.cv.internal.resources.beans.ItemListBean;
 import org.openhab.io.cv.internal.resources.beans.ItemStateListBean;
-import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,8 @@ public class ReadResource {
 			.getLogger(ReadResource.class);
 
 	public static final String PATH_READ = "r";
-
+	
+	
 	@Context
 	UriInfo uriInfo;
 	@Context
@@ -83,22 +83,26 @@ public class ReadResource {
 			@QueryParam("i") long index,
 			@QueryParam("t") long time,
 			@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-			@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
-			@HeaderParam(HeaderConfig.X_CACHE_DATE) long cacheDate,
     		@Context AtmosphereResource resource) {
-		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
-		logger.debug("Received HTTP GET request at '{}' for {} items at index '{}', time '{}', ResponseType: '{}'.",
-				new String[] { uriInfo.getPath(), String.valueOf(itemNames.size()), String.valueOf(index), String.valueOf(cacheDate), responseType});
+		final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
+		if (logger.isDebugEnabled()) {
+			logger.debug("Received HTTP GET request at '{}' for {} items at index '{}', ResponseType: '{}'.",
+				uriInfo.getPath(), itemNames.size(), index, responseType);
+		}
+		List<ReturnType> rts = getReturnTypes(itemNames);
 		if(index==0) {
 			// first request => return all values
 			if (responseType != null) {
-				throw new WebApplicationException(Response.ok(getItemStateListBean(itemNames,System.currentTimeMillis()), responseType).build());
+				throw new WebApplicationException(Response.ok(getItemStateListBean(rts,System.currentTimeMillis()), responseType).build());
 			} else {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		CometVisuBroadcaster itemBroadcaster = (CometVisuBroadcaster) BroadcasterFactory.getDefault().lookup(CometVisuBroadcaster.class, resource.getRequest().getPathInfo(), true);
-		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener(itemNames));
+		
+		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+		CometVisuBroadcaster itemBroadcaster = (CometVisuBroadcaster) broadcasterFactory.lookup(CometVisuBroadcaster.class, resource.getRequest().getPathInfo(), true);
+		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener(rts));
+		
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
 			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
@@ -106,53 +110,53 @@ public class ReadResource {
 			.outputComments(true).build();
 	}
 	
-	public ItemStateListBean getItemStateListBean(List<String> itemNames, long index) {
-		ItemStateListBean stateList = new ItemStateListBean(new ItemListBean(getItemBeans(itemNames)));
+	private List<ReturnType> getReturnTypes(List<String> itemNames) {
+		List<ReturnType> rts = new ArrayList<ReturnType>();
+		for (String cvItemName : itemNames) {
+			try {
+				ReturnType rt = new ReturnType(cvItemName);
+				rts.add(rt);
+			} catch (ItemNotFoundException e) {
+				logger.trace(e.getMessage());
+			}
+		}
+		return rts;
+	}
+	
+	public ItemStateListBean getItemStateListBean(List<ReturnType> rts, long index) {
+		ItemStateListBean stateList = new ItemStateListBean(new ItemListBean(getItemBeans(rts)));
 		stateList.index = index+1;
 		return stateList;
 	}
 	
-	public Collection<ItemBean> getItemBeans(List<String> itemNames) {
+	public Collection<ItemBean> getItemBeans(List<ReturnType> rts) {
 		Collection<ItemBean> beans = new LinkedList<ItemBean>();
-		ItemUIRegistry registry = CVApplication.getItemUIRegistry();
-		for (String itemName : itemNames) {
-			try {
-				Item item = registry.getItem(itemName);
-				beans.add(createItemBean(item,false));
-			} catch (ItemNotFoundException e) {
-				logger.debug(e.getMessage());
-			}
+		for (ReturnType rt : rts) {
+			beans.add(createItemBean(rt));
 		}
 		return beans;
 	}
+	
+	public static ItemBean createItemBean(ReturnType rt) {
+		return createItemBean(rt.getItem(),false,rt.getStateClass(),rt.getClientItemName());
+	}
 
-	public static ItemBean createItemBean(Item item, boolean drillDown) {
+	public static ItemBean createItemBean(Item item, boolean drillDown, Class<? extends State> stateClass, String clientItemName) {
 		ItemBean bean;
 		if (item instanceof GroupItem && drillDown) {
 			GroupItem groupItem = (GroupItem) item;
 			GroupItemBean groupBean = new GroupItemBean();
 			Collection<ItemBean> members = new HashSet<ItemBean>();
 			for (Item member : groupItem.getMembers()) {
-				members.add(createItemBean(member, false));
+				members.add(createItemBean(member, false, null, null));
 			}
 			groupBean.members = members.toArray(new ItemBean[members.size()]);
 			bean = groupBean;
 		} else {
-			bean = new ItemBean(item.getName(), item.getState().toString());
+			String state = stateClass==null ? item.getState().toString() : item.getStateAs(stateClass).toString();
+			String name = clientItemName==null ? item.getName() : clientItemName;
+			bean = new ItemBean(name, state);
 		}
 		return bean;
-	}
-
-	static public Item getItem(String itemname) {
-		ItemUIRegistry registry = CVApplication.getItemUIRegistry();
-		if (registry != null) {
-			try {
-				Item item = registry.getItem(itemname);
-				return item;
-			} catch (ItemNotFoundException e) {
-				logger.debug(e.getMessage());
-			}
-		}
-		return null;
 	}
 }

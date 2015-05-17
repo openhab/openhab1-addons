@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,6 +61,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getPin <em>Pin</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -207,6 +208,26 @@ public class DigitalActorDigitalOut4Impl extends MinimalEObjectImpl.Container im
    * @ordered
    */
   protected int pin = PIN_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "digital_4out";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   private int mask;
 
@@ -440,6 +461,16 @@ public class DigitalActorDigitalOut4Impl extends MinimalEObjectImpl.Container im
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void init()
@@ -601,6 +632,8 @@ public class DigitalActorDigitalOut4Impl extends MinimalEObjectImpl.Container im
         return getMbrick();
       case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4__PIN:
         return getPin();
+      case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4__DEVICE_TYPE:
+        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -707,6 +740,8 @@ public class DigitalActorDigitalOut4Impl extends MinimalEObjectImpl.Container im
         return getMbrick() != null;
       case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4__PIN:
         return pin != PIN_EDEFAULT;
+      case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -855,6 +890,8 @@ public class DigitalActorDigitalOut4Impl extends MinimalEObjectImpl.Container im
     result.append(subId);
     result.append(", pin: ");
     result.append(pin);
+    result.append(", deviceType: ");
+    result.append(deviceType);
     result.append(')');
     return result.toString();
   }

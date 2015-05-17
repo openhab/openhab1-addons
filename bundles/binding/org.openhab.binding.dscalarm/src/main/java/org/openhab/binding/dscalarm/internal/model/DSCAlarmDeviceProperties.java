@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,7 +27,9 @@ public class DSCAlarmDeviceProperties {
 	private int systemConnection = 0;
 	private String systemConnectionDescription = "";
 	private String systemMessage = "";
-	private Date systemTimeDate;
+	private Date systemTime = new Date(0);
+	private boolean systemTimeStamp = false;
+	private boolean systemTimeBroadcast = false;
 	private int systemCommand = -1;
 	private int systemError = 0;
 	private int systemErrorCode = 0;
@@ -40,7 +42,7 @@ public class DSCAlarmDeviceProperties {
 	
 	private int generalState = 0;
 	private String generalStateDescription = "";
-	private int armState = 0; /* partition:0=disarmed, 1=away armed, 2=stay armed, 3=zero entry delay, 4=with user code; zone:0=Armed, 1=Bypassed*/
+	private int armState = 0; /* partition:0=disarmed, 1=away armed, 2=stay armed, 3=away no delay, 4=stay no delay, 5=with user code; zone:0=Armed, 1=Bypassed*/
 	private String armStateDescription = "";
 	private int alarmState = 0;
 	private String alarmStateDescription = "";
@@ -68,10 +70,23 @@ public class DSCAlarmDeviceProperties {
 	private String backlightLEDStateDescription = "Off";
 	private int acLEDState = 0; /* 0=Off, 1=On, 2=Flashing*/
 	private String acLEDStateDescription = "Off";
+
+	private boolean fireKeyAlarm = false;
+	private boolean panicKeyAlarm = false;
+	private boolean auxKeyAlarm = false;
+	private boolean auxInputAlarm = false;
+	private boolean armed = false;
+	private boolean armedStay = false;
+	private boolean armedAway = false;
+	private boolean entryDelay = false;
+	private boolean exitDelay = false;
+	private boolean alarmed = false;
+	private boolean tampered = false;
+	private boolean faulted = false;
+	private boolean tripped = false;
 	
 	enum StateType{
 		CONNECTION_STATE,
-		TIME_DATE,
 		GENERAL_STATE,
 		ARM_STATE,
 		ALARM_STATE,
@@ -91,6 +106,22 @@ public class DSCAlarmDeviceProperties {
 		AC_LED_STATE;
 	}
 
+	enum TriggerType{
+		FIRE_KEY_ALARM,
+		PANIC_KEY_ALARM,
+		AUX_KEY_ALARM,
+		AUX_INPUT_ALARM,
+		ARMED,
+		ARMED_STAY,
+		ARMED_AWAY,
+		ENTRY_DELAY,
+		EXIT_DELAY,
+		ALARMED,
+		TAMPERED,
+		FAULTED,
+		TRIPPED;
+	}
+
 	public int getSystemConnection() {
 		return systemConnection;
 	}
@@ -103,9 +134,18 @@ public class DSCAlarmDeviceProperties {
 		return systemMessage;
 	}
 	
-	public String getTimeDate() {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:mm MM/dd/YY");
-		return tm.format(systemTimeDate);
+	public String getSystemTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		
+		return sdf.format(systemTime);
+	}
+
+	public boolean getSystemTimeStamp() {
+		return systemTimeStamp;
+	}
+
+	public boolean getSystemTimeBroadcast() {
+		return systemTimeBroadcast;
 	}
 
 	public int getSystemCommand() {
@@ -272,8 +312,58 @@ public class DSCAlarmDeviceProperties {
 				break;
 		}
 	
-	return stateDescription;
+		return stateDescription;
 
+	}
+	
+	public boolean getTrigger(TriggerType triggerType) {
+		boolean trigger = false;
+		
+		switch(triggerType) {
+			case FIRE_KEY_ALARM:
+				trigger = fireKeyAlarm;
+				break;
+			case PANIC_KEY_ALARM:
+				trigger = panicKeyAlarm;
+				break;
+			case AUX_KEY_ALARM:
+				trigger = auxKeyAlarm;
+				break;
+			case AUX_INPUT_ALARM:
+				trigger = auxInputAlarm;
+				break;
+			case ARMED:
+				trigger = armed;
+				break;
+			case ARMED_STAY:
+				trigger = armedStay;
+				break;
+			case ARMED_AWAY:
+				trigger = armedAway;
+				break;
+			case ENTRY_DELAY:
+				trigger = entryDelay;
+				break;
+			case EXIT_DELAY:
+				trigger = exitDelay;
+				break;
+			case ALARMED:
+				trigger = alarmed;
+				break;
+			case TAMPERED:
+				trigger = tampered;
+				break;
+			case FAULTED:
+				trigger = faulted;
+				break;
+			case TRIPPED:
+				trigger = tripped;
+				break;
+			default:
+				break;
+		}
+		
+		return trigger;
 	}
 
 	public void setSystemConnection(int systemConnection) {
@@ -284,13 +374,25 @@ public class DSCAlarmDeviceProperties {
 		this.systemMessage = systemMessage;
 	}
 
-	public void setTimeDate(String timeDate) {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:MM MM/DD/YY");
+	public void setSystemTime(String time) {
+		SimpleDateFormat sdf = new SimpleDateFormat("HHmmMMddyy");
+		Date date = null;
+		
 		try {
-			systemTimeDate = tm.parse(timeDate);
-		} catch (ParseException parseException) {
-			logger.error("setTimeDate(): parse error {} ", parseException);
+			date = sdf.parse(time);
+		} catch (ParseException e) {
+			logger.error("setTimeDate(): Parse Exception occured while trying parse date string - {}. ",e);
 		}
+		
+		this.systemTime = date;
+	}
+
+	public void setSystemTimeStamp(boolean systemTimeStamp) {
+		this.systemTimeStamp = systemTimeStamp;
+	}
+
+	public void setSystemTimeBroadcast(boolean systemTimeBroadcast) {
+		this.systemTimeBroadcast = systemTimeBroadcast;
 	}
 
 	public void setSystemError(int systemError) {
@@ -425,5 +527,51 @@ public class DSCAlarmDeviceProperties {
 			default:
 				break;
 		}	
+	}
+	public void setTrigger(TriggerType triggerType, boolean trigger) {
+		
+		switch(triggerType) {
+			case FIRE_KEY_ALARM:
+				fireKeyAlarm = trigger;
+				break;
+			case PANIC_KEY_ALARM:
+				panicKeyAlarm = trigger;
+				break;
+			case AUX_KEY_ALARM:
+				auxKeyAlarm = trigger;
+				break;
+			case AUX_INPUT_ALARM:
+				auxInputAlarm = trigger;
+				break;
+			case ARMED:
+				armed = trigger;
+				break;
+			case ARMED_STAY:
+				armedStay = trigger;
+				break;
+			case ARMED_AWAY:
+				armedAway = trigger;
+				break;
+			case ENTRY_DELAY:
+				entryDelay = trigger;
+				break;
+			case EXIT_DELAY:
+				exitDelay = trigger;
+				break;
+			case ALARMED:
+				alarmed = trigger;
+				break;
+			case TAMPERED:
+				tampered = trigger;
+				break;
+			case FAULTED:
+				faulted = trigger;
+				break;
+			case TRIPPED:
+				tripped = trigger;
+				break;
+			default:
+				break;
+		}
 	}
 }

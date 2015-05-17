@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,8 @@
 package org.openhab.io.rest.internal.filter;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,48 +36,51 @@ import org.slf4j.LoggerFactory;
 public class PollingDelayFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(PollingDelayFilter.class);
 	
+	ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	
 	@Override
-	public BroadcastAction filter(Object arg0, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(final AtmosphereResource resource, Object originalMessage, final Object message) {
+	public BroadcastAction filter(String broadcasterId, final AtmosphereResource resource, Object originalMessage, final Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		try {	
 			// delay first broadcast for long-polling and other polling transports
 			boolean isItemMessage = originalMessage instanceof Item || originalMessage instanceof GroupItem;
-			boolean isStreamingTransport = false;
+			boolean isStreamingTransport = ResponseTypeHelper.isStreamingTransport(request);
+			
+			//strange atmosphere bug, seems harmless, but pollutes the logs
+			//so lets see if this fails or not first before we call it again.
 			try {
-			isStreamingTransport = ResponseTypeHelper.isStreamingTransport(request);
+				resource.getRequest().getPathInfo();
 			} catch (Exception e) {
-				logger.error(e.getMessage());
-				return new BroadcastAction(ACTION.ABORT,  message);				
+				return new BroadcastAction(ACTION.ABORT, message);
 			}
 			if(!isStreamingTransport && message instanceof PageBean && isItemMessage) {
 				final String delayedBroadcasterName = resource.getRequest().getPathInfo();
-				Executors.newSingleThreadExecutor().submit(new Runnable() {
+				executor.schedule(new Runnable() {
 		            public void run() {
 		                try {
-		                    Thread.sleep(300);
-							GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
-							delayedBroadcaster.broadcast(message, resource);
-							
+		                    BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+							GeneralBroadcaster delayedBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, delayedBroadcasterName);
+							if(delayedBroadcaster != null)
+								delayedBroadcaster.broadcast(message, resource);
 						} catch (Exception e) {
-							logger.error(e.getMessage());
+							logger.error("Could not broadcast message", e);
 						} 
 		            }
-		        });
+		        }, 300, TimeUnit.MILLISECONDS);
 			} else {
 				//pass message to next filter
-				return new BroadcastAction(ACTION.CONTINUE,  message);
+				return new BroadcastAction(ACTION.CONTINUE, message);
 			}
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return new BroadcastAction(ACTION.ABORT,  message);
+			logger.error(e.getMessage(), e);
 		} 
-		return new BroadcastAction(ACTION.ABORT,  message);
+		return new BroadcastAction(ACTION.ABORT, message);
 	}
 	
 }

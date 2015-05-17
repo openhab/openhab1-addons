@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.binding.dscalarm.internal.protocol;
 
 import java.text.SimpleDateFormat;
@@ -22,39 +21,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class that utilizes the Third Party Interface () for the EyezOn Envisalink 3/2DS
+ * A class that utilizes the API/TPI for the DSC IT-100 Serial Interface or the EyezOn Envisalink 3/2DS (TPI)
  * @author Russell Stephens
  * @since 1.6.0
  */
 public class API {
 	
 	private static final Logger logger = LoggerFactory.getLogger(API.class);
-       
+    
+	
+    /** DSC Alarm connector type - Serial or TCP. **/
 	private DSCAlarmConnectorType connectorType = null;
+	
+	/** DSC Alarm Connector **/
 	private DSCAlarmConnector dscAlarmConnector = null;
     
-    /** API serial port name. **/
-    private String apiSerialPort = "";
+    /** DSC IT-100 Serial Interface serial port name. **/
+    private String serialPort = "";
 
-    /** API IP address. **/
-    private String apiIP = "192.168.0.100";
-
-	/** default TCP port. **/
+	/** DSC IT-100 Serial Interface default baud rate. **/
 	public static final int DEFAULT_BAUD_RATE = 9600;
 
-	/** default TCP port. **/
+	/** EyezOn Envisalink 3/2DS IP address. **/
+    private String ipAddress = "192.168.0.100";
+
+	/** EyezOn Envisalink 3/2DS default TCP port. **/
 	public static final int DEFAULT_TCP_PORT = 4025;
 
-	/** Connection timeout in milliseconds **/
-	private static final int CONNECTION_TIMEOUT = 5000;
+	/** EyezOn Envisalink 3/2DS TCP Connection timeout in milliseconds **/
+	private static final int TCP_CONNECTION_TIMEOUT = 5000;
 
-	/** Default user code **/
-	private static final String DEFAULT_USER_CODE = "1234";
-
-	/** Default  password **/
+	/** EyezOn Envisalink 3/2DS default password **/
 	private static final String DEFAULT_PASSWORD = "user";
 
-   	/** Baud Rate for serial connection - set to default **/
+	/** DSC Alarm default user code **/
+	private static final String DEFAULT_USER_CODE = "1234";
+
+	/** Baud Rate for serial connection - set to default **/
 	private int baudRate = DEFAULT_BAUD_RATE;
 
 	/** User password for  network login - set to default **/
@@ -63,22 +66,32 @@ public class API {
    	/** DSC Alarm user code for some commands - set to default **/
 	private String dscAlarmUserCode = DEFAULT_USER_CODE;
 
+   	/** DSC Alarm connection variable **/
 	private boolean connected = false;
+
+	/** DSC Alarm valid baud rates **/
 	private int[] baudRates = {9600,19200,38400,57600,115200};
 	
 	/**
 	 * Constructor for Serial Connection
 	 * 
-	 * @param serialPort
+	 * @param sPort
 	 * @param baud
 	 */	
-	public API(String serialPort, int baud) {
-		if (StringUtils.isNotBlank(serialPort)) {
-			apiSerialPort = serialPort;
+	public API(String sPort, int baud, String userCode) {
+		if (StringUtils.isNotBlank(sPort)) {
+			serialPort = sPort;
 		}
 
 		if(isValidBaudRate(baud))
 			baudRate = baud;
+
+		if (StringUtils.isNotBlank(userCode)) {
+			this.dscAlarmUserCode = userCode;
+		}
+
+		//The IT-100 requires 6 digit codes. Shorter codes are right padded with 0.
+		this.dscAlarmUserCode = StringUtils.rightPad(dscAlarmUserCode, 6, '0');
 
 		connectorType = DSCAlarmConnectorType.SERIAL;
 	}
@@ -88,19 +101,19 @@ public class API {
 	 * 
 	 * @param ip
 	 * @param password
-	 * @param dscAlarmUserCode
+	 * @param userCode
 	 */
-	public API(String ip, String password, String dscAlarmUserCode) {
+	public API(String ip, String password, String userCode) {
 		if (StringUtils.isNotBlank(ip)) {
-			apiIP = ip;
+			ipAddress = ip;
 		}
 
 		if (StringUtils.isNotBlank(password)) {
 			this.password = password;
 		}
 
-		if (StringUtils.isNotBlank(dscAlarmUserCode)) {
-			this.dscAlarmUserCode = dscAlarmUserCode;
+		if (StringUtils.isNotBlank(userCode)) {
+			this.dscAlarmUserCode = userCode;
 		}
 
 		connectorType = DSCAlarmConnectorType.TCP;
@@ -164,13 +177,13 @@ public class API {
     	switch (connectorType) {
 	    	case SERIAL:
 				if(dscAlarmConnector == null) { 
-					dscAlarmConnector = new SerialConnector(apiSerialPort, baudRate);
+					dscAlarmConnector = new SerialConnector(serialPort, baudRate);
 				}
 				break;
 	    	case TCP:
-	        	if(StringUtils.isNotBlank(apiIP) ) {
+	        	if(StringUtils.isNotBlank(ipAddress) ) {
 					if(dscAlarmConnector == null) { 
-						dscAlarmConnector = new TCPConnector(apiIP, DEFAULT_TCP_PORT, CONNECTION_TIMEOUT);
+						dscAlarmConnector = new TCPConnector(ipAddress, DEFAULT_TCP_PORT, TCP_CONNECTION_TIMEOUT);
 					}
 	        	}
 	        	else {
@@ -383,7 +396,7 @@ public class API {
  			apiCommand.setAPICommand(command, data);
     		dscAlarmConnector.write(apiCommand.toString());
     		successful = true;
-    		logger.debug("sendCommand(): Command Sent - {}",apiCommand.toString());
+    		logger.debug("sendCommand(): '{}' Command Sent - {}",apiCode,apiCommand);
     	}
     	else
     		logger.error("sendCommand(): Command Not Sent - Invalid!");

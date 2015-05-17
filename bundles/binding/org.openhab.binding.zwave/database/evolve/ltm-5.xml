@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>LTM-5</Model>
+	<Label lang="en">Wall Mount Accessory Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x2b</id>
+		</Class>
+		<Class>
+			<id>0x2c</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore Start Level (Transmitting)</Label>
+			<Help lang="en">Dimmers controlled by this switch will start dimming from their current level.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Help lang="en">In night-light mode the LED on the switch will turn ON when the switch is turned OFF.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+		</Parameter>
+			<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Help lang="en">Change the top of the switch to OFF and the bottom of the switch to ON.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore Start-Level (Receiving)</Label>
+			<Help lang="en">The dimmer will start dimming from its current level.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Transmission Indication</Label>
+			<Help lang="en">Flicker LED while transmitting.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No Flicker</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flicker Whole Transmission</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Flicker 1 Second</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Default>2</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Polling Interval</Label>
+			<Help lang="en">How often, in minutes, to poll to keep synchronized with group.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Poll First Node</Label>
+			<Help lang="en">Poll only the first node in Group 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>			
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en">Nodes in this group are turned ON/OFF by tapping the paddle or dimmed/brightened by holding the paddle. The LED will indicate the status of this group.</Help>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

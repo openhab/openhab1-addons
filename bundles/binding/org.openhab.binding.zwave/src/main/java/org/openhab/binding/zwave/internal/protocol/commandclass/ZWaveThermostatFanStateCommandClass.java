@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -29,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat FanState command class.
@@ -39,12 +39,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ZWaveThermostatFanStateCommandClass extends ZWaveCommandClass
 implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatFanStateCommandClass.class);
 
 	private static final byte THERMOSTAT_FAN_STATE_GET              = 0x2;
 	private static final byte THERMOSTAT_FAN_STATE_REPORT           = 0x3;
 
 	private final Set<FanStateType> fanStateTypes = new HashSet<FanStateType>();
+	
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+
+	private boolean isGetSupported = true;
 
 	/**
 	 * Creates a new instance of the ZWaveThermostatFanStateCommandClass class.
@@ -85,10 +91,6 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		case THERMOSTAT_FAN_STATE_REPORT:
 			logger.trace("NODE {}: Process Thermostat Fan State Report", this.getNode().getNodeId());
 			processThermostatFanStateReport(serialMessage, offset, endpoint);
-
-			if (this.getNode().getNodeStage() != NodeStage.DONE)
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-
 			break;
 		default:
 			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).", 
@@ -120,11 +122,13 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		}
 
 		// fanState type seems to be supported, add it to the list.
-		if (!this.fanStateTypes.contains(fanStateType))
-			this.fanStateTypes.add(fanStateType);
-
+		if(!fanStateTypes.contains(fanStateType))
+			fanStateTypes.add(fanStateType);
+		
+		dynamicDone = true;
+		
 		logger.debug("NODE {}: Thermostat fan state  Report value = {}", this.getNode().getNodeId(), fanStateType.getLabel());
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
+		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 		this.getController().notifyEventListeners(zEvent);
 	}
 
@@ -132,9 +136,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		// TODO (or question for Dan from Chris) - shouldn't this iterate through all fan modes?
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(getValueMessage());
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 
@@ -143,8 +150,13 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_FAN_STATE_GET", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
 		byte[] payload = {
 				(byte) this.getNode().getNodeId(),
 				2,
@@ -153,6 +165,15 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		};
 		result.setMessagePayload(payload);
 		return result;
+	}
+
+	@Override
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
 
 	/**

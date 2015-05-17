@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.dscalarm.internal.model;
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEvent;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.StateType;
+import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.TriggerType;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -18,6 +19,7 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class Partition extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Partition.class);
 
-	DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
+	public DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
 
 	/**
 	 * Constructor
@@ -49,9 +51,12 @@ public class Partition extends DSCAlarmDevice{
 	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
+		logger.debug("refreshItem(): Partition Item Name: {}", item.getName());
+
 		int state;
 		String strStatus = "";
-		logger.debug("refreshItem(): Partition Item Name: {}", item.getName());
+		boolean trigger;
+		OnOffType onOffType;
 
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
@@ -65,6 +70,26 @@ public class Partition extends DSCAlarmDevice{
 						state = partitionProperties.getState(StateType.ARM_STATE);
 						strStatus = partitionProperties.getStateDescription(StateType.ARM_STATE);
 						publisher.postUpdate(item.getName(), new DecimalType(state));
+						break;
+					case PARTITION_ARMED:
+						trigger = partitionProperties.getTrigger(TriggerType.ARMED);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PARTITION_ENTRY_DELAY:
+						trigger = partitionProperties.getTrigger(TriggerType.ENTRY_DELAY);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PARTITION_EXIT_DELAY:
+						trigger = partitionProperties.getTrigger(TriggerType.EXIT_DELAY);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PARTITION_IN_ALARM:
+						trigger = partitionProperties.getTrigger(TriggerType.ALARMED);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
 						break;
 					default:
 						logger.debug("refreshItem(): Partition item not updated.");
@@ -98,13 +123,11 @@ public class Partition extends DSCAlarmDevice{
 								case 650:
 								case 653:
 									state = 1;
-									partitionProperties.setState(StateType.GENERAL_STATE, state, strStatus);
 									break;
 								case 651:
 								case 672:
 								case 673:
 									state = 0;
-									partitionProperties.setState(StateType.GENERAL_STATE, 0, strStatus);
 									break;
 								case 654:
 									partitionProperties.setState(StateType.ALARM_STATE, 1, strStatus);
@@ -143,6 +166,8 @@ public class Partition extends DSCAlarmDevice{
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Partition Item Name: {}", item.getName());
 
+		boolean trigger = state != 0 ? true : false;
+		
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
 				switch(config.getDSCAlarmItemType()) {
@@ -151,6 +176,18 @@ public class Partition extends DSCAlarmDevice{
 						break;
 					case PARTITION_ARM_MODE:
 						partitionProperties.setState(StateType.ARM_STATE, state, description);
+						break;
+					case PARTITION_ARMED:
+						partitionProperties.setTrigger(TriggerType.ARMED, trigger);
+						break;
+					case PARTITION_ENTRY_DELAY:
+						partitionProperties.setTrigger(TriggerType.ENTRY_DELAY, trigger);
+						break;
+					case PARTITION_EXIT_DELAY:
+						partitionProperties.setTrigger(TriggerType.EXIT_DELAY, trigger);
+						break;
+					case PARTITION_IN_ALARM:
+						partitionProperties.setTrigger(TriggerType.ALARMED, trigger);
 						break;
 					default: 
 						logger.debug("updateProperties(): Partition property not updated.");

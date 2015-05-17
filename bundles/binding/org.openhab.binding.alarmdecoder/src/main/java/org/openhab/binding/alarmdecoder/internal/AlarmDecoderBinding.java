@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -360,7 +360,12 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 					parts.get(0).length());
 		}
 		try {
-			int numeric = Integer.parseInt(parts.get(1));
+			int numeric = 0;
+			try {
+				numeric = Integer.parseInt(parts.get(1));
+			} catch (NumberFormatException e) {
+				numeric = Integer.parseInt(parts.get(1), 16);
+			}
 			int upper = Integer.parseInt(parts.get(0).substring(1,6), 2);
 			int nbeeps = Integer.parseInt(parts.get(0).substring(6,7));
 			int lower = Integer.parseInt(parts.get(0).substring(7,17), 2);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,15 @@
  */
 package org.openhab.binding.insteonplm.internal.device;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.openhab.binding.insteonplm.InsteonPLMBindingConfig;
+import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener.StateChangeType;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.utils.Utils.ParsingException;
 import org.openhab.core.types.Command;
@@ -76,21 +79,8 @@ public class DeviceFeature {
 	private HashMap<Class<? extends Command>, CommandHandler> m_commandHandlers =
 				new HashMap<Class<? extends Command>, CommandHandler>();
 	private ArrayList<DeviceFeatureListener> m_listeners = new ArrayList<DeviceFeatureListener>();
+	private ArrayList<DeviceFeature>	m_connectedFeatures = new ArrayList<DeviceFeature>();
 	
-	static {
-		// read features from xml file and store them in a map
-		try {
-			InputStream input = DeviceFeature.class.getResourceAsStream("/device_features.xml");
-			ArrayList<FeatureTemplate> features = FeatureTemplateLoader.s_readTemplates(input);
-			for (FeatureTemplate f : features) {
-				s_features.put(f.getName(), f);
-			}
-		} catch (IOException e) {
-			logger.error("IOException while reading device features", e);
-		} catch (ParsingException e) {
-			logger.error("Parsing exception while reading device features", e);
-		}
-	}
 	
 	/**
 	 * Constructor
@@ -114,12 +104,15 @@ public class DeviceFeature {
 	public String	 	getName()			{ return m_name; }
 	public synchronized QueryStatus	getQueryStatus()	{ return m_queryStatus; }
 	public InsteonDevice getDevice() 		{ return m_device; }
-	public boolean 		hasListeners() 		{ return !m_listeners.isEmpty(); }
 	public boolean		isStatusFeature()	{ return m_isStatus; }
 	public MessageHandler getDefaultMsgHandler() { return m_defaultMsgHandler; }
 	public HashMap<Integer, MessageHandler> getMsgHandlers() {
 		return this.m_msgHandlers;
 	}
+	public ArrayList<DeviceFeature>	getConnectedFeatures() {
+		 return (m_connectedFeatures); 
+	}
+
 	// various simple setters
 	public void setStatusFeature(boolean f)	{ m_isStatus = f; }
 	public void setPollHandler(PollHandler h)	{ m_pollHandler = h; }
@@ -131,6 +124,7 @@ public class DeviceFeature {
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
 	}
+
 	/**
 	 * Add a listener (item) to a device feature
 	 * @param l the listener
@@ -146,11 +140,27 @@ public class DeviceFeature {
 		}
 	}
 	/**
+	 * Adds a connected feature such that this DeviceFeature can
+	 * act as a feature group
+	 * @param f the device feature related to this feature
+	 */
+	public void addConnectedFeature(DeviceFeature f) {
+		m_connectedFeatures.add(f);
+	}
+
+	public boolean hasListeners() {
+		if (!m_listeners.isEmpty()) return true;
+		for (DeviceFeature f: m_connectedFeatures) {
+			if (f.hasListeners()) return true;
+		}
+		return false;
+	}
+
+	/**
 	 * removes a DeviceFeatureListener from this feature
 	 * @param aItemName name of the item to remove as listener
 	 * @return true if a listener was removed 
 	 */
-	
 	public boolean removeListener(String aItemName) {
 		boolean listenerRemoved = false;
 		synchronized(m_listeners) {
@@ -164,6 +174,16 @@ public class DeviceFeature {
 		}
 		return listenerRemoved;
 	}
+	
+	public boolean isReferencedByItem(String aItemName) {
+		synchronized(m_listeners) {
+			for (DeviceFeatureListener fl : m_listeners) {
+				if (fl.getItemName().equals(aItemName)) return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Called when message is incoming. Dispatches message according to message dispatcher
 	 * @param msg The message to dispatch
@@ -202,34 +222,36 @@ public class DeviceFeature {
 	}
 	
 	/**
-	 * Publish new state to all device feature listeners
+	 * Publish new state to all device feature listeners, but give them
+	 * additional dataKey and dataValue information so they can decide
+	 * whether to publish the data to the bus.
+	 * 
 	 * @param newState state to be published
+	 * @param changeType what kind of changes to publish
+	 * @param dataKey the key on which to filter
+	 * @param dataValue the value that must be matched
 	 */
-	public void publishAll(State newState) {
+	public void publish(State newState, StateChangeType changeType, String dataKey,
+			String dataValue) {
 		logger.debug("{}:{} publishing: {}", this.getDevice().getAddress(),
 					getName(), newState);
 		synchronized(m_listeners) {
 			for (DeviceFeatureListener listener : m_listeners) {
-				listener.stateChanged(newState);
+				listener.stateChanged(newState, changeType, dataKey, dataValue);
 			}
 		}
 	}
 	/**
-	 * Publish new state to all device feature listeners that match
-	 * a given filter for the parameters
-	 * @param newState the state to be published
-	 * @param key the parameter key
-	 * @param val the (integer!) value that the parameter must match
+	 * Publish new state to all device feature listeners
+	 * @param newState state to be published
+	 * @param changeType what kind of changes to publish
 	 */
-	public void publishFiltered(State newState, String key, int val) {
-		logger.debug("{} publishing filtered: {} param {} == {}",
-				getName(), newState, key, val);
+	public void publish(State newState, StateChangeType changeType) {
+		logger.debug("{}:{} publishing: {}", this.getDevice().getAddress(),
+					getName(), newState);
 		synchronized(m_listeners) {
 			for (DeviceFeatureListener listener : m_listeners) {
-				if (listener.hasParameter(key) && listener.getIntParameter(key) == val) {
-					logger.debug("{} publishing to: {}", getName(), listener.getItemName());
-					listener.stateChanged(newState);
-				}
+				listener.stateChanged(newState, changeType);
 			}
 		}
 	}
@@ -268,12 +290,52 @@ public class DeviceFeature {
 	 */
 	public static DeviceFeature s_makeDeviceFeature(String s) {
 		DeviceFeature f = null;
-		if (s_features.containsKey(s)) {
-			f = s_features.get(s).build();
-		} else {
-			logger.error("unimplemented feature requested: {}", s);
+		synchronized(s_features) {
+			if (s_features.containsKey(s)) {
+				f = s_features.get(s).build();
+			} else {
+				logger.error("unimplemented feature requested: {}", s);
+			}
 		}
 		return f;
 	}
-
+	/**
+	 * Reads the features templates from an input stream and puts them in global map
+	 * @param input the input stream from which to read the feature templates
+	 */
+	public static void s_readFeatureTemplates(InputStream input) {
+		try {
+			ArrayList<FeatureTemplate> features = FeatureTemplateLoader.s_readTemplates(input);
+			synchronized (s_features) {
+				for (FeatureTemplate f : features) {
+					s_features.put(f.getName(), f);
+				}
+			}
+		} catch (IOException e) {
+			logger.error("IOException while reading device features", e);
+		} catch (ParsingException e) {
+			logger.error("Parsing exception while reading device features", e);
+		}
+	}
+	/**
+	 * Reads the feature templates from a file and adds them to a global map
+	 * @param file name of the file to read from
+	 */
+	public static void s_readFeatureTemplates(String file) {
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			s_readFeatureTemplates(fis);
+		} catch (FileNotFoundException e) {
+			logger.error("cannot read feature templates from file {} ", file, e);
+		}
+	}
+	
+	/**
+	 * static initializer
+	 */
+	static {
+		// read features from xml file and store them in a map
+		InputStream input = DeviceFeature.class.getResourceAsStream("/device_features.xml");
+		s_readFeatureTemplates(input);
+	}
 }

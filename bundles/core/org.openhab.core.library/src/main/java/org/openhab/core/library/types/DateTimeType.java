@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,11 +14,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.openhab.core.types.Command;
 import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 
 
-public class DateTimeType implements PrimitiveType, State {
+public class DateTimeType implements PrimitiveType, State, Command {
 	
 	public final static SimpleDateFormat DATE_FORMATTER_WITH_TZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,10 +19,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 @XStreamAlias("configurationParameter")
 public class ConfigurationParameter {
-	
+
 	private final int index;
 	private final int size;
 	private int value;
+	private boolean readOnly;
+	private boolean writeOnly;
 	
 	/***
 	 * Constructor. Creates a new instance of the {@link ConfigurationParameter} class.
@@ -75,5 +77,37 @@ public class ConfigurationParameter {
 	 */
 	public int getSize() {
 		return size;
+	}
+	
+	/**
+	 * Sets the parameter as a WriteOnly parameter
+	 * @param write true if the parameter should not be read
+	 */
+	public void setWriteOnly(boolean write) {
+		writeOnly = write;
+	}
+
+	/**
+	 * Returns true if this parameter is write only
+	 * @return true if the parameter should not be read back
+	 */
+	public boolean getWriteOnly() {
+		return writeOnly;
+	}
+
+	/**
+	 * Sets the parameter as a ReadOnly parameter
+	 * @param read true if the parameters is readonly
+	 */
+	public void setReadOnly(boolean read) {
+		readOnly = read;
+	}
+
+	/**
+	 * Returns true if this parameter is read only
+	 * @return true if the parameter should not be written to
+	 */
+	public boolean getReadOnly() {
+		return readOnly;
 	}
 }

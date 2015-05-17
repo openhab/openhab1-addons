@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,12 @@ import com.ning.http.client.AsyncHttpClient;
 public class PlayerOpen extends RpcCall {
 	
 	private String file;
+	private Integer channelId;
+
+
+	public void setChannelId(Integer channelId) {
+		this.channelId = channelId;
+	}
 
 	public PlayerOpen(AsyncHttpClient client, String uri) {
 		super(client, uri);
@@ -33,6 +39,8 @@ public class PlayerOpen extends RpcCall {
 		this.file = file;
 	}
 
+
+	
 	@Override
 	protected String getName() {
 		return "Player.Open";
@@ -42,8 +50,10 @@ public class PlayerOpen extends RpcCall {
 	protected Map<String, Object> getParams() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, Object> item = new HashMap<String, Object>();
-				
-		item.put("file", file);
+		if(channelId!=null)
+			item.put("channelid", channelId);
+		else
+			item.put("file", file);
 		params.put("item", item);
 		return params;
 	}

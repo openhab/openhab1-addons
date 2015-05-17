@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,10 @@ package org.openhab.binding.epsonprojector.connector;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -27,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.3.0
  */
-public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
+public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, SerialPortEventListener {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(EpsonProjectorSerialConnector.class);
@@ -65,7 +68,11 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 			if (in.markSupported()) {
 				in.reset();
 			}
-
+			
+			// RXTX serial port library causes high CPU load
+			// Start event listener, which will just sleep and slow down event loop
+			serialPort.addEventListener(this);
+			serialPort.notifyOnDataAvailable(true);
 		} catch (Exception e) {
 			throw new EpsonProjectorException(e);
 		}
@@ -89,6 +96,8 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 			serialPort.close();
 		}
 		
+		serialPort.removeEventListener();
+		
 		serialPort = null;
 		out = null;
 		in = null;
@@ -100,6 +109,10 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 	 * {@inheritDoc}
 	 */
 	public String sendMessage(String data, int timeout) throws EpsonProjectorException {
+		if (in == null || out == null) {
+			connect();
+		}
+		
 		try {
 			// flush input stream
 			if (in.markSupported()) {
@@ -118,37 +131,65 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 				}
 			}
 
-			out.write(data.getBytes());
-			out.write("\r\n".getBytes());
-			out.flush();
+			return sendMmsg(data, timeout);
 
-			String resp = "";
-
-			long startTime = System.currentTimeMillis();
-			long elapsedTime = 0;
-
-			while (elapsedTime < timeout) {
-				int availableBytes = in.available();
-				if (availableBytes > 0) {
-					byte[] tmpData = new byte[availableBytes];
-					int readBytes = in.read(tmpData, 0, availableBytes);
-					resp = resp.concat(new String(tmpData, 0, readBytes));
-					
-					if (resp.contains(":")) {
-						return resp;
-					}
-				} else {
-					Thread.sleep(100);
-				}
-
-				elapsedTime = Math.abs((new Date()).getTime() - startTime);
+		} catch (IOException e) {
+			
+			logger.debug("IO error occured...reconnect and resend ones");
+			disconnect();
+			connect();
+			
+			try {
+				return sendMmsg(data, timeout);
+			} catch (IOException e1) {
+				throw new EpsonProjectorException(e);
 			}
-
+			
 		} catch (Exception e) {
 			throw new EpsonProjectorException(e);
 		}
-
-		return null;
 	}
 
+	@Override
+	public void serialEvent(SerialPortEvent arg0) {
+		try {
+			logger.trace("RXTX library CPU load workaround, sleep forever");
+			Thread.sleep(Long.MAX_VALUE);
+		} catch (InterruptedException e) {
+		}
+	}
+	
+	private String sendMmsg(String data, int timeout) throws IOException, EpsonProjectorException {
+		out.write(data.getBytes());
+		out.write("\r\n".getBytes());
+		out.flush();
+
+		String resp = "";
+
+		long startTime = System.currentTimeMillis();
+		long elapsedTime = 0;
+
+		while (elapsedTime < timeout) {
+			int availableBytes = in.available();
+			if (availableBytes > 0) {
+				byte[] tmpData = new byte[availableBytes];
+				int readBytes = in.read(tmpData, 0, availableBytes);
+				resp = resp.concat(new String(tmpData, 0, readBytes));
+				
+				if (resp.contains(":")) {
+					return resp;
+				}
+			} else {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					throw new EpsonProjectorException(e);
+				}
+			}
+
+			elapsedTime = Math.abs((new Date()).getTime() - startTime);
+		}
+		
+		return null;
+	}
 }

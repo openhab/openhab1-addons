@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -183,15 +183,24 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 
 	/**
 	 * Restarts the Homematic communicator if no messages arrive within a
-	 * configured time.
+	 * configured time or the reconnect interval is reached.
 	 */
 	@Override
 	protected void execute() {
-		long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
-		if (timeSinceLastEvent > context.getConfig().getAliveInterval()) {
-			logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
-			communicator.stop();
-			communicator.start();
+		if (context.getConfig().getReconnectInterval() == null) {
+			long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
+			if (timeSinceLastEvent >= context.getConfig().getAliveInterval()) {
+				logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
+				communicator.stop();
+				communicator.start();
+			}
+		} else {
+			long timeSinceLastReconnect = (System.currentTimeMillis() - communicator.getLastReconnectTime()) / 1000;
+			if (timeSinceLastReconnect >= context.getConfig().getReconnectInterval()) {
+				logger.info("Reconnect interval reached, refreshing Homematic server connections");
+				communicator.stop();
+				communicator.start();
+			}
 		}
 	}
 
@@ -208,7 +217,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	 */
 	@Override
 	protected String getName() {
-		return "Homematic server keep alive thread";
+		return "Homematic server connection tracker";
 	}
 
 }

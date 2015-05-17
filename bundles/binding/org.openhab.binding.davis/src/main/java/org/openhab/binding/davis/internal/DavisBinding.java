@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,11 +15,9 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -99,27 +97,37 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		//logger.debug("execute() method is called!");
-		if (isProperlyConfigured()) {
-
+		logger.trace("execute() method is called!");
+		
+		try {
+			openPort();
+				
 			// get all configured keys from providers, get needed read commands
 			// for them, send those read commands
 			for (DavisBindingProvider provider : providers) {
 				Collection<DavisCommand> commands = DavisValueType.getReadCommandsByKeys(provider.getConfiguredKeys());
-
-				try {
-					wakeup();
-					for (DavisCommand command : commands) {
+		
+				for (DavisCommand command : commands) {					
+					if (wakeup()) {					
 						sendCommand(command);
+					} else {
+						logger.warn("Wakeup failed, trying reset sequence!");
+						resetAfterError();
 					}
-				} catch (IOException e) {
-					logger.error("Wakeup failed!");
 				}
 			}
+			
+			closePort();
+			
+		} catch (InitializationException e) {
+			logger.error(e.getMessage());					
 		}
+				
+		logger.trace("execute() method is finished!");
 	}
 		
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.trace("update() method is called!");
 		if (config != null) {
 			// to override the default refresh interval one has to add a 
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
@@ -128,33 +136,28 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			String newPort = (String) config.get("port"); //$NON-NLS-1$
-			if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {
-				
-				try {
-					openPort(newPort);
-					setProperlyConfigured(true);
-				} catch (InitializationException e) {
-					logger.error(e.getMessage());
-					setProperlyConfigured(false);
-				}				
+			if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {				
+				port = newPort;
+				setProperlyConfigured(true);				
 			}
 		}
 	}	
 	
-	public void openPort(String portName) throws InitializationException {
+	public void openPort() throws InitializationException {
 		CommPortIdentifier portIdentifier;
-
-		port = portName;
+		
 		try {
 			portIdentifier = CommPortIdentifier.getPortIdentifier(port);
 
 			try {
 				serialPort = (SerialPort) portIdentifier.open("openhab", 3000);
 				serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8,SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-				inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
+				//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+				serialPort.enableReceiveTimeout(100);
+				serialPort.enableReceiveThreshold(1);				
+				inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));				
 				outputStream = serialPort.getOutputStream();
-
+				logger.debug("port opened: "+port);
 			} catch (PortInUseException e) {
 				throw new InitializationException(e);
 			} catch (UnsupportedCommOperationException e) {
@@ -191,41 +194,103 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 			e.printStackTrace();
 		}
 		serialPort.close();
+		logger.debug("port closed: "+port);
+	}
+	
+	protected void resetAfterError() {
+		//Drop the rest
+		try {
+			logger.warn("error, dropping remaining data!");
+			readResponse();
+			wakeup();
+			writeString("RXTEST\n");
+			byte[] buf = readResponse();
+			expectString(buf,"\n\rOK\n\r");
+		} catch (IOException e1) {
+			logger.warn("IO Exception reset after Error: "+e1);			
+			closePort(); 
+			try {
+				openPort();
+			} catch (InitializationException e) {
+				logger.error("reopening port failed!");
+			}
+		}
+	}
+	
+	public byte[] readResponse() throws IOException {
+		byte[] responseBlock = new byte[0];
+		byte[] readBuffer = new byte[BUF_LENGTH];
+
+		do {
+			while (inputStream.available() > 0) {
+
+				int bytes = inputStream.read(readBuffer);
+
+				// merge bytes
+				byte[] mergedBytes = new byte[responseBlock.length
+						+ bytes];
+				System.arraycopy(responseBlock, 0, mergedBytes, 0,
+						responseBlock.length);
+				System.arraycopy(readBuffer, 0, mergedBytes,
+						responseBlock.length, bytes);
+
+				responseBlock = mergedBytes;
+			}
+			try {
+				// add wait states around reading the stream, so that
+				// interrupted transmissions are merged
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// ignore interruption
+			}
+
+		} while (inputStream.available() > 0);
+		String string = new String(responseBlock);
+		logger.debug("RX: "+escape(string));
+		return responseBlock;
 	}
 	
 	
 	public void sendCommand(DavisCommand command) {
-		//logger.debug("sendCommand() method is called!");		
+		byte[] responseBlock;
+		int offset = 0;
+		
+		logger.debug("sendCommand() method is called!");		
+		DavisCommandType commandType = DavisCommandType.getCommandTypeByCommand(command.getRequestCmd());
 		
 		try {
 
-			//command über rs232 schicken (inkl '\n'), wait for ACK
-			logger.debug("TX: "+command.getRequestCmd());
+			//command über rs232 schicken (inkl '\n'), wait for ACK			
 			writeString(command.getRequestCmd() + '\n');
 
-			sleep(250);
-			DavisCommandType commandType = DavisCommandType.getCommandTypeByCommand(command.getRequestCmd());
+			responseBlock = readResponse();
+
+			
 			switch (commandType.getResponsetype()) {
 				case Constants.RESPONSE_TYPE_NONE:
 					break;
-				case Constants.RESPONSE_TYPE_ACK:
-					int in = inputStream.read();
-					if ( in != Constants.ACK) {
-			            throw new IOException("Invalid response");
-			        }
+				case Constants.RESPONSE_TYPE_ACK:	
+					byte[] resp = new byte[1];
+					resp[0] = Constants.ACK;
+					expectString(responseBlock,new String(resp));					
+					offset = 1;
 					break;
 				case Constants.RESPONSE_TYPE_OK:
-					expectString("\n\rOK\n\r");
+					expectString(responseBlock,"\n\rOK\n\r");
+					offset = 6;
 					break;
 			}
 			
-			byte[] inputBuf = null;
 			switch (commandType.getResponselimitertype()) {
 				case Constants.RESPONSE_LIMITER_TYPE_CRLF:
-					inputBuf = new BufferedReader(new InputStreamReader(inputStream)).readLine().getBytes();					
+					if (responseBlock[responseBlock.length-2]!='\n' || responseBlock[responseBlock.length-1]!='\r') {
+			            throw new IOException("expected CRLF at end of response missing");
+					}
 					break;
 				case Constants.RESPONSE_LIMITER_TYPE_FIXED_SIZE:
-					inputBuf = readBytes(commandType.getResponselength());			        
+					if (responseBlock.length-offset!=commandType.getResponselength()) {
+			            throw new IOException("expected length of response: "+commandType.getResponselength() + ", but got: "+ (responseBlock.length-offset));
+					}					        
 					break;
 				case Constants.RESPONSE_LIMITER_TYPE_MULTIPLE_CRLF:
 					//TODO add support
@@ -234,83 +299,76 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 			
 			switch (commandType.getCrcchecktype()) {
 				case Constants.CRC_CHECK_TYPE_VAR1:
-					if (!CRC16.check(inputBuf, 0, inputBuf.length)) {
+					if (!CRC16.check(responseBlock, offset, responseBlock.length-offset)) {
 						throw new IOException("CRC error");
 					}
 					break;
 				case Constants.CRC_CHECK_TYPE_NONE:
 					break;
 			}
-
-			//aus response alle werte dekodieren für es ein item gibt -> postUpdate
-			Set<DavisValueType> valueTypes = DavisValueType.getValueTypesByCommandType(commandType);
-			for (DavisValueType valueType : valueTypes) {				
-				//get items and post Updates for all items with key
-				for (DavisBindingProvider provider : providers) {
-					List<String> itemNames = provider.getItemNamesForKey(valueType.getKey());
-					State state = valueType.getDataType().convertToState(inputBuf, valueType);
-					for (String itemName : itemNames) {
-						eventPublisher.postUpdate(itemName, state);
+			
+			try {
+				int responseLength = responseBlock.length-offset-(commandType.getCrcchecktype()==Constants.CRC_CHECK_TYPE_VAR1?2:0);
+				byte[] inputBuf = new byte[responseLength];
+				System.arraycopy(responseBlock, offset, inputBuf, 0,responseLength);
+	
+				String string = new String(inputBuf);
+				logger.debug("parsing: "+escape(string));
+				//aus response alle werte dekodieren für es ein item gibt -> postUpdate
+				Set<DavisValueType> valueTypes = DavisValueType.getValueTypesByCommandType(commandType);
+				for (DavisValueType valueType : valueTypes) {				
+					//get items and post Updates for all items with key
+					for (DavisBindingProvider provider : providers) {
+						List<String> itemNames = provider.getItemNamesForKey(valueType.getKey());
+						State state = valueType.getDataType().convertToState(inputBuf, valueType);
+						for (String itemName : itemNames) {
+							eventPublisher.postUpdate(itemName, state);
+						}
 					}
 				}
+			} catch (ArrayIndexOutOfBoundsException aie) {
+				logger.warn(aie.getMessage());
 			}
 		} catch (IOException e) {
-			//Drop the rest
-			try {
-				sleep(2000);
-				while (inputStream.read() != -1) {
-					//Throw away.
-				}
-				logger.warn("IO Exception in sendCommand() method, dropped remaining data!");						
-				writeString("RXTEST\n");
-				expectString("\n\rOK\n\r");
-			} catch (IOException e1) {
-				logger.error("IO Exception in dropping corrupt data!");
-				e1.printStackTrace();
-			}
+			logger.warn(e.getMessage());
+			resetAfterError();
 		}
 	}
 	
 	protected void writeString(String string) throws IOException {
+		logger.debug("TX: "+escape(string));
 		outputStream.write(string.getBytes());
 		outputStream.flush();
 	}
 	
-	protected void expectString(String string) throws IOException {
-		int length = string.length();
-		byte[] buf = readBytes(length);
-		String s = new String(buf);
-		if (!string.equals(s)) {
-			throw new IOException("Invalid response: " + escape(s));
+	protected void expectString(byte[] buffer,String string) throws IOException {
+		String s = new String(buffer);
+		if (buffer.length<string.length()) {
+			throw new IOException("unexpected response too short: " + escape(s)+ ", expected: "+escape(string));
+		}
+		if (!string.equals(s.substring(0, string.length()))) {
+			throw new IOException("unexpected response mismatch: " + escape(s.substring(0, string.length()))+ ", expected: "+escape(string));
 		}
 	}
 
-	protected byte[] readBytes(int length) throws IOException {
-		byte[] buf = new byte[length];
-		for (int i = 0; i < length; i++) {
-			int c = inputStream.read();
-			if (c != -1) {
-				buf[i] = (byte) (c & 0xff);
-			} else {
-				throw new IOException("Unexpected EOF");
-			}
-		}
-		return buf;
-	}
-
-	protected boolean wakeup() throws IOException {
+	protected boolean wakeup() {
 		// Send wakeup command.
 		boolean awake = false;
 		int i = 0;
 		while (awake == false && i++ < 3) {
-			writeString("\n");
 			try {
-				expectString("\n\r");
+				logger.debug("sending wakeup sequence");
+				writeString("\n");	
+				sleep(100);
+				logger.debug("waiting for wakeup response");
+				byte[] buf = readResponse();
+				expectString(buf,"\n\r");				
 				awake = true;
+				return awake;
 			} catch (IOException e) {
-				// Ignore.
+				logger.warn("wakeup failed, retry");
 			}
-			sleep(i*400);
+			sleep(1200);
 		}
 		return awake;
 	}
@@ -319,7 +377,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 		try {
 			Thread.sleep(ms);
 		} catch (InterruptedException ex) {
-			// Ignore.
+			logger.debug("sleep interrupted");
 		}
 	}
 	

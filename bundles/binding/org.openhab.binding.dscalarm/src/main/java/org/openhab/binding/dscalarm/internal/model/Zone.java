@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,9 +11,11 @@ package org.openhab.binding.dscalarm.internal.model;
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEvent;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.StateType;
+import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.TriggerType;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class Zone extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Zone.class);
 
-	DSCAlarmDeviceProperties zoneProperties = new DSCAlarmDeviceProperties();
+	public DSCAlarmDeviceProperties zoneProperties = new DSCAlarmDeviceProperties();
 	
 	/**
 	 * Constructor
@@ -49,9 +51,12 @@ public class Zone extends DSCAlarmDevice{
 	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
+		logger.debug("refreshItem(): Zone Item Name: {}", item.getName());
+
 		int state;
 		String strStatus = "";
-		logger.debug("refreshItem(): Zone Item Name: {}", item.getName());
+		boolean trigger;
+		OnOffType onOffType;
 
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
@@ -78,6 +83,26 @@ public class Zone extends DSCAlarmDevice{
 					case ZONE_BYPASS_MODE:
 						state = zoneProperties.getState(StateType.ARM_STATE);
 						publisher.postUpdate(item.getName(), new DecimalType(state));
+						break;
+					case ZONE_IN_ALARM:
+						trigger = zoneProperties.getTrigger(TriggerType.ALARMED);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case ZONE_TAMPER:
+						trigger = zoneProperties.getTrigger(TriggerType.TAMPERED);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case ZONE_FAULT:
+						trigger = zoneProperties.getTrigger(TriggerType.FAULTED);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case ZONE_TRIPPED:
+						trigger = zoneProperties.getTrigger(TriggerType.TRIPPED);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
 						break;
 					default: 
 						logger.debug("refreshItem(): Zone item not updated.");
@@ -137,6 +162,8 @@ public class Zone extends DSCAlarmDevice{
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Zone Item Name: {}", item.getName());
 
+		boolean trigger = state != 0 ? true : false;
+
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
 				switch(config.getDSCAlarmItemType()) {
@@ -154,6 +181,18 @@ public class Zone extends DSCAlarmDevice{
 						break;
 					case ZONE_BYPASS_MODE:
 						zoneProperties.setState(StateType.ARM_STATE, state, description);
+						break;
+					case ZONE_IN_ALARM:
+						zoneProperties.setTrigger(TriggerType.ALARMED, trigger);
+						break;
+					case ZONE_TAMPER:
+						zoneProperties.setTrigger(TriggerType.TAMPERED, trigger);
+						break;
+					case ZONE_FAULT:
+						zoneProperties.setTrigger(TriggerType.FAULTED, trigger);
+						break;
+					case ZONE_TRIPPED:
+						zoneProperties.setTrigger(TriggerType.TRIPPED, trigger);
 						break;
 					default: 
 						logger.debug("updateProperties():: Zone property not updated.");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,19 +10,14 @@ package org.openhab.core.transform.internal.service;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
-import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationService;
-import org.openhab.core.transform.internal.TransformationActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,14 +28,12 @@ import org.slf4j.LoggerFactory;
  * @author Gaël L'hopital
  * @since 1.6.0
  */
-public class ScaleTransformationService implements TransformationService {
+public class ScaleTransformationService extends LocalizableTransformationService implements TransformationService {
 
-	static final Logger logger =
-	LoggerFactory.getLogger(ScaleTransformationService.class);
+	static final Logger logger = LoggerFactory.getLogger(ScaleTransformationService.class);
 
 	/** RegEx to extract a scale definition */
-	private static final Pattern limits_pattern =
-	Pattern.compile("(\\[|\\])(.*)\\,(.*)(\\[|\\])\\=(.*)");
+	private static final Pattern limits_pattern = Pattern.compile("(\\[|\\])(.*)\\,(.*)(\\[|\\])\\=(.*)");
 
 	/**
 	 * <p>
@@ -63,23 +56,9 @@ public class ScaleTransformationService implements TransformationService {
 	if (filename == null || source == null) {
 		throw new TransformationException("the given parameters 'filename' and 'source' must not be null");
 	}
-	
 
 	String result = "not found";
-	String basename = FilenameUtils.getBaseName(filename);
-	String extension = FilenameUtils.getExtension(filename);
-	String locale = Locale.getDefault().getLanguage();
-	String basePath = ConfigDispatcher.getConfigFolder() + File.separator + TransformationActivator.TRANSFORM_FOLDER_NAME + File.separator;
-	String path = basePath + filename;
-	// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test.scale
-	String alternatePath = basePath + basename + "_" + locale + "." + extension;
-	// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test-en.scale
-
-	File f = new File(alternatePath);
-	if (f.exists()) {
-		path = alternatePath;
-	}
-	logger.debug("Using scale file '{}'",path);
+	String path = getLocalizedProposedFilename(filename);
 
 	try{
 		double value = Double.parseDouble(source);
@@ -95,25 +74,29 @@ public class ScaleTransformationService implements TransformationService {
 				double maxLimit = Double.parseDouble(matcher.group(3));
 
 				// a bit of a trick to include/exclude limits of the segment
-				if (matcher.group(1).equals(']'))
-					minLimit = minLimit - 0.0000000001;
-				if (matcher.group(1).equals('['))
+				if (matcher.group(1).equals("]"))
 					minLimit = minLimit + 0.0000000001;
+				if (matcher.group(1).equals("["))
+					minLimit = minLimit - 0.0000000001;
+				if (matcher.group(4).equals("]"))
+					maxLimit = maxLimit + 0.0000000001;
+				if (matcher.group(4).equals("["))
+					maxLimit = maxLimit - 0.0000000001;
 
 				if ((minLimit < value) && (value < maxLimit)) {
 					result = matcher.group(5);
 					break;
 				}
-
-			} else {
-				logger.warn("Line '{}' does not match scale pattern in the file '{}'.",strLine,path );
-			}
-
+			} 
 		}
 
 		in.close();
 	} catch (NumberFormatException e){
-		logger.warn("Scale transform can only work with numeric values, '{}' is not ", source);
+		// If it's not a number let's try it like a classical map
+		// mainly for UnDefType value reason
+		MapTransformationService map = new MapTransformationService();
+		result = map.transform(filename, source);
+		
 	} catch (IOException e) {	
 		throw new TransformationException("An error occured while scaling value ", e);
 	}

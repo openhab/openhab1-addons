@@ -33,7 +33,6 @@ Workflow {
         component = Generator {
             pathRtProject = runtimeProject
             pathUiProject = "${runtimeProject}.ui"
-            pathTestProject = "${runtimeProject}.tests"
             projectNameRt = projectName
             projectNameUi = "${projectName}.ui"
             language = {

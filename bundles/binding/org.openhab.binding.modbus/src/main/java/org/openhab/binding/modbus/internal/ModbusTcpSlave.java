@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,6 @@ package org.openhab.binding.modbus.internal;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import org.slf4j.Logger;
@@ -24,15 +23,10 @@ import org.slf4j.LoggerFactory;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public class ModbusTcpSlave extends ModbusSlave {
+public class ModbusTcpSlave extends ModbusIPSlave {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModbusTcpSlave.class);
 
-	/** host address */
-	private String host;
-
-	/** connection port. Default 502 */
-	private int port = Modbus.DEFAULT_PORT;
 
 	private TCPMasterConnection connection = null;
 
@@ -60,7 +54,7 @@ public class ModbusTcpSlave extends ModbusSlave {
 			if (connection == null)
 				connection = new TCPMasterConnection(InetAddress.getByName(getHost()));
 		} catch (UnknownHostException e) {
-			logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
 			connection = null;
 			return false;
 		}
@@ -71,7 +65,7 @@ public class ModbusTcpSlave extends ModbusSlave {
 				((ModbusTCPTransaction)transaction).setConnection(connection);
 				((ModbusTCPTransaction)transaction).setReconnecting(false);
 			} catch (Exception e) {
-				logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+				logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
 				return false;
 			}
 		return true;
@@ -81,20 +75,5 @@ public class ModbusTcpSlave extends ModbusSlave {
 		connection = null;
 	}
 
-	String getHost() {
-		return host;
-	}
-
-	void setHost(String host) {
-		this.host = host;
-	}
-
-	int getPort() {
-		return port;
-	}
-
-	void setPort(int port) {
-		this.port = port;
-	}
 
 }

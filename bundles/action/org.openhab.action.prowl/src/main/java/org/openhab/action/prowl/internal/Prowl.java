@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,26 +30,11 @@ import org.slf4j.LoggerFactory;
 public class Prowl {
 
 	private static final Logger logger = LoggerFactory.getLogger(Prowl.class);
-
-	// provide public static methods here
-	
-	// Example
-	@ActionDoc(text="A cool method that does some Prowl", 
-			returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-	public static boolean doProwl(@ParamDoc(name="something", text="the something to do") String something) {
-		if (!ProwlActionService.isProperlyConfigured) {
-			logger.debug("Prowl action is not yet configured - execution aborted!");
-			return false;
-		}
-		// now do something cool
-		return true;
-	}
 	
 	static String url = null;
 	static String apiKey = null;
 	static int priority = 0;
-	
-	
+		
 	/**
 	 * Pushes a Prowl notification with the configured api
 	 * key and takes the default priority into account
