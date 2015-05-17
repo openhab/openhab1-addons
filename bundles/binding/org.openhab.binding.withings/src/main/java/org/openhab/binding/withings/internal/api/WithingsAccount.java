@@ -39,15 +39,16 @@ import org.slf4j.LoggerFactory;
  * This class holds the Withings Account Credentials. It can also load 
  * and store the credentials the either the {@code openhab.cfg} (legacy)
  * or the {@code services/withings-ouath.cfg} file. Where to store values
- * get's decided whether {@code openhab.cfg} contains already keys 
- * starting with {@code withings-oauth}.
+ * is decided whether {@code openhab.cfg} contains already keys 
+ * starting with {@code withings-oauth} or not.
  * 
  * Note: We'd decided to reimplement {@code store} and {@code load} rather
- * the using the {@link java.util.Properties} class because our keys can
- * contain ":" which unfortunately is a valid delimiter in Properties. 
+ * than using the {@link java.util.Properties} class because our keys can
+ * contain ":" which unfortunately is a reserved delimiter in 
+ * {@link java.util.Properties}. 
  * 
  * @author Thomas.Eichstaedt-Engelen
- * @since 1.6.0
+ * @since 1.7.0
  */
 public final class WithingsAccount {
 	
@@ -72,8 +73,10 @@ public final class WithingsAccount {
 	
 	ServiceRegistration<?> clientServiceRegistration;
 
-	public WithingsAccount(String accountId) {
+	public WithingsAccount(String accountId, String consumerKey, String consumerSecret) {
 		this.accountId = accountId;
+		this.consumerKey = consumerKey;
+		this.consumerSecret = consumerSecret;
 	}
 
 	public boolean isValid() {
@@ -150,8 +153,6 @@ public final class WithingsAccount {
 			Map<String, String> config = load(file);
 			
 			config.put(prefix + "userid", userId);
-			config.put(prefix + "consumerkey", consumerKey);
-			config.put(prefix + "consumersecret", consumerSecret);
 			config.put(prefix + "token", token);
 			config.put(prefix + "tokensecret", tokenSecret);
 			
@@ -222,9 +223,7 @@ public final class WithingsAccount {
 	
 	@Override
 	public String toString() {
-		return "WithingsAccount [userId=" + userId + ", consumerKey="
-				+ consumerKey + ", consumerSecret=" + consumerSecret
-				+ ", token=" + token + ", tokenSecret=" + tokenSecret + "]";
+		return "WithingsAccount [userId=" + userId + ", token=" + token + ", tokenSecret=" + tokenSecret + "]";
 	}
 	
 }

@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.withings.internal.api;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -21,6 +19,7 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.exception.OAuthException;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
@@ -72,6 +71,9 @@ public class WithingsAuthenticator implements ManagedService {
 	/** Redirect URL to which the user is redirected after the login */
 	private String redirectUrl = DEFAULT_REDIRECT_URL;
 	
+	private String consumerKey = DEFAULT_CONSUMER_KEY;
+	private String consumerSecret = DEFAULT_CONSUMER_SECRET;
+	
 	private OAuthProvider provider;
 
 	private ComponentContext componentContext;
@@ -90,7 +92,7 @@ public class WithingsAuthenticator implements ManagedService {
 	}
 	
 	
-	private WithingsAccount getAccounts(String accountId) {
+	private WithingsAccount getAccount(String accountId) {
 		return accountsCache.get(accountId);
 	}
 	
@@ -100,7 +102,7 @@ public class WithingsAuthenticator implements ManagedService {
 	 */
 	public synchronized void startAuthentication(String accountId) {
 
-		WithingsAccount withingsAccount = getAccounts(accountId);
+		WithingsAccount withingsAccount = getAccount(accountId);
 		if (withingsAccount == null) {
 			logger.warn("Couldn't find Credentials of Account '{}'. Please check openhab.cfg or withings.cfg.", accountId);
 			return;
@@ -131,7 +133,7 @@ public class WithingsAuthenticator implements ManagedService {
 	 */
 	public synchronized void finishAuthentication(String accountId, String verificationCode, String userId) {
 
-		WithingsAccount withingsAccount = getAccounts(accountId);
+		WithingsAccount withingsAccount = getAccount(accountId);
 		if (withingsAccount == null) {
 			logger.warn("Couldn't find Credentials of Account '{}'. Please check openhab.cfg or withings.cfg.", accountId);
 			return;
@@ -196,8 +198,18 @@ public class WithingsAuthenticator implements ManagedService {
 		if (config != null) {
 			
 			String redirectUrl = (String) config.get("redirectUrl");
-			if (redirectUrl != null) {
+			if (StringUtils.isNotBlank(redirectUrl)) {
 				this.redirectUrl = redirectUrl;
+			}
+			
+			String consumerKeyString = (String) config.get("consumerkey");
+			if (StringUtils.isNotBlank(consumerKeyString)) {
+				this.consumerKey = consumerKeyString;
+			}
+			
+			String consumerSecretString = (String) config.get("consumersecret");
+			if (StringUtils.isNotBlank(consumerSecretString)) {
+				this.consumerSecret = consumerSecretString;
 			}
 
 			Enumeration<String> configKeys = config.keys();
@@ -206,7 +218,11 @@ public class WithingsAuthenticator implements ManagedService {
 				
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
-				if ("redirectUrl".equals(configKey) || "service.pid".equals(configKey)) {
+				if ("redirectUrl".equals(configKey) ||
+					"consumerkey".equals(configKey) ||
+					"consumersecret".equals(configKey) ||
+					"service.pid".equals(configKey)) {
+					
 					continue;
 				}
 
@@ -226,7 +242,7 @@ public class WithingsAuthenticator implements ManagedService {
 
 				WithingsAccount account = accountsCache.get(accountId);
 				if (account == null) {
-					account = new WithingsAccount(accountId);
+					account = new WithingsAccount(accountId, consumerKey, consumerSecret);
 					accountsCache.put(accountId, account);
 				}
 
@@ -234,21 +250,11 @@ public class WithingsAuthenticator implements ManagedService {
 				
 				if ("userid".equals(configKeyTail)) {
 					account.userId = value;
-				} else if ("consumerkey".equals(configKeyTail)) {
-					account.consumerKey = 
-						isNotBlank(value) ? value : DEFAULT_CONSUMER_KEY;
-				}
-				else if ("consumersecret".equals(configKeyTail)) {
-					account.consumerSecret =
-						isNotBlank(value) ? value : DEFAULT_CONSUMER_SECRET;
-				}
-				else if ("token".equals(configKeyTail)) {
+				} else if ("token".equals(configKeyTail)) {
 					account.token = value;
-				}
-				else if ("tokensecret".equals(configKeyTail)) {
+				} else if ("tokensecret".equals(configKeyTail)) {
 					account.tokenSecret = value;
-				}
-				else {
+				} else {
 					throw new ConfigurationException(configKey, "The given configuration key is unknown!");
 				}
 			}
