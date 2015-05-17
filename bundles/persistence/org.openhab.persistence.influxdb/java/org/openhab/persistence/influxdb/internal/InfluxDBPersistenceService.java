@@ -29,6 +29,7 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -75,8 +76,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private static final String DIGITAL_VALUE_OFF = "0";
   private static final String DIGITAL_VALUE_ON = "1";
   private static final String VALUE_COLUMN_NAME = "value";
-  private static final String DIGITAL_VALUE_CLOSED = "CLOSED";
-  private static final String DIGITAL_VALUE_OPEN = "OPEN";  
   private ItemRegistry itemRegistry;
   private InfluxDB influxDB;
   private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceService.class);
@@ -91,11 +90,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private PersistentStateRestorer persistentStateRestorer;
 
   public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-	this.persistentStateRestorer = persistentStateRestorer;
+    this.persistentStateRestorer = persistentStateRestorer;
   }
-	
+
   public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-	this.persistentStateRestorer = null;
+    this.persistentStateRestorer = null;
   }
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -189,14 +188,24 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     String realName = item.getName();
     String name = (alias != null) ? alias : realName;
-    Object value = stateToObject(item.getState());
+    
+    State state = null;
+    if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+      state = item.getStateAs(PercentType.class);
+    } else if (item instanceof ColorItem) {
+      state = item.getStateAs(HSBType.class);
+    } else {
+        // All other items should return the best format by default
+        state = item.getState();
+    }
+    Object value = stateToObject(state);
     logger.trace("storing {} in influxdb {}", name, value);
 
     // For now time is calculated by influxdb, may be this should be configurable?
     Serie serie = new Serie.Builder(name)
-    		.columns(VALUE_COLUMN_NAME)
-    		.values(value)
-    		.build();
+      .columns(VALUE_COLUMN_NAME)
+      .values(value)
+      .build();
     // serie.setColumns(new String[] {"time", VALUE_COLUMN_NAME});
     // Object[] point = new Object[] {System.currentTimeMillis(), value};
 
@@ -262,7 +271,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     if ( ! checkConnection()){
       logger.error("database connection does not work for now, will retry to use the database.");
     }
-	persistentStateRestorer.initializeItems(getName());
+    persistentStateRestorer.initializeItems(getName());
   }
 
   @Override
@@ -421,31 +430,28 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   /**
    * Converts {@link State} to objects fitting into influxdb values.
    * 
-   * @param 	state to be converted
-   * @return 	integer or double value for DecimalType and PercentType, 
-   * 			0 or 1 for OnOffType and OpenClosedType,
-   *         	SortedMap<String, PrimitiveType> for HSBType,
-   *         	integer for DateTimeType,
-   *         	SortedMap<String, PrimitiveType> for PointType
+   * @param     state to be converted
+   * @return    integer or double value for DecimalType, 
+   *            0 or 1 for OnOffType and OpenClosedType,
+   *            integer for DateTimeType,
+   *            String for all others
    */
   private Object stateToObject(State state) {
     Object value;
     if (state instanceof DecimalType) {
-    	value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
-    } else if (state instanceof PercentType) {
-        value = convertBigDecimalToNum(((PercentType) state).toBigDecimal());
+      value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
     } else if (state instanceof OnOffType) {
-    	value = (OnOffType) state == OnOffType.ON ? 1 : 0;
+      value = (OnOffType) state == OnOffType.ON ? 1 : 0;
     } else if (state instanceof OpenClosedType) {
-    	value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
+      value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
     } else if (state instanceof HSBType) {
-    	value = ((HSBType) state).getConstituents();
+      value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
-    	value = ((DateTimeType) state).getCalendar().getTime().getTime();
+      value = ((DateTimeType) state).toString();
     } else if (state instanceof PointType) {
-    	value = ((PointType) state).getConstituents();
+      value = ((PointType) state).toString();
     } else {
-    	value = state.toString();
+      value = state.toString();
     }
     return value;
   }
@@ -459,21 +465,19 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private String stateToString(State state) {
     String value;
     if (state instanceof DecimalType) {
-    	value = ((DecimalType) state).toBigDecimal().toString();
-    } else if (state instanceof PercentType) {
-    	value = ((PercentType) state).toBigDecimal().toString();
+      value = ((DecimalType) state).toBigDecimal().toString();
     } else if (state instanceof OnOffType) {
-    	value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
+      value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
     } else if (state instanceof OpenClosedType) {
-    	value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_OPEN : DIGITAL_VALUE_CLOSED;  
+      value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;  
     } else if (state instanceof HSBType) {
-    	value = ((HSBType) state).getConstituents().toString();
+      value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
-    	value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
+      value = ((DateTimeType) state).toString();
     } else if (state instanceof PointType) {
-    	value = ((PointType) state).getConstituents().toString();
+      value = ((PointType) state).toString();
     } else {
-    	value = state.toString();
+      value = state.toString();
     }
     return value;
   }
@@ -485,7 +489,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * @param value to be converted to a {@link State}
    * @param itemName name of the {@link Item} to get the {@link State} for
    * @return the state of the item represented by the itemName parameter, 
-   * 			else the string value of the Object parameter
+   *         else the string value of the Object parameter
    */
   private State objectToState(Object value, String itemName) {
     String valueStr = String.valueOf(value);
@@ -494,20 +498,20 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         Item item = itemRegistry.getItem(itemName);
         
         if (item instanceof ColorItem || item instanceof DimmerItem) {
-        	return item.getState();
+          return item.getState();
         } else if (item instanceof SwitchItem) {
-        	return convertToSwitchOutput(valueStr).equals(DIGITAL_VALUE_OFF)
-        		? OnOffType.OFF
-                : OnOffType.ON;
+          return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
+            ? OnOffType.OFF
+            : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-        	return (convertToContactOutput(valueStr).equals(DIGITAL_VALUE_CLOSED))
-                ? OpenClosedType.CLOSED
-                : OpenClosedType.OPEN;
+          return (string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF))
+            ? OpenClosedType.CLOSED
+            : OpenClosedType.OPEN;
         } else if (item instanceof GenericItem) {
-        	return item.getState();
+          return item.getState();
         }
       } catch (ItemNotFoundException e) {
-    	  logger.warn("Could not find item '{}' in registry", itemName);
+          logger.warn("Could not find item '{}' in registry", itemName);
       }
     }
     // just return a StringType as a fallback
@@ -515,56 +519,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   /**
+   * Maps a string value which expresses a {@link BigDecimal.ZERO } to DIGITAL_VALUE_OFF, all others
+   * to DIGITAL_VALUE_ON
    * 
-   * @param 	switchValue				database value representing a SwitchItem state
-   * @return	DIGITAL_VALUE_ON		if input "on" (ignore case) or a non-zero number
-   * 			DIGITAL_VALUE_OFF		all other cases
+   * @param value to be mapped
+   * @return
    */
-  private String convertToSwitchOutput(String switchValue) {
-	  // input may be numeric (0, 1, 99.999) or string ("on", "OfF", "asdf"), so can we parse it as an int?
-	  try {
-		  int valueAsInt = Integer.parseInt(switchValue);
-		  if (valueAsInt != 0) {
-			  logger.trace("switchValue {}", DIGITAL_VALUE_ON);
-			  return DIGITAL_VALUE_ON;
-		  }
-	  } catch (NumberFormatException e) {
-		  // input is not an integer
-		  if ("on".equalsIgnoreCase(switchValue)) {
-			  logger.trace("switchValue {}", DIGITAL_VALUE_ON);
-			  return DIGITAL_VALUE_ON;
-		  }
-	  }
-	  
-	  // to reach here we either have a number that is zero, or a string that is not "on"	  
-	  logger.trace("contactValue {}", DIGITAL_VALUE_OFF);
-	  return DIGITAL_VALUE_OFF;
-  }
+  private String string2DigitalValue(String value) {
+    BigDecimal num = new BigDecimal(value);
+    if (num.compareTo(BigDecimal.ZERO) == 0) {
+      logger.trace("digitalvalue {}", DIGITAL_VALUE_OFF);
+      return DIGITAL_VALUE_OFF;
+    } else {
+      logger.trace("digitalvalue {}", DIGITAL_VALUE_ON);
+      return DIGITAL_VALUE_ON;
+    }
+  }  
   
-  /**
-   * 
-   * @param 	contactValue			database value representing a ContactItem state
-   * @return	DIGITAL_VALUE_OPEN		if input "open" (ignore case) or a non-zero number
-   * 			DIGITAL_VALUE_CLOSED	all other cases
-   */
-  private String convertToContactOutput(String contactValue) {
-	  // input may be numeric (0, 1, 99.999) or string ("open", "ClOsEd", "asdf"), so can we parse it as an int?
-	  try {
-		  int valueAsInt = Integer.parseInt(contactValue);
-		  if (valueAsInt != 0) {
-			  logger.trace("contactValue {}", DIGITAL_VALUE_OPEN);
-			  return DIGITAL_VALUE_OPEN;
-		  }
-	  } catch (NumberFormatException e) {
-		  // input is not an integer
-		  if ("open".equalsIgnoreCase(contactValue)) {
-			  logger.trace("contactValue {}", DIGITAL_VALUE_OPEN);
-			  return DIGITAL_VALUE_OPEN;
-		  }
-	  }
-	  
-	  // to reach here we either have a number that is zero, or a string that is not "open"	  
-	  logger.trace("contactValue {}", DIGITAL_VALUE_CLOSED);
-	  return DIGITAL_VALUE_CLOSED;
-  }
+  
 }
