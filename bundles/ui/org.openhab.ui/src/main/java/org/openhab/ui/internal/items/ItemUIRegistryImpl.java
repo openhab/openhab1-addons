@@ -225,7 +225,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		try {
 			item = getItem(itemName);
 		} catch (ItemNotFoundException e) {
-			logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
+			logger.error("Cannot retrieve item {} for widget {}", itemName, w.eClass().getInstanceTypeName());
 		}
 		return formatLabel(item, itemName, label);
 	}
@@ -435,7 +435,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				Item item = getItem(itemName);
 				return item.getState();
 			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve item '{}' for widget {}", new String[] { itemName, w.eClass().getInstanceTypeName() });
+				logger.error("Cannot retrieve item {} for widget {}", itemName, w.eClass().getInstanceTypeName());
 			}
 		}
 		return UnDefType.UNDEF;
