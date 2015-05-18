@@ -8,13 +8,18 @@
  */
 package org.openhab.binding.wr3223.internal;
 
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.openhab.binding.wr3223.WR3223BindingProvider;
+import org.openhab.binding.wr3223.WR3223CommandType;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -25,6 +30,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider implements WR3223BindingProvider {
 
+	private static final Logger logger = 
+			LoggerFactory.getLogger(WR3223GenericBindingProvider.class);	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -50,12 +58,31 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		WR3223BindingConfig config = new WR3223BindingConfig();
-		
-		//parse bindingconfig here ...
-		
-		addBindingConfig(item, config);		
+		WR3223CommandType commandType = WR3223CommandType.fromString(bindingConfig);
+		if(commandType != null){
+			if(WR3223CommandType.validateBinding(commandType, item.getClass())){
+				WR3223BindingConfig config = new WR3223BindingConfig(commandType);
+				addBindingConfig(item, config);
+			} else {
+				throw new BindingConfigParseException("'" + bindingConfig + "' is no valid binding type");
+			}
+		}
+		else {
+			logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
+		}		
 	}
+	
+	
+	public String[] getItemNamesForType(WR3223CommandType eventType) {
+		Set<String> itemNames = new HashSet<String>();
+		for(Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
+			WR3223BindingConfig wr3223Config = (WR3223BindingConfig) entry.getValue();
+			if(wr3223Config.getType().equals(eventType)) {
+				itemNames.add(entry.getKey());
+			}
+		}
+		return itemNames.toArray(new String[itemNames.size()]);
+	}	
 	
 	
 	/**
@@ -65,7 +92,18 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 	 * @since 1.7.0
 	 */
 	class WR3223BindingConfig implements BindingConfig {
-		// put member fields here which holds the parsed values
+		private WR3223CommandType type;
+
+		public WR3223BindingConfig(WR3223CommandType type) {
+			super();
+			this.type = type;
+		}
+
+		public WR3223CommandType getType() {
+			return type;
+		}
+		
+		
 	}
 	
 	

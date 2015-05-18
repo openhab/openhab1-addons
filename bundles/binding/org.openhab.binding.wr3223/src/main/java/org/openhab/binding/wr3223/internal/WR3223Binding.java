@@ -9,13 +9,15 @@
 package org.openhab.binding.wr3223.internal;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
-import org.openhab.binding.wr3223.WR3223BindingProvider;
-import org.openhab.binding.wr3223.WR3223Commands;
-
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.wr3223.WR3223BindingProvider;
+import org.openhab.binding.wr3223.WR3223CommandType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -24,8 +26,8 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * This class is an active binding to control the WR3223. To control the WR3223 over RS232/USB it must receive 
+ * at least every 20 second a message.
  * 
  * @author Michael Fraefel
  * @since 1.7.0
@@ -127,7 +129,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	 * Configure binding.
 	 * @param configuration
 	 */
-	private void configure(final Map<String, Object> configuration) {
+	private void configure(final Map<String, Object> configuration) {		
 		//Configure refresh
 		String refreshIntervalString = (String) configuration.get("refresh");
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
@@ -162,6 +164,16 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			setProperlyConfigured(false);
 			logger.error("No connection configured");
 		}
+
+		//Close the connector if already one is open.
+		if(connector != null){
+			try{
+				connector.close();
+			}catch(IOException ex){
+				logger.error("Error by closing connector.", ex);
+			}
+		}
+		
 
 	}	
 
@@ -204,7 +216,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		}
 		
 		try{
-			logger.info("Aussentemperatur: "+connector.read(controllerAddr, WR3223Commands.T3));
+			handleEventTypeDecimal(connector.read(controllerAddr, WR3223Commands.T3),WR3223CommandType.TEMPERATURE_OUTSIDE);
 		
 		}catch(IOException ex){
 			logger.error("WR3223 read:", ex);
@@ -212,7 +224,28 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		}		
 
 	}
-
+	
+	private void handleEventTypeDecimal(String value, WR3223CommandType wr3223CommandType) {
+		if(value != null){
+			try{
+				handleEventType(DecimalType.valueOf(value.trim()),wr3223CommandType);
+			}catch(NumberFormatException nfe){
+				logger.error("Can't set value {} to item type {} because it's not a decimal number.", value, wr3223CommandType.getCommand());
+			}
+		}else{
+			logger.error("Can't set NULL value to item type {} because it's not a decimal number.", wr3223CommandType.getCommand());
+			
+		}
+	}
+	
+	private void handleEventType(org.openhab.core.types.State state, WR3223CommandType wr3223CommandType) {
+		for (WR3223BindingProvider provider : providers) {
+			for (String itemName : provider.getItemNamesForType(wr3223CommandType)) {
+				eventPublisher.postUpdate(itemName, state);
+			}
+		}
+	}
+	
 	/**
 	 * @{inheritDoc}
 	 */

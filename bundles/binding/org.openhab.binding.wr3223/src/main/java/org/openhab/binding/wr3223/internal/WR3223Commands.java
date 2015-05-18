@@ -1,4 +1,4 @@
-package org.openhab.binding.wr3223;
+package org.openhab.binding.wr3223.internal;
 
 public enum WR3223Commands {
 	/** Abtau ein Temperatur lesen/schreiben */

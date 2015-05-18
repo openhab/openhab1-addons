@@ -15,5 +15,12 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.7.0
  */
 public interface WR3223BindingProvider extends BindingProvider {
+	
+	/**
+	 * Provides an array of all item names of this provider for a given binding type
+	 * @param bindingType the binding type of the items
+	 * @return an array of all item names of this provider for the given binding type
+	 */
+	public String[] getItemNamesForType(WR3223CommandType bindingType);	
 
 }

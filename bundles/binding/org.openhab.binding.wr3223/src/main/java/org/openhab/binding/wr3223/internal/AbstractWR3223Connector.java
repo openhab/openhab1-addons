@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.wr3223.WR3223Commands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
