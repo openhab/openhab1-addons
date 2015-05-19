@@ -225,7 +225,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		try {
 			item = getItem(itemName);
 		} catch (ItemNotFoundException e) {
-			logger.error("Cannot retrieve item {} for widget {}", itemName, w.eClass().getInstanceTypeName());
+			logger.debug("Cannot retrieve item {} for widget {}", itemName, w.eClass().getInstanceTypeName());
 		}
 		return formatLabel(item, itemName, label);
 	}
