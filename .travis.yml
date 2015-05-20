@@ -3,3 +3,6 @@ jdk:
 - openjdk7
 
 script: mvn clean install
+
+notifications:
+  slack: openhab:AkOKc2KLF3lDl0mAdzwJSntR
