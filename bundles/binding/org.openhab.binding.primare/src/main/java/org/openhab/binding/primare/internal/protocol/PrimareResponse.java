@@ -46,7 +46,7 @@ public abstract class PrimareResponse {
          *              Primare command as specified in items configuration file
 	 * @return boolean
 	 */
-	public abstract boolean is_relevant_for(String deviceCmdString);
+	public abstract boolean isRelevantFor(String deviceCmdString);
 
 
 	/**

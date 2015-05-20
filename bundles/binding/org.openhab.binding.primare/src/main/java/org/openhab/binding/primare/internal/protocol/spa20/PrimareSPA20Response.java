@@ -57,7 +57,7 @@ public class PrimareSPA20Response extends PrimareResponse {
 	/**
 	 * @{inheritDoc}
 	 */
-	public boolean is_relevant_for(String deviceCmdString) {
+	public boolean isRelevantFor(String deviceCmdString) {
 		
 		boolean relevant = false;
 

@@ -331,7 +331,7 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider>
 						String[] commandParts = values.get(cmd).split(":");
 						String deviceCmd = commandParts[1];
 
-						boolean match = deviceResponse.is_relevant_for(deviceCmd);
+						boolean match = deviceResponse.isRelevantFor(deviceCmd);
 
 						if (match) {
 							Class<? extends Item> itemType = provider.getItemType(itemName);
