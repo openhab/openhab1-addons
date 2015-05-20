@@ -312,9 +312,6 @@ public class PrimareSerialConnector extends PrimareConnector {
 				byte b = inStream.readByte();
 				bytesReceivedAt = new Date();
 				
-				// logger.trace("waitStateMessages - data from {} READ: [{}] ({})",
-				//	     PrimareSerialConnector.this.toString(), String.format("0x%02x",b), b);
-				
 				buffer[total++] = b;
 				// Access byte[] buffer and consume bytes 0 .. total-1 if DLE ETX has been seen 
 				parseData(total-1);
