@@ -423,6 +423,9 @@ public class SitemapResource {
 					throw new RuntimeException(ex.getMessage(), ex);
 				}
 			}
+			if(uri.getFragment() != null) {
+				sb.append("#" + uri.getFragment());
+			}
 			sbBaseUrl.append(sb.toString());
 			bean.url = sbBaseUrl.toString();
     	}
