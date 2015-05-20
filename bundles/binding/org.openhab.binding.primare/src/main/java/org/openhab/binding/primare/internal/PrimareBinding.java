@@ -71,11 +71,9 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider>
 	}
 
 	public void activate() {
-		logger.debug("Activate");
 	}
 
 	public void deactivate() {
-		logger.debug("Deactivate");
 		closeAllConnections();
 	}
 
