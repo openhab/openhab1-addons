@@ -222,10 +222,6 @@ public class PrimareSerialConnector extends PrimareConnector {
 			logger.error("You may consider OpenHAB startup parameter [ -Dgnu.io.rxtx.SerialPorts={} ]", 
 				     serialPortName);
 			throw e;
-			
-			//	} catch (Exception e) {
-			//logger.error("Error connecting to {}: {}", PrimareSerialConnector.this.toString(),e);
-			//throw e;
 		}
 	}
 
