@@ -32,10 +32,10 @@ public class OneWireBindingConfigFactory {
 	 * @return a new BindingConfig, corresponding to the given <code><pvItem/code> and <code><pvBindingConfig/code>
 	 * @throws BindingConfigParseException
 	 */
-	public static OneWireBindingConfig createOneWireDeviceProperty(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
+	public static InterfaceAbstractOneWireBindingConfig createOneWireDeviceProperty(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
 		logger.debug("createOneWireDeviceProperty: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
 
-		OneWireBindingConfig lvNewBindingConfig = null;
+		InterfaceAbstractOneWireBindingConfig lvNewBindingConfig = null;
 		if (OneWireClearCacheControlBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {
 			lvNewBindingConfig = new OneWireClearCacheControlBindingConfig(pvBindingConfig);
 		} else if (OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {

@@ -1,6 +1,6 @@
 package org.openhab.binding.onewire.internal.control;
 
-import org.openhab.binding.onewire.internal.OneWireBindingConfig;
+import org.openhab.binding.onewire.internal.InterfaceAbstractOneWireBindingConfig;
 import org.openhab.binding.onewire.internal.OneWireBinding;
 import org.openhab.core.types.Command;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public abstract class AbstractOneWireControlBindingConfig implements
-		OneWireBindingConfig {
+		InterfaceAbstractOneWireBindingConfig {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractOneWireControlBindingConfig.class);
