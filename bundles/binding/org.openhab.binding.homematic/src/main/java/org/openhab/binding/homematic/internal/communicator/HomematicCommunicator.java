@@ -57,7 +57,6 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	private ItemDisabler itemDisabler;
 
 	private long lastEventTime = System.currentTimeMillis();
-	private long lastReconnectTime = System.currentTimeMillis();
 	private HomematicPublisher publisher = new HomematicPublisher();
 	/**
 	 * Starts the communicator and initializes everything.
@@ -90,8 +89,6 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				homematicClient.registerCallback();
 
 				scheduleFirstRefresh();
-				
-				lastReconnectTime = System.currentTimeMillis();
 			} catch (Exception e) {
 				logger.error("Could not start Homematic communicator: " + e.getMessage(), e);
 				stop();
@@ -104,7 +101,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	 * initial load and server startup
 	 */
 	private void scheduleFirstRefresh() {
-		logger.info("Scheduling one datapoint reload job in one minute");
+		logger.info("Scheduling one datapoint reload job in 60 seconds");
 		delayedExecutor.schedule(new TimerTask() {
 
 			@Override
@@ -112,7 +109,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				logger.debug("Initial Homematic datapoints reload");
 				context.getStateHolder().reloadDatapoints();
 			}
-		}, 61000); // 61 seconds to prevent reload at a reconnect
+		}, 60000);
 	}
 
 	/**
@@ -379,13 +376,6 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	 */
 	public long getLastEventTime() {
 		return lastEventTime;
-	}
-	
-	/**
-	 * Returns the timestamp from the last Homematic server reconnect.
-	 */
-	public long getLastReconnectTime() {
-		return lastReconnectTime;
 	}
 
 }

@@ -183,24 +183,15 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 
 	/**
 	 * Restarts the Homematic communicator if no messages arrive within a
-	 * configured time or the reconnect interval is reached.
+	 * configured time.
 	 */
 	@Override
 	protected void execute() {
-		if (context.getConfig().getReconnectInterval() == null) {
-			long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
-			if (timeSinceLastEvent >= context.getConfig().getAliveInterval()) {
-				logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
-				communicator.stop();
-				communicator.start();
-			}
-		} else {
-			long timeSinceLastReconnect = (System.currentTimeMillis() - communicator.getLastReconnectTime()) / 1000;
-			if (timeSinceLastReconnect >= context.getConfig().getReconnectInterval()) {
-				logger.info("Reconnect interval reached, refreshing Homematic server connections");
-				communicator.stop();
-				communicator.start();
-			}
+		long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
+		if (timeSinceLastEvent > context.getConfig().getAliveInterval()) {
+			logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
+			communicator.stop();
+			communicator.start();
 		}
 	}
 
@@ -217,7 +208,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	 */
 	@Override
 	protected String getName() {
-		return "Homematic server connection tracker";
+		return "Homematic server keep alive thread";
 	}
 
 }
