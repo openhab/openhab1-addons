@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyBindingConfig;
 import org.osgi.service.cm.ConfigurationException;
 import org.owfs.jowfsclient.Enums.OwBusReturn;
 import org.owfs.jowfsclient.Enums.OwPersistence;
@@ -193,39 +192,24 @@ public class OneWireConnection {
 	 * @param pvDevicePropertyPath
 	 * @return device property value as String
 	 */
-	public static synchronized String readFromOneWire(AbstractOneWireDevicePropertyBindingConfig pvBindingConfig) {
-		String lvDevicePropertyPath = pvBindingConfig.getDevicePropertyPath();
-
+	public static synchronized String readFromOneWire(String pvDevicePropertyPath) {		
 		int lvAttempt = 1;
 		while (lvAttempt <= cvRetry) {
 			try {
-				logger.debug("trying to read from '{}', read attempt={}", new Object[] { lvDevicePropertyPath, lvAttempt });
-				if (checkIfDeviceExists(lvDevicePropertyPath)) {
-					String lvReadValue = OneWireConnection.getConnection().read(lvDevicePropertyPath);
-					logger.debug("Read value '{}' from {}, read attempt={}", new Object[] { lvReadValue, lvDevicePropertyPath, lvAttempt });
-
-					// Test
-					if (pvBindingConfig.isIgnore85CPowerOnResetValues()) {
-						double lvReadDouble = Double.parseDouble(lvReadValue);
-						if (lvReadDouble == 85.0) {
-							logger.debug("reading from path " + lvDevicePropertyPath + " attempt " + lvAttempt + " Ignoring 85°C value");
-						} else {
-							return lvReadValue;
-						}
-					} else {
-						return lvReadValue;
-					}
+				logger.debug("trying to read from '{}', read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
+				if (checkIfDeviceExists(pvDevicePropertyPath)) {
+					String lvReadValue = OneWireConnection.getConnection().read(pvDevicePropertyPath);
+					logger.debug("Read value '{}' from {}, read attempt={}", new Object[] { lvReadValue, pvDevicePropertyPath, lvAttempt });
+					return lvReadValue;
 				} else {
-					logger.info("there is no device for path {}, read attempt={}", new Object[] { lvDevicePropertyPath, lvAttempt });
+					logger.info("there is no device for path {}, read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
 				}
 			} catch (OwfsException oe) {
-				logger.error("reading from path " + lvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
+				logger.error("reading from path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
 				reconnect();
 			} catch (IOException ioe) {
-				logger.error("couldn't establish network connection while read attempt " + lvAttempt + " '" + lvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+				logger.error("couldn't establish network connection while read attempt " + lvAttempt + " '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
 				reconnect();
-			} catch (NumberFormatException lvNumberFormatException) {
-				logger.error("Ignoring 85C PowerOnReset values can only be used with temperature sensors! Read a value, which is not a number");
 			} finally {
 				lvAttempt++;
 			}

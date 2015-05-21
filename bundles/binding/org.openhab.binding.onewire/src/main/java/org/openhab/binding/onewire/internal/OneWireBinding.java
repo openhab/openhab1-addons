@@ -261,7 +261,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 				return;
 			}
 
-			String lvReadValue = OneWireConnection.readFromOneWire(pvBindingConfig);
+			String lvReadValue = OneWireConnection.readFromOneWire(pvBindingConfig.getDevicePropertyPath());
 
 			Item lvItem = getItem(pvItemName);
 			if (lvReadValue != null) {

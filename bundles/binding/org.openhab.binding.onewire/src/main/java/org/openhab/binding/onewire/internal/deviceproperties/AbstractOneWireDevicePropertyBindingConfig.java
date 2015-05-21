@@ -21,10 +21,6 @@ import org.slf4j.LoggerFactory;
  * <code>refreshinterval=<i>value in seconds</i></code>
  * Defaults to 60 seconds
  * 
- * Ignore 85°C power on reset values (DS18B20)
- * <code>ignore85CPowerOnResetValues</code>
- * Defaults to false 
- * 
  * Example:
  * <code>
  * 	onewire="deviceId=28.67C6697351FF;propertyName=temperature;refreshinterval=10"
@@ -49,10 +45,6 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements Inte
 	 */
 	private String ivPropertyName;
 	
-	/**
-	 * ignore 85°C power on reset values (DS18B20)
-	 */
-	private boolean ivIgnore85CPowerOnResetValues = false;
 	
 	/**
 	 * Default autofresh value in seconds, can be set for each defined Item
@@ -74,7 +66,6 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements Inte
 			parseDeviceId(pvConfigPart);
 			parsePropertyName(pvConfigPart);
 			parseRefreshInterval(pvConfigPart);
-			parseIgnore85CPowerOnResetValues(pvConfigPart);
 		}
 
 		// DeviceId and property must be filled
@@ -101,15 +92,6 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements Inte
 		if (pvConfigPart.startsWith(lvConfigProperty)) {
 			String lvConfigValue = pvConfigPart.substring(lvConfigProperty.length());
 			this.setPropertyName(lvConfigValue);
-		}
-	}
-	
-	private void parseIgnore85CPowerOnResetValues(String pvConfigPart) {
-		String lvConfigProperty = null;
-
-		lvConfigProperty = "ignore85CPowerOnResetValues";
-		if (pvConfigPart.equals(lvConfigProperty)) {
-			ivIgnore85CPowerOnResetValues=true;
 		}
 	}
 
@@ -145,15 +127,6 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements Inte
 
 	public void setAutoRefreshInSecs(int pvAutoRefreshInSecs) {
 		this.ivAutoRefreshInSecs = pvAutoRefreshInSecs;
-	}
-	
-	public boolean isIgnore85CPowerOnResetValues() {
-		return ivIgnore85CPowerOnResetValues;
-	}
-
-	public void setIgnore85CPowerOnResetValues(
-			boolean pvIgnore85CPowerOnResetValues) {
-		this.ivIgnore85CPowerOnResetValues = pvIgnore85CPowerOnResetValues;
 	}
 
 	/**
