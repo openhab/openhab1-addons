@@ -2,7 +2,7 @@ package org.openhab.binding.onewire.internal.deviceproperties;
 
 import java.util.ArrayList;
 
-import org.openhab.binding.onewire.internal.InterfaceAbstractOneWireBindingConfig;
+import org.openhab.binding.onewire.internal.OneWireBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.modifier.InterfaceOneWireTypeModifier;
 import org.openhab.core.types.Type;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Dennis Riegelbauer
  * @since 1.7.0
  */
-public abstract class AbstractOneWireDevicePropertyBindingConfig implements InterfaceAbstractOneWireBindingConfig {
+public abstract class AbstractOneWireDevicePropertyBindingConfig implements OneWireBindingConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractOneWireDevicePropertyBindingConfig.class);
 

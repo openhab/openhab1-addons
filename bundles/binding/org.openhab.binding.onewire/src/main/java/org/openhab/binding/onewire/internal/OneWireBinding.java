@@ -67,14 +67,12 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	@Override
 	public void activate() {
 		super.activate();
-		logger.debug("activate onewire-binding");
 		ivOneWireReaderScheduler.start();
 	}
 
 	@Override
 	public void deactivate() {
 		super.deactivate();
-		logger.debug("deactivate onewire-binding");
 		ivOneWireReaderScheduler.stop();
 	}
 
@@ -84,9 +82,6 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
 	 */
 	public void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
-
-		logger.debug("updated onewire-binding");
-
 		if (pvConfig != null) {
 			//Basic config
 			String lvPostOnlyChangedValues = (String) pvConfig.get("post_only_changed_values");
@@ -108,7 +103,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	protected void internalReceiveCommand(String pvItemName, Command pvCommand) {
 		logger.debug("received command " + pvCommand.toString() + " for item " + pvItemName);
 		
-		InterfaceAbstractOneWireBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
+		OneWireBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
 
 		if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
 			AbstractOneWireDevicePropertyWritableBindingConfig lvWritableBindingConfig = (AbstractOneWireDevicePropertyWritableBindingConfig) lvBindigConfig;
@@ -183,7 +178,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 			
 			OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) pvProvider;
 
-			InterfaceAbstractOneWireBindingConfig lvBindingConfig = lvBindingProvider.getBindingConfig(pvItemName);
+			OneWireBindingConfig lvBindingConfig = lvBindingProvider.getBindingConfig(pvItemName);
 
 			//Only for AbstractOneWireDevicePropertyBindingConfig, not for AbstractOneWireControlBindingConfigs
 			if (lvBindingConfig != null && lvBindingConfig instanceof AbstractOneWireDevicePropertyBindingConfig) {
@@ -226,7 +221,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 * @param pvItemName
 	 * @return the corresponding AbstractOneWireDevicePropertyBindingConfig to the given <code>pvItemName</code>
 	 */
-	private InterfaceAbstractOneWireBindingConfig getBindingConfig(String pvItemName) {
+	private OneWireBindingConfig getBindingConfig(String pvItemName) {
 		for (OneWireBindingProvider lvProvider : providers) {
 			return lvProvider.getBindingConfig(pvItemName);
 		}

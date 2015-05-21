@@ -10,7 +10,7 @@ package org.openhab.binding.onewire;
 
 import java.util.Map;
 
-import org.openhab.binding.onewire.internal.InterfaceAbstractOneWireBindingConfig;
+import org.openhab.binding.onewire.internal.OneWireBindingConfig;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
@@ -29,7 +29,7 @@ public interface OneWireBindingProvider extends BindingProvider {
 	/**
 	 * @return the corresponding InterfaceAbstractOneWireBindingConfig to the given <code>pvItemName</code>
 	 */
-	public InterfaceAbstractOneWireBindingConfig getBindingConfig(String pvItemName);
+	public OneWireBindingConfig getBindingConfig(String pvItemName);
 
 	/**
 	 * @return all BindingConfig

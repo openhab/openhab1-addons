@@ -63,7 +63,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	public void processBindingConfiguration(String pvContext, Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(pvContext, pvItem, pvBindingConfig);
 
-		InterfaceAbstractOneWireBindingConfig pvDevicePropertyBindingConfig = OneWireBindingConfigFactory.createOneWireDeviceProperty(pvItem, pvBindingConfig);
+		OneWireBindingConfig pvDevicePropertyBindingConfig = OneWireBindingConfigFactory.createOneWireDeviceProperty(pvItem, pvBindingConfig);
 
 		addBindingConfig(pvItem, pvDevicePropertyBindingConfig);
 
@@ -88,8 +88,8 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.onewire.OneWireBindingProvider#getBindingConfig(java.lang.String)
 	 */
-	public InterfaceAbstractOneWireBindingConfig getBindingConfig(String pvItemName) {
-		return (InterfaceAbstractOneWireBindingConfig) bindingConfigs.get(pvItemName);
+	public OneWireBindingConfig getBindingConfig(String pvItemName) {
+		return (OneWireBindingConfig) bindingConfigs.get(pvItemName);
 	}
 
 	/* (non-Javadoc)
