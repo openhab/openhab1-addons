@@ -193,12 +193,16 @@ public class OneWireUpdateScheduler {
 			return false;
 		}
 
+		if (pvAutoRefreshTimeInSecs == 0) {
+			return updateOnce(pvItemName);
+		}
+
 		// Check if item is already present in another list and if so, remove it
 		int lvOldListNumber = getAutoRefreshTimeInSecs(pvItemName);
 		if (lvOldListNumber > 0) {
 			if (lvOldListNumber == pvAutoRefreshTimeInSecs) {
 				logger.debug("item '{}' was already in  auto refresh list {}", pvItemName, pvAutoRefreshTimeInSecs);
-				return true;
+				return false;
 			}
 			List<String> lvOldList = cvScheduleMap.get(lvOldListNumber);
 			synchronized (lvOldList) {
