@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.energenie</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.energenie</bundle.namespace>
-		<deb.name>openhab-addon-binding-Energenie</deb.name>
-		<deb.description>openhab addon binding Energenie</deb.description>
+		<deb.name>openhab-addon-binding-energenie</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

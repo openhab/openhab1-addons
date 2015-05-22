@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.enigma2</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.enigma2</bundle.namespace>
-		<deb.name>openhab-addon-binding-Enigma2</deb.name>
-		<deb.description>openhab addon binding Enigma2</deb.description>
+		<deb.name>openhab-addon-binding-enigma2</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

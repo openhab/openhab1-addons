@@ -12,7 +12,7 @@
 		<bundle.symbolicName>org.openhab.action.openwebif</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.openwebif</bundle.namespace>
 		<deb.name>openhab-addon-action-openwebif</deb.name>
-		<deb.description>openhab addon action openwebif</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
