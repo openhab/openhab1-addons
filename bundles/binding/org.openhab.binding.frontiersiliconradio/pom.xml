@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.frontiersiliconradio</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.frontiersiliconradio</bundle.namespace>
-		<deb.name>openhab-addon-binding-FrontierSiliconRadio</deb.name>
-		<deb.description>openhab addon binding FrontierSiliconRadio</deb.description>
+		<deb.name>openhab-addon-binding-frontiersiliconradio</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -28,6 +28,16 @@
 			<plugin>
 				<groupId>org.vafer</groupId>
 				<artifactId>jdeb</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>${tycho-groupid}</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
