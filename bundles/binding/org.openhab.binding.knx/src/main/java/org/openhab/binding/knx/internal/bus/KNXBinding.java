@@ -158,10 +158,18 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	/* (non-Javadoc)
 	 * @see tuwien.auto.calimero.process.ProcessListener#groupWrite(tuwien.auto.calimero.process.ProcessEvent)
 	 */
+	/**
+	 * If <code>knx:ignorelocalevents=true</code> is set in configuration, it prevents internal events 
+	 * coming from 'openHAB event bus' a second time to be sent back to the 'openHAB event bus'.
+	 *  
+	 * @param e the {@link ProcessEvent} to handle.
+	 */
 	@Override
 	public void groupWrite(ProcessEvent e) {
 		logger.debug("Received groupWrite Event.");
-		readFromKNX(e);
+		if (!(KNXConnection.getIgnoreLocalSourceEvents() && e.getSourceAddr().toString().equalsIgnoreCase(KNXConnection.getLocalSourceAddr()))) {
+			readFromKNX(e);
+		}else logger.warn("Ignoring local Event, received from my local Source address {} for Group address {}.", e.getSourceAddr().toString(), e.getDestination().toString());
 	}
 
 	/* (non-Javadoc)
