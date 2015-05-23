@@ -12,6 +12,8 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -67,6 +69,8 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 	
 	private static FreeboxOsClient fbClient;
 	private static LoginManager loginManager;
+
+	private Calendar lastPhoneCheck;
 	
 	/** 
 	 * the refresh interval which is used to poll values from the Freebox
@@ -95,6 +99,7 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 		appVersion = String.format("%d.%d",bundle.getVersion().getMajor(),bundle.getVersion().getMinor()); // something like 1.5
 		appID = bundle.getSymbolicName();																// org.openhab.binding.freebox
 		appName = bundle.getHeaders().get("Bundle-Name");												// "openHAB Freebox Binding"
+		lastPhoneCheck = Calendar.getInstance();
 	}
 	
 	private void setItemValue(Item item, boolean value) {
@@ -136,12 +141,14 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 			LanHostsConfig hc = fbClient.getLanManager().getAllLanHostsConfig();
 			
 			List<CallEntry> appels = fbClient.getCallManager().getCallEntries();
+			PhoneCallComparator comparator = new PhoneCallComparator();
+			Collections.sort(appels, comparator);
 
 			for (FreeboxBindingProvider provider : providers) {
 				Collection<String> items = provider.getItemNames();
 				
 				for (CallEntry call: appels) {
-					if (call.is_new_()) {
+					if (call.getTimeStamp().after(lastPhoneCheck)) {
 						for (String itemName: items) {
 							FreeboxBindingConfig bindingConfig = provider.getConfig(itemName);
 							if (bindingConfig.commandParam == null || bindingConfig.commandParam.equalsIgnoreCase(call.getType())) {
@@ -164,10 +171,9 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 								}
 							}
 						}						
-						call.setNew(false);
-						fbClient.getCallManager().setCallEntry(call);
 					}
 				}
+				lastPhoneCheck.setTimeInMillis(System.currentTimeMillis());
 				
 				for (String itemName: items) {
 					FreeboxBindingConfig bindingConfig = provider.getConfig(itemName);
@@ -492,5 +498,23 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 				}
 			}
 		}				
+	}
+	
+	/**
+	 * A comparator of phone calls by ascending date and time
+	 */
+	private class PhoneCallComparator implements Comparator<CallEntry> {
+
+		@Override
+		public int compare(CallEntry call1, CallEntry call2) {
+			int result = 0;
+			if (call1.getTimeStamp().before(call2.getTimeStamp())) {
+				result = -1;
+			} else if (call1.getTimeStamp().after(call2.getTimeStamp())) {
+				result = 1;
+			}
+			return result;
+		}
+
 	}
 }
