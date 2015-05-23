@@ -11,12 +11,15 @@ package org.openhab.binding.wr3223.internal;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.wr3223.WR3223BindingProvider;
 import org.openhab.binding.wr3223.WR3223CommandType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -34,6 +37,17 @@ import org.slf4j.LoggerFactory;
  */
 public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> {
 
+	private static final WR3223CommandType[] READ_COMMANDS = {
+		WR3223CommandType.TEMPERATURE_EVAPORATOR,
+		WR3223CommandType.TEMPERATURE_CONDENSER,
+		WR3223CommandType.TEMPERATURE_OUTSIDE,
+		WR3223CommandType.TEMPERATURE_AFTER_HEAT_EXCHANGER,
+		WR3223CommandType.TEMPERATURE_SUPPLY_AIR,
+		WR3223CommandType.TEMPERATURE_AFTER_BRINE_PREHEATING,
+		WR3223CommandType.TEMPERATURE_AFTER_PREHEATING_RADIATOR,
+		WR3223CommandType.VENTILATION_LEVEL
+	};
+	
 	private static final Logger logger = 
 		LoggerFactory.getLogger(WR3223Binding.class);
 
@@ -214,16 +228,44 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		}catch(IOException ex){
 			logger.error("Couldn't establish connection to WR3223.", ex);
 		}
+	
 		
-		try{
-			handleEventTypeDecimal(connector.read(controllerAddr, WR3223Commands.T3),WR3223CommandType.TEMPERATURE_OUTSIDE);
-		
-		}catch(IOException ex){
-			logger.error("WR3223 read:", ex);
-			
-		}		
+		//Read values from WR3223
+		for(WR3223CommandType readCommand : READ_COMMANDS){
+			readAndPublishValue(readCommand);
+		}
+	
 
 	}
+	
+	private void readAndPublishValue(WR3223CommandType wr3223CommandType) {
+		List<String> itemNames = getBoundItemsForType(wr3223CommandType);
+		if(itemNames.size()>0){
+			try {
+				String value = connector.read(controllerAddr, wr3223CommandType.getWr3223Command());
+				if(value != null){
+					State state = null;
+					if(wr3223CommandType.getItemClass() == NumberItem.class){
+						try{
+							state = DecimalType.valueOf(value.trim());
+						}catch(NumberFormatException nfe){
+							logger.error("Can't set value {} to item type {} because it's not a decimal number.", value, wr3223CommandType.getCommand());
+						}
+					}
+					if(state != null){
+						for(String itemName : itemNames){
+							eventPublisher.postUpdate(itemName, state);
+						}
+					}
+				}else{
+					logger.error("Can't set NULL value to item type {}.", wr3223CommandType.getCommand());
+					
+				}
+			} catch (IOException ex) {
+				logger.error("WR3223 read:", ex);
+			}
+		}
+	}	
 	
 	private void handleEventTypeDecimal(String value, WR3223CommandType wr3223CommandType) {
 		if(value != null){
@@ -245,6 +287,17 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			}
 		}
 	}
+	
+	private List<String> getBoundItemsForType( WR3223CommandType wr3223CommandType) {
+		List<String> itemNames = new ArrayList<String>(); 
+		for (WR3223BindingProvider provider : providers) {
+			for (String itemName : provider.getItemNamesForType(wr3223CommandType)) {
+				itemNames.add(itemName);
+			}
+		}
+		return itemNames;
+	}
+	
 	
 	/**
 	 * @{inheritDoc}
