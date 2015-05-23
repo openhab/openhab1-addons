@@ -12,7 +12,7 @@
 		<bundle.symbolicName>org.openhab.action.xbmc</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.xbmc</bundle.namespace>
 		<deb.name>openhab-addon-action-xbmc</deb.name>
-		<deb.description>openhab addon action xbmc</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

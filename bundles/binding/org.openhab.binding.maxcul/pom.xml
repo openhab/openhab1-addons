@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.maxcul</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.maxcul</bundle.namespace>
-		<deb.name>openhab-addon-binding-MaxCul</deb.name>
-		<deb.description>openhab addon binding MaxCul</deb.description>
+		<deb.name>openhab-addon-binding-maxcul</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

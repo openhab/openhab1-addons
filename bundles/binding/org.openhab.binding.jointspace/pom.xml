@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.jointspace</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.jointspace</bundle.namespace>
-		<deb.name>openhab-addon-binding-JointSpace</deb.name>
-		<deb.description>openhab addon binding JointSpace</deb.description>
+		<deb.name>openhab-addon-binding-jointspace</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

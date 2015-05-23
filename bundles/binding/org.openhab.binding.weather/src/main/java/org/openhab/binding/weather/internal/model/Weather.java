@@ -35,6 +35,7 @@ public class Weather {
 	private Precipitation precipitation = new Precipitation();
 	private Temperature temperature = new Temperature();
 	private Wind wind = new Wind();
+	private Station station = new Station();
 
 	private ProviderName provider;
 
@@ -113,6 +114,13 @@ public class Weather {
 	}
 
 	/**
+	 * Returns station data.
+	 */
+	public Station getStation() {
+		return station;
+	}
+	
+	/**
 	 * Returns forecast data.
 	 */
 	public List<org.openhab.binding.weather.internal.model.Forecast> getForecast() {
@@ -171,7 +179,7 @@ public class Weather {
 			tsb.append("day", ((org.openhab.binding.weather.internal.model.Forecast) this).getDay());
 		}
 		tsb.append(temperature).append(atmosphere).append(clouds).append(condition).append(precipitation).append(wind)
-				.append(error);
+				.append(station).append(error);
 
 		return tsb.toString();
 	}

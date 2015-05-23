@@ -75,8 +75,8 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 			return null;
 		}
 		int parmValue = Integer.parseInt(parmNumber);
-		if(parmValue <= 0 || parmValue > 255) {
-			logger.error("NODE {}: 'parameter' option must be between 1 and 255.", node.getNodeId());
+		if(parmValue < 0 || parmValue > 255) {
+			logger.error("NODE {}: 'parameter' option must be between 0 and 255.", node.getNodeId());
 			return null;			
 		}
 		return node.encapsulate(commandClass.getConfigMessage(parmValue), commandClass, endpointId);
@@ -122,8 +122,8 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 		}
 
 		int paramIndex = Integer.parseInt(parmNumber);
-		if(paramIndex <= 0 || paramIndex > 255) {
-			logger.error("NODE {}: 'parameter' option must be between 1 and 255.", node.getNodeId());
+		if(paramIndex < 0 || paramIndex > 255) {
+			logger.error("NODE {}: 'parameter' option must be between 0 and 255.", node.getNodeId());
 			return;			
 		}
 

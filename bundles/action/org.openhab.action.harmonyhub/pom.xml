@@ -11,8 +11,8 @@
     <properties>
         <bundle.symbolicName>org.openhab.action.harmonyhub</bundle.symbolicName>
         <bundle.namespace>org.openhab.action.harmonyhub</bundle.namespace>
-        <deb.name>openhab-addon-action-HarmonyHub</deb.name>
-        <deb.description>openhab addon action HarmonyHub</deb.description>
+        <deb.name>openhab-addon-action-harmonyhub</deb.name>
+		<deb.description>${project.name}</deb.description>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>

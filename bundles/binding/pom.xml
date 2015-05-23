@@ -72,6 +72,7 @@
     <module>org.openhab.binding.mqttitude</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
+    <module>org.openhab.binding.systeminfo.test</module>
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.pilight</module>
     <module>org.openhab.binding.pilight.test</module>
@@ -141,11 +142,17 @@
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
     <module>org.openhab.binding.ecobee</module>
+    <module>org.openhab.binding.autelis</module>
     <module>org.openhab.binding.nest</module>
     <module>org.openhab.binding.satel</module>
     <module>org.openhab.binding.harmonyhub</module>
     <module>org.openhab.binding.plex</module>
     <module>org.openhab.binding.wr3223</module>
+    <module>org.openhab.binding.mochadx10</module>
+    <module>org.openhab.binding.denon</module>
+    <module>org.openhab.binding.mailcontrol</module>
+    <module>org.openhab.binding.primare</module>
+    <module>org.openhab.binding.frontiersiliconradio</module>
   </modules>
 
 </project>
