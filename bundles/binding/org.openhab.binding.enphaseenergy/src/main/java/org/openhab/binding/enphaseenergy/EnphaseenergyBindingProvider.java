@@ -19,8 +19,7 @@ import org.openhab.binding.enphaseenergy.internal.EnphaseenergyItemType;
  * taken into account.
  * 
  * @author Markus Fritze
- * @author Andreas Brenk
- * @since 1.4.0
+ * @since 1.7.0
  */
 public interface EnphaseenergyBindingProvider extends BindingProvider {
 

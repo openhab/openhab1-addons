@@ -15,8 +15,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Fritze
- * @author Andreas Brenk
- * @since 1.4.0
+ * @since 1.7.0
  */
 public final class EnphaseenergyActivator implements BundleActivator {
 

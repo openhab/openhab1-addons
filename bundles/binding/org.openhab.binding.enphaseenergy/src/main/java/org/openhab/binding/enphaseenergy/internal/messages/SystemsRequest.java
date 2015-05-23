@@ -27,8 +27,7 @@ import org.openhab.binding.enphaseenergy.internal.EnphaseenergyException;
  * modules.
  * 
  * @author Markus Fritze
- * @author Andreas Brenk
- * @since 1.4.0
+ * @since 1.7.0
  * @see <a href="https://developer.enphase.com/docs#api-systems">systems</a>
  */
 public class SystemsRequest extends AbstractMessage {

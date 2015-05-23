@@ -33,18 +33,11 @@ import org.slf4j.LoggerFactory;
  * Binding that gets measurements from the Enphase Energy API every couple of minutes.
  * 
  * @author Markus Fritze
- * @author Andreas Brenk
- * @author Thomas.Eichstaedt-Engelen
- * @author Gaël L'hopital
- * @since 1.4.0
+ * @since 1.7.0
  */
 public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(EnphaseenergyBinding.class);
-
-    protected static final String CONFIG_REFRESH = "refresh";
-    protected static final String CONFIG_USER_ID = "user_id";
-    protected static final String CONFIG_KEY = "key";
 
 	private String	user_id;
 	private String 	key;
@@ -100,41 +93,9 @@ public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBin
 						if(!systemId.equals(itemSystemId)) {
 							continue;
 						}
-						State state = null;
 						final EnphaseenergyItemType itemType = provider.getItemType(itemName);
 						logger.debug("itemName {} for {} and {}", itemName, systemId, itemType);
-						switch (itemType) {
-						case MODULES:
-							state = new DecimalType(response.getModules());
-							break;
-						case SIZE_W:
-							state = new DecimalType(response.getSize_w());
-							break;
-						case CURRENT_POWER:
-							state = new DecimalType(response.getCurrent_power());
-							break;
-						case ENERGY_TODAY:
-							state = new DecimalType(response.getEnergy_today() * 0.001);
-							break;
-						case ENERGY_LIFETIME:
-							state = new DecimalType(response.getEnergy_lifetime() * 0.001 * 0.001);
-							break;
-						case SUMMARY_DATE:
-							state = new DateTimeType(response.getSummary_date());
-							break;
-						case SOURCE:
-							state = new StringType(response.getSource());
-							break;
-						case STATUS:
-							state = new StringType(response.getStatus());
-							break;
-						case OPERATIONAL_AT:
-							state = new DateTimeType(response.getOperational_at());
-							break;
-						case LAST_REPORT_AT:
-							state = new DateTimeType(response.getLast_report_at());
-							break;
-						}
+						final State state = createStateFromType(itemType);
 						if (state != null) {
 							this.eventPublisher.postUpdate(itemName, state);
 						}
@@ -153,33 +114,62 @@ public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBin
     public void updated(final Dictionary<String, ?> config) throws ConfigurationException {
         if (config != null) {
 
-            Enumeration<String> configKeys = config.keys();
-            while (configKeys.hasMoreElements()) {
-                String configKey = (String) configKeys.nextElement();
-                if ("service.pid".equals(configKey)) {
-                	continue;
-                }
+            String useridString = (String) config.get("user_id");
+            if (StringUtils.isNotBlank(useridString)) {
+                this.user_id = useridString;
+            }
 
-                String value = (String) config.get(configKey);
-				logger.debug("Set config {} to {}",configKey,value);
-				if(CONFIG_REFRESH.equals(configKey)) {
-					if (isNotBlank(value)) {
-						this.refreshInterval = Long.parseLong(value);
-					}
-				}
-                else if (CONFIG_USER_ID.equals(configKey)) {
-                    this.user_id = value;
-                }
-                else if (CONFIG_KEY.equals(configKey)) {
-                    this.key = value;
-                }
-                else {
-                    throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
-                }
+            String keyString = (String) config.get("key");
+            if (StringUtils.isNotBlank(keyString)) {
+                this.key = keyString;
+            }
+
+            String refreshIntervalString = (String) config.get("refresh");
+            if (StringUtils.isNotBlank(refreshIntervalString)) {
+                this.refreshInterval = Long.parseLong(refreshIntervalString);
             }
 
             setProperlyConfigured(true);
         }
     }
 
+    /**
+     * Convert an enphase energy item type to a openHAB state
+     */
+	private State createStateFromType(final EnphaseenergyItemType itemType) {
+		State state = null;
+		switch (itemType) {
+		case MODULES:
+			state = new DecimalType(response.getModules());
+			break;
+		case SIZE_W:
+			state = new DecimalType(response.getSize_w());
+			break;
+		case CURRENT_POWER:
+			state = new DecimalType(response.getCurrent_power());
+			break;
+		case ENERGY_TODAY:
+			state = new DecimalType(response.getEnergy_today() * 0.001);
+			break;
+		case ENERGY_LIFETIME:
+			state = new DecimalType(response.getEnergy_lifetime() * 0.001 * 0.001);
+			break;
+		case SUMMARY_DATE:
+			state = new DateTimeType(response.getSummary_date());
+			break;
+		case SOURCE:
+			state = new StringType(response.getSource());
+			break;
+		case STATUS:
+			state = new StringType(response.getStatus());
+			break;
+		case OPERATIONAL_AT:
+			state = new DateTimeType(response.getOperational_at());
+			break;
+		case LAST_REPORT_AT:
+			state = new DateTimeType(response.getLast_report_at());
+			break;
+		}
+		return state;
+	}
 }

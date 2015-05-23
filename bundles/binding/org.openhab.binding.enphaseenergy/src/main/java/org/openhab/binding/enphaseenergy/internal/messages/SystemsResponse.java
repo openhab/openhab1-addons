@@ -41,8 +41,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * </pre>
  * 
  * @author Markus Fritze
- * @author Andreas Brenk
- * @since 1.4.0
+ * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SystemsResponse extends AbstractMessage {
@@ -58,6 +57,8 @@ public class SystemsResponse extends AbstractMessage {
 	private String status;
 	private long operational_at;
 	private long last_report_at;
+
+    private static final String enphaseDateFormatString = "yyyy-MM-dd";
 
 	/**
 	 * "system_id": 12345
@@ -112,15 +113,13 @@ public class SystemsResponse extends AbstractMessage {
 	 */
 	@JsonProperty("summary_date")
 	public Calendar getSummary_date() {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		final SimpleDateFormat format = new SimpleDateFormat(enphaseDateFormatString);
 		Calendar calendar = Calendar.getInstance(); 
-		try
-		{
+		try {
 			Date	date = format.parse(this.summary_date);
 			calendar.setTime(date);
-		}
-		catch (ParseException e)
-		{
+		} catch (ParseException e) {
+			logger.debug("summary_date {} has an unknown format", this.summary_date);
 		}
 		return calendar;
 	}

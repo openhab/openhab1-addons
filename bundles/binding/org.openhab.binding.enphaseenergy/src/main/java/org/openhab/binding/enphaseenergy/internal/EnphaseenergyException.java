@@ -10,8 +10,7 @@ package org.openhab.binding.enphaseenergy.internal;
 
 /**
  * @author Markus Fritze
- * @author Andreas Brenk
- * @since 1.4.0
+ * @since 1.7.0
  */
 public class EnphaseenergyException extends RuntimeException {
 

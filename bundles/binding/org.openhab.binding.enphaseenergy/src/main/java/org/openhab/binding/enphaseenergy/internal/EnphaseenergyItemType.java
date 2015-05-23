@@ -12,8 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Markus Fritze
- * @author Gaël L'hopital
- * @since 1.6.0
+ * @since 1.7.0
  * 
  * This enum holds all the different measures and states available
  * to be retrieved by the Enphase Energy binding
@@ -29,21 +28,7 @@ public enum EnphaseenergyItemType {
 	STATUS("status"),
 	OPERATIONAL_AT("operational_at"),
 	LAST_REPORT_AT("last_report_at");
-/*
-{
-	"system_id":17240,
-	"modules":20,
-	"size_w":4160,
-	"current_power":928,
-	"energy_today":18531,
-	"energy_lifetime":28739558,
-	"summary_date":"2015-02-23",
-	"source":"microinverters",
-	"status":"normal",
-	"operational_at":1304566098,
-	"last_report_at":1424738997
-}
-*/
+
 	String measure;
 
 	private EnphaseenergyItemType(String measure) {

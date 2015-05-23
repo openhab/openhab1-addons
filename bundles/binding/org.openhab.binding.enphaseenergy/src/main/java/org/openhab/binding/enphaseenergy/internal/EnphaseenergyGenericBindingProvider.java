@@ -41,11 +41,7 @@ import org.slf4j.LoggerFactory;
  * </li> </ul>
  * 
  * @author Markus Fritze
- * @author Markus Fritze
- * @author Andreas Brenk
- * @author Thomas.Eichstaedt-Engelen
- * @author Gaël L'hopital
- * @since 1.4.0
+ * @since 1.7.0
  */
 public class EnphaseenergyGenericBindingProvider extends
 		AbstractGenericBindingProvider implements EnphaseenergyBindingProvider {
