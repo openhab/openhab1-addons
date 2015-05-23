@@ -77,11 +77,15 @@ public class FritzboxBinding extends
 				"ctlmgr_ctl w dect settings/enabled");
 		commandMap.put(FritzboxBindingProvider.TYPE_WLAN,
 				"ctlmgr_ctl w wlan settings/ap_enabled");
+		commandMap.put(FritzboxBindingProvider.TYPE_WLAN_SCND,
+				"ctlmgr_ctl w wlan settings/ap_enabled_scnd");
 
 		queryMap.put(FritzboxBindingProvider.TYPE_DECT,
 				"ctlmgr_ctl r dect settings/enabled");
 		queryMap.put(FritzboxBindingProvider.TYPE_WLAN,
 				"ctlmgr_ctl r wlan settings/ap_enabled");
+		queryMap.put(FritzboxBindingProvider.TYPE_WLAN_SCND,
+				"ctlmgr_ctl r wlan settings/ap_enabled_scnd");
 	}
 
 	@Override
