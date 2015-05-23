@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -79,19 +80,19 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 	private String collection;
 
 	private boolean initialized = false;
-	protected ItemRegistry itemRegistry;
+	protected AtomicReference<ItemRegistry> itemRegistry = new AtomicReference<ItemRegistry>();
 
 	private MongoClient cl;
 	private DBCollection mongoCollection;
 
-	private PersistentStateRestorer persistentStateRestorer;
+	private AtomicReference<PersistentStateRestorer> persistentStateRestorer = new AtomicReference<PersistentStateRestorer>();
 	
 	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
+		this.persistentStateRestorer.set(persistentStateRestorer);
 	}
 		
 	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
+		this.persistentStateRestorer.compareAndSet(persistentStateRestorer, null);
 	}
 
 	public void activate() {
@@ -104,11 +105,11 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
+		this.itemRegistry.set(itemRegistry);
 	}
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
+		this.itemRegistry.compareAndSet(itemRegistry, null);
 	}
 
 	/**
@@ -255,7 +256,7 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 
 			// connection has been established ... initialization completed!
 			initialized = true;
-			persistentStateRestorer.initializeItems(getName());
+			persistentStateRestorer.get().initializeItems(getName());
 		}
 
 	}
@@ -351,8 +352,8 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 	private Item getItem(String itemName) {
 		Item item = null;
 		try {
-			if (itemRegistry != null) {
-				item = itemRegistry.getItem(itemName);
+			if (itemRegistry.get() != null) {
+				item = itemRegistry.get().getItem(itemName);
 			}
 		} catch (ItemNotFoundException e1) {
 			logger.error("Unable to get item type for {}", itemName);

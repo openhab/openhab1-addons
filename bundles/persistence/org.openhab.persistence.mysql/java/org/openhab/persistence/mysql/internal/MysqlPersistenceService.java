@@ -23,6 +23,7 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,8 +97,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private String password;
 
 	private boolean initialized = false;
-	protected ItemRegistry itemRegistry;
-	private PersistentStateRestorer persistentStateRestorer;
+	protected AtomicReference<ItemRegistry> itemRegistry = new AtomicReference<ItemRegistry>();
+	private AtomicReference<PersistentStateRestorer> persistentStateRestorer = new AtomicReference<PersistentStateRestorer>();
 
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
@@ -130,19 +131,19 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
+		this.itemRegistry.set(itemRegistry);
 	}
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
+		this.itemRegistry.compareAndSet(itemRegistry, null);
 	}
 	
 	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
+		this.persistentStateRestorer.set(persistentStateRestorer);
 	}
 	
 	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
+		this.persistentStateRestorer.compareAndSet(persistentStateRestorer, null);
 	}
 
 	/**
@@ -521,7 +522,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			initialized = true;
 			
 			logger.debug("mySQL configuration complete.");
-			persistentStateRestorer.initializeItems(getName());
+			persistentStateRestorer.get().initializeItems(getName());
 		}
 
 	}
@@ -549,8 +550,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		String itemName = filter.getItemName();
 		logger.debug("mySQL query: item is {}", itemName);
 		try {
-			if (itemRegistry != null) {
-				item = itemRegistry.getItem(itemName);
+			if (itemRegistry.get() != null) {
+				item = itemRegistry.get().getItem(itemName);
 			}
 		} catch (ItemNotFoundException e1) {
 			logger.error("Unable to get item type for {}", itemName);
