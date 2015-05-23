@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class JpaPersistenceService implements QueryablePersistenceService {
 	private static final Logger logger = LoggerFactory.getLogger(JpaPersistenceService.class);
 
-	protected ItemRegistry itemRegistry;
+	protected AtomicReference<ItemRegistry> itemRegistry = new AtomicReference<ItemRegistry>();
 	
 	private EntityManagerFactory emf = null;
 	
@@ -70,11 +71,11 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
+		this.itemRegistry.set(itemRegistry);
 	}
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
+		this.itemRegistry.compareAndSet(itemRegistry, null);
 	}
 
 	@Override
@@ -262,8 +263,8 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 	private Item getItemFromRegistry(String itemName) {
 		Item item = null;
 		try {
-			if (itemRegistry != null) {
-				item = itemRegistry.getItem(itemName);
+			if (itemRegistry.get() != null) {
+				item = itemRegistry.get().getItem(itemName);
 			}
 		} catch (ItemNotFoundException e1) {
 			logger.error("Unable to get item type for {}", itemName);

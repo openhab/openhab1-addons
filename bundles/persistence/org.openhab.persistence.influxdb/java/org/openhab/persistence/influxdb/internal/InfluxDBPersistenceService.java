@@ -16,6 +16,7 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang.StringUtils;
 import org.influxdb.InfluxDB;
@@ -71,7 +72,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private static final String DIGITAL_VALUE_OFF = "0";
   private static final String DIGITAL_VALUE_ON = "1";
   private static final String VALUE_COLUMN_NAME = "value";
-  private ItemRegistry itemRegistry;
+  private AtomicReference<ItemRegistry> itemRegistry = new AtomicReference<ItemRegistry>();
   private InfluxDB influxDB;
   private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceService.class);
   private static final Object TIME_COLUMN_NAME = "time";
@@ -82,22 +83,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private boolean isProperlyConfigured;
   private boolean connected;
   
-  private PersistentStateRestorer persistentStateRestorer;
+  private AtomicReference<PersistentStateRestorer> persistentStateRestorer = new AtomicReference<PersistentStateRestorer>();
 
   public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-	this.persistentStateRestorer = persistentStateRestorer;
+	this.persistentStateRestorer.set(persistentStateRestorer);
   }
 	
   public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-	this.persistentStateRestorer = null;
+	this.persistentStateRestorer.compareAndSet(persistentStateRestorer, null);
   }
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
-    this.itemRegistry = itemRegistry;
+    this.itemRegistry.set(itemRegistry);
   }
 
   public void unsetItemRegistry(ItemRegistry itemRegistry) {
-    this.itemRegistry = null;
+    this.itemRegistry.compareAndSet(itemRegistry, null);
   }
 
   public void activate() {
@@ -256,7 +257,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     if ( ! checkConnection()){
       logger.error("database connection does not work for now, will retry to use the database.");
     }
-	persistentStateRestorer.initializeItems(getName());
+	persistentStateRestorer.get().initializeItems(getName());
   }
 
   @Override
@@ -469,9 +470,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    */
   private State objectToState(Object value, String itemName) {
     String valueStr = String.valueOf(value);
-    if (itemRegistry != null) {
+    if (itemRegistry.get() != null) {
       try {
-        Item item = itemRegistry.getItem(itemName);
+        Item item = itemRegistry.get().getItem(itemName);
         if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
           return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
               ? OnOffType.OFF

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 import javax.servlet.Servlet;
@@ -94,23 +95,23 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		PERIODS.put("Y", -31536000000L);
 	}
 	
-	protected HttpService httpService;
-	protected ItemUIRegistry itemUIRegistry;
+	protected AtomicReference<HttpService> httpService = new AtomicReference<HttpService>();
+	protected AtomicReference<ItemUIRegistry> itemUIRegistry = new AtomicReference<ItemUIRegistry>();
 
 	public void setHttpService(HttpService httpService) {
-		this.httpService = httpService;
+		this.httpService.set(httpService);
 	}
 
 	public void unsetHttpService(HttpService httpService) {
-		this.httpService = null;
+		this.httpService.compareAndSet(httpService, null);
 	}
 
 	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = itemUIRegistry;
+		this.itemUIRegistry.set(itemUIRegistry);
 	}
 
 	public void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = null;
+		this.itemUIRegistry.compareAndSet(itemUIRegistry, null);
 	}
 
 	protected void activate() {
@@ -118,7 +119,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 			logger.debug("Starting up rrd chart servlet at " + SERVLET_NAME);
 
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			httpService.registerServlet(SERVLET_NAME, this, props, createHttpContext());
+			httpService.get().registerServlet(SERVLET_NAME, this, props, createHttpContext());
 
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
@@ -128,7 +129,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	}
 
 	protected void deactivate() {
-		httpService.unregister(SERVLET_NAME);
+		httpService.get().unregister(SERVLET_NAME);
 	}
 
 	public void service(ServletRequest req, ServletResponse res)
@@ -176,7 +177,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	 */
 	protected void addLine(RrdGraphDef graphDef, Item item, int counter) {
 		Color color = LINECOLORS[counter%LINECOLORS.length];
-		String label = itemUIRegistry.getLabel(item.getName());
+		String label = itemUIRegistry.get().getLabel(item.getName());
 		String rrdName = RRD4jService.DB_FOLDER + File.separator + item.getName() + ".rrd";
 		ConsolFun consolFun;
 		if(label!=null && label.contains("[") && label.contains("]")) {
@@ -210,7 +211,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	 * @return a {@link SecureHttpContext}
 	 */
 	protected HttpContext createHttpContext() {
-		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
+		HttpContext defaultHttpContext = httpService.get().createDefaultHttpContext();
 		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
 	}
 
@@ -270,7 +271,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		if (items != null) {
 			String[] itemNames = items.split(",");
 			for (String itemName : itemNames) {
-				Item item = itemUIRegistry.getItem(itemName);
+				Item item = itemUIRegistry.get().getItem(itemName);
 				addLine(graphDef, item, seriesCounter++);
 			}
 		}
@@ -279,7 +280,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		if (groups != null) {
 			String[] groupNames = groups.split(",");
 			for (String groupName : groupNames) {
-				Item item = itemUIRegistry.getItem(groupName);
+				Item item = itemUIRegistry.get().getItem(groupName);
 				if (item instanceof GroupItem) {
 					GroupItem groupItem = (GroupItem) item;
 					for (Item member : groupItem.getMembers()) {

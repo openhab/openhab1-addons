@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -72,14 +73,14 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 
 	private Map<String,Timer> timers = new HashMap<String,Timer>();
 
-	protected ItemRegistry itemRegistry;
+	protected AtomicReference<ItemRegistry> itemRegistry =new AtomicReference<ItemRegistry>();
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = itemRegistry;
+		this.itemRegistry.set(itemRegistry);
 	}
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		this.itemRegistry = null;
+		this.itemRegistry.compareAndSet(itemRegistry, null);
 	}
 
 	/**
@@ -149,10 +150,10 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 					timers.put(name, timer);
 					timer.schedule(task, 1000);
 				} else {
-					logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
+					logger.warn("Could not persist '{}' to rrd4j database: {}", name, e.getMessage());
 				}
 			} catch (Exception e) {
-				logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
+				logger.warn("Could not persist '{}' to rrd4j database: {}", name, e.getMessage());
 			}
 			try {
 				db.close();
@@ -218,7 +219,7 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 				}
 				return items;
 			} catch (IOException e) {
-				logger.warn("Could not query rrd4j database for item '{}': {}", new String[] { itemName, e.getMessage() });
+				logger.warn("Could not query rrd4j database for item '{}': {}", itemName, e.getMessage());
 			}
 		}
 		return Collections.emptyList();
@@ -241,10 +242,10 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 				db = new RrdDb(getRrdDef(alias, file));
 			}
 		} catch (IOException e) {
-			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
+			logger.error("Could not create rrd4j database file '{}': {}", file.getAbsolutePath(), e.getMessage());
 		} catch(RejectedExecutionException e) {
 			// this happens if the system is shut down
-			logger.debug("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
+			logger.debug("Could not create rrd4j database file '{}': {}", file.getAbsolutePath(), e.getMessage());
 		}
 		return db;
 	}
@@ -260,9 +261,9 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 			}
 		}
 		if (useRdc == null) { // not defined, use defaults
-			if (itemRegistry!=null) {
+			if (itemRegistry.get() != null) {
 				try {
-					Item item = itemRegistry.getItem(itemName);
+					Item item = itemRegistry.get().getItem(itemName);
 					if (item instanceof NumberItem) {
 						useRdc = rrdDefs.get("default_numeric");
 					} else {
@@ -300,9 +301,9 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 	}
 
 	private State mapToState(double value, String itemName) {
-		if(itemRegistry!=null) {
+		if(itemRegistry.get() != null) {
 			try {
-				Item item = itemRegistry.getItem(itemName);
+				Item item = itemRegistry.get().getItem(itemName);
 				if(item instanceof SwitchItem && !(item instanceof DimmerItem)) {
 					return value==0.0d ? OnOffType.OFF : OnOffType.ON;
 				} else if(item instanceof ContactItem) {
