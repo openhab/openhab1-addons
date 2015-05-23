@@ -10,6 +10,7 @@ package org.openhab.persistence.influxdb.internal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
@@ -22,13 +23,14 @@ import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
 import org.influxdb.dto.Serie;
-import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
@@ -50,6 +52,7 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import retrofit.RetrofitError;
 
 /**
@@ -447,7 +450,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     } else if (state instanceof HSBType) {
       value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
-      value = ((DateTimeType) state).toString();
+      value = ((DateTimeType) state).getCalendar().getTime().getTime();
     } else {
       value = state.toString();
     }
@@ -471,7 +474,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     } else if (state instanceof HSBType) {
       value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
-      value = ((DateTimeType) state).toString();
+      value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
     } else {
       value = state.toString();
     }
@@ -492,9 +495,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
-        
-        if (item instanceof ColorItem || item instanceof DimmerItem) {
-          return item.getState();
+        if (item instanceof NumberItem) {
+          return new DecimalType(valueStr);
+        } else if (item instanceof ColorItem) {
+          return new HSBType(valueStr);
+        } else if (item instanceof DimmerItem) {
+          return new PercentType(valueStr);
         } else if (item instanceof SwitchItem) {
           return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
             ? OnOffType.OFF
@@ -503,8 +509,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
           return (string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF))
             ? OpenClosedType.CLOSED
             : OpenClosedType.OPEN;
-        } else if (item instanceof GenericItem) {
-          return item.getState();
+        } else if (item instanceof RollershutterItem) {
+          return new PercentType(valueStr);
+        } else if (item instanceof DateTimeItem) {
+          Calendar calendar = Calendar.getInstance();
+          calendar.setTimeInMillis(new BigDecimal(valueStr).longValue());
+          return new DateTimeType(calendar);
+        } else {
+          return new StringType(valueStr);
         }
       } catch (ItemNotFoundException e) {
           logger.warn("Could not find item '{}' in registry", itemName);
