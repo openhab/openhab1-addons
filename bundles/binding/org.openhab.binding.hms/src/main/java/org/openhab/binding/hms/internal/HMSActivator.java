@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Extension of the default OSGi bundle activator
+ * OSGi bundle activator for HMS binding
  * 
  * @author Thomas Urmann
- * @since 1.6.0
+ * @since 1.7.0
  */
 public final class HMSActivator implements BundleActivator {
 

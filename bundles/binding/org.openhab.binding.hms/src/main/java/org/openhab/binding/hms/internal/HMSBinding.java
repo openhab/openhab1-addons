@@ -29,11 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This class makes use of a CUL device in SLOW_RF mode and handles messages received via this channel.
  * 
  * @author Thomas Urmann
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider> implements ManagedService, CULListener {
 
@@ -51,12 +50,6 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider> implem
 
 	private CULHandler cul;
 
-	public HMSBinding() {
-	}
-
-	public void activate() {
-	}
-	
 	private void setNewDeviceName(String deviceName) {
 		if (cul != null) {
 			CULManager.close(cul);
@@ -77,7 +70,7 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider> implem
 	}
 
 	public void deactivate() {
-		logger.debug("Deactivating FS20 binding");
+		logger.debug("Deactivating HMS binding");
 		cul.unregisterListener(this);
 		CULManager.close(cul);
 	}
@@ -91,7 +84,9 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider> implem
 	}
 
 	/**
-	 * Codierung <s1><s0><t1><t0><f0><t2><f2><f1>
+	 * Code <s1><s0><t1><t0><f0><t2><f2><f1>
+	 * 
+	 * similar perl code is:
 	 * $v[0] = int(substr($val, 5, 1) . substr($val, 2, 2))/10;
 	 * $v[0] =  -$v[0] if($status1 & 8);
 	 * $v[1] = int(substr($val, 6, 2) . substr($val, 4, 1))/10;
@@ -121,8 +116,9 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider> implem
 			}
 			double humidity = Integer.parseInt(woHeader.substring(6, 8) + woHeader.substring(4, 5)) / 10.0;
 
-			logger.info("device: " + device + ", T: " +(!isNegative?" ":"")+ temperature + ",\tH: " + humidity + ", Bat.: "
-					+ batteryStatus);
+			logger.info("device: {}, T: {},\tH: {}, Bat.: {}", device,
+					(!isNegative ? " " : "") + temperature, humidity,
+					batteryStatus);
 			
 			HMSBindingConfig temperatureConfig = findConfig(device, HMSBindingConfig.Datapoint.TEMPERATURE);
 			if (temperatureConfig != null) {
@@ -165,7 +161,7 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider> implem
 
 	@Override
 	protected void execute() {
-		// Ignore
+		// has to be overridden since base class method is abstract
 	}
 
 	@Override

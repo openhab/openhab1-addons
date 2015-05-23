@@ -12,9 +12,13 @@ import org.openhab.binding.hms.internal.HMSGenericBindingProvider.HMSBindingConf
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * This interface extends BindingProvider and provides a new method for getting
+ * a HMS binding configuration by address string and datapoint.
+ * 
  * @author Thomas Urmann
- * @since 1.6.0
+ * @since 1.7.0
  */
 public interface HMSBindingProvider extends BindingProvider {
-	public HMSBindingConfig getBindingConfigForAddressAndDatapoint(String address, HMSBindingConfig.Datapoint datapoint);
+	public HMSBindingConfig getBindingConfigForAddressAndDatapoint(
+			String address, HMSBindingConfig.Datapoint datapoint);
 }
