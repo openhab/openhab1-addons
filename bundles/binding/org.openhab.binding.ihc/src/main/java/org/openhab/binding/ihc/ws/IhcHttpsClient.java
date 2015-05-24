@@ -9,6 +9,7 @@
 package org.openhab.binding.ihc.ws;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NoHttpResponseException;
@@ -33,10 +34,8 @@ public abstract class IhcHttpsClient {
 			.getLogger(IhcHttpsClient.class);
 
 	final int DEF_CONNECT_TIMEOUT = 10000;
-	final int DEF_REQUEST_TIMEOUT = 5000;
 
 	private int connectTimeout = DEF_CONNECT_TIMEOUT;
-	private int requestTimeout = DEF_REQUEST_TIMEOUT;
 
 	private HttpClient client = null;
 	private HttpPost postReq = null;
@@ -55,22 +54,6 @@ public abstract class IhcHttpsClient {
 	 */
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
-	}
-
-	/**
-	 * @return the timeout in milliseconds
-	 * 
-	 */
-	public int getRequestTimeout() {
-		return requestTimeout;
-	}
-
-	/**
-	 * @param timeout
-	 *            the timeout to set
-	 */
-	public void setRequestTimeout(int timeout) {
-		requestTimeout = timeout;
 	}
 
 	/**
@@ -96,15 +79,24 @@ public abstract class IhcHttpsClient {
 	 * 
 	 * @param query
 	 *            Data to send.
+	 * @param timeout
+	 *            the timeout to set in milliseconds
 	 * @return Response from server.
 	 */
-	protected String sendQuery(String query) throws IhcExecption {
+	protected String sendQuery(String query, int timeout) throws IhcExecption {
 		try {
-			return sendQ(query);
+			return sendQ(query, timeout);
 		} catch (NoHttpResponseException e) {
 			try {
 				logger.debug("No response received, resend query");
-				return sendQ(query);
+				return sendQ(query, timeout);
+			} catch (IOException ee) {
+				throw new IhcExecption(ee);
+			}
+		} catch (SocketTimeoutException e) {
+			try {
+				logger.debug("Timeout received, resend query");
+				return sendQ(query, timeout);
 			} catch (IOException ee) {
 				throw new IhcExecption(ee);
 			}
@@ -113,15 +105,15 @@ public abstract class IhcHttpsClient {
 		} 
 	}
 
-	private String sendQ(String query) throws ClientProtocolException, IOException, NoHttpResponseException {
-		logger.trace("Send query (timeout={}): {}", requestTimeout, query);
+	private String sendQ(String query, int timeout) throws ClientProtocolException, IOException, NoHttpResponseException {
+		logger.trace("Send query (timeout={}): {}", timeout, query);
 		
 		postReq.setEntity(new StringEntity(query, "UTF-8"));
 		postReq.addHeader("content-type", "text/xml");
 
 		final RequestConfig params = RequestConfig.custom()
 				.setConnectTimeout(connectTimeout)
-				.setSocketTimeout(requestTimeout).build();
+				.setSocketTimeout(timeout).build();
 		postReq.setConfig(params);
 
 		// Execute POST

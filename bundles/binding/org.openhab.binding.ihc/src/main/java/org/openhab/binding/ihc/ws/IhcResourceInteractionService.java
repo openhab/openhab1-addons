@@ -49,10 +49,11 @@ import org.xml.sax.InputSource;
 public class IhcResourceInteractionService extends IhcHttpsClient {
 	
 	private String url;
+	private int timeout;
 	
 	IhcResourceInteractionService(String host, int timeout) {
 		url = "https://" + host + "/ws/ResourceInteractionService";
-		super.setRequestTimeout(timeout);
+		this.timeout = timeout;
 		super.setConnectTimeout(timeout);
 	}
 
@@ -77,7 +78,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 		String query = String.format(soapQuery, String.valueOf(resoureId));
 
 		openConnection(url);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 
 		NodeList nodeList;
@@ -569,7 +570,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 			throws IhcExecption {
 
 		openConnection(url);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 
 		return Boolean.parseBoolean(WSBaseDataType.parseValue(response,
@@ -604,7 +605,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
 		openConnection(url);
 		@SuppressWarnings("unused")
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 	}
 
@@ -632,8 +633,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
 		String query = String.format(soapQuery, timeoutInSeconds);
 		openConnection(url);
-		setRequestTimeout(getRequestTimeout() + timeoutInSeconds * 1000);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout + timeoutInSeconds * 1000);
 		closeConnection();
 		
 		List<WSResourceValue> resourceValueList = new ArrayList<WSResourceValue>();
