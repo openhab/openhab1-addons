@@ -1,4 +1,4 @@
-[![Build Status](https://openhab-ci.innoq.io/jenkins/job/openhab/badge/icon)](https://openhab-ci.innoq.io/jenkins/job/openhab)
+[![Build Status](https://openhab-ci.innoq.io/jenkins/job/openhab/badge/icon?.png)](https://openhab-ci.innoq.io/jenkins/job/openhab)
 
 ## Introduction
 
