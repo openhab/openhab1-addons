@@ -153,6 +153,7 @@
     <module>org.openhab.binding.mailcontrol</module>
     <module>org.openhab.binding.primare</module>
     <module>org.openhab.binding.frontiersiliconradio</module>
+    <module>org.openhab.binding.panasonictv</module>
   </modules>
 
 </project>
