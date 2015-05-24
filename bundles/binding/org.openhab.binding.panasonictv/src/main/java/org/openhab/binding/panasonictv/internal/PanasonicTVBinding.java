@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,8 +31,6 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
  * This class in mainly used for receiving internal command and to send them to
  * the Panasonic TV.
@@ -40,21 +38,18 @@ import org.slf4j.LoggerFactory;
  * @author André Heuer
  * @since 1.7.0
  */
-public class PanasonicTVBinding extends
-		AbstractBinding<PanasonicTVBindingProvider> implements
-		ManagedService {
+public class PanasonicTVBinding extends AbstractBinding<PanasonicTVBindingProvider> implements ManagedService {
 
 	private Map<String, String> registeredTVs = new HashMap<String, String>();
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(PanasonicTVBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(PanasonicTVBinding.class);
 
 	/**
 	 * the refresh interval which is used to poll values from the PanansonicTV
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-	
+
 	/**
 	 * Listening port of the TV
 	 */
@@ -103,14 +98,8 @@ public class PanasonicTVBinding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
-
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
@@ -118,11 +107,10 @@ public class PanasonicTVBinding extends
 
 			for (Enumeration<?> e = config.keys(); e.hasMoreElements();) {
 				String tv = (String) e.nextElement();
-				if (tv.equalsIgnoreCase("service.pid")
-						|| tv.equalsIgnoreCase("refresh"))
+				if (tv.equalsIgnoreCase("service.pid") || tv.equalsIgnoreCase("refresh")) {
 					continue;
-				logger.info("TV registered '" + tv + "' with IP '"
-						+ config.get(tv) + "'");
+				}
+				logger.info("TV registered '" + tv + "' with IP '" + config.get(tv) + "'");
 				registeredTVs.put(tv, config.get(tv).toString());
 			}
 
@@ -154,8 +142,7 @@ public class PanasonicTVBinding extends
 
 		String tvIp = registeredTVs.get(config.getTv());
 
-		if ((tvIp == null) || tvIp.isEmpty())
-		{
+		if ((tvIp == null) || tvIp.isEmpty()) {
 			return 0;
 		}
 
@@ -166,7 +153,7 @@ public class PanasonicTVBinding extends
 					client.getOutputStream(), "UTF8"));
 
 			String header = "POST /nrc/control_0/ HTTP/1.1\r\n";
-			header = header + "Host: " + tvIp + ":" + tvPort +"\r\n";
+			header = header + "Host: " + tvIp + ":" + tvPort + "\r\n";
 			header = header
 					+ "SOAPACTION: \"urn:panasonic-com:service:p00NetworkControl:1#X_SendKey\"\r\n";
 			header = header + "Content-Type: text/xml; charset=\"utf-8\"\r\n";
@@ -196,7 +183,8 @@ public class PanasonicTVBinding extends
 
 			return Integer.parseInt(response.split(" ")[1]);
 		} catch (IOException e) {
-			logger.error("Exception during communication to the TV: " + e.getStackTrace());
+			logger.error("Exception during communication to the TV: "
+					+ e.getStackTrace());
 		} catch (Exception e) {
 			logger.error("Exception in binding during execution of command: "
 					+ e.getStackTrace());
