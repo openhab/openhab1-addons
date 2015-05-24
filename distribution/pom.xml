@@ -875,6 +875,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.hms</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.fht</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
