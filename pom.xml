@@ -61,8 +61,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         
-        <repo.url>https://api.bintray.com/maven/openhab/mvn/</repo.url>
-        <repo.type>snapshot</repo.type>
+        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
     </properties>
     
     <packaging>pom</packaging>
@@ -335,7 +334,7 @@
             <distributionManagement>
                 <repository>
                     <id>bintray</id>
-                    <url>${repo.url}/${repo.type}</url>
+                    <url>${repo.url}</url>
                     <uniqueVersion>false</uniqueVersion>
                 </repository>
             </distributionManagement>
