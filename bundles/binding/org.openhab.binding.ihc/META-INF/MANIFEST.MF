@@ -33,4 +33,7 @@ Bundle-SymbolicName: org.openhab.binding.ihc
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/org.apache.httpcomponents.httpclient_4.4.1.jar,
+ lib/org.apache.httpcomponents.httpcore_4.4.1.jar,
+ lib/commons-logging-1.2.jar

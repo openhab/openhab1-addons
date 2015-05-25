@@ -27,6 +27,7 @@
     <module>org.openhab.core.scriptengine</module>
     <module>org.openhab.core.transform</module>
     <module>org.openhab.core.transform.test</module>
+    <module>org.openhab.core.jsr223</module>
   </modules>
 
 </project>

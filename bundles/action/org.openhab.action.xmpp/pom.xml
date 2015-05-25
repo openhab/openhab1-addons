@@ -12,7 +12,7 @@
 		<bundle.symbolicName>org.openhab.action.xmpp</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.xmpp</bundle.namespace>
 		<deb.name>openhab-addon-action-xmpp</deb.name>
-		<deb.description>openhab addon action xmpp</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.action.weather</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.weather</bundle.namespace>
-		<deb.name>openhab-addon-action-Weather</deb.name>
-		<deb.description>openhab addon action Weather</deb.description>
+		<deb.name>openhab-addon-action-weather</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

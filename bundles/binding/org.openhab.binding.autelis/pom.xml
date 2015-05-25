@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.autelis</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.autelis</bundle.namespace>
-		<deb.name>openhab-addon-binding-Autelis</deb.name>
-		<deb.description>openhab addon binding Autelis</deb.description>
+		<deb.name>openhab-addon-binding-autelis</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

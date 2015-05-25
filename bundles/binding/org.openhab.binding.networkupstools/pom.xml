@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.networkupstools</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.networkupstools</bundle.namespace>
-		<deb.name>openhab-addon-binding-NetworkUpsTools</deb.name>
-		<deb.description>openhab addon binding NetworkUpsTools</deb.description>
+		<deb.name>openhab-addon-binding-networkupstools</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
