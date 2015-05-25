@@ -16,4 +16,6 @@ package org.openhab.binding.maxcube.internal.exceptions;
  */
 public class IncorrectMultilineIndexException extends Exception {
 
+	private static final long serialVersionUID = -2261755876987011907L;
+
 }
