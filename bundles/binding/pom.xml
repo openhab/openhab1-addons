@@ -155,6 +155,6 @@
     <module>org.openhab.binding.frontiersiliconradio</module>
     <module>org.openhab.binding.panasonictv</module>
     <module>org.openhab.binding.enphaseenergy</module>
+    <module>org.openhab.binding.lightwaverf</module>
   </modules>
-
 </project>

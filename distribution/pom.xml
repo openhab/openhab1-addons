@@ -1179,12 +1179,12 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-	        <dependency>
-                        <groupId>org.openhab.binding</groupId>
-                        <artifactId>org.openhab.binding.networkupstools</artifactId>
-                        <version>${project.version}</version>
-                        <type>jar</type>
-                </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.networkupstools</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.plex</artifactId>
@@ -1266,6 +1266,12 @@
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.enphaseenergy</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.lightwaverf</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
