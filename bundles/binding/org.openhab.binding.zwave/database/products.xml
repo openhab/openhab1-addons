@@ -1,6 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0175</Id>
+		<Name>devolo</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>MT02646</Model>
+			<Label lang="en">Home Control Metering Plug</Label>
+			<ConfigFile>devolo/mt02646.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0000</Id>
 		<Name>Sigma Designs</Name>
 		<Product>

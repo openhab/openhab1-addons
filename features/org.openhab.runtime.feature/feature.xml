@@ -246,7 +246,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+		 
    <plugin
          id="org.apache.felix.gogo.command"
          download-size="0"

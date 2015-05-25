@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.benqprojector</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.benqprojector</bundle.namespace>
-		<deb.name>openhab-addon-binding-BenqProjector</deb.name>
-		<deb.description>openhab addon binding BenqProjector</deb.description>
+		<deb.name>openhab-addon-binding-benqprojector</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

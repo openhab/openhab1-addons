@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>MT02646</Model>
+	<Label lang="en">Home Control Metering Plug</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x7A</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x98</id></Class>		
+	</CommandClasses>
+	
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">Watt Meter Report Period</Label>
+			<Help lang="en"><![CDATA[Enable automatic interval in seconds reporting with an interval of 5s * the value. Set to 0 will disable the autoreporting function.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>6</Default>
+			<Size>2</Size>
+			<Label lang="en">KWH Meter Report Period</Label>
+			<Help lang="en"><![CDATA[Enable automatic interval in minutes reporting with an interval of 10min * the value. Set to 0 will disable the autoreporting function.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Minimum>10</Minimum>
+			<Maximum>1300</Maximum>
+			<Default>1300</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of current for Load Caution</Label>
+			<Help lang="en"><![CDATA[1300*0.01A = 13A]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>10000</Maximum>
+			<Default>10000</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of KWh for Load Caution</Label>
+			<Help lang="en"><![CDATA[Enable automatic warning when the accumulated kWh power consumption exceeds the setting value from 1KWh ~ 10000KWh.. Set to 0 will disable kWh load caution reporting.]]></Help>
+		</Parameter>		
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">Restore switch state mode</Label>
+			<Help lang="en"><![CDATA[Restore switch state mode. 1 is default.]]></Help>
+			<Item>
+                <Value>0</Value>
+                <Label lang="en">Upon the return of AC power, the switch will remain Off.</Label>
+            </Item>
+			<Item>
+                <Value>1</Value>
+                <Label lang="en">Upon the return of AC power, the switch will return to the state it was in when the power was turned off.</Label>
+            </Item>
+			<Item>
+                <Value>2</Value>
+                <Label lang="en">Upon the return of AC power, the switch will turn On.</Label>
+            </Item>
+		</Parameter>		
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">Mode of switch off function</Label>
+			<Help lang="en"><![CDATA[Mode of switch off function. 1 is default.]]></Help>
+			<Item>
+                <Value>0</Value>
+                <Label lang="en">SWITCH OFF commands received are ignored.</Label>
+            </Item>
+			<Item>
+                <Value>1</Value>
+                <Label lang="en">SWITCH OFF commands received are honored.</Label>
+            </Item>
+		</Parameter>		
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">LED indication mode</Label>
+			<Help lang="en"><![CDATA[Restore switch state mode. 1 is default.]]></Help>
+			<Item>
+                <Value>1</Value>
+                <Label lang="en">The LED follows the state of the switch.</Label>
+            </Item>
+			<Item>
+                <Value>2</Value>
+                <Label lang="en">Night Mode - When the switch is On, the LED is Off, and when the switch is Off, the LED is On.</Label>
+            </Item>
+			<Item>
+                <Value>3</Value>
+                <Label lang="en">Flash Mode - When the state of the switch changes, the LED will be on for one second and then will turn off.</Label>
+            </Item>
+		</Parameter>		
+		<Parameter>
+			<Index>8</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto off timer</Label>
+			<Help lang="en"><![CDATA[Auto off timer. 0 will disable the auto off function.]]></Help>
+		</Parameter>		
+		
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>			
+			<Label lang="en">RF off command mode</Label>
+			<Help lang="en"><![CDATA[RF off command mode]]></Help>
+			<Item>
+                <Value>0</Value>
+                <Label lang="en">When SWITCH ALL OFF is received, the MT02646 turns Off.</Label>
+            </Item>
+			<Item>
+                <Value>1</Value>
+                <Label lang="en">When SWITCH ALL OFF is received, the MT02646 ignores the command and does nothing.</Label>
+            </Item>
+			<Item>
+                <Value>2</Value>
+                <Label lang="en">When SWITCH ALL OFF is received, the MT02646 will turn On if it is Off, and will turn Off if it is On.</Label>
+            </Item>
+			<Item>
+                <Value>3</Value>
+                <Label lang="en">When SWITCH ALL OFF is received, the MT02646 turns On.</Label>
+            </Item>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

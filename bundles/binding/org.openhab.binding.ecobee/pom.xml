@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.ecobee</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.ecobee</bundle.namespace>
-		<deb.name>openhab-addon-binding-Ecobee</deb.name>
-		<deb.description>openhab addon binding Ecobee</deb.description>
+		<deb.name>openhab-addon-binding-ecobee</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

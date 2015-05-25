@@ -12,7 +12,7 @@
 		<bundle.symbolicName>org.openhab.action.pushover</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.pushover</bundle.namespace>
 		<deb.name>openhab-addon-action-pushover</deb.name>
-		<deb.description>openhab addon action pushover</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

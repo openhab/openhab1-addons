@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.mailcontrol</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.mailcontrol</bundle.namespace>
-		<deb.name>openhab-addon-binding-MailControl</deb.name>
-		<deb.description>openhab addon binding MailControl</deb.description>
+		<deb.name>openhab-addon-binding-mailcontrol</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
