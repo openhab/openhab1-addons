@@ -1185,15 +1185,12 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-<<<<<<< HEAD
-=======
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.plex</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
->>>>>>> eb0dba1f76f379fbc96e67d8785e01f8e3aaed0f
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.ecobee</artifactId>
