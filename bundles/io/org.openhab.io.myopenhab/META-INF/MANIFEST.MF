@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.io.myopenhab.internal
 Bundle-ManifestVersion: 2
 Bundle-Name: my.openHAB Service Connection Bundle
 Bundle-SymbolicName: org.openhab.io.myopenhab
-Bundle-Version: 1.7.0
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.io.myopenhab.internal.MyOpenHABServiceActivator
 Service-Component: OSGI-INF/myopenhab.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
