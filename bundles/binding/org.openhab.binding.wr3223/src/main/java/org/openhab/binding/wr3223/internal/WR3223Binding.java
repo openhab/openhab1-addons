@@ -45,7 +45,9 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		WR3223CommandType.TEMPERATURE_SUPPLY_AIR,
 		WR3223CommandType.TEMPERATURE_AFTER_BRINE_PREHEATING,
 		WR3223CommandType.TEMPERATURE_AFTER_PREHEATING_RADIATOR,
-		WR3223CommandType.VENTILATION_LEVEL
+		WR3223CommandType.VENTILATION_LEVEL,
+		WR3223CommandType.ROTATION_SPEED_SUPPLY_AIR_MOTOR,
+		WR3223CommandType.ROTATION_SPEED_EXHAUST_AIR_MOTOR
 	};
 	
 	private static final Logger logger = 
@@ -238,6 +240,10 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
 	}
 	
+	/**
+	 * Read value of given command and publish it to the bus.
+	 * @param wr3223CommandType
+	 */
 	private void readAndPublishValue(WR3223CommandType wr3223CommandType) {
 		List<String> itemNames = getBoundItemsForType(wr3223CommandType);
 		if(itemNames.size()>0){
@@ -262,31 +268,17 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 					
 				}
 			} catch (IOException ex) {
-				logger.error("WR3223 read:", ex);
+				logger.error("Error by reading values from WR3223:", ex);
+				if(connector != null){
+					try{
+						connector.close();
+					}catch(IOException ex2){
+						logger.error("Error by closing connector.", ex2);
+					}
+				}				
 			}
 		}
 	}	
-	
-	private void handleEventTypeDecimal(String value, WR3223CommandType wr3223CommandType) {
-		if(value != null){
-			try{
-				handleEventType(DecimalType.valueOf(value.trim()),wr3223CommandType);
-			}catch(NumberFormatException nfe){
-				logger.error("Can't set value {} to item type {} because it's not a decimal number.", value, wr3223CommandType.getCommand());
-			}
-		}else{
-			logger.error("Can't set NULL value to item type {} because it's not a decimal number.", wr3223CommandType.getCommand());
-			
-		}
-	}
-	
-	private void handleEventType(org.openhab.core.types.State state, WR3223CommandType wr3223CommandType) {
-		for (WR3223BindingProvider provider : providers) {
-			for (String itemName : provider.getItemNamesForType(wr3223CommandType)) {
-				eventPublisher.postUpdate(itemName, state);
-			}
-		}
-	}
 	
 	private List<String> getBoundItemsForType( WR3223CommandType wr3223CommandType) {
 		List<String> itemNames = new ArrayList<String>(); 

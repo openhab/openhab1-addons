@@ -76,7 +76,25 @@ public enum WR3223CommandType {
 			itemClass = NumberItem.class;
 			wr3223Command = WR3223Commands.LS;			
 		}
-	},		
+	},
+	
+	/** (de: Drehzahl Zuluftmotor) */
+	ROTATION_SPEED_SUPPLY_AIR_MOTOR {
+		{
+			command = "rotation_speed_supply_air_motor";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.NZ;			
+		}
+	},
+	
+	/** (de: Drehzahl Abluftmotor) */
+	ROTATION_SPEED_EXHAUST_AIR_MOTOR {
+		{
+			command = "rotation_speed_exhaust_air_motor";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.NA;			
+		}
+	},	
 	;	
 	
 	/** Represents the WR3223 command as it will be used in *.items configuration */
