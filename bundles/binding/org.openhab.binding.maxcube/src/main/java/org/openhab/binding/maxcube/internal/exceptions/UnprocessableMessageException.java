@@ -16,4 +16,6 @@ package org.openhab.binding.maxcube.internal.exceptions;
  */
 public class UnprocessableMessageException extends Exception {
 
+	private static final long serialVersionUID = 648805723501492041L;
+
 }
