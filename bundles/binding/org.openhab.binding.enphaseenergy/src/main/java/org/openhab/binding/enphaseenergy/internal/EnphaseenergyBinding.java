@@ -8,14 +8,11 @@
  */
 package org.openhab.binding.enphaseenergy.internal;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Calendar;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.enphaseenergy.EnphaseenergyBindingProvider;
 import org.openhab.binding.enphaseenergy.internal.messages.SystemsRequest;
 import org.openhab.binding.enphaseenergy.internal.messages.SystemsResponse;
@@ -67,7 +64,6 @@ public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBin
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("incomplete-switch")
     @Override
     protected void execute() {
         logger.debug("Querying Enphase Energy API");
@@ -95,7 +91,7 @@ public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBin
 						}
 						final EnphaseenergyItemType itemType = provider.getItemType(itemName);
 						logger.debug("itemName {} for {} and {}", itemName, systemId, itemType);
-						final State state = createStateFromType(itemType);
+						final State state = createStateFromType(itemType, response);
 						if (state != null) {
 							this.eventPublisher.postUpdate(itemName, state);
 						}
@@ -135,8 +131,9 @@ public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBin
 
     /**
      * Convert an enphase energy item type to a openHAB state
+     * @param response 
      */
-	private State createStateFromType(final EnphaseenergyItemType itemType) {
+	private State createStateFromType(final EnphaseenergyItemType itemType, SystemsResponse response) {
 		State state = null;
 		switch (itemType) {
 		case MODULES:

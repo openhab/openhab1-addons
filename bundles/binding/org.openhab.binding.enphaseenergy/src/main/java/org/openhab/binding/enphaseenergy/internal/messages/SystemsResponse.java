@@ -8,15 +8,16 @@
  */
 package org.openhab.binding.enphaseenergy.internal.messages;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Java Bean to represent a JSON response to a <code>devicelist</code> API
@@ -45,6 +46,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SystemsResponse extends AbstractMessage {
+
+	private static Logger logger = LoggerFactory.getLogger(SystemsResponse.class);
 
 	private Integer system_id;
 	private Integer modules;
