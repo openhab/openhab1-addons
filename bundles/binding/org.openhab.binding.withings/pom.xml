@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.withings</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.withings</bundle.namespace>
-		<deb.name>openhab-addon-binding-Withings</deb.name>
-		<deb.description>openhab addon binding Withings</deb.description>
+		<deb.name>openhab-addon-binding-withings</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
