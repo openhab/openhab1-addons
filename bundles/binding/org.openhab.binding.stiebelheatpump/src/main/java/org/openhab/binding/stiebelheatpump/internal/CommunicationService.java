@@ -1,35 +1,32 @@
 /**
- * Copyright 2014 
- * This file is part of stiebel heat pump reader.
- * It is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * It is  is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with the project. 
- * If not, see http://www.gnu.org/licenses/.
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.stiebelheatpump.internal;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.openhab.binding.stiebelheatpump.protocol.DataParser;
 import org.openhab.binding.stiebelheatpump.protocol.ProtocolConnector;
 import org.openhab.binding.stiebelheatpump.protocol.RecordDefinition;
 import org.openhab.binding.stiebelheatpump.protocol.RecordDefinition.Type;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
-import org.openhab.binding.stiebelheatpump.protocol.SerialConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommunicationService {
 
-	private static ProtocolConnector connector;
-	private String serialPortName;
+	private ProtocolConnector connector;
 	private static final int MAXRETRIES = 100;
 	private final int INPUT_BUFFER_LENGTH = 1024;
 	private byte buffer[] = new byte[INPUT_BUFFER_LENGTH];
@@ -48,25 +45,15 @@ public class CommunicationService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(CommunicationService.class);
 
-	public CommunicationService() {
+	public CommunicationService(ProtocolConnector connector) {
+		this.connector = connector;
+		this.connector.connect();
 	}
-
-	public CommunicationService(String serialPortName, int baudRate)
-			throws StiebelHeatPumpException {
-		this.serialPortName = serialPortName;
-		connector = getStiebelHeatPumpConnector();
-		connector.connect(serialPortName, baudRate);
-		return;
-	}
-
-	public CommunicationService(String serialPortName, int baudRate,
-			List<Request> configuration) throws StiebelHeatPumpException {
-		this.serialPortName = serialPortName;
-		connector = getStiebelHeatPumpConnector();
-		connector.connect(serialPortName, baudRate);
+	
+	public CommunicationService(ProtocolConnector connector, List<Request> configuration) {
+		this(connector);
 		heatPumpConfiguration = configuration;
 		categorizeHeatPumpConfiguration();
-		return;
 	}
 
 	public void finalizer() {
@@ -726,11 +713,4 @@ public class CommunicationService {
 		return requestMessage;
 	}
 
-	private ProtocolConnector getStiebelHeatPumpConnector() {
-		if (connector != null)
-			return connector;
-		if (serialPortName != null)
-			connector = new SerialConnector();
-		return connector;
-	}
 }

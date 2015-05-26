@@ -1,14 +1,10 @@
 /**
- * Copyright 2014 
- * This file is part of stiebel heat pump reader.
- * It is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * It is  is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with the project. 
- * If not, see http://www.gnu.org/licenses/.
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
@@ -16,22 +12,22 @@ import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
 
 public interface ProtocolConnector {
 
-	public abstract void connect(String s, int i)
-			throws StiebelHeatPumpException;
+	void connect();
 
-	public abstract void disconnect();
+	void disconnect();
 
-	public abstract byte get() throws StiebelHeatPumpException;
+	byte get() throws StiebelHeatPumpException;
 
-	public abstract short getShort() throws StiebelHeatPumpException;
+	short getShort() throws StiebelHeatPumpException;
 
-	public abstract void get(byte abyte0[]) throws StiebelHeatPumpException;
+	void get(byte abyte0[]) throws StiebelHeatPumpException;
 
-	public abstract void mark();
+	void mark();
 
-	public abstract void reset();
+	void reset();
 
-	public abstract void write(byte abyte0[]) throws StiebelHeatPumpException;
+	void write(byte abyte0[]) throws StiebelHeatPumpException;
+	
+	void write(byte byte0) throws StiebelHeatPumpException;
 
-	public abstract void write(byte byte0) throws StiebelHeatPumpException;
 }

@@ -1,29 +1,18 @@
 /**
- * Copyright 2014 
- * This file is part of stiebel heat pump reader.
- * It is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * It is  is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with the project. 
- * If not, see http://www.gnu.org/licenses/.
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.stiebelheatpump.protocol;
-
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
-import org.openhab.binding.stiebelheatpump.protocol.ProtocolConnector;
-import org.openhab.binding.stiebelheatpump.protocol.CircularByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,60 +22,38 @@ import org.slf4j.LoggerFactory;
  * @author Evert van Es (originaly copied from)
  * @author Peter Kreutzer
  */
-public class SerialConnector implements ProtocolConnector {
+public abstract class SerialConnector implements ProtocolConnector {
 
-	private static final Logger logger = LoggerFactory
+	protected static final Logger logger = LoggerFactory
 			.getLogger(SerialConnector.class);
 
 	InputStream in = null;
 	DataOutputStream out = null;
-	SerialPort serialPort = null;
 	ByteStreamPipe byteStreamPipe = null;
 
 	private CircularByteBuffer buffer;
 
-	@Override
-	public void connect(String device, int baudrate) {
+	public void connect() {
 		try {
-			CommPortIdentifier portIdentifier = CommPortIdentifier
-					.getPortIdentifier(device);
-
-			CommPort commPort = portIdentifier.open(this.getClass().getName(),
-					2000);
-
-			serialPort = (SerialPort) commPort;
-			setSerialPortParameters(baudrate);
-
-			in = serialPort.getInputStream();
-			out = new DataOutputStream(serialPort.getOutputStream());
-
+			connectPort();
 			out.flush();
-
 			buffer = new CircularByteBuffer(Byte.MAX_VALUE * Byte.MAX_VALUE + 2
 					* Byte.MAX_VALUE);
 			byteStreamPipe = new ByteStreamPipe(in, buffer);
-			byteStreamPipe.startTask();
-
-			// Runtime.getRuntime().addShutdownHook(new Thread() {
-			// @Override
-			// public void run() {
-			// disconnect();
-			// }
-			// });
 		} catch (Exception e) {
-			throw new RuntimeException("Could not init comm port", e);
+			throw new RuntimeException("Could not init serial connection" , e);
 		}
 	}
-
+	
 	@Override
 	public void disconnect() {
 		logger.debug("Interrupt reading thread");
-		byteStreamPipe.stopTask();
+		byteStreamPipe.close();
 
 		logger.debug("Closing serial connection");
 		try {
 			out.close();
-			serialPort.close();
+			disconnectPort();
 			buffer.stop();
 			try {
 				Thread.sleep(2000);
@@ -99,6 +66,10 @@ public class SerialConnector implements ProtocolConnector {
 		logger.debug("Disconnected");
 	}
 
+	protected abstract void connectPort() throws Exception;
+	
+	protected abstract void disconnectPort();
+	
 	@Override
 	public byte get() throws StiebelHeatPumpException {
 		return buffer.get();
@@ -148,21 +119,4 @@ public class SerialConnector implements ProtocolConnector {
 		}
 	}
 
-	/**
-	 * Sets the serial port parameters to xxxxbps-8N1
-	 * 
-	 * @param baudrate
-	 *            used to initialize the serial connection
-	 */
-	protected void setSerialPortParameters(int baudrate) throws IOException {
-
-		try {
-			// Set serial port to xxxbps-8N1
-			serialPort.setSerialPortParams(baudrate, SerialPort.DATABITS_8,
-					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-		} catch (UnsupportedCommOperationException ex) {
-			throw new IOException(
-					"Unsupported serial port parameter for serial port");
-		}
-	}
 }

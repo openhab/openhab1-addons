@@ -1,17 +1,14 @@
 /**
- * Copyright 2014 
- * This file is part of stiebel heat pump reader.
- * It is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * It is  is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with the project. 
- * If not, see http://www.gnu.org/licenses/.
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Kreutzer
  */
-public class ByteStreamPipe implements Runnable {
+public class ByteStreamPipe implements Runnable, Closeable {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(ByteStreamPipe.class);
@@ -38,50 +35,42 @@ public class ByteStreamPipe implements Runnable {
 	public ByteStreamPipe(InputStream in, CircularByteBuffer buffer) {
 		this.in = in;
 		this.buffer = buffer;
-	}
-
-	public void startTask() {
+		running = true;
 		taskThread = new Thread(this);
 		taskThread.setName("StiebelConnectorThread");
 		taskThread.start();
 	}
 
-	public void stopTask() {
-		taskThread.interrupt();
-		try {
-			in.close();
-		} catch (IOException e) {
-			logger.error("Error while closing COM port.", e);
-		}
-		try {
-			taskThread.join();
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			System.exit(1);
-		}
-	}
-
 	@Override
 	public void run() {
-		while (!Thread.interrupted())
+		while (running) {
 			try {
 				if (in.available() > 0) {
 					byte readByte = (byte) in.read();
 					logger.debug(String.format("Received %02X", readByte));
 					buffer.put(readByte);
+				} else {
+					Thread.sleep(200);
 				}
 			} catch (Exception e) {
 				logger.error("Error while reading from COM port. Stopping.", e);
 				throw new RuntimeException(e);
 			}
-	}
-
-	public void stop() {
-		running = false;
+		}
 		try {
 			in.close();
 		} catch (IOException e) {
-			logger.error("Error while closing COM port.", e);
+			logger.warn("Error closing stream", e);
 		}
 	}
+
+	public void close() {
+		running = false;
+		try {
+			taskThread.join();
+		} catch (InterruptedException e) {
+			// Ignore
+		}
+	}
+
 }

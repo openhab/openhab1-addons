@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
+import org.openhab.binding.stiebelheatpump.protocol.ProtocolConnector;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
+import org.openhab.binding.stiebelheatpump.protocol.SerialPortConnector;
+import org.openhab.binding.stiebelheatpump.protocol.TcpConnector;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
@@ -53,12 +56,6 @@ public class StiebelHeatPumpBinding extends
 	 */
 	private long refreshInterval = 60000; // in ms
 
-	/** the serial port to use for connecting to the heat pump */
-	private String serialPort;
-
-	/** baud rate for the serial port */
-	private int baudRate = DEFAULT_BAUD_RATE;
-
 	/** timeout for the serial port */
 	private int serialTimeout = DEFAULT_SERIAL_TIMEOUT;
 
@@ -73,6 +70,8 @@ public class StiebelHeatPumpBinding extends
 
 	// ** indicates if the communication is currently in use by a call
 	boolean communicationInUse = false;
+
+	private ProtocolConnector connector;
 
 	public StiebelHeatPumpBinding() {
 	}
@@ -112,8 +111,7 @@ public class StiebelHeatPumpBinding extends
 		CommunicationService communicationService = null;
 
 		try {
-			communicationService = new CommunicationService(serialPort,
-					baudRate, heatPumpConfiguration);
+			communicationService = new CommunicationService(connector, heatPumpConfiguration);
 			Map<String, String> data = new HashMap<String, String>();
 			Map<String, String> allData = new HashMap<String, String>();
 
@@ -129,8 +127,6 @@ public class StiebelHeatPumpBinding extends
 				logger.debug("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-
-			communicationService.finalizer();
 
 			publishValues(allData);
 		} catch (StiebelHeatPumpException e) {
@@ -172,8 +168,7 @@ public class StiebelHeatPumpBinding extends
 				try {
 					Map<String, String> data = new HashMap<String, String>();
 					communicationInUse = true;
-					CommunicationService communicationService = new CommunicationService(
-							serialPort, baudRate, heatPumpConfiguration);
+					CommunicationService communicationService = new CommunicationService(connector, heatPumpConfiguration);
 					data = communicationService.setData(command.toString(),
 							parameter);
 
@@ -207,9 +202,11 @@ public class StiebelHeatPumpBinding extends
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 
-		serialPort = null;
-		baudRate = DEFAULT_BAUD_RATE;
+		String serialPort = null;
+		int baudRate = DEFAULT_BAUD_RATE;
 		serialTimeout = DEFAULT_SERIAL_TIMEOUT;
+		String host = null;
+		int port = 0;
 
 		logger.debug("Loading stiebelheatpump binding configuration.");
 
@@ -232,6 +229,12 @@ public class StiebelHeatPumpBinding extends
 			if (StringUtils.isNotBlank((String) config.get("baudRate"))) {
 				baudRate = Integer.parseInt((String) config.get("baudRate"));
 			}
+			if (StringUtils.isNotBlank((String) config.get("host"))) {
+				host = (String) config.get("host");
+			}
+			if (StringUtils.isNotBlank((String) config.get("port"))) {
+				port = Integer.parseInt((String) config.get("port"));
+			}
 			if (StringUtils.isNotBlank((String) config.get("serialTimeout"))) {
 				serialTimeout = Integer.parseInt((String) config
 						.get("serialTimeout"));
@@ -239,15 +242,29 @@ public class StiebelHeatPumpBinding extends
 			if (StringUtils.isNotBlank((String) config.get("version"))) {
 				version = (String) config.get("version");
 			}
+			try {
+				if (host != null) {
+					this.connector = new TcpConnector(host, port);
+				} else {
+					this.connector = new SerialPortConnector(serialPort, baudRate);
+				}
+				boolean isInitialized = getInitialHeatPumpSettings();
+				setTime();
+				if (host != null) {
+					logger.info(
+							"Created heatpump configuration with tcp {}:{}, version:{} ",
+							host, port, version);
+				} else {
+					logger.info(
+						"Created heatpump configuration with  serialport:{}, baudrate:{}, version:{} ",
+						serialPort, baudRate, version);
+				}
+				setProperlyConfigured(isInitialized);
+			} catch (RuntimeException e) {
+				logger.warn(e.getMessage(), e);
+				throw e;
+			}
 
-			boolean isInitialized = getInitialHeatPumpSettings();
-			setTime();
-			
-			logger.info(
-					"Created heatpump configuration with  serialport:{}, baudrate:{}, version:{} ",
-					serialPort, baudRate, version);
-
-			setProperlyConfigured(isInitialized);
 		}
 	}
 
@@ -260,6 +277,7 @@ public class StiebelHeatPumpBinding extends
 	 * @return true if heat pump information could be successfully read
 	 */
 	public boolean getInitialHeatPumpSettings() {
+		CommunicationService communicationService = null;
 		try {
 			
 			int retry = 0;
@@ -278,8 +296,7 @@ public class StiebelHeatPumpBinding extends
 			
 			communicationInUse = true;			
 			
-			CommunicationService communicationService = new CommunicationService(
-					serialPort, baudRate);
+			communicationService = new CommunicationService(connector);
 			Map<String, String> data = new HashMap<String, String>();
 			Map<String, String> allData = new HashMap<String, String>();
 
@@ -303,7 +320,7 @@ public class StiebelHeatPumpBinding extends
 						entry.getValue());
 			}
 
-			communicationService.finalizer();
+			
 
 			publishValues(allData);
 
@@ -313,6 +330,9 @@ public class StiebelHeatPumpBinding extends
 					+ e.toString());
 		} finally{
 			communicationInUse = false;
+			if (communicationService != null) {
+				communicationService.finalizer();
+			}
 		}
 
 		return false;
@@ -326,6 +346,7 @@ public class StiebelHeatPumpBinding extends
 	 * @return true if heat pump time could be successfully set
 	 */
 	public boolean setTime() {
+		CommunicationService communicationService = null;
 		try {
 
 			int retry = 0;
@@ -342,17 +363,18 @@ public class StiebelHeatPumpBinding extends
 				}
 			}
 			communicationInUse = true;			
-
-			CommunicationService communicationService = new CommunicationService(
-					serialPort, baudRate, heatPumpConfiguration);
+			communicationService = new CommunicationService(connector, heatPumpConfiguration);
 			communicationService.setTime();
-			communicationService.finalizer();
+
 			return true;
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Stiebel heatpump time could not be set on heat pump! "
 					+ e.toString());
 		} finally{
-			communicationInUse = false;			
+			communicationInUse = false;
+			if (communicationService != null) {
+				communicationService.finalizer();
+			}
 		}
 
 		return false;
@@ -366,23 +388,27 @@ public class StiebelHeatPumpBinding extends
 	 */
 	private void publishValues(Map<String, String> heatPumpData) {
 		for (StiebelHeatPumpBindingProvider provider : providers) {
-			for (String itemName : provider.getItemNames()) {
-				String parameter = provider.getParameter(itemName);
-				if (parameter != null && heatPumpData.containsKey(parameter)) {
-					String heatpumpValue = heatPumpData.get(parameter);
-					Class<? extends Item> itemType = provider
-							.getItemType(itemName);
-					if (itemType.isAssignableFrom(NumberItem.class)) {
-						eventPublisher.postUpdate(itemName, new DecimalType(
-								heatpumpValue));
-					}
-					if (itemType.isAssignableFrom(StringItem.class)) {
-						String value = heatpumpValue;
-						eventPublisher.postUpdate(itemName, new StringType(
-								value));
-					}
-				}
+			publishForProvider(heatPumpData, provider);
+		}
+	}
+
+	private void publishForProvider(Map<String, String> heatPumpData,
+			StiebelHeatPumpBindingProvider provider) {
+		for (String itemName : provider.getItemNames()) {
+			String parameter = provider.getParameter(itemName);
+			if (parameter != null && heatPumpData.containsKey(parameter)) {
+				publishItem(itemName, heatPumpData.get(parameter), provider.getItemType(itemName));
 			}
+		}
+	}
+
+	private void publishItem(String itemName, String heatpumpValue,
+			Class<? extends Item> itemType) {
+		if (itemType.isAssignableFrom(NumberItem.class)) {
+			eventPublisher.postUpdate(itemName, new DecimalType(heatpumpValue));
+		}
+		if (itemType.isAssignableFrom(StringItem.class)) {
+			eventPublisher.postUpdate(itemName, new StringType(heatpumpValue));
 		}
 	}
 
