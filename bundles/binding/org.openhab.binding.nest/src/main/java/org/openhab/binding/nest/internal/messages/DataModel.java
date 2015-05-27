@@ -25,6 +25,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openhab.binding.nest.internal.messages.Structure.AwayState;
 import org.openhab.binding.nest.internal.messages.Thermostat.HvacMode;
+import org.openhab.binding.nest.internal.messages.Thermostat.HvacState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.AlarmState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.BatteryHealth;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.ColorState;
@@ -73,6 +74,17 @@ public class DataModel extends AbstractMessagePart {
 				}
 			}
 		}, HvacMode.class);
+		convertUtils.register(new Converter() {
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof StringType) {
+					return HvacState.forValue(value.toString());
+				} else {
+					return null;
+				}
+			}
+		}, HvacState.class);
 		convertUtils.register(new Converter() {
 			@SuppressWarnings("rawtypes")
 			@Override
