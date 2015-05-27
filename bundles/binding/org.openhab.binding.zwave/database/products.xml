@@ -1,6 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0175</Id>
+		<Name>devolo</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>MT02646</Model>
+			<Label lang="en">Home Control Metering Plug</Label>
+			<ConfigFile>devolo/mt02646.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0000</Id>
 		<Name>Sigma Designs</Name>
 		<Product>
@@ -15,6 +28,15 @@
 	<Manufacturer>
 		<Id>014F</Id>
 		<Name>Linear</Name>
+		<Product>
+			<Reference>
+				<Type>5257</Type>
+				<Id>3533</Id>
+			</Reference>
+			<Model>WS15Z-1</Model>
+			<Label lang="en">Wall Mounted Switch</Label>
+			<ConfigFile>linear/wsz15-1.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>4457</Type>
@@ -371,6 +393,15 @@
 			<Label lang="en">Wall Mount Accessory Switch</Label>
 			<ConfigFile>evolve/ltm-5.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3034</Id>
+			</Reference>
+			<Model>LRM-AS</Model>
+			<Label lang="en">Wall Mounted Dimmer</Label>
+			<ConfigFile>evolve/lrm-as.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
@@ -437,6 +468,14 @@
 	        <Model>45604</Model>
 	        <Label lang="en">Outdoor Lighting Control Module</Label>
 	        <ConfigFile>ge/45604.xml</ConfigFile>
+        </Product>
+		<Product>
+	        <Reference>
+		        <Type>4944</Type>
+		        <Id>3031</Id>
+	        </Reference>
+	        <Model>12724</Model>
+	        <Label lang="en">Lighting Control Dimmer Switch</Label>
         </Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -624,12 +663,33 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0101</Type>
+				<Id>005a</Id>
+			</Reference>
+			<Reference>
+				<Type>0201</Type>
+				<Id>005a</Id>
+			</Reference>
+			<Model>Z-Stick Gen-5</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0036</Id>
 			</Reference>
 			<Model>DSB54</Model>
-			<Label lang="en">Recessed Door/Window sensor</Label>
+			<Label lang="en">Recessed Door/Window Sensor</Label>
 			<ConfigFile>aeon/dsb54.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>DSB54</Model>
+			<Label lang="en">Recessed Door/Window Sensor (Gen5)</Label>
+			<ConfigFile>aeon/dsb54-gen5.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -990,6 +1050,10 @@
 				<Type>2001</Type>
 				<Id>0102</Id>
 			</Reference>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0105</Id>
+			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
 			<Label lang="de">Tür-Fenster-Sensor</Label>
@@ -1169,6 +1233,15 @@
 			<Model>FGS221</Model>
 			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
 			<ConfigFile>fibaro/fgs221.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0202</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Model>FGS222</Model>
+			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
+			<ConfigFile>fibaro/fgs222.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1581,9 +1654,22 @@
 				<Type>0002</Type>
 				<Id>000D</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000E</Id>
+			</Reference>			
 			<Model>PST-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
 			<ConfigFile>philio/pst02.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>			
+			<Model>PST-02A</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/pst02a.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1594,6 +1680,16 @@
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
 			<ConfigFile>philio/pan04_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0012</Id>
+			</Reference>
+			<Model>PAN04-1B</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW with power meter</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit Strommessung</Label>
+			<ConfigFile>philio/pan04_1b.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1659,6 +1755,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0001</Id>
 			</Reference>
 			<Model>RPi Controller</Model>
 			<Label lang="en">RPi ZWave Controller</Label>
@@ -1757,6 +1857,15 @@
 			<Model>VRCZ4-M0Z</Model>
 			<Label lang="en">4-Zone Controller</Label>
 			<ConfigFile>leviton/vrcz4-m0z.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+			        <Type>1202</Type>
+			        <Id>243</Id>
+			</Reference>
+			<Model>VRCZ4-MRZ</Model>
+			<Label lang="en">4-Zone Controller</Label>
+			<ConfigFile>leviton/vrcz4-mrz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1893,6 +2002,15 @@
 			<Model>SSA3</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0063</Type>
+				<Id>010c</Id>
+			</Reference>
+			<Model>WWA-02</Model>
+			<Label lang="en">Wireless Water and Temperature Alarm</Label>
+			<ConfigFile>fortrezz/wwa02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2066,4 +2184,17 @@
             <ConfigFile>dragontech/wd100.xml</ConfigFile>
         </Product>
     </Manufacturer>
+	<Manufacturer>
+		<Id>015f</Id>
+		<Name>MCO Home</Name>
+		<Product>
+			<Reference>
+				<Type>0a05</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>MH10-PM2.5-WA</Model>
+			<Label lang="en">PM2.5 Monitor</Label>
+			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

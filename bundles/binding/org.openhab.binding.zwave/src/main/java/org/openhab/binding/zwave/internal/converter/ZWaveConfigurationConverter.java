@@ -75,8 +75,8 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 			return null;
 		}
 		int parmValue = Integer.parseInt(parmNumber);
-		if(parmValue <= 0 || parmValue > 255) {
-			logger.error("NODE {}: 'parameter' option must be between 1 and 255.", node.getNodeId());
+		if(parmValue < 0 || parmValue > 255) {
+			logger.error("NODE {}: 'parameter' option must be between 0 and 255.", node.getNodeId());
 			return null;			
 		}
 		return node.encapsulate(commandClass.getConfigMessage(parmValue), commandClass, endpointId);
@@ -96,7 +96,8 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 		
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, cfgEvent.getParameter().getValue());
 		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}({}), endpoint = {}, ignoring event.",
+					event.getNodeId(), item.getName(), item.getClass().getSimpleName(), event.getEndpoint());
 			return;
 		}
 
@@ -121,9 +122,9 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 			return;
 		}
 
-		int parmValue = Integer.parseInt(parmNumber);
-		if(parmValue <= 0 || parmValue > 255) {
-			logger.error("NODE {}: 'parameter' option must be between 1 and 255.", node.getNodeId());
+		int paramIndex = Integer.parseInt(parmNumber);
+		if(paramIndex < 0 || paramIndex > 255) {
+			logger.error("NODE {}: 'parameter' option must be between 0 and 255.", node.getNodeId());
 			return;			
 		}
 
@@ -139,12 +140,18 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 			return;
 		}
 
-		ZWaveDbConfigurationParameter dbParameter = configList.get(parmValue);
+		ZWaveDbConfigurationParameter dbParameter = null;
+		for (ZWaveDbConfigurationParameter parameter : configList) {
+			if (parameter.Index == paramIndex) {
+				dbParameter = parameter;
+				break;
+			}
+		}
 		if(dbParameter == null) {
-			logger.error("NODE {}: Device has no parameter {}.", node.getNodeId(), parmValue);
+			logger.error("NODE {}: Device has no parameter {}.", node.getNodeId(), paramIndex);
 			return;
 		}
-		ConfigurationParameter configurationParameter = new ConfigurationParameter(parmValue, (Integer)converter.convertFromCommandToValue(item, command), dbParameter.Size);
+		ConfigurationParameter configurationParameter = new ConfigurationParameter(paramIndex, (Integer)converter.convertFromCommandToValue(item, command), dbParameter.Size);
 
 		// Set the parameter
 		SerialMessage serialMessage = commandClass.setConfigMessage(configurationParameter);
@@ -156,7 +163,7 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 		this.getController().sendData(serialMessage);
 
 		// And request a read-back
-		serialMessage = commandClass.getConfigMessage(parmValue);
+		serialMessage = commandClass.getConfigMessage(paramIndex);
 		this.getController().sendData(serialMessage);
 
 		if (command instanceof State) {

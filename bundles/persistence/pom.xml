@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -30,6 +30,7 @@
     <module>org.openhab.persistence.mongodb</module>
     <module>org.openhab.persistence.influxdb</module>
     <module>org.openhab.persistence.jpa</module>
+    <module>org.openhab.persistence.mapdb</module>
   </modules>
 
 </project>

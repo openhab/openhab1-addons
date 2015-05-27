@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,11 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This class implements binding configuration for all items that represent
  * Integra zones/partitions/outputs state.
  * 
+ * Supported options:
+ * <ul>
+ * <li>commands_only - binding does not update state of the item, but accepts commands</li>
+ * </ul>
+ * 
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
@@ -40,11 +45,10 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 	}
 
 	private StatusType statusType;
-	private Map<String, String> options;
 
 	private IntegraStatusBindingConfig(StatusType statusType, Map<String, String> options) {
+		super(options);
 		this.statusType = statusType;
-		this.options = options;
 	}
 
 	/**
@@ -73,7 +77,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 	 */
 	@Override
 	public State convertEventToState(Item item, SatelEvent event) {
-		if (!(event instanceof IntegraStatusEvent)) {
+		if (!(event instanceof IntegraStatusEvent) || hasOptionEnabled(Options.COMMANDS_ONLY)) {
 			return null;
 		}
 
@@ -130,7 +134,6 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 			if (command instanceof StringType) {
 				dateTime = DateTimeType.valueOf(command.toString());
 			} else if (command instanceof DateTimeType) {
-				// not possible, DateTimeType is not a command
 				dateTime = (DateTimeType) command;
 			}
 			if (dateTime != null) {
@@ -154,6 +157,6 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 	 */
 	@Override
 	public String toString() {
-		return String.format("IntegraStatusBindingConfig: status = %s, options = %s", this.statusType, this.options);
+		return String.format("IntegraStatusBindingConfig: status = %s, options = %s", this.statusType, this.optionsAsString());
 	}
 }

@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
@@ -15,12 +21,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +50,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
@@ -158,7 +167,17 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected HighLowValue sensorValue;
+  protected OnOffValue sensorValue;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected ButtonConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -183,6 +202,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   private BrickletJoystick tinkerforgeDevice;
 
   private ButtonListener listener;
+
+  private boolean tactile;
 
   /**
    * <!-- begin-user-doc -->
@@ -370,7 +391,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public HighLowValue getSensorValue()
+  public OnOffValue getSensorValue()
   {
     return sensorValue;
   }
@@ -380,12 +401,60 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(HighLowValue newSensorValue)
+  public void setSensorValue(OnOffValue newSensorValue)
   {
-    HighLowValue oldSensorValue = sensorValue;
+    OnOffValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE, oldSensorValue, sensorValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ButtonConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(ButtonConfiguration newTfConfig, NotificationChain msgs)
+  {
+    ButtonConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(ButtonConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.JOYSTICK_BUTTON__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.JOYSTICK_BUTTON__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__TF_CONFIG, newTfConfig, newTfConfig));
   }
 
   /**
@@ -403,16 +472,20 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * 
    * @generated NOT
    */
-  public void fetchSensorValue()
-  {
-    try {
-      HighLowValue value = tinkerforgeDevice.isPressed() ? HighLowValue.LOW : HighLowValue.HIGH;
-      setSensorValue(value);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+  public void fetchSensorValue() {
+    if (tactile || this.sensorValue == null || this.sensorValue == OnOffValue.UNDEF) {
+      try {
+        OnOffValue value = tinkerforgeDevice.isPressed() ? OnOffValue.ON : OnOffValue.OFF;
+        setSensorValue(value);
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    } else {
+      // send current state to update the eventbus
+      setSensorValue(getSensorValue());
     }
   }
 
@@ -435,6 +508,13 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   public void enable()
   {
     tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+    tactile = false;
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("tactile"))) {
+        tactile = tfConfig.isTactile();
+      }
+    }
+    logger.trace("tactile is {}", tactile);
     listener = new ButtonListener();
     tinkerforgeDevice.addPressedListener(listener);
     tinkerforgeDevice.addReleasedListener(listener);
@@ -453,16 +533,27 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
 
     @Override
     public void released() {
-      logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, HighLowValue.LOW);
-      setSensorValue(HighLowValue.HIGH);
+      if (tactile) {
+        logger.trace("{} released setting new tactile value", LoggerConstants.TFMODELUPDATE);
+        setSensorValue(OnOffValue.OFF);
+      } else {
+        logger.trace("{} released omitting in switch mode", LoggerConstants.TFMODELUPDATE);
+      }
     }
 
     @Override
     public void pressed() {
-      logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, HighLowValue.HIGH);
-      setSensorValue(HighLowValue.LOW);
+      if (tactile) {
+        logger.trace("{} pressed setting new tactile value {}", LoggerConstants.TFMODELUPDATE,
+            OnOffValue.ON);
+        setSensorValue(OnOffValue.ON);
+      } else {
+        // toggle current device state
+        OnOffValue newSwitchValue = sensorValue == OnOffValue.ON ? OnOffValue.OFF : OnOffValue.ON;
+        logger.trace("pressed switch value changed to {}", newSwitchValue);
+        setSensorValue(newSwitchValue);
+      }
     }
-
   }
 
   /**
@@ -509,6 +600,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     {
       case ModelPackage.JOYSTICK_BUTTON__MBRICK:
         return basicSetMbrick(null, msgs);
+      case ModelPackage.JOYSTICK_BUTTON__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -553,6 +646,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         return getMbrick();
       case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
         return getSensorValue();
+      case ModelPackage.JOYSTICK_BUTTON__TF_CONFIG:
+        return getTfConfig();
       case ModelPackage.JOYSTICK_BUTTON__DEVICE_TYPE:
         return getDeviceType();
     }
@@ -588,7 +683,10 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         setMbrick((MBrickletJoystick)newValue);
         return;
       case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
-        setSensorValue((HighLowValue)newValue);
+        setSensorValue((OnOffValue)newValue);
+        return;
+      case ModelPackage.JOYSTICK_BUTTON__TF_CONFIG:
+        setTfConfig((ButtonConfiguration)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -623,7 +721,10 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         setMbrick((MBrickletJoystick)null);
         return;
       case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
-        setSensorValue((HighLowValue)null);
+        setSensorValue((OnOffValue)null);
+        return;
+      case ModelPackage.JOYSTICK_BUTTON__TF_CONFIG:
+        setTfConfig((ButtonConfiguration)null);
         return;
     }
     super.eUnset(featureID);
@@ -653,6 +754,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         return getMbrick() != null;
       case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
         return sensorValue != null;
+      case ModelPackage.JOYSTICK_BUTTON__TF_CONFIG:
+        return tfConfig != null;
       case ModelPackage.JOYSTICK_BUTTON__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
@@ -675,6 +778,14 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.JOYSTICK_BUTTON__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -694,6 +805,14 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.JOYSTICK_BUTTON__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -710,6 +829,13 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
       switch (baseOperationID)
       {
         case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.JOYSTICK_BUTTON___FETCH_SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }

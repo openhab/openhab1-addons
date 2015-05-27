@@ -242,10 +242,12 @@ Example entry:
      <model>2487S</model>
      <description>KeypadLinc On/Off 6-Button Scene Control </description>
      <feature name="loadswitch">LoadSwitchButton</feature>
-     <feature name="keypadbuttonA">KeyPadButton3</feature>
-     <feature name="keypadbuttonB">KeyPadButton4</feature>
-     <feature name="keypadbuttonC">KeyPadButton5</feature>
-     <feature name="keypadbuttonD">KeyPadButton6</feature>
+     <feature_group name="button_group" type="KeyPadButtonGroup">
+     	<feature name="keypadbuttonA">KeyPadButton3</feature>
+     	<feature name="keypadbuttonB">KeyPadButton4</feature>
+     	<feature name="keypadbuttonC">KeyPadButton5</feature>
+     	<feature name="keypadbuttonD">KeyPadButton6</feature>
+     </feature_group>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
@@ -253,10 +255,12 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 6-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
-     <feature name="keypadbuttonA">KeyPadButton3</feature>
-     <feature name="keypadbuttonB">KeyPadButton4</feature>
-     <feature name="keypadbuttonC">KeyPadButton5</feature>
-     <feature name="keypadbuttonD">KeyPadButton6</feature>
+     <feature_group name="button_group" type="KeyPadButtonGroup">
+     	<feature name="keypadbuttonA">KeyPadButton3</feature>
+     	<feature name="keypadbuttonB">KeyPadButton4</feature>
+     	<feature name="keypadbuttonC">KeyPadButton5</feature>
+     	<feature name="keypadbuttonD">KeyPadButton6</feature>
+     </feature_group>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -264,13 +268,15 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 8-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
-     <feature name="keypadbuttonB">KeyPadButton2</feature>
-     <feature name="keypadbuttonC">KeyPadButton3</feature>
-     <feature name="keypadbuttonD">KeyPadButton4</feature>
-     <feature name="keypadbuttonE">KeyPadButton5</feature>
-     <feature name="keypadbuttonF">KeyPadButton6</feature>
-     <feature name="keypadbuttonG">KeyPadButton7</feature>
-     <feature name="keypadbuttonH">KeyPadButton8</feature>
+     <feature_group name="button_group" type="KeyPadButtonGroup">
+     	<feature name="keypadbuttonB">KeyPadButton2</feature>
+     	<feature name="keypadbuttonC">KeyPadButton3</feature>
+     	<feature name="keypadbuttonD">KeyPadButton4</feature>
+     	<feature name="keypadbuttonE">KeyPadButton5</feature>
+     	<feature name="keypadbuttonF">KeyPadButton6</feature>
+     	<feature name="keypadbuttonG">KeyPadButton7</feature>
+     	<feature name="keypadbuttonH">KeyPadButton8</feature>
+     </feature_group>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -278,6 +284,33 @@ Example entry:
      <model>2423A1</model>
      <description>iMeter Solo Power Meter</description>
      <feature name="meter">PowerMeter</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
+ <device productKey="F00.00.18">
+     <model>2441TH</model>
+     <description>Insteon Thermostat</description>
+     <feature name="temperature">ThermostatTemperature</feature>
+     <feature name="coolsetpoint">ThermostatCoolSetPoint</feature>
+     <feature name="heatsetpoint">ThermostatHeatSetPoint</feature>
+     <feature name="humidity">ThermostatHumidity</feature>
+     <feature name="modecontrol">ThermostatModeControl</feature>
+     <feature name="fancontrol">ThermostatFanControl</feature>
+     <feature name="mastercontrol">ThermostatMasterControl</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
+ <device productKey="F00.00.19">
+     <model>2457D2</model>
+     <description>LampLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.1A">
+     <model>2475SDB</model>
+     <description>In-LineLinc Relay</description>
+     <feature name="switch">GenericSwitch</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 

@@ -896,8 +896,9 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
 				break;
 			case PartitionArmed: /*652*/
-				//forLimit = 1;
-
+			case UserClosing: /*700*/
+			case SpecialClosing: /*701*/
+			case PartialClosing: /*702*/
 				updateItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 1);
 
 				updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
@@ -907,6 +908,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				setPartitionStatus(partitionId, 0, apiMessage.getAPIName());
 				break;
 			case PartitionDisarmed: /*655*/
+			case UserOpening: /*750*/
+			case SpecialOpening: /*751*/
 				updateItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 0);
 
 				updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);

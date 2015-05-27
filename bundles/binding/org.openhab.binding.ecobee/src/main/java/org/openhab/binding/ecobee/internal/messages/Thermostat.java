@@ -11,14 +11,19 @@ package org.openhab.binding.ecobee.internal.messages;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
+import org.openhab.core.types.UnDefType;
 
 /**
  * The Thermostat Java Bean is the central piece of the ecobee API. All objects relate in one way or another to a real
@@ -80,6 +85,10 @@ public class Thermostat extends AbstractMessagePart {
 	private NotificationSettings notificationSettings;
 	private ThermostatPrivacy privacy;
 	private Version version;
+	@JsonProperty("remoteSensors")
+	private List<RemoteSensor> remoteSensorList;
+	@JsonIgnore
+	private Map<String, RemoteSensor> remoteSensors;
 
 	public Thermostat(@JsonProperty("identifier") String identifier) {
 		this.identifier = identifier;
@@ -107,7 +116,7 @@ public class Thermostat extends AbstractMessagePart {
 
 	/**
 	 * Set the specified property value, performing type conversions as required to conform to the type of the
-	 * destination property. Nest beans are created if they are currently <code>null</code>.
+	 * destination property. Nested beans are created if they are currently <code>null</code>.
 	 * 
 	 * @param name
 	 *            property name (can be nested/indexed/mapped/combo)
@@ -433,6 +442,35 @@ public class Thermostat extends AbstractMessagePart {
 		return version;
 	}
 
+	/**
+	 * @return the list of RemoteSensor objects for the Thermostat.
+	 */
+	@JsonProperty("remoteSensors")
+	public List<RemoteSensor> getRemoteSensorList() {
+		return this.remoteSensorList;
+	}
+
+	/**
+	 * @return the name-based map of RemoteSensor objects.
+	 */
+	@JsonIgnore
+	public Map<String, RemoteSensor> getRemoteSensors() {
+		return this.remoteSensors;
+	}
+
+	/**
+	 * Create a named-based map of RemoteSensors from the list of RemoteSensors, for ease of access from beanutils.
+	 */
+	protected void sync() {
+		this.remoteSensors = new HashMap<String, RemoteSensor>();
+		if (this.remoteSensorList != null) {
+			for (RemoteSensor rs : this.remoteSensorList) {
+				rs.sync();
+				this.remoteSensors.put(rs.getName(), rs);
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();
@@ -464,6 +502,7 @@ public class Thermostat extends AbstractMessagePart {
 		builder.append("notificationSettings", this.notificationSettings);
 		builder.append("privacy", this.privacy);
 		builder.append("version", this.version);
+		builder.append("remoteSensors", this.remoteSensorList);
 
 		return builder.toString();
 	}
@@ -3465,6 +3504,200 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
+	 * The RemoteSensor object represents a sensor connected to the thermostat.
+	 * 
+	 * The remote sensor data will only show computed occupancy, as does the thermostat. Definition - For a given
+	 * sensor, computed occupancy means a sensor is occupied if any motion was detected in the past 30 minutes.
+	 * RemoteSensor data changes trigger the runtimeRevision to be updated. The data updates are sent at an interval of
+	 * 3 mins maximum. This means that you should not poll quicker than once every 3 mins for revision changes.
+	 * 
+	 * @see <a
+	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/RemoteSensor.shtml">RemoteSensor</a>
+	 * @author John Cocula
+	 */
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class RemoteSensor extends AbstractMessagePart {
+		private String id;
+		private String name;
+		private String type;
+		private String code;
+		private Boolean inUse;
+		@JsonProperty("capability")
+		private List<RemoteSensorCapability> capabilityList;
+		@JsonIgnore
+		private Map<String, RemoteSensorCapability> capability;
+
+		/**
+		 * @return the unique sensor identifier. It is composed of deviceName + deviceId separated by colons, for
+		 *         example: <code>rs:100</code>
+		 */
+		@JsonProperty("id")
+		public String getId() {
+			return this.id;
+		}
+
+		/**
+		 * @return the user assigned sensor name
+		 */
+		@JsonProperty("name")
+		public String getName() {
+			return this.name;
+		}
+
+		/**
+		 * @return the type of remote sensor. Values: <code>thermostat</code>, <code>ecobee3_remote_sensor</code>,
+		 *         <code>monitor_sensor</code>, <code>control_sensor</code>.
+		 */
+		@JsonProperty("type")
+		public String getType() {
+			return this.type;
+		}
+
+		/**
+		 * @return the unique 4-digit alphanumeric sensor code. For ecobee3 remote sensors this corresponds to the code
+		 *         found on the back of the physical sensor.
+		 */
+		@JsonProperty("code")
+		public String getCode() {
+			return this.code;
+		}
+
+		/**
+		 * @return this flag indicates whether the remote sensor is currently in use by a comfort setting. See
+		 *         {@link Climate} for more information.
+		 */
+		@JsonProperty("inUse")
+		public Boolean getInUse() {
+			return this.inUse;
+		}
+
+		/**
+		 * @return a list of {@link RemoteSensorCapability} objects
+		 */
+		@JsonProperty("capability")
+		public List<RemoteSensorCapability> getCapabilityList() {
+			return this.capabilityList;
+		}
+
+		/**
+		 * @return a type-based map of {@link RemoteSensorCapability} objects
+		 */
+		@JsonIgnore
+		public Map<String, RemoteSensorCapability> getCapability() {
+			return this.capability;
+		}
+
+		/**
+		 * Create a map of RemoteSensorCapability objects, keyed by type, for easy beanutils reference.
+		 */
+		protected void sync() {
+			this.capability = new HashMap<String, RemoteSensorCapability>();
+			if (this.capabilityList != null) {
+				for (RemoteSensorCapability rsc : this.capabilityList) {
+					this.capability.put(rsc.getType(), rsc);
+				}
+			}
+		}
+
+		@Override
+		public String toString() {
+			final ToStringBuilder builder = createToStringBuilder();
+			builder.appendSuper(super.toString());
+			builder.append("id", this.id);
+			builder.append("name", this.name);
+			builder.append("type", this.type);
+			builder.append("code", this.inUse);
+			builder.append("capability", this.capabilityList);
+
+			return builder.toString();
+		}
+	}
+
+	/**
+	 * The RemoteSensorCapability object represents the specific capability of a sensor connected to the thermostat.
+	 * 
+	 * For the occupancy type capability the data will only show computed occupancy, as does the thermostat.
+	 * 
+	 * @see <a
+	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/RemoteSensorCapability.shtml">RemoteSensorCapability</a>
+	 * @author John Cocula
+	 */
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class RemoteSensorCapability extends AbstractMessagePart {
+		private String id;
+		private String type;
+		@JsonProperty("value")
+		private String valueString;
+
+		/**
+		 * @return the unique sensor capability identifier. For example: 1
+		 */
+		@JsonProperty("id")
+		public String getId() {
+			return this.id;
+		}
+
+		/**
+		 * @return The type of sensor capability. Values: <code>adc</code>, <code>co2</code>, <code>dryContact</code>,
+		 *         <code>humidity</code>, <code>temperature</code>, <code>occupancy</code>, <code>unknown</code>.
+		 */
+		@JsonProperty("type")
+		public String getType() {
+			return this.type;
+		}
+
+		/**
+		 * @return The data value for this capability, always a String. Temperature values are expressed as degrees
+		 *         Fahrenheit, multiplied by 10. For example, a temperature of 72F would be returned as the value "720".
+		 *         Occupancy values are "true" or "false". Humidity is expressed as a % value such as "45". Unknown
+		 *         values are returned as "unknown".
+		 */
+		@JsonProperty("value")
+		public String getValueString() {
+			return this.valueString;
+		}
+
+		/**
+		 * @return a properly typed version of the value, depending on <code>type</code>. Types are not documented for
+		 *         <code>adc</code>, <code>co2</code>, or <code>dryContact</code> and so are returned as strings, until
+		 *         the documentation explains.
+		 */
+		@JsonIgnore
+		public Object getValue() {
+			try {
+				if ("temperature".equals(type)) {
+					return new Temperature(Integer.parseInt(valueString));
+				} else if ("occupancy".equals(type)) {
+					if ("true".equals(valueString)) {
+						return Boolean.TRUE;
+					} else if ("false".equals(valueString)) {
+						return Boolean.FALSE;
+					} else {
+						return UnDefType.NULL;
+					}
+				} else if ("humidity".equals(type)) {
+					return Integer.parseInt(valueString);
+				} else {
+					return valueString;
+				}
+			} catch (NumberFormatException nfe) {
+				return UnDefType.NULL;
+			}
+		}
+
+		@Override
+		public String toString() {
+			final ToStringBuilder builder = createToStringBuilder();
+			builder.appendSuper(super.toString());
+			builder.append("id", this.id);
+			builder.append("type", this.type);
+			builder.append("value", this.valueString);
+
+			return builder.toString();
+		}
+	}
+
+	/**
 	 * The Sensor class represents a sensor connected to the thermostat. Sensors may not be modified using the API,
 	 * however some configuration may occur through the web portal.
 	 * 
@@ -4439,6 +4672,108 @@ public class Thermostat extends AbstractMessagePart {
 	/**
 	 * The Weather Forecast contains the weather forecast information for the thermostat. The first forecast is the most
 	 * accurate, later forecasts become less accurate in distance and time.
+	 * 
+	 * The <code>weatherSymbol</code> field can be used by the API caller to display a particular icon or message for
+	 * example. The values mapping for the weather to <code>weatherSymbol</code> field is:
+	 * 
+	 * <table>
+	 * <tbody>
+	 * <tr>
+	 * <th>meaning</th>
+	 * <th>weatherSymbol</th>
+	 * </tr>
+	 * <tr>
+	 * <td>no_symbol</td>
+	 * <td>-2</td>
+	 * </tr>
+	 * <tr>
+	 * <td>sunny</td>
+	 * <td>0</td>
+	 * </tr>
+	 * <tr>
+	 * <td>few_clouds</td>
+	 * <td>1</td>
+	 * </tr>
+	 * <tr>
+	 * <td>partly_cloudy</td>
+	 * <td>2</td>
+	 * </tr>
+	 * <tr>
+	 * <td>mostly_cloudy</td>
+	 * <td>3</td>
+	 * </tr>
+	 * <tr>
+	 * <td>overcast</td>
+	 * <td>4</td>
+	 * </tr>
+	 * <tr>
+	 * <td>drizzle</td>
+	 * <td>5</td>
+	 * </tr>
+	 * <tr>
+	 * <td>rain</td>
+	 * <td>6
+	 * <tr>
+	 * <td>freezing_rain</td>
+	 * <td>7</td>
+	 * </tr>
+	 * <tr>
+	 * <td>showers</td>
+	 * <td>8</td>
+	 * </tr>
+	 * <tr>
+	 * <td>hail</td>
+	 * <td>9</td>
+	 * </tr>
+	 * <tr>
+	 * <td>snow</td>
+	 * <td>10</td>
+	 * </tr>
+	 * <tr>
+	 * <td>flurries</td>
+	 * <td>11</td>
+	 * </tr>
+	 * <tr>
+	 * <td>freezing_snow</td>
+	 * <td>12</td>
+	 * </tr>
+	 * <tr>
+	 * <td>blizzard</td>
+	 * <td>13</td>
+	 * </tr>
+	 * <tr>
+	 * <td>pellets</td>
+	 * <td>14
+	 * <tr>
+	 * <td>thunderstorm</td>
+	 * <td>15</td>
+	 * </tr>
+	 * <tr>
+	 * <td>windy</td>
+	 * <td>16</td>
+	 * </tr>
+	 * <tr>
+	 * <td>tornado</td>
+	 * <td>17</td>
+	 * </tr>
+	 * <tr>
+	 * <td>fog</td>
+	 * <td>18</td>
+	 * </tr>
+	 * <tr>
+	 * <td>haze</td>
+	 * <td>19</td>
+	 * </tr>
+	 * <tr>
+	 * <td>smoke</td>
+	 * <td>20</td>
+	 * </tr>
+	 * <tr>
+	 * <td>dust</td>
+	 * <td>21</td>
+	 * </tr>
+	 * </tbody>
+	 * </table>
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/WeatherForecast.shtml">WeatherForecast</a>

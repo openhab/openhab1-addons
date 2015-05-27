@@ -1828,6 +1828,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     {
       switch (derivedFeatureID)
       {
+        case ModelPackage.MSERVO__SWITCH_STATE: return ModelPackage.SWITCH_SENSOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -1835,7 +1836,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MSERVO__SWITCH_STATE: return ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -1907,6 +1907,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     {
       switch (baseFeatureID)
       {
+        case ModelPackage.SWITCH_SENSOR__SWITCH_STATE: return ModelPackage.MSERVO__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -1914,7 +1915,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MSERVO__SWITCH_STATE;
         default: return -1;
       }
     }

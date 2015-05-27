@@ -13,6 +13,7 @@ import java.io.InputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.weather.internal.converter.Converter;
+import org.openhab.binding.weather.internal.converter.property.PressureTrendConverter;
 import org.openhab.binding.weather.internal.metadata.MetadataHandler;
 import org.openhab.binding.weather.internal.metadata.ProviderMappingInfo;
 import org.openhab.binding.weather.internal.model.Atmosphere;
@@ -168,16 +169,18 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 	 */
 	@Override
 	public void postProcess(Weather weather) throws Exception {
-		Double currentPressure = weather.getAtmosphere().getPressure();
-		if (currentPressure != null && weather.getForecast().size() > 0) {
-			Double fcPressure = weather.getForecast().get(0).getAtmosphere().getPressure();
-			if (fcPressure != null) {
-				if (fcPressure > currentPressure) {
-					weather.getAtmosphere().setPressureTrend("up");
-				} else if (fcPressure < currentPressure) {
-					weather.getAtmosphere().setPressureTrend("down");
-				} else {
-					weather.getAtmosphere().setPressureTrend("equal");
+		if (weather.getAtmosphere().getPressureTrend() == null) {
+			Double currentPressure = weather.getAtmosphere().getPressure();
+			if (currentPressure != null && weather.getForecast().size() > 0) {
+				Double fcPressure = weather.getForecast().get(0).getAtmosphere().getPressure();
+				if (fcPressure != null) {
+					if (fcPressure > currentPressure) {
+						weather.getAtmosphere().setPressureTrend(PressureTrendConverter.TREND_UP);
+					} else if (fcPressure < currentPressure) {
+						weather.getAtmosphere().setPressureTrend(PressureTrendConverter.TREND_DOWN);
+					} else {
+						weather.getAtmosphere().setPressureTrend(PressureTrendConverter.TREND_EQUAL);
+					}
 				}
 			}
 		}

@@ -28,6 +28,7 @@ import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
@@ -44,12 +45,14 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonRightLed;
-import org.openhab.binding.tinkerforge.internal.model.Direction;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.Electrode;
@@ -59,14 +62,20 @@ import org.openhab.binding.tinkerforge.internal.model.IO4Device;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
 import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
 import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
 import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -84,6 +93,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
@@ -91,8 +101,10 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
@@ -108,7 +120,6 @@ import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBrickl
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
 import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MOutSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
@@ -129,8 +140,15 @@ import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
 import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCNoiseRejectionFilter;
+import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
+import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCWireMode;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitch;
 import org.openhab.binding.tinkerforge.internal.model.Proximity;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
@@ -141,6 +159,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
 import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
@@ -149,21 +168,24 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
 import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
-import org.openhab.binding.tinkerforge.internal.model.ValueActor;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
+import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
@@ -188,6 +210,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
+import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
@@ -196,8 +219,10 @@ import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
+import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
@@ -205,7 +230,6 @@ import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
-import java.math.BigDecimal;
 
 /**
  * <!-- begin-user-doc -->
@@ -388,6 +412,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass programmableColorActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass simpleColorActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass moveActorEClass = null;
 
   /**
@@ -423,28 +461,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass dualButtonLeftButtonEClass = null;
+  private EClass dualButtonButtonEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass dualButtonRightButtonEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass dualButtonLeftLedEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass dualButtonRightLedEClass = null;
+  private EClass dualButtonLedEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -500,6 +524,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass ledGroupEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mBrickletSegmentDisplay4x7EClass = null;
 
   /**
@@ -536,13 +567,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass programmableSwitchActorEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass mOutSwitchActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -731,6 +755,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass tfptcBrickletConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfIndustrialDual020mAConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfServoConfigurationEClass = null;
 
   /**
@@ -787,6 +825,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass buttonConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dualButtonLEDConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ledStripConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ledGroupConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mServoEClass = null;
 
   /**
@@ -823,6 +889,62 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletDistanceIREClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletSolidStateRelayEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletIndustrialDual020mAEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dual020mADeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletPTCEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcTemperatureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcResistanceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ptcConnectedEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1032,6 +1154,48 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum dualButtonDevicePositionEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum dualButtonLedSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum dualButtonButtonSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum joystickSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum ptcSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum industrialDual020mASubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EEnum noSubIdsEEnum = null;
 
   /**
@@ -1040,6 +1204,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum industrialDigitalInSubIDsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum industrialDigitalOutSubIDsEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1368,6 +1539,27 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EDataType tinkerBrickletPTCEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletIndustrialDual020mAEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletSolidStateRelayEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType hsbTypeEDataType = null;
 
   /**
@@ -1460,6 +1652,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType digitalValueEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType hsbValueEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1809,7 +2008,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_IsConnected()
+  public EAttribute getMBrickd_Authkey()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(4);
   }
@@ -1819,7 +2018,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_AutoReconnect()
+  public EAttribute getMBrickd_IsConnected()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(5);
   }
@@ -1829,7 +2028,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_Reconnected()
+  public EAttribute getMBrickd_AutoReconnect()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(6);
   }
@@ -1839,7 +2038,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickd_Timeout()
+  public EAttribute getMBrickd_Reconnected()
   {
     return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(7);
   }
@@ -1849,9 +2048,29 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickd_ConnectedCounter()
+  {
+    return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickd_Timeout()
+  {
+    return (EAttribute)mBrickdEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getMBrickd_Mdevices()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(8);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(10);
   }
 
   /**
@@ -1861,7 +2080,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EReference getMBrickd_Ecosystem()
   {
-    return (EReference)mBrickdEClass.getEStructuralFeatures().get(9);
+    return (EReference)mBrickdEClass.getEStructuralFeatures().get(11);
   }
 
   /**
@@ -2379,6 +2598,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMIndustrialQuadRelayBricklet_DeviceType()
+  {
+    return (EAttribute)mIndustrialQuadRelayBrickletEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMIndustrialQuadRelay()
   {
     return mIndustrialQuadRelayEClass;
@@ -2429,9 +2658,29 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMIndustrialDigitalIn_DeviceType()
+  {
+    return (EAttribute)mIndustrialDigitalInEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMBrickletIndustrialDigitalOut4()
   {
     return mBrickletIndustrialDigitalOut4EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletIndustrialDigitalOut4_DeviceType()
+  {
+    return (EAttribute)mBrickletIndustrialDigitalOut4EClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2452,6 +2701,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getDigitalActorDigitalOut4_Pin()
   {
     return (EAttribute)digitalActorDigitalOut4EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorDigitalOut4_DeviceType()
+  {
+    return (EAttribute)digitalActorDigitalOut4EClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2529,9 +2788,49 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getColorActor__SetColor__HSBType_DeviceOptions()
+  public EAttribute getColorActor_Color()
   {
-    return colorActorEClass.getEOperations().get(0);
+    return (EAttribute)colorActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProgrammableColorActor()
+  {
+    return programmableColorActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getProgrammableColorActor__SetSelectedColor__HSBType_DeviceOptions()
+  {
+    return programmableColorActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSimpleColorActor()
+  {
+    return simpleColorActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getSimpleColorActor__SetSelectedColor__HSBType()
+  {
+    return simpleColorActorEClass.getEOperations().get(0);
   }
 
   /**
@@ -2679,6 +2978,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickletDualButton_DeviceType()
+  {
+    return (EAttribute)mBrickletDualButtonEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getDualButtonDevice()
   {
     return dualButtonDeviceEClass;
@@ -2689,9 +2998,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getDualButtonLeftButton()
+  public EClass getDualButtonButton()
   {
-    return dualButtonLeftButtonEClass;
+    return dualButtonButtonEClass;
   }
 
   /**
@@ -2699,9 +3008,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getDualButtonRightButton()
+  public EAttribute getDualButtonButton_DeviceType()
   {
-    return dualButtonRightButtonEClass;
+    return (EAttribute)dualButtonButtonEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2709,9 +3018,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getDualButtonLeftLed()
+  public EAttribute getDualButtonButton_Position()
   {
-    return dualButtonLeftLedEClass;
+    return (EAttribute)dualButtonButtonEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2719,9 +3028,29 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getDualButtonRightLed()
+  public EClass getDualButtonLed()
   {
-    return dualButtonRightLedEClass;
+    return dualButtonLedEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDualButtonLed_DeviceType()
+  {
+    return (EAttribute)dualButtonLedEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDualButtonLed_Position()
+  {
+    return (EAttribute)dualButtonLedEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2849,9 +3178,59 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickletLEDStrip_DeviceType()
+  {
+    return (EAttribute)mBrickletLEDStripEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLEDStrip_ColorMapping()
+  {
+    return (EAttribute)mBrickletLEDStripEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLEDGroup()
+  {
+    return ledGroupEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDGroup_DeviceType()
+  {
+    return (EAttribute)ledGroupEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMBrickletSegmentDisplay4x7()
   {
     return mBrickletSegmentDisplay4x7EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletSegmentDisplay4x7_DeviceType()
+  {
+    return (EAttribute)mBrickletSegmentDisplay4x7EClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2959,6 +3338,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getSwitchSensor_SwitchState()
+  {
+    return (EAttribute)switchSensorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EOperation getSwitchSensor__FetchSwitchState()
   {
     return switchSensorEClass.getEOperations().get(0);
@@ -2972,16 +3361,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EClass getMSwitchActor()
   {
     return mSwitchActorEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getMSwitchActor_SwitchState()
-  {
-    return (EAttribute)mSwitchActorEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -3009,29 +3388,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getProgrammableSwitchActor_SwitchState()
-  {
-    return (EAttribute)programmableSwitchActorEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EOperation getProgrammableSwitchActor__TurnSwitch__OnOffValue_DeviceOptions()
   {
     return programmableSwitchActorEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getMOutSwitchActor()
-  {
-    return mOutSwitchActorEClass;
   }
 
   /**
@@ -3809,6 +4168,56 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getTFPTCBrickletConfiguration()
+  {
+    return tfptcBrickletConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFPTCBrickletConfiguration_NoiseRejectionFilter()
+  {
+    return (EAttribute)tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFPTCBrickletConfiguration_WireMode()
+  {
+    return (EAttribute)tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFIndustrialDual020mAConfiguration()
+  {
+    return tfIndustrialDual020mAConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFIndustrialDual020mAConfiguration_SampleRate()
+  {
+    return (EAttribute)tfIndustrialDual020mAConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFServoConfiguration()
   {
     return tfServoConfigurationEClass;
@@ -4129,6 +4538,126 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getButtonConfiguration()
+  {
+    return buttonConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getButtonConfiguration_Tactile()
+  {
+    return (EAttribute)buttonConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDualButtonLEDConfiguration()
+  {
+    return dualButtonLEDConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDualButtonLEDConfiguration_Autotoggle()
+  {
+    return (EAttribute)dualButtonLEDConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLEDStripConfiguration()
+  {
+    return ledStripConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_Chiptype()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_Frameduration()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_Clockfrequency()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_ColorMapping()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDStripConfiguration_SubDevices()
+  {
+    return (EAttribute)ledStripConfigurationEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLEDGroupConfiguration()
+  {
+    return ledGroupConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLEDGroupConfiguration_Leds()
+  {
+    return (EAttribute)ledGroupConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMServo()
   {
     return mServoEClass;
@@ -4402,6 +4931,226 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletDistanceIR__Init()
   {
     return mBrickletDistanceIREClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletSolidStateRelay()
+  {
+    return mBrickletSolidStateRelayEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletSolidStateRelay_DeviceType()
+  {
+    return (EAttribute)mBrickletSolidStateRelayEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletSolidStateRelay__Init()
+  {
+    return mBrickletSolidStateRelayEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletIndustrialDual020mA()
+  {
+    return mBrickletIndustrialDual020mAEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletIndustrialDual020mA_DeviceType()
+  {
+    return (EAttribute)mBrickletIndustrialDual020mAEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletIndustrialDual020mA__Init()
+  {
+    return mBrickletIndustrialDual020mAEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDual020mADevice()
+  {
+    return dual020mADeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDual020mADevice_DeviceType()
+  {
+    return (EAttribute)dual020mADeviceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDual020mADevice_Threshold()
+  {
+    return (EAttribute)dual020mADeviceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDual020mADevice_SensorNum()
+  {
+    return (EAttribute)dual020mADeviceEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletPTC()
+  {
+    return mBrickletPTCEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletPTC_DeviceType()
+  {
+    return (EAttribute)mBrickletPTCEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletPTC__Init()
+  {
+    return mBrickletPTCEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCDevice()
+  {
+    return ptcDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCTemperature()
+  {
+    return ptcTemperatureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCTemperature_DeviceType()
+  {
+    return (EAttribute)ptcTemperatureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCTemperature_Threshold()
+  {
+    return (EAttribute)ptcTemperatureEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCResistance()
+  {
+    return ptcResistanceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCResistance_DeviceType()
+  {
+    return (EAttribute)ptcResistanceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCResistance_Threshold()
+  {
+    return (EAttribute)ptcResistanceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getPTCConnected()
+  {
+    return ptcConnectedEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPTCConnected_DeviceType()
+  {
+    return (EAttribute)ptcConnectedEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -5269,6 +6018,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getHSBValue()
+  {
+    return hsbValueEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getTinkerBrickletIO16()
   {
     return tinkerBrickletIO16EDataType;
@@ -5299,6 +6058,66 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getDualButtonDevicePosition()
+  {
+    return dualButtonDevicePositionEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getDualButtonLedSubIds()
+  {
+    return dualButtonLedSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getDualButtonButtonSubIds()
+  {
+    return dualButtonButtonSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getJoystickSubIds()
+  {
+    return joystickSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getPTCSubIds()
+  {
+    return ptcSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getIndustrialDual020mASubIds()
+  {
+    return industrialDual020mASubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -5312,6 +6131,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EEnum getIndustrialDigitalInSubIDs()
   {
     return industrialDigitalInSubIDsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getIndustrialDigitalOutSubIDs()
+  {
+    return industrialDigitalOutSubIDsEEnum;
   }
 
   /**
@@ -5779,6 +6608,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletPTC()
+  {
+    return tinkerBrickletPTCEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletIndustrialDual020mA()
+  {
+    return tinkerBrickletIndustrialDual020mAEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletSolidStateRelay()
+  {
+    return tinkerBrickletSolidStateRelayEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -5937,9 +6796,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickdEClass, MBRICKD__IP_CONNECTION);
     createEAttribute(mBrickdEClass, MBRICKD__HOST);
     createEAttribute(mBrickdEClass, MBRICKD__PORT);
+    createEAttribute(mBrickdEClass, MBRICKD__AUTHKEY);
     createEAttribute(mBrickdEClass, MBRICKD__IS_CONNECTED);
     createEAttribute(mBrickdEClass, MBRICKD__AUTO_RECONNECT);
     createEAttribute(mBrickdEClass, MBRICKD__RECONNECTED);
+    createEAttribute(mBrickdEClass, MBRICKD__CONNECTED_COUNTER);
     createEAttribute(mBrickdEClass, MBRICKD__TIMEOUT);
     createEReference(mBrickdEClass, MBRICKD__MDEVICES);
     createEReference(mBrickdEClass, MBRICKD__ECOSYSTEM);
@@ -5979,17 +6840,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mActorEClass = createEClass(MACTOR);
 
     switchSensorEClass = createEClass(SWITCH_SENSOR);
+    createEAttribute(switchSensorEClass, SWITCH_SENSOR__SWITCH_STATE);
     createEOperation(switchSensorEClass, SWITCH_SENSOR___FETCH_SWITCH_STATE);
 
     mSwitchActorEClass = createEClass(MSWITCH_ACTOR);
-    createEAttribute(mSwitchActorEClass, MSWITCH_ACTOR__SWITCH_STATE);
     createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE);
 
     programmableSwitchActorEClass = createEClass(PROGRAMMABLE_SWITCH_ACTOR);
-    createEAttribute(programmableSwitchActorEClass, PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE);
     createEOperation(programmableSwitchActorEClass, PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS);
-
-    mOutSwitchActorEClass = createEClass(MOUT_SWITCH_ACTOR);
 
     mInSwitchActorEClass = createEClass(MIN_SWITCH_ACTOR);
 
@@ -6026,7 +6884,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(numberActorEClass, NUMBER_ACTOR___SET_NUMBER__BIGDECIMAL);
 
     colorActorEClass = createEClass(COLOR_ACTOR);
-    createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
+    createEAttribute(colorActorEClass, COLOR_ACTOR__COLOR);
+
+    programmableColorActorEClass = createEClass(PROGRAMMABLE_COLOR_ACTOR);
+    createEOperation(programmableColorActorEClass, PROGRAMMABLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE_DEVICEOPTIONS);
+
+    simpleColorActorEClass = createEClass(SIMPLE_COLOR_ACTOR);
+    createEOperation(simpleColorActorEClass, SIMPLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE);
 
     moveActorEClass = createEClass(MOVE_ACTOR);
     createEAttribute(moveActorEClass, MOVE_ACTOR__DIRECTION);
@@ -6045,16 +6909,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS);
 
     mBrickletDualButtonEClass = createEClass(MBRICKLET_DUAL_BUTTON);
+    createEAttribute(mBrickletDualButtonEClass, MBRICKLET_DUAL_BUTTON__DEVICE_TYPE);
 
     dualButtonDeviceEClass = createEClass(DUAL_BUTTON_DEVICE);
 
-    dualButtonLeftButtonEClass = createEClass(DUAL_BUTTON_LEFT_BUTTON);
+    dualButtonButtonEClass = createEClass(DUAL_BUTTON_BUTTON);
+    createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__DEVICE_TYPE);
+    createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__POSITION);
 
-    dualButtonRightButtonEClass = createEClass(DUAL_BUTTON_RIGHT_BUTTON);
-
-    dualButtonLeftLedEClass = createEClass(DUAL_BUTTON_LEFT_LED);
-
-    dualButtonRightLedEClass = createEClass(DUAL_BUTTON_RIGHT_LED);
+    dualButtonLedEClass = createEClass(DUAL_BUTTON_LED);
+    createEAttribute(dualButtonLedEClass, DUAL_BUTTON_LED__DEVICE_TYPE);
+    createEAttribute(dualButtonLedEClass, DUAL_BUTTON_LED__POSITION);
 
     mBrickletLinearPotiEClass = createEClass(MBRICKLET_LINEAR_POTI);
     createEAttribute(mBrickletLinearPotiEClass, MBRICKLET_LINEAR_POTI__DEVICE_TYPE);
@@ -6109,6 +6974,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mDualRelayBrickletEClass, MDUAL_RELAY_BRICKLET__DEVICE_TYPE);
 
     mIndustrialQuadRelayBrickletEClass = createEClass(MINDUSTRIAL_QUAD_RELAY_BRICKLET);
+    createEAttribute(mIndustrialQuadRelayBrickletEClass, MINDUSTRIAL_QUAD_RELAY_BRICKLET__DEVICE_TYPE);
 
     mIndustrialQuadRelayEClass = createEClass(MINDUSTRIAL_QUAD_RELAY);
     createEAttribute(mIndustrialQuadRelayEClass, MINDUSTRIAL_QUAD_RELAY__DEVICE_TYPE);
@@ -6117,15 +6983,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletIndustrialDigitalIn4EClass, MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_TYPE);
 
     mIndustrialDigitalInEClass = createEClass(MINDUSTRIAL_DIGITAL_IN);
+    createEAttribute(mIndustrialDigitalInEClass, MINDUSTRIAL_DIGITAL_IN__DEVICE_TYPE);
 
     mBrickletIndustrialDigitalOut4EClass = createEClass(MBRICKLET_INDUSTRIAL_DIGITAL_OUT4);
+    createEAttribute(mBrickletIndustrialDigitalOut4EClass, MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_TYPE);
 
     digitalActorDigitalOut4EClass = createEClass(DIGITAL_ACTOR_DIGITAL_OUT4);
     createEAttribute(digitalActorDigitalOut4EClass, DIGITAL_ACTOR_DIGITAL_OUT4__PIN);
+    createEAttribute(digitalActorDigitalOut4EClass, DIGITAL_ACTOR_DIGITAL_OUT4__DEVICE_TYPE);
 
     mBrickletSegmentDisplay4x7EClass = createEClass(MBRICKLET_SEGMENT_DISPLAY4X7);
+    createEAttribute(mBrickletSegmentDisplay4x7EClass, MBRICKLET_SEGMENT_DISPLAY4X7__DEVICE_TYPE);
 
     mBrickletLEDStripEClass = createEClass(MBRICKLET_LED_STRIP);
+    createEAttribute(mBrickletLEDStripEClass, MBRICKLET_LED_STRIP__DEVICE_TYPE);
+    createEAttribute(mBrickletLEDStripEClass, MBRICKLET_LED_STRIP__COLOR_MAPPING);
+
+    ledGroupEClass = createEClass(LED_GROUP);
+    createEAttribute(ledGroupEClass, LED_GROUP__DEVICE_TYPE);
 
     digitalActorIO16EClass = createEClass(DIGITAL_ACTOR_IO16);
     createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__DEVICE_TYPE);
@@ -6225,6 +7100,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR__DEVICE_TYPE);
     createEAttribute(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR__THRESHOLD);
     createEOperation(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR___INIT);
+
+    mBrickletSolidStateRelayEClass = createEClass(MBRICKLET_SOLID_STATE_RELAY);
+    createEAttribute(mBrickletSolidStateRelayEClass, MBRICKLET_SOLID_STATE_RELAY__DEVICE_TYPE);
+    createEOperation(mBrickletSolidStateRelayEClass, MBRICKLET_SOLID_STATE_RELAY___INIT);
+
+    mBrickletIndustrialDual020mAEClass = createEClass(MBRICKLET_INDUSTRIAL_DUAL020M_A);
+    createEAttribute(mBrickletIndustrialDual020mAEClass, MBRICKLET_INDUSTRIAL_DUAL020M_A__DEVICE_TYPE);
+    createEOperation(mBrickletIndustrialDual020mAEClass, MBRICKLET_INDUSTRIAL_DUAL020M_A___INIT);
+
+    dual020mADeviceEClass = createEClass(DUAL020M_ADEVICE);
+    createEAttribute(dual020mADeviceEClass, DUAL020M_ADEVICE__DEVICE_TYPE);
+    createEAttribute(dual020mADeviceEClass, DUAL020M_ADEVICE__THRESHOLD);
+    createEAttribute(dual020mADeviceEClass, DUAL020M_ADEVICE__SENSOR_NUM);
+
+    mBrickletPTCEClass = createEClass(MBRICKLET_PTC);
+    createEAttribute(mBrickletPTCEClass, MBRICKLET_PTC__DEVICE_TYPE);
+    createEOperation(mBrickletPTCEClass, MBRICKLET_PTC___INIT);
+
+    ptcDeviceEClass = createEClass(PTC_DEVICE);
+
+    ptcTemperatureEClass = createEClass(PTC_TEMPERATURE);
+    createEAttribute(ptcTemperatureEClass, PTC_TEMPERATURE__DEVICE_TYPE);
+    createEAttribute(ptcTemperatureEClass, PTC_TEMPERATURE__THRESHOLD);
+
+    ptcResistanceEClass = createEClass(PTC_RESISTANCE);
+    createEAttribute(ptcResistanceEClass, PTC_RESISTANCE__DEVICE_TYPE);
+    createEAttribute(ptcResistanceEClass, PTC_RESISTANCE__THRESHOLD);
+
+    ptcConnectedEClass = createEClass(PTC_CONNECTED);
+    createEAttribute(ptcConnectedEClass, PTC_CONNECTED__DEVICE_TYPE);
 
     mBrickletTemperatureEClass = createEClass(MBRICKLET_TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__DEVICE_TYPE);
@@ -6335,6 +7240,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     tfNullConfigurationEClass = createEClass(TF_NULL_CONFIGURATION);
 
+    tfptcBrickletConfigurationEClass = createEClass(TFPTC_BRICKLET_CONFIGURATION);
+    createEAttribute(tfptcBrickletConfigurationEClass, TFPTC_BRICKLET_CONFIGURATION__NOISE_REJECTION_FILTER);
+    createEAttribute(tfptcBrickletConfigurationEClass, TFPTC_BRICKLET_CONFIGURATION__WIRE_MODE);
+
+    tfIndustrialDual020mAConfigurationEClass = createEClass(TF_INDUSTRIAL_DUAL020M_ACONFIGURATION);
+    createEAttribute(tfIndustrialDual020mAConfigurationEClass, TF_INDUSTRIAL_DUAL020M_ACONFIGURATION__SAMPLE_RATE);
+
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
@@ -6409,9 +7321,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(dimmableConfigurationEClass, DIMMABLE_CONFIGURATION__MIN_VALUE);
     createEAttribute(dimmableConfigurationEClass, DIMMABLE_CONFIGURATION__MAX_VALUE);
 
+    buttonConfigurationEClass = createEClass(BUTTON_CONFIGURATION);
+    createEAttribute(buttonConfigurationEClass, BUTTON_CONFIGURATION__TACTILE);
+
+    dualButtonLEDConfigurationEClass = createEClass(DUAL_BUTTON_LED_CONFIGURATION);
+    createEAttribute(dualButtonLEDConfigurationEClass, DUAL_BUTTON_LED_CONFIGURATION__AUTOTOGGLE);
+
+    ledStripConfigurationEClass = createEClass(LED_STRIP_CONFIGURATION);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__CHIPTYPE);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__FRAMEDURATION);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__CLOCKFREQUENCY);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__COLOR_MAPPING);
+    createEAttribute(ledStripConfigurationEClass, LED_STRIP_CONFIGURATION__SUB_DEVICES);
+
+    ledGroupConfigurationEClass = createEClass(LED_GROUP_CONFIGURATION);
+    createEAttribute(ledGroupConfigurationEClass, LED_GROUP_CONFIGURATION__LEDS);
+
     // Create enums
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
     industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
+    industrialDigitalOutSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_OUT_SUB_IDS);
     industrialQuadRelayIDsEEnum = createEEnum(INDUSTRIAL_QUAD_RELAY_IDS);
     servoSubIDsEEnum = createEEnum(SERVO_SUB_IDS);
     barometerSubIDsEEnum = createEEnum(BAROMETER_SUB_IDS);
@@ -6429,6 +7358,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     configOptsSwitchSpeedEEnum = createEEnum(CONFIG_OPTS_SWITCH_SPEED);
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
     configOptsServoEEnum = createEEnum(CONFIG_OPTS_SERVO);
+    dualButtonDevicePositionEEnum = createEEnum(DUAL_BUTTON_DEVICE_POSITION);
+    dualButtonLedSubIdsEEnum = createEEnum(DUAL_BUTTON_LED_SUB_IDS);
+    dualButtonButtonSubIdsEEnum = createEEnum(DUAL_BUTTON_BUTTON_SUB_IDS);
+    joystickSubIdsEEnum = createEEnum(JOYSTICK_SUB_IDS);
+    ptcSubIdsEEnum = createEEnum(PTC_SUB_IDS);
+    industrialDual020mASubIdsEEnum = createEEnum(INDUSTRIAL_DUAL020M_ASUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -6443,6 +7378,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletIndustrialDigitalOut4EDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4);
     switchStateEDataType = createEDataType(SWITCH_STATE);
     digitalValueEDataType = createEDataType(DIGITAL_VALUE);
+    hsbValueEDataType = createEDataType(HSB_VALUE);
     tinkerBrickletIO16EDataType = createEDataType(TINKER_BRICKLET_IO16);
     mTinkerBrickServoEDataType = createEDataType(MTINKER_BRICK_SERVO);
     mTinkerforgeValueEDataType = createEDataType(MTINKERFORGE_VALUE);
@@ -6469,6 +7405,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     brickletJoystickEDataType = createEDataType(BRICKLET_JOYSTICK);
     tinkerBrickletLinearPotiEDataType = createEDataType(TINKER_BRICKLET_LINEAR_POTI);
     tinkerBrickletDualButtonEDataType = createEDataType(TINKER_BRICKLET_DUAL_BUTTON);
+    tinkerBrickletPTCEDataType = createEDataType(TINKER_BRICKLET_PTC);
+    tinkerBrickletIndustrialDual020mAEDataType = createEDataType(TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A);
+    tinkerBrickletSolidStateRelayEDataType = createEDataType(TINKER_BRICKLET_SOLID_STATE_RELAY);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -6549,7 +7488,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
     mSwitchActorEClass.getESuperTypes().add(this.getSwitchSensor());
     programmableSwitchActorEClass.getESuperTypes().add(this.getSwitchSensor());
-    mOutSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
     mInSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMBrickletIO16());
@@ -6562,6 +7500,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletLCD20x4());
     g1.getETypeArguments().add(g2);
     mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
+    programmableColorActorEClass.getESuperTypes().add(this.getColorActor());
+    simpleColorActorEClass.getESuperTypes().add(this.getColorActor());
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(dimmableActorEClass_TC);
     g1.getETypeArguments().add(g2);
@@ -6583,21 +7523,23 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     dualButtonDeviceEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDualButtonDevice());
-    dualButtonLeftButtonEClass.getEGenericSuperTypes().add(g1);
+    dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(this.getDigitalValue());
+    g2 = createEGenericType(this.getSwitchState());
     g1.getETypeArguments().add(g2);
-    dualButtonLeftButtonEClass.getEGenericSuperTypes().add(g1);
+    dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getButtonConfiguration());
+    g1.getETypeArguments().add(g2);
+    dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDualButtonDevice());
-    dualButtonRightButtonEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(this.getDigitalValue());
+    dualButtonLedEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDigitalActor());
+    dualButtonLedEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getDualButtonLEDConfiguration());
     g1.getETypeArguments().add(g2);
-    dualButtonRightButtonEClass.getEGenericSuperTypes().add(g1);
-    dualButtonLeftLedEClass.getESuperTypes().add(this.getDualButtonDevice());
-    dualButtonLeftLedEClass.getESuperTypes().add(this.getDigitalActor());
-    dualButtonRightLedEClass.getESuperTypes().add(this.getDualButtonDevice());
-    dualButtonRightLedEClass.getESuperTypes().add(this.getDigitalActor());
+    dualButtonLedEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLinearPoti());
     g1.getETypeArguments().add(g2);
@@ -6645,7 +7587,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getJoystickDevice());
     joystickButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(this.getDigitalValue());
+    g2 = createEGenericType(this.getSwitchState());
+    g1.getETypeArguments().add(g2);
+    joystickButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getButtonConfiguration());
     g1.getETypeArguments().add(g2);
     joystickButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
@@ -6754,12 +7700,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTinkerBrickletSegmentDisplay4x7());
     g1.getETypeArguments().add(g2);
     mBrickletSegmentDisplay4x7EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getColorActor());
+    g1 = createEGenericType(this.getProgrammableColorActor());
     mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLEDStrip());
     g1.getETypeArguments().add(g2);
     mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getLEDStripConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getLEDGroup());
+    g1.getETypeArguments().add(g2);
+    mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletLEDStrip());
+    g1.getETypeArguments().add(g2);
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getSimpleColorActor());
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSwitchActor());
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getLEDGroupConfiguration());
+    g1.getETypeArguments().add(g2);
+    ledGroupEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDigitalActor());
     digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIODevice());
@@ -6955,6 +7921,84 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletDistanceIREClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletSolidStateRelay());
+    g1.getETypeArguments().add(g2);
+    mBrickletSolidStateRelayEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSwitchActor());
+    mBrickletSolidStateRelayEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletIndustrialDual020mA());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getDual020mADevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFIndustrialDual020mAConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDual020mAEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletIndustrialDual020mA());
+    g1.getETypeArguments().add(g2);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    dual020mADeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletPTC());
+    g1.getETypeArguments().add(g2);
+    mBrickletPTCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFPTCBrickletConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletPTCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getPTCDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletPTCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletPTC());
+    g1.getETypeArguments().add(g2);
+    ptcDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPTCDevice());
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    ptcTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPTCDevice());
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    ptcResistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPTCDevice());
+    ptcConnectedEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    ptcConnectedEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletTemperature());
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
@@ -7129,9 +8173,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
     mlcd20x4BacklightEClass.getESuperTypes().add(this.getMInSwitchActor());
     mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
-    mlcd20x4ButtonEClass.getESuperTypes().add(this.getMOutSwitchActor());
-    mlcd20x4ButtonEClass.getESuperTypes().add(this.getMLCDSubDevice());
-    mlcd20x4ButtonEClass.getESuperTypes().add(this.getCallbackListener());
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getSwitchState());
+    g1.getETypeArguments().add(g2);
+    mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMLCDSubDevice());
+    mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getButtonConfiguration());
+    g1.getETypeArguments().add(g2);
+    mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getOHTFDevice());
     g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_TFC);
     g1.getETypeArguments().add(g2);
@@ -7139,6 +8190,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     ohtfSubDeviceAdminDeviceEClass.getEGenericSuperTypes().add(g1);
     tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfptcBrickletConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfIndustrialDual020mAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -7157,6 +8210,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     multiTouchDeviceConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     brickletMultiTouchConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     dimmableConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    buttonConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    dualButtonLEDConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    ledStripConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    ledGroupConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -7186,9 +8243,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickd_IpConnection(), this.getMIPConnection(), "ipConnection", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Host(), theEcorePackage.getEString(), "host", "localhost", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Port(), theEcorePackage.getEInt(), "port", "4223", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickd_IsConnected(), theEcorePackage.getEBoolean(), "isConnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_Authkey(), theEcorePackage.getEString(), "authkey", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_IsConnected(), this.getDigitalValue(), "isConnected", null, 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_AutoReconnect(), theEcorePackage.getEBoolean(), "autoReconnect", "true", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Reconnected(), theEcorePackage.getEBoolean(), "reconnected", "false", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickd_ConnectedCounter(), this.getMDecimalValue(), "connectedCounter", "0", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickd_Timeout(), theEcorePackage.getEInt(), "timeout", "2500", 0, 1, MBrickd.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType();
@@ -7246,23 +8305,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mActorEClass, MActor.class, "MActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(switchSensorEClass, SwitchSensor.class, "SwitchSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSwitchSensor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, SwitchSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getSwitchSensor__FetchSwitchState(), null, "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mSwitchActorEClass, MSwitchActor.class, "MSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, MSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getMSwitchActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(programmableSwitchActorEClass, ProgrammableSwitchActor.class, "ProgrammableSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getProgrammableSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, ProgrammableSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getProgrammableSwitchActor__TurnSwitch__OnOffValue_DeviceOptions(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(mInSwitchActorEClass, MInSwitchActor.class, "MInSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -7307,10 +8363,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, theEcorePackage.getEBigDecimal(), "value", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(colorActorEClass, ColorActor.class, "ColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getColorActor_Color(), this.getHSBValue(), "color", null, 0, 1, ColorActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    op = initEOperation(getColorActor__SetColor__HSBType_DeviceOptions(), null, "setColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    initEClass(programmableColorActorEClass, ProgrammableColorActor.class, "ProgrammableColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getProgrammableColorActor__SetSelectedColor__HSBType_DeviceOptions(), null, "setSelectedColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(simpleColorActorEClass, SimpleColorActor.class, "SimpleColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getSimpleColorActor__SetSelectedColor__HSBType(), null, "setSelectedColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMoveActor_Direction(), this.getDirectionValue(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7344,16 +8408,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletDualButtonEClass, MBrickletDualButton.class, "MBrickletDualButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletDualButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_dualbutton", 0, 1, MBrickletDualButton.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dualButtonDeviceEClass, DualButtonDevice.class, "DualButtonDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(dualButtonLeftButtonEClass, DualButtonLeftButton.class, "DualButtonLeftButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(dualButtonButtonEClass, DualButtonButton.class, "DualButtonButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDualButtonButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_button", 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDualButtonButton_Position(), this.getDualButtonDevicePosition(), "position", null, 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(dualButtonRightButtonEClass, DualButtonRightButton.class, "DualButtonRightButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(dualButtonLeftLedEClass, DualButtonLeftLed.class, "DualButtonLeftLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(dualButtonRightLedEClass, DualButtonRightLed.class, "DualButtonRightLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(dualButtonLedEClass, DualButtonLed.class, "DualButtonLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDualButtonLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_led", 0, 1, DualButtonLed.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDualButtonLed_Position(), this.getDualButtonDevicePosition(), "position", null, 0, 1, DualButtonLed.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletLinearPotiEClass, MBrickletLinearPoti.class, "MBrickletLinearPoti", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletLinearPoti_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_linear_poti", 0, 1, MBrickletLinearPoti.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7419,23 +8484,33 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMDualRelayBricklet_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_dual_relay", 0, 1, MDualRelayBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mIndustrialQuadRelayBrickletEClass, MIndustrialQuadRelayBricklet.class, "MIndustrialQuadRelayBricklet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMIndustrialQuadRelayBricklet_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_quad_relay", 0, 1, MIndustrialQuadRelayBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mIndustrialQuadRelayEClass, MIndustrialQuadRelay.class, "MIndustrialQuadRelay", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMIndustrialQuadRelay_DeviceType(), theEcorePackage.getEString(), "deviceType", "industrial_quad_relay", 0, 1, MIndustrialQuadRelay.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMIndustrialQuadRelay_DeviceType(), theEcorePackage.getEString(), "deviceType", "quad_relay", 0, 1, MIndustrialQuadRelay.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletIndustrialDigitalIn4EClass, MBrickletIndustrialDigitalIn4.class, "MBrickletIndustrialDigitalIn4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletIndustrialDigitalIn4_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_industrial_digital_4in", 0, 1, MBrickletIndustrialDigitalIn4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mIndustrialDigitalInEClass, MIndustrialDigitalIn.class, "MIndustrialDigitalIn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMIndustrialDigitalIn_DeviceType(), theEcorePackage.getEString(), "deviceType", "digital_4in", 0, 1, MIndustrialDigitalIn.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletIndustrialDigitalOut4EClass, MBrickletIndustrialDigitalOut4.class, "MBrickletIndustrialDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletIndustrialDigitalOut4_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_industrial_digital_4out", 0, 1, MBrickletIndustrialDigitalOut4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(digitalActorDigitalOut4EClass, DigitalActorDigitalOut4.class, "DigitalActorDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActorDigitalOut4_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActorDigitalOut4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorDigitalOut4_DeviceType(), theEcorePackage.getEString(), "deviceType", "digital_4out", 0, 1, DigitalActorDigitalOut4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletSegmentDisplay4x7EClass, MBrickletSegmentDisplay4x7.class, "MBrickletSegmentDisplay4x7", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletSegmentDisplay4x7_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_segmentdisplay4x7", 0, 1, MBrickletSegmentDisplay4x7.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletLEDStripEClass, MBrickletLEDStrip.class, "MBrickletLEDStrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletLEDStrip_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ledstrip", 0, 1, MBrickletLEDStrip.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLEDStrip_ColorMapping(), theEcorePackage.getEString(), "colorMapping", "rgb", 0, 1, MBrickletLEDStrip.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ledGroupEClass, LEDGroup.class, "LEDGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLEDGroup_DeviceType(), theEcorePackage.getEString(), "deviceType", "ledgroup", 0, 1, LEDGroup.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(digitalActorIO16EClass, DigitalActorIO16.class, "DigitalActorIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActorIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7545,6 +8620,39 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickletDistanceIR_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "5", 0, 1, MBrickletDistanceIR.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletDistanceIR__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletSolidStateRelayEClass, MBrickletSolidStateRelay.class, "MBrickletSolidStateRelay", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletSolidStateRelay_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_solidstaterelay", 0, 1, MBrickletSolidStateRelay.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletSolidStateRelay__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletIndustrialDual020mAEClass, MBrickletIndustrialDual020mA.class, "MBrickletIndustrialDual020mA", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletIndustrialDual020mA_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_industrialdual020ma", 0, 1, MBrickletIndustrialDual020mA.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletIndustrialDual020mA__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(dual020mADeviceEClass, Dual020mADevice.class, "Dual020mADevice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDual020mADevice_DeviceType(), theEcorePackage.getEString(), "deviceType", "industrial020ma_sensor", 0, 1, Dual020mADevice.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDual020mADevice_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "1", 0, 1, Dual020mADevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDual020mADevice_SensorNum(), theEcorePackage.getEShort(), "sensorNum", null, 0, 1, Dual020mADevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mBrickletPTCEClass, MBrickletPTC.class, "MBrickletPTC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletPTC_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ptc", 0, 1, MBrickletPTC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletPTC__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(ptcDeviceEClass, PTCDevice.class, "PTCDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(ptcTemperatureEClass, PTCTemperature.class, "PTCTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPTCTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "ptc_temperature", 0, 1, PTCTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPTCTemperature_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "2", 0, 1, PTCTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ptcResistanceEClass, PTCResistance.class, "PTCResistance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPTCResistance_DeviceType(), theEcorePackage.getEString(), "deviceType", "ptc_resistance", 0, 1, PTCResistance.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPTCResistance_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "2", 0, 1, PTCResistance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ptcConnectedEClass, PTCConnected.class, "PTCConnected", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPTCConnected_DeviceType(), theEcorePackage.getEString(), "deviceType", "ptc_connected", 0, 1, PTCConnected.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletTemperatureEClass, MBrickletTemperature.class, "MBrickletTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_temperature", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7692,6 +8800,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(tfNullConfigurationEClass, TFNullConfiguration.class, "TFNullConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+    initEClass(tfptcBrickletConfigurationEClass, TFPTCBrickletConfiguration.class, "TFPTCBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFPTCBrickletConfiguration_NoiseRejectionFilter(), theEcorePackage.getEShortObject(), "noiseRejectionFilter", null, 0, 1, TFPTCBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFPTCBrickletConfiguration_WireMode(), theEcorePackage.getEShortObject(), "wireMode", null, 0, 1, TFPTCBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfIndustrialDual020mAConfigurationEClass, TFIndustrialDual020mAConfiguration.class, "TFIndustrialDual020mAConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFIndustrialDual020mAConfiguration_SampleRate(), theEcorePackage.getEShortObject(), "sampleRate", null, 0, 1, TFIndustrialDual020mAConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7766,6 +8881,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDimmableConfiguration_MinValue(), theEcorePackage.getEBigDecimal(), "minValue", null, 0, 1, DimmableConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDimmableConfiguration_MaxValue(), theEcorePackage.getEBigDecimal(), "maxValue", null, 0, 1, DimmableConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(buttonConfigurationEClass, ButtonConfiguration.class, "ButtonConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getButtonConfiguration_Tactile(), theEcorePackage.getEBoolean(), "tactile", "false", 0, 1, ButtonConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(dualButtonLEDConfigurationEClass, DualButtonLEDConfiguration.class, "DualButtonLEDConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDualButtonLEDConfiguration_Autotoggle(), theEcorePackage.getEBoolean(), "autotoggle", "false", 0, 1, DualButtonLEDConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ledStripConfigurationEClass, LEDStripConfiguration.class, "LEDStripConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLEDStripConfiguration_Chiptype(), theEcorePackage.getEString(), "chiptype", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_Frameduration(), theEcorePackage.getEIntegerObject(), "frameduration", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_Clockfrequency(), theEcorePackage.getELongObject(), "clockfrequency", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_ColorMapping(), theEcorePackage.getEString(), "colorMapping", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLEDStripConfiguration_SubDevices(), theEcorePackage.getEString(), "subDevices", null, 0, 1, LEDStripConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ledGroupConfigurationEClass, LEDGroupConfiguration.class, "LEDGroupConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLEDGroupConfiguration_Leds(), theEcorePackage.getEString(), "leds", null, 0, 1, LEDGroupConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     // Initialize enums and add enum literals
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
 
@@ -7774,6 +8905,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN1);
     addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN2);
     addEEnumLiteral(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.IN3);
+
+    initEEnum(industrialDigitalOutSubIDsEEnum, IndustrialDigitalOutSubIDs.class, "IndustrialDigitalOutSubIDs");
+    addEEnumLiteral(industrialDigitalOutSubIDsEEnum, IndustrialDigitalOutSubIDs.OUT0);
+    addEEnumLiteral(industrialDigitalOutSubIDsEEnum, IndustrialDigitalOutSubIDs.OUT1);
+    addEEnumLiteral(industrialDigitalOutSubIDsEEnum, IndustrialDigitalOutSubIDs.OUT2);
+    addEEnumLiteral(industrialDigitalOutSubIDsEEnum, IndustrialDigitalOutSubIDs.OUT3);
 
     initEEnum(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.class, "IndustrialQuadRelayIDs");
     addEEnumLiteral(industrialQuadRelayIDsEEnum, IndustrialQuadRelayIDs.RELAY0);
@@ -7907,6 +9044,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.LEFTPOSITION);
     addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.RIGHTPOSITION);
 
+    initEEnum(dualButtonDevicePositionEEnum, DualButtonDevicePosition.class, "DualButtonDevicePosition");
+    addEEnumLiteral(dualButtonDevicePositionEEnum, DualButtonDevicePosition.LEFT);
+    addEEnumLiteral(dualButtonDevicePositionEEnum, DualButtonDevicePosition.RIGHT);
+
+    initEEnum(dualButtonLedSubIdsEEnum, DualButtonLedSubIds.class, "DualButtonLedSubIds");
+    addEEnumLiteral(dualButtonLedSubIdsEEnum, DualButtonLedSubIds.DUALBUTTON_LEFTLED);
+    addEEnumLiteral(dualButtonLedSubIdsEEnum, DualButtonLedSubIds.DUALBUTTON_RIGHTLED);
+
+    initEEnum(dualButtonButtonSubIdsEEnum, DualButtonButtonSubIds.class, "DualButtonButtonSubIds");
+    addEEnumLiteral(dualButtonButtonSubIdsEEnum, DualButtonButtonSubIds.DUALBUTTON_LEFTBUTTON);
+    addEEnumLiteral(dualButtonButtonSubIdsEEnum, DualButtonButtonSubIds.DUALBUTTON_RIGHTBUTTON);
+
+    initEEnum(joystickSubIdsEEnum, JoystickSubIds.class, "JoystickSubIds");
+    addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_XPOSITION);
+    addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_YPOSITION);
+    addEEnumLiteral(joystickSubIdsEEnum, JoystickSubIds.JOYSTICK_BUTTON);
+
+    initEEnum(ptcSubIdsEEnum, PTCSubIds.class, "PTCSubIds");
+    addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_TEMPERATURE);
+    addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_RESISTANCE);
+    addEEnumLiteral(ptcSubIdsEEnum, PTCSubIds.PTC_CONNECTED);
+
+    initEEnum(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.class, "IndustrialDual020mASubIds");
+    addEEnumLiteral(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.SENSOR0);
+    addEEnumLiteral(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.SENSOR1);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -7920,6 +9083,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletIndustrialDigitalOut4EDataType, BrickletIndustrialDigitalOut4.class, "MTinkerBrickletIndustrialDigitalOut4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(switchStateEDataType, OnOffValue.class, "SwitchState", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(digitalValueEDataType, HighLowValue.class, "DigitalValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(hsbValueEDataType, HSBValue.class, "HSBValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletIO16EDataType, BrickletIO16.class, "TinkerBrickletIO16", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickServoEDataType, BrickServo.class, "MTinkerBrickServo", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerforgeValueEDataType, TinkerforgeValue.class, "MTinkerforgeValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -7946,6 +9110,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(brickletJoystickEDataType, BrickletJoystick.class, "BrickletJoystick", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLinearPotiEDataType, BrickletLinearPoti.class, "TinkerBrickletLinearPoti", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletDualButtonEDataType, BrickletDualButton.class, "TinkerBrickletDualButton", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletPTCEDataType, BrickletPTC.class, "TinkerBrickletPTC", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletIndustrialDual020mAEDataType, BrickletIndustrialDual020mA.class, "TinkerBrickletIndustrialDual020mA", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletSolidStateRelayEDataType, BrickletSolidStateRelay.class, "TinkerBrickletSolidStateRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
