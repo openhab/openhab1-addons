@@ -21,6 +21,7 @@ import org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpConnector;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpSimulator;
+import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser.NibeDataType;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser.VariableInformation;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpSerialConnector;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpUDPConnector;
@@ -50,6 +51,9 @@ public class NibeHeatPumpBinding extends
 	private String serialPort = null;
 	private boolean simulateHeatPump = false;
 
+	/* configuration variables for parsing */
+	private int modelNo = 1145;
+	
 	/** Thread to handle messages from heat pump */
 	private NibeHeatPumpMessageListener messageListener = null;
 
@@ -77,6 +81,11 @@ public class NibeHeatPumpBinding extends
 			String PortString = (String) config.get("udpPort");
 			if (StringUtils.isNotBlank(PortString)) {
 				udpPort = Integer.parseInt(PortString);
+			}
+			
+			String modelNoString = (String) config.get("modelNo");
+			if (StringUtils.isNotBlank(modelNoString)) {
+				modelNo = Integer.parseInt(modelNoString);
 			}
 
 			serialPort = (String) config.get("serialPort");
@@ -179,12 +188,37 @@ public class NibeHeatPumpBinding extends
 							int key = keys.nextElement();
 							double value = regValues.get(key);
 
-							VariableInformation variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F1145_F1245
-									.get(key);
+							VariableInformation variableInfo;
+							if ( modelNo == 750 )	{
+								variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F750.get(key);
+							} else {
+								variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F1145_F1245.get(key);
+							}
 
 							if (variableInfo == null) {
 								logger.debug("Unknown variable {}", key);
 							} else {
+								// 32bit handling:
+								// The "correct" way:
+//								if ( variableInfo.dataType == NibeDataType.U32 || variableInfo.dataType == NibeDataType.S32 )
+								// The working way:
+								if ( key == 40079 || key == 40081 || key == 40083 || key == 43144 || key == 43239 || key == 43305 || key == 43416 || key == 43420 || key == 43424 )
+								{
+									logger.debug("32bit variableInfo detected {}", key);
+									int keyValue 		= regValues.get(key);
+									int keyPlusOneValue = regValues.get(key + 1);
+//									if (keys.hasMoreElements())
+									{
+//										if ( regValues.get(key + 1) != null )
+										{
+											keyPlusOneValue = regValues.get(key + 1);
+										}
+									}
+									logger.debug("Value " + keyValue + " PlusOneValue " + keyPlusOneValue);
+//									value = (int) ((Number) regValues.get(key + 1) ).intValue() << 16 | ((Number) regValues.get(key + 0) ).intValue(); 
+									value = (int) keyPlusOneValue << 16 | keyValue;
+								}
+								
 								value = value / variableInfo.factor;
 								org.openhab.core.types.State state = convertNibeValueToState(
 										variableInfo.dataType, value);
