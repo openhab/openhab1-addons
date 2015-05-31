@@ -9,13 +9,23 @@
 package org.openhab.binding.caldav_command.internal;
 
 /**
- * Item type
+ * Item type.
+ * Actions which can be performed on items.
  * 
  * @author Robert
  * @since 1.7.0
  */
 public enum CalDavType {
+	/**
+	 * get the value from the event (triggered at BEGIN or END
+	 */
 	VALUE,
+	/**
+	 * get the date when the item will be next switched
+	 */
 	DATE,
+	/**
+	 * disables the event triggered execution
+	 */
 	DISABLE
 }

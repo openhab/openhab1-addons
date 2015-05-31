@@ -8,6 +8,8 @@
  */
 package org.openhab.io.caldav;
 
+import java.util.List;
+
 /**
  * Cal DAV loader interface
  * 
@@ -26,4 +28,17 @@ public interface CalDavLoader {
 	 * @param notifier the event listener
 	 */
 	public void removeListener(EventNotifier notifier);
+
+	/**
+	 * add a new event to the calendar
+	 * @param calDavEvent
+	 */
+	public void addEvent(CalDavEvent calDavEvent);
+
+	/**
+	 * get events for a specific calendar
+	 * @param calendarId
+	 * @return
+	 */
+	public List<CalDavEvent> getEvents(String calendarId);
 }

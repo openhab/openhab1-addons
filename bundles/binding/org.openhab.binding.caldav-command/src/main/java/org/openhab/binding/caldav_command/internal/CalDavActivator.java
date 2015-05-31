@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Robert Delbrück
- * @since 1.6.0
+ * @since 1.7.0
  */
 public final class CalDavActivator implements BundleActivator {
 

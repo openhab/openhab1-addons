@@ -17,7 +17,14 @@ import org.openhab.core.binding.BindingConfig;
  * @since 1.7.0
  */
 public class CalDavNextEventConfig implements BindingConfig {
+	/**
+	 * configuration is for this item
+	 */
 	private String itemName;
+	
+	/**
+	 * configuration is for the item which is referenced inside the calendar
+	 */
 	private String itemNameToListenTo;
 	private CalDavType type;
 

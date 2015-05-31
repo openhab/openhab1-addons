@@ -37,11 +37,10 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Maps events from calDAV to items. Can be used to show personal events in sitemaps.
  * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 
@@ -76,16 +75,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	public void activate() {
-//		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-//		if (bundleContext != null) {
-//
-//			ServiceReference<?> serviceReference2 = bundleContext.getServiceReference(ItemRegistry.class.getName());
-//			if (serviceReference2 != null) {
-//				itemRegistry = (ItemRegistry) bundleContext.getService(serviceReference2);
-//			} else
-//				logger.error("itemregistry=null");
-//		} else
-//			logger.error("bundleContext=null");
 
 	}
 	
@@ -94,22 +83,26 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			this.calDavLoader.removeListener(this);
 		}
 	}
-
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updated(Dictionary<String, ?> properties)
 			throws ConfigurationException {
 		if (properties == null) {
 			logger.warn("no configuration found");
 		} else {
-            String usedCalendars = (String) properties.get(PARAM_USED_CALENDARS);
-            if (usedCalendars != null) {
-                for (String cal : usedCalendars.split(",")) {
-                    this.calendars.add(cal.trim());
-                }
-            }
+			String usedCalendars = (String) properties
+					.get(PARAM_USED_CALENDARS);
+			if (usedCalendars != null) {
+				for (String cal : usedCalendars.split(",")) {
+					this.calendars.add(cal.trim());
+				}
+			}
 
-			String homeIdentifiers = (String) properties.get(PARAM_HOME_IDENTIFIERS);
+			String homeIdentifiers = (String) properties
+					.get(PARAM_HOME_IDENTIFIERS);
 			if (homeIdentifiers != null) {
 				for (String homeIdent : homeIdentifiers.split(",")) {
 					this.homeIdentifier.add(homeIdent.trim().toLowerCase());
@@ -130,15 +123,15 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		CalDavConfig config = ((CalDavBindingProvider) provider).getConfig(itemName);
 		if (config == null) {
-//			logger.warn("cannot find binding config for item: {}", itemName);
-//			eventPublisher.postUpdate(itemName, org.openhab.core.types.UnDefType.UNDEF);
 			return;
 		}
 		this.updateItem(itemName, config);
 	}
 	
 	
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void eventRemoved(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
@@ -152,6 +145,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		this.updateItemsForEvent();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void eventLoaded(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
@@ -165,6 +161,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		this.updateItemsForEvent();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void eventChanged(CalDavEvent event) {
 		if (!calendars.contains(event.getCalendarId())) {
@@ -176,6 +175,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		this.updateItemsForEvent();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void eventBegins(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
@@ -189,6 +191,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		this.updateItemsForEvent();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void eventEnds(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
@@ -272,16 +277,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			logger.debug("sending command {} for item {}", command, itemName);
 			eventPublisher.postUpdate(itemName, command);
 			logger.trace("command {} successfuly send", command);
-//			try {
-//				Item item = this.itemRegistry.getItem(itemName);
-//				State state = item.getState();
-//			} catch (ItemNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
-		
-		
 	}
 	
 	private List<CalDavEvent> getActiveEvents(String calendar) {

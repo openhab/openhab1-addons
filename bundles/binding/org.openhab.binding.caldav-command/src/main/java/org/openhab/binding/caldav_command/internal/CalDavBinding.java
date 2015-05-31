@@ -44,15 +44,28 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
- * This is the default implementation of the caldav binding
+ * Implementation of the caldav command binding.
+ * Every event which is loaded from the server can be triggered with 4 notifications.
+ * <br/>
+ * All events which are loaded must fulfil a name syntax for the description.
+ * All other fields of a event are free to choose.
  * 
+ * <pre>
+ * Sample configuration for event description:
+ * BEGIN:Livingroom_Heater:23
+ * END:Livingroom_Heater:16
+ * => Meaning: when the event starts the heater turns on to 23 and when the event ends
+ * it turns back to 16
  * 
- * BEGIN:ItemName:ON
- * BEGIN:ItemName:23
- * 
- * END:ItemName:OFF
- * END:ItemName:16
- * 
+ * <br/>
+ * Sample configuration for event description:
+ * BEGIN:Kitchen_Music:ON
+ * END:Kitchen_Music:OFF
+ * => Meaning: when the event starts the music turns on and when the event ends
+ * it turns off
+ * </pre>
+ *
+ * @see org.openhab.io.caldav.EventNotifier 
  * @author Robert Delbrück
  * @since 1.7.0
  */
@@ -171,15 +184,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			String itemName = commandSplit[0];
 			String commandString = commandSplit[1];
 			
-			Item item = null;
 			try {
-				item = itemRegistry.getItem(itemName);
+				itemRegistry.getItem(itemName);
 			} catch (ItemNotFoundException e) {
 				logger.error("item '" + itemName + "' could not be found");
-				return;
-			}
-			if (item == null) {
-				logger.error("cannot find item: {}", itemName);
 				return;
 			}
 			
@@ -318,7 +326,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 
 					logger.trace("remove: {}", entry.getValue().get(i).getEventId());
 					entry.getValue().remove(i);
-//					i--;
 					
 					for (int j = 0; j < entry.getValue().size(); j++) {
 						logger.trace("{}: {}", j, entry.getValue().get(j).getEventId());

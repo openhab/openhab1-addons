@@ -12,10 +12,18 @@ import org.openhab.binding.caldav_personal.internal.CalDavConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * Binding provider for the calDAV personal
+ * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public interface CalDavBindingProvider extends BindingProvider {
+	
+	/**
+	 * returns the configuration for a given item
+	 * @param item item for which the configuration is requested
+	 * @return configuration
+	 */
 	CalDavConfig getConfig(String item);
 	
 }

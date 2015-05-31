@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * valid values: name, description, place, start, end
  * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider implements CalDavBindingProvider {
 	private static final Logger logger = LoggerFactory.getLogger(CalDavBindingProviderImpl.class);

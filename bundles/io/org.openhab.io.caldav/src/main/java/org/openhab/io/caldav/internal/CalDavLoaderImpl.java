@@ -10,6 +10,7 @@ package org.openhab.io.caldav.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -38,9 +40,20 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -49,6 +62,7 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
@@ -63,7 +77,9 @@ import com.github.sardine.Sardine;
 import com.github.sardine.impl.SardineImpl;
 
 /**
- * Default implementation of the CalDAV loader.
+ * Loads all events from the configured calDAV servers.
+ * This is done with an interval.
+ * All interesting events are hold in memory.
  * 
  * @author Robert Delbrück
  * @since 1.7.0
@@ -91,8 +107,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private List<EventNotifier> eventListenerList = new ArrayList<EventNotifier>();
 	
 	
-//	private int tzOffsetMillis;
-
 	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
@@ -104,6 +118,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				if (key.equals("service.pid")) {
 					continue;
 				} else if (key.equals(PROP_TIMEZONE)) {
+					LOG.debug("overriding default timezone {} with {}", defaultTimeZone, config.get(key));
 					defaultTimeZone = DateTimeZone.forID(config.get(key) + "");
 					if (defaultTimeZone == null) {
 						throw new ConfigurationException(PROP_TIMEZONE, "invalid timezone value: " + config.get(key));
@@ -140,6 +155,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				}
 			}
 
+			// verify if all required parameters are set
 			for (String id : this.configMap.keySet()) {
 				if (configMap.get(id).getUrl() == null) {
 					throw new ConfigurationException(PROP_URL, PROP_URL + " must be set");
@@ -161,8 +177,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 			setProperlyConfigured(true);
 			this.startLoading();
-		} else {
-			LOG.warn("configuration not found");
 		}
 	}
 
@@ -183,7 +197,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		this.eventListenerList.remove(notifier);
 	}
 
-	private synchronized void addEvent(CalDavEvent event) {
+	private synchronized void addEventToMap(CalDavEvent event) {
 		if (!this.eventCache.containsKey(event.getCalendarId())) {
 			LOG.debug("creating event map for calendar: {}", event.getCalendarId());
 			this.eventCache.put(event.getCalendarId(), new ConcurrentHashMap<String, CalDavEvent>());
@@ -277,8 +291,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			}
 		};
 		timerBeginMap.put(event.getId(), timerTaskBegin);
-		new Timer().schedule(timerTaskBegin, event.getStart().toDate());
-		LOG.debug("begin timer scheduled for event '{}' @ {}", event.getShortName(), event.getStart().toDate());
+		Date startAsDate = event.getStart().toDate();
+		new Timer().schedule(timerTaskBegin, startAsDate);
+		LOG.debug("begin timer scheduled for event '{}' @ {}", event.getShortName(), startAsDate);
 		
 		TimerTask timerTaskEnd = new TimerTask() {
 			@Override
@@ -298,15 +313,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			}
 		};
 		timerEndMap.put(event.getId(), timerTaskEnd);
-		new Timer().schedule(timerTaskEnd, event.getEnd().toDate());
-		LOG.debug("end timer scheduled for event '{}' @ {}", event.getShortName(), event.getEnd().toDate());
+		Date endAsDate = event.getEnd().toDate();
+		new Timer().schedule(timerTaskEnd, endAsDate);
+		LOG.debug("end timer scheduled for event '{}' @ {}", event.getShortName(), endAsDate);
 	}
-
-	private synchronized List<CalDavEvent> loadEvents(CalDavConfig config, List<String> currentLoad)
-			throws IOException, ParserException {
-		List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
-
-		Sardine sardine = null;
+	
+	private Sardine getConnection(CalDavConfig config) {
 		if (config.isDisableCertificateVerification()) {
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
 			try {
@@ -318,20 +330,23 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				    }
 				}).build());
 			} catch (KeyManagementException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("error verifying certificate", e);
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("error verifying certificate", e);
 			} catch (KeyStoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("error verifying certificate", e);
 			}
-			sardine = new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
+			return new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
 		} else {
-			sardine = new SardineImpl(config.getUsername(), config.getPassword());
+			return new SardineImpl(config.getUsername(), config.getPassword());
 		}
-		
+	}
+
+	private synchronized List<CalDavEvent> loadEvents(CalDavConfig config, List<String> currentLoad)
+			throws IOException, ParserException {
+		List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
+
+		Sardine sardine = getConnection(config);
 
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_PARSING, true);
@@ -355,11 +370,16 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			CalendarBuilder builder = new CalendarBuilder();
 
 			Calendar calendar = builder.build(inputStream);
-			for (CalendarComponent comp : calendar.getComponents()) {
-				LOG.trace("loading event: {}", comp);
-				if (comp instanceof VTimeZone) {
-					
-				} else if (comp instanceof VEvent) {
+			LOG.trace("calendar: {}", calendar);
+			
+//			DateTimeZone calendarsDateTimeZone = DateTimeZone.UTC;
+//			CalendarComponent compTimeZone = calendar.getComponent("VTIMEZONE");
+//			if (compTimeZone != null) {
+//				calendarsDateTimeZone = DateTimeZone.forID(((VTimeZone) compTimeZone).getTimeZoneId().getValue());
+//			}
+			for (CalendarComponent comp : calendar.getComponents("VEVENT")) {
+				LOG.trace("loading event: {}", comp.getName());
+				if (comp instanceof VEvent) {
 					VEvent vEvent = (VEvent) comp;
 					LOG.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
 					java.util.Calendar instance1 = java.util.Calendar
@@ -377,28 +397,55 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							continue;
 						}
 						
-						DateTimeZone dateTimeZone = defaultTimeZone;
+						org.joda.time.DateTime start = null;
+						org.joda.time.DateTime end = null;
+						
+//						DateTimeZone dateTimeZone = defaultTimeZone;
 						if (p.getStart().getTimeZone() == null) {
-							dateTimeZone = DateTimeZone.UTC;
+							if (p.getStart().isUtc()) {
+								LOG.trace("start is without timezone, but UTC");
+								start = new org.joda.time.DateTime(p.getRangeStart(), DateTimeZone.UTC).toLocalDateTime().toDateTime(defaultTimeZone);
+							} else {
+								LOG.trace("start is without timezone, not UTC");
+								start = new LocalDateTime(p.getRangeStart()).toDateTime();
+							}
 						} else if (DateTimeZone.getAvailableIDs().contains(p.getStart().getTimeZone().getID())) {
-							dateTimeZone = DateTimeZone.forID(p.getStart().getTimeZone().getID());
+							LOG.trace("start is with known timezone: {}", p.getStart().getTimeZone().getID());
+							start = new org.joda.time.DateTime(p.getRangeStart(), DateTimeZone.forID(p.getStart().getTimeZone().getID()));
+						} else {
+							// unknown timezone
+							LOG.trace("start is with unknown timezone: {}", p.getStart().getTimeZone().getID());
+							start = new org.joda.time.DateTime(p.getRangeStart(), defaultTimeZone);
 						}
 						
-						org.joda.time.DateTime eventStart = new org.joda.time.DateTime(p.getRangeStart(), dateTimeZone);
-						org.joda.time.DateTime eventEnd = new org.joda.time.DateTime(p.getRangeEnd(), dateTimeZone);
-						if (eventStart.getSecondOfDay() != 0) {
-							eventStart = eventStart.toDateTime(defaultTimeZone);
+						if (p.getEnd().getTimeZone() == null) {
+							if (p.getStart().isUtc()) {
+								end = new org.joda.time.DateTime(p.getRangeEnd(), DateTimeZone.UTC).toLocalDateTime().toDateTime(defaultTimeZone);
+							} else {
+								end = new LocalDateTime(p.getRangeEnd()).toDateTime();
+							}
+						} else if (DateTimeZone.getAvailableIDs().contains(p.getEnd().getTimeZone().getID())) {
+							end = new org.joda.time.DateTime(p.getRangeEnd(), DateTimeZone.forID(p.getEnd().getTimeZone().getID()));
+						} else {
+							// unknown timezone
+							end = new org.joda.time.DateTime(p.getRangeEnd(), defaultTimeZone);
 						}
-						if (eventEnd.getSecondOfDay() != 0) {
-							eventEnd = eventEnd.toDateTime(defaultTimeZone);
-						}
+						
+//						org.joda.time.DateTime eventStart = new org.joda.time.DateTime(p.getRangeStart(), dateTimeZone);
+//						org.joda.time.DateTime eventEnd = new org.joda.time.DateTime(p.getRangeEnd(), dateTimeZone);
+//						if (eventStart.getSecondOfDay() != 0) {
+//							eventStart = eventStart.toDateTime(defaultTimeZone);
+//						}
+//						if (eventEnd.getSecondOfDay() != 0) {
+//							eventEnd = eventEnd.toDateTime(defaultTimeZone);
+//						}
 						
 						CalDavEvent event = new CalDavEvent(vEvent.getSummary()
 								.getValue(), 
 								vEvent.getUid().getValue(),
 								config.getKey(), 
-								eventStart, 
-								eventEnd
+								start, 
+								end
 						);
 						if (vEvent.getLastModified() != null) {
 							event.setLastChanged(new org.joda.time.DateTime(vEvent.getLastModified().getDate()));
@@ -413,7 +460,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							event.setContent(vEvent.getDescription().getValue());
 						}
 						LOG.trace("adding event: " + event.getShortName());
-						addEvent(event);
+						addEventToMap(event);
 						currentLoad.add(event.getId());
 					}
 
@@ -482,6 +529,46 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	@Override
 	protected String getName() {
 		return "CalDav Loader";
+	}
+
+	@Override
+	public void addEvent(CalDavEvent calDavEvent) {
+		CalDavConfig config = configMap.get(calDavEvent.getCalendarId());
+		Sardine sardine = getConnection(config);
+		
+		String uid = UUID.randomUUID().toString();
+		
+		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+		TimeZone timezone = registry.getTimeZone(defaultTimeZone.getID());
+		
+		Calendar calendar = new Calendar();
+		calendar.getProperties().add(Version.VERSION_2_0);
+		calendar.getProperties().add(new ProdId("openHAB caldav-persistence"));
+		VEvent vEvent = new VEvent();
+		vEvent.getProperties().add(new Summary(calDavEvent.getName()));
+		vEvent.getProperties().add(new Description(calDavEvent.getContent()));
+		final DtStart dtStart = new DtStart(new net.fortuna.ical4j.model.DateTime(calDavEvent.getStart().toDate()));
+		dtStart.setTimeZone(timezone);
+		vEvent.getProperties().add(dtStart);
+		final DtEnd dtEnd = new DtEnd(new net.fortuna.ical4j.model.DateTime(calDavEvent.getEnd().toDate()));
+		dtEnd.setTimeZone(timezone);
+		vEvent.getProperties().add(dtEnd);
+		vEvent.getProperties().add(new Uid(uid));
+		vEvent.getProperties().add(Clazz.PUBLIC);
+		calendar.getComponents().add(vEvent);
+		
+		try {
+			sardine.put(config.getUrl() + "/openHAB-" + uid + ".ics", calendar.toString().getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			LOG.error("cannot write event", e);
+		} catch (IOException e) {
+			LOG.error("cannot write event", e);
+		}
+	}
+
+	@Override
+	public List<CalDavEvent> getEvents(String calendarId) {
+		return new ArrayList<CalDavEvent>(eventCache.get(calendarId).values());
 	}
 
 }

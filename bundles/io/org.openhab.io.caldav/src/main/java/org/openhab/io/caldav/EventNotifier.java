@@ -15,9 +15,33 @@ package org.openhab.io.caldav;
  * @since 1.7.0
  */
 public interface EventNotifier {
+	/**
+	 * invoked when event was loaded via caldav
+	 * @param event the interesting event
+	 */
 	void eventLoaded(CalDavEvent event);
+	
+	/**
+	 * invoked when event was removed from calendar and reloaded from caldav
+	 * @param event the interesting event
+	 */
 	void eventRemoved(CalDavEvent event);
+	
+	/**
+	 * invoked when event was changed (modify date of ics event
+	 * @param event the interesting event
+	 */
 	void eventChanged(CalDavEvent event);
+	
+	/**
+	 * invoked when event starts
+	 * @param event the interesting event
+	 */
 	void eventBegins(CalDavEvent event);
+	
+	/**
+	 * invoked when event ends
+	 * @param event the interesting event
+	 */
 	void eventEnds(CalDavEvent event);
 }
