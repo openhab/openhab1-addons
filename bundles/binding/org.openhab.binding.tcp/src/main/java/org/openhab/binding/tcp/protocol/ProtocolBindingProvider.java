@@ -40,7 +40,7 @@ public interface ProtocolBindingProvider extends ChannelBindingProvider {
 	/* Get a list of the openHAB Commands associated with the combination of the given Item and protocol command */
 	public List<String> getItemNames(String protocolCommand);
 
-	/* Get a list of the openHAB Commands associated with the combingation of the given Item and protocol command */
+	/* Get a list of the openHAB Commands associated with the combination of the given Item and protocol command */
 	public List<Command> getAllCommands(String itemName, String protocolCommand);
 
 	/* Get a list of the openHAB Commands associated with the given Item  */
