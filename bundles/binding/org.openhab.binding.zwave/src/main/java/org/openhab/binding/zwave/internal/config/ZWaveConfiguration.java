@@ -314,15 +314,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Add the action buttons
 				record.addAction("Heal", "Heal Node");
+				record.addAction("Initialise", "Reinitialise Node");
 				
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
 					record.addAction("Delete", "Delete Node");
 				}
 				records.add(record);
-
-				// This needs to be removed - temporary only until it's added to initialisation code.
-				record.addAction("Version", "Version Info");
 			}
 			return records;
 		}
@@ -963,23 +961,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					nodeSerializer.SerializeNode(node);
 				}
 
+				if (action.equals("Initialise")) {
+					logger.debug("NODE {}: re-initialising node", nodeId);
+
+					// Delete the saved XML
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(nodeId);
+					
+					this.zController.reinitialiseNode(nodeId);
+				}
+
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
-				}
-
-				// This is temporary
-				// It should be in the startup code, but that needs refactoring
-				if (action.equals("Version")) {
-					logger.debug("NODE {}: Get node version", nodeId);
-					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-							.getCommandClass(CommandClass.VERSION);
-					if (versionCommandClass == null) {
-						return;
-					}
-
-					// Request the version report for this node
-					this.zController.sendData(versionCommandClass.getVersionMessage());
 				}
 
 				// Return here as afterwards we assume there are more elements

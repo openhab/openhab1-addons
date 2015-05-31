@@ -1,6 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0175</Id>
+		<Name>devolo</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>MT02646</Model>
+			<Label lang="en">Home Control Metering Plug</Label>
+			<ConfigFile>devolo/mt02646.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0000</Id>
 		<Name>Sigma Designs</Name>
 		<Product>
@@ -422,6 +435,15 @@
 		</Product>
 		<Product>
            <Reference>
+               <Type>4944</Type>
+               <Id>3031</Id>
+           </Reference>
+           <Model>ZW3003</Model>
+           <Label lang="en">In-Wall Dimmer</Label>
+           <ConfigFile>ge/zw3003.xml</ConfigFile>
+        </Product>
+		<Product>
+           <Reference>
                <Type>4450</Type>
                <Id>3030</Id>
            </Reference>
@@ -650,12 +672,33 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0101</Type>
+				<Id>005a</Id>
+			</Reference>
+			<Reference>
+				<Type>0201</Type>
+				<Id>005a</Id>
+			</Reference>
+			<Model>Z-Stick Gen-5</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0036</Id>
 			</Reference>
 			<Model>DSB54</Model>
-			<Label lang="en">Recessed Door/Window sensor</Label>
+			<Label lang="en">Recessed Door/Window Sensor</Label>
 			<ConfigFile>aeon/dsb54.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>DSB54</Model>
+			<Label lang="en">Recessed Door/Window Sensor (Gen5)</Label>
+			<ConfigFile>aeon/dsb54-gen5.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -2150,4 +2193,17 @@
             <ConfigFile>dragontech/wd100.xml</ConfigFile>
         </Product>
     </Manufacturer>
+	<Manufacturer>
+		<Id>015f</Id>
+		<Name>MCO Home</Name>
+		<Product>
+			<Reference>
+				<Type>0a05</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>MH10-PM2.5-WA</Model>
+			<Label lang="en">PM2.5 Monitor</Label>
+			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

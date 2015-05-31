@@ -163,7 +163,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 			StringBuffer discoveryMessage = new StringBuffer();
 			discoveryMessage.append("M-SEARCH * HTTP/1.1\r\n");
 			discoveryMessage.append("HOST: " + SSDP_IP + ":" + SSDP_PORT + "\r\n");
-			discoveryMessage.append("ST: urn:Belkin:device:\r\n");
+			discoveryMessage.append("ST: upnp:rootdevice\r\n");
 			discoveryMessage.append("MAN: \"ssdp:discover\"\r\n");
 			discoveryMessage.append("MX: 5\r\n");
 			discoveryMessage.append("\r\n");
@@ -207,21 +207,24 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								String location = StringUtils.substringBetween(message, "LOCATION: ", "/setup.xml");
-								if (location != null) {
-								
-									logger.debug("Wemo device found at URL '{}'", location);
-								
-									try {
-										int timeout = 5000;
-										String friendlyNameResponse = HttpUtil.executeUrl("GET", location+"/setup.xml", timeout);
-										String friendlyName = StringUtils.substringBetween(friendlyNameResponse, "<friendlyName>", "</friendlyName>");
-										logger.info("Wemo device '{}' found at '{}'", friendlyName, location);
-										wemoConfigMap.put(friendlyName, location);
+								if (message != null) {
+									String location = StringUtils.substringBetween(message, "LOCATION: ", "/setup.xml");
 									
+									if (location != null) {
+									
+										try {
+											int timeout = 5000;
+											String response = HttpUtil.executeUrl("GET", location+"/setup.xml", timeout);
+											if (response.contains("urn:Belkin:device")) {
+												logger.debug("Wemo device found at URL '{}'", location);
+												String friendlyName = StringUtils.substringBetween(response, "<friendlyName>", "</friendlyName>");
+												logger.info("Wemo device '{}' found at '{}'", friendlyName, location);
+												wemoConfigMap.put(friendlyName, location);
+											}
 										} catch (Exception te) {
 											logger.error("Could not find wemo friendlyName ", te);
 										}
+									}
 								}
 							}
 						}).start();

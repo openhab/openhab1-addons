@@ -29,7 +29,6 @@ import org.openhab.binding.maxcube.internal.message.C_Message;
 import org.openhab.binding.maxcube.internal.message.Configuration;
 import org.openhab.binding.maxcube.internal.message.Device;
 import org.openhab.binding.maxcube.internal.message.DeviceInformation;
-import org.openhab.binding.maxcube.internal.message.H_Message;
 import org.openhab.binding.maxcube.internal.message.HeatingThermostat;
 import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
@@ -208,6 +207,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					} else {
 						continue;
 					}
+					
+					message.debug(logger);
 
 					if (message != null) {
 						message.debug(logger);

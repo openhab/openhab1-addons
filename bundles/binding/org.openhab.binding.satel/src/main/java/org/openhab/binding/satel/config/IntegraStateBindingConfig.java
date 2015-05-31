@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,13 +26,10 @@ import org.openhab.binding.satel.internal.types.PartitionState;
 import org.openhab.binding.satel.internal.types.StateType;
 import org.openhab.binding.satel.internal.types.ZoneState;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
@@ -56,16 +53,11 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 
 	private StateType stateType;
 	private int[] objectNumbers;
-	private Map<String, String> options;
 	
-	private enum Options {
-		COMMANDS_ONLY, FORCE_ARM
-	}
-
 	private IntegraStateBindingConfig(StateType stateType, int[] objectNumbers, Map<String, String> options) {
+		super(options);
 		this.stateType = stateType;
 		this.objectNumbers = objectNumbers;
-		this.options = options;
 	}
 
 	/**
@@ -145,14 +137,15 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 		
 		if (this.objectNumbers.length == 1) {
 			int bitNbr = this.objectNumbers[0] - 1;
-			return booleanToState(item, stateEvent.isSet(bitNbr));
+			boolean invertState = hasOptionEnabled(Options.INVERT_STATE) 
+					&& (this.stateType.getObjectType() == ObjectType.ZONE || this.stateType.getObjectType() == ObjectType.OUTPUT);
+			return booleanToState(item, stateEvent.isSet(bitNbr) ^ invertState);
 		} else if (this.objectNumbers.length == 0) {
-			if (item instanceof ContactItem) {
-				return (stateEvent.statesSet() > 0) ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-			} else if (item instanceof SwitchItem) {
-				return (stateEvent.statesSet() > 0) ? OnOffType.ON : OnOffType.OFF;
-			} else if (item instanceof NumberItem) {
-				return new DecimalType(stateEvent.statesSet());
+			int statesSet = stateEvent.statesSet();
+			if (item instanceof NumberItem) {
+				return new DecimalType(statesSet);
+			} else {
+				return booleanToState(item, statesSet > 0);
 			}
 		} else if (this.objectNumbers.length == 2 && item instanceof RollershutterItem) {
 			// roller shutter support
@@ -182,7 +175,8 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 			switch (this.stateType.getObjectType()) {
 			case OUTPUT:
 				byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16);
-				return ControlObjectCommand.buildMessage(switchOn ? OutputControl.ON : OutputControl.OFF, outputs,
+				boolean invertState = hasOptionEnabled(Options.INVERT_STATE);
+				return ControlObjectCommand.buildMessage(switchOn ^ invertState ? OutputControl.ON : OutputControl.OFF, outputs,
 						userCode);
 
 			case DOORS:
@@ -264,7 +258,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 			sb.append(Integer.toString(i));
 		}
 		return String.format("IntegraStateBindingConfig: object = %s, state = %s, object nbr = %s, options = %s",
-				this.stateType.getObjectType(), this.stateType, sb.toString(), this.options);
+				this.stateType.getObjectType(), this.stateType, sb.toString(), this.optionsAsString());
 	}
 
 	private byte[] getObjectBitset(int size) {
@@ -281,9 +275,5 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 		int bitNbr = this.objectNumbers[bitToSet] - 1;
 		bitset[bitNbr / 8] |= (byte) (1 << (bitNbr % 8));
 		return bitset;
-	}
-	
-	private boolean hasOptionEnabled(Options option) {
-		return Boolean.parseBoolean(this.options.get(option.name()));
 	}
 }

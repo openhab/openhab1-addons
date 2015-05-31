@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB RFXCOM Binding
 Bundle-SymbolicName: org.openhab.binding.rfxcom
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.binding.rfxcom.internal.RFXComActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the RFXCOM binding of the open Home Aut
@@ -14,6 +14,7 @@ Import-Package: gnu.io,
  javax.xml.bind,
  org.apache.commons.io;version="2.0.1",
  org.apache.commons.lang,
+ org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,

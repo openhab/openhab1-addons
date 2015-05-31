@@ -14,6 +14,7 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -108,6 +109,10 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
 	 * {@inheritDoc}
 	 */
 	public String sendMessage(String data, int timeout) throws EpsonProjectorException {
+		if (in == null || out == null) {
+			connect();
+		}
+		
 		try {
 			// flush input stream
 			if (in.markSupported()) {
@@ -126,37 +131,23 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
 				}
 			}
 
-			out.write(data.getBytes());
-			out.write("\r\n".getBytes());
-			out.flush();
+			return sendMmsg(data, timeout);
 
-			String resp = "";
-
-			long startTime = System.currentTimeMillis();
-			long elapsedTime = 0;
-
-			while (elapsedTime < timeout) {
-				int availableBytes = in.available();
-				if (availableBytes > 0) {
-					byte[] tmpData = new byte[availableBytes];
-					int readBytes = in.read(tmpData, 0, availableBytes);
-					resp = resp.concat(new String(tmpData, 0, readBytes));
-					
-					if (resp.contains(":")) {
-						return resp;
-					}
-				} else {
-					Thread.sleep(100);
-				}
-
-				elapsedTime = Math.abs((new Date()).getTime() - startTime);
+		} catch (IOException e) {
+			
+			logger.debug("IO error occured...reconnect and resend ones");
+			disconnect();
+			connect();
+			
+			try {
+				return sendMmsg(data, timeout);
+			} catch (IOException e1) {
+				throw new EpsonProjectorException(e);
 			}
-
+			
 		} catch (Exception e) {
 			throw new EpsonProjectorException(e);
 		}
-
-		return null;
 	}
 
 	@Override
@@ -166,5 +157,39 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
 			Thread.sleep(Long.MAX_VALUE);
 		} catch (InterruptedException e) {
 		}
+	}
+	
+	private String sendMmsg(String data, int timeout) throws IOException, EpsonProjectorException {
+		out.write(data.getBytes());
+		out.write("\r\n".getBytes());
+		out.flush();
+
+		String resp = "";
+
+		long startTime = System.currentTimeMillis();
+		long elapsedTime = 0;
+
+		while (elapsedTime < timeout) {
+			int availableBytes = in.available();
+			if (availableBytes > 0) {
+				byte[] tmpData = new byte[availableBytes];
+				int readBytes = in.read(tmpData, 0, availableBytes);
+				resp = resp.concat(new String(tmpData, 0, readBytes));
+				
+				if (resp.contains(":")) {
+					return resp;
+				}
+			} else {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					throw new EpsonProjectorException(e);
+				}
+			}
+
+			elapsedTime = Math.abs((new Date()).getTime() - startTime);
+		}
+		
+		return null;
 	}
 }
