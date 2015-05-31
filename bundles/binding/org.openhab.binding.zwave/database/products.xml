@@ -435,6 +435,15 @@
 		</Product>
 		<Product>
            <Reference>
+               <Type>4944</Type>
+               <Id>3031</Id>
+           </Reference>
+           <Model>ZW3003</Model>
+           <Label lang="en">In-Wall Dimmer</Label>
+           <ConfigFile>ge/zw3003.xml</ConfigFile>
+        </Product>
+		<Product>
+           <Reference>
                <Type>4450</Type>
                <Id>3030</Id>
            </Reference>
