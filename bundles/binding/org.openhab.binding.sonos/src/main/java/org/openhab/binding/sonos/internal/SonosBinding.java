@@ -647,6 +647,9 @@ implements ManagedService {
 				case RADIO:
 					result = player.playRadio(commandAsString);
 					break;
+				case FAVORITE:
+					result = player.playFavorite(commandAsString);
+					break;
 				case SETALARM:
 					result = player.setAlarm(commandAsString);
 					break;
