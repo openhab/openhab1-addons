@@ -53,29 +53,31 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 /**
- * This is the implementation of the SQL {@link PersistenceService}.
+ * This is the implementation of the H2 SQL {@link PersistenceService}.
+ * See http://h2database.com
+ * 
+ * H2 database licensed under EPL (http://h2database.com/html/license.html)
  * 
  * Data is persisted with the following conversions -:
  * 
- * Item-Type Data-Type H2SQL-Type
- * ========= ========= ==========
- * ColorItem HSBType CHAR(25)
- * ContactItem OnOffType CHAR(6)
- * DateTimeItem DateTimeType DATETIME
- * DimmerItem PercentType TINYINT
- * NumberItem DecimalType DOUBLE
- * RollershutterItem PercentType TINYINT
- * StringItem StringType VARCHAR(20000)
- * SwitchItem OnOffType CHAR(3)
+ * Item-Type         Data-Type    H2SQL-Type
+ * =========         =========    ==========
+ * ColorItem         HSBType      CHAR(25)
+ * ContactItem       OnOffType    CHAR(6)
+ * DateTimeItem      DateTimeType DATETIME
+ * DimmerItem        PercentType  TINYINT
+ * NumberItem        DecimalType  DOUBLE
+ * RollershutterItem PercentType  TINYINT
+ * StringItem        StringType   VARCHAR(20000)
+ * SwitchItem        OnOffType    CHAR(3)
  * 
  * In the store method, type conversion is performed where the default type for
  * an item is not as above For example, DimmerType can return OnOffType, so to
  * keep the best resolution, we store as a number in SQL and convert to
  * DecimalType before persisting to H2SQL.
  * 
- * @author Chris Jackson
+ * @author Chris Jackson - Initial contribution
  * @since 1.8.0
  */
 public class H2SqlPersistenceService implements QueryablePersistenceService, ManagedService {
@@ -85,7 +87,6 @@ public class H2SqlPersistenceService implements QueryablePersistenceService, Man
     private String driverClass = "org.h2.Driver";
 
     protected ItemRegistry itemRegistry;
-    // private PersistentStateRestorer persistentStateRestorer;
 
     private Connection connection = null;
 
@@ -170,7 +171,7 @@ public class H2SqlPersistenceService implements QueryablePersistenceService, Man
         String sqlCmd = null;
 
         // Create the table for the data
-        sqlCmd = new String("CREATE TABLE IF NOT EXISTS " + item.getName() + " (Time DATETIME, Value " + sqlType
+        sqlCmd = new String("CREATE TABLE IF NOT EXISTS openhab." + item.getName() + " (Time DATETIME, Value " + sqlType
                 + ", PRIMARY KEY(Time));");
         logger.debug("H2SQL: " + sqlCmd);
 
@@ -196,28 +197,30 @@ public class H2SqlPersistenceService implements QueryablePersistenceService, Man
         // state in a format that's not preferred or compatible with the H2SQL type.
         // eg. DimmerItem can return OnOffType (ON, OFF), or PercentType (0-100).
         // We need to make sure we cover the best type for serialisation.
-        logger.debug("H2SQL: State is {}", item.getState());
         String value;
         if (item instanceof DimmerItem || item instanceof RollershutterItem) {
             value = item.getStateAs(PercentType.class).toString();
+            logger.debug("Got as Percent: {}", value);
         } else if (item instanceof ColorItem) {
             value = item.getStateAs(HSBType.class).toString();
+            logger.debug("Got as HSB: {}", value);
         } else {
             // All other items should return the best format by default
             value = item.getState().toString();
         }
+        logger.debug("H2SQL: State is {}::{}", item.getState(), value);
 
         try {
             statement = connection.createStatement();
-            sqlCmd = new String("INSERT INTO " + item.getName() + " (TIME, VALUE) VALUES(NOW(),'" + value + "');");
+            sqlCmd = new String("INSERT INTO openhab." + item.getName() + " (TIME, VALUE) VALUES(NOW(),'" + value + "');");
             statement.executeUpdate(sqlCmd);
 
             long timerStop = System.currentTimeMillis();
-            logger.debug("H2SQL: Stored item '{}' as '{}'[{}] in {}ms", item.getName(), item.getState()
-                    .toString(), value, timerStop - timerStart);
+            logger.debug("H2SQL: Stored item '{}' as '{}'[{}] in {}ms", item.getName(), value,
+                    item.getState().toString(), timerStop - timerStart);
             logger.debug("H2SQL: {}", sqlCmd);
         } catch (Exception e) {
-            logger.error("H2SQL: Could not store item '{}' in database with statement '{}': {}", item.getName(), sqlCmd);
+            logger.error("H2SQL: Could not store item '{}' in database with statement '{}'", item.getName(), sqlCmd);
             logger.error("     : " + e.getMessage());
         } finally {
             if (statement != null) {
@@ -264,18 +267,28 @@ public class H2SqlPersistenceService implements QueryablePersistenceService, Man
 
             final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
             final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
-            logger.debug("H2SQL: Connecting to database");
-            String databaseName = "etc/";
+            String databaseFileName = "etc/";
             if (eshUserDataFolder != null) {
-                databaseName = eshUserDataFolder + "/";
+                databaseFileName = eshUserDataFolder + "/";
             }
-            databaseName += "h2sql/openhab";
-            logger.debug("H2SQL: Connecting to database");
+            databaseFileName += "h2sql/openhab";
 
-            String url = "jdbc:h2:file:" + databaseName;
+            String url = "jdbc:h2:file:" + databaseFileName;
+
+            // Disable logging
+            // TODO: Look at using slf4j
+            url += ";TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0;";
             connection = DriverManager.getConnection(url);
 
-            logger.debug("H2SQL: Connected to database {}", databaseName);
+            logger.debug("H2SQL: Connected to database {}", databaseFileName);
+
+            // TODO: Move these into the connection URL
+            Statement statement = connection.createStatement();
+            String sqlCmd = new String("CREATE SCHEMA IF NOT EXISTS OPENHAB;");
+            statement.executeUpdate(sqlCmd);
+            sqlCmd = new String("SET SCHEMA OPENHAB;");
+            statement.executeUpdate(sqlCmd);
+            statement.close();
         } catch (Exception e) {
             logger.error("H2SQL: Failed connecting to the SQL database");
             logger.error("     : " + e.getMessage());
@@ -319,50 +332,6 @@ public class H2SqlPersistenceService implements QueryablePersistenceService, Man
      * @{inheritDoc
      */
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        return;
-        /*
-         * logger.debug("H2SQL: Configuration starting");
-         * if (config != null) {
-         * Enumeration<String> keys = config.keys();
-         * 
-         * while (keys.hasMoreElements()) {
-         * String key = (String) keys.nextElement();
-         * 
-         * Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
-         * 
-         * if (!matcher.matches()) {
-         * continue;
-         * }
-         * 
-         * matcher.reset();
-         * matcher.find();
-         * 
-         * if (!matcher.group(1).equals("sqltype")) {
-         * continue;
-         * }
-         * 
-         * String itemType = matcher.group(2).toUpperCase() + "ITEM";
-         * String value = (String) config.get(key);
-         * 
-         * sqlTypes.put(itemType, value);
-         * }
-         * 
-         * String tmpString = (String) config.get("reconnectCnt");
-         * if (StringUtils.isNotBlank(tmpString)) {
-         * errReconnectThreshold = Integer.parseInt(tmpString);
-         * }
-         * }
-         * 
-         * // reconnect to the database in case the configuration has changed.
-         * disconnectFromDatabase();
-         * connectToDatabase();
-         * 
-         * // connection has been established ... initialization completed!
-         * initialized = true;
-         * 
-         * logger.debug("H2SQL: Configuration complete.");
-         * // persistentStateRestorer.initializeItems(getName());
-         */
     }
 
     @Override
@@ -436,7 +405,7 @@ public class H2SqlPersistenceService implements QueryablePersistenceService, Man
             Statement st = connection.createStatement();
 
             String queryString = new String();
-            queryString = "SELECT Time, Value FROM " + filter.getItemName();
+            queryString = "SELECT Time, Value FROM openhab." + filter.getItemName();
             if (!filterString.isEmpty()) {
                 queryString += filterString;
             }
