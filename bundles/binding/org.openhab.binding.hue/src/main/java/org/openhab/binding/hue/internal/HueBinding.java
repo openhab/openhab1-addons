@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.hue.internal;
 
-import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Set;
@@ -19,7 +18,6 @@ import org.openhab.binding.hue.internal.HueBindingConfig.BindingType;
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 import org.openhab.binding.hue.internal.hardware.HueBulb;
-import org.openhab.binding.hue.internal.tools.SsdpDiscovery;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
@@ -53,8 +51,6 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	private long refreshInterval;
 	
 	private HueBridge activeBridge = null;
-	private String bridgeIP = null;
-	private String bridgeSecret = "openHAB";
 
 	// Caches all bulbs controlled to prevent the recreation of the bulbs which
 	// triggers a rereading of the settings from the bridge which is very
@@ -266,42 +262,23 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 		return null;
 	}
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void updated(Dictionary config) throws ConfigurationException {
-		if (config != null) {
-			String ip = (String) config.get("ip");
-			if (StringUtils.isNotBlank(ip)) {
-				this.bridgeIP = ip;
-			} else {
-				try {
-					this.bridgeIP = new SsdpDiscovery()
-							.findIpForResponseKeywords("description.xml",
-									"FreeRTOS");
-				} catch (IOException e) {
-					logger.warn("Could not find hue bridge automatically. Please make sure it is switched on and connected to the same network as openHAB. If it permanently fails you may configure the IP address of your hue bridge manually in the openHAB configuration.");
-				}
-			}
-			String secret = (String) config.get("secret");
-			if (StringUtils.isNotBlank(secret)) {
-				this.bridgeSecret = secret;
-			}
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void updated(Dictionary config) throws ConfigurationException {
+        if (config != null) {
 
-			// connect the Hue bridge with the new configs
-			if(this.bridgeIP!=null) {
-				activeBridge = new HueBridge(bridgeIP, bridgeSecret);
-				activeBridge.pairBridgeIfNecessary();
-			}
-			
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-				
-				// RefreshInterval is specified in openhap.cfg, therefore enable polling
-				setProperlyConfigured(true);
-			}
-		}
+            HueBridgeDiscoverer discoverer = new HueBridgeDiscoverer(config);
+            this.activeBridge = discoverer.discoverHueBridge();
 
-	}
+            String refreshIntervalString = (String) config.get("refresh");
+            if (StringUtils.isNotBlank(refreshIntervalString)) {
+                refreshInterval = Long.parseLong(refreshIntervalString);
+                
+                // RefreshInterval is specified in openhap.cfg, therefore enable polling
+                setProperlyConfigured(true);
+            }
+        }
+
+    }
 
 }

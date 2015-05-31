@@ -27,4 +27,4 @@ Bundle-SymbolicName: org.openhab.binding.hue
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,lib/json-simple-1.1.jar
