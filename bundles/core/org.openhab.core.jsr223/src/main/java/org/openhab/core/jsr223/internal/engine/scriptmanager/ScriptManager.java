@@ -185,13 +185,15 @@ public class ScriptManager {
 	}
 
 	private void removeScript(String scriptName) {
-		Script script = scripts.remove(scriptName);
+		if(scripts.containsKey(scriptName)) {
+			Script script = scripts.remove(scriptName);
 
-		List<Rule> allRules = script.getRules();
+			List<Rule> allRules = script.getRules();
 
-		triggerManager.removeRuleModel(allRules);
-		for (Rule rule : allRules) {
-			ruleMap.remove(rule);
+			triggerManager.removeRuleModel(allRules);
+			for (Rule rule : allRules) {
+				ruleMap.remove(rule);
+			}
 		}
 	}
 
