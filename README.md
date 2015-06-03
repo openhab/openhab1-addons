@@ -1,5 +1,4 @@
-[![Build Status](http://openhab-ci.innoq.io/jenkins/job/openhab/badge/icon)](https://openhab-ci.innoq.io/jenkins/job/openhab)
-![Status](https://openhab-ci.innoq.io/jenkins/buildStatus/icon?job=openhab)
+<a href="https://openhab-ci.innoq.io/jenkins/job/openhab/"><img src="https://openhab-ci.innoq.io/jenkins/buildStatus/icon?job=openhab" /></a>
 
 ## Introduction
 
