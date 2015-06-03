@@ -1,4 +1,4 @@
-<a href="https://openhab-ci.innoq.io/jenkins/job/openhab/"><img src="https://openhab-ci.innoq.io/jenkins/buildStatus/icon?job=openhab" /></a>
+[![Build Status](http://openhab-ci.innoq.io/jenkins/buildStatus/icon?job=openhab)](http://openhab-ci.innoq.io/jenkins/job/openhab/)
 
 ## Introduction
 
