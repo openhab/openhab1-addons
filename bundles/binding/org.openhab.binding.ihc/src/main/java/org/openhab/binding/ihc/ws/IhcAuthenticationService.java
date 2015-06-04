@@ -27,14 +27,15 @@ public class IhcAuthenticationService extends IhcHttpsClient {
 	private static final Logger logger = LoggerFactory.getLogger(IhcAuthenticationService.class);
 
 	private String url;
-	
+	private int timeout;
+
 	IhcAuthenticationService(String host) {
 		url = "https://" + host + "/ws/AuthenticationService";
 	}
 
 	IhcAuthenticationService(String host, int timeout) {
 		this(host);
-		super.setRequestTimeout(timeout);
+		this.timeout = timeout;
 		super.setConnectTimeout(timeout);
 	}
 	
@@ -55,7 +56,7 @@ public class IhcAuthenticationService extends IhcHttpsClient {
 		String query = String.format(soapQuery, password, username, application);
 		
 		openConnection(url);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		WSLoginResult loginResult = new WSLoginResult();
 		loginResult.encodeData(response);
 		return loginResult;

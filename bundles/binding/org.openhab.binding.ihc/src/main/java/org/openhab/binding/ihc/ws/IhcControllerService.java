@@ -31,10 +31,11 @@ public class IhcControllerService extends IhcHttpsClient {
 			+ "</soapenv:Envelope>";
 
 	private String url;
-	
+	private int timeout;
+
 	IhcControllerService(String host, int timeout) {
 		url = "https://" + host + "/ws/ControllerService";
-		super.setRequestTimeout(timeout);
+		this.timeout = timeout;
 		super.setConnectTimeout(timeout);
 	}
 
@@ -48,7 +49,7 @@ public class IhcControllerService extends IhcHttpsClient {
 		
 		openConnection(url);
 		setRequestProperty("SOAPAction", "getProjectInfo");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
 		closeConnection();
 		WSProjectInfo projectInfo = new WSProjectInfo();
 		projectInfo.encodeData(response);
@@ -64,7 +65,7 @@ public class IhcControllerService extends IhcHttpsClient {
 		
 		openConnection(url);
 		setRequestProperty("SOAPAction", "getIHCProjectNumberOfSegments");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
 		closeConnection();
 
 		String numberOfSegments = WSBaseDataType.parseValue(response,
@@ -82,7 +83,7 @@ public class IhcControllerService extends IhcHttpsClient {
 		
 		openConnection(url);
 		setRequestProperty("SOAPAction", "getIHCProjectSegmentationSize");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
 		closeConnection();
 
 		String segmentationSize = WSBaseDataType.parseValue(response,
@@ -118,7 +119,7 @@ public class IhcControllerService extends IhcHttpsClient {
 		String query = String.format(soapQuery, index, major, minor);
 		openConnection(url);
 		setRequestProperty("SOAPAction", "getIHCProjectSegment");
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 		WSFile file = new WSFile();
 		file.encodeData(response);
@@ -135,7 +136,7 @@ public class IhcControllerService extends IhcHttpsClient {
 		
 		openConnection(url);
 		setRequestProperty("SOAPAction", "getState");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
 		closeConnection();
 		WSControllerState controllerState = new WSControllerState();
 		controllerState.encodeData(response);
@@ -169,8 +170,7 @@ public class IhcControllerService extends IhcHttpsClient {
 		String query = String.format(soapQuery, previousState.getState(), timeoutInSeconds);
 		openConnection(url);
 		setRequestProperty("SOAPAction", "waitForControllerStateChange");
-		setRequestTimeout(getRequestTimeout() + timeoutInSeconds * 1000);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout + timeoutInSeconds * 1000);
 		closeConnection();
 		WSControllerState controllerState = new WSControllerState();
 		controllerState.encodeData(response);

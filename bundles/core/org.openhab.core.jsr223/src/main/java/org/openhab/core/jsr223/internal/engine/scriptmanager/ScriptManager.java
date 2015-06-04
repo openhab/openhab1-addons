@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.core.jsr223.internal.engine.scriptmanager;
 
 import java.io.File;
@@ -177,13 +185,15 @@ public class ScriptManager {
 	}
 
 	private void removeScript(String scriptName) {
-		Script script = scripts.remove(scriptName);
+		if(scripts.containsKey(scriptName)) {
+			Script script = scripts.remove(scriptName);
 
-		List<Rule> allRules = script.getRules();
+			List<Rule> allRules = script.getRules();
 
-		triggerManager.removeRuleModel(allRules);
-		for (Rule rule : allRules) {
-			ruleMap.remove(rule);
+			triggerManager.removeRuleModel(allRules);
+			for (Rule rule : allRules) {
+				ruleMap.remove(rule);
+			}
 		}
 	}
 
