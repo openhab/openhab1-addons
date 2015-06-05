@@ -17,6 +17,7 @@
 
   <modules>
     <module>action</module>
+    <module>archetype</module>
     <module>binding</module>
     <module>config</module>
     <module>core</module>
