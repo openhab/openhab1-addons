@@ -75,7 +75,8 @@
 			</Reference>
 			<Model>RF9540-N</Model>
 			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light
-				Switch</Label>
+				Switch
+			</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1439,6 +1440,16 @@
 		<Product>
 			<Reference>
 				<Type>1000</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>ZME_05461</Model>
+			<Label lang="en">Double switch</Label>
+			<Label lang="de">Doppeltaster</Label>
+			<ConfigFile>zwaveme/zme_05461.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
 				<Id>0200</Id>
 			</Reference>
 			<Model>ZME_064374</Model>
@@ -1690,9 +1701,11 @@
 			</Reference>
 			<Model>PAN04-1</Model>
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
-				with power meter</Label>
+				with power meter
+			</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit
-				Strommessung</Label>
+				Strommessung
+			</Label>
 			<ConfigFile>philio/pan04_1.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1702,9 +1715,11 @@
 			</Reference>
 			<Model>PAN04-1B</Model>
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
-				with power meter</Label>
+				with power meter
+			</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW mit
-				Strommessung</Label>
+				Strommessung
+			</Label>
 			<ConfigFile>philio/pan04_1b.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1762,7 +1777,8 @@
 			</Reference>
 			<Model>TH8320ZW</Model>
 			<Label lang="en">VisionPRO Z-Wave Touchscreen Programmable
-				Thermostat</Label>
+				Thermostat
+			</Label>
 			<ConfigFile>honeywell/th8320zw.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
@@ -2006,7 +2022,8 @@
 			</Reference>
 			<Model>MIMOlite</Model>
 			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact
-				Relay</Label>
+				Relay
+			</Label>
 			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
 		</Product>
 		<Product>
