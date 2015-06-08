@@ -26,6 +26,11 @@ import org.osgi.service.cm.ConfigurationException;
  * # Hostname / IP address of the Homematic CCU or Homegear server
  * homematic:host=
  * 
+ * # The timeout in seconds for connections to a slower CCU (optional, default is 15)
+ * # If you have a CCU1 with many devices, you may get a read time out exception. 
+ * # Increase this timeout to give the CCU1 more time to respond.
+ * # homematic:host.timeout=
+ *
  * # Hostname / IP address for the callback server (optional, default is auto-discovery)
  * # This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). 
  * # homematic:callback.host=
@@ -50,6 +55,7 @@ import org.osgi.service.cm.ConfigurationException;
  */
 public class HomematicConfig {
 	private static final String CONFIG_KEY_HOMEMATIC_HOST = "host";
+	private static final String CONFIG_KEY_HOMEMATIC_HOST_TIMEOUT = "host.timeout";
 	private static final String CONFIG_KEY_CALLBACK_HOST = "callback.host";
 	private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
 	private static final String CONFIG_KEY_ALIVE_INTERVAL = "alive.interval";
@@ -57,9 +63,11 @@ public class HomematicConfig {
 
 	private static final Integer DEFAULT_CALLBACK_PORT = 9123;
 	private static final int DEFAULT_ALIVE_INTERVAL = 300;
+	private static final int DEFAULT_HOST_TIMEOUT = 15;
 
 	private boolean valid;
 	private String host;
+	private Integer timeout;
 	private String callbackHost;
 	private Integer callbackPort;
 	private Integer aliveInterval;
@@ -76,6 +84,8 @@ public class HomematicConfig {
 			throw new ConfigurationException("homematic",
 					"Parameter host is mandatory and must be configured. Please check your openhab.cfg!");
 		}
+
+		timeout = parseInt(properties, CONFIG_KEY_HOMEMATIC_HOST_TIMEOUT, DEFAULT_HOST_TIMEOUT);
 
 		callbackHost = (String) properties.get(CONFIG_KEY_CALLBACK_HOST);
 		if (StringUtils.isBlank(callbackHost)) {
@@ -114,6 +124,13 @@ public class HomematicConfig {
 		return host;
 	}
 
+	/**
+	 * Returns the timeout connecting to a Homematic server host.
+	 */
+	public Integer getTimeout() {
+		return timeout;
+	}
+	
 	/**
 	 * Returns the callback host.
 	 */
@@ -165,7 +182,8 @@ public class HomematicConfig {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("host", host)
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("host", host).append("timeout", timeout)
 				.append("callbackHost", callbackHost).append("callbackPort", callbackPort)
 				.append("aliveInterval", reconnectInterval == null ? aliveInterval : "disabled")
 				.append("reconnectInterval", reconnectInterval == null ? "disabled" : reconnectInterval).toString();
