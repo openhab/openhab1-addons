@@ -14,7 +14,7 @@ import java.math.BigInteger;
 
 /**
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 public class ResolVBUSValue {
@@ -42,10 +42,5 @@ public class ResolVBUSValue {
 	public void setBitSize(BigInteger bitSize) {
 		this.bitSize = bitSize;
 	}
-	
-
-
-	
-	
-	
+		
 }

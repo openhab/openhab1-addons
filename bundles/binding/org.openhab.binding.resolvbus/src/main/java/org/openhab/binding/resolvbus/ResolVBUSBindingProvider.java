@@ -13,7 +13,7 @@ import org.openhab.core.items.Item;
 
 /**
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 public interface ResolVBUSBindingProvider extends BindingProvider {
 	

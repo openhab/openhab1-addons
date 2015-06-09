@@ -27,8 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class represents the LAN Receiver where the data is captured via the LAN interface
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
@@ -75,7 +76,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 		try {
 			vBusSocket = new Socket(host, port);
 			inStream = vBusSocket.getInputStream();
-			logger.debug("Connected to: " + host + ":" + port);
+			logger.debug("Connected to {}:{}",host, port);
 		} catch (UnknownHostException e) {	
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -89,7 +90,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 		inStream.close();
 		logger.debug("Closing socket..");
 		vBusSocket.close();
-		logger.debug("Socket to: " + host + ":" + port+" closed");
+		logger.debug("Socket to {}:{} closed",host, port);
 	}
 
 	/**
@@ -167,7 +168,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 					vBusSocket.getOutputStream()));
 
 			inputString = reader.readLine();
-			logger.debug("Received input: "+inputString);
+			logger.debug("Received input: {} ",inputString);
 			if (inputString.startsWith("+HELLO")) {
 				logger.debug("Welcome message...sending password");
 				writer.write("PASS "+password);
@@ -180,7 +181,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 			}
 
 			inputString = reader.readLine();
-			logger.debug("Received input: "+inputString);
+			logger.debug("Received input: {} ",inputString);
 			if (inputString.startsWith("+OK:")) {
 				logger.debug("Password accepted..");
 				writer.write("DATA");

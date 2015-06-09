@@ -26,8 +26,10 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
+
+
 public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvider implements ResolVBUSBindingProvider {
 	
 	static final Logger logger = LoggerFactory.getLogger(ResolVBUSGenericBindingProvider.class);

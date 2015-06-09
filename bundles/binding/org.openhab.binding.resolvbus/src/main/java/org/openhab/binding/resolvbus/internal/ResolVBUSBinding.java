@@ -44,11 +44,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * This is the main class for the ResolVBUS Binding
  * 
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProvider> implements ManagedService, ResolVBUSListener{
 
@@ -97,11 +96,6 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	 */
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
-
-		// the configuration is guaranteed not to be null, because the component definition has the
-		// configuration-policy set to require. If set to 'optional' then the configuration may be null
-		// to override the default refresh interval one has to add a 
-		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 
 		if (configuration != null) {
 			
@@ -207,11 +201,14 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	 */
 	public void deactivate(final int reason) {
 		this.bundleContext = null;
+		stopListener();
+	}
+
+	private void stopListener() {
 		logger.debug("Stoppig ResolVBUS listener...");
 		if (packetReceiver != null)
 			packetReceiver.stopListener();
 	}
-
 	
 	/**
 	 * @{inheritDoc}
@@ -249,28 +246,6 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		}
 	}
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-//		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-//		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
-	}
-
 
 	public void publishUpdate(String name, String value) {
 
@@ -298,18 +273,6 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	
 	public void loadXMLConfig()  {
 
-//		try {
-//			JAXBContext jc = JAXBContext.newInstance(ResolVBUSConfig.class);
-//			Unmarshaller unmarshaller = jc.createUnmarshaller();
-//			config = (ResolVBUSConfig) unmarshaller.unmarshal(getClass().getResourceAsStream("/xml/VBusSpecificationResol.xml"));
-//			if (config == null) {
-//				logger.debug("Error reading XML Configuration");
-//			}
-//		} catch (JAXBException e) {
-//			logger.debug("Couldn't read XML Config: "+e.getMessage()+" ");
-//			e.printStackTrace();
-//		}
-		
 		
 		URL entry = FrameworkUtil.getBundle(ResolVBUSConfig.class).getEntry("xml/VBusSpecificationResol_NEW.xml");
 
@@ -332,7 +295,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		InputStream x = entry.openStream();
 		config = (ResolVBUSConfig) xstream.fromXML(x);
 		} catch (IOException e) {
-			logger.error("Couldn't read XML Config: "+e.getMessage());
+			logger.error("Couldn't read XML Config: {} ",e.getMessage());
 		}
 		
 	}
@@ -343,7 +306,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		ResolVBUSPacket packet = config.getPacketWithDevice(vbusStream.getSourceAddress(),vbusStream.getDestinationAdress());
 		
 		if (packet == null) {
-			logger.debug("No XML-Packet found for address: "+ vbusStream.getSourceAddress()+ " destination: "+vbusStream.getDestinationAdress());
+			logger.debug("No XML-Packet found for address: {} destination: {} ",vbusStream.getSourceAddress(),vbusStream.getDestinationAdress());
 		}
 		
 		if (packet != null) {
@@ -351,11 +314,11 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				for (String itemName : provider.getItemNames()) {
 					double value;
 					String itemConfig = provider.getName(itemName);
-					logger.debug("Trying to update item: "+itemName+" who has config: "+itemConfig);
+					logger.debug("Trying to update item {} who has config: {}",itemName,itemConfig);
 					if (itemConfig != null) {
 						ResolVBUSField field = packet.getFieldWithName(itemConfig);
 						if (field == null) {
-							logger.debug("No XML Field found for: "+itemConfig);
+							logger.debug("No XML Field found for: {} ",itemConfig);
 							continue;
 						}
 						

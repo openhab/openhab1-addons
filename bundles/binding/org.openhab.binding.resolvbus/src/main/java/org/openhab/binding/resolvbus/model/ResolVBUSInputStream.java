@@ -11,7 +11,7 @@ package org.openhab.binding.resolvbus.model;
 
 /**
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 import java.util.List;
@@ -104,13 +104,9 @@ public class ResolVBUSInputStream {
 
 		byte [] destAddress = {rawByteData[2],rawByteData[1]};
 		destinationAdress = ResolVBUSUtility.bytesToHex(destAddress);
-//		destinationAdress = rawByteData[1];
-//		destinationAdress |= (rawByteData[2] << 8);
 
 		byte [] srcAddress= {rawByteData[4],rawByteData[3]};
 		sourceAddress = ResolVBUSUtility.bytesToHex(srcAddress);
-//		sourceAddress = rawByteData[3];
-//		sourceAddress |= (rawByteData[4] << 8);
 
 		protocolVersion = rawByteData[5];
 
@@ -128,7 +124,7 @@ public class ResolVBUSInputStream {
 		}
 		
 		if (protocolVersion!= 16) {
-			logger.debug("Wrong protocol version: "+protocolVersion+" Only Version 1.0 is supported");
+			logger.debug("Wrong protocol version: {} .Only Version 1.0 is supported",protocolVersion);
 			errorFree = false;
 			return;
 		}
@@ -149,10 +145,9 @@ public class ResolVBUSInputStream {
 			// Verify checksum
 		
 			if (ResolVBUSUtility.calcChecksum(rawByteData, offset, 5) != rawByteData[15 + i * 6]) {
-				logger.debug("Payload Error in: "+i);
-				logger.debug("Payload ChecksumC:"+(int) ResolVBUSUtility.calcChecksum(rawByteData, offset, 5));
-				logger.debug("Payload Checksum:"+(int) rawByteData[15 + i * 6]);
-//				logger.debug(VBusUtility.bytesToHex(rawData));
+				logger.debug("Payload Error in: {} ",i);
+				logger.debug("Payload ChecksumC: {}",(int) ResolVBUSUtility.calcChecksum(rawByteData, offset, 5));
+				logger.debug("Payload Checksum: {}",(int) rawByteData[15 + i * 6]);
 				errorFree = false;
 			}
 

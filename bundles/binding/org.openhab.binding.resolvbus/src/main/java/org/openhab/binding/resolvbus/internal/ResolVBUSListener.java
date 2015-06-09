@@ -13,7 +13,7 @@ import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
 
 /**
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 public interface ResolVBUSListener {

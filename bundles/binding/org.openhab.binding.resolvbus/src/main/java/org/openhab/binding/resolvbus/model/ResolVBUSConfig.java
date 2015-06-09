@@ -16,7 +16,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 public class ResolVBUSConfig {

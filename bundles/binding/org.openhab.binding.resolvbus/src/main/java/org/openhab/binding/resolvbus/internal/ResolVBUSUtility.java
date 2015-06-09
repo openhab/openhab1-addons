@@ -19,8 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class provides some common functions for reuse in the rest of the binding
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 public class ResolVBUSUtility {
@@ -85,7 +86,7 @@ public class ResolVBUSUtility {
 	}
 
 	/**
-	 * This methods parses the VBusPacket and stores the
+	 * This methods parses the VBusPacket and stores the data in a list
 	 * 
 	 * @param vbPacket
 	 * @param xmlPacket
@@ -112,7 +113,7 @@ public class ResolVBUSUtility {
 					fieldValue |= 1 << i;
 				}
 			}
-			logger.debug("Adding Value from InputStream to ArrayList: "+fieldValue);
+			logger.debug("Adding Value from InputStream to ArrayList {} ",fieldValue);
 			valueList.add(fieldValue);
 		}
 		return valueList;

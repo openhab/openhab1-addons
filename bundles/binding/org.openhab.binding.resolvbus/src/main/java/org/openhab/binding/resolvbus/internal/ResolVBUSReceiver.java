@@ -8,6 +8,11 @@
  */
 package org.openhab.binding.resolvbus.internal;
 
+/**
+ * @author Michael Heckmann
+ * @since 1.8.0
+ */
+
 public interface ResolVBUSReceiver extends Runnable{
 	
 	public void stopListener();

@@ -31,8 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class represents the Serial/USB Receiver where the data is captured via the serial/USB interface
  * @author Michael Heckmann
- * @since 1.7.0
+ * @since 1.8.0
  */
 
 public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
@@ -188,13 +189,13 @@ public class ResolVBUSSerialReceiver implements ResolVBUSReceiver, Runnable {
 
 		}
 		if (foundPort != true) {
-			logger.debug("Serialport not found: " + portName);
+			logger.debug("Serialport not found {} ", portName);
 			return;
 		}
 		try {
 			serialPort = (SerialPort) serialPortId.open("Open and Sending", 500);
 		} catch (PortInUseException e) {
-			logger.debug("Serialport "+serialPort.getName()+" is in use");
+			logger.debug("Serialport {} is in use",serialPort.getName());
 		}
 
 		try {
