@@ -1748,6 +1748,15 @@
 		<Name>NorthQ</Name>
 		<Product>
 			<Reference>
+				<Type>0010</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>NQ-9121</Model>
+			<Label lang="en">NorthQ Gas Meter</Label>
+			<ConfigFile>northq/nq9121.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
