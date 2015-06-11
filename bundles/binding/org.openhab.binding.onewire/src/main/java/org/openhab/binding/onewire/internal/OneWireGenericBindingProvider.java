@@ -47,7 +47,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * @see org.openhab.model.item.binding.BindingConfigReader#validateItemType(org.openhab.core.items.Item, java.lang.String)
 	 */
 	public void validateItemType(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		logger.debug("validateItemType: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
+		logger.debug("validateItemType: " + pvItem.getName() + " - bindingConfig:" + pvBindingConfig);
 
 		if (OneWireBindingConfigFactory.isValidItemType(pvItem, pvBindingConfig)) {
 			return;
@@ -61,12 +61,11 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void processBindingConfiguration(String pvContext, Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(pvContext, pvItem, pvBindingConfig);
-
 		OneWireBindingConfig pvDevicePropertyBindingConfig = OneWireBindingConfigFactory.createOneWireDeviceProperty(pvItem, pvBindingConfig);
 
 		addBindingConfig(pvItem, pvDevicePropertyBindingConfig);
 
+		super.processBindingConfiguration(pvContext, pvItem, pvBindingConfig);
 	}
 
 	/* (non-Javadoc)

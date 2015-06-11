@@ -37,7 +37,9 @@ public class ChangedEventTrigger implements EventTrigger {
 
 	@Override
 	public boolean evaluate(Item item, State oldState, State newState, Command command, TriggerType type) {
-		return ((type == TriggerType.CHANGE || type == TriggerType.UPDATE) && item.getName().equals(itemName) && (this.fromState == null || this.fromState.equals(oldState)) && (this.toState == null || this.toState.equals(newState)));
+		return type == TriggerType.CHANGE && item.getName().equals(itemName) 
+				&& (this.fromState == null || this.fromState.equals(oldState)) 
+				&& (this.toState == null || this.toState.equals(newState));
 	}
 
 	@Override

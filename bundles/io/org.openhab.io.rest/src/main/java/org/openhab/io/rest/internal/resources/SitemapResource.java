@@ -330,18 +330,7 @@ public class SitemapResource {
     		Switch switchWidget = (Switch) widget;
     		for(Mapping mapping : switchWidget.getMappings()) {
     			MappingBean mappingBean = new MappingBean();
-				// Remove quotes - if they exist
-				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
-						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
-					}
-					else {
-						mappingBean.command = mapping.getCmd();
-					}
-				}
-				else {
-					mappingBean.command = mapping.getCmd();
-				}
+				mappingBean.command = mapping.getCmd();
 				mappingBean.label = mapping.getLabel();
 				bean.mappings.add(mappingBean);
 			}
@@ -350,18 +339,7 @@ public class SitemapResource {
 			Selection selectionWidget = (Selection) widget;
 			for (Mapping mapping : selectionWidget.getMappings()) {
 				MappingBean mappingBean = new MappingBean();
-				// Remove quotes - if they exist
-				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
-						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
-					}
-					else {
-						mappingBean.command = mapping.getCmd();
-					}				
-				}
-				else {
-					mappingBean.command = mapping.getCmd();
-				}
+				mappingBean.command = mapping.getCmd();
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}

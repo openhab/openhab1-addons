@@ -143,7 +143,9 @@ public class Constants {
 
 	public static final short Souliss_T1n_OnFeedback = 0x23;
 	public static final short Souliss_T1n_OffFeedback = 0x24;
-
+	public static final String Souliss_T12_Use_Of_Slot_AUTOMODE  = "automode";
+	public static final String Souliss_T12_Use_Of_Slot_SWITCH  = "switch";
+			
 	public static final long Souliss_T16_Red = 0x22FF0000; // Set a state
 	public static final long Souliss_T16_Green = 0x2200FF00;
 	public static final long Souliss_T16_Blue = 0x220000FF;

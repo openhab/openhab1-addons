@@ -11,6 +11,7 @@ package org.openhab.binding.dscalarm.internal.model;
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.StateType;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.TriggerType;
+import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.TroubleType;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEvent;
 import org.openhab.core.events.EventPublisher;
@@ -52,6 +53,7 @@ public class Panel extends DSCAlarmDevice{
 		int state;
 		String str = "";
 		boolean trigger;
+		boolean trouble;
 		boolean boolState;
 		OnOffType onOffType;
 
@@ -88,6 +90,55 @@ public class Panel extends DSCAlarmDevice{
 						state = panelProperties.getSystemCommand();
 						publisher.postUpdate(item.getName(), new DecimalType(state));
 						break;
+					case PANEL_TROUBLE_MESSAGE:
+						str = panelProperties.getTroubleMessage();
+						publisher.postUpdate(item.getName(), new StringType(str));
+						break;
+					case PANEL_TROUBLE_LED:
+						boolState = panelProperties.getTroubleLED();
+						onOffType = boolState ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_SERVICE_REQUIRED:
+						trouble = panelProperties.getTrouble(TroubleType.SERVICE_REQUIRED);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_AC_TROUBLE:
+						trouble = panelProperties.getTrouble(TroubleType.AC_TROUBLE);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_TELEPHONE_TROUBLE:
+						trouble = panelProperties.getTrouble(TroubleType.TELEPHONE_LINE_TROUBLE);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_FTC_TROUBLE:
+						trouble = panelProperties.getTrouble(TroubleType.FAILURE_TO_COMMUNICATE);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_ZONE_FAULT:
+						trouble = panelProperties.getTrouble(TroubleType.ZONE_FAULT);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_ZONE_TAMPER:
+						trouble = panelProperties.getTrouble(TroubleType.ZONE_TAMPER);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_ZONE_LOW_BATTERY:
+						trouble = panelProperties.getTrouble(TroubleType.ZONE_LOW_BATTERY);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
+					case PANEL_TIME_LOSS:
+						trouble = panelProperties.getTrouble(TroubleType.LOSS_OF_TIME);
+						onOffType = trouble ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;						
 					case PANEL_FIRE_KEY_ALARM:
 						trigger = panelProperties.getTrigger(TriggerType.FIRE_KEY_ALARM);
 						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
@@ -122,10 +173,14 @@ public class Panel extends DSCAlarmDevice{
 	@Override
 	public void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event) {
 		APIMessage apiMessage = null;
+		int apiCode = -1;
+		boolean boolState;
 		int state;
+		OnOffType onOffType;
 
 		if(event != null) {
 			apiMessage = event.getAPIMessage();
+			apiCode = Integer.parseInt(apiMessage.getAPICode());
 			String str = "";
 			logger.debug("handleEvent(): Panel Item Name: {}", item.getName());
 	
@@ -157,6 +212,22 @@ public class Panel extends DSCAlarmDevice{
 								publisher.postUpdate(item.getName(), new StringType(str));
 							}
 							break;
+						case PANEL_TROUBLE_MESSAGE:
+							if(apiMessage != null) {
+								str = apiMessage.getAPIDescription();
+								panelProperties.setTroubleMessage(str);
+							}
+							publisher.postUpdate(item.getName(), new StringType(str));
+							break;
+						case PANEL_TROUBLE_LED:
+							if(apiMessage != null) {
+								boolState = (apiCode == 840) ? true:false;
+								panelProperties.setTroubleLED(boolState);
+								
+								onOffType = boolState ? OnOffType.ON : OnOffType.OFF;
+								publisher.postUpdate(item.getName(), onOffType);
+							}
+							break;
 						case PANEL_TIME:
 							if(apiMessage != null) {
 								panelProperties.setSystemTime(apiMessage.getAPIData());
@@ -180,6 +251,7 @@ public class Panel extends DSCAlarmDevice{
 		logger.debug("updateProperties(): Panel Item Name: {}", item.getName());
 		
 		boolean trigger = state != 0 ? true : false;
+		boolean trouble = state != 0 ? true : false;		
 		boolean boolState = state != 0 ? true : false;
 
 		if(config != null) {
@@ -194,6 +266,36 @@ public class Panel extends DSCAlarmDevice{
 					case PANEL_COMMAND:
 						panelProperties.setSystemCommand(state);
 						break;
+					case PANEL_TROUBLE_MESSAGE:
+						panelProperties.setTroubleMessage(description);
+						break;
+					case PANEL_TROUBLE_LED:
+						panelProperties.setTroubleLED(boolState);
+						break;						
+					case PANEL_SERVICE_REQUIRED:
+						panelProperties.setTrouble(TroubleType.SERVICE_REQUIRED, trouble);
+						break;						
+					case PANEL_AC_TROUBLE:
+						panelProperties.setTrouble(TroubleType.AC_TROUBLE, trouble);
+						break;						
+					case PANEL_TELEPHONE_TROUBLE:
+						panelProperties.setTrouble(TroubleType.TELEPHONE_LINE_TROUBLE, trouble);
+						break;						
+					case PANEL_FTC_TROUBLE:
+						panelProperties.setTrouble(TroubleType.FAILURE_TO_COMMUNICATE, trouble);
+						break;						
+					case PANEL_ZONE_FAULT:
+						panelProperties.setTrouble(TroubleType.ZONE_FAULT, trouble);
+						break;						
+					case PANEL_ZONE_TAMPER:
+						panelProperties.setTrouble(TroubleType.ZONE_TAMPER, trouble);
+						break;						
+					case PANEL_ZONE_LOW_BATTERY:
+						panelProperties.setTrouble(TroubleType.ZONE_LOW_BATTERY, trouble);
+						break;						
+					case PANEL_TIME_LOSS:
+						panelProperties.setTrouble(TroubleType.LOSS_OF_TIME, trouble);
+						break;						
 					case PANEL_FIRE_KEY_ALARM:
 						panelProperties.setTrigger(TriggerType.FIRE_KEY_ALARM, trigger);
 						break;

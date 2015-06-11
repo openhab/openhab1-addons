@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WAPIRZ-1</Model>
+	<Label lang="en">PIR Motion Detector</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x2b</id>
+		</Class>
+		<Class>
+			<id>0x2c</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Re-trigger Wait Time</Label>
+			<Help lang="en">By default, to conserve battery life, after the WAPIRZ-1 detects motion it cannot
+be re-triggered by motion again for 3 minutes. Each time motion is detected
+(even during this wait time) the 3 minute timer starts over. The length of the
+re-trigger wait time can be adjusted with this setting.
+			</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

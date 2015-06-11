@@ -86,8 +86,10 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 						if (gpioPin != null) {
 							if (command == OnOffType.ON) {
 								gpioPin.setValue(GPIOPin.VALUE_HIGH);
+								logger.debug("Send command 1 to GPIO {}", gpioPin.getPinNumber());
 							} else {
 								gpioPin.setValue(GPIOPin.VALUE_LOW);
+								logger.debug("Send command 0 to GPIO {}", gpioPin.getPinNumber());
 							}
 						}
 					} catch (IOException e) {
@@ -148,17 +150,23 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 
 		try {
 			if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+				String itemName = "";
 				try {
-					String itemName = (String) registry.getKey(pin);
+					itemName = (String) registry.getKey(pin);
 
 					/* The item may be deleted while waiting to acquire read lock */
 					if (itemName != null) {
 						if (value == GPIOPin.VALUE_HIGH) {
 							eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
+							logger.debug("Received command 1 from GPIO {}", pin.getPinNumber());							
 						} else {
 							eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
+							logger.debug("Received command 0 from GPIO {}", pin.getPinNumber());	
 						}
 					}
+				} catch (IOException e) {
+					logger.error("Error occured while receiving pin state for item " + itemName + ", exception: " + e.getMessage());
+					return;
 				} finally {
 					registryLock.readLock().unlock();
 				}

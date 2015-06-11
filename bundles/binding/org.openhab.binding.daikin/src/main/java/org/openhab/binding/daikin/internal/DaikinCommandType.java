@@ -18,6 +18,7 @@ import org.openhab.core.library.items.SwitchItem;
  * The list of supported command types for the Daikin binding
  *  
  * @author Ben Jones
+ * @author Jos schering
  * @since 1.5.0
  */
 public enum DaikinCommandType {
@@ -64,6 +65,10 @@ public enum DaikinCommandType {
 			case TEMPIN:
 			case HUMIDITYIN:
 			case TEMPOUT:
+			case MODE:
+			case FAN:
+			case SWING:
+			case TIMER:
 				return NumberItem.class;
 			default:
 				return StringItem.class;

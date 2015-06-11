@@ -754,6 +754,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad TEMPERATURE reply from {}", nm(), dev.getAddress());
+					return;
+				}
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
 				int level = cmd2/2;
 				logger.info("{}: got TEMPERATURE from {} of value: {}", nm(), dev.getAddress(), level);
@@ -776,6 +781,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad HUMIDITY reply from {}", nm(), dev.getAddress());
+					return;
+				}
 				int cmd2 = (int) msg.getByte("command2");
 				logger.info("{}: got HUMIDITY from {} of value: {}", nm(), dev.getAddress(), cmd2);
 				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), cmd2);
@@ -900,6 +910,49 @@ public abstract class MessageHandler {
 					f.publish(new DecimalType(3), StateChangeType.CHANGED);
 					break;	
 				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Handles FanLinc replies to Fan requests.
+	 */
+	public static class FanLincFanControlReplyHandler extends  MessageHandler {
+		FanLincFanControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				byte cmd2 = msg.getByte("command2");
+				switch (cmd2) {
+				case (byte) 0x00:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "OFF");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;
+				case (byte) 0x55:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "LOW");
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;	
+				case (byte) 0xAA:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "MED");
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;	
+				case (byte) 0xFF:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "HIGH");
+					f.publish(new DecimalType(4), StateChangeType.CHANGED);
+					break;
+				default: // do nothing, but log.
+					logger.warn("{} unexpected cmd2 value received: {}. Dropping msg {}", nm(), cmd2, msg);
 					break;
 				}
 			} catch (FieldException e) {

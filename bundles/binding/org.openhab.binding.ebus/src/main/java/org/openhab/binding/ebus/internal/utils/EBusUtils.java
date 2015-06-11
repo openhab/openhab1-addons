@@ -377,8 +377,13 @@ public class EBusUtils {
 			buffer.put(data[crcPos+1]);
 
 			if(data[crcPos+1] == EBusTelegram.SYN) {
-				// Broadcast Telegram, end
-				return new EBusTelegram(buffer);
+				
+				if(data[1] == EBusTelegram.BROADCAST) {
+					// Broadcast Telegram, end
+					return new EBusTelegram(buffer);
+				}
+				
+				
 			}
 
 			if((data[crcPos+1] == EBusTelegram.ACK_OK || data[crcPos+1] == EBusTelegram.ACK_FAIL) 

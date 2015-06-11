@@ -20,6 +20,7 @@ public enum DigitalSTROMBindingConfigEnum {
 	timeinterval,
 	context,
 	zoneid,
-	groupid
+	groupid, 
+	sensor
 	
 }

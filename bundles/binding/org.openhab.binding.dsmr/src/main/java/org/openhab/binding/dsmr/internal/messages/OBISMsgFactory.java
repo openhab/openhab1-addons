@@ -72,7 +72,7 @@ public class OBISMsgFactory {
 			obisId = new OBISIdentifier(obisIdString);
 			reducedObisId = obisId.getReducedOBISIdentifier();
 		} catch (ParseException pe) {
-			logger.error("Received invalid OBIS identifer:" + obisIdString);
+			logger.error("Received invalid OBIS identifier:" + obisIdString);
 
 			return null;
 		}

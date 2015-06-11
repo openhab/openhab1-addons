@@ -9,16 +9,24 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.myopenhab">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.io.myopenhab">
    <implementation class="org.openhab.io.myopenhab.internal.MyOpenHABServiceImpl"/>
+   
    <service>
 	   <provide interface="org.openhab.io.myopenhab.MyOpenHABService"/>
 	   <provide interface="org.osgi.service.cm.ManagedService" />
 	   <provide interface="org.openhab.core.scriptengine.action.ActionService" />
 	   <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
-   <reference bind="setItemUIRegistry" cardinality="1..1" interface="org.openhab.ui.items.ItemUIRegistry" name="ItemUIRegistry" policy="dynamic" unbind="unsetItemUIRegistry"/>
-   <reference bind="setEventPublisher" cardinality="0..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
+   
    <property name="service.pid" type="String" value="org.openhab.myopenhab"/>
    <property name="event.topics" type="String" value="openhab/*"/>
+   
+   <reference bind="setItemUIRegistry" cardinality="1..1" 
+		interface="org.openhab.ui.items.ItemUIRegistry" name="ItemUIRegistry" 
+		policy="dynamic" unbind="unsetItemUIRegistry"/>
+   <reference bind="setEventPublisher" cardinality="0..1" 
+		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
+		policy="dynamic" unbind="unsetEventPublisher"/>
+	
 </scr:component>
