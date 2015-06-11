@@ -59,6 +59,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
 	 */
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+		
+		logger.debug("sapp activate called");
 		this.bundleContext = bundleContext;
 
 		// the configuration is guaranteed not to be null, because the component definition has the
@@ -83,6 +85,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 */
 	public void modified(final Map<String, Object> configuration) {
 		// update the internal configuration accordingly
+		logger.debug("sapp modified called");
 	}
 	
 	/**
@@ -100,6 +103,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
      * </ul>
 	 */
 	public void deactivate(final int reason) {
+		logger.debug("sapp deactivate called");
 		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
