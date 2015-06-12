@@ -154,9 +154,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	/**
-	 * the refresh interval which is used to poll values from the Ecobee server (optional, defaults to 60000ms)
+	 * the refresh interval which is used to poll values from the Ecobee server (optional, defaults to 180000ms)
 	 */
-	private long refreshInterval = 60000;
+	private long refreshInterval = 180000;
 
 	/**
 	 * A map of userids from the openhab.cfg file to OAuth credentials used to communicate with each app instance.
@@ -597,7 +597,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like ecobee:refresh=120000
+			// parameter to openhab.cfg like ecobee:refresh=240000
 			String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
 			if (isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
