@@ -157,5 +157,6 @@
     <module>org.openhab.binding.enphaseenergy</module>
     <module>org.openhab.binding.lightwaverf</module>
 	<module>org.openhab.binding.souliss</module>
+    <module>org.openhab.binding.sapp</module>
   </modules>
 </project>
