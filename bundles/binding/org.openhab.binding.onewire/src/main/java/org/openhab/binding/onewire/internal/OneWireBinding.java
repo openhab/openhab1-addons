@@ -278,6 +278,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 				}
 			} else {
 				logger.error("Set Item for itemName=" + pvItemName + " to Undefined, because the readvalue is null");
+				ivCacheItemStates.remove(pvItemName);
 				eventPublisher.postUpdate(lvItem.getName(), UnDefType.UNDEF);
 			}
 		}
