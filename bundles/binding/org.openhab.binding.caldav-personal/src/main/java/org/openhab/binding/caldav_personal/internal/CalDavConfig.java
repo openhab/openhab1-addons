@@ -14,7 +14,7 @@ import org.openhab.core.binding.BindingConfig;
  * Configuration class
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  *
  */
 public class CalDavConfig implements BindingConfig {

@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see org.openhab.io.caldav.EventNotifier 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");

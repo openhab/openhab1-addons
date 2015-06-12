@@ -13,6 +13,7 @@ import static org.openhab.persistence.caldav.internal.CaldavConfiguration.durati
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * This is a {@link PersistenceService} implementation using calDAV.
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CaldavPersistenceService implements QueryablePersistenceService {
 
@@ -66,6 +67,7 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 		if(alias==null) alias = item.getName();
 		
 		CalDavEvent event = new CalDavEvent();
+		event.setId(UUID.randomUUID().toString());
 		event.setName(alias);
 		event.setContent("BEGIN:" + alias + ":" + item.getState());
 		DateTime now = DateTime.now();

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * Contains configuration parameters for the caldav persistence
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CaldavConfiguration implements ManagedService {
 	

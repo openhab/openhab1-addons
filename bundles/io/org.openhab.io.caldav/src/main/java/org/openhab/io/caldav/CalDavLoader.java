@@ -14,7 +14,7 @@ import java.util.List;
  * Cal DAV loader interface
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public interface CalDavLoader {
 	/**

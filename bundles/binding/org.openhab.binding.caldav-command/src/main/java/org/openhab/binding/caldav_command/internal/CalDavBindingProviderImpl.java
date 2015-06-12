@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * caldav="itemName:Livingroom_Temperature_Set type:DISABLE"
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider implements CalDavBindingProvider {
 	private static final Logger logger = LoggerFactory.getLogger(CalDavBindingProviderImpl.class);

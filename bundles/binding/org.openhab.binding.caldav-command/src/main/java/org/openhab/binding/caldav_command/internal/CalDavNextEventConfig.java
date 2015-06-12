@@ -14,7 +14,7 @@ import org.openhab.core.binding.BindingConfig;
  * Configuration class for items
  * 
  * @author Robert
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CalDavNextEventConfig implements BindingConfig {
 	/**

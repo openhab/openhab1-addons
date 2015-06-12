@@ -16,7 +16,7 @@ import org.openhab.core.binding.BindingProvider;
 /**
  * Binding provider for the calDAV command
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public interface CalDavBindingProvider extends BindingProvider {
 	/**

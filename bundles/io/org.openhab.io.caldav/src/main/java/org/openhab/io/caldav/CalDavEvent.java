@@ -16,7 +16,7 @@ import org.joda.time.format.DateTimeFormatter;
  * A calendar event
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CalDavEvent {
 	private static final DateTimeFormatter SDF = DateTimeFormat.forPattern("dd.MM.yyyy/HH:mm");
@@ -26,6 +26,7 @@ public class CalDavEvent {
 	private DateTime end;
 	private DateTime lastChanged;
 	private String id;
+	private String fileName;
 	private String calendarId;
 	private String location;
 	private String content;
@@ -67,10 +68,14 @@ public class CalDavEvent {
 	public void setEnd(DateTime end) {
 		this.end = end;
 	}
-
+	
 	public String getId() {
-		return this.calendarId + "-" + this.id + "-" + this.start.hashCode() + "-" + this.end.hashCode();
+		return this.id;
 	}
+
+//	public String getId() {
+//		return this.calendarId + "-" + this.id + "-" + this.start.hashCode() + "-" + this.end.hashCode();
+//	}
 
 	public void setId(String id) {
 		this.id = id;
@@ -108,6 +113,14 @@ public class CalDavEvent {
 		this.content = content;
 	}
 	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	public String getShortName() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.id);

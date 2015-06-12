@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * Maps events from calDAV to items. Can be used to show personal events in sitemaps.
  * 
  * @author Robert Delbrück
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 

@@ -13,7 +13,7 @@ package org.openhab.binding.caldav_command.internal;
  * Actions which can be performed on items.
  * 
  * @author Robert
- * @since 1.7.0
+ * @since 1.8.0
  */
 public enum CalDavType {
 	/**
