@@ -57,9 +57,6 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 	private static final int DEFAULT_SOCKET_TIMEOUT_MS = 1000;
 	private static final int DEFAULT_MAX_RETRIES = 3;
 	
-	// error code
-	private static final byte ERROR_RESPONSE = -1;
-		
 	// list of Piface nodes loaded from the binding configuration
 	private final Map<String, PifaceNode> pifaceNodes = new HashMap<String, PifaceNode>();
 	
@@ -268,9 +265,7 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		int attempt = 1;
 		while (attempt <= node.maxRetries) {
 			try {
-				byte response = sendCommand(node, command, commandAck, pinNumber, pinValue, attempt);
-				if (response != ERROR_RESPONSE)
-					return response;
+				return sendCommand(node, command, commandAck, pinNumber, pinValue, attempt);
 			} catch (ErrorResponseException e) {
 				attempt++;
 			}
