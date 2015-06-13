@@ -1740,6 +1740,17 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0013</Id>
+			</Reference>
+			<Model>PAN06-1A</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
+			</Label>
+			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
+			<ConfigFile>philio/pan06_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Model>PAN11-1</Model>
