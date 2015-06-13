@@ -509,26 +509,28 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		}
 		LOG.trace("starting execution...");
 		
-		
-
 		ScheduledExecutorService execService = Executors.newScheduledThreadPool(eventCache.size());
 		for (final EventRuntime eventRuntime : eventCache.values()) {
-			LOG.debug("reload cached events for config: {}", eventRuntime.getConfig().getKey());
-			for (File fileCalendarKeys : new File(CACHE_PATH).listFiles()) {
-				if (!eventRuntime.getConfig().getKey().equals(FilenameUtils.getBaseName(fileCalendarKeys.getName()))) {
-					continue;
-				}
-				for (File icsFile : FileUtils.listFiles(fileCalendarKeys, new String[]{"ics"}, false)) {
-					try {
-						FileInputStream fis = new FileInputStream(icsFile);
-						loadEvents(icsFile.getAbsolutePath(), fis, eventRuntime.getConfig(), new ArrayList<String>());
-					} catch (IOException e) {
-						LOG.error("cannot load events", e);
-					} catch (ParserException e) {
-						LOG.error("cannot load events", e);
+			try {
+				LOG.debug("reload cached events for config: {}", eventRuntime.getConfig().getKey());
+				for (File fileCalendarKeys : new File(CACHE_PATH).listFiles()) {
+					if (!eventRuntime.getConfig().getKey().equals(FilenameUtils.getBaseName(fileCalendarKeys.getName()))) {
+						continue;
 					}
-					eventRuntime.setLastPull(LocalDateTime.now());
+					for (File icsFile : FileUtils.listFiles(fileCalendarKeys, new String[]{"ics"}, false)) {
+						try {
+							FileInputStream fis = new FileInputStream(icsFile);
+							loadEvents(icsFile.getAbsolutePath(), fis, eventRuntime.getConfig(), new ArrayList<String>());
+						} catch (IOException e) {
+							LOG.error("cannot load events", e);
+						} catch (ParserException e) {
+							LOG.error("cannot load events", e);
+						}
+						eventRuntime.setLastPull(LocalDateTime.now());
+					}
 				}
+			} catch (Error e) {
+				LOG.error("cannot load events", e);
 			}
 			
 			execService.scheduleAtFixedRate(new Runnable() {
@@ -550,7 +552,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
 					} catch (ParserException e) {
 						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
-					} catch (Exception e) {
+					} catch (Error e) {
 						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
 					}
 				}
@@ -601,7 +603,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 	@Override
 	public List<CalDavEvent> getEvents(String calendarId) {
-		return new ArrayList<CalDavEvent>(eventCache.get(calendarId).getEventMap().values());
+		LOG.trace("quering events for calendarKey {}", calendarId);
+		final ArrayList<CalDavEvent> eventList = new ArrayList<CalDavEvent>(eventCache.get(calendarId).getEventMap().values());
+		LOG.debug("return event list for {} with {} entries", calendarId, eventList.size());
+		return eventList;
 	}
 	
 	private Calendar createCalendar(CalDavEvent calDavEvent) {

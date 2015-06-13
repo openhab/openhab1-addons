@@ -111,7 +111,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		this.calDavLoader = null;
 	}
 	
-	public void activate() { }
+	public void activate() { 
+	}
 	
 	public void deactivate() { }
 
@@ -126,6 +127,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				for (String value : read.split(",")) {
 					this.readCalendars.add(value.trim());
 				}
+			}
+			this.reloadCurrentLoadedEvents();
+		}
+	}
+	
+	private void reloadCurrentLoadedEvents() {
+		if (this.calDavLoader == null) {
+			return;
+		}
+		for (String calendarKey : this.readCalendars) {
+			for (CalDavEvent calDavEvent : this.calDavLoader.getEvents(calendarKey)) {
+				this.eventLoaded(calDavEvent);
 			}
 		}
 	}

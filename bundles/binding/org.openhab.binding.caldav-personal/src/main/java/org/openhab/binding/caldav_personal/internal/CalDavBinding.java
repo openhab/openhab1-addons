@@ -65,6 +65,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	public void setCalDavLoader(CalDavLoader calDavLoader) {
+		logger.debug("setting CalDavLoader: {}", calDavLoader != null);
 		this.calDavLoader = calDavLoader;
 		this.calDavLoader.addListener(this);
 	}
@@ -75,7 +76,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	public void activate() {
-
+		logger.debug("CalDavBinding (personal) activated");
 	}
 	
 	public void deactivate() {
@@ -90,9 +91,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	@Override
 	public void updated(Dictionary<String, ?> properties)
 			throws ConfigurationException {
-		if (properties == null) {
-			logger.warn("no configuration found");
-		} else {
+		if (properties != null) {
+			logger.debug("loading configuration...");
 			String usedCalendars = (String) properties
 					.get(PARAM_USED_CALENDARS);
 			if (usedCalendars != null) {
@@ -108,6 +108,25 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 					this.homeIdentifier.add(homeIdent.trim().toLowerCase());
 				}
 			}
+			logger.debug("loading configuration done");
+			this.reloadCurrentLoadedEvents();
+		}
+		
+	}
+	
+	private void reloadCurrentLoadedEvents() {
+		try {
+			if (this.calDavLoader == null) {
+				return;
+			}
+			logger.trace("reloading events");
+			for (String calendarKey : this.calendars) {
+				for (CalDavEvent calDavEvent : this.calDavLoader.getEvents(calendarKey)) {
+					this.eventLoaded(calDavEvent);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("cannot load events", e);
 		}
 	}
 	
