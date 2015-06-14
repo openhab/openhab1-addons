@@ -47,6 +47,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	/**
 	 * {@inheritDoc}
+	 * [A/I/O/V]:[1-2500]:[1-8,L,H,*]
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
