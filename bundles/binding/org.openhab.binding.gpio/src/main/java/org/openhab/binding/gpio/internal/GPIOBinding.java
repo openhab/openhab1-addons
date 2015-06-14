@@ -86,8 +86,10 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 						if (gpioPin != null) {
 							if (command == OnOffType.ON) {
 								gpioPin.setValue(GPIOPin.VALUE_HIGH);
+								logger.info("Send command 1 to GPIO " + gpioPin.getPinNumber().toString());
 							} else {
 								gpioPin.setValue(GPIOPin.VALUE_LOW);
+								logger.info("Send command 0 to GPIO " + gpioPin.getPinNumber().toString());
 							}
 						}
 					} catch (IOException e) {
@@ -155,8 +157,10 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 					if (itemName != null) {
 						if (value == GPIOPin.VALUE_HIGH) {
 							eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
+							logger.info("Received command 1 from GPIO " + gpioPin.getPinNumber().toString());
 						} else {
 							eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
+							logger.info("Received command 0 from GPIO " + gpioPin.getPinNumber().toString());
 						}
 					}
 				} finally {
@@ -334,16 +338,20 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 				/* Item type 'Contact' */
 				if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
 					eventPublisher.postUpdate(itemName, OpenClosedType.OPEN);
+					logger.info("Received command 1 from GPIO " + gpioPin.getPinNumber().toString());
 				} else {
 					eventPublisher.postUpdate(itemName, OpenClosedType.CLOSED);
+					logger.info("Received command 0 from GPIO " + gpioPin.getPinNumber().toString());
 				}
 			} else {
 
 				/* Item type 'Switch' */
 				if (gpioPin.getValue() == GPIOPin.VALUE_HIGH) {
 					eventPublisher.postUpdate(itemName, OnOffType.ON);
+					logger.info("Received command 1 from GPIO " + gpioPin.getPinNumber().toString());
 				} else {
 					eventPublisher.postUpdate(itemName, OnOffType.OFF);
+					logger.info("Received command 0 from GPIO " + gpioPin.getPinNumber().toString());
 				}
 			}
 
