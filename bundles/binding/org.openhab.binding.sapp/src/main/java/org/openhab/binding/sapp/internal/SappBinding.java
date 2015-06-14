@@ -8,11 +8,11 @@
  */
 package org.openhab.binding.sapp.internal;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.sapp.SappBindingProvider;
-
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
@@ -31,8 +31,16 @@ import org.slf4j.LoggerFactory;
 public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(SappBinding.class);
-
-	protected static final Command WILDCARD_COMMAND_KEY = StringType.valueOf("*");
+	
+	private static final String CONFIG_KEY_REFRESH = "refresh";
+	private static final String CONFIG_KEY_PNMAS_ENABLED = "pnmas.ids";
+	private static final String CONFIG_KEY_PNMAS_ID = "pnmas.%s.ip";
+	private static final String CONFIG_KEY_PNMAS_PORT = "pnmas.%s.port";
+	
+	/**
+	 * map of existing pnmas. key is pnmas id.
+	 */
+	private Map<String, SappPnmas> pnmasMap = new HashMap<>();
 
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
@@ -72,9 +80,48 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		// to override the default refresh interval one has to add a
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-		String refreshIntervalString = (String) configuration.get("refresh");
+		String refreshIntervalString = (String) configuration.get(CONFIG_KEY_REFRESH);
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
 			refreshInterval = Long.parseLong(refreshIntervalString);
+			logger.debug("set refresh interval: " + refreshInterval);
+		}
+		
+		String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
+		if (pnmasEnabled != null) {
+			String[] pnmasIds = pnmasEnabled.split(",");
+			for (String pnmasId : pnmasIds) {
+				logger.debug(String.format("loading info for pnmas %s", pnmasId));
+				
+				String ip = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_ID, pnmasId));
+				if (ip == null) {
+					logger.warn(String.format("ip not found for pnmas %s", pnmasId));
+					continue;
+				}
+				
+				int port;
+				String portString = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_PORT, pnmasId));
+				if (portString == null) {
+					logger.warn(String.format("port not found for pnmas %s", pnmasId));
+					continue;
+				} else {
+					try {
+						port = Integer.parseInt(portString);
+					} catch (NumberFormatException e) {
+						logger.warn(String.format("bad port number for pnmas %s", pnmasId));
+						continue;
+					}
+				}
+				
+				if (pnmasMap.containsKey(pnmasId)) {
+					logger.warn(String.format("pnmas %s duplicated, skipping", pnmasId));
+					continue;
+				}
+				
+				pnmasMap.put(pnmasId, new SappPnmas(ip, port));
+			}
+			for (String pnmasKey : pnmasMap.keySet()) {
+				logger.debug(String.format("pnmas %s : %s:", pnmasKey, pnmasMap.get(pnmasKey)));
+			}
 		}
 
 		// read further config parameters here ...
@@ -91,7 +138,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 */
 	public void modified(final Map<String, Object> configuration) {
 		// update the internal configuration accordingly
-		logger.debug("sapp modified called");
+		logger.debug("modified called");
 	}
 
 	/**
@@ -151,7 +198,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("sapp internalReceiveCommand({},{}) is called!", itemName, command);
+		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+
+		SappBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 	}
 
 	/**
@@ -162,7 +211,23 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("sapp internalReceiveUpdate({},{}) is called!", itemName, newState);
+		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
+	/**
+	 * Find the first matching {@link ChannelBindingProvider} according to
+	 * <code>itemName</code>
+	 * 
+	 * @param itemName
+	 * 
+	 * @return the matching binding provider or <code>null</code> if no binding
+	 *         provider could be found
+	 */
+	protected SappBindingProvider findFirstMatchingBindingProvider(String itemName) {
+		SappBindingProvider firstMatchingProvider = null;
+		for (SappBindingProvider provider : providers) {
+			System.out.println(provider.getClass());
+		}
+		return firstMatchingProvider;
+	}
 }
