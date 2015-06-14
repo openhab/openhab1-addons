@@ -2271,4 +2271,16 @@
 			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0010</Id>
+		<Name>Residential Control Systems</Name>
+		<Product>
+			<Reference>
+				<Type>5442</Type>
+				<Id>5432</Id>
+			</Reference>
+			<Model>TBZ48</Model>
+			<Label lang="en">Thermostat</Label>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
