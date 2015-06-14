@@ -39,6 +39,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2002</Type>
+				<Id>0203</Id>
+			</Reference>
+			<Model>WAPIRZ-1</Model>
+			<Label lang="en">PIR Motion Detector</Label>
+			<ConfigFile>linear/wapirz-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4457</Type>
 				<Id>3034</Id>
 			</Reference>
