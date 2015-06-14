@@ -123,3 +123,7 @@ Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }
 
 /* Locations */
 Location DemoLocation			"Brandenburg Gate Berlin"
+
+/* Sapp */
+Group gSapp 		(All)
+Switch SappSwitch				"SappSwitch" (gSapp) { sapp="pippo" }

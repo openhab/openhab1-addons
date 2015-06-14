@@ -68,4 +68,7 @@ sitemap demo label="Demo House"
 			}
 		}
 	}
+	Frame {
+		Group item=gSapp label="Sapp test items" icon="firstfloor"
+	}
 }

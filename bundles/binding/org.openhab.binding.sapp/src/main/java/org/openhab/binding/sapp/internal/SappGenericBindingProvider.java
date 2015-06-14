@@ -11,11 +11,10 @@ package org.openhab.binding.sapp.internal;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
@@ -24,6 +23,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.0.0
  */
 public class SappGenericBindingProvider extends AbstractGenericBindingProvider implements SappBindingProvider {
+
+	private static final Logger logger = LoggerFactory.getLogger(SappGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -43,21 +44,30 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
 		//}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		SappBindingConfig config = new SappBindingConfig();
-		
-		//parse bindingconfig here ...
-		
-		addBindingConfig(item, config);		
+
+		if (bindingConfig != null) {
+			parseAndAddBindingConfig(item, bindingConfig);
+		} else {
+			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+		}
 	}
-	
-	
+
+	// TODO fake
+	private void parseAndAddBindingConfig(Item item, String bindingConfigs) throws BindingConfigParseException {
+		SappBindingConfig config = new SappBindingConfig();
+
+		logger.debug(String.format("bindingconfig received '%s' for item: '%s': ", bindingConfigs, item));
+
+		addBindingConfig(item, config);
+	}
+
 	/**
 	 * This is a helper class holding binding specific configuration details
 	 * 
@@ -67,6 +77,5 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	class SappBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
 	}
-	
-	
+
 }
