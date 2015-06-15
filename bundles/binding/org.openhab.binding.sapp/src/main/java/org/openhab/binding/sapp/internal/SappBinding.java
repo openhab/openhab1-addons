@@ -209,6 +209,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				logger.warn(String.format("bad pnmas id (%s) in binding (%s) ... skipping", bindingConfig.getPnmasId(), bindingConfig));
 				continue;
 			}
+			
+			// TODO execute command
 		}
 	}
 
