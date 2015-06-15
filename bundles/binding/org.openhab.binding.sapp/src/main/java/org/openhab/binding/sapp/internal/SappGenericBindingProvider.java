@@ -26,11 +26,9 @@ import org.slf4j.LoggerFactory;
  * @author Paolo Denti
  * @since 1.0.0
  */
-public class SappGenericBindingProvider extends AbstractGenericBindingProvider
-		implements SappBindingProvider {
+public class SappGenericBindingProvider extends AbstractGenericBindingProvider implements SappBindingProvider {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SappGenericBindingProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(SappGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -43,10 +41,8 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider
 	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		logger.debug(String.format("validating item '%s' against config '%s'",
-				item, bindingConfig));
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		logger.debug(String.format("validating item '%s' against config '%s'", item, bindingConfig));
 		// TODO
 		// if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
 		// throw new BindingConfigParseException("item '" + item.getName()
@@ -60,15 +56,13 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
 			addBindingConfig(item, new SappBindingConfig(bindingConfig));
 		} else {
-			logger.warn("bindingConfig is NULL (item=" + item
-					+ ") -> processing bindingConfig aborted!");
+			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
 		}
 	}
 
@@ -107,54 +101,39 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider
 		private int address;
 		private String subAddress;
 
-		public SappBindingConfig(String bindingConfig)
-				throws BindingConfigParseException {
+		public SappBindingConfig(String bindingConfig) throws BindingConfigParseException {
 
 			// check syntax
 			String[] bindingConfigParts = bindingConfig.split(":");
 			if (bindingConfigParts.length != 4) {
-				throw new BindingConfigParseException(String.format(
-						"Invalid Sapp binding configuration '%s'",
-						bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 			}
 
 			// pnmasId
 			this.pnmasId = bindingConfigParts[0];
 			if (this.pnmasId.length() == 0) {
-				throw new BindingConfigParseException(String.format(
-						"Invalid Sapp binding configuration '%s'",
-						bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 			}
 
 			// addressType
 			this.addressType = bindingConfigParts[1].toUpperCase();
 			if (!validAddresses.keySet().contains(this.addressType)) {
-				throw new BindingConfigParseException(String.format(
-						"Invalid Sapp binding configuration '%s'",
-						bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 			}
 
 			// address
 			try {
 				this.address = Integer.parseInt(bindingConfigParts[2]);
-				if (this.address <= 0
-						|| this.address > validAddresses.get(this.addressType)
-								.intValue()) {
-					throw new BindingConfigParseException(String.format(
-							"Invalid Sapp binding configuration '%s'",
-							bindingConfig));
+				if (this.address <= 0 || this.address > validAddresses.get(this.addressType).intValue()) {
+					throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 				}
 			} catch (NumberFormatException e) {
-				throw new BindingConfigParseException(String.format(
-						"Invalid Sapp binding configuration '%s'",
-						bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 			}
 
 			this.subAddress = bindingConfigParts[3].toUpperCase();
 			if (!ArrayUtils.contains(validSubAddresses, this.subAddress)) {
-				throw new BindingConfigParseException(String.format(
-						"Invalid Sapp binding configuration '%s'",
-						bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 			}
 		}
 	}
