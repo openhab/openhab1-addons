@@ -24,13 +24,13 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * valid format: <id>:[A/I/O/V]:[1-2500]:[1-16,L,H,*]
  */
 public class SappBindingConfig implements BindingConfig {
-	private static final Map<String, Integer> validAddresses = new HashMap<String, Integer>() {
+	private static final Map<SappAddressType, Integer> validAddresses = new HashMap<SappAddressType, Integer>() {
 		private static final long serialVersionUID = 592091386684476669L;
 		{
-			put("A", new Integer(250));
-			put("I", new Integer(255));
-			put("O", new Integer(255));
-			put("V", new Integer(2500));
+			put(SappAddressType.ALARM, new Integer(250));
+			put(SappAddressType.INPUT, new Integer(255));
+			put(SappAddressType.OUTPUT, new Integer(255));
+			put(SappAddressType.VIRTUAL, new Integer(2500));
 		}
 	};
 	private static final String[] validSubAddresses;
@@ -47,7 +47,7 @@ public class SappBindingConfig implements BindingConfig {
 
 	private String itemName;
 	private String pnmasId;
-	private String addressType;
+	private SappAddressType addressType;
 	private int address;
 	private String subAddress;
 
@@ -68,7 +68,7 @@ public class SappBindingConfig implements BindingConfig {
 		}
 
 		// addressType
-		this.addressType = bindingConfigParts[1].toUpperCase();
+		this.addressType = SappAddressType.fromString(bindingConfigParts[1].toUpperCase());
 		if (!validAddresses.keySet().contains(this.addressType)) {
 			throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 		}
@@ -97,7 +97,7 @@ public class SappBindingConfig implements BindingConfig {
 		return pnmasId;
 	}
 
-	public String getAddressType() {
+	public SappAddressType getAddressType() {
 		return addressType;
 	}
 
