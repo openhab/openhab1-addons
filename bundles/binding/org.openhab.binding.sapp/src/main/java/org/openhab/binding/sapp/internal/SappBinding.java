@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -47,6 +46,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 * set in the activate() method and must not be accessed anymore once the
 	 * deactivate() method was called or before activate() was called.
 	 */
+	@SuppressWarnings("unused")
 	private BundleContext bundleContext;
 
 	/**
@@ -199,8 +199,14 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
-
-		SappBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+		for (SappBindingProvider provider : providers) {
+			logger.debug("found provider: " + provider.toString());
+			if (!provider.providesBindingFor(itemName))
+				continue;
+			
+			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+			logger.debug(bindingConfig.toString());
+		}
 	}
 
 	/**
@@ -212,22 +218,5 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
-	}
-
-	/**
-	 * Find the first matching {@link ChannelBindingProvider} according to
-	 * <code>itemName</code>
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the matching binding provider or <code>null</code> if no binding
-	 *         provider could be found
-	 */
-	protected SappBindingProvider findFirstMatchingBindingProvider(String itemName) {
-		SappBindingProvider firstMatchingProvider = null;
-		for (SappBindingProvider provider : providers) {
-			logger.debug(String.format("%s", provider.toString()));
-		}
-		return firstMatchingProvider;
 	}
 }
