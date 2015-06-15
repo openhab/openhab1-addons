@@ -10,6 +10,7 @@ package org.openhab.binding.sapp.internal;
 
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -33,18 +34,15 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		logger.debug(String.format("validating item '%s' against config '%s'", item, bindingConfig));
-		// TODO
-		// if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		// throw new BindingConfigParseException("item '" + item.getName()
-		// + "' is of type '" + item.getClass().getSimpleName()
-		// +
-		// "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		// }
+		
+		if (item instanceof StringItem) {
+			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not allowed, please check your *.items configuration");
+		}
 	}
 
 	/**

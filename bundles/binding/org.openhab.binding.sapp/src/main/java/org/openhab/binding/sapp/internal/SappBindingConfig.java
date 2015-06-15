@@ -21,7 +21,6 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @author Paolo Denti
  * @since 1.0.0
  * 
- * valid format: <id>:[A/I/O/V]:[1-2500]:[1-16,L,H,*]
  */
 public class SappBindingConfig implements BindingConfig {
 	private static final Map<SappAddressType, SappAddressRange> validAddresses = new HashMap<SappAddressType, SappAddressRange>() {

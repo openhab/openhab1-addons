@@ -14,11 +14,17 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.paolodenti.jsapp.core.command.Sapp7DCommand;
+import com.github.paolodenti.jsapp.core.command.base.SappCommand;
+import com.github.paolodenti.jsapp.core.command.base.SappException;
+import com.github.paolodenti.jsapp.core.util.SappUtils;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -30,12 +36,12 @@ import org.slf4j.LoggerFactory;
 public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(SappBinding.class);
-	
+
 	private static final String CONFIG_KEY_REFRESH = "refresh";
 	private static final String CONFIG_KEY_PNMAS_ENABLED = "pnmas.ids";
 	private static final String CONFIG_KEY_PNMAS_ID = "pnmas.%s.ip";
 	private static final String CONFIG_KEY_PNMAS_PORT = "pnmas.%s.port";
-	
+
 	/**
 	 * map of existing pnmas. key is pnmas id.
 	 */
@@ -85,19 +91,19 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			refreshInterval = Long.parseLong(refreshIntervalString);
 			logger.debug("set refresh interval: " + refreshInterval);
 		}
-		
+
 		String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
 		if (pnmasEnabled != null) {
 			String[] pnmasIds = pnmasEnabled.split(",");
 			for (String pnmasId : pnmasIds) {
 				logger.debug(String.format("loading info for pnmas %s", pnmasId));
-				
+
 				String ip = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_ID, pnmasId));
 				if (ip == null) {
 					logger.warn(String.format("ip not found for pnmas %s", pnmasId));
 					continue;
 				}
-				
+
 				int port;
 				String portString = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_PORT, pnmasId));
 				if (portString == null) {
@@ -111,12 +117,12 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 						continue;
 					}
 				}
-				
+
 				if (pnmasMap.containsKey(pnmasId)) {
 					logger.warn(String.format("pnmas %s duplicated, skipping", pnmasId));
 					continue;
 				}
-				
+
 				pnmasMap.put(pnmasId, new SappPnmas(ip, port));
 			}
 			for (String pnmasKey : pnmasMap.keySet()) {
@@ -135,6 +141,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 *            Updated configuration properties
 	 */
 	public void modified(final Map<String, Object> configuration) {
+
 		// update the internal configuration accordingly
 		logger.debug("modified called");
 	}
@@ -157,6 +164,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 *            </ul>
 	 */
 	public void deactivate(final int reason) {
+
 		logger.debug("sapp deactivate called");
 		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and
@@ -164,35 +172,39 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
+
 		return refreshInterval;
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected String getName() {
+
 		return "Sapp Refresh Service";
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
+
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
+
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
@@ -201,21 +213,21 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			logger.debug("found provider: " + provider.getClass());
 			if (!provider.providesBindingFor(itemName))
 				continue;
-			
+
 			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
 			logger.debug("found binding " + bindingConfig);
-			
+
 			if (!pnmasMap.containsKey(bindingConfig.getPnmasId())) {
 				logger.warn(String.format("bad pnmas id (%s) in binding (%s) ... skipping", bindingConfig.getPnmasId(), bindingConfig));
 				continue;
 			}
-			
-			// TODO execute command
+
+			executeCommand(bindingConfig, command);
 		}
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
@@ -224,4 +236,38 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
+
+	/**
+	 * executes the real command on pnmas device
+	 */
+	private void executeCommand(SappBindingConfig bindingConfig, Command command) {
+
+		try {
+			if (command instanceof OnOffType) { // set bit
+				switch (bindingConfig.getAddressType()) {
+				case ALARM:
+				case INPUT:
+				case OUTPUT: {
+					logger.error("cannot run " + command.getClass().getSimpleName() + " on " + bindingConfig.getAddressType() + " type");
+					break;
+				}
+
+				case VIRTUAL: {
+					SappPnmas pnmas = pnmasMap.get(bindingConfig.getPnmasId());
+					SappCommand sappCommand = new Sapp7DCommand(bindingConfig.getAddress(), command.equals(OnOffType.ON) ? 1 : 0);
+					sappCommand.run(pnmas.getIp(), pnmas.getPort());
+					break;
+				}
+
+				default:
+					break;
+				}
+			} else { // TODO
+
+			}
+		} catch (SappException e) {
+			logger.error("could not run sappcommand: " + e.getMessage());
+		}
+	}
+
 }
