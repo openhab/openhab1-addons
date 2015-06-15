@@ -72,7 +72,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * @author Paolo Denti
 	 * @since 1.0.0
 	 * 
-	 *        valid format: <id>:[A/I/O/V]:[1-2500]:[1-16,L,H,*]
+	 * valid format: <id>:[A/I/O/V]:[1-2500]:[1-16,L,H,*]
 	 */
 	static class SappBindingConfig implements BindingConfig {
 		private static final Map<String, Integer> validAddresses = new HashMap<String, Integer>() {
