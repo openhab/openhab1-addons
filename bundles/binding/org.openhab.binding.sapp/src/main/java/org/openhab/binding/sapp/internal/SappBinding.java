@@ -226,7 +226,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	protected SappBindingProvider findFirstMatchingBindingProvider(String itemName) {
 		SappBindingProvider firstMatchingProvider = null;
 		for (SappBindingProvider provider : providers) {
-			System.out.println(provider.getClass());
+			logger.debug(String.format("%s", provider.toString()));
 		}
 		return firstMatchingProvider;
 	}
