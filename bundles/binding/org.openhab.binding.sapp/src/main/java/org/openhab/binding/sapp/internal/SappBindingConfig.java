@@ -24,13 +24,13 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * valid format: <id>:[A/I/O/V]:[1-2500]:[1-16,L,H,*]
  */
 public class SappBindingConfig implements BindingConfig {
-	private static final Map<SappAddressType, Integer> validAddresses = new HashMap<SappAddressType, Integer>() {
+	private static final Map<SappAddressType, SappAddressRange> validAddresses = new HashMap<SappAddressType, SappAddressRange>() {
 		private static final long serialVersionUID = 592091386684476669L;
 		{
-			put(SappAddressType.ALARM, new Integer(250));
-			put(SappAddressType.INPUT, new Integer(255));
-			put(SappAddressType.OUTPUT, new Integer(255));
-			put(SappAddressType.VIRTUAL, new Integer(2500));
+			put(SappAddressType.ALARM, new SappAddressRange(1, 250));
+			put(SappAddressType.INPUT, new SappAddressRange(1, 255));
+			put(SappAddressType.OUTPUT, new SappAddressRange(1, 255));
+			put(SappAddressType.VIRTUAL, new SappAddressRange(1, 2500));
 		}
 	};
 	private static final String[] validSubAddresses;
@@ -76,7 +76,7 @@ public class SappBindingConfig implements BindingConfig {
 		// address
 		try {
 			this.address = Integer.parseInt(bindingConfigParts[2]);
-			if (this.address <= 0 || this.address > validAddresses.get(this.addressType).intValue()) {
+			if (this.address < validAddresses.get(this.addressType).getLoRange() || this.address > validAddresses.get(this.addressType).getHiRange()) {
 				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
 			}
 		} catch (NumberFormatException e) {

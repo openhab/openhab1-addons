@@ -64,5 +64,5 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public SappBindingConfig getBindingConfig(String itemName) {
 		return (SappBindingConfig) bindingConfigs.get(itemName);
-	}	
+	}
 }

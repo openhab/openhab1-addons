@@ -124,8 +124,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			}
 		}
 
-		// read further config parameters here ...
-
 		setProperlyConfigured(true);
 	}
 
@@ -200,7 +198,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
 		for (SappBindingProvider provider : providers) {
-			logger.debug("found provider: " + provider.toString());
+			logger.debug("found provider: " + provider.getClass());
 			if (!provider.providesBindingFor(itemName))
 				continue;
 			
