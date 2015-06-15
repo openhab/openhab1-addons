@@ -1864,6 +1864,15 @@
 			<Model>ZDP100</Model>
 			<Label lang="en">Plugin Lamp Module</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>524d</Type>
+				<Id>3330</Id>
+			</Reference>
+			<Model>ZRM230</Model>
+			<Label lang="en">Wall Switch/Transmitter (2-gang)</Label>
+			<ConfigFile>act/zrm230.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>001d</Id>
