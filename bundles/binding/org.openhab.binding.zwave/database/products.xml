@@ -2287,4 +2287,17 @@
 			<Label lang="en">Thermostat</Label>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>008b</Id>
+		<Name>Trane</Name>
+		<Product>
+			<Reference>
+				<Type>5452</Type>
+				<Id>5433</Id>
+			</Reference>
+			<Model>TZEMT400BB32MAA</Model>
+			<Label lang="en">Trane Z-Wave Programmable Thermostat</Label>
+			<ConfigFile>trane/tzemt400bb32maa.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
