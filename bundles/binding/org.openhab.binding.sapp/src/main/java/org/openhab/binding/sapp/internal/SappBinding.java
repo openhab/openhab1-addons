@@ -203,7 +203,12 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				continue;
 			
 			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-			logger.debug(bindingConfig.toString());
+			logger.debug("found binding " + bindingConfig);
+			
+			if (!pnmasMap.containsKey(bindingConfig.getPnmasId())) {
+				logger.warn(String.format("bad pnmas id (%s) in binding (%s) ... skipping", bindingConfig.getPnmasId(), bindingConfig));
+				continue;
+			}
 		}
 	}
 
