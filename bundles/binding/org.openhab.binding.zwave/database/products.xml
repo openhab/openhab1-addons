@@ -39,6 +39,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2002</Type>
+				<Id>0203</Id>
+			</Reference>
+			<Model>WAPIRZ-1</Model>
+			<Label lang="en">PIR Motion Detector</Label>
+			<ConfigFile>linear/wapirz-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4457</Type>
 				<Id>3034</Id>
 			</Reference>
@@ -2264,6 +2273,18 @@
 			<Model>MH10-PM2.5-WA</Model>
 			<Label lang="en">PM2.5 Monitor</Label>
 			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0010</Id>
+		<Name>Residential Control Systems</Name>
+		<Product>
+			<Reference>
+				<Type>5442</Type>
+				<Id>5432</Id>
+			</Reference>
+			<Model>TBZ48</Model>
+			<Label lang="en">Thermostat</Label>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
