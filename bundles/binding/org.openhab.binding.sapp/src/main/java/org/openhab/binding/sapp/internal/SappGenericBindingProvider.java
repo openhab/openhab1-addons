@@ -8,12 +8,7 @@
  */
 package org.openhab.binding.sapp.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
-import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -65,4 +60,9 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
 		}
 	}
+
+	@Override
+	public SappBindingConfig getBindingConfig(String itemName) {
+		return (SappBindingConfig) bindingConfigs.get(itemName);
+	}	
 }

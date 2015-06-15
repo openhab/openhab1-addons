@@ -8,12 +8,20 @@
  */
 package org.openhab.binding.sapp;
 
+import org.openhab.binding.sapp.internal.SappBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * This interface is implemented by classes that can provide mapping information
+ * between openHAB items and Sapp items.
+ * 
+ * Implementing classes should register themselves as a service in order to be 
+ * taken into account.
+
  * @author Paolo Denti
  * @since 1.0.0
  */
 public interface SappBindingProvider extends BindingProvider {
 
+	SappBindingConfig getBindingConfig(String itemName);
 }
