@@ -126,4 +126,6 @@ Location DemoLocation			"Brandenburg Gate Berlin"
 
 /* Sapp */
 Group gSapp 		(All)
-Switch SappSwitch				"SappSwitch" (gSapp) { sapp="pippo" }
+Switch SappSwitch				"SappSwitch1" (gSapp) { sapp="casa:V:2000:*" }
+Switch SappSwitch				"SappSwitch2" (gSapp) { sapp="casa:F:2000:*" }
+Switch SappSwitch				"SappSwitch3" (gSapp) { sapp="casa:V:20000:*" }
