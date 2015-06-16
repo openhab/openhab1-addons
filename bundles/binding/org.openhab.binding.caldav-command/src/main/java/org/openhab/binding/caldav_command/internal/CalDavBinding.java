@@ -269,15 +269,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	@Override
-	public void eventChanged(CalDavEvent event) {
-		this.handleForEventMap(event, SCOPE_BEGIN, false);
-		this.handleForEventMap(event, SCOPE_END, false);
-		
-		this.handleForEventMap(event, SCOPE_BEGIN, true);
-		this.handleForEventMap(event, SCOPE_END, true);
-	}
-
-	@Override
 	public void eventBegins(CalDavEvent event) {
 		this.doAction(event, SCOPE_BEGIN);
 	}

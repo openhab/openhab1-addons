@@ -26,7 +26,6 @@ public class CalDavEvent {
 	private DateTime end;
 	private DateTime lastChanged;
 	private String id;
-	private String fileName;
 	private String calendarId;
 	private String location;
 	private String content;
@@ -69,13 +68,13 @@ public class CalDavEvent {
 		this.end = end;
 	}
 	
-	public String getId() {
-		return this.id;
-	}
-
 //	public String getId() {
-//		return this.calendarId + "-" + this.id + "-" + this.start.hashCode() + "-" + this.end.hashCode();
+//		return this.id;
 //	}
+
+	public String getId() {
+		return this.calendarId + "-" + this.id + "-" + this.start.hashCode() + "-" + this.end.hashCode();
+	}
 
 	public void setId(String id) {
 		this.id = id;
@@ -113,14 +112,6 @@ public class CalDavEvent {
 		this.content = content;
 	}
 	
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
 	public String getShortName() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.id);

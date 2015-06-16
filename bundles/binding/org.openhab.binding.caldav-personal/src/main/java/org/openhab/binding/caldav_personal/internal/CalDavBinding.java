@@ -184,20 +184,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void eventChanged(CalDavEvent event) {
-		if (!calendars.contains(event.getCalendarId())) {
-            return;
-        }
-		
-		logger.debug("event changed: {}", event.getShortName());
-		
-		this.updateItemsForEvent();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void eventBegins(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
             return;

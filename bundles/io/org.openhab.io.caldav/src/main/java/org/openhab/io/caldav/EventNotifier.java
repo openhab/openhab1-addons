@@ -28,12 +28,6 @@ public interface EventNotifier {
 	void eventRemoved(CalDavEvent event);
 	
 	/**
-	 * invoked when event was changed (modify date of ics event
-	 * @param event the interesting event
-	 */
-	void eventChanged(CalDavEvent event);
-	
-	/**
 	 * invoked when event starts
 	 * @param event the interesting event
 	 */
