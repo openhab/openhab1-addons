@@ -228,24 +228,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
-		for (SappBindingProvider provider : providers) {
-			logger.debug("found provider: " + provider.getClass());
-			if (!provider.providesBindingFor(itemName))
-				continue;
 
-			State actualState = provider.getItem(itemName).getState();
-			logger.debug("actualState:" + actualState + " " + actualState.getClass());
-
-			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-			logger.debug("found binding " + bindingConfig);
-
-			if (!pnmasMap.containsKey(bindingConfig.getPnmasId())) {
-				logger.warn(String.format("bad pnmas id (%s) in binding (%s) ... skipping", bindingConfig.getPnmasId(), bindingConfig));
-				continue;
-			}
-
-			executeCommand(bindingConfig, command);
-		}
+		executeSappCommand(itemName, command);
 	}
 
 	/**
@@ -263,7 +247,20 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * executes the real command on pnmas device
 	 */
-	private void executeCommand(SappBindingConfig bindingConfig, Command command) {
+	private void executeSappCommand(String itemName, Command command) {
+
+		SappBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+		if (provider == null) {
+			logger.error("cannot find a provider, skipping command");
+		}
+
+		SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+		logger.debug("found binding " + bindingConfig);
+
+		if (!pnmasMap.containsKey(bindingConfig.getPnmasId())) {
+			logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", bindingConfig.getPnmasId(), bindingConfig));
+			return;
+		}
 
 		try {
 			if (command instanceof OnOffType) { // set bit
@@ -291,6 +288,29 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		} catch (SappException e) {
 			logger.error("could not run sappcommand: " + e.getMessage());
 		}
+	}
+
+	/**
+	 * Find the first matching {@link ChannelBindingProvider} according to
+	 * <code>itemName</code>
+	 * 
+	 * @param itemName
+	 * 
+	 * @return the matching binding provider or <code>null</code> if no binding
+	 *         provider could be found
+	 */
+
+	protected SappBindingProvider findFirstMatchingBindingProvider(String itemName) {
+
+		for (SappBindingProvider provider : providers) {
+			logger.debug("found provider: " + provider.getClass());
+			if (!provider.providesBindingFor(itemName)) {
+				continue;
+			}
+			return provider;
+		}
+
+		return null;
 	}
 
 	private void initializeAllItemsInProvider(SappBindingProvider provider) throws SappException {
