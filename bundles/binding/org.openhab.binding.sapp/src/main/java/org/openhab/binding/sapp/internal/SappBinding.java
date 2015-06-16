@@ -14,6 +14,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.items.Item;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -22,6 +24,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.paolodenti.jsapp.core.command.Sapp7CCommand;
 import com.github.paolodenti.jsapp.core.command.Sapp7DCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
@@ -65,9 +68,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 * syncronization object used to avoid overlapping pollings
 	 */
 	private boolean isInPolling = false;
-
-	public SappBinding() {
-	}
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
@@ -222,8 +222,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 										}
 									}
 								} else { // poll
-									// TODO fake test
-									eventPublisher.postUpdate("SappSwitch2", OnOffType.OFF);
+									// TODO
 								}
 							}
 						}
@@ -293,6 +292,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					SappPnmas pnmas = pnmasMap.get(bindingConfig.getPnmasId());
 					SappCommand sappCommand = new Sapp7DCommand(bindingConfig.getAddress(), command.equals(OnOffType.ON) ? 1 : 0);
 					sappCommand.run(pnmas.getIp(), pnmas.getPort());
+					if (sappCommand.isResponseOk()) {
+						throw new SappException("command execution failed");
+					}
 					break;
 				}
 
@@ -331,14 +333,47 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	}
 
 	private void initializeAllItemsInProvider(SappBindingProvider provider) throws SappException {
+
 		logger.debug("Updating item state for items {}", provider.getItemNames());
 		for (String itemName : provider.getItemNames()) {
 			logger.debug("querying and setting item" + itemName);
 			State actualState = provider.getItem(itemName).getState();
 			if (actualState instanceof UnDefType) { // item just added, refresh
-				// TODO queryAndSendActualState(provider, itemName);
-				eventPublisher.postUpdate(itemName, OnOffType.ON);
+				queryAndSendActualState(provider, itemName);
 			}
+		}
+	}
+	
+	private void queryAndSendActualState(SappBindingProvider provider, String itemName) {
+		
+		Item item = provider.getItem(itemName);
+		
+		if (item instanceof SwitchItem) {
+			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+
+			switch (bindingConfig.getAddressType()) {
+			case VIRTUAL:
+				try {
+					SappPnmas pnmas = pnmasMap.get(bindingConfig.getPnmasId());
+					SappCommand sappCommand = new Sapp7CCommand(bindingConfig.getAddress());
+					sappCommand.run(pnmas.getIp(), pnmas.getPort());
+					if (!sappCommand.isResponseOk()) {
+						throw new SappException("command execution failed");
+					}
+					int result = SappBindingUtils.filter(bindingConfig, sappCommand.getResponse().getDataAsWord());
+					
+					eventPublisher.postUpdate(itemName, result == 0 ? OnOffType.OFF : OnOffType.ON);
+				} catch (SappException e) {
+					logger.error("could not run sappcommand: " + e.getMessage());
+				}
+				break;
+
+			default:
+				logger.error("wrong item type " + item.getClass().getSimpleName() + " for address type " + bindingConfig.getAddressType());
+				break;
+			}
+		} else { // TODO complete with other items
+			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
 	}
 }
