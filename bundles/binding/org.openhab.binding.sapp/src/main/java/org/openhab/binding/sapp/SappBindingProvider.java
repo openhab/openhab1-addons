@@ -10,6 +10,7 @@ package org.openhab.binding.sapp;
 
 import org.openhab.binding.sapp.internal.SappBindingConfig;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -23,5 +24,25 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface SappBindingProvider extends BindingProvider {
 
+    /**
+     * @param itemName The name of the item
+     * @return The bindingConfig for the itemName
+     */
 	SappBindingConfig getBindingConfig(String itemName);
+
+    /**
+     * @param itemName The name of the item
+     * @return The item with the given name
+     */
+    Item getItem(String itemName);
+    
+    /**
+     * @return returns true is some bindings have been added; should be reset by the actual provider
+     */
+    boolean isFullRefreshNeeded();
+
+    /**
+     * @param fullRefreshNeeded should be used by the actual provider after a full refresh
+     */
+    void setFullRefreshNeeded(boolean fullRefreshNeeded);
 }

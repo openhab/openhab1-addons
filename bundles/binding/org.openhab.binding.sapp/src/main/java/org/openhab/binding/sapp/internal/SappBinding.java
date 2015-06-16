@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import com.github.paolodenti.jsapp.core.command.Sapp7DCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
-import com.github.paolodenti.jsapp.core.util.SappUtils;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -197,6 +196,25 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
+
+		if (isProperlyConfigured()) { // wait until provider is properly configured
+			for (SappBindingProvider provider : providers) {
+				if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
+					logger.debug("executing a full refresh");
+					for (SappBindingProvider sappBindingProvider : providers) {
+						try {
+							initializeAllItemsInProvider(sappBindingProvider);
+							provider.setFullRefreshNeeded(false);
+						} catch (SappException e) {
+							logger.error("error while initializing items:" + e.getMessage());
+						}
+					}
+				} else { // poll
+					// TODO fake test
+					eventPublisher.postUpdate("SappSwitch2", OnOffType.ON);
+				}
+			}
+		}
 	}
 
 	/**
@@ -213,6 +231,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			logger.debug("found provider: " + provider.getClass());
 			if (!provider.providesBindingFor(itemName))
 				continue;
+
+			State actualState = provider.getItem(itemName).getState();
+			logger.debug("actualState:" + actualState + " " + actualState.getClass());
 
 			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
 			logger.debug("found binding " + bindingConfig);
@@ -231,6 +252,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
+
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
@@ -263,11 +285,18 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					break;
 				}
 			} else { // TODO
-
+				logger.error("command " + command.getClass().getSimpleName() + " not yet implemented");
 			}
 		} catch (SappException e) {
 			logger.error("could not run sappcommand: " + e.getMessage());
 		}
 	}
 
+	private void initializeAllItemsInProvider(SappBindingProvider provider) throws SappException {
+		logger.debug("Updating item state for items {}", provider.getItemNames());
+		for (String itemName : provider.getItemNames()) {
+			logger.debug("querying and setting item" + itemName);
+			// TODO queryAndSendActualState(provider, itemName);
+		}
+	}
 }
