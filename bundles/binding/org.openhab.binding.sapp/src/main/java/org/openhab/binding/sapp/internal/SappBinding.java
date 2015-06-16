@@ -61,6 +61,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 */
 	private long refreshInterval = 60000;
 
+	/**
+	 * syncronization object used to avoid overlapping pollings
+	 */
+	private boolean isInPolling = false;
+
 	public SappBinding() {
 	}
 
@@ -196,23 +201,35 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	protected void execute() {
 
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
 
-		if (isProperlyConfigured()) { // wait until provider is properly configured
-			for (SappBindingProvider provider : providers) {
-				if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
-					logger.debug("executing a full refresh");
-					for (SappBindingProvider sappBindingProvider : providers) {
-						try {
-							initializeAllItemsInProvider(sappBindingProvider);
-							provider.setFullRefreshNeeded(false);
-						} catch (SappException e) {
-							logger.error("error while initializing items:" + e.getMessage());
+		if (!isInPolling) {
+			synchronized (this) { // do not overlap execute()
+				if (!isInPolling) {
+					try {
+						isInPolling = true;
+						logger.debug("execute() method is called!");
+
+						if (isProperlyConfigured()) { // wait until provider is properly configured
+							for (SappBindingProvider provider : providers) {
+								if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
+									logger.debug("executing a full refresh");
+									for (SappBindingProvider sappBindingProvider : providers) {
+										try {
+											initializeAllItemsInProvider(sappBindingProvider);
+											provider.setFullRefreshNeeded(false);
+										} catch (SappException e) {
+											logger.error("error while initializing items:" + e.getMessage());
+										}
+									}
+								} else { // poll
+									// TODO fake test
+									eventPublisher.postUpdate("SappSwitch2", OnOffType.OFF);
+								}
+							}
 						}
+					} finally {
+						isInPolling = false;
 					}
-				} else { // poll
-					// TODO fake test
-					eventPublisher.postUpdate("SappSwitch2", OnOffType.OFF);
 				}
 			}
 		}
