@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.sapp.internal;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,11 @@ import org.slf4j.LoggerFactory;
 
 import com.github.paolodenti.jsapp.core.command.Sapp7CCommand;
 import com.github.paolodenti.jsapp.core.command.Sapp7DCommand;
+import com.github.paolodenti.jsapp.core.command.Sapp80Command;
+import com.github.paolodenti.jsapp.core.command.Sapp81Command;
+import com.github.paolodenti.jsapp.core.command.Sapp82Command;
 import com.github.paolodenti.jsapp.core.command.base.SappCommand;
+import com.github.paolodenti.jsapp.core.command.base.SappConnection;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
 
 /**
@@ -207,22 +212,70 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				if (!isInPolling) {
 					try {
 						isInPolling = true;
-						logger.debug("execute() method is called!");
 
 						if (isProperlyConfigured()) { // wait until provider is properly configured
 							for (SappBindingProvider provider : providers) {
 								if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
 									logger.debug("executing a full refresh");
-									for (SappBindingProvider sappBindingProvider : providers) {
-										try {
-											initializeAllItemsInProvider(sappBindingProvider);
-											provider.setFullRefreshNeeded(false);
-										} catch (SappException e) {
-											logger.error("error while initializing items:" + e.getMessage());
-										}
+									try {
+										initializeAllItemsInProvider(provider);
+										provider.setFullRefreshNeeded(false);
+									} catch (SappException e) {
+										logger.error("error while initializing items:" + e.getMessage());
 									}
 								} else { // poll
-									// TODO
+									for (SappPnmas pnmas : pnmasMap.values()) { // each pnmas
+										try {
+											SappConnection sappConnection = new SappConnection(pnmas.getIp(), pnmas.getPort());
+											sappConnection.openConnection();
+
+											try {
+												SappCommand sappCommand;
+
+												// poll outputs
+												sappCommand = new Sapp80Command();
+												sappCommand.run(sappConnection);
+												if (!sappCommand.isResponseOk()) {
+													throw new SappException("command execution failed");
+												}
+												Map<Byte, Integer> changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
+												if (changedOutputs.size() != 0) {
+													// TODO update items
+												}
+
+												// poll inputs
+												sappCommand = new Sapp81Command();
+												sappCommand.run(sappConnection);
+												if (!sappCommand.isResponseOk()) {
+													throw new SappException("command execution failed");
+												}
+												Map<Byte, Integer> changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
+												if (changedInputs.size() != 0) {
+													// TODO update items
+												}
+
+												// poll virtuals
+												sappCommand = new Sapp82Command();
+												sappCommand.run(sappConnection);
+												if (!sappCommand.isResponseOk()) {
+													throw new SappException("command execution failed");
+												}
+												Map<Integer, Integer> changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
+												if (changedVirtuals.size() != 0) {
+													// TODO update items
+													for (SappBindingProvider sappBindingProvider : providers) { // TODO rimuovere fake
+														initializeAllItemsInProvider(sappBindingProvider);
+													}
+												}
+											} finally {
+												sappConnection.closeConnection();
+											}
+										} catch (IOException e) {
+											logger.error("polling failed on pnmas " + pnmas);
+										} catch (SappException e) {
+											logger.error("polling failed on pnmas " + pnmas);
+										}
+									}
 								}
 							}
 						}
@@ -343,11 +396,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			}
 		}
 	}
-	
+
 	private void queryAndSendActualState(SappBindingProvider provider, String itemName) {
-		
+
 		Item item = provider.getItem(itemName);
-		
+
 		if (item instanceof SwitchItem) {
 			SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
 
@@ -361,7 +414,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 						throw new SappException("command execution failed");
 					}
 					int result = SappBindingUtils.filter(bindingConfig, sappCommand.getResponse().getDataAsWord());
-					
+
 					eventPublisher.postUpdate(itemName, result == 0 ? OnOffType.OFF : OnOffType.ON);
 				} catch (SappException e) {
 					logger.error("could not run sappcommand: " + e.getMessage());
