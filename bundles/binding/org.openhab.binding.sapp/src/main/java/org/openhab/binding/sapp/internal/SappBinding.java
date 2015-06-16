@@ -17,6 +17,7 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -211,7 +212,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					}
 				} else { // poll
 					// TODO fake test
-					eventPublisher.postUpdate("SappSwitch2", OnOffType.ON);
+					eventPublisher.postUpdate("SappSwitch2", OnOffType.OFF);
 				}
 			}
 		}
@@ -296,7 +297,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		logger.debug("Updating item state for items {}", provider.getItemNames());
 		for (String itemName : provider.getItemNames()) {
 			logger.debug("querying and setting item" + itemName);
-			// TODO queryAndSendActualState(provider, itemName);
+			State actualState = provider.getItem(itemName).getState();
+			if (actualState instanceof UnDefType) { // item just added, refresh
+				// TODO queryAndSendActualState(provider, itemName);
+				eventPublisher.postUpdate(itemName, OnOffType.ON);
+			}
 		}
 	}
 }
