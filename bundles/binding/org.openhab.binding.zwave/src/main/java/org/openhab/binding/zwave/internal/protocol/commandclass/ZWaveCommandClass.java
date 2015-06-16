@@ -328,18 +328,22 @@ public abstract class ZWaveCommandClass {
 			size = 2;
 		}
 		
-		int precision = value.scale();
-		
-		// precision cannot be negative, cannot be more than 7 as well, 
-		// but this is guarded by the Integer min / max values already.
-		if (precision < 0) {
-			throw new ArithmeticException();
+		// Remove any trailing zero's so we send the least amount of bytes possible
+		BigDecimal normalizedValue = value.stripTrailingZeros();
+
+		// Make our scale at least 0, precision cannot be more than 7 but
+		// this is guarded by the Integer min / max values already.
+		if (normalizedValue.scale() < 0)
+		{
+			normalizedValue = normalizedValue.setScale(0);
 		}
 		
+		int precision = normalizedValue.scale();
+
 		byte[] result = new byte[size + 1];
 		// precision + scale (unused) + size
 		result[0] = (byte) ((precision << PRECISION_SHIFT) | size);
-		int unscaledValue = value.unscaledValue().intValue(); // ie. 22.5 = 225
+		int unscaledValue = normalizedValue.unscaledValue().intValue(); // ie. 22.5 = 225
 		for (int i = 0; i < size; i++) {
 			result[size - i] = (byte) ((unscaledValue >> (i * 8)) & 0xFF);
 		}
