@@ -928,6 +928,15 @@
 			<Label lang="en">Smart Strip</Label>
 			<ConfigFile>aeon/smart_strip.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0104</Type>
+				<Id>0050</Id>
+			</Reference>
+			<Model>ZW080-A17</Model>
+			<Label lang="en">Siren</Label>
+			<ConfigFile>aeon/siren.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
