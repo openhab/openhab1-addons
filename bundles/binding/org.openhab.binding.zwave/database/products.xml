@@ -1907,6 +1907,10 @@
 				<Type>0501</Type>
 				<Id>0334</Id>
 			</Reference>
+			<Reference>
+				<Type>0501</Type>
+				<Id>0209</Id>
+			</Reference>
 			<Model>VRI10-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
 			<ConfigFile>leviton/vri10-1lz.xml</ConfigFile>
