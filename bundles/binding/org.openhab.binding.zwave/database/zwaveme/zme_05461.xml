@@ -2,6 +2,7 @@
 <Product>
 	<Model>ZME_05461</Model>
 	<Label lang="en">Double Switch</Label>
+	<Label lang="de">Doppeltaster</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x25</id></Class>
@@ -185,7 +186,7 @@
 			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Switch on/off by holding buttons</Label>
-			<Label lang="de">Schalten bei Dimm-Kommandos</</Label>
+			<Label lang="de">Schalten bei Gedrückthalten</Label>
 			<Label lang="ru">Включить/выключить при удержании клавиш</Label>
 			<Item>
 				<Value>0</Value>
