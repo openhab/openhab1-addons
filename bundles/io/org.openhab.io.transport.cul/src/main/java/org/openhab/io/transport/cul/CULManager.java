@@ -51,7 +51,7 @@ public class CULManager {
 	 * @throws CULDeviceException
 	 */
 	public static CULHandler getOpenCULHandler(String deviceName, CULMode mode) throws CULDeviceException {
-		return getOpenCULHandler(deviceName, mode, null);
+		return getOpenCULHandler(deviceName, mode, new HashMap<String, Object>());
 	}
 	
 	/**
