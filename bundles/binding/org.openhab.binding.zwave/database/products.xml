@@ -928,6 +928,15 @@
 			<Label lang="en">Smart Strip</Label>
 			<ConfigFile>aeon/smart_strip.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0104</Type>
+				<Id>0050</Id>
+			</Reference>
+			<Model>ZW080-A17</Model>
+			<Label lang="en">Siren</Label>
+			<ConfigFile>aeon/siren.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -1064,6 +1073,22 @@
 			<Model>ZP3102</Model>
 			<Label lang="en">Motion Sensor</Label>
 			<ConfigFile>vision/zp3102.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2008</Type>
+				<Id>0803</Id>
+			</Reference>
+			<Model>Lamp Dimmer Module</Model>
+			<Label lang="en">Lamp Dimmer Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2007</Type>
+				<Id>0703</Id>
+			</Reference>
+			<Model>Lamp Switch Module</Model>
+			<Label lang="en">Lamp Switch Module</Label>
 		</Product>
 		<Product>
 			<Reference>
@@ -1885,6 +1910,10 @@
 			<Reference>
 				<Type>0501</Type>
 				<Id>0334</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
+				<Id>0209</Id>
 			</Reference>
 			<Model>VRI10-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
