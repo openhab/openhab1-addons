@@ -112,16 +112,19 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	
 	public void activate() {
-		// Initialise the type array
-		sqlTypes.put("COLORITEM", "VARCHAR(70)");
-		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", "DATETIME");
-		sqlTypes.put("DIMMERITEM", "TINYINT");
-		sqlTypes.put("GROUPITEM", "VARCHAR(200)");
-		sqlTypes.put("NUMBERITEM", "DOUBLE");
-		sqlTypes.put("ROLERSHUTTERITEM", "TINYINT");
-		sqlTypes.put("STRINGITEM", "VARCHAR(20000)");
-		sqlTypes.put("SWITCHITEM", "CHAR(3)");
+		// Initialise the type array, default/fallback ItemType is StringType ("STRINGITEM")
+		// If higher Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
+		//sqlTypes.put("CALLITEM", 		"VARCHAR(20000)");	//uses default StringType
+		sqlTypes.put("COLORITEM", 		"VARCHAR(70)");
+		sqlTypes.put("CONTACTITEM", 	"VARCHAR(6)");
+		sqlTypes.put("DATETIMEITEM", 	"DATETIME");
+		sqlTypes.put("DIMMERITEM", 		"TINYINT");
+		//sqlTypes.put("GROUPITEM", 	"DOUBLE"); 			//if GroupItem:<ItemType> is not defined in *.items using StringType
+		//sqlTypes.put("LOCATIONITEM", 	"VARCHAR(20000)");	//uses default StringType
+		sqlTypes.put("NUMBERITEM", 		"DOUBLE");
+		sqlTypes.put("ROLERSHUTTERITEM","TINYINT");
+		sqlTypes.put("STRINGITEM", 		"VARCHAR(20000)");
+		sqlTypes.put("SWITCHITEM", 		"CHAR(3)");
 	}
 
 	public void deactivate() {
@@ -150,6 +153,22 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 */
 	public String getName() {
 		return "mysql";
+	}
+	
+	private String getItemType(Item i) {
+		Item item = i;
+		if(i instanceof GroupItem){
+			item = ((GroupItem) i).getBaseItem();
+			if(item == null)//if GroupItem:<ItemType> is not defined in *.items using StringType
+				return sqlTypes.get("STRINGITEM");
+		}
+		String itemType = item.getClass().toString().toUpperCase();
+		//Pointsyntax??
+		itemType = itemType.substring(itemType.lastIndexOf('.') + 1);
+		if(sqlTypes.get(itemType) == null)
+			return sqlTypes.get("STRINGITEM");
+		
+		return sqlTypes.get(itemType);
 	}
 
 	private String getTable(Item item) {
@@ -203,13 +222,9 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			return null;
 		}
 
-		// Default the type to double
-		String mysqlType = new String("DOUBLE");
-		String itemType = item.getClass().toString().toUpperCase();
-		itemType = itemType.substring(itemType.lastIndexOf('.') + 1);
-		if (sqlTypes.get(itemType) != null) {
-			mysqlType = sqlTypes.get(itemType);
-		}
+		// Default the type was double, changed to String
+		
+		String mysqlType = getItemType(item);
 
 		// We have a rowId, create the table for the data
 		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType
@@ -636,7 +651,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTimeInMillis(rs.getTimestamp(2).getTime());
 					state = new DateTimeType(calendar);
-				} else
+				} else	//Call, Location, String and if GroupItem:<ItemType> is not defined in *.items using StringType
 					state = new StringType(rs.getString(2));
 
 				MysqlItem mysqlItem = new MysqlItem(itemName, state, rs.getTimestamp(1));
