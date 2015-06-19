@@ -11,12 +11,12 @@ package org.openhab.binding.plex.internal.communication;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Part of {@link MediaContainer}, holds information about a video item. 
+ * Part of {@link MediaContainer}, holds information about a music track. 
  * 
  * @author Jeroen Idserda
  * @since 1.7.0
  */
-@XmlRootElement(name = "Video")
-public class Video extends AbstractSessionItem {
+@XmlRootElement(name = "Track")
+public class Track extends AbstractSessionItem { 
 	
 }

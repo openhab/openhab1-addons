@@ -8,14 +8,16 @@
  */
 package org.openhab.binding.plex.internal;
 
-import static org.openhab.binding.plex.internal.PlexBindingConstants.*;
+import static org.openhab.binding.plex.internal.PlexProperty.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Date;
 
 import org.openhab.binding.plex.internal.annotations.ItemMapping;
 import org.openhab.binding.plex.internal.annotations.ItemPlayerStateMapping;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 
@@ -29,25 +31,31 @@ public class PlexSession {
 	
 	private String machineIdentifier;
 
+	// Key of media that is currently playing
+	private String key;
+
 	private String sessionKey;
 	
-	@ItemMapping(property = PROPERTY_STATE, type=StringType.class, stateMappings = 
-		{@ItemPlayerStateMapping(state=PlexPlayerState.Playing, property=PROPERTY_PLAY),
-		 @ItemPlayerStateMapping(state=PlexPlayerState.Stopped, property=PROPERTY_STOP),
-		 @ItemPlayerStateMapping(state=PlexPlayerState.Paused, property=PROPERTY_PAUSE)})
+	@ItemMapping(property = STATE, type=StringType.class, stateMappings = 
+		{@ItemPlayerStateMapping(state=PlexPlayerState.Playing, property=PLAY),
+		 @ItemPlayerStateMapping(state=PlexPlayerState.Stopped, property=STOP),
+		 @ItemPlayerStateMapping(state=PlexPlayerState.Paused, property=PAUSE)})
 	private PlexPlayerState state = PlexPlayerState.Stopped;
 	
-	@ItemMapping(property = PROPERTY_TITLE, type=StringType.class)
+	@ItemMapping(property = TITLE, type=StringType.class)
 	private String title = "";
 	
-	@ItemMapping(property = PROPERTY_TYPE, type=StringType.class)
+	@ItemMapping(property = TYPE, type=StringType.class)
 	private String type = "";
 	
-	@ItemMapping(property = PROPERTY_VOLUME, type=PercentType.class)
+	@ItemMapping(property = VOLUME, type=PercentType.class)
 	private Integer volume = 100;
 	
-	@ItemMapping(property = PROPERTY_PROGRESS, type=PercentType.class)
+	@ItemMapping(property = PROGRESS, type=PercentType.class)
 	private BigDecimal progress = BigDecimal.ZERO;
+	
+	@ItemMapping(property = END_TIME, type=DateTimeType.class)
+	private Date endTime = null;
 	
 	private int duration = 0;
 	
@@ -59,6 +67,14 @@ public class PlexSession {
 
 	public void setMachineIdentifier(String machineIdentifier) {
 		this.machineIdentifier = machineIdentifier;
+	}
+	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getSessionKey() {
@@ -104,6 +120,10 @@ public class PlexSession {
 	public BigDecimal getProgress() {
 		return progress;
 	}
+	
+	public Date getEndTime() {
+		return endTime;
+	}
 
 	public int getDuration() {
 		return duration;
@@ -135,6 +155,8 @@ public class PlexSession {
 			progress = new BigDecimal("100").min(progress);
 			
 			this.progress = progress;
+			this.endTime = new Date(System.currentTimeMillis() + (duration - viewOffset));
 		}
 	}
+
 }
