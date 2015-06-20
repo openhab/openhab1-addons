@@ -19,6 +19,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,25 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
 			if (zwaveCommandClass != null) {
 				node.addCommandClass(zwaveCommandClass);
+			}
+		}
+
+		// If this is a 'not listening' device, then ensure the wakeup class is added!
+		// This is needed as some battery devices don't support, or don't report
+		// the wakeup class. However, if we don't add this, then the node won't
+		// initialise as we won't proceed when the NIF is received.
+		// Additionally, adding the wakeup class will ensure frames are buffered even
+		// if wakeup isn't supported by the device, and we will send them when a NIF is
+		// received - at least there's some chance it will be awake!!
+		if(listening == false && node.getCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP) == null) {
+			ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(CommandClass.WAKE_UP.getKey(), node, zController);
+			if (commandClass != null) {
+				// Set the version to 1. This stops the binding requesting the version
+				// when the class isn't supported 
+				commandClass.setVersion(1);
+				
+				// And add it to the node...
+				node.addCommandClass(commandClass);
 			}
 		}
 
