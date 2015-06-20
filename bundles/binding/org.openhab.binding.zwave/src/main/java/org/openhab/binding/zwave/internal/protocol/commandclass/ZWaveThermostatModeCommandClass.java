@@ -304,7 +304,8 @@ ZWaveCommandClassDynamicState {
 		AUTO_CHANGEOVER(10,"Auto Changeover"),
 		HEAT_ECON(11,"Heat Econ"),
 		COOL_ECON(12,"Cool Econ"),
-		AWAY(13,"Away");
+		AWAY(13,"Away"),
+		MANUAL(31, "Manual");
 
 		/**
 		 * A mapping between the integer code and its corresponding mode type

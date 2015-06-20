@@ -472,7 +472,9 @@ public class DenonConnector {
 		logger.debug("Refreshing URL: {}", url);
 		
 		Deviceinfo deviceinfo = getDocument(url, Deviceinfo.class);
-		connection.setZoneCount(deviceinfo.getDeviceZones());
+		if (deviceinfo != null) {
+			connection.setZoneCount(deviceinfo.getDeviceZones());
+		}
 		
 		/**
 		 * The maximum volume is received from the telnet connection in the
@@ -481,7 +483,7 @@ public class DenonConnector {
 		 */
 		connection.setMainVolumeMax(DenonConnectionProperties.MAX_VOLUME);
 		
-		logger.debug("Denon {} zones: {}", connection.getInstance(), deviceinfo.getDeviceZones());
+		logger.debug("Denon {} zones: {}", connection.getInstance(), connection.getZoneCount());
 	}
 	
 	private void refreshHttpProperties() {

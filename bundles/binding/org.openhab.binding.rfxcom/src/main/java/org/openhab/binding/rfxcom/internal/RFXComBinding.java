@@ -88,7 +88,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.info("RFXComBinding.internalReceiveCommand: " + itemName + " " + command);
+		logger.debug("Received command: {} {}", itemName, command);
 		if(itemName != null) {
 			if(executeCommand(itemName, command) && command instanceof State) {
 				eventPublisher.postUpdate(itemName, (State)command);

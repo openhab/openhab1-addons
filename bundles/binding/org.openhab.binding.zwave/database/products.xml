@@ -485,6 +485,10 @@
 				<Type>5250</Type>
 				<Id>3130</Id>
 			</Reference>
+			<Reference>
+				<Type>4f50</Type>
+				<Id>3031</Id>
+			</Reference>
 			<Model>45604</Model>
 			<Label lang="en">Outdoor Lighting Control Module</Label>
 			<ConfigFile>ge/45604.xml</ConfigFile>
@@ -1136,6 +1140,10 @@
 			<Reference>
 				<Type>2009</Type>
 				<Id>0903</Id>
+			</Reference>
+			<Reference>
+				<Type>2009</Type>
+				<Id>0908</Id>
 			</Reference>
 			<Model>ZM1602</Model>
 			<Label lang="en">AC/DC Siren</Label>
@@ -2328,6 +2336,19 @@
 			</Reference>
 			<Model>TBZ48</Model>
 			<Label lang="en">Thermostat</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>008b</Id>
+		<Name>Trane</Name>
+		<Product>
+			<Reference>
+				<Type>5452</Type>
+				<Id>5433</Id>
+			</Reference>
+			<Model>TZEMT400BB32MAA</Model>
+			<Label lang="en">Trane Z-Wave Programmable Thermostat</Label>
+			<ConfigFile>trane/tzemt400bb32maa.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

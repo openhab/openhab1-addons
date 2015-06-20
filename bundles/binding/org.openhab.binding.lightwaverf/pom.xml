@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.7.0-SNAPSHOT</version>
+		<version>1.8.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.lightwaverf</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.lightwaverf</bundle.namespace>
-		<deb.name>openhab-addon-binding-LightwaveRf</deb.name>
-		<deb.description>openhab addon binding LightwaveRf</deb.description>
+		<deb.name>openhab-addon-binding-lightwaverf</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

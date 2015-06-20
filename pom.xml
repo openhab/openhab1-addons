@@ -8,7 +8,7 @@
     
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
     <name>openHAB</name>
     
     <organization>
@@ -61,8 +61,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         
-        <repo.url>https://api.bintray.com/maven/openhab/mvn/</repo.url>
-        <repo.type>snapshot</repo.type>
+        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
     </properties>
     
     <packaging>pom</packaging>
@@ -223,9 +222,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>com.mycila.maven-license-plugin</groupId>
-                    <artifactId>maven-license-plugin</artifactId>
-                    <version>1.9.0</version>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>2.11</version>
                     <configuration>
                         <basedir>${basedir}</basedir>
                         <header>src/etc/header.txt</header>
@@ -245,7 +244,7 @@
                         </excludes>
                         <useDefaultExcludes>true</useDefaultExcludes>
                         <properties>
-                            <year>2013</year>
+                            <year>2015</year>
                         </properties>
                         <encoding>UTF-8</encoding>
                     </configuration>
@@ -335,7 +334,7 @@
             <distributionManagement>
                 <repository>
                     <id>bintray</id>
-                    <url>${repo.url}/${repo.type}</url>
+                    <url>${repo.url}</url>
                     <uniqueVersion>false</uniqueVersion>
                 </repository>
             </distributionManagement>
