@@ -82,8 +82,9 @@ public class CcuClient extends BaseHomematicClient {
 
 		httpClient = new HttpClient(new SimpleHttpConnectionManager(true));
 		HttpClientParams params = httpClient.getParams();
-		params.setConnectionManagerTimeout(5000);
-		params.setSoTimeout(30000);
+		Long timeout = context.getConfig().getTimeout() * 1000L;
+		params.setConnectionManagerTimeout(timeout);
+		params.setSoTimeout(timeout.intValue());
 		params.setContentCharset("ISO-8859-1");
 	}
 
