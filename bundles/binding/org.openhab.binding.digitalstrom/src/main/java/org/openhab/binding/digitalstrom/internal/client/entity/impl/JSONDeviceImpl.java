@@ -69,9 +69,6 @@ public class JSONDeviceImpl implements Device {
 	
 	private int electricMeterValue = 0;
 	
-	private int temperatureSensorValue = 0;
-	
-	private int humiditySensorValue = 0;
 	
 	private	List<Short> groupList = new LinkedList<Short>();
 	
@@ -343,40 +340,6 @@ public class JSONDeviceImpl implements Device {
 		notifyDeviceListener(this.dsid.getValue());
 	}
 
-	@Override
-	public int getTemperatureSensorValue() {
-		return temperatureSensorValue;
-	}
-
-	@Override
-	public synchronized void setTemperatureSensorValue(int sensorValue) {
-		if (sensorValue < 0) {
-			this.temperatureSensorValue = 0;
-		}
-		else {
-			this.temperatureSensorValue = sensorValue;
-		}
-		
-		notifyDeviceListener(this.dsid.getValue());
-	}	
-	
-	@Override
-	public int getHumiditySensorValue() {
-		return humiditySensorValue;
-	}
-
-	@Override
-	public synchronized void setHumiditySensorValue(int sensorValue) {
-		if (sensorValue < 0) {
-			this.humiditySensorValue = 0;
-		}
-		else {
-			this.humiditySensorValue = sensorValue;
-		}
-		
-		notifyDeviceListener(this.dsid.getValue());
-	}		
-	
 	@Override
 	public int getPowerConsumption() {
 		return powerConsumption;
