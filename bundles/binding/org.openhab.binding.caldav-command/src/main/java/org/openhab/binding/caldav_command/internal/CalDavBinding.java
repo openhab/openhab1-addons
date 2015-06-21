@@ -37,6 +37,7 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
 import org.openhab.io.caldav.EventNotifier;
+import org.openhab.io.caldav.EventUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -71,8 +72,6 @@ import org.slf4j.LoggerFactory;
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-	private static final String SCOPE_END = "END";
-	private static final String SCOPE_BEGIN = "BEGIN";
 	
 	private static final String KEY_READ_CALENDARS = "readCalendars";
 
@@ -173,11 +172,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		return null;
 	}
 	
-	private void handleForEventMap(CalDavEvent event, String scope, boolean add) {
+	private synchronized void handleForEventMap(CalDavEvent event, String scope, boolean add) {
 		if (!readCalendars.contains(event.getCalendarId())) {
 			logger.trace("event '{}' is not in used calendars", event.getShortName());
 			return;
 		}
+		
+		if (scope.equals(EventUtils.SCOPE_BEGIN) && event.getStart().isBeforeNow()) {
+        	return;
+        }
+		if (scope.equals(EventUtils.SCOPE_END) && event.getEnd().isBeforeNow()) {
+        	return;
+        }
 		
 		if (event.getContent() == null) {
 			logger.warn("no content for event: {}", event.getShortName());
@@ -193,7 +199,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		
 		String[] commands = content.split(",");
 		for (String itemCommand : commands) {
-			String[] commandSplit = itemCommand.split(":");
+			String[] commandSplit = itemCommand.split(EventUtils.SEPERATOR);
 			String itemName = commandSplit[0];
 			String commandString = commandSplit[1];
 			
@@ -212,7 +218,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			List<CalDavNextEventConfig> configList = provider.getConfigForListenerItem(itemName);
 			for (CalDavNextEventConfig config : configList) {
 				if (add) {
-					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, scope.equals(SCOPE_BEGIN) ? event.getStart() : event.getEnd(), config.getType(), event.getId(), scope);
+					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, scope.equals(EventUtils.SCOPE_BEGIN) ? event.getStart() : event.getEnd(), config.getType(), event.getId(), scope);
 				} else {
 					this.removeFromEventMap(itemName, event.getId(), scope);		
 				}
@@ -258,24 +264,24 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 
 	@Override
 	public void eventRemoved(CalDavEvent event) {
-		this.handleForEventMap(event, SCOPE_BEGIN, false);
-		this.handleForEventMap(event, SCOPE_END, false);
+		this.handleForEventMap(event, EventUtils.SCOPE_BEGIN, false);
+		this.handleForEventMap(event, EventUtils.SCOPE_END, false);
 	}
 
 	@Override
 	public void eventLoaded(CalDavEvent event) {
-		this.handleForEventMap(event, SCOPE_BEGIN, true);
-		this.handleForEventMap(event, SCOPE_END, true);
+		this.handleForEventMap(event, EventUtils.SCOPE_BEGIN, true);
+		this.handleForEventMap(event, EventUtils.SCOPE_END, true);
 	}
 	
 	@Override
 	public void eventBegins(CalDavEvent event) {
-		this.doAction(event, SCOPE_BEGIN);
+		this.doAction(event, EventUtils.SCOPE_BEGIN);
 	}
 
 	@Override
 	public void eventEnds(CalDavEvent event) {
-		this.doAction(event, SCOPE_END);
+		this.doAction(event, EventUtils.SCOPE_END);
 	}
 	
 	private void doAction(CalDavEvent event, String scope) {
@@ -295,7 +301,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		String[] commands = content.split(",");
 		for (String itemCommand : commands) {
-			String[] commandSplit = itemCommand.split(":");
+			String[] commandSplit = itemCommand.split(EventUtils.SEPERATOR);
 			String itemName = commandSplit[0];
 			String commandString = commandSplit[1];
 			
@@ -374,7 +380,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		Collections.sort(containerList, new Comparator<NextEventContainer>() {
 			@Override
 			public int compare(NextEventContainer o1, NextEventContainer o2) {
-				return o2.getChangeDate().compareTo(o1.getChangeDate());
+				return o1.getChangeDate().compareTo(o2.getChangeDate());
 			}
 		});
 		
@@ -388,7 +394,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			return;
 		}
 		
-		NextEventContainer container = containerList.get(containerList.size() - 1);
+		NextEventContainer container = containerList.get(0);
 		
 		CalDavType type = container.getType();
 		logger.trace("handling event of type: {}", type);

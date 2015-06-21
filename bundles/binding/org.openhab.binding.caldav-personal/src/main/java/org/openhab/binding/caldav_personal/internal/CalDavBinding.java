@@ -57,8 +57,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
     private List<String> calendars = new ArrayList<String>();
 	private List<String> homeIdentifier = new ArrayList<String>();
 	
-//	private ItemRegistry itemRegistry;
-	
 	private ConcurrentHashMap<String, CalDavEvent> eventMap = new ConcurrentHashMap<String, CalDavEvent>();
 	
 	public CalDavBinding() {
@@ -156,6 +154,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
         if (!calendars.contains(event.getCalendarId())) {
             return;
         }
+        
+        if (event.getEnd().isBeforeNow()) {
+        	return;
+        }
 
 		this.eventMap.remove(event.getId());
 		
@@ -171,6 +173,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	public void eventLoaded(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
             return;
+        }
+        
+        if (event.getEnd().isBeforeNow()) {
+        	return;
         }
 
 		this.eventMap.put(event.getId(), event);
@@ -188,6 +194,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
         if (!calendars.contains(event.getCalendarId())) {
             return;
         }
+        
+        if (event.getStart().isBeforeNow()) {
+        	return;
+        }
 
 		this.eventMap.put(event.getId(), event);
 		
@@ -203,6 +213,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	public void eventEnds(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
             return;
+        }
+        
+        if (event.getEnd().isBeforeNow()) {
+        	return;
         }
 
 		this.eventMap.remove(event.getId());

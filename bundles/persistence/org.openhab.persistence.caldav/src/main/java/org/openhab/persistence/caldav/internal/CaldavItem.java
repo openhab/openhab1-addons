@@ -13,12 +13,13 @@ import java.util.Date;
 
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
+import org.openhab.io.caldav.CalDavEvent;
 
 /**
- * This is a Java bean used to persist item states with timestamps in the database.
+ * This is a Java bean used to persist item states with timestamps in calDAV.
  * 
- * @author Kai Kreuzer
- * @since 1.0.0
+ * @author Robert Delbrück
+ * @since 1.8.0
  *
  */
 public class CaldavItem implements HistoricItem {
@@ -26,7 +27,19 @@ public class CaldavItem implements HistoricItem {
 	private String name;
 	private State state;
 	private Date timestamp;
-	
+	private CalDavEvent event;
+
+	public CaldavItem() {
+		super();
+	}
+
+	public CaldavItem(String name, State state, Date timestamp) {
+		super();
+		this.name = name;
+		this.state = state;
+		this.timestamp = timestamp;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -51,6 +64,16 @@ public class CaldavItem implements HistoricItem {
 		this.timestamp = timestamp;
 	}
 	
+	
+	
+	public CalDavEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(CalDavEvent event) {
+		this.event = event;
+	}
+
 	@Override
 	public String toString() {
 		return DateFormat.getDateTimeInstance().format(timestamp) + ": " + name + " -> "+ state.toString();

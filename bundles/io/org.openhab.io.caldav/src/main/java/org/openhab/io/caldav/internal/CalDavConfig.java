@@ -21,19 +21,22 @@ public class CalDavConfig {
 	private String url;
 	private int reloadMinutes;
 	private int preloadMinutes;
+	private int historicLoadMinutes;
 	private boolean disableCertificateVerification;
 	
 	public CalDavConfig() {
 		super();
 	}
 
-	public CalDavConfig(String key, String username, String password, String url, int reloadMinutes) {
+	public CalDavConfig(String key, String username, String password, String url, 
+			int reloadMinutes, int historicLoadMinutes) {
 		super();
 		this.key = key;
 		this.username = username;
 		this.password = password;
 		this.url = url;
 		this.reloadMinutes = reloadMinutes;
+		this.historicLoadMinutes = historicLoadMinutes;
 	}
 
 	public String getKey() {
@@ -91,6 +94,14 @@ public class CalDavConfig {
 	public void setDisableCertificateVerification(
 			boolean disableCertificateVerification) {
 		this.disableCertificateVerification = disableCertificateVerification;
+	}
+	
+	public int getHistoricLoadMinutes() {
+		return historicLoadMinutes;
+	}
+
+	public void setHistoricLoadMinutes(int historicLoadMinutes) {
+		this.historicLoadMinutes = historicLoadMinutes;
 	}
 
 	@Override

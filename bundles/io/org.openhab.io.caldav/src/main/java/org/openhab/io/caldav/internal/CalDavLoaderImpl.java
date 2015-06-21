@@ -10,10 +10,10 @@ package org.openhab.io.caldav.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -29,7 +29,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,10 +39,10 @@ import java.util.concurrent.TimeUnit;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.data.UnfoldingReader;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.TimeZone;
@@ -98,6 +97,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		ManagedService, CalDavLoader {
 	private static final String PROP_RELOAD_INTERVAL = "reloadInterval";
 	private static final String PROP_PRELOAD_TIME = "preloadTime";
+	private static final String PROP_HISTORIC_LOAD_TIME = "historicLoadTime";
 	private static final String PROP_URL = "url";
 	private static final String PROP_PASSWORD = "password";
 	private static final String PROP_USERNAME = "username";
@@ -159,6 +159,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					calDavConfig.setReloadMinutes(Integer.parseInt(value));
 				} else if (paramKey.equals(PROP_PRELOAD_TIME)) {
 					calDavConfig.setPreloadMinutes(Integer.parseInt(value));
+				} else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
+					calDavConfig.setHistoricLoadMinutes(Integer.parseInt(value));
 				} else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
 					calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
 				}
@@ -230,26 +232,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		}
 	}
 	
-//	private void storeToDisk(CalDavEvent event) {
-//		try {
-//			Calendar calendar = createCalendar(event);
-//			FileOutputStream fout = new FileOutputStream(getCacheFile(event));
-//			CalendarOutputter outputter = new CalendarOutputter();
-//			outputter.output(calendar, fout);
-//			fout.flush();
-//			fout.close();
-//		} catch (IOException e) {
-//			LOG.error("cannot store event '{}' to disk", event.getId());
-//		} catch (ValidationException e) {
-//			LOG.error("cannot store event '{}' to disk", event.getId());
-//		}
-//	}
-	
 	private void removeFromDisk(EventContainer eventContainer) {
 		getCacheFile(eventContainer.getCalendarId(), eventContainer.getFilename()).delete();
 	}
 
-	private synchronized void addEventToMap(EventContainer eventContainer) {
+	private synchronized void addEventToMap(EventContainer eventContainer, boolean createTimer) {
 		CalendarRuntime calendarRuntime = this.eventCache.get(eventContainer.getCalendarId());
 		
 		ConcurrentHashMap<String, EventContainer> eventContainerMap = calendarRuntime.getEventMap();
@@ -293,8 +280,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					}
 				}
 				
-				for (CalDavEvent event : eventContainer.getEventList()) {
-					createJob(eventContainer, event);
+				if (createTimer) {
+					for (CalDavEvent event : eventContainer.getEventList()) {
+						if (event.getEnd().isAfterNow()) {
+							createJob(eventContainer, event);
+						}
+					}
 				}
 			} else {
 				// event is already in map and not updated, ignoring
@@ -313,8 +304,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					}
 				}
 			}
-			for (CalDavEvent event : eventContainer.getEventList()) {
-				createJob(eventContainer, event);
+			if (createTimer) {
+				for (CalDavEvent event : eventContainer.getEventList()) {
+					if (event.getEnd().isAfterNow()) {
+						createJob(eventContainer, event);
+					}
+				}
 			}
 		}
 	}
@@ -368,8 +363,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						LOG.error("error while invoking listener", e);
 					}
 				}
-//				eventContainer.getTimerBeginMap().get(event.getId()).cancel();
-//				eventContainer.getTimerBeginMap().remove(event.getId());
 			}
 		};
 		eventContainer.getTimerBeginMap().add(timerTaskBegin);
@@ -388,8 +381,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						LOG.error("error while invoking listener", e);
 					}
 				}
-//				eventContainer.getTimerEndMap().get(event.getId()).cancel();
-//				eventContainer.getTimerEndMap().remove(event.getId());
 				
 				eventCache.get(event.getCalendarId()).getEventMap().remove(eventContainer.getEventId());
 			}
@@ -451,8 +442,14 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			
 			// must not be loaded
 			EventContainer eventContainer = calendarRuntime.getEventContainerByFilename(getFilename(resource.getName()));
+			final org.joda.time.DateTime lastResourceChange = new org.joda.time.DateTime(resource.getModified());
+			
+			LOG.trace("eventContainer found: {}", eventContainer != null);
+			LOG.trace("last resource modification: {}", lastResourceChange);
+			LOG.trace("last change of already loaded event: {}", eventContainer != null ? eventContainer.getLastChanged() : null);
 			if (eventContainer != null 
-					&& !new org.joda.time.DateTime(resource.getModified()).isAfter(eventContainer.getLastChanged())) {
+					&& !lastResourceChange.isAfter(eventContainer.getLastChanged())) {
+				LOG.debug("skipping resource {}, not changed", resource.getName());
 				continue;
 			}
 			
@@ -465,51 +462,44 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			InputStream inputStream = sardine.get(url.toString().replaceAll(
 					" ", "%20"));
 
-			this.loadEvents(getFilename(resource.getName()), inputStream, config, oldEventIds);
+			this.loadEvents(getFilename(resource.getName()), lastResourceChange, inputStream, config, oldEventIds);
 		}
 	}
 	
 	private String getFilename(String name) {
 		name = FilenameUtils.getBaseName(name);
-		name = name.replaceAll("[^a-zA-Z0-9]", "_");
+		name = name.replaceAll("[^a-zA-Z0-9-_]", "_");
 		return name;
 	}
 	
-	private void loadEvents(String filename, final InputStream inputStream, final CalDavConfig config, final List<String> oldEventIds) throws IOException, ParserException {
+	private void loadEvents(String filename, org.joda.time.DateTime lastChanged, final InputStream inputStream, final CalDavConfig config, final List<String> oldEventIds) throws IOException, ParserException {
 		CalendarBuilder builder = new CalendarBuilder();
-		Calendar calendar = builder.build(inputStream);
+		Calendar calendar = builder.build(new UnfoldingReader(new InputStreamReader(inputStream), true));
 		LOG.trace("calendar: {}", calendar);
 		
 		EventContainer eventContainer = new EventContainer(config.getKey());
 		eventContainer.setFilename(filename);
-		boolean someIsInPeriod = false;
+		eventContainer.setLastChanged(lastChanged);
+//		boolean someIsInPeriod = false;
+		
+		org.joda.time.DateTime loadFrom = org.joda.time.DateTime.now().minusMinutes(config.getHistoricLoadMinutes());
+		org.joda.time.DateTime loadTo = org.joda.time.DateTime.now().plusMinutes(config.getPreloadMinutes());
 		
 		for (CalendarComponent comp : calendar.getComponents(Component.VEVENT)) {
 			VEvent vEvent = (VEvent) comp;
 			LOG.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
-			java.util.Calendar instance1 = java.util.Calendar
-					.getInstance();
-			instance1.add(java.util.Calendar.HOUR_OF_DAY, -1);
-			Date startDate = instance1.getTime();
 			
 			PeriodList periods = vEvent
 					.calculateRecurrenceSet(new Period(new DateTime(
-							startDate), new Dur(0, 0, config.getPreloadMinutes(), 0)));
+							loadFrom.toDate()), new DateTime(loadTo.toDate())));
 			
 			String eventId = vEvent.getUid().getValue();
-			org.joda.time.DateTime lastChanged = vEvent.getLastModified() != null ? new org.joda.time.DateTime(vEvent.getLastModified().getDate()) : new org.joda.time.DateTime(0);
 			
 			// expecting this is for every vEvent inside a calendar equals
 			eventContainer.setEventId(eventId);
-			eventContainer.setLastChanged(lastChanged);
 
 			for (Period p : periods) {
-				if (p.getEnd().before(new Date())) {
-					// date is already ended, ignoring
-					continue;
-				}
-				
-				someIsInPeriod = true;
+//				someIsInPeriod = true;
 				
 				org.joda.time.DateTime start = null;
 				org.joda.time.DateTime end = null;
@@ -551,7 +541,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						start, 
 						end
 				);
-//				event.setFileName(filename);
 				event.setLastChanged(lastChanged);
 				if (vEvent.getLocation() != null) {
 					event.setLocation(vEvent.getLocation().getValue());
@@ -559,15 +548,14 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				if (vEvent.getDescription() != null) {
 					event.setContent(vEvent.getDescription().getValue());
 				}
+				event.setFilename(filename);
 				LOG.trace("adding event: " + event.getShortName());
 				eventContainer.getEventList().add(event);
 				
 			}
 		}
-		if (someIsInPeriod) {
-			addEventToMap(eventContainer);
-			storeToDisk(config.getKey(), filename, calendar);
-		}
+		addEventToMap(eventContainer, true);
+		storeToDisk(config.getKey(), filename, calendar);
 	}
 
 	public void startLoading() {
@@ -578,7 +566,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		
 		execService = Executors.newScheduledThreadPool(eventCache.size());
 		for (final CalendarRuntime eventRuntime : eventCache.values()) {
-//			eventRuntime.loadSettingsFromDisk();
 			try {
 				LOG.debug("reload cached events for config: {}", eventRuntime.getConfig().getKey());
 				for (File fileCalendarKeys : new File(CACHE_PATH).listFiles()) {
@@ -586,14 +573,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						continue;
 					}
 					final Collection<File> icsFiles = FileUtils.listFiles(fileCalendarKeys, new String[]{"ics"}, false);
-//					if (icsFiles.size() > 0) {
-//						eventRuntime.setLastPull(LocalDateTime.now());
-//						eventRuntime.saveSettingsToDisk();
-//					}
 					for (File icsFile : icsFiles) {
 						try {
 							FileInputStream fis = new FileInputStream(icsFile);
-							loadEvents(getFilename(icsFile.getAbsolutePath()), fis, eventRuntime.getConfig(), new ArrayList<String>());
+							loadEvents(getFilename(icsFile.getAbsolutePath()), new org.joda.time.DateTime(icsFile.lastModified()), fis, eventRuntime.getConfig(), new ArrayList<String>());
 						} catch (IOException e) {
 							LOG.error("cannot load events for file: " + icsFile, e);
 						} catch (ParserException e) {
@@ -616,10 +599,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
 							oldEventIds.add(eventContainer.getFilename());
 						}
-//						if (oldEventIds.size() > 0) {
-//							eventRuntime.setLastPull(LocalDateTime.now());
-//							eventRuntime.saveSettingsToDisk();
-//						}
 						loadEvents(eventRuntime, oldEventIds);
 						// stop all events in oldMap
 						removeDeletedEvents(eventRuntime.getConfig().getKey(), oldEventIds);
@@ -665,13 +644,36 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 	@Override
 	public void addEvent(CalDavEvent calDavEvent) {
-		CalDavConfig config = eventCache.get(calDavEvent.getCalendarId()).getConfig();
+		final CalendarRuntime calendarRuntime = eventCache.get(calDavEvent.getCalendarId());
+		CalDavConfig config = calendarRuntime.getConfig();
+		if (config == null) {
+			LOG.error("cannot find config for calendar id: {}", calDavEvent.getCalendarId());
+		}
 		Sardine sardine = getConnection(config);
 		
 		Calendar calendar = this.createCalendar(calDavEvent);
 		
 		try {
-			sardine.put(config.getUrl() + "/openHAB-" + calDavEvent.getId() + ".ics", calendar.toString().getBytes("UTF-8"));
+			final String fullIcsFile = config.getUrl() + "/" + calDavEvent.getFilename() + ".ics";
+			if (calendarRuntime.getEventContainerByFilename(calDavEvent.getFilename()) != null) {
+				LOG.debug("event will be updated: {}", fullIcsFile);
+				try {
+					sardine.delete(fullIcsFile);
+				} catch (IOException e) {
+					LOG.error("cannot remove old ics file: {}", fullIcsFile);
+				}
+			} else {
+				LOG.debug("event is new: {}", fullIcsFile);
+			}
+			
+			sardine.put(fullIcsFile, calendar.toString().getBytes("UTF-8"));
+			
+			EventContainer eventContainer = new EventContainer(calDavEvent.getCalendarId());
+			eventContainer.setEventId(calDavEvent.getId());
+			eventContainer.setFilename(getFilename(calDavEvent.getFilename()));
+			eventContainer.getEventList().add(calDavEvent);
+			eventContainer.setLastChanged(calDavEvent.getLastChanged());
+			this.addEventToMap(eventContainer, false);
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("cannot write event", e);
 		} catch (IOException e) {
@@ -733,17 +735,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	}
 
 	class CalendarRuntime {
-		private static final String SETTINGS_FILE = "settings.cfg";
-		private static final String PROP_LAST_PULL = "LAST_PULL";
-		
 		private final ConcurrentHashMap<String, EventContainer> eventMap = new ConcurrentHashMap<String, EventContainer>();
 		
-//		private LocalDateTime lastPull = new LocalDateTime(0);
 		private CalDavConfig config;
-		
-//		public LocalDateTime getLastPull() {
-//			return lastPull;
-//		}
 		
 		public EventContainer getEventContainerByFilename(String filename) {
 			for (EventContainer eventContainer : eventMap.values()) {
@@ -753,10 +747,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			}
 			return null;
 		}
-
-//		public void setLastPull(LocalDateTime lastPull) {
-//			this.lastPull = lastPull;
-//		}
 		
 		public ConcurrentHashMap<String, EventContainer> getEventMap() {
 			return eventMap;
@@ -769,42 +759,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		public void setConfig(CalDavConfig config) {
 			this.config = config;
 		}
-
-//		public void loadSettingsFromDisk() {
-//			Properties p = new Properties();
-//			try {
-//				final File path = new File(CACHE_PATH + "/" + config.getKey());
-//				final File file = new File(path, SETTINGS_FILE);
-//				if (file.exists()) {
-//					final FileInputStream fis = new FileInputStream(file);
-//					p.load(fis);
-//					fis.close();
-//					this.lastPull = LocalDateTime.parse(p.getProperty(PROP_LAST_PULL));
-//				}
-//			} catch (FileNotFoundException e) {
-//				LOG.error("cannot load settings for calendar: " + config.getKey(), e);
-//			} catch (IOException e) {
-//				LOG.error("cannot load settings for calendar: " + config.getKey(), e);
-//			}
-//		}
-//		
-//		public void saveSettingsToDisk() {
-//			Properties p = new Properties();
-//			p.put(PROP_LAST_PULL, this.lastPull.toString());
-//			try {
-//				final File path = new File(CACHE_PATH + "/" + config.getKey());
-//				path.mkdirs();
-//				final File file = new File(path, SETTINGS_FILE);
-//				final FileOutputStream fos = new FileOutputStream(file);
-//				p.store(fos, "by openhab");
-//				fos.flush();
-//				fos.close();
-//			} catch (FileNotFoundException e) {
-//				LOG.error("cannot save settings for calendar: " + config.getKey(), e);
-//			} catch (IOException e) {
-//				LOG.error("cannot save settings for calendar: " + config.getKey(), e);
-//			}
-//		}
 	}
 	
 	/**
