@@ -10,6 +10,7 @@ package org.openhab.persistence.caldav.internal;
 
 import static org.openhab.persistence.caldav.internal.CaldavConfiguration.calendarId;
 import static org.openhab.persistence.caldav.internal.CaldavConfiguration.duration;
+import static org.openhab.persistence.caldav.internal.CaldavConfiguration.singleEvents;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -118,7 +119,8 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 		State state = item.getState();
 		logger.trace("persisting item: {}", item);
 		
-		try {
+		if (!singleEvents) {
+			// try to create events with correct ON OFF duration
 			final CaldavItem lastOn = this.findLastOn(alias, state);
 			if (lastOn != null) {
 				if (isOff(item.getState())) {
@@ -139,24 +141,22 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 				}
 				return;
 			}
-			
-			logger.debug("creating new event");
-			CalDavEvent event = new CalDavEvent();
-			final String id = UUID.randomUUID().toString();
-			event.setId(id);
-			event.setName(alias);
-			event.setLastChanged(DateTime.now());
-			event.setContent(EventUtils.SCOPE_BEGIN + EventUtils.SEPERATOR + alias + EventUtils.SEPERATOR + item.getState());
-			DateTime now = DateTime.now();
-			event.setStart(now);
-			event.setEnd(now.plusMinutes(duration));
-			event.setCalendarId(calendarId);
-			event.setFilename("openHAB-" + id);
-			logger.debug("new event for persistence created: {}", event);
-			this.calDavLoader.addEvent(event);
-		} catch (Error e) {
-			logger.error("unexpected error while storing item: " + item, e);
 		}
+		
+		logger.debug("creating new event");
+		CalDavEvent event = new CalDavEvent();
+		final String id = UUID.randomUUID().toString();
+		event.setId(id);
+		event.setName(alias);
+		event.setLastChanged(DateTime.now());
+		event.setContent(EventUtils.SCOPE_BEGIN + EventUtils.SEPERATOR + alias + EventUtils.SEPERATOR + item.getState());
+		DateTime now = DateTime.now();
+		event.setStart(now);
+		event.setEnd(now.plusMinutes(duration));
+		event.setCalendarId(calendarId);
+		event.setFilename("openHAB-" + id);
+		logger.debug("new event for persistence created: {}", event);
+		this.calDavLoader.addEvent(event);
 	}
 
 	private boolean isOff(State state) {

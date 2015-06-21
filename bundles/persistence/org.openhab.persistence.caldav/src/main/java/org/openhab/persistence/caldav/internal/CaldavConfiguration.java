@@ -32,6 +32,8 @@ public class CaldavConfiguration implements ManagedService {
 	
 	public static int duration = 5;
 	
+	public static boolean singleEvents = true;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -50,6 +52,11 @@ public class CaldavConfiguration implements ManagedService {
 				} catch (NumberFormatException e) {
 					logger.error("cannot convert to int: {}", durationString);
 				}
+			}
+			
+			String singleEventsString = (String) config.get("singleEvents");
+			if (StringUtils.isNotBlank(singleEventsString)) {
+				singleEvents = Boolean.parseBoolean(singleEventsString);
 			}
 		}
 	}
