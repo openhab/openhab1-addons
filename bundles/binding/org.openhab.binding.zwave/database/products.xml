@@ -1120,6 +1120,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>200f</Type>
+				<Id>0f03</Id>
+			</Reference>
+			<Model>ZS6301</Model>
+			<Label lang="en">CO Detector</Label>
+			<ConfigFile>vision/zs6301.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2005</Type>
 				<Id>0503</Id>
 			</Reference>
