@@ -19,9 +19,9 @@ public class CalDavConfig {
 	private String username;
 	private String password;
 	private String url;
-	private int reloadMinutes;
-	private int preloadMinutes;
-	private int historicLoadMinutes;
+	private int reloadMinutes = 60;
+	private int preloadMinutes = 60 * 24;
+	private int historicLoadMinutes = 0;
 	private boolean disableCertificateVerification;
 	
 	public CalDavConfig() {

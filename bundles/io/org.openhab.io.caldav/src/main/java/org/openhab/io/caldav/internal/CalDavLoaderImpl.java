@@ -177,12 +177,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				if (configMap.get(id).getPassword() == null) {
 					throw new ConfigurationException(PROP_PASSWORD, PROP_PASSWORD + " must be set");
 				}
-				if (configMap.get(id).getReloadMinutes() == 0) {
-					throw new ConfigurationException(PROP_RELOAD_INTERVAL, PROP_RELOAD_INTERVAL + " must be set");
-				}
-				if (configMap.get(id).getPreloadMinutes() == 0) {
-					throw new ConfigurationException(PROP_PRELOAD_TIME, PROP_PRELOAD_TIME + " must be set");
-				}
 				LOG.trace("config for id '{}': {}", id, configMap.get(id));
 			}
 			
