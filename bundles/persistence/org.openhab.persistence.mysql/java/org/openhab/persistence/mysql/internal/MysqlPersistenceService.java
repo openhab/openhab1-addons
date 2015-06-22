@@ -79,6 +79,7 @@ import org.slf4j.LoggerFactory;
  * keep the best resolution, we store as a number in SQL and convert to
  * DecimalType before persisting to MySQL.
  * 
+ * @author Helmut Lehmeyer
  * @author Henrik Sjöstrand
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson
@@ -110,18 +111,22 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private Map<String, String> sqlTables = new HashMap<String, String>();
 	private Map<String, String> sqlTypes = new HashMap<String, String>();
 
-	
+	/**
+	 * Initialise the type array
+	 * If other Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
+	 */
 	public void activate() {
-		// Initialise the type array
-		sqlTypes.put("COLORITEM", "VARCHAR(70)");
-		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", "DATETIME");
-		sqlTypes.put("DIMMERITEM", "TINYINT");
-		sqlTypes.put("GROUPITEM", "VARCHAR(200)");
-		sqlTypes.put("NUMBERITEM", "DOUBLE");
-		sqlTypes.put("ROLERSHUTTERITEM", "TINYINT");
-		sqlTypes.put("STRINGITEM", "VARCHAR(20000)");
-		sqlTypes.put("SWITCHITEM", "CHAR(3)");
+		sqlTypes.put("CALLITEM", 		"VARCHAR(200)");
+		sqlTypes.put("COLORITEM", 		"VARCHAR(70)");
+		sqlTypes.put("CONTACTITEM", 	"VARCHAR(6)");
+		sqlTypes.put("DATETIMEITEM", 	"DATETIME");
+		sqlTypes.put("DIMMERITEM", 		"TINYINT");
+		//sqlTypes.put("GROUPITEM", 	"DOUBLE");
+		sqlTypes.put("LOCATIONITEM", 	"VARCHAR(30)");
+		sqlTypes.put("NUMBERITEM", 		"DOUBLE");
+		sqlTypes.put("ROLLERSHUTTERITEM","TINYINT");
+		sqlTypes.put("STRINGITEM", 		"VARCHAR(20000)");
+		sqlTypes.put("SWITCHITEM", 		"CHAR(3)");
 	}
 
 	public void deactivate() {
@@ -151,6 +156,35 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	public String getName() {
 		return "mysql";
 	}
+	
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+	private String getItemType(Item i) {
+		Item item = i;		
+		if(i instanceof GroupItem){
+			logger.debug("mySQL: Item is GroupItem, try to find ItemType by BaseItem");
+			item = ((GroupItem) i).getBaseItem();
+			if(item == null){//if GroupItem:<ItemType> is not defined in *.items using StringType
+				logger.debug("mySQL: BaseItem GroupItem:<ItemType> is not defined in *.items searching for first Member and try to use as ItemType");
+				item = ((GroupItem) i).getMembers().get(0);
+				if(item == null){
+					logger.debug("mySQL: ItemType NOT found! Use STRINGITEM now.");
+					return sqlTypes.get("STRINGITEM");
+				}
+				logger.debug("mySQL: ItemType found by first Member!");
+			}
+		}
+		String itemType = item.getClass().toString().toUpperCase();
+		//Pointsyntax??
+		itemType = itemType.substring(itemType.lastIndexOf('.') + 1);
+		if(sqlTypes.get(itemType) == null)
+			return sqlTypes.get("STRINGITEM");
+		
+		return sqlTypes.get(itemType);
+	}
 
 	private String getTable(Item item) {
 		Statement statement = null;
@@ -165,6 +199,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		if (tableName != null)
 			return tableName;
 
+		logger.debug("mySQL: no Table found for itemName={} get:{}", itemName, sqlTables.get(itemName));
+		
 		// Create a new entry in the Items table. This is the translation of
 		// item name to table
 		try {
@@ -203,13 +239,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			return null;
 		}
 
-		// Default the type to double
-		String mysqlType = new String("DOUBLE");
-		String itemType = item.getClass().toString().toUpperCase();
-		itemType = itemType.substring(itemType.lastIndexOf('.') + 1);
-		if (sqlTypes.get(itemType) != null) {
-			mysqlType = sqlTypes.get(itemType);
-		}
+		String mysqlType = getItemType(item);
 
 		// We have a rowId, create the table for the data
 		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType
@@ -303,11 +333,25 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// eg. DimmerItem can return OnOffType (ON, OFF), or PercentType (0-100).
 		// We need to make sure we cover the best type for serialisation.
 		String value;
-		if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-			value = item.getStateAs(PercentType.class).toString();
-		} else if (item instanceof ColorItem) {
-			value = item.getStateAs(HSBType.class).toString();
+		if (item instanceof ColorItem) {
+			value = item.getStateAs(HSBType.class).toString();			
+		} else if (item instanceof RollershutterItem) {
+			value = item.getStateAs(PercentType.class).toString();			
 		} else {
+			/*
+			!!ATTENTION!!
+			
+			1.
+			DimmerItem.getStateAs(PercentType.class).toString() always returns 0
+			RollershutterItem.getStateAs(PercentType.class).toString() works as expected
+			
+			2.
+			(item instanceof ColorItem) == (item instanceof DimmerItem) = true
+			Therefore for instance tests ColorItem always has to be tested before DimmerItem
+			
+			!!ATTENTION!!
+			*/
+			
 			// All other items should return the best format by default
 			value = item.getState().toString();
 		}
@@ -317,8 +361,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		try {
 			statement = connection.createStatement();
 			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
-					+ item.getState().toString() + "') ON DUPLICATE KEY UPDATE VALUE='"
-					+ item.getState().toString() + "';");
+					+ value + "') ON DUPLICATE KEY UPDATE VALUE='"
+					+ value + "';");
 			statement.executeUpdate(sqlCmd);
 
 			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
@@ -636,7 +680,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTimeInMillis(rs.getTimestamp(2).getTime());
 					state = new DateTimeType(calendar);
-				} else
+				} else	//Call, Location, String
 					state = new StringType(rs.getString(2));
 
 				MysqlItem mysqlItem = new MysqlItem(itemName, state, rs.getTimestamp(1));
