@@ -10,6 +10,7 @@ package org.openhab.persistence.mysql.internal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -51,6 +52,7 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
@@ -79,6 +81,7 @@ import org.slf4j.LoggerFactory;
  * keep the best resolution, we store as a number in SQL and convert to
  * DecimalType before persisting to MySQL.
  * 
+ * @author Helmut Lehmeyer
  * @author Henrik Sjöstrand
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson
@@ -114,17 +117,29 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	public void activate() {
 		// Initialise the type array, default/fallback ItemType is StringType ("STRINGITEM")
 		// If higher Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
-		//sqlTypes.put("CALLITEM", 		"VARCHAR(20000)");	//uses default StringType
+		sqlTypes.put("CALLITEM", 		"VARCHAR(200)");	//uses default StringType
 		sqlTypes.put("COLORITEM", 		"VARCHAR(70)");
 		sqlTypes.put("CONTACTITEM", 	"VARCHAR(6)");
 		sqlTypes.put("DATETIMEITEM", 	"DATETIME");
 		sqlTypes.put("DIMMERITEM", 		"TINYINT");
-		//sqlTypes.put("GROUPITEM", 	"DOUBLE"); 			//if GroupItem:<ItemType> is not defined in *.items using StringType
-		//sqlTypes.put("LOCATIONITEM", 	"VARCHAR(20000)");	//uses default StringType
+		//sqlTypes.put("GROUPITEM", 	"DOUBLE");
+		sqlTypes.put("LOCATIONITEM", 	"VARCHAR(100)");
 		sqlTypes.put("NUMBERITEM", 		"DOUBLE");
 		sqlTypes.put("ROLERSHUTTERITEM","TINYINT");
 		sqlTypes.put("STRINGITEM", 		"VARCHAR(20000)");
 		sqlTypes.put("SWITCHITEM", 		"CHAR(3)");
+		
+		//
+		sqlTypes.put("DecimalType", 	"DOUBLE");
+		sqlTypes.put("HSBType", 		"VARCHAR(70)");
+		sqlTypes.put("PercentType", 	"TINYINT");
+		sqlTypes.put("OnOffType", 		"CHAR(3)");
+		sqlTypes.put("OpenClosedType", 	"VARCHAR(6)");
+		sqlTypes.put("UpDownType", 		"VARCHAR(6)");
+		sqlTypes.put("DateTimeType", 	"DATETIME");
+		sqlTypes.put("CallType", 		"VARCHAR(200)");
+		sqlTypes.put("PointType", 		"VARCHAR(100)");
+		sqlTypes.put("StringType", 		"VARCHAR(20000)");
 	}
 
 	public void deactivate() {
@@ -155,12 +170,58 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		return "mysql";
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
 	private String getItemType(Item i) {
-		Item item = i;
+		Item item = i;		
+		
+
+		List<Class<? extends State>> ty = i.getAcceptedDataTypes();
+		List<Class<? extends Command>> tc = i.getAcceptedCommandTypes();
+		for(Class<? extends State> type : ty) {
+			logger.debug("##mySQL: AcceptedDataType:: getName: {} getSimpleName: {}", i.getName(), type.getSimpleName());
+		}
+		for(Class<? extends Command> typec : tc) {
+			logger.debug("##mySQL: AcceptedCommandType:: getName: {} getSimpleName: {}", i.getName(), typec.getSimpleName());
+		}
+		
 		if(i instanceof GroupItem){
+			logger.debug("mySQL: Item is GroupItem, try to find ItemType by BaseItem");
 			item = ((GroupItem) i).getBaseItem();
-			if(item == null)//if GroupItem:<ItemType> is not defined in *.items using StringType
-				return sqlTypes.get("STRINGITEM");
+			if(item == null){//if GroupItem:<ItemType> is not defined in *.items using StringType
+				logger.debug("mySQL: BaseItem GroupItem:<ItemType> is not defined in *.items searching for first Member and try to use as ItemType");
+				item = ((GroupItem) i).getMembers().get(0);
+				if(item == null){
+					logger.debug("mySQL: No Members found, try to use AcceptedDataTypes now");
+					List<Class<? extends State>> types = i.getAcceptedDataTypes();
+					for(Class<? extends State> type : types) {
+						logger.debug("mySQL: getName: {} getSimpleName: {}", i.getName(), type.getSimpleName());
+						String sn = type.getSimpleName();
+						String[] prioSortedTypes = {
+								"DecimalType",
+								"HSBType",
+								"PercentType",
+								"OnOffType",
+								"OpenClosedType",
+								"UpDownType",
+								"DateTimeType",
+								"StringType"
+						};
+						for( int n = 0; n < prioSortedTypes.length; n++){
+							logger.debug("mySQL: sn: {} prioSortedType: {}", sn, prioSortedTypes[n]);
+							if(sn.contains(prioSortedTypes[n]))
+								return sqlTypes.get(prioSortedTypes[n]);
+						}
+					}
+					logger.debug("mySQL: ItemType NOT found! Use STRINGITEM now.");
+					return sqlTypes.get("STRINGITEM");
+				}
+				logger.debug("mySQL: ItemType found by first Member!");
+				//return sqlTypes.get("STRINGITEM");
+			}
 		}
 		String itemType = item.getClass().toString().toUpperCase();
 		//Pointsyntax??
@@ -172,7 +233,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	}
 
 	private String getTable(Item item) {
-		Statement statement = null;
+		PreparedStatement statement = null;
 		String sqlCmd = null;
 		int rowId = 0;
 
@@ -184,15 +245,18 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		if (tableName != null)
 			return tableName;
 
+		logger.debug("mySQL: no Table found for itemName={} get:{}", itemName, sqlTables.get(itemName));
+		
 		// Create a new entry in the Items table. This is the translation of
 		// item name to table
 		try {
-			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES ('" + itemName + "')");
+			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES (?)");
 
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlCmd, Statement.RETURN_GENERATED_KEYS);
-
+			statement = connection.prepareStatement(sqlCmd, Statement.RETURN_GENERATED_KEYS);
+			statement.setString(1, itemName);
+			statement.executeUpdate();
 			ResultSet resultSet = statement.getGeneratedKeys();
+			
 			if (resultSet != null && resultSet.next()) {
 				rowId = resultSet.getInt(1);
 			}
@@ -227,16 +291,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		String mysqlType = getItemType(item);
 
 		// We have a rowId, create the table for the data
-		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType
-				+ ", PRIMARY KEY(Time));");
+		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType + ", PRIMARY KEY(Time));");
 		logger.debug("SQL: " + sqlCmd);
 
 		try {
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlCmd);
+			statement = connection.prepareStatement(sqlCmd);
+			statement.executeUpdate();
 
-			logger.debug("mySQL: Table created for item '" + itemName + "' with datatype " + mysqlType
-					+ " in SQL database.");
+			logger.debug("mySQL: Table created for item '" + itemName + "' with datatype " + mysqlType + " in SQL database.");
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
 			errCnt++;
@@ -257,12 +319,13 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// The item needs to be removed from the index table to avoid duplicates
 		if(sqlTables.get(itemName) == null) {
 			logger.error("mySQL: Item '{}' was not added to the table - removing index", itemName);
-			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
+			sqlCmd = new String("DELETE FROM Items WHERE ItemName=?");
 			logger.debug("SQL: {}", sqlCmd);
 	
 			try {
-				statement = connection.createStatement();
-				statement.executeUpdate(sqlCmd);	
+				statement = connection.prepareStatement(sqlCmd);
+				statement.setString(1, itemName);
+				statement.executeUpdate();	
 			} catch (Exception e) {
 				errCnt++;
 				
@@ -328,13 +391,15 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		}
 
 		String sqlCmd = null;
-		Statement statement = null;
+		//Statement statement = null;
+		PreparedStatement statement = null;
 		try {
-			statement = connection.createStatement();
-			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
-					+ item.getState().toString() + "') ON DUPLICATE KEY UPDATE VALUE='"
-					+ item.getState().toString() + "';");
-			statement.executeUpdate(sqlCmd);
+			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
+			//statement = connection.createStatement();
+			statement = connection.prepareStatement(sqlCmd);
+			statement.setString(1, item.getState().toString());
+			statement.setString(2, item.getState().toString());
+			statement.executeUpdate();
 
 			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
 					.toString(), value, (new java.util.Date()).toString());
