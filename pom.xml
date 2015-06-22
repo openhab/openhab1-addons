@@ -271,14 +271,6 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </pluginRepository>
         <pluginRepository>
-            <id>fornax.repository</id>
-            <name>Fornax Repository</name>
-            <url>https://projects.itemis.de/nexus/content/groups/public/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
             <id>xtend.repository</id>
             <name>Xtend Repository</name>
             <url>http://build.eclipse.org/common/xtend/maven/org/eclipse/xtend/org.eclipse.xtend.maven/</url>
