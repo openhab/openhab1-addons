@@ -1994,6 +1994,15 @@
 			<Label lang="en">4-Zone Controller</Label>
 			<ConfigFile>leviton/vrcz4-mrz.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1706</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>VRPD3-1LW</Model>
+			<Label lang="en">Scene Capable Plug-in Dimmer</Label>
+			<ConfigFile>leviton/vrpd3-1lw.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>007e</Id>
