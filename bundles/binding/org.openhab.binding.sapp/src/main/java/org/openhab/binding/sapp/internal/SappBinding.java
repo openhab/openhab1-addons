@@ -53,7 +53,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * map of existing pnmas. key is pnmas id.
 	 */
-	private Map<String, SappPnmas> pnmasMap = new HashMap<>();
+	private Map<String, SappPnmas> pnmasMap = new HashMap<String, SappPnmas>();
 
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
