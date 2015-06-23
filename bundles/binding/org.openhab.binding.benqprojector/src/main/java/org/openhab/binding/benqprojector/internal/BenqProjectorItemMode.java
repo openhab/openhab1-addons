@@ -66,9 +66,16 @@ public enum BenqProjectorItemMode {
 
 	private State parseNumberResponse(String response) {
 		String[] responseParts = response.split("=");
-		if (responseParts.length == 2) {
-			return new DecimalType(Integer.parseInt(responseParts[1].substring(
-					0, responseParts[1].length() - 1)));
+		if (responseParts.length == 2 ) {
+			try
+			{
+				return new DecimalType(Integer.parseInt(responseParts[1].substring(
+						0, responseParts[1].length() - 1)));
+			}
+			catch (NumberFormatException nfe)
+			{
+				return UnDefType.UNDEF;
+			}
 		}
 		return UnDefType.UNDEF;
 	}
