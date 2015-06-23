@@ -139,7 +139,7 @@ public class OneWireConnection {
 			String lvTempScaleString = (String) pvConfig.get("tempscale");
 			if (StringUtils.isNotBlank(lvTempScaleString)) {
 				try {
-					cvTempScale = OwTemperatureScale.valueOf("tempScaleString");
+					cvTempScale = OwTemperatureScale.valueOf(lvTempScaleString);
 				} catch (IllegalArgumentException iae) {
 					throw new ConfigurationException("onewire:tempscale", "Unknown temperature scale '" + lvTempScaleString + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKIN.");
 				}
