@@ -39,7 +39,7 @@ public class Squeezebox {
 	// handle to the Squeeze Server connection
 	public static SqueezeServer squeezeServer;
 
-	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&q=";
+	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&ie=UTF-8&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
 
 	private static boolean isReady() {
