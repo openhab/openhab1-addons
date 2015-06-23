@@ -343,7 +343,6 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 
 		if ((config == null) || config.isEmpty()) {
 			logger.debug("using default configuration only");
-			return;
 		}
 
 		Enumeration<String> keys = config.keys();

@@ -339,8 +339,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		// Iterate through bindings and update all inbound values.
 		for (final EcobeeBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
-				if (provider.isInBound(itemName) && credentialsMatch(provider, itemName, oauthCredentials)
-						&& thermostats.containsKey(provider.getThermostatIdentifier(itemName))) {
+				if (provider.isInBound(itemName) && credentialsMatch(provider, itemName, oauthCredentials)) {
 					final State newState = getState(provider, thermostats, itemName);
 
 					logger.debug("readEcobee: Updating itemName '{}' with newState '{}'", itemName, newState);
