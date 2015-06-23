@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Paolo Denti
- * @since 1.0.0
+ * @since 1.8.0
  */
 public class SappGenericBindingProvider extends AbstractGenericBindingProvider implements SappBindingProvider {
 

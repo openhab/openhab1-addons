@@ -12,7 +12,7 @@ package org.openhab.binding.sapp.internal;
  * Class which represents a Pnmas controller
  *  
  * @author Paolo Denti
- * @since 1.0.0
+ * @since 1.8.0
  */
 public class SappPnmas {
 

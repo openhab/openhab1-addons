@@ -19,7 +19,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This is a helper class holding binding specific configuration details
  * 
  * @author Paolo Denti
- * @since 1.0.0
+ * @since 1.8.0
  * 
  */
 public class SappBindingConfig implements BindingConfig {

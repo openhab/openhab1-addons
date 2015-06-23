@@ -39,7 +39,7 @@ import com.github.paolodenti.jsapp.core.command.base.SappException;
  * querying a Website/Device.
  * 
  * @author Paolo Denti
- * @since 1.0.0
+ * @since 1.8.0
  */
 public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 

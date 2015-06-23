@@ -20,7 +20,7 @@ import org.openhab.core.items.Item;
  * taken into account.
 
  * @author Paolo Denti
- * @since 1.0.0
+ * @since 1.8.0
  */
 public interface SappBindingProvider extends BindingProvider {
 
