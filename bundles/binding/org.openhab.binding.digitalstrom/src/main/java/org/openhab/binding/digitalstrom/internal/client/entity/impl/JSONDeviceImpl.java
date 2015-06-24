@@ -244,7 +244,7 @@ public class JSONDeviceImpl implements Device {
 		if (outputMode == null) {
 			return false;
 		}
-		return outputMode.equals(OutputModeEnum.DIMMED);
+		return outputMode.equals(OutputModeEnum.DIMMED) || outputMode.equals(OutputModeEnum.DIMMED_2);
 	}
 
 	@Override
