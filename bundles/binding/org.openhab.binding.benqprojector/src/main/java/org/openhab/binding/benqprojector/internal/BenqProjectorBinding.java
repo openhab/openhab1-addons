@@ -53,6 +53,17 @@ public class BenqProjectorBinding extends
 	 * 
 	 */
 	private long refreshInterval = 60000;
+	
+	/**
+	 * This is used to prevent the power on/off command creating item On/Off toggles
+	 * due to the update of the power status of the projector not applying until the projector
+	 * is fully powered on or off. 
+	 * 
+	 * Default delay after a command has been sent to check the power status again is 60s (60000) as the
+	 * projector can take this long to cool down before being considered by it's software 'off'
+	 */
+	private long powerUpdateDelayCounter = 0;
+	private final long POWER_UPDATE_DELAY = 60000;
 
 	/**
 	 * Min & Max volume limits
@@ -96,13 +107,19 @@ public class BenqProjectorBinding extends
 				logger.debug("Polling projector status for " + itemName);
 				BenqProjectorBindingConfig cfg = binding
 						.getConfigForItemName(itemName);
-				State s = queryProjector(cfg);
-				if (!(s instanceof UnDefType)) {
-					eventPublisher.postUpdate(itemName, s);
-					logger.debug(itemName + " status is " + s);
+				if (cfg.mode == BenqProjectorItemMode.POWER && this.powerUpdateDelayCounter > 0)
+				{
+					this.powerUpdateDelayCounter -= refreshInterval;
+					logger.debug(itemName+" update delayed as power status was recently set");
 				} else {
-					logger.debug(itemName
-							+ " not updated as result was undefined");
+					State s = queryProjector(cfg);
+					if (!(s instanceof UnDefType)) {
+						eventPublisher.postUpdate(itemName, s);
+						logger.debug(itemName + " status is " + s);
+					} else {
+						logger.debug(itemName
+								+ " not updated as result was undefined");
+					}
 				}
 			}
 		}
@@ -117,7 +134,7 @@ public class BenqProjectorBinding extends
 			if (binding.providesBindingFor(itemName)) {
 				logger.debug("Process command " + command + " for " + itemName);
 				BenqProjectorBindingConfig cfg = binding
-						.getConfigForItemName(itemName);
+						.getConfigForItemName(itemName);				
 				String resp = sendCommandToProjector(cfg, command);
 				State s = cfg.mode.parseResponse(resp);
 				if (!(s instanceof UnDefType)) {
@@ -176,7 +193,7 @@ public class BenqProjectorBinding extends
 	 * @param cfg
 	 *            Configuration of item to run query on
 	 */
-	private State queryProjector(BenqProjectorBindingConfig cfg) {
+	private State queryProjector(BenqProjectorBindingConfig cfg) {		
 		String resp = transport.sendCommandExpectResponse(cfg.mode
 				.getItemModeCommandQueryString());
 		return cfg.mode.parseResponse(resp);
@@ -198,6 +215,8 @@ public class BenqProjectorBinding extends
 		String response = "";
 		switch (cfg.mode) {
 		case POWER:
+			/* set the amount of time until we read power status again */
+			this.powerUpdateDelayCounter = this.POWER_UPDATE_DELAY;  
 		case MUTE:
 			if (c instanceof OnOffType) {
 				if ((OnOffType) c == OnOffType.ON) {
