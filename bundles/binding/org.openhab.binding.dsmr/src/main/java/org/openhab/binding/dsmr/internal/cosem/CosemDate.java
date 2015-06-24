@@ -40,7 +40,7 @@ public class CosemDate extends CosemValue<DateTimeType> {
 	/**
 	 * Parses a String value to an openHAB DateTimeType
 	 * <p>
-	 * The input string must be in the format yyMMddHHmmssX
+	 * The input string must be in the format yyMMddHHmmssX or yy-MM-dd HH:mm:ss
 	 * <p>
 	 * Based on the DSMR specification X is:
 	 * <p>
@@ -75,8 +75,22 @@ public class CosemDate extends CosemValue<DateTimeType> {
 
 			return new DateTimeType(c);
 		} else {
-			throw new ParseException("value: " + cosemValue
-					+ " is not a valid CosemDate string (yyMMddHHmmss)", 0);
+			 p = Pattern.compile("(\d{2}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})([S,W]?)");
+
+			m = p.matcher(cosemValue);
+			if (m.matches()) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+
+				Date date = formatter.parse(m.group(1));
+
+				Calendar c = Calendar.getInstance();
+				c.setTime(date);
+
+				return new DateTimeType(c);
+			} else {
+				throw new ParseException("value: " + cosemValue
+						+ " is not a valid CosemDate string (yyMMddHHmmss or yy-MM-dd HH:mm:ss)", 0);
+			}
 		}
 	}
 }
