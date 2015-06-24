@@ -189,5 +189,9 @@ public class WallThermostatStateMsg extends BaseMsg {
 	public ThermostatControlMode getControlMode() {
 		return ctrlMode;
 	}
+	
+	public boolean isDisplayMeasuredTemp() {
+		return displayMeasuredTemp;
+	}
 
 }

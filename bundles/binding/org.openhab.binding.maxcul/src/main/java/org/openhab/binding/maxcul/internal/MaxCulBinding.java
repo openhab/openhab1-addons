@@ -524,6 +524,11 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 							eventPublisher.postUpdate(itemName,
 									new DecimalType(wallThermStateMsg
 											.getControlMode().toInt()));
+						} else if (bc.getFeature() == MaxCulFeature.DISPLAY) {
+							eventPublisher
+								.postUpdate(itemName, wallThermStateMsg
+									.isDisplayMeasuredTemp() ? OnOffType.ON
+									: OnOffType.OFF);
 						}
 					}
 				}
