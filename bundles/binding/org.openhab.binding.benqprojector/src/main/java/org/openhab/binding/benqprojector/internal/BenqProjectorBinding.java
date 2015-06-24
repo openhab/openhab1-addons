@@ -161,7 +161,11 @@ public class BenqProjectorBinding extends
 
 			String deviceIdString = (String) config.get("deviceId");
 			if (StringUtils.isNotBlank(deviceIdString)) {
-				setProperlyConfigured(transport.setupConnection(deviceIdString));
+				transport.setupConnection(deviceIdString);
+				/* we always want the refresh service to start, it will attempt
+				 * to reconnect next time if necessary
+				 */				
+				setProperlyConfigured(true); 
 			}
 		}
 	}

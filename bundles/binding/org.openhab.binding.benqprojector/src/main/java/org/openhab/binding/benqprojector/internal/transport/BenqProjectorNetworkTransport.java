@@ -68,8 +68,10 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 			return true;
 		} catch (UnknownHostException e) {
 			logger.error("Unable to find host: " + this.networkHost);
+			this.closeConnection(); // tidy up
 		} catch (IOException e) {
 			logger.error("IO Exception: " + e.getMessage());
+			this.closeConnection(); // tidy up
 		}
 		return false;
 	}
@@ -78,7 +80,7 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 	public boolean setupConnection(String connectionParams) {
 		boolean setupOK = false;
 		if (this.projectorSocket == null) {
-			/* parse connection paramters in the format host:port */
+			/* parse connection parameters in the format host:port */
 			String[] deviceIdParts = connectionParams.split(":");
 			if (deviceIdParts.length == 2) {
 				this.networkHost = deviceIdParts[0];
@@ -96,24 +98,41 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 
 	@Override
 	public void closeConnection() {
-		try {
-			this.projectorReader.close();
+		if (this.projectorReader != null) {
+			try {
+				this.projectorReader.close();
+			} catch (IOException e) {
+				logger.error("Attempt to close projectorReader resulted in IO exception: "
+						+ e.getMessage());
+			}
 			this.projectorReader = null;
-			this.projectorWriter.close();
-			this.projectorReader = null;
-			this.projectorSocket.close();
-		} catch (IOException e) {
-			logger.error("Trying close socket, reader or writer resulted in IO exception: "
-					+ e.getMessage());
 		}
-		this.projectorSocket = null;
+		
+		
+		if (this.projectorWriter != null) {
+			this.projectorWriter.close(); // No IOException
+			this.projectorWriter = null;
+		}
+		
+		if (this.projectorSocket != null) {
+			try {
+				this.projectorSocket.close();
+			} catch (IOException e) {
+				logger.error("Trying close projectorSocket resulted in IO exception: "
+						+ e.getMessage());
+			}
+			this.projectorSocket = null;
+		}		
 	}
 
 	@Override
 	public String sendCommandExpectResponse(String cmd) {
 		String respStr = "";
 		String tmp;
-		if (this.projectorWriter != null) {
+		if (!this.connectionReady()) {
+			logger.warn("Connection not setup. Attempting setup again...");
+			this.networkConnect();
+		} else {
 			this.projectorWriter.printf("%s", cmd);
 			logger.debug("Sent command '" + cmd.replace("\r", "") + "'");
 			try {
@@ -141,18 +160,20 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 						retryAttempt = true;
 						sendCommandExpectResponse(cmd);						
 					} else {
-						logger.error("Attempt to reconnect after IOException failed: "
+						logger.error("Attempt to reconnect after exception failed - original exception error was: "
 								+ e.getMessage());
 					}
 					/* reset flag */
 					retryAttempt = false;
 				}
 			} 
-		} else {
-			logger.debug("Not sending command to projector as connection is not setup yet.");
 		}
 
 		return respStr;
 	}
-
+	
+	private boolean connectionReady()
+	{
+		return (this.projectorSocket != null && this.projectorReader != null && this.projectorWriter != null);
+	}
 }
