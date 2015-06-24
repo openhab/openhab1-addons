@@ -44,6 +44,8 @@ public class MaxCulBindingConfig implements BindingConfig {
 	private boolean temperatureConfigSet = false;
 	private HashSet<String> associatedSerialNum = new HashSet<String>();
 
+	private boolean displayActualTemperature = false;
+	
 	private final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
 
 	private static final Logger logger = LoggerFactory
@@ -92,6 +94,8 @@ public class MaxCulBindingConfig implements BindingConfig {
 		this.paired = true;
 		saveStoredConfig();
 	}
+	
+	
 
 	private String generateConfigFilename() {
 		String base = CONFIG_PROPERTIES_BASE;
@@ -262,5 +266,13 @@ public class MaxCulBindingConfig implements BindingConfig {
 
 	public void addAssociatedSerialNum(String assocDeviceSerial) {
 		this.associatedSerialNum.add(assocDeviceSerial);
+	}
+	
+	public void setDisplayActualTemperature(boolean displayActualTemperature) {
+		this.displayActualTemperature = displayActualTemperature;
+	}
+	
+	public boolean getDisplayActualTemperature() {
+		return this.displayActualTemperature;
 	}
 }

@@ -29,6 +29,7 @@ import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
 import org.openhab.binding.maxcul.internal.messages.ResetMsg;
+import org.openhab.binding.maxcul.internal.messages.SetDisplayActualTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.SetGroupIdMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.ThermostatControlMode;
@@ -330,6 +331,9 @@ public class MaxCulMsgHandler implements CULListener {
 		case WALL_THERMOSTAT_STATE:
 			new WallThermostatStateMsg(data).printMessage();
 			break;
+		case SET_DISPLAY_ACTUAL_TEMP:
+			new SetDisplayActualTemperatureMsg(data).printMessage();
+			break;
 		case ADD_LINK_PARTNER:
 		case CONFIG_TEMPERATURES:
 		case CONFIG_VALVE:
@@ -338,8 +342,7 @@ public class MaxCulMsgHandler implements CULListener {
 		case REMOVE_GROUP_ID:
 		case REMOVE_LINK_PARTNER:
 		case RESET:
-		case SET_COMFORT_TEMPERATURE:
-		case SET_DISPLAY_ACTUAL_TEMP:
+		case SET_COMFORT_TEMPERATURE:		
 		case SET_ECO_TEMPERATURE:
 		case SHUTTER_CONTACT_STATE:
 		case UNKNOWN:
@@ -682,6 +685,24 @@ public class MaxCulMsgHandler implements CULListener {
 		ResetMsg resetMsg = new ResetMsg(getMessageCount(), (byte) 0, (byte) 0,
 				this.srcAddr, devAddr);
 		sendMessage(resetMsg);
+	}
+	
+	/**
+	 * Configure a device to display the actual measured temperature
+	 * 
+	 * @param devAddr
+	 * 			Address of device to config
+	 * @param msgSeq
+	 * 			Associated message sequencer
+	 * @param displayActualTemperature
+	 * 			True if the measure temperature is to be shown
+	 */
+	public void sendSetDisplayActualTemperature(String devAddr, MessageSequencer msgSeq,
+			boolean displayActualTemperature) {
+		SetDisplayActualTemperatureMsg dispActTempMsg = new SetDisplayActualTemperatureMsg(getMessageCount(), 
+				(byte) 0, this.srcAddr, devAddr, displayActualTemperature);
+		dispActTempMsg.setMessageSequencer(msgSeq);
+		sendMessage(dispActTempMsg);
 	}
 
 	/**

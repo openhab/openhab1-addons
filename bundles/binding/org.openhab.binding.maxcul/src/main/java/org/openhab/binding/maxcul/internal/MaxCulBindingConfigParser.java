@@ -72,6 +72,8 @@ public class MaxCulBindingConfigParser {
 						parseAssociation(configParts[idx], cfg);
 					} else if (configParts[idx].startsWith("feature")) {
 						parseDeviceFeature(configParts[idx], cfg);
+					} else if (configParts[idx].startsWith("display")) {
+						parseDeviceDisplay(configParts[idx], cfg);
 					}
 				}
 			} else {
@@ -178,6 +180,10 @@ public class MaxCulBindingConfigParser {
 				cfg.setFeature(MaxCulFeature.VALVE_POS);
 			} else if (configPart.equals("reset")) {
 				cfg.setFeature(MaxCulFeature.RESET);
+			} else if (configPart.equals("displaySetting")) {
+				cfg.setFeature(MaxCulFeature.DISPLAY);
+			} else {
+				logger.error("Unable to parse feature '"+configPart+"'");
 			}
 		}
 	}
@@ -217,6 +223,18 @@ public class MaxCulBindingConfigParser {
 		} else
 			throw new BindingConfigParseException(
 					"Format of association configuration is incorrect! must be 'association=<serialNum>[,<serialNum>,[...]]'");
+	}
+	
+	private static void parseDeviceDisplay(String configParts,
+			MaxCulBindingConfig cfg) throws BindingConfigParseException {
+		String[] configKeyValueSplit = configParts.split("=");
+		if (configKeyValueSplit.length == 2 && configKeyValueSplit[1].matches("setpoint")) {
+			cfg.setDisplayActualTemperature(false);
+		} else if (configKeyValueSplit.length == 2 && configKeyValueSplit[1].matches("actualTemp")) {
+			cfg.setDisplayActualTemperature(true);
+		} else
+			throw new BindingConfigParseException(
+					"Format of device display configuration is incorrect! Must be 'display=setpoint' or 'display=actualTemp' ");
 	}
 
 	/**

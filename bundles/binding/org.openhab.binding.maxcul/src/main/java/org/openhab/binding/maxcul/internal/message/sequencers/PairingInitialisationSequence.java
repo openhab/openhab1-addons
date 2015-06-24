@@ -32,7 +32,14 @@ import org.slf4j.LoggerFactory;
 public class PairingInitialisationSequence implements MessageSequencer {
 
 	private enum PairingInitialisationState {
-		INITIAL_PING, PONG_ACKED, GROUP_ID_ACKED, CONFIG_TEMPS_ACKED, SENDING_ASSOCIATIONS, SENDING_ASSOCIATIONS_ACKED, SENDING_WEEK_PROFILE, RETX_WAKEUP_ACK, FINISHED;
+		INITIAL_PING, PONG_ACKED, 
+		SET_GROUP_ID, GROUP_ID_ACKED, 
+		SET_CONFIG_TEMPS, CONFIG_TEMPS_ACKED, 
+		SET_DISPLAY_CONFIG, SET_DISPLAY_ACKED,
+		START_SENDING_ASSOCIATIONS, SENDING_ASSOCIATIONS, SENDING_ASSOCIATIONS_ACKED, 
+		SENDING_WEEK_PROFILE, 
+		RETX_WAKEUP_ACK, 
+		FINISHED;
 	}
 
 	private static final Logger logger = LoggerFactory
@@ -72,160 +79,209 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		if (state != PairingInitialisationState.RETX_WAKEUP_ACK) {
 			pktLostCount = 0; // reset counter - ack received
 		}
-
-		logger.debug("Sequence State: " + state);
-		switch (state) {
-		case INITIAL_PING:
-			/* get device type */
-			PairPingMsg ppMsg = new PairPingMsg(msg.rawMsg);
-			this.deviceType = MaxCulDevice.getDeviceTypeFromInt(ppMsg.type);
-			/* Send PONG - assumes PING is checked */
-			logger.debug("Sending PONG");
-			this.devAddr = msg.srcAddrStr;
-			messageHandler.sendPairPong(devAddr, this);
-			state = PairingInitialisationState.PONG_ACKED;
-			break;
-		case PONG_ACKED:
-			if (msg.msgType == MaxCulMsgType.ACK) {
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack()) {
-					if (this.deviceType == MaxCulDevice.PUSH_BUTTON) {
-						/* for a push button we're done now */
+		
+		boolean waitingForResponse = false;
+		while (waitingForResponse == false) {
+			logger.debug("Sequence State: " + state);
+			switch (state) {
+			case INITIAL_PING:
+				/* get device type */
+				PairPingMsg ppMsg = new PairPingMsg(msg.rawMsg);
+				this.deviceType = MaxCulDevice.getDeviceTypeFromInt(ppMsg.type);
+				/* Send PONG - assumes PING is checked */
+				logger.debug("Sending PONG");
+				this.devAddr = msg.srcAddrStr;
+				messageHandler.sendPairPong(devAddr, this);
+				waitingForResponse = true;
+				state = PairingInitialisationState.PONG_ACKED;
+				break;
+			case PONG_ACKED:
+				if (msg.msgType == MaxCulMsgType.ACK) {
+					AckMsg ack = new AckMsg(msg.rawMsg);
+					if (ack.getIsNack()) {
+						logger.error("PAIR_PONG was nacked. Ending sequence");
 						state = PairingInitialisationState.FINISHED;
+					} else if (this.deviceType == MaxCulDevice.PUSH_BUTTON) {
+						/* for a push button we're done now */
+						logger.debug("Push Button done. Ending sequence");
+						state = PairingInitialisationState.FINISHED; 
 					} else {
-						/* send group id information */
-						logger.debug("Sending GROUP_ID");
-						messageHandler.sendSetGroupId(devAddr, group_id, this);
-						state = PairingInitialisationState.GROUP_ID_ACKED;
+						state = PairingInitialisationState.SET_GROUP_ID;
 					}
 				} else {
-					logger.error("PAIR_PONG was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
-				}
-			} else {
-				logger.error("Received " + msg.msgType + " when expecting ACK");
-			}
-			break;
-		case GROUP_ID_ACKED:
-			if (msg.msgType == MaxCulMsgType.ACK) {
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack()
-						&& (this.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT
-								|| this.deviceType == MaxCulDevice.WALL_THERMOSTAT || this.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS)) {
-					// send temps for comfort/eco etc
-					messageHandler.sendConfigTemperatures(devAddr, this,
-							config.getComfortTemp(), config.getEcoTemp(),
-							config.getMaxTemp(), config.getMinTemp(),
-							config.getMeasurementOffset(),
-							config.getWindowOpenTemperature(),
-							config.getWindowOpenDuration());
-					state = PairingInitialisationState.CONFIG_TEMPS_ACKED;
-				} else {
-					logger.error("SET_GROUP_ID was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
-				}
-			} else {
-				logger.error("Received " + msg.msgType + " when expecting ACK");
-			}
-			break;
-		case CONFIG_TEMPS_ACKED:
-			if (msg.msgType == MaxCulMsgType.ACK) {
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack()) {
-
-					/*
-					 * associate device with us so we get updates - we pretend
-					 * to be the MAX! Cube
-					 */
-					messageHandler.sendAddLinkPartner(devAddr, this,
-							msg.dstAddrStr, MaxCulDevice.CUBE);
-
-					/*
-					 * if there are more associations to come then set up
-					 * iterator and goto state to transmit more associations
-					 */
-					if (associations != null && associations.isEmpty() == false) {
-						assocIter = associations.iterator();
-						state = PairingInitialisationState.SENDING_ASSOCIATIONS;
-					} else {
-						logger.debug("No user configured associations");
-						state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
-					}
-				} else {
-					logger.error("CONFIG_TEMPERATURES was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
-				}
-			} else {
-				logger.error("Received " + msg.msgType + " when expecting ACK");
-			}
-			break;
-		case SENDING_ASSOCIATIONS:
-			if (msg.msgType == MaxCulMsgType.ACK) {
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack()) {
-					if (assocIter.hasNext()) /*
-											 * this should always be true, but
-											 * good to check
-											 */
+					logger.error("Received " + msg.msgType + " when expecting ACK");
+				}				
+				break;
+			case SET_GROUP_ID:
+				/* send group id information */
+				logger.debug("Sending GROUP_ID");
+				messageHandler.sendSetGroupId(devAddr, group_id, this);
+				waitingForResponse = true;
+				state = PairingInitialisationState.GROUP_ID_ACKED;
+				break;
+			case GROUP_ID_ACKED:
+				if (msg.msgType == MaxCulMsgType.ACK) {
+					AckMsg ack = new AckMsg(msg.rawMsg);
+					if (!ack.getIsNack())
 					{
-						MaxCulBindingConfig partnerCfg = assocIter.next();
-						messageHandler.sendAddLinkPartner(this.devAddr, this,
-								partnerCfg.getDevAddr(),
-								partnerCfg.getDeviceType());
-						/*
-						 * if it's the last association message then wait for
-						 * last ACK
-						 */
-						if (assocIter.hasNext()) {
-							state = PairingInitialisationState.SENDING_ASSOCIATIONS;
+						state = PairingInitialisationState.SET_CONFIG_TEMPS;
+					} else {
+						logger.error("SET_GROUP_ID was nacked. Ending sequence");
+						state = PairingInitialisationState.FINISHED;
+					}
+				} else {
+					logger.error("Received " + msg.msgType + " when expecting ACK");
+				}
+				break;
+			case SET_CONFIG_TEMPS:
+				if (this.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT
+				|| this.deviceType == MaxCulDevice.WALL_THERMOSTAT 
+				|| this.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS) {
+					// send temps for comfort/eco etc
+						messageHandler.sendConfigTemperatures(devAddr, this,
+								config.getComfortTemp(), config.getEcoTemp(),
+								config.getMaxTemp(), config.getMinTemp(),
+								config.getMeasurementOffset(),
+								config.getWindowOpenTemperature(),
+								config.getWindowOpenDuration());
+						waitingForResponse = true;
+						state = PairingInitialisationState.CONFIG_TEMPS_ACKED;
+				} else {
+					state = PairingInitialisationState.SET_DISPLAY_CONFIG;
+				}
+				break;
+			case CONFIG_TEMPS_ACKED:
+				if (msg.msgType == MaxCulMsgType.ACK)
+				{
+					AckMsg ack = new AckMsg(msg.rawMsg);
+					if (!ack.getIsNack()) {
+						/* skip display setting for now as it is done manually */
+						//state = PairingInitialisationState.SET_DISPLAY_CONFIG;
+						state = PairingInitialisationState.START_SENDING_ASSOCIATIONS;
+					} else {
+						logger.error("CONFIG_TEMPS was nacked. Ending sequence");
+						state = PairingInitialisationState.FINISHED;
+					}
+				} else {
+					logger.error("Received " + msg.msgType + " when expecting ACK");
+				}
+						
+				break;
+			case SET_DISPLAY_CONFIG:
+					if (this.deviceType == MaxCulDevice.WALL_THERMOSTAT) {
+							/* configure the device to show actual temperature */
+							messageHandler.sendSetDisplayActualTemperature(devAddr, this, config.getDisplayActualTemperature());
+							waitingForResponse = true;
+							state = PairingInitialisationState.SET_DISPLAY_ACKED;
+					} else {
+						state = PairingInitialisationState.SENDING_ASSOCIATIONS;
+					}
+					break;
+			case SET_DISPLAY_ACKED:
+				if (msg.msgType == MaxCulMsgType.ACK) {
+						AckMsg ack = new AckMsg(msg.rawMsg);
+						if (!ack.getIsNack()) {							
+							state = PairingInitialisationState.START_SENDING_ASSOCIATIONS;
 						} else {
-							state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
+							logger.error("CONFIG_TEMPERATURES was nacked. Ending sequence");
+							state = PairingInitialisationState.FINISHED;
 						}
 					} else {
-						// TODO NOTE: if further states are added then ensure
-						// you go to the right state. I.e. when all associations
-						// are done
+						logger.error("Received " + msg.msgType + " when expecting ACK");
+					}
+				break;
+			case START_SENDING_ASSOCIATIONS:
+				/*
+				 * associate device with us so we get updates - we pretend
+				 * to be the MAX! Cube
+				 */
+				messageHandler.sendAddLinkPartner(devAddr, this,
+						msg.dstAddrStr, MaxCulDevice.CUBE);
+				waitingForResponse = true;
+				
+				/*
+				 * if there are more associations to come then set up
+				 * iterator and goto state to transmit more associations
+				 */
+				if (associations != null && associations.isEmpty() == false) {
+					assocIter = associations.iterator();
+					state = PairingInitialisationState.SENDING_ASSOCIATIONS;
+				} else {
+					logger.debug("No user configured associations");
+					state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
+				}
+				break;
+			case SENDING_ASSOCIATIONS:
+				if (msg.msgType == MaxCulMsgType.ACK) {
+					AckMsg ack = new AckMsg(msg.rawMsg);
+					if (!ack.getIsNack()) {
+						if (assocIter.hasNext()) /*
+						 * this should always be true, but
+						 * good to check
+						 */
+						{
+							MaxCulBindingConfig partnerCfg = assocIter.next();
+							messageHandler.sendAddLinkPartner(this.devAddr, this,
+									partnerCfg.getDevAddr(),
+									partnerCfg.getDeviceType());
+							waitingForResponse = true;
+							/*
+							 * if it's the last association message then wait for
+							 * last ACK
+							 */
+							if (assocIter.hasNext()) {
+								state = PairingInitialisationState.SENDING_ASSOCIATIONS;
+							} else {
+								state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
+							}
+						} else {
+							// TODO NOTE: if further states are added then ensure
+							// you go to the right state. I.e. when all associations
+							// are done
+							state = PairingInitialisationState.FINISHED;
+						}
+					} else {
+						logger.error("SENDING_ASSOCIATIONS was nacked. Ending sequence");
 						state = PairingInitialisationState.FINISHED;
 					}
 				} else {
-					logger.error("SENDING_ASSOCIATIONS was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
+					logger.error("Received " + msg.msgType + " when expecting ACK");
 				}
-			} else {
-				logger.error("Received " + msg.msgType + " when expecting ACK");
-			}
-			break;
-		case SENDING_ASSOCIATIONS_ACKED:
-			state = PairingInitialisationState.FINISHED;
-			break;
-		case SENDING_WEEK_PROFILE:
-			// TODO implement this - but where to get a week profile from.
-			// Meaningless at the moment!
-			state = PairingInitialisationState.FINISHED;
-			break;
-		case FINISHED:
-			/* done, do nothing */
-			break;
-		case RETX_WAKEUP_ACK:
-			/* here are waiting for an ACK after sending a wakeup message */
-			if (msg.msgType == MaxCulMsgType.ACK) {
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack()) {
-					logger.debug("Attempt retransmission - resuming");
-					this.useFast = true;
-					messageHandler.sendMessage(reTxMsg);
-					state = reTxState; // resume back to previous state
+				break;
+			case SENDING_ASSOCIATIONS_ACKED:
+				state = PairingInitialisationState.FINISHED;
+				break;
+			case SENDING_WEEK_PROFILE:
+				// TODO implement this - but where to get a week profile from.
+				// Meaningless at the moment!
+				state = PairingInitialisationState.FINISHED;
+				break;
+			case FINISHED:
+				/* done, do nothing */
+				waitingForResponse = true; // break out of loop
+				break;
+			case RETX_WAKEUP_ACK:
+				/* here are waiting for an ACK after sending a wakeup message */
+				if (msg.msgType == MaxCulMsgType.ACK) {
+					AckMsg ack = new AckMsg(msg.rawMsg);
+					if (!ack.getIsNack()) {
+						logger.debug("Attempt retransmission - resuming");
+						this.useFast = true;
+						messageHandler.sendMessage(reTxMsg);
+						waitingForResponse = true;
+						state = reTxState; // resume back to previous state
+					} else {
+						logger.error("WAKEUP for ReTx was nacked. Ending sequence");
+						state = PairingInitialisationState.FINISHED;
+					}
 				} else {
-					logger.error("WAKEUP for ReTx was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
+					logger.error("Received " + msg.msgType + " when expecting ACK");
 				}
-			} else {
-				logger.error("Received " + msg.msgType + " when expecting ACK");
+				break;
+			default:
+				logger.error("Invalid state for PairingInitialisation Message Sequence!");
+				break;
 			}
-			break;
-		default:
-			logger.error("Invalid state for PairingInitialisation Message Sequence!");
-			break;
 		}
 	}
 

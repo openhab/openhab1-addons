@@ -188,10 +188,16 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 							+ bindingConfig.getDeviceType()
 							+ " that is not OnOffType");
 				break;
+			
+			case WALL_THERMOSTAT:								
 			case RADIATOR_THERMOSTAT:
 			case RADIATOR_THERMOSTAT_PLUS:
-			case WALL_THERMOSTAT:
-				if (bindingConfig.getFeature() == MaxCulFeature.THERMOSTAT) {
+				if (bindingConfig.getFeature() == MaxCulFeature.DISPLAY
+						&& bindingConfig.getDeviceType() == MaxCulDevice.WALL_THERMOSTAT
+						&& command instanceof OnOffType) {
+					boolean displayActualTemp = ((OnOffType)command == OnOffType.ON);
+					messageHandler.sendSetDisplayActualTemperature(bindingConfig.getDevAddr(), null, displayActualTemp);
+				} else if (bindingConfig.getFeature() == MaxCulFeature.THERMOSTAT) {
 					/* clear out old pacing timer */
 					if (pacedBindingTransmitTimers.containsKey(bindingConfig)) {
 						pacedBindingTransmitTimers.get(bindingConfig).cancel();
