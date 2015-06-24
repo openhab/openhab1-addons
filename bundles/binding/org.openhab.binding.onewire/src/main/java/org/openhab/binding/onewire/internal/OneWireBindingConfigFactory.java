@@ -41,7 +41,7 @@ public class OneWireBindingConfigFactory {
 	 * @throws BindingConfigParseException
 	 */
 	public static OneWireBindingConfig createOneWireDeviceProperty(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		logger.debug("createOneWireDeviceProperty: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
+		logger.debug("createOneWireDeviceProperty: " + pvItem.getName() + " - bindingConfig:" + pvBindingConfig);
 
 		OneWireBindingConfig lvNewBindingConfig = null;
 		if (OneWireClearCacheControlBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {
