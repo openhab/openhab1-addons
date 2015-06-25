@@ -27,23 +27,63 @@ import org.slf4j.LoggerFactory;
  * @author Bernd Pfrommer
  * @since 1.5.0
  */
-public class ModemDBBuilder implements MsgListener {
+public class ModemDBBuilder implements MsgListener, Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(ModemDBBuilder.class);
-	
-	Port m_port = null;
-	
+	private boolean	m_isComplete 	= false;
+	private Port	m_port 			= null;
+	private	Thread	m_writeThread	= null;
+	private int		m_timeoutMillis = 30000;
+
 	public ModemDBBuilder(Port port) {
 		m_port = port;
 	}
 	
+	public void setRetryTimeout(int timeout) {
+		m_timeoutMillis = timeout;
+	}
+
 	public void start() {
 		m_port.addListener(this);
+		m_writeThread	= new Thread(this);
+		m_writeThread.setName("DBBuilder");
+		m_writeThread.start();
 		logger.debug("querying port for first link record");
+	}
+
+	public void startDownload() {
+		logger.trace("starting modem database download");
+		m_port.clearModemDB();
+		getFirstLinkRecord();
+	}
+	
+	public synchronized boolean isComplete() { return (m_isComplete); }
+
+
+	@Override
+	public void run() {
+		logger.trace("starting modem db builder thread");
+		while (!isComplete()) {
+			startDownload();
+			try {
+				Thread.sleep(m_timeoutMillis); // wait for download to complete
+			} catch (InterruptedException e) {
+				logger.warn("modem db builder thread interrupted");
+				break;
+			}
+			if (!isComplete()) {
+				logger.warn("modem database download unsuccessful, restarting!");
+			}
+		}
+		logger.trace("exiting modem db builder thread");
+	}
+
+	private void getFirstLinkRecord() {
 		try {
 			m_port.writeMessage(Msg.s_makeMessage("GetFirstALLLinkRecord"));
 		} catch (IOException e) {
-			logger.error("cannot query for link messages", e);
+			logger.error("error sending link record query ", e);
 		}
+		
 	}
 	
 	/**
@@ -78,7 +118,8 @@ public class ModemDBBuilder implements MsgListener {
 		}
 	}
 	
-	private void done() {
+	private synchronized void done() {
+		m_isComplete = true;
 		logModemDB();
 		m_port.removeListener(this);
 		m_port.modemDBComplete();

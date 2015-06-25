@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>VRS15-1LZ</Model>
-	<Label lang="en">Scene Capable Push On/Off</Label>
+	<Model>VRPD3-1LW</Model>
+	<Label lang="en">Scene Capable Plug-in Dimmer</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
-		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
 		<Class><id>0x86</id></Class>
 		<Class><id>0x27</id></Class>
 		<Class><id>0x2b</id></Class>
@@ -19,13 +19,6 @@
 	<Configuration>
 
 	</Configuration>
-        <Associations>
-                <Group>
-                        <Index>1</Index>
-                        <Maximum>5</Maximum>
-                        <Label lang="en">Group 1</Label>
-                        <SetToController>true</SetToController>
-                </Group>
-        </Associations>	
+	
 </Product>
 

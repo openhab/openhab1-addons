@@ -68,7 +68,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	private boolean mKNXConnectionEstablished;
 
 	public void activate(ComponentContext componentContext) {
-		logger.info("Calimero library version {}", Settings.getLibraryVersion());
+		logger.debug("Calimero library version {}", Settings.getLibraryVersion());
 		logger.trace("KNXBinding: activating");
 		KNXConnection.addConnectionListener(this);
 		mKNXBusReaderScheduler.start();

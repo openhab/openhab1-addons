@@ -12,15 +12,11 @@ package org.openhab.binding.digitalstrom.internal.config;
  * @author 	Alexander Betker
  * @since 1.3.0
  */
-public enum DigitalSTROMBindingConfigEnum {
+public enum SensorConfig {
 	
-	dsid,
-	dsmid,
-	consumption,
-	timeinterval,
-	context,
-	zoneid,
-	groupid, 
-	sensor
+	TEMPERATURE_INDOORS,
+	RELATIVE_HUMIDITY_INDOORS,
+	TEMPERATURE_OUTDOORS,
+	RELATIVE_HUMIDITY_OUTDOORS
 	
 }
