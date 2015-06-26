@@ -28,8 +28,8 @@
 			<Type>short</Type>
 			<Default>0</Default>
 			<Size>2</Size>
-			<label Lang="en">IN1 Alarm Cancellation Delay alarm Cancellation
-			</label>
+			<Label Lang="en">IN1 Alarm Cancellation Delay alarm Cancellation
+			</Label>
 			<Help Lang="en">Additional delay after an alarm from input IN1 has
 				ceased. The parameter allows you to specify additional time, after
 				which the input no. 1 alarm is cancelled once its violation has
@@ -41,8 +41,8 @@
 			<Type>byte</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<label Lang="en">Status change signaled by LEDs change signaled by
-			</label>
+			<Label Lang="en">Status change signaled by LEDs change signaled by
+			</Label>
 		</Parameter>
 	</Configuration>
 	<Associations>
