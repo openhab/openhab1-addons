@@ -73,6 +73,15 @@
 			<Label lang="en">Dimmable LED Light Bulb</Label>
 			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>102</Id>
+			</Reference>
+			<Model>WADWAZ-1</Model>
+			<Label lang="en">Door/Windows Sensor</Label>
+			<ConfigFile>linear/wadwaz-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
