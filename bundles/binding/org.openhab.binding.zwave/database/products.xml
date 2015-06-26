@@ -2206,4 +2206,17 @@
 			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>014f</Id>
+		<Name>Linear</Name>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>102</Id>
+			</Reference>
+			<Model>WADWAZ-1</Model>
+			<Label lang="en">Door/Windows Sensor</Label>
+			<ConfigFile>linear/wadwaz-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
