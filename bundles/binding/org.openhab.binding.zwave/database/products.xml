@@ -82,6 +82,15 @@
 			<Label lang="en">Door/Windows Sensor</Label>
 			<ConfigFile>linear/wadwaz-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5246</Type>
+				<Id>3133</Id>
+			</Reference>
+			<Model>FS20Z</Model>
+			<Label lang="en">Isolated Contact Fixture Module</Label>
+			<ConfigFile>linear/fs20z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
