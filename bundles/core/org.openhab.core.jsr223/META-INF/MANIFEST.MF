@@ -6,7 +6,8 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.8.0.qualifier
 Bundle-SymbolicName: org.openhab.core.jsr223;singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.openhab.model.item
+Require-Bundle: org.openhab.model.item,
+ org.openhab.core.persistence
 Import-Package: com.google.common.collect,
  org.joda.time,
  org.joda.time.base,
