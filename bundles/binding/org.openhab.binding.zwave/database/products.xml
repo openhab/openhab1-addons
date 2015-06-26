@@ -64,6 +64,15 @@
 			<Label lang="en">Dimmable LED Light Bulb</Label>
 			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>102</Id>
+			</Reference>
+			<Model>WADWAZ-1</Model>
+			<Label lang="en">Door/Windows Sensor</Label>
+			<ConfigFile>linear/wadwaz-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -2204,19 +2213,6 @@
 			<Model>MH10-PM2.5-WA</Model>
 			<Label lang="en">PM2.5 Monitor</Label>
 			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
-		</Product>
-	</Manufacturer>
-	<Manufacturer>
-		<Id>014f</Id>
-		<Name>Linear</Name>
-		<Product>
-			<Reference>
-				<Type>2001</Type>
-				<Id>102</Id>
-			</Reference>
-			<Model>WADWAZ-1</Model>
-			<Label lang="en">Door/Windows Sensor</Label>
-			<ConfigFile>linear/wadwaz-1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
