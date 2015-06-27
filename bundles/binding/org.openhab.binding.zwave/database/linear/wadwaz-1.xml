@@ -24,8 +24,8 @@
 	</CommandClasses>
 	<Associations>
 		<Group>
-			<Index>3</Index>
-			<Maximum>1</Maximum>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
 			<Label lang="">Condition</Label>
 			<SetToController>true</SetToController>
 		</Group>
