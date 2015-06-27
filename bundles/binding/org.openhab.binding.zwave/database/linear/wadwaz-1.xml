@@ -26,7 +26,7 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>5</Maximum>
-			<Label lang="">Condition</Label>
+			<Label lang="">Controller Updates</Label>
 			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
