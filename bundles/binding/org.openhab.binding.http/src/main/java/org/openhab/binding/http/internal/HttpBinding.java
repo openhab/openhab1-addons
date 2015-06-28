@@ -61,6 +61,9 @@ import org.slf4j.LoggerFactory;
 public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> implements ManagedService {
 
 	static final Logger logger = LoggerFactory.getLogger(HttpBinding.class);
+
+	protected static final String CONFIG_TIMEOUT = "timeout";
+	protected static final String CONFIG_GRANULARITY = "granularity";
 	
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
 	private int timeout = 5000;
@@ -386,12 +389,12 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 			itemCache.clear();
 			
 			if (config != null) {
-				String timeoutString = (String) config.get("timeout");
+				String timeoutString = (String) config.get(CONFIG_TIMEOUT);
 				if (StringUtils.isNotBlank(timeoutString)) {
 					timeout = Integer.parseInt(timeoutString);
 				}
 				
-				String granularityString = (String) config.get("granularity");
+				String granularityString = (String) config.get(CONFIG_GRANULARITY);
 				if (StringUtils.isNotBlank(granularityString)) {
 					granularity = Integer.parseInt(granularityString);
 				}
@@ -406,7 +409,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	
 					// the config-key enumeration contains additional keys that we
 					// don't want to process here ...
-					if ("service.pid".equals(key)) {
+					if (CONFIG_TIMEOUT.equals(key) || CONFIG_GRANULARITY.equals(key)
+							|| "service.pid".equals(key)) {
 						continue;
 					}
 	
