@@ -23,7 +23,7 @@
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">LED always off</Label>
+				<Label lang="en">LED always OFF</Label>
 			</Item>
 			<Help lang="en">Defines the behavior of the blue LED. Default is Night Light mode where LED is on when switch is off.</Help>
 		</Parameter>

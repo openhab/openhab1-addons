@@ -451,7 +451,7 @@
 			</Reference>
 			<Model>ZW4005</Model>
 			<Label lang="en">On/Off Relay Switch</Label>
-			<ConfigFile>ge/SmartSwitch.xml</ConfigFile>
+			<ConfigFile>ge/smartswitch.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
