@@ -22,44 +22,11 @@
 			<id>0xFF</id>
 		</Class>
 	</CommandClasses>
-	<Configuration>
-		<Parameter>
-			<Index>1</Index>
-			<Type>short</Type>
-			<Default>0</Default>
-			<Size>2</Size>
-			<Label Lang="en">IN1 Alarm Cancellation Delay alarm Cancellation
-			</Label>
-			<Help Lang="en">Additional delay after an alarm from input IN1 has
-				ceased. The parameter allows you to specify additional time, after
-				which the input no. 1 alarm is cancelled once its violation has
-				ceased.
-			</Help>
-		</Parameter>
-		<Parameter>
-			<Index>2</Index>
-			<Type>byte</Type>
-			<Default>1</Default>
-			<Size>1</Size>
-			<Label Lang="en">Status change signaled by LEDs change signaled by
-			</Label>
-		</Parameter>
-	</Configuration>
 	<Associations>
 		<Group>
 			<Index>1</Index>
 			<Maximum>5</Maximum>
-			<Label lang="en">Input IN1</Label>
-		</Group>
-		<Group>
-			<Index>2</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Tamper Button</Label>
-		</Group>
-		<Group>
-			<Index>3</Index>
-			<Maximum>1</Maximum>
-			<Label lang="">Condition</Label>
+			<Label lang="en">Controller Updates</Label>
 			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
