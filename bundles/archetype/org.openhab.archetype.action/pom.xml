@@ -1,53 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <groupId>org.openhab.archetype</groupId>
-  <artifactId>org.openhab.archetype.action</artifactId>
-  <version>1.7.0-SNAPSHOT</version>
-  <packaging>maven-archetype</packaging>
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>archetype</artifactId>
+		<version>1.8.0-SNAPSHOT</version>
+	</parent>
 
-  <name>org.openhab.archetype.action</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.archetype</groupId>
+	<artifactId>org.openhab.archetype.action</artifactId>
 
-  <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.archetype</groupId>
-        <artifactId>archetype-packaging</artifactId>
-        <version>2.2</version>
-      </extension>
-    </extensions>
+	<name>openHAB Action Archetype</name>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-archetype-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+	<packaging>maven-archetype</packaging>
 
-  <description>This is the Maven-Archetype for building new actions for the open Home Automation Bus (openHAB)</description>
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.archetype</groupId>
+				<artifactId>archetype-packaging</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
 
-  <licenses>
-    <license>
-      <name>GNU General Public License</name>
-      <url>http://www.gnu.org/licenses/gpl.html</url>
-      <comments>Additional permission under GNU GPL version 3 section 7
-        
-        If you modify this Program, or any covered work, by linking or 
-        combining it with Eclipse (or a modified version of that library),
-        containing parts covered by the terms of the Eclipse Public License
-        (EPL), the licensors of this Program grant you additional permission
-        to convey the resulting work.</comments>
-    </license>
-  </licenses>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-archetype-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
-  <scm>
-    <connection>scm:hg:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.binding/</connection>
-    <developerConnection>scm:svn:https://openhab.googlecode.com/hg/bundles/archetype/org.openhab.archetype.action/</developerConnection>
-    <url>http://code.google.com/p/openhab/source/browse/bundles/archetype/org.openhab.archetype.action/</url>
-  </scm>
-  
+	<description>This is the Maven-Archetype for building new actions for the open Home Automation Bus (openHAB)</description>
+
 </project>

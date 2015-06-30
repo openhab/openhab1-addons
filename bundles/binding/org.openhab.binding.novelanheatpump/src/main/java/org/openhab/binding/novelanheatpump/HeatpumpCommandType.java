@@ -304,7 +304,72 @@ public enum HeatpumpCommandType {
 			command = "temperature_solar_storage";
 			itemClass = NumberItem.class;
 		}
+	},
+	
+	//in german Heizung Betriebsart
+	TYPE_HEATING_OPERATION_MODE {
+		{
+			command = "heating_operation_mode";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Heizung Temperatur (Parallelverschiebung)
+	TYPE_HEATING_TEMPERATURE {
+		{
+			command = "heating_temperature";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Warmwasser Betriebsart
+	TYPE_WARMWATER_OPERATION_MODE {
+		{
+			command = "warmwater_operation_mode";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Warmwasser Temperatur
+	TYPE_WARMWATER_TEMPERATURE {
+		{
+			command = "warmwater_temperature";
+			itemClass = NumberItem.class;
+		}
+	},
+	//in german Comfort Kühlung Betriebsart
+	TYPE_COOLING_OPERATION_MODE {
+		{
+			command = "cooling_operation_mode";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Comfort Kühlung AT-Freigabe
+	TYPE_COOLING_RELEASE_TEMPERATURE {
+		{
+			command = "cooling_release_temperature";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Solltemp MK1
+	TYPE_COOLING_INLET_TEMP {
+		{
+			command = "cooling_inlet_temperature";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german AT-Überschreitung
+	TYPE_COOLING_START_AFTER_HOURS {
+		{
+			command = "cooling_start_hours";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german AT-Unterschreitung
+	TYPE_COOLING_STOP_AFTER_HOURS {
+		{
+			command = "cooling_stop_hours";
+			itemClass = NumberItem.class;
+		}
 	};
+	
 
 	
 	/** Represents the heatpump command as it will be used in *.items configuration */

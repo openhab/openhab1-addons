@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -36,6 +39,8 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.rrd4j.ConsolFun;
 import org.rrd4j.DsType;
 import org.rrd4j.core.FetchData;
@@ -45,27 +50,30 @@ import org.rrd4j.core.RrdDef;
 import org.rrd4j.core.Sample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This is the implementation of the RRD4j {@link PersistenceService}. To learn
- * more about RRD4j please visit their <a href="http://code.google.com/p/rrd4j/">website</a>.
+ * more about RRD4j please visit their <a href="https://github.com/rrd4j/rrd4j">website</a>.
  * 
  * @author Kai Kreuzer
+ * @author Jan N. Klug
  * @since 1.0.0
  */
-public class RRD4jService implements QueryablePersistenceService {
+public class RRD4jService implements QueryablePersistenceService, ManagedService {
+
+	private ConcurrentHashMap<String, RrdDefConfig> rrdDefs = new ConcurrentHashMap<String, RrdDefConfig>();
 
 	private static final String DATASOURCE_STATE = "state";
 
-	protected final static String DB_FOLDER = getUserDataFolder() + File.separator + "rrd4j";
-	
+	public final static String DB_FOLDER = getUserPersistenceDataFolder() + File.separator + "rrd4j";
+
 	private static final Logger logger = LoggerFactory.getLogger(RRD4jService.class);
 
 	private Map<String,Timer> timers = new HashMap<String,Timer>();
-	
+
 	protected ItemRegistry itemRegistry;
-	
+
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = itemRegistry;
 	}
@@ -86,9 +94,9 @@ public class RRD4jService implements QueryablePersistenceService {
 	 */
 	public synchronized void store(final Item item, final String alias) {
 		final String name = alias==null ? item.getName() : alias;
-		ConsolFun function = getConsolidationFunction(item);
-		RrdDb db = getDB(name, function);
+		RrdDb db = getDB(name);
 		if(db!=null) {
+			ConsolFun function = getConsolidationFunction(db);
 			long now = System.currentTimeMillis()/1000;
 			if(function!=ConsolFun.AVERAGE) {
 				try {
@@ -99,10 +107,10 @@ public class RRD4jService implements QueryablePersistenceService {
 						double lastValue = db.getLastDatasourceValue(DATASOURCE_STATE);
 						if(!Double.isNaN(lastValue)) {
 							Sample sample = db.createSample();
-				            sample.setTime(now - 1);
-				            sample.setValue(DATASOURCE_STATE, lastValue);
-				            sample.update();
-		                    logger.debug("Stored '{}' with state '{}' in rrd4j database", name, mapToState(lastValue, item.getName()));
+							sample.setTime(now - 1);
+							sample.setValue(DATASOURCE_STATE, lastValue);
+							sample.update();
+							logger.debug("Stored '{}' with state '{}' in rrd4j database", name, mapToState(lastValue, item.getName()));
 						}
 					}
 				} catch (IOException e) {
@@ -111,15 +119,18 @@ public class RRD4jService implements QueryablePersistenceService {
 			}
 			try {
 				Sample sample = db.createSample();
-	            sample.setTime(now);
-	            
-	            DecimalType state = (DecimalType) item.getStateAs(DecimalType.class);
-	            if (state!=null) {
-                    double value = state.toBigDecimal().doubleValue();
-                    sample.setValue(DATASOURCE_STATE, value);
-                    sample.update();
-                    logger.debug("Stored '{}' with state '{}' in rrd4j database", name, item.getState());
-	            }
+				sample.setTime(now);
+
+				DecimalType state = (DecimalType) item.getStateAs(DecimalType.class);
+				if (state!=null) {
+					double value = state.toBigDecimal().doubleValue();
+					if (db.getDatasource(DATASOURCE_STATE).getType()==DsType.COUNTER) { // counter values must be adjusted by stepsize
+						value = value * db.getRrdDef().getStep();
+					}
+					sample.setValue(DATASOURCE_STATE, value);
+					sample.update();
+					logger.debug("Stored '{}' with state '{}' in rrd4j database", name, item.getState());
+				}
 			} catch (IllegalArgumentException e) {
 				if(e.getMessage().contains("at least one second step is required")) {
 
@@ -143,7 +154,7 @@ public class RRD4jService implements QueryablePersistenceService {
 			} catch (Exception e) {
 				logger.warn("Could not persist '{}' to rrd4j database: {}", new String[] { name, e.getMessage() });
 			}
-            try {
+			try {
 				db.close();
 			} catch (IOException e) {
 				logger.debug("Error closing rrd4j database: {}", e.getMessage());
@@ -157,13 +168,13 @@ public class RRD4jService implements QueryablePersistenceService {
 	public void store(Item item) {
 		store(item, null);
 	}
-	
+
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
 		String itemName = filter.getItemName();
-		ConsolFun consolidationFunction = getConsolidationFunction(itemName);
-		RrdDb db = getDB(itemName, consolidationFunction);
+		RrdDb db = getDB(itemName);
 		if(db!=null) {
+			ConsolFun consolidationFunction = getConsolidationFunction(db);
 			long start = 0L;
 			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 : filter.getEndDate().getTime()/1000;
 
@@ -187,7 +198,7 @@ public class RRD4jService implements QueryablePersistenceService {
 						}
 					} else {
 						throw new UnsupportedOperationException("rrd4j does not allow querys without a begin date, " + 
-								"unless order is decending and a single value is requested");
+								"unless order is descending and a single value is requested");
 					}
 				} else {
 					start = filter.getBeginDate().getTime()/1000;
@@ -208,26 +219,27 @@ public class RRD4jService implements QueryablePersistenceService {
 				return items;
 			} catch (IOException e) {
 				logger.warn("Could not query rrd4j database for item '{}': {}", new String[] { itemName, e.getMessage() });
-			}	
+			}
 		}
 		return Collections.emptyList();
 	}
 
-	protected synchronized RrdDb getDB(String alias, ConsolFun function) {
+	protected synchronized RrdDb getDB(String alias) {
 		RrdDb db = null;
-        File file = new File(DB_FOLDER + File.separator + alias + ".rrd");
-    	try {
-            if (file.exists()) {
-            	// recreate the RrdDb instance from the file
-            	db = new RrdDb(file.getAbsolutePath());
-            } else {
-            	File folder = new File(DB_FOLDER);
-            	if(!folder.exists()) {
-            		folder.mkdir();
-            	}
-            	// create a new database file
-                db = new RrdDb(getRrdDef(function, file));
-            }
+		File file = new File(DB_FOLDER + File.separator + alias + ".rrd");
+		try {
+			if (file.exists()) {
+				// recreate the RrdDb instance from the file
+				db = new RrdDb(file.getAbsolutePath());
+			} else {
+				File folder = new File(DB_FOLDER);
+				if(!folder.exists()) {
+					folder.mkdirs();
+				}
+				// create a new database file
+				//db = new RrdDb(getRrdDef(function, file));
+				db = new RrdDb(getRrdDef(alias, file));
+			}
 		} catch (IOException e) {
 			logger.error("Could not create rrd4j database file '{}': {}", new String[] { file.getAbsolutePath(), e.getMessage() });
 		} catch(RejectedExecutionException e) {
@@ -237,54 +249,54 @@ public class RRD4jService implements QueryablePersistenceService {
 		return db;
 	}
 
-	private RrdDef getRrdDef(ConsolFun function, File file) {
-    	RrdDef rrdDef = new RrdDef(file.getAbsolutePath());
-    	if(function==ConsolFun.AVERAGE) {
-    		// for measurement values, we define archives that are suitable for charts
-    		rrdDef.setStep(60);
-	        rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
-	        rrdDef.addDatasource(DATASOURCE_STATE, DsType.GAUGE, 60, Double.NaN, Double.NaN);
-	        rrdDef.addArchive(function, 0.5, 1, 480); // 8 hours (granularity 1 min)
-	        rrdDef.addArchive(function, 0.5, 4, 360); // one day (granularity 4 min)
-	        rrdDef.addArchive(function, 0.5, 15, 644); // one week (granularity 15 min)
-	        rrdDef.addArchive(function, 0.5, 60, 720); // one month (granularity 1 hour)
-	        rrdDef.addArchive(function, 0.5, 720, 730); // one year (granularity 12 hours)
-	        rrdDef.addArchive(function, 0.5, 10080, 520); // ten years (granularity 7 days)
-    	} else {
-    		// for other things, we mainly provide a high level of detail for the last hour
-    		rrdDef.setStep(1);
-	        rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
-	        rrdDef.addDatasource(DATASOURCE_STATE, DsType.GAUGE, 3600, Double.NaN, Double.NaN);
-	        rrdDef.addArchive(function, .999, 1, 3600); // 1 hour (granularity 1 sec)
-	        rrdDef.addArchive(function, .999, 10, 1440); // 4 hours (granularity 10 sec)
-	        rrdDef.addArchive(function, .999, 60, 1440); // one day (granularity 1 min)
-	        rrdDef.addArchive(function, .999, 900, 2880); // one month (granularity 15 min)
-	        rrdDef.addArchive(function, .999, 21600, 1460); // one year (granularity 6 hours)
-	        rrdDef.addArchive(function, .999, 86400, 3650); // ten years (granularity 1 day)
-    	}
+
+	private RrdDefConfig getRrdDefConfig(String itemName) {
+		RrdDefConfig useRdc = null;
+		for (Map.Entry<String, RrdDefConfig> e: rrdDefs.entrySet()) { // try to find special config
+			RrdDefConfig rdc = e.getValue();
+			if (rdc.appliesTo(itemName)) {
+				useRdc = rdc;
+				break;
+			}
+		}
+		if (useRdc == null) { // not defined, use defaults
+			if (itemRegistry!=null) {
+				try {
+					Item item = itemRegistry.getItem(itemName);
+					if (item instanceof NumberItem) {
+						useRdc = rrdDefs.get("default_numeric");
+					} else {
+						useRdc = rrdDefs.get("default_other");
+					}
+				} catch (ItemNotFoundException e) {
+					logger.debug("Could not find item '{}' in registry", itemName);
+				}
+			} else {
+				useRdc = rrdDefs.get("default_other");
+			}
+		}
+		return useRdc;
+	}
+
+	private RrdDef getRrdDef(String itemName, File file) {
+		RrdDef rrdDef = new RrdDef(file.getAbsolutePath());
+		RrdDefConfig useRdc = getRrdDefConfig(itemName);
+
+		rrdDef.setStep(useRdc.step);
+		rrdDef.setStartTime(System.currentTimeMillis()/1000-1);
+		rrdDef.addDatasource(DATASOURCE_STATE, useRdc.dsType, useRdc.heartbeat, useRdc.min, useRdc.max);
+		for (RrdArchiveDef rad : useRdc.archives) {
+			rrdDef.addArchive(rad.fcn, rad.xff, rad.steps, rad.rows);
+		}
 		return rrdDef;
 	}
 
-	static public ConsolFun getConsolidationFunction(Item item) {
-		if(item instanceof NumberItem) {
-			return ConsolFun.AVERAGE;
-		} else {
-			// for all other values (like ON/OFF etc.) use the maximum value for consolidation
+	public ConsolFun getConsolidationFunction(RrdDb db) {
+		try {
+			return db.getRrdDef().getArcDefs()[0].getConsolFun();
+		} catch (IOException e) {
 			return ConsolFun.MAX;
 		}
-	}
-
-	private ConsolFun getConsolidationFunction(String itemName) {
-		if(itemRegistry!=null) {
-			try {
-				Item item = itemRegistry.getItem(itemName);
-				return getConsolidationFunction(item);
-			} catch (ItemNotFoundException e) {
-				logger.debug("Could not find item '{}' in registry", itemName);
-			}
-		}
-		// use MAX as the default
-		return ConsolFun.MAX;
 	}
 
 	private State mapToState(double value, String itemName) {
@@ -303,14 +315,231 @@ public class RRD4jService implements QueryablePersistenceService {
 		// just return a DecimalType as a fallback
 		return new DecimalType(value);
 	}
-	
-	static private String getUserDataFolder() {
+
+	static private String getUserPersistenceDataFolder() {
 		String progArg = System.getProperty("smarthome.userdata");
 		if (progArg != null) {
-			return progArg;
+			return progArg + File.separator + "persistence";
 		} else {
 			return "etc";
 		}
 	}
 
+	/**
+	 * @{inheritDoc
+	 */
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+
+		// add default configurations
+		RrdDefConfig defaultNumeric = new RrdDefConfig("default_numeric");
+		defaultNumeric.setDef("GAUGE,60,U,U,60");
+		defaultNumeric.addArchives("AVERAGE,0.5,1,480:AVERAGE,0.5,4,360:AVERAGE,0.5,14,644:AVERAGE,0.5,60,720:AVERAGE,0.5,720,730:AVERAGE,0.5,10080,520");
+		rrdDefs.put("default_numeric", defaultNumeric);
+
+		RrdDefConfig defaultOther = new RrdDefConfig("default_other");
+		defaultOther.setDef("GAUGE,3600,U,U,1");
+		defaultOther.addArchives("MAX,.999,1,3600:MAX,.999,10,1440:MAX,.999,60,1440:MAX,.999,900,2880:MAX,.999,21600,1460:MAX,.999,86400,3650");
+		rrdDefs.put("default_other", defaultOther);
+
+		if ((config == null) || config.isEmpty()) {
+			logger.debug("using default configuration only");
+			return;
+		}
+
+		Enumeration<String> keys = config.keys();
+		while (keys.hasMoreElements()) {
+
+			String key = keys.nextElement();
+
+			if (key.equals("service.pid")) {	// ignore servioce.pid
+				continue;
+			}
+
+			String[] subkeys = key.split("\\.");
+			if (subkeys.length != 2) {
+				logger.debug("config '{}' should have the format 'name.configkey'", key);
+				continue;
+			}
+
+			String value = (String) config.get(key);
+			String name = subkeys[0].toLowerCase();
+			String property = subkeys[1].toLowerCase();
+
+			if (StringUtils.isBlank(value)) {
+				logger.trace("Config is empty: {}", property);
+				continue;
+			} else {
+				logger.trace("Processing config: {} = {}", property, value);
+			}
+
+			RrdDefConfig rrdDef = rrdDefs.get(name);
+			if (rrdDef == null) {
+				rrdDef = new RrdDefConfig(name);
+				rrdDefs.put(name, rrdDef);
+			}
+
+			if (property.equals("def")) {
+				rrdDef.setDef(value);
+			} else if (property.equals("archives")) {
+				rrdDef.addArchives(value);
+			} else if (property.equals("items")) {
+				rrdDef.addItems(value);
+			} else {
+				logger.warn("Unknown property {} : {}", property, value);
+			}
+
+		}
+
+		for (RrdDefConfig rrdDef : rrdDefs.values()) {
+			if (rrdDef.isValid()) {
+				logger.debug("Created {}", rrdDef.toString());
+			} else {
+				logger.info("Removing invalid defintion {}", rrdDef.toString());
+				rrdDefs.remove(rrdDef.name);
+			}
+		}
+	}
+
+	private class RrdArchiveDef {
+		public ConsolFun fcn;
+		public double xff;
+		public int steps, rows;
+
+		public String toString() {
+			StringBuilder sb = new StringBuilder(" " + fcn);
+			sb.append(" xff = ").append(xff);
+			sb.append(" steps = ").append(steps);
+			sb.append(" rows = ").append(rows);
+			return sb.toString();
+		}
+
+	}
+
+	private class RrdDefConfig {
+		public String name;
+		public DsType dsType;
+		public int heartbeat, step;
+		public double min, max;
+		public List<RrdArchiveDef> archives;
+		public List<String> itemNames;
+
+		private boolean isInitialized;
+
+		public RrdDefConfig(String name) {
+			this.name = name;
+			archives = new ArrayList<RrdArchiveDef>();
+			itemNames = new ArrayList<String>();
+			isInitialized = false;
+		}
+
+		public void setDef(String defString) {
+			String[] opts = defString.split(",");
+			if (opts.length != 5) { // check if correct number of parameters
+				logger.warn("invalid number of parameters {}: {}", name, defString);
+				return;
+			}
+
+			if (opts[0].equals("ABSOLUTE")) { // dsType
+				dsType = DsType.ABSOLUTE;
+			} else if (opts[0].equals("COUNTER")) {
+				dsType = DsType.COUNTER;
+			} else if (opts[0].equals("DERIVE")) {
+				dsType = DsType.DERIVE;
+			} else if (opts[0].equals("GAUGE")) {
+				dsType = DsType.GAUGE;
+			} else {
+				logger.warn("{}: dsType {} not supported", name, opts[0]);
+			}
+
+			heartbeat = Integer.parseInt(opts[1]);
+
+			if (opts[2].equals("U")) {
+				min = Double.NaN;
+			} else {
+				min = Double.parseDouble(opts[2]);
+			}
+
+			if (opts[3].equals("U")) {
+				max = Double.NaN;
+			} else {
+				max = Double.parseDouble(opts[3]);
+			}
+
+			step = Integer.parseInt(opts[4]);
+
+			isInitialized = true; // successfully initialized
+
+			return;
+		}
+
+		public void addArchives(String archivesString) {
+			String splitArchives[] = archivesString.split(":");
+			for (String archiveString: splitArchives) {
+				String[] opts = archiveString.split(",");
+				if (opts.length != 4) { // check if correct number of parameters
+					logger.warn("invalid number of parameters {}: {}", name, archiveString);
+					return;
+				}
+				RrdArchiveDef arc = new RrdArchiveDef();
+
+				if (opts[0].equals("AVERAGE")) {
+					arc.fcn = ConsolFun.AVERAGE;
+				} else if (opts[0].equals("MIN")) {
+					arc.fcn = ConsolFun.MIN;
+				} else if (opts[0].equals("MAX")) {
+					arc.fcn = ConsolFun.MAX;
+				} else if (opts[0].equals("LAST")) {
+					arc.fcn = ConsolFun.LAST;
+				} else if (opts[0].equals("FIRST")) {
+					arc.fcn = ConsolFun.FIRST;
+				} else if (opts[0].equals("TOTAL")) {
+					arc.fcn = ConsolFun.TOTAL;
+				} else {
+					logger.warn("{}: consolidation function  {} not supported", name, opts[0]);
+				}
+				arc.xff = Double.parseDouble(opts[1]);
+				arc.steps = Integer.parseInt(opts[2]);
+				arc.rows = Integer.parseInt(opts[3]);
+				archives.add(arc);
+			}
+		}
+
+		public void addItems(String itemsString) {
+			String splitItems[] = itemsString.split(",");
+			for (String item: splitItems) {
+				itemNames.add(item);
+			}
+		}
+
+		public boolean appliesTo(String item) {
+			return itemNames.contains(item);
+		}
+
+		public boolean isValid() { // a valid configuration must be initialized and contain at least one function
+			return (isInitialized && (archives.size()>0));
+		}
+
+		public ConsolFun getDefaultConsolFun() {
+			return archives.iterator().next().fcn;
+		}
+
+		public String toString() {
+			StringBuilder sb = new StringBuilder(name);
+			sb.append(" = ").append(dsType);
+			sb.append(" heartbeat = ").append(heartbeat);
+			sb.append(" min/max = ").append(min).append("/").append(max);
+			sb.append(" step = ").append(step);
+			sb.append(" ").append(archives.size()).append(" archives(s) = [");
+			for (RrdArchiveDef arc : archives) {
+				sb.append(arc.toString());
+			}
+			sb.append("] ");
+			sb.append(itemNames.size()).append(" items(s) = [");
+			for (String item : itemNames) {
+				sb.append(item).append(" ");
+			}
+			sb.append("]");
+			return sb.toString();
+		}
+	}
 }

@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.ebus.internal
+Ignore-Package: org.openhab.binding.ebus.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
+Bundle-Name: This is the eBus binding of the open Home Aut
+ omation Bus (openHAB)
+Bundle-SymbolicName: org.openhab.binding.ebus;singleton:=true
+Bundle-Version: 1.8.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: gnu.io;resolution:=optional,
+ org.apache.commons.lang,
+ org.codehaus.jackson,
+ org.codehaus.jackson.map,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-DocURL: http://www.openhab.org
+Service-Component: OSGI-INF/ebusbinding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

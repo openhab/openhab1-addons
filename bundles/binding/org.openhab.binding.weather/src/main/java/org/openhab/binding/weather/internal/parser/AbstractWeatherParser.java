@@ -13,9 +13,10 @@ import java.io.InputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.weather.internal.converter.Converter;
+import org.openhab.binding.weather.internal.converter.property.PressureTrendConverter;
 import org.openhab.binding.weather.internal.metadata.MetadataHandler;
 import org.openhab.binding.weather.internal.metadata.ProviderMappingInfo;
-import org.openhab.binding.weather.internal.model.Athmosphere;
+import org.openhab.binding.weather.internal.model.Atmosphere;
 import org.openhab.binding.weather.internal.model.Forecast;
 import org.openhab.binding.weather.internal.model.Precipitation;
 import org.openhab.binding.weather.internal.model.ProviderName;
@@ -130,9 +131,9 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 			temp.setCurrent(null);
 		}
 
-		Athmosphere athm = weather.getAthmosphere();
-		if (temp.getFeel() == null && temp.getCurrent() != null && athm.getHumidity() != null) {
-			Double humidex = UnitUtils.getHumidex(temp.getCurrent(), athm.getHumidity());
+		Atmosphere atm = weather.getAtmosphere();
+		if (temp.getFeel() == null && temp.getCurrent() != null && atm.getHumidity() != null) {
+			Double humidex = UnitUtils.getHumidex(temp.getCurrent(), atm.getHumidity());
 			temp.setFeel(humidex);
 		}
 
@@ -153,11 +154,11 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 			precip.setRain(null);
 		}
 
-		if (precip.getSnow() != null && precip.getSnow() == 0.0) {
-			precip.setSnow(null);
+		if (precip.getSnow() == null) {
+			precip.setSnow(0.0);
 		}
-		if (precip.getRain() != null && precip.getRain() == 0.0) {
-			precip.setRain(null);
+		if (precip.getRain() == null) {
+			precip.setRain(0.0);
 		}
 
 		CommonIdHandler.getInstance().setCommonId(weather);
@@ -168,16 +169,18 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 	 */
 	@Override
 	public void postProcess(Weather weather) throws Exception {
-		Double currentPressure = weather.getAthmosphere().getPressure();
-		if (currentPressure != null && weather.getForecast().size() > 0) {
-			Double fcPressure = weather.getForecast().get(0).getAthmosphere().getPressure();
-			if (fcPressure != null) {
-				if (fcPressure > currentPressure) {
-					weather.getAthmosphere().setPressureTrend("up");
-				} else if (fcPressure < currentPressure) {
-					weather.getAthmosphere().setPressureTrend("down");
-				} else {
-					weather.getAthmosphere().setPressureTrend("equal");
+		if (weather.getAtmosphere().getPressureTrend() == null) {
+			Double currentPressure = weather.getAtmosphere().getPressure();
+			if (currentPressure != null && weather.getForecast().size() > 0) {
+				Double fcPressure = weather.getForecast().get(0).getAtmosphere().getPressure();
+				if (fcPressure != null) {
+					if (fcPressure > currentPressure) {
+						weather.getAtmosphere().setPressureTrend(PressureTrendConverter.TREND_UP);
+					} else if (fcPressure < currentPressure) {
+						weather.getAtmosphere().setPressureTrend(PressureTrendConverter.TREND_DOWN);
+					} else {
+						weather.getAtmosphere().setPressureTrend(PressureTrendConverter.TREND_EQUAL);
+					}
 				}
 			}
 		}

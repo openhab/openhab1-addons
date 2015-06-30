@@ -46,7 +46,7 @@ public class ModbusUdpSlave extends ModbusIPSlave {
 			if (connection == null)
 				connection = new UDPMasterConnection(InetAddress.getByName(getHost()));
 		} catch (UnknownHostException e) {
-			logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
 			connection = null;
 			return false;
 		}
@@ -56,7 +56,7 @@ public class ModbusUdpSlave extends ModbusIPSlave {
 				connection.connect();
                                 ((ModbusUDPTransaction)transaction).setTerminal(connection.getTerminal());
 			} catch (Exception e) {
-				logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+				logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
 				return false;
 			}
 		return true;

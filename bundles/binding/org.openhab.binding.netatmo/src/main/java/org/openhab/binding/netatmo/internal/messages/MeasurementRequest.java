@@ -30,7 +30,7 @@ import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
  */
 public class MeasurementRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = "http://api.netatmo.net/api/getmeasure";
+	private static final String RESOURCE_URL = API_BASE_URL + "getmeasure";
 
 	/**
 	 * @param deviceId

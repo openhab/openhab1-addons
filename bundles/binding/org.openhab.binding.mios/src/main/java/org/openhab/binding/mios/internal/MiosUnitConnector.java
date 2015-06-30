@@ -9,7 +9,6 @@
 package org.openhab.binding.mios.internal;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
@@ -36,6 +35,7 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.AsyncHttpClientConfig.Builder;
@@ -48,15 +48,11 @@ import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
  * This code has two functions to perform:
  * <ul>
  * <li>Inbound <i>changes</i> from the MiOS Unit.<br>
- * Manages an internal thread to periodically poll the configured MiOS Unit and
- * timeout at the specified interval. All changes are internally transformed
- * from their original (JSON) form, and dispatched to the relevant parts of
- * openHAB.
+ * Manages an internal thread to periodically poll the configured MiOS Unit and timeout at the specified interval. All
+ * changes are internally transformed from their original (JSON) form, and dispatched to the relevant parts of openHAB.
  * <li>Outbound <i>commands</i> to the MiOS Unit.<br>
- * Exposes a method to transform & transmit openHAB Commands to the configured
- * MiOS Unit, in a non-blocking manner.<br>
- * Callers wishing to utilize this functionality use the
- * <code>invokeCommand</code> method.
+ * Exposes a method to transform & transmit openHAB Commands to the configured MiOS Unit, in a non-blocking manner.<br>
+ * Callers wishing to utilize this functionality use the <code>invokeCommand</code> method.
  * </ul>
  * 
  * @author Mark Clark
@@ -64,8 +60,7 @@ import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
  */
 public class MiosUnitConnector {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(MiosUnitConnector.class);
+	private static final Logger logger = LoggerFactory.getLogger(MiosUnitConnector.class);
 
 	private static final String ENCODING_CHARSET = "utf-8";
 
@@ -79,10 +74,10 @@ public class MiosUnitConnector {
 	private static final String DEVICE_URL = "http://%s:%d/data_request?id=action&DeviceNum=%d&serviceId=%s&action=%s";
 	private static final String DEVICE_URL_PARAMS = DEVICE_URL + "&%s";
 
-	private static final Pattern DEVICE_PATTERN = Pattern
-			.compile("(?<serviceName>.+)/"
-					+ "(?<serviceAction>.+)"
-					+ "\\(((?<serviceParam>[a-zA-Z]+[a-zA-Z0-9]*)(=(?<serviceValue>.+))?)?\\)");
+	private static final Pattern DEVICE_PATTERN = Pattern.compile("(?<serviceName>.+)/" + "(?<serviceAction>.+)"
+			+ "\\(((?<serviceParam>[a-zA-Z]+[a-zA-Z0-9]*)(=(?<serviceValue>.+))?)?\\)");
+
+	private static final Pattern ACTION_PATTERN = Pattern.compile("(?<serviceName>.+)/" + "(?<serviceAction>.+)");
 
 	// the MiOS instance and openHAB event publisher handles
 	private final MiosUnit unit;
@@ -93,10 +88,18 @@ public class MiosUnitConnector {
 	private Thread pollThread;
 	boolean running;
 
+	// Create a place to keep the last "status" attribute, for each Device, so we can compare incoming values for
+	// Duplicates (Devices & Scenes)
+	//
+	// The MiOS system will send duplicate values, so we need this data to avoid pumelling openHAB with unnecessary
+	// changes (and it can only be done here due to the async nature of openHAB store writes). This map is keyed by the
+	// DeviceId/SceneId form the MiOS system, which can be either a String, or an Integer.
+	private HashMap<String, Integer> deviceStatusCache = new HashMap<String, Integer>(100);
+	private HashMap<Integer, Integer> sceneStatusCache = new HashMap<Integer, Integer>(100);
+
 	/**
 	 * @param unit
-	 *            The host to connect to. Give a reachable hostname or IP
-	 *            address, without protocol or port
+	 *            The host to connect to. Give a reachable hostname or IP address, without protocol or port
 	 */
 	public MiosUnitConnector(MiosUnit unit, MiosBinding binding) {
 		logger.debug("Constructor: unit '{}', binding '{}'", unit, binding);
@@ -110,8 +113,7 @@ public class MiosUnitConnector {
 		// Use the JDK Provider for now, we're not looking for server-level
 		// scalability, and we'd like to lighten the load for folks wanting to
 		// run atop RPi units.
-		this.client = new AsyncHttpClient(new JDKAsyncHttpProvider(
-				builder.build()));
+		this.client = new AsyncHttpClient(new JDKAsyncHttpProvider(builder.build()));
 
 		pollCall = new LongPoll();
 		pollThread = new Thread(pollCall);
@@ -120,23 +122,20 @@ public class MiosUnitConnector {
 	/***
 	 * Check if the connection to the MiOS instance is active
 	 * 
-	 * @return true if an active connection to the MiOS instance exists, false
-	 *         otherwise
+	 * @return true if an active connection to the MiOS instance exists, false otherwise
 	 */
 	public boolean isConnected() {
 		return isRunning() && pollCall.isConnected();
 	}
 
 	/**
-	 * Attempts to create a connection to the MiOS host and begin listening for
-	 * updates over the async HTTP connection.
+	 * Attempts to create a connection to the MiOS host and begin listening for updates over the async HTTP connection.
 	 * 
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	public void open() throws IOException, InterruptedException,
-			ExecutionException {
+	public void open() throws IOException, InterruptedException, ExecutionException {
 		running = true;
 		pollThread.start();
 	}
@@ -181,24 +180,19 @@ public class MiosUnitConnector {
 		}
 	}
 
-	private void callDevice(DeviceBindingConfig config, Command command,
-			State state) throws TransformationException {
+	private void callDevice(DeviceBindingConfig config, Command command, State state) throws TransformationException {
 
-		logger.debug(
-				"callDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')",
-				new Object[] { config.toProperty(), command, state });
+		logger.debug("callDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')", new Object[] {
+				config.toProperty(), command, state });
 
 		String newCommand = config.transformCommand(command);
 		if (newCommand == null) {
-			logger.warn(
-					"callDevice: Command '{}' not supported, or missing command: mapping, for Item '{}'",
+			logger.warn("callDevice: Command '{}' not supported, or missing command: mapping, for Item '{}'",
 					command.toString(), config.getItemName());
 			return;
 		} else if (newCommand.equals("")) {
-			logger.trace(
-					"callDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
-					new Object[] { config.getItemName(), command.toString(),
-							config.toProperty() });
+			logger.trace("callDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
+					new Object[] { config.getItemName(), command.toString(), config.toProperty() });
 			return;
 		}
 
@@ -208,15 +202,14 @@ public class MiosUnitConnector {
 			try {
 				MiosUnit u = getMiosUnit();
 
-				String serviceName = matcher.group("serviceName");
+				String serviceName = DeviceBindingConfig.mapServiceAlias(matcher.group("serviceName"));
 				String serviceAction = matcher.group("serviceAction");
 				String serviceParam = matcher.group("serviceParam");
 				String serviceValue = matcher.group("serviceValue");
 
 				logger.debug(
 						"callDevice: decoded as serviceName '{}' serviceAction '{}' serviceParam '{}' serviceValue '{}'",
-						new Object[] { serviceName, serviceAction,
-								serviceParam, serviceValue });
+						new Object[] { serviceName, serviceAction, serviceParam, serviceValue });
 
 				// Perform any necessary bind-variable style transformations on
 				// the value, before we put it into the URL.
@@ -226,59 +219,68 @@ public class MiosUnitConnector {
 				// build the parameter section of the URL, encoding parameter
 				// names and values... trust no-one 8)
 				if (serviceParam != null) {
-					String p = URLEncoder
-							.encode(serviceParam, ENCODING_CHARSET)
-							+ '='
+					String p = URLEncoder.encode(serviceParam, ENCODING_CHARSET) + '='
 							+ URLEncoder.encode(serviceValue, ENCODING_CHARSET);
-					callMios(String.format(DEVICE_URL_PARAMS, u.getHostname(),
-							u.getPort(), config.getMiosId(),
+					callMios(String.format(DEVICE_URL_PARAMS, u.getHostname(), u.getPort(), config.getMiosId(),
 							URLEncoder.encode(serviceName, ENCODING_CHARSET),
-							URLEncoder.encode(serviceAction, ENCODING_CHARSET),
-							p));
+							URLEncoder.encode(serviceAction, ENCODING_CHARSET), p));
 				} else {
-					callMios(String.format(DEVICE_URL, u.getHostname(),
-							u.getPort(), config.getMiosId(),
+					callMios(String.format(DEVICE_URL, u.getHostname(), u.getPort(), config.getMiosId(),
 							URLEncoder.encode(serviceName, ENCODING_CHARSET),
 							URLEncoder.encode(serviceAction, ENCODING_CHARSET)));
 				}
 
 			} catch (UnsupportedEncodingException uee) {
-				logger.debug(
-						"Really, trust me, this won't happen ;)   exception='{}'",
-						uee);
+				logger.debug("Really, trust me, this won't happen ;)   exception='{}'", uee);
 			}
 		} else {
-			logger.error(
-					"callDevice: The parameter is in the wrong format.  BindingConfig '{}', UPnP Action '{}'",
+			logger.error("callDevice: The parameter is in the wrong format.  BindingConfig '{}', UPnP Action '{}'",
 					config, newCommand);
 		}
 
 	}
 
-	private void callScene(SceneBindingConfig config, Command command,
-			State state) throws TransformationException {
-		logger.debug("callScene: Need to remote-invoke Scene '{}'",
-				config.toProperty());
+	private void callScene(SceneBindingConfig config, Command command, State state) throws TransformationException {
+		logger.debug("callScene: Need to remote-invoke Scene '{}'", config.toProperty());
 
 		String newCommand = config.transformCommand(command);
 
 		if (newCommand != null) {
 			MiosUnit u = getMiosUnit();
-			callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(),
-					config.getMiosId()));
+			callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(), config.getMiosId()));
 		} else {
-			logger.warn(
-					"callScene: Command '{}' not supported, or missing command: declaration, for Item '{}'",
+			logger.warn("callScene: Command '{}' not supported, or missing command: declaration, for Item '{}'",
 					command.toString(), config.getItemName());
 		}
-
 	}
 
 	private void callMios(String url) {
 		logger.debug("callMios: Would like to fire off the URL '{}'", url);
 
 		try {
-			getAsyncHttpClient().prepareGet(url).execute();
+			@SuppressWarnings("unused")
+			Future<Integer> f = getAsyncHttpClient().prepareGet(url).execute(new AsyncCompletionHandler<Integer>() {
+				@Override
+				public Integer onCompleted(Response response) throws Exception {
+
+					// Yes, their content-type really does come back with just "xml", but we'll add "text/xml" for
+					// when/if they ever fix that bug...
+					if (!(response.getStatusCode() == 200 && ("text/xml".equals(response.getContentType())
+							|| "xml".equals(response.getContentType())))) {
+						logger.debug("callMios: Error in HTTP Response code {}, content-type {}:\n{}", new Object[] {
+								response.getStatusCode(), response.getContentType(),
+								response.hasResponseBody() ? response.getResponseBody() : "No Body" });
+					}
+					return response.getStatusCode();
+				}
+
+				@Override
+				public void onThrowable(Throwable t) {
+					logger.warn("callMios: Exception Throwable occurred fetching content: {}", t.getMessage(), t);
+				}
+			}
+
+			);
 
 			// TODO: Run it and walk away?
 			//
@@ -286,35 +288,92 @@ public class MiosUnitConnector {
 			// success/fail of the call, log details (etc) so things can be
 			// diagnosed.
 		} catch (Exception e) {
-			logger.debug(
-					"callMios: Exception Error occurred fetching content: {}",
-					e.getMessage(), e);
+			logger.warn("callMios: Exception Error occurred fetching content: {}", e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Request that a MiOS Scene be triggered.
+	 * 
+	 * Used by openHAB Action code, this method fires off the MiOS Scene associated with the Scene Item.
+	 * 
+	 * @param config
+	 *            A Scene [Item] Binding Configuration.
+	 */
+	public void invokeScene(SceneBindingConfig config) {
+
+		logger.debug("invokeScene: Invoking remote Scene '{}'", config.toProperty());
+
+		MiosUnit u = getMiosUnit();
+		callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(), config.getMiosId()));
+	}
+
+	/**
+	 * Request that a MiOS Device Action be triggered.
+	 * 
+	 * Used by openHAB Action code, this method fires off the MiOS Action associated with the Device Item.
+	 * 
+	 * @param config
+	 *            A Device [Item] Binding Configuration.
+	 * @param actionName
+	 *            a UPnP-style Action to fire off on the remote MiOS Unit.
+	 * @param params
+	 *            a NV-Pair style list of parameters to be used by the Action call.
+	 */
+	public void invokeAction(DeviceBindingConfig config, String actionName, List<Entry<String, Object>> params) {
+		Matcher matcher = ACTION_PATTERN.matcher(actionName);
+		if (matcher.matches()) {
+			try {
+				MiosUnit u = getMiosUnit();
+
+				String serviceName = DeviceBindingConfig.mapServiceAlias(matcher.group("serviceName"));
+				String serviceAction = matcher.group("serviceAction");
+
+				if (params != null) {
+					String p = "";
+
+					for (Entry<String, Object> entry : params) {
+						if (p.length() != 0) {
+							p += '&';
+						}
+
+						p += URLEncoder.encode(entry.getKey(), ENCODING_CHARSET) + '='
+								+ URLEncoder.encode(entry.getValue().toString(), ENCODING_CHARSET);
+					}
+
+					callMios(String.format(DEVICE_URL_PARAMS, u.getHostname(), u.getPort(), config.getMiosId(),
+							URLEncoder.encode(serviceName, ENCODING_CHARSET),
+							URLEncoder.encode(serviceAction, ENCODING_CHARSET), p));
+				} else {
+					callMios(String.format(DEVICE_URL, u.getHostname(), u.getPort(), config.getMiosId(),
+							URLEncoder.encode(serviceName, ENCODING_CHARSET),
+							URLEncoder.encode(serviceAction, ENCODING_CHARSET)));
+				}
+
+			} catch (UnsupportedEncodingException uee) {
+				logger.debug("Really, trust me, this won't happen ;)   exception='{}'", uee);
+			}
 		}
 	}
 
 	/**
 	 * Request a Command be delivered to the MiOS Unit under control.
 	 * <p>
-	 * The MiOS Binding uses this call to deliver "single valued" openHAB
-	 * Commands to the target MiOS Unit.
+	 * The MiOS Binding uses this call to deliver "single valued" openHAB Commands to the target MiOS Unit.
 	 * <p>
-	 * Configurable transformations, defined at the BindingConfig level, are
-	 * used to transform this openHAB Command into the specific form required by
-	 * the MiOS Unit.
+	 * Configurable transformations, defined at the BindingConfig level, are used to transform this openHAB Command into
+	 * the specific form required by the MiOS Unit.
 	 * <p>
-	 * openHAB Commands can only be targeted to Device and Scene Bindings, all
-	 * other requests will cause a warning to be logged.
+	 * openHAB Commands can only be targeted to Device and Scene Bindings, all other requests will cause a warning to be
+	 * logged.
 	 */
-	public void invokeCommand(MiosBindingConfig config, Command command,
-			State state) throws Exception {
+	public void invokeCommand(MiosBindingConfig config, Command command, State state) throws Exception {
 		if (config instanceof SceneBindingConfig) {
 			callScene((SceneBindingConfig) config, command, state);
 		} else if (config instanceof DeviceBindingConfig) {
 			callDevice((DeviceBindingConfig) config, command, state);
 		} else {
-			logger.warn(
-					"Unhandled command execution for Command ('{}') on binding '{}'",
-					command, config);
+			logger.warn("Unhandled command execution for Command ('{}') on binding '{}'", command, config);
 		}
 	}
 
@@ -333,17 +392,14 @@ public class MiosUnitConnector {
 	/**
 	 * MiOS Poll code.
 	 * 
-	 * This code will stand up a thread to serially poll the target MiOS Unit.
-	 * The initial poll request will return the full content from the MiOS unit.
-	 * Subsequent calls are requested to only return the incremental/changed
-	 * contents.
+	 * This code will stand up a thread to serially poll the target MiOS Unit. The initial poll request will return the
+	 * full content from the MiOS unit. Subsequent calls are requested to only return the incremental/changed contents.
 	 * 
-	 * If a processing error (Timeout, etc) is detected, then a full content
-	 * poll is again initiated (since things can change during the interval)
+	 * If a processing error (Timeout, etc) is detected, then a full content poll is again initiated (since things can
+	 * change during the interval)
 	 * 
-	 * Upon successful polling, a series of calls are made to openHAB to push
-	 * the data to the respective bindings, so that data values will change
-	 * within the user's Rules (etc).
+	 * Upon successful polling, a series of calls are made to openHAB to push the data to the respective bindings, so
+	 * that data values will change within the user's Rules (etc).
 	 * 
 	 * @author Mark Clark
 	 * @since 1.6.0
@@ -381,16 +437,13 @@ public class MiosUnitConnector {
 
 				// Use a timeout on the MiOS URL call that's about 2/3 of what
 				// the connection timeout is.
-				int t = Math.min(c.getIdleConnectionTimeoutInMs(),
-						unit.getTimeout()) / 500 / 3;
+				int t = Math.min(c.getIdleConnectionTimeoutInMs(), unit.getTimeout()) / 500 / 3;
 				int d = unit.getMinimumDelay();
 
-				return String.format(Locale.US, STATUS2_INCREMENTAL_URL,
-						unit.getHostname(), unit.getPort(), loadTime,
+				return String.format(Locale.US, STATUS2_INCREMENTAL_URL, unit.getHostname(), unit.getPort(), loadTime,
 						dataVersion, new Integer(t), new Integer(d));
 			} else {
-				return String.format(Locale.US, STATUS2_URL,
-						unit.getHostname(), unit.getPort());
+				return String.format(Locale.US, STATUS2_URL, unit.getHostname(), unit.getPort());
 			}
 		}
 
@@ -416,28 +469,23 @@ public class MiosUnitConnector {
 			try {
 				getMiosBinding().postPropertyUpdate(p, value, incremental);
 			} catch (Exception e) {
-				logger.error(
-						"Exception '{}' raised pushing property '{}' value '{}' into openHAB",
+				logger.error("Exception '{}' raised pushing property '{}' value '{}' into openHAB",
 						new Object[] { e.getMessage(), p, value, e });
 			}
 		}
 
-		private void processSystem(Map<String, Object> system,
-				boolean incremental) {
+		private void processSystem(Map<String, Object> system, boolean incremental) {
 			for (Map.Entry<String, Object> entry : system.entrySet()) {
 				String key = entry.getKey();
 				Object value = entry.getValue();
 
-				if (!key.equals("devices") && !key.equals("scenes")
-						&& !key.equals("rooms") && !key.equals("sections")) {
-					if (value instanceof String || value instanceof Integer
-							|| value instanceof Double
+				if (!key.equals("devices") && !key.equals("scenes") && !key.equals("rooms") && !key.equals("sections")) {
+					if (value instanceof String || value instanceof Integer || value instanceof Double
 							|| value instanceof Boolean) {
 						// Skip over Lua code blocks and
 						// fix [known] date-time values on the way through, so
 						// they use the native type.
-						if (key.equals("DeviceSync") || key.equals("LoadTime")
-								|| key.equals("zwave_heal")
+						if (key.equals("DeviceSync") || key.equals("LoadTime") || key.equals("zwave_heal")
 								|| key.equals("TimeStamp")) {
 							value = fixTimestamp(value);
 						}
@@ -452,9 +500,7 @@ public class MiosUnitConnector {
 							continue;
 						}
 
-						logger.debug(
-								"processSystem: skipping key={}, class={}",
-								key, value.getClass());
+						logger.debug("processSystem: skipping key={}, class={}", key, value.getClass());
 					}
 				}
 			}
@@ -486,63 +532,81 @@ public class MiosUnitConnector {
 				}
 
 				// Enumerate Device Attributes
-				for (Map.Entry<String, Object> da : device.entrySet()) {
+				for (Entry<String, Object> da : device.entrySet()) {
 					String key = da.getKey();
 					Object value = da.getValue();
 
-					if (value instanceof String || value instanceof Integer
-							|| value instanceof Double
+					if (value instanceof String || value instanceof Integer || value instanceof Double
 							|| value instanceof Boolean) {
 						if (key.equals("time_created")) {
 							// fix [known] date-time values on the way through,
-							// so
-							// they use the native type.
+							// so they use the native type.
 							value = fixTimestamp(value);
+						} else if (key.equals("id")) {
+							// Skip "id", since it's done at the end.
+							continue;
 						}
 
-						// TODO: Consider putting the Device's ID attribute last
-						// in the list. When multiple value changes are being
-						// made, people may want something to indicate
-						// "these are the last" [bundle] of changes for this
-						// device.
-						//
-						// Otherwise they'll come out in JSON order
-						// (unpredictable) which may not be the order they're
-						// normally changed at the MiOS end. Making this last
-						// would be like having an "end of [device] transaction"
-						// marker.
+						boolean force = false;
+						boolean statusAttr = key.equals("status");
 
-						String property = "device:" + deviceId + '/'
-								+ da.getKey();
-						publish(property, value, incremental);
+						// Handle a bug in MiOS's JSON, where they send the STATUS Attribute even if it hasn't
+						// changed. This resulted in a lot of unnecessary writes to openHAB. We can do this
+						// because this thread is the single-source of values for the STATUS attribute.
+						if (statusAttr) {
+							Integer lastValue = deviceStatusCache.get(deviceId);
+							if (!value.equals(lastValue)) {
+								deviceStatusCache.put(deviceId, (Integer) value);
+								force = true;
+							}
+						}
+
+						if (!statusAttr || force) {
+							String property = "device:" + deviceId + '/' + key;
+							publish(property, value, incremental);
+						}
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
 						// the system.
-						if (key.equals("states") || key.equals("ControlURLs")
-								|| key.equals("Jobs") || key.equals("tooltip")) {
+						if (key.equals("states") || key.equals("ControlURLs") || key.equals("Jobs")
+								|| key.equals("tooltip")) {
 							continue;
 						}
 
-						logger.debug(
-								"processDevices: skipping key={}, class={}",
-								key, value.getClass());
+						logger.debug("processDevices: skipping key={}, class={}", key, value.getClass());
 					}
 				}
 
 				// Enumerate Device State Variables
 				List<Object> deviceStates = getList(device, "states");
+				boolean variablesProcessed = false;
 
 				for (Object ds : deviceStates) {
 					@SuppressWarnings("unchecked")
 					Map<String, Object> state = (Map<String, Object>) ds;
-					String var = (String) state.get("service") + "/"
-							+ (String) state.get("variable");
+					String var = (String) state.get("service") + "/" + (String) state.get("variable");
 					String property = "device:" + deviceId + "/service/" + var;
 
 					// Can be String or Integer
 					Object value = (Object) state.get("value");
 					publish(property, value, incremental);
+					variablesProcessed = true;
+				}
+
+				// The Device's ID attribute is last in the list and only
+				// sent when at-least-one UPnP State Variable has been changed.
+				//
+				// This is done to allow folks something to "trigger" off in a
+				// rule if they have cross-Item validation dependencies.
+				//
+				// Otherwise they'll come out in JSON order
+				// (unpredictable) which may not be the order they're
+				// normally changed at the MiOS end. Making this last
+				// would be like having an "end of [device] transaction"
+				// marker.
+				if (variablesProcessed) {
+					publish("device:" + deviceId + "/id", deviceId, incremental);
 				}
 			}
 		}
@@ -562,43 +626,51 @@ public class MiosUnitConnector {
 				Integer sceneId = (Integer) scene.get("id");
 
 				// Enumerate Scene Attributes
-				for (Map.Entry<String, Object> da : scene.entrySet()) {
+				for (Entry<String, Object> da : scene.entrySet()) {
 					String key = da.getKey();
-
 					Object value = da.getValue();
 
-					if (value instanceof String || value instanceof Integer
-							|| value instanceof Double
+					if (value instanceof String || value instanceof Integer || value instanceof Double
 							|| value instanceof Boolean) {
 						if (key.equals("Timestamp")) {
 							// fix [known] date-time values on the way through,
-							// so
-							// they use the native type.
+							// so they use the native type.
 							value = fixTimestamp(value);
 
 							// Fix the key so it's consistent with the one used
-							// at
-							// the System level.
+							// at the System level.
 							// TODO: Document this.
 							key = "TimeStamp";
 						}
 
-						String property = "scene:" + sceneId + "/" + key;
-						publish(property, value, incremental);
+						boolean force = false;
+						boolean statusAttr = key.equals("status");
+
+						// Handle a bug in MiOS's JSON, where they send the STATUS Attribute even if it hasn't
+						// changed. This resulted in a lot of unnecessary writes to openHAB. We can do this
+						// because this thread is the single-source of values for the STATUS attribute.
+						if (statusAttr) {
+							Integer lastValue = sceneStatusCache.get(sceneId);
+							if (!value.equals(lastValue)) {
+								sceneStatusCache.put(sceneId, (Integer) value);
+								force = true;
+							}
+						}
+
+						if (!statusAttr || force) {
+							String property = "scene:" + sceneId + "/" + key;
+							publish(property, value, incremental);
+						}
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
 						// the system.
-						if (key.equals("timers") || key.equals("triggers")
-								|| key.equals("groups")
-								|| key.equals("tooltip") || key.equals("Jobs")
-								|| key.equals("lua")) {
+						if (key.equals("timers") || key.equals("triggers") || key.equals("groups")
+								|| key.equals("tooltip") || key.equals("Jobs") || key.equals("lua")) {
 							continue;
 						}
 
-						logger.debug(
-								"processScenes: skipping key={}, class={}",
-								key, value.getClass());
+						logger.debug("processScenes: skipping key={}, class={}", key, value.getClass());
 					}
 				}
 			}
@@ -612,8 +684,7 @@ public class MiosUnitConnector {
 			// TODO: Implement
 		}
 
-		private void processResponse(Map<String, Object> response,
-				boolean incremental) {
+		private void processResponse(Map<String, Object> response, boolean incremental) {
 
 			Integer lt = (Integer) response.get("LoadTime");
 			Integer dv = (Integer) response.get("DataVersion");
@@ -627,11 +698,8 @@ public class MiosUnitConnector {
 
 				logger.debug(
 						"processResponse: success! loadTime={}, dataVersion={} devices({}) scenes({}) rooms({}) sections({})",
-						new Object[] { lt, dv,
-								Integer.toString(devices.size()),
-								Integer.toString(scenes.size()),
-								Integer.toString(rooms.size()),
-								Integer.toString(sections.size()) });
+						new Object[] { lt, dv, Integer.toString(devices.size()), Integer.toString(scenes.size()),
+								Integer.toString(rooms.size()), Integer.toString(sections.size()) });
 
 				processDevices(devices, incremental);
 				processScenes(scenes, incremental);
@@ -645,8 +713,7 @@ public class MiosUnitConnector {
 				this.dataVersion = dv;
 				this.failures = 0;
 			} else {
-				throw new RuntimeException(
-						"Processing error on MiOS JSON Response - malformed");
+				throw new RuntimeException("Processing error on MiOS JSON Response - malformed");
 			}
 		}
 
@@ -656,8 +723,7 @@ public class MiosUnitConnector {
 
 		// TODO: Need to make this stream-oriented, so we don't have to keep the
 		// entire (large) MiOS JSON string in memory at the same time as the
-		// parsed
-		// JSON result.
+		// parsed JSON result.
 		@SuppressWarnings("unchecked")
 		private Map<String, Object> readJson(String json) {
 			if (json == null)
@@ -690,18 +756,15 @@ public class MiosUnitConnector {
 					// configuration indicates to do so, or if we get an error.
 					MiosUnit unit = getMiosUnit();
 					int errorCount = unit.getErrorCount();
-					boolean force = (loopCount == 0l) || (errorCount != 0)
-							&& (failures != 0)
+					boolean force = (loopCount == 0l) || (errorCount != 0) && (failures != 0)
 							&& ((failures % errorCount) == 0);
 
 					boolean incremental = (!force && loadTime != null && dataVersion != null);
 					String uri = getUri(incremental);
 
-					logger.debug("run: URI Built was '{}' loop '{}'", uri,
-							loopCount);
+					logger.debug("run: URI Built was '{}' loop '{}'", uri, loopCount);
 
-					Future<Response> f = getAsyncHttpClient().prepareGet(uri)
-							.execute();
+					Future<Response> f = getAsyncHttpClient().prepareGet(uri).execute();
 					Response r = (Response) f.get();
 
 					// Force the Response Charset to be UTF-8, since MiOS isn't setting
@@ -727,8 +790,7 @@ public class MiosUnitConnector {
 					this.failures++;
 					logger.debug(
 							"run: Exception Error occurred fetching/processing content: {},{}.  Total failures ({})",
-							new Object[] { e.getMessage(), e,
-									Integer.toString(failures) });
+							new Object[] { e.getMessage(), e, Integer.toString(failures) });
 
 					// TODO: Make the pause configurable and/or add a backoff
 					// mechanism.
@@ -742,8 +804,7 @@ public class MiosUnitConnector {
 				}
 			} while (isRunning());
 
-			logger.info("run: Shutting down MiOS Polling thread.  Unit={}",
-					getMiosUnit().getName());
+			logger.info("run: Shutting down MiOS Polling thread.  Unit={}", getMiosUnit().getName());
 			connected = false;
 		}
 	}

@@ -176,7 +176,7 @@ public class DropboxSynchronizer implements ManagedService {
 	 * @throws DbxException if there are technical or application level errors 
 	 * in the Dropbox communication
 	 * 
-	 * @see <a href="http://code.google.com/p/openhab/wiki/DropboxIOBundle">openHAB Dropbox Wiki</a>
+	 * @see <a href="https://github.com/openhab/openhab/wiki/Dropbox-IO">openHAB Dropbox IO Wiki</a>
 	 */
 	public void startAuthentication() throws DbxException {
 		DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);
@@ -198,7 +198,7 @@ public class DropboxSynchronizer implements ManagedService {
 	 * @throws DbxException if there are technical or application level errors 
 	 * in the Dropbox communication
 	 * 
-	 * @see <a href="http://code.google.com/p/openhab/wiki/DropboxIOBundle">openHAB Dropbox Wiki</a>
+	 * @see <a href="https://github.com/openhab/openhab/wiki/Dropbox-IO">openHAB Dropbox IO Wiki</a>
 	 */
 	public void finishAuthentication(String code) throws DbxException {
 		DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(requestConfig, appInfo);

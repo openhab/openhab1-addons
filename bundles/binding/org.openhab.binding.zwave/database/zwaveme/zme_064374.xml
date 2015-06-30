@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_064374</Model>
+	<Label lang="en">Wall Plug Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Set LED indication mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Night mode</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic switch off</Label>
+			<Help lang="en"><![CDATA[If not zero, automatically switch off after a user defined time]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Function of RF off command</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch ON</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off else switch off</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines how to interpret RF Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state after power cycle</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No, turn off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes (Default)</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines if the switch should restore switch state to the last state prior to device power off (power cycle).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Energy consumption</Label>
+			<Minimum>0</Minimum>
+			<Maximum>1800</Maximum>
+			<Help lang="en"><![CDATA[Specify the consumption of the load in watts, for the calculation of power consumption. Max load 1800 W.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Off Color</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>22</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">On Color</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en"><![CDATA[Send Reports on switch state change]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 2</Label>
+			<Help lang="en"><![CDATA[Controlled by buttons]]></Help>
+		</Group>
+	</Associations>
+</Product>
+

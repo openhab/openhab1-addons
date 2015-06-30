@@ -84,6 +84,16 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	 */
 	private String valueType = ModbusBindingProvider.VALUE_TYPE_UINT16;
 
+	/**
+	 * A multiplier for the raw incoming data
+	 * @note rawMultiplier can also be used for divisions, by simply
+	 * setting the value smaller than zero.
+	 * 
+	 * E.g.:
+	 * - data/100 ... rawDataMultiplier=0.01
+	 */
+	private double rawDataMultiplier = 1.0;
+
 	private Object storage;
 	protected ModbusTransaction transaction = null; 
 
@@ -203,10 +213,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		transaction.setRequest(request);
 
 		try {
-			logger.debug("ModbusSlave: FC" +request.getFunctionCode()+" ref=" + writeRegister + " value=" + newValue.getValue());				
+			logger.debug("ModbusSlave: FC{} ref={} value={}", 
+					request.getFunctionCode(), writeRegister, newValue.getValue());
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave: {}", e.getMessage());
 			return;
 		}
 	}
@@ -232,10 +243,10 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		request.setUnitID(getId());
 		transaction.setRequest(request);
 		try {
-			logger.debug("ModbusSlave: FC05 ref=" + writeRegister + " value=" + b);				
+			logger.debug("ModbusSlave: FC05 ref={} value={}", writeRegister, b);
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave:{}", e.getMessage());
 			return;
 		}
 	}
@@ -323,7 +334,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		try {
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave:{}", e.getMessage());
 			return null;
 		}
 
@@ -375,4 +386,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		this.valueType = valueType;
 	}
 
+	void setRawDataMultiplier(double value) {
+		this.rawDataMultiplier = value;
+	}
+
+	double getRawDataMultiplier() {
+		return rawDataMultiplier;
+	}
 }

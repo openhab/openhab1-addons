@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB REST libraries Bundle
 Bundle-SymbolicName: org.openhab.io.rest.lib
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
@@ -10,19 +10,16 @@ Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/jackson-mapper-asl-1.9.2.jar,
  lib/jackson-xc-1.9.2.jar,
  lib/asm-3.1.jar,
- lib/jersey-client-1.17.1.jar,
- lib/jersey-json-1.17.1.jar,
- lib/jersey-server-1.17.1.jar,
- lib/jersey-servlet-1.17.1.jar,
- lib/jettison-1.1.jar,
- lib/jersey-core-1.17.1.jar,
+ lib/jersey-core-1.18.1.jar,
+ lib/jersey-json-1.18.1.jar,
+ lib/jersey-server-1.18.1.jar,
+ lib/jersey-servlet-1.18.1.jar,
  lib/jsr311-api-1.1.1.jar,
- lib/atmosphere-compat-jbossweb-2.0.1.jar,
- lib/atmosphere-compat-tomcat-2.0.1.jar,
- lib/atmosphere-compat-tomcat7-2.0.1.jar,
- lib/atmosphere-annotations-2.0.9.jar,
- lib/atmosphere-jersey-2.0.9.jar,
- lib/atmosphere-runtime-2.0.9.jar
+ lib/atmosphere-runtime-2.2.5.jar,
+ lib/atmosphere-annotations-2.2.5.jar,
+ lib/atmosphere-jersey-2.2.5.jar,
+ lib/jersey-client-1.18.1.jar,
+ lib/jettison-1.1.jar
 Import-Package: com.sun.jersey.api.core,
  com.sun.jersey.api.json,
  com.sun.jersey.core.osgi,
@@ -38,13 +35,119 @@ Import-Package: com.sun.jersey.api.core,
  org.osgi.framework,
  org.slf4j
 DynamicImport-Package: *
-Export-Package: com.sun.jersey.api.client,com.sun.jersey.api.core,com.
- sun.jersey.api.core.servlet,com.sun.jersey.api.json,com.sun.jersey.co
- re.osgi,com.sun.jersey.core.util,com.sun.jersey.spi.container,javax.w
- s.rs,javax.ws.rs.core,javax.ws.rs.ext,org.atmosphere,org.atmosphere.a
- nnotation,org.atmosphere.cache,org.atmosphere.cpr,org.atmosphere.jers
- ey,org.atmosphere.util,org.codehaus.jackson;version="1.9.2",org.codeh
- aus.jackson.annotate;version="1.9.2",org.codehaus.jackson.map;version
- ="1.9.2",org.codehaus.jackson.map.annotate;version="1.9.2",org.codeha
- us.jackson.type;version="1.9.2"
+Export-Package: com.sun.jersey.api.client;
+  uses:="com.sun.jersey.core.spi.component,
+   new com.sun.jersey.api.client,
+   com.sun.jersey.core.header,
+   com.sun.jersey.api.client.filter,
+   com.sun.jersey.api.client.async,
+   com.sun.jersey.core.util,
+   com.sun.jersey.core.spi.component.ioc,
+   com.sun.jersey.core.spi.factory,
+   com.sun.jersey.spi,
+   com.sun.jersey.client.proxy,
+   com.sun.jersey.api.client.config,
+   javax.ws.rs.ext,
+   javax.ws.rs.core,
+   com.sun.jersey.spi.inject,
+   com.sun.jersey.client.impl,
+   com.sun.jersey.client.impl.async",
+ com.sun.jersey.api.core;
+  uses:="com.sun.jersey.spi.container,
+   com.sun.jersey.server.impl.application,
+   javax.ws.rs.core,
+   com.sun.jersey.api.representation,
+   com.sun.jersey.core.spi.scanning,
+   com.sun.jersey.core.util,
+   com.sun.jersey.api.model",
+ com.sun.jersey.api.core.servlet;uses:="javax.servlet,com.sun.jersey.api.core",
+ com.sun.jersey.api.json;
+  uses:="org.codehaus.jackson.map,
+   org.codehaus.jackson,
+   new com.sun.jersey.api.json,
+   javax.xml.bind",
+ com.sun.jersey.core.osgi;uses:="org.osgi.framework,com.sun.jersey.core.spi.scanning",
+ com.sun.jersey.core.util;uses:="javax.ws.rs.core,javax.xml.parsers",
+ com.sun.jersey.spi.container;
+  uses:="com.sun.jersey.api.container,
+   com.sun.jersey.core.spi.component,
+   com.sun.jersey.spi,
+   com.sun.jersey.core.header,
+   javax.ws.rs.ext,
+   javax.ws.rs.core,
+   com.sun.jersey.api.representation,
+   javax.ws.rs,
+   com.sun.jersey.api.core,
+   com.sun.jersey.spi.monitoring,
+   com.sun.jersey.spi.dispatch,
+   com.sun.jersey.core.util,
+   com.sun.jersey.server.impl.inject,
+   com.sun.jersey.api.model,
+   com.sun.jersey.core.spi.component.ioc",
+ javax.ws.rs;uses:="javax.ws.rs.core",
+ javax.ws.rs.core,
+ javax.ws.rs.ext;uses:="javax.ws.rs.core",
+ org.atmosphere;uses:="org.atmosphere.cpr",
+ org.atmosphere.annotation;
+  uses:="javax.servlet,
+   org.slf4j,
+   org.atmosphere.cpr,
+   org.atmosphere.handler",
+ org.atmosphere.cache;uses:="org.atmosphere.cpr",
+ org.atmosphere.cpr;
+  uses:="org.slf4j,
+   org.atmosphere.interceptor,
+   javax.servlet.http,
+   org.atmosphere.websocket,
+   org.atmosphere.handler,
+   org.atmosphere.util.annotation,
+   javax.servlet,
+   org.atmosphere.di,
+   new org.atmosphere.cpr,
+   org.atmosphere.util,
+   org.atmosphere.cache",
+ org.atmosphere.jersey;
+  uses:="com.sun.jersey.core.spi.component,
+   org.atmosphere.annotation,
+   com.sun.jersey.spi,
+   org.slf4j,
+   com.sun.jersey.spi.container,
+   javax.servlet.http,
+   org.atmosphere.cpr,
+   javax.ws.rs.core,
+   com.sun.jersey.spi.inject,
+   com.sun.jersey.api.core,
+   com.sun.jersey.api,
+   new org.atmosphere.jersey,
+   com.sun.jersey.api.model",
+ org.atmosphere.util;
+  uses:="org.slf4j,
+   javax.servlet.http,
+   org.atmosphere.cpr,
+   javax.servlet",
+ org.codehaus.jackson;version="1.9.2";
+  uses:="org.codehaus.jackson.io,
+   org.codehaus.jackson.type,
+   org.codehaus.jackson.format,
+   org.codehaus.jackson.sym,
+   org.codehaus.jackson.util",
+ org.codehaus.jackson.annotate;version="1.9.2",
+ org.codehaus.jackson.map;version="1.9.2";
+  uses:="org.codehaus.jackson.io,
+   org.codehaus.jackson.map.introspect,
+   org.codehaus.jackson.type,
+   org.codehaus.jackson.map.type,
+   org.codehaus.jackson,
+   org.codehaus.jackson.annotate,
+   org.codehaus.jackson.map.annotate,
+   org.codehaus.jackson.map.ser,
+   org.codehaus.jackson.map.jsontype,
+   org.codehaus.jackson.map.util,
+   org.codehaus.jackson.node,
+   org.codehaus.jackson.map.jsontype.impl,
+   org.codehaus.jackson.schema,
+   org.codehaus.jackson.format,
+   org.codehaus.jackson.map.deser",
+ org.codehaus.jackson.map.annotate;version="1.9.2",
+ org.codehaus.jackson.type;version="1.9.2"
 Require-Bundle: javax.servlet

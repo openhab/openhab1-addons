@@ -8,11 +8,16 @@
  */
 package org.openhab.io.rest.internal.filter;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener.CacheEntry;
@@ -33,12 +38,12 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
 	private static final Logger logger = LoggerFactory.getLogger(DuplicateBroadcastProtectionFilter.class);
 	
 	@Override
-	public BroadcastAction filter(Object arg0, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+	public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, Object originalMessage, Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		
 		try {	
@@ -50,36 +55,37 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
 			}
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return new BroadcastAction(ACTION.ABORT,  message);
 		} 
 		
 	}
 	
-	private boolean isDoubleBroadcast(HttpServletRequest request, Object responseEntity){
-		String clientId = request.getHeader("X-Atmosphere-tracking-id");
-		
+	private boolean isDoubleBroadcast(HttpServletRequest request,
+			Object responseEntity) throws JsonGenerationException,
+			JsonMappingException, IOException {
+	
+		String clientId = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRACKING_ID);
+
 		// return false if the X-Atmosphere-tracking-id is not set
-		if(clientId == null || clientId.isEmpty()){
+		if (clientId == null || clientId.isEmpty()) {
 			return false;
 		}
-		try{
-			CacheEntry entry = ResourceStateChangeListener.getCachedEntries().put(clientId, new CacheEntry(responseEntity));
-			//there was an existing cached entry, see if its the same
-			if(entry != null){
-				ObjectMapper mapper = new ObjectMapper();
-				//cached data
-				String firedResponse =  mapper.writeValueAsString(entry.getData()); 
-				//new data
-				String responseValue =  mapper.writeValueAsString(responseEntity);
-				//the same ?
-	            if(responseValue.equals(firedResponse)) {
-	            	return true;
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Could not check if double broadcast",e);
-		} 
-        return false;
+
+		CacheEntry entry = ResourceStateChangeListener.getCachedEntries().put(
+				clientId, new CacheEntry(responseEntity));
+		// there was an existing cached entry, see if its the same
+		if (entry != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			// cached data
+			final String firedResponse = mapper.writeValueAsString(entry.getData());
+			// new data
+			final String responseValue = mapper.writeValueAsString(responseEntity);
+			// the same ?
+			return responseValue.equals(firedResponse); 
+		}
+
+		return false;
 	}
+
 }

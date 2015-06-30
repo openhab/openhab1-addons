@@ -51,7 +51,7 @@ public class CULManager {
 	 * @throws CULDeviceException
 	 */
 	public static CULHandler getOpenCULHandler(String deviceName, CULMode mode) throws CULDeviceException {
-		return getOpenCULHandler(deviceName, mode, null);
+		return getOpenCULHandler(deviceName, mode, new HashMap<String, Object>());
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class CULManager {
 
 			if (openDevices.containsKey(deviceName)) {
 				CULHandler handler = openDevices.get(deviceName);
-				if (handler.getCULMode() == mode) {
+				if ((handler.getCULMode() == mode)  && (handler.arePropertiesEqual(properties))){
 					logger.debug("Device " + deviceName + " is already open in mode " + mode.toString()
 							+ ", returning already openend handler");
 					return handler;

@@ -12,7 +12,7 @@
 <feature
       id="org.openhab.designer.feature"
       label="openHAB Designer"
-      version="1.7.0.qualifier"
+      version="1.8.0.qualifier"
       provider-name="openHAB.org"
       plugin="org.openhab.designer.core">
 
@@ -263,7 +263,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+         
    <plugin
          id="org.openhab.core.persistence"
          download-size="0"
@@ -355,15 +355,22 @@
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
-           id="org.openhab.action.openwebif"
-           download-size="0"
-           install-size="0"
-           version="0.0.0"
-           unpack="false"/>
+   <plugin
+         id="org.openhab.action.openwebif"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.openhab.action.astro"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.tinkerforge"
          download-size="0"
          install-size="0"
          version="0.0.0"

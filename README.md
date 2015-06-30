@@ -1,3 +1,5 @@
+[![Build Status](https://openhab-ci.innoq.io/jenkins/buildStatus/icon?job=openhab)](https://openhab-ci.innoq.io/jenkins/job/openhab/)
+
 ## Introduction
 
 The open Home Automation Bus (openHAB) project aims at providing a universal integration platform for all things around home automation. It is a pure Java solution, fully based on OSGi. The Equinox OSGi runtime and Jetty as a web server build the core foundation of the runtime.

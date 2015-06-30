@@ -19,15 +19,21 @@ import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcube.MaxCubeBindingProvider;
+import org.openhab.binding.maxcube.internal.exceptions.IncompleteMessageException;
+import org.openhab.binding.maxcube.internal.exceptions.IncorrectMultilineIndexException;
+import org.openhab.binding.maxcube.internal.exceptions.MessageIsWaitingException;
+import org.openhab.binding.maxcube.internal.exceptions.NoMessageAvailableException;
+import org.openhab.binding.maxcube.internal.exceptions.UnprocessableMessageException;
+import org.openhab.binding.maxcube.internal.exceptions.UnsupportedMessageTypeException;
 import org.openhab.binding.maxcube.internal.message.C_Message;
 import org.openhab.binding.maxcube.internal.message.Configuration;
 import org.openhab.binding.maxcube.internal.message.Device;
 import org.openhab.binding.maxcube.internal.message.DeviceInformation;
-import org.openhab.binding.maxcube.internal.message.H_Message;
 import org.openhab.binding.maxcube.internal.message.HeatingThermostat;
 import org.openhab.binding.maxcube.internal.message.L_Message;
 import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
+import org.openhab.binding.maxcube.internal.message.MessageProcessor;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.S_Message;
@@ -119,6 +125,12 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	private BufferedReader reader = null;
 	private OutputStreamWriter writer = null;
 	
+	
+	/**
+	 * Processor that handles lines received from MAX!Cube
+	 */
+	MessageProcessor messageProcessor = new MessageProcessor();
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -146,21 +158,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	
 	@Override
 	public void deactivate() {
-		if(socket!=null) {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-			}
-			socket = null;
-		}
+		socketClose();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void execute() {
+	public synchronized void execute() {
 		if (ip == null) {
 			logger.debug("Update prior to completion of interface IP configuration");
 			return;
@@ -193,14 +198,20 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					cont = false;
 					continue;
 				}
-
-				Message message;
+				
+				Message message = null;
 				try {
-					message = processRawMessage(raw);
-
+					this.messageProcessor.addReceivedLine(raw);
+					if (this.messageProcessor.isMessageAvailable()) {
+						message = this.messageProcessor.pull();
+					} else {
+						continue;
+					}
+					
 					message.debug(logger);
 
 					if (message != null) {
+						message.debug(logger);
 						if (message.getType() == MessageType.M) {
 							M_Message msg = (M_Message) message;
 							for (DeviceInformation di : msg.devices) {
@@ -251,14 +262,32 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							cont = false;
 						}
 					}
+				} catch (IncorrectMultilineIndexException ex) {
+					logger.info("Incorrect MAX!Cube multiline message detected. Stopping processing and continue with next Line.");
+					this.messageProcessor.reset();
+				} catch (NoMessageAvailableException ex) {
+					logger.info("Could not process MAX!Cube message. Stopping processing and continue with next Line.");
+					this.messageProcessor.reset();
+				} catch (IncompleteMessageException ex) {
+					logger.info("Error while parsing MAX!Cube multiline message. Stopping processing, and continue with next Line.");
+					this.messageProcessor.reset();
+				} catch (UnprocessableMessageException ex) {
+					logger.info("Error while parsing MAX!Cube message. Stopping processing, and continue with next Line.");
+					this.messageProcessor.reset();
+				} catch (UnsupportedMessageTypeException ex) {
+					logger.info("Unsupported MAX!Cube message detected. Ignoring and continue with next Line.");
+					this.messageProcessor.reset();
+				} catch (MessageIsWaitingException ex) {
+					logger.info("There was and unhandled message waiting. Ignoring and continue with next Line.");
+					this.messageProcessor.reset();
 				} catch (Exception e) {
 					logger.info("Failed to process message received by MAX! protocol.");
 					logger.debug(Utils.getStackTrace(e));
+					this.messageProcessor.reset();
 				}
 			}
 			if(!exclusive) {
-				socket.close();
-				socket = null;
+				socketClose();
 			}
 
 			for (MaxCubeBindingProvider provider : providers) {
@@ -317,13 +346,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				}
 			}
 		} catch (UnknownHostException e) {
-			logger.info("Cannot establish connection with MAX!Cube lan gateway while connecting to '{}'", ip);
-			logger.debug(Utils.getStackTrace(e));
-			socket = null;
+			logger.info("Host error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+			socketClose();
 		} catch (IOException e) {
-			logger.info("Cannot read data from MAX!Cube lan gateway while connecting to '{}'", ip);
-			logger.debug(Utils.getStackTrace(e));
-			socket = null; //reconnect on next execution
+			logger.info("IO error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+			socketClose(); //reconnect on next execution
+		} catch (Exception e) {
+			logger.info("Error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+			logger.info(Utils.getStackTrace(e));
+			socketClose(); //reconnect on next execution
 		}
 	}
 
@@ -340,7 +371,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		for (MaxCubeBindingProvider provider : providers) {
 			serialNumber = provider.getSerialNumber(itemName);
 
-			if (serialNumber.equals(null)) {
+			if (StringUtils.isBlank(serialNumber)) {
 				continue;
 			}
 
@@ -401,8 +432,22 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					writer.write(commandString);
 					logger.debug(commandString);
 					writer.flush();
+					
+					Message message = null;
 					String raw = reader.readLine();
-					Message message = processRawMessage(raw);
+                    try {
+                        while (!this.messageProcessor.isMessageAvailable()) {
+                        	this.messageProcessor.addReceivedLine(raw);
+                            raw = reader.readLine();
+                        }
+
+                        message = this.messageProcessor.pull();
+                    } catch (Exception e) {
+                        logger.info("Error while handling response from MAX! Cube lan gateway!");
+                        logger.debug(Utils.getStackTrace(e));
+                        this.messageProcessor.reset();
+                    }
+					
 					if (message !=null) {
 						if (message.getType() == MessageType.S) {
 							sMessageProcessing((S_Message)message);
@@ -412,11 +457,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						socket = null;
 					}
 				} catch (UnknownHostException e) {
-					logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
-					logger.debug(Utils.getStackTrace(e));
+					logger.info("Host error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+					socketClose();
 				} catch (IOException e) {
-					logger.warn("Cannot write data from MAX!Cube lan gateway while connecting to '{}'", ip);
-					logger.debug(Utils.getStackTrace(e));
+					logger.info("IO error occurred while writing to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+					socketClose(); //reconnect on next execution
+				} catch (Exception e) {
+					logger.info("Error occurred while writing to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+					logger.info(Utils.getStackTrace(e));
+					socketClose(); //reconnect on next execution
 				}
 				logger.debug("Command Sent to {}", ip);
 			} else {
@@ -440,11 +489,23 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	
 	private boolean socketConnect() throws UnknownHostException, IOException {
 		socket = new Socket(ip, port);
+		socket.setSoTimeout(2000);
 		logger.debug("open new connection... to "+ip+" port "+port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new OutputStreamWriter(socket.getOutputStream());
 		requestCount = 0;
 		return true;
+	}
+
+	private void socketClose() {
+		if(socket!=null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// Ignore
+			}
+			socket = null;
+		}
 	}
 
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
@@ -454,32 +515,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Processes the raw TCP data read from the MAX protocol, returning the
-	 * corresponding Message.
-	 * 
-	 * @param raw
-	 *            the raw data provided read from the MAX protocol
-	 * @return the correct message for the given raw data
-	 */
-	private Message processRawMessage(String raw) {
-
-		if (raw.startsWith("H:")) {
-			return new H_Message(raw);
-		} else if (raw.startsWith("M:")) {
-			return new M_Message(raw);
-		} else if (raw.startsWith("C:")) {
-			return new C_Message(raw);
-		} else if (raw.startsWith("L:")) {
-			return new L_Message(raw);
-		} else if (raw.startsWith("S:")) {
-			return new S_Message(raw);
-		} else {
-			logger.debug("Unknown message block: '{}'",raw);
-		}
-			return null;
 	}
 
 	/**

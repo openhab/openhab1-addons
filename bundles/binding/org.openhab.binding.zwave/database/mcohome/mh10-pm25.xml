@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>MH10-PM2.5-WA</Model>
+	<Label lang="en">PM2.5 Monitor</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x31</id>
+<!--           <isGetSupported>false</isGetSupported> -->
+		</Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

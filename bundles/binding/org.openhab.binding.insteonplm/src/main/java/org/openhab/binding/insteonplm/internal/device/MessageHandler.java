@@ -9,6 +9,8 @@
 package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -164,6 +166,7 @@ public abstract class MessageHandler {
 			m = new GroupMessageStateMachine();
 			m_groupState.put(new Integer(group), m);
 		}
+		logger.debug("updating group state for {} to {}", group, a);
 		return (m.action(a, hops));
 	}
 	
@@ -240,13 +243,13 @@ public abstract class MessageHandler {
 			if (msg.isAckOfDirect()) {
 				logger.error("{}: device {}: ignoring ack of direct.", nm(), a);
 			} else {
-				logger.info("{}: device {} was turned on.", nm(), a);
-				m_feature.publish(OnOffType.ON, StateChangeType.ALWAYS);
+				logger.info("{}: device {} was turned on. Sending poll request to get actual level", nm(), a);
+				m_feature.publish(PercentType.HUNDRED, StateChangeType.ALWAYS);
 				// need to poll to find out what level the dimmer is at now.
 				// it may not be at 100% because dimmers can be configured
 				// to switch to e.g. 75% when turned on.
 				Msg m = f.makePollMsg();
-				if (m != null)	f.getDevice().enqueueMessage(m, f);
+				if (m != null)	f.getDevice().enqueueDelayedMessage(m, f, 1000);
 			}
 		}
 	}
@@ -260,12 +263,27 @@ public abstract class MessageHandler {
 				logger.info("{}: device {} was switched on.", nm(),
 								f.getDevice().getAddress());
 				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
+			} else {
+				logger.debug("ignored message: {} or {}", isDuplicate(msg), isMybutton(msg,f));
 			}
 		}
 	}
 
-	public static class LightOffHandler extends MessageHandler {
-		LightOffHandler(DeviceFeature p) { super(p); }
+	public static class LightOffDimmerHandler extends MessageHandler {
+		LightOffDimmerHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (!isDuplicate(msg) && isMybutton(msg, f)) {
+				logger.info("{}: device {} was turned off.", nm(),
+						f.getDevice().getAddress());
+				f.publish(PercentType.ZERO, StateChangeType.ALWAYS);
+			}
+		}
+	}
+
+	public static class LightOffSwitchHandler extends MessageHandler {
+		LightOffSwitchHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
@@ -301,7 +319,7 @@ public abstract class MessageHandler {
 					m_feature.publish(isOn ? OnOffType.ON : OnOffType.OFF, StateChangeType.CHANGED);
 				}
 			} catch (FieldException e) {
-				logger.error("error parsing {}: ", msg, e);
+				logger.error("{} error parsing {}: ", nm(), msg, e);
 			}
 		}
 		/**
@@ -360,17 +378,17 @@ public abstract class MessageHandler {
 					cmd2 = 0xff;
 				}
 
-				int level = cmd2*100/255;
-				if (level == 0 && cmd2 > 0) level = 1;
 				if (cmd2 == 0) {
-					logger.info("{}: set device {} to OFF", nm(),
+					logger.info("{}: set device {} to level 0", nm(),
 							dev.getAddress());
-					m_feature.publish(OnOffType.OFF, StateChangeType.CHANGED);
+					m_feature.publish(PercentType.ZERO, StateChangeType.CHANGED);
 				} else if (cmd2 == 0xff) {
-					logger.info("{}: set device {} to ON", nm(),
+					logger.info("{}: set device {} to level 100", nm(),
 							dev.getAddress());
-					m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
+					m_feature.publish(PercentType.HUNDRED, StateChangeType.CHANGED);
 				} else {
+					int level = cmd2*100/255;
+					if (level == 0) level = 1;
 					logger.info("{}: set device {} to level {}", nm(),
 							dev.getAddress(), level);
 					m_feature.publish(new PercentType(level), StateChangeType.CHANGED);
@@ -398,7 +416,8 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			if (!msg.isExtended()) {
-				logger.warn("device {} expected extended msg as info reply, got {}", dev.getAddress(), msg);
+				logger.warn("{} device {} expected extended msg as info reply, got {}",
+						nm(), dev.getAddress(), msg);
 				return;
 			}
 			try {
@@ -408,14 +427,14 @@ public abstract class MessageHandler {
 					int prodKey = msg.getInt24("userData2", "userData3", "userData4");
 					int devCat  = msg.getByte("userData5");
 					int subCat  = msg.getByte("userData6");
-					logger.info("{} got product data: cat: {} subcat: {} key: {} ", dev.getAddress(), devCat, subCat,
-							Utils.getHexString(prodKey));
+					logger.info("{} {} got product data: cat: {} subcat: {} key: {} ",
+							nm(), dev.getAddress(), devCat, subCat,	Utils.getHexString(prodKey));
 					break;
 				case 0x02: // this is a device text string response message
-					logger.info("{} got text str {} ", dev.getAddress(), msg);
+					logger.info("{} {} got text str {} ", nm(), dev.getAddress(), msg);
 					break;
 				default:
-					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
+					logger.warn("{} unknown cmd2 = {} in info reply message {}", nm(), cmd2, msg);
 					break;
 				}
 			} catch (FieldException e) {
@@ -424,42 +443,14 @@ public abstract class MessageHandler {
 		}
 	}
 
-	public static class MotionSensorLightReplyHandler extends MessageHandler {
-		MotionSensorLightReplyHandler(DeviceFeature p) { super(p); }
+	public static class MotionSensorDataReplyHandler extends MessageHandler {
+		MotionSensorDataReplyHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			if (!msg.isExtended()) {
-				logger.trace("device {} ignoring non-extended msg {}", dev.getAddress(), msg);
-				return;
-			}
-			try {
-				int cmd2 = (int) (msg.getByte("command2") & 0xff);
-				switch (cmd2) {
-				case 0x00: // this is a product data response message
-					int lightLevel = msg.getByte("userData11") & 0xff;
-					logger.debug("{} got light level {}", dev.getAddress(), lightLevel);
-					m_feature.publish(new DecimalType(lightLevel), StateChangeType.CHANGED);
-					break;
-				default:
-					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
-					break;
-				}
-			} catch (FieldException e) {
-				logger.error("error parsing {}: ", msg, e);
-			}
-		}
-	}
-
-	public static class MotionSensorBatteryReplyHandler extends MessageHandler {
-		MotionSensorBatteryReplyHandler(DeviceFeature p) { super(p); }
-		@Override
-		public void handleMessage(int group, byte cmd1, Msg msg,
-				DeviceFeature f, String fromPort) {
-			InsteonDevice dev = f.getDevice();
-			if (!msg.isExtended()) {
-				logger.warn("device {} expected extended msg as info reply, got {}", dev.getAddress(), msg);
+				logger.trace("{} device {} ignoring non-extended msg {}", nm(), dev.getAddress(), msg);
 				return;
 			}
 			try {
@@ -467,8 +458,42 @@ public abstract class MessageHandler {
 				switch (cmd2) {
 				case 0x00: // this is a product data response message
 					int batteryLevel = msg.getByte("userData12") & 0xff;
-					logger.debug("{} got battery level {}", dev.getAddress(), batteryLevel);
-					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED);
+					int lightLevel = msg.getByte("userData11") & 0xff;
+					logger.debug("{}: {} got light level: {}, battery level: {}",
+								nm(), dev.getAddress(), lightLevel, batteryLevel);
+					m_feature.publish(new DecimalType(lightLevel), StateChangeType.CHANGED, "field", "light_level");
+					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED, "field", "battery_level");
+					break;
+				default:
+					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
+					break;
+				}
+			} catch (FieldException e) {
+				logger.error("error parsing {}: ", msg, e);
+			}
+		}
+	}
+	
+	public static class HiddenDoorSensorDataReplyHandler extends MessageHandler {
+		HiddenDoorSensorDataReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			if (!msg.isExtended()) {
+				logger.trace("{} device {} ignoring non-extended msg {}", nm(), dev.getAddress(), msg);
+				return;
+			}
+			try {
+				int cmd2 = (int) (msg.getByte("command2") & 0xff);
+				switch (cmd2) {
+				case 0x00: // this is a product data response message
+					int batteryLevel = msg.getByte("userData4") & 0xff;
+					int batteryWatermark = msg.getByte("userData7") & 0xff;
+					logger.debug("{}: {} got light level: {}, battery level: {}",
+								nm(), dev.getAddress(), batteryWatermark, batteryLevel);
+					m_feature.publish(new DecimalType(batteryWatermark), StateChangeType.CHANGED, "field", "battery_watermark_level");
+					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED, "field", "battery_level");
 					break;
 				default:
 					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
@@ -480,6 +505,55 @@ public abstract class MessageHandler {
 		}
 	}
 
+	public static class PowerMeterUpdateHandler extends MessageHandler {
+		PowerMeterUpdateHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (msg.isExtended()) {
+				try {
+					// see iMeter developer notes 2423A1dev-072013-en.pdf
+					int b7	= msg.getByte("userData7")	& 0xff;
+					int b8	= msg.getByte("userData8")	& 0xff;
+					int watts = (b7 << 8) | b8;
+					if (watts > 32767) {
+						watts -= 65535;
+					}
+
+					int b9	= msg.getByte("userData9")	& 0xff;
+					int b10	= msg.getByte("userData10")	& 0xff;
+					int b11	= msg.getByte("userData11")	& 0xff;
+					int b12	= msg.getByte("userData12")	& 0xff;
+					BigDecimal kwh = BigDecimal.ZERO;
+					if (b9 < 254) {
+						int e = (b9 << 24) | (b10 << 16) | (b11 << 8) | b12;
+						kwh = new BigDecimal(e * 65535.0 / (1000 * 60 * 60 * 60)).setScale(4, RoundingMode.HALF_UP);
+					}
+
+					logger.debug("{}:{} watts: {} kwh: {} ", nm(), f.getDevice().getAddress(), watts, kwh);
+					m_feature.publish(new DecimalType(kwh), StateChangeType.CHANGED, "field", "kwh");
+					m_feature.publish(new DecimalType(watts), StateChangeType.CHANGED, "field", "watts");
+				} catch (FieldException e) {
+					logger.error("error parsing {}: ", msg, e);
+				}
+			}
+		}
+	}
+	
+	public static class PowerMeterResetHandler extends MessageHandler {
+		PowerMeterResetHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			logger.info("{}: power meter {} was reset", nm(), dev.getAddress());
+
+			// poll device to get updated kilowatt hours and watts
+			Msg m = f.makePollMsg();
+			if (m != null)	f.getDevice().enqueueMessage(m, f);
+		}
+	}
+	
 	public static class LastTimeHandler extends MessageHandler {
 		LastTimeHandler(DeviceFeature p) { super(p); }
 		@Override
@@ -503,7 +577,7 @@ public abstract class MessageHandler {
 				cmd = msg.getByte("Cmd");
 				cmd2 = msg.getByte("command2");
 			} catch (FieldException e) {
-				logger.debug("no cmd found, dropping msg {}", msg);
+				logger.debug("{} no cmd found, dropping msg {}", nm(), msg);
 				return;
 			}
 			if (msg.isAckOfDirect() && (f.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING)
@@ -552,7 +626,7 @@ public abstract class MessageHandler {
 					break;
 				}
 			} catch (FieldException e) {
-				logger.debug("no cmd2 found, dropping msg {}", msg);
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
 				return;
 			}
 
@@ -641,6 +715,210 @@ public abstract class MessageHandler {
 		}
 	}
 
+	/**
+	 * Handles Thermostat replies to Set Cool SetPoint requests.
+	 */
+	public static class ThermostatSetPointMsgHandler extends  MessageHandler {
+		ThermostatSetPointMsgHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				if (msg.isExtended()) {
+					logger.info("{}: received msg for feature {}", nm(), f.getName());
+					int level = ((f.getName()).equals("ThermostatCoolSetPoint")) ? (int)(msg.getByte("userData7") & 0xff) : (int)(msg.getByte("userData8") & 0xff);
+					logger.info("{}: got SetPoint from {} of value: {}", nm(), dev.getAddress(), level);
+					f.publish(new DecimalType(level), StateChangeType.CHANGED);
+				} else {
+					logger.info("{}: received msg for feature {}", nm(), f.getName());
+					int cmd2 = (int) (msg.getByte("command2") & 0xff);
+					int level = cmd2/2;
+					logger.info("{}: got SETPOINT from {} of value: {}", nm(), dev.getAddress(), level);
+					f.publish(new DecimalType(level), StateChangeType.CHANGED);
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Handles Thermostat replies to Temperature requests.
+	 */
+	public static class ThermostatTemperatureRequestReplyHandler extends  MessageHandler {
+		ThermostatTemperatureRequestReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad TEMPERATURE reply from {}", nm(), dev.getAddress());
+					return;
+				}
+				int cmd2 = (int) (msg.getByte("command2") & 0xff);
+				int level = cmd2/2;
+				logger.info("{}: got TEMPERATURE from {} of value: {}", nm(), dev.getAddress(), level);
+				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), level);
+				f.publish(new DecimalType(level), StateChangeType.CHANGED);
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}	
+		
+	/**
+	 * Handles Thermostat replies to Humidity requests.
+	 */
+	public static class ThermostatHumidityRequestReplyHandler extends  MessageHandler {
+		ThermostatHumidityRequestReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad HUMIDITY reply from {}", nm(), dev.getAddress());
+					return;
+				}
+				int cmd2 = (int) msg.getByte("command2");
+				logger.info("{}: got HUMIDITY from {} of value: {}", nm(), dev.getAddress(), cmd2);
+				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), cmd2);
+				f.publish(new PercentType(cmd2), StateChangeType.CHANGED);
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Handles Thermostat replies to Mode requests.
+	 */
+	public static class ThermostatModeControlReplyHandler extends  MessageHandler {
+		ThermostatModeControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				/**
+				* Cmd2 Description 										Thermostat Support 	Comments
+				* 0x04 set mode to heat and returns 04 in ACK 			yes 				On Heat
+				* 0x05 set mode to cool and returns 05 in ACK 			yes 				On Cool
+				* 0x06 set mode to manual auto and returns 06 in ACK 	yes 				Manual Auto
+				*/
+				byte cmd2 = msg.getByte("command2");
+				switch (cmd2) {
+				case 0x04:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "HEAT");
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;
+				case 0x05:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "COOL");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;
+				case 0x06:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "AUTO");
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Handles Thermostat replies to Fan requests.
+	 */
+	public static class ThermostatFanControlReplyHandler extends  MessageHandler {
+		ThermostatFanControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				/**
+				* Cmd2 Description 										Thermostat Support 	Comments
+				* 0x07 Turn fan on and returns 07 in ACK 				yes 				On Fan
+				* 0x08 Turn fan auto mode and returns 08 in ACK 		yes 				Auto Fan
+				* 0x09 Turn all off and returns 09 in ACK 				yes 				Off All
+				*/
+				byte cmd2 = msg.getByte("command2");
+				switch (cmd2) {
+				case 0x07:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "ON");
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;
+				case 0x08:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "AUTO");
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;	
+				case 0x09:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "OFF");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;	
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Handles Thermostat replies to Master requests.
+	 */
+	public static class ThermostatMasterControlReplyHandler extends  MessageHandler {
+		ThermostatMasterControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			try {
+				/**
+				* 
+				*/
+				byte cmd2 = msg.getByte("userData3");
+				switch (cmd2) {
+				case 0x00:
+					logger.info("{}: set PRIMARY Thermostat to MASTER", nm());
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;
+				case 0x01:
+					logger.info("{}: set SECONDARY Thermostat to MASTER", nm());
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;	
+				case 0x02:
+					logger.info("{}: set TERTIARY Thermostat to MASTER", nm());
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;	
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create

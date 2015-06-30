@@ -49,12 +49,6 @@
 
 	<logger name="OSGi" level="WARN" />
 	<logger name="org.eclipse.jetty" level="WARN" />
-	<logger name="org.drools.SystemEventListener" level="INFO" />
-
-	<root level="INFO">
-		<appender-ref ref="FILE" />
-		<appender-ref ref="STDOUT" />
-	</root>
 
 	<logger name="org.openhab.io.dropbox" level="DEBUG" />
 
@@ -63,5 +57,12 @@
 	
 	<!-- temporary workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=402750 -->
 	<logger name="OSGi" level="OFF" />
+	
+	<logger name="tuwien.auto.calimero" level="WARN" />
+	
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
 	
 </configuration>

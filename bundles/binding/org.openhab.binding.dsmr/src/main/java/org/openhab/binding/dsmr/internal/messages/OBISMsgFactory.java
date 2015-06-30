@@ -9,16 +9,12 @@
 package org.openhab.binding.dsmr.internal.messages;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openhab.binding.dsmr.internal.DSMRMeter;
 import org.openhab.binding.dsmr.internal.DSMRMeterType;
-import org.openhab.binding.dsmr.internal.DSMRVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,159 +29,129 @@ public class OBISMsgFactory {
 	private static final Logger logger = LoggerFactory
 			.getLogger(OBISMsgFactory.class);
 
-	/* Regular expression for OBIS strings */
-	private static final String OBIS_REGEX = "^(\\d{1,3}-\\d{1,3}:\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(\\(.*\\))+$";
-	private static final String OBIS_VALUE_REGEX = "\\(([^\\(\\)]*)\\)";
-	private static final String OBIS_CONFIGURABLE_CHANNEL_PATTERN = "(\\d+)-(-1):(\\d+)\\.(\\d+)\\.(\\d+)";
-
-	/* Pattern instances */
-	private final Pattern obisPattern;
-	private final Pattern obisValuePattern;
-	private final Pattern obisChannelPattern;
-
 	/* internal lookup cache */
-	private final HashMap<String, OBISMsgType> obisLookupTable;
+	private final HashMap<OBISIdentifier, List<OBISMsgType>> obisLookupTable;
 
 	/**
-	 * Creates a new OBISMsgFactory for the specified DSMRVersion
+	 * Creates a new OBISMsgFactory
 	 * 
-	 * @param version
-	 *            {@link DMSRVersion} to use for handling input data
 	 * @param dsmrMeters
 	 *            available DSMR meters (see {@link DSMRMeter}) in the binding
 	 */
-	public OBISMsgFactory(DSMRVersion version, List<DSMRMeter> dsmrMeters) {
-		obisPattern = Pattern.compile(OBIS_REGEX);
-		obisValuePattern = Pattern.compile(OBIS_VALUE_REGEX);
-		obisChannelPattern = Pattern.compile(OBIS_CONFIGURABLE_CHANNEL_PATTERN);
-
+	public OBISMsgFactory(List<DSMRMeter> dsmrMeters) {
 		/*
-		 * Fill a lookup table with OBIS messages belonging to the specified
-		 * DSMR version and channel - MeterType mapping
+		 * Fill a lookup table with OBIS message types based on the specified
+		 * channel - MeterType mapping
 		 */
-		obisLookupTable = new HashMap<String, OBISMsgType>();
+		obisLookupTable = new HashMap<OBISIdentifier, List<OBISMsgType>>();
 
 		// Create a convenience lookup table for a channel based on meter type
 		Map<DSMRMeterType, Integer> meterChannelMapping = new HashMap<DSMRMeterType, Integer>();
 		for (DSMRMeter meter : dsmrMeters) {
 			meterChannelMapping.put(meter.getMeterType(), meter.getChannel());
 		}
-		fillLookupTable(version, meterChannelMapping);
+		fillLookupTable(meterChannelMapping);
 	}
 
 	/**
 	 * Return OBISMessage from specified string or null if string couldn't be
 	 * parsed correctly or no corresponding OBISMessage was found
 	 * 
-	 * @param obisStr
-	 *            a single raw OBIS message string received from the DSMR meter
+	 * @param obisIdString
+	 *            String containing the OBIS message identifier
+	 * @param cosemStringValues
+	 *            LinkedList of String containing Cosem values
 	 * @return OBISMessage or null if parsing failed
 	 */
-	public OBISMessage getMessage(String obisStr) {
-		OBISMessage msg = null;
+	public OBISMessage getMessage(String obisIdString,
+			LinkedList<String> cosemStringValues) {
+		OBISIdentifier obisId = null;
+		OBISIdentifier reducedObisId = null;
 
-		if (obisStr != null) {
-			Matcher m = obisPattern.matcher(obisStr);
+		try {
+			obisId = new OBISIdentifier(obisIdString);
+			reducedObisId = obisId.getReducedOBISIdentifier();
+		} catch (ParseException pe) {
+			logger.error("Received invalid OBIS identifer:" + obisIdString);
 
-			if (m.matches()) {
-				logger.debug("Received valid OBIS String:" + obisStr);
+			return null;
+		}
 
-				List<String> cosemStringValues = new ArrayList<String>();
+		logger.debug("Received obisIdString " + obisIdString + ", obisId:"
+				+ obisId + ", values:" + cosemStringValues);
 
-				// Get identifier and all the values as a single String
-				OBISMsgType msgType = getOBISMsgType(m.group(1));
+		if (obisLookupTable.containsKey(reducedObisId)) {
+			List<OBISMsgType> compatibleMsgTypes = obisLookupTable.get(reducedObisId);
 
-				if (msgType != OBISMsgType.UNKNOWN) {
-					// Get the individual COSEM String values
-					String allCosemStringValues = m.group(2);
-					Matcher valueMatcher = obisValuePattern
-							.matcher(allCosemStringValues);
+			OBISMessage msg = null;
 
-					while (valueMatcher.find()) {
-						cosemStringValues.add(valueMatcher.group(1));
-					}
+			logger.debug("Found " + compatibleMsgTypes.size()
+					+ " compatible message type(s)");
+			for (OBISMsgType msgType : compatibleMsgTypes) {
+				msg = new OBISMessage(msgType);
 
-					logger.debug("OBIS message type:" + msgType + ", values:"
-							+ cosemStringValues);
+				try {
+					logger.debug("Parse values for OBIS Message type:"
+							+ msgType);
 
-					msg = new OBISMessage(msgType);
+					msg.parseCosemValues(cosemStringValues);
 
-					try {
-						msg.parseCosemValues(cosemStringValues);
-					} catch (ParseException pe) {
-						logger.error("Failed to parse " + obisStr, pe);
-					}
-				} else {
-					logger.warn("Received OBIS unknown message:" + obisStr);
+					return msg;
+				} catch (ParseException pe) {
+					logger.debug("Failed to parse OBIS identifer " + obisId
+							+ ", values:" + cosemStringValues + " for type"
+							+ msgType, pe);
 				}
 			}
-		}
-
-		logger.debug("Converted to:" + msg);
-
-		return msg;
-	}
-
-	/**
-	 * Returns the OBIS message type (See {@link OBISMsgType}) for the specified
-	 * OBIS reduced identifier
-	 * 
-	 * @param obisId
-	 *            the OBIS reduced identifier
-	 * @return the {@link OBISMsgType} or UNKNOWN if the OBIS reduced identifier
-	 *         is unknown
-	 */
-	private OBISMsgType getOBISMsgType(String obisId) {
-		if (obisLookupTable.containsKey(obisId)) {
-			return obisLookupTable.get(obisId);
+			logger.error("Failed to parse OBIS identifier " + obisId
+					+ ", values:" + cosemStringValues);
 		} else {
-			return OBISMsgType.UNKNOWN;
+			logger.warn("Received OBIS unknown message:" + obisId);
 		}
+		return null;
 	}
 
 	/**
-	 * This method fills a lookup table in which the applicable OBIS message
-	 * types are stored based on the {@link DSMRVersion} and mapping channel -
-	 * {@link DSMRMeterType}
+	 * This method fills a lookup table with the OBIS message types based on the
+	 * mapping channel - {@link DSMRMeterType}
 	 * <p>
-	 * DSMR messages can be interpreted ambiguous if the version or mapping is
-	 * not known. The lookup table makes sure that messages are parsed without
-	 * ambiguity.
 	 * 
-	 * @param version
-	 *            applicable DSMR version
 	 * @param mapping
 	 *            DSMRMeterType - channel mapping
 	 */
-	private void fillLookupTable(DSMRVersion version,
-			Map<DSMRMeterType, Integer> mapping) {
+	private void fillLookupTable(Map<DSMRMeterType, Integer> mapping) {
 		for (OBISMsgType t : OBISMsgType.values()) {
-			if (t.applicableVersions.contains(version)) {
-				Matcher m = obisChannelPattern.matcher(t.obisId);
-				if (m.matches()) {
-					DSMRMeterType meterType = t.meterType;
-					if (mapping.containsKey(meterType)) {
-						/*
-						 * OBIS-identifier contains a variable channel Check if
-						 * the configuration contains the mapping for this meter
-						 * type and then make the OBIS-identifier specific
-						 */
+			OBISIdentifier obisId = t.obisId;
 
-						Integer channel = mapping.get(t.meterType);
-						logger.debug("Change OBIS-identifier " + t.obisId
-								+ " for meter " + t.meterType + " on channel "
-								+ channel);
+			if (obisId.getGroupB() == null) {
+				DSMRMeterType meterType = t.meterType;
+				if (mapping.containsKey(meterType)) {
+					/*
+					 * OBIS-identifier contains a variable channel Check if the
+					 * configuration contains the mapping for this meter type
+					 * and then make the OBIS-identifier specific
+					 */
 
-						String obisSpecificIdentifier = m.replaceFirst("$1-"
-								+ channel + ":$3.$4.$5");
-						obisLookupTable.put(obisSpecificIdentifier, t);
-					} else {
-						logger.debug("Mapping does not contain a channel for "
-								+ meterType);
-					}
+					Integer channel = mapping.get(t.meterType);
+					logger.debug("Change OBIS-identifier " + t.obisId
+							+ " for meter " + t.meterType + " on channel "
+							+ channel);
+
+					obisId = new OBISIdentifier(obisId.getGroupA(), channel,
+							obisId.getGroupC(), obisId.getGroupD(),
+							obisId.getGroupE(), obisId.getGroupF());
 				} else {
-					obisLookupTable.put(t.obisId, t);
+					logger.debug("Mapping does not contain a channel for "
+							+ meterType);
+
+					obisId = null;
 				}
+			}
+			if (obisId != null) {
+				if (!obisLookupTable.containsKey(obisId)) {
+					obisLookupTable.put(obisId, new LinkedList<OBISMsgType>());
+				}
+				obisLookupTable.get(obisId).add(t);
 			}
 		}
 	}
