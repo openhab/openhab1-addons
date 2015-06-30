@@ -519,6 +519,15 @@
 			<Model>12724</Model>
 			<Label lang="en">Lighting Control Dimmer Switch</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4952</Type>
+				<Id>3032</Id>
+			</Reference>
+			<Model>ZW4005</Model>
+			<Label lang="en">On/Off Relay Switch</Label>
+			<ConfigFile>ge/ZW4005.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
