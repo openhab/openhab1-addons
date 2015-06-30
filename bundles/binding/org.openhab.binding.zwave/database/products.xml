@@ -1668,6 +1668,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0121</Type>
+				<Id>0133</Id>
+			</Reference>
+			<Model>TZ68</Model>
+			<Label lang="en">In Wall Micro Switch</Label>
+			<ConfigFile>tkb/tz78.xml</ConfigFile>
+		</Product>
+		<Product>	
+			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
