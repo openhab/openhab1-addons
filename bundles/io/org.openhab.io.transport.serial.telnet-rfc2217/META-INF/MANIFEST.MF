@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Telnet-rfc2217
+Bundle-SymbolicName: org.openhab.io.transport.serial.telnet-rfc2217
+Bundle-Version: 1.8.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: gnu.io,
+ org.apache.commons.net;version="3.2.0",
+ org.apache.commons.net.telnet;version="3.2.0",
+ org.osgi.framework;version="1.7.0",
+ org.slf4j
+Export-Package: org.openhab.io.transport.serial.telnet
+Bundle-Activator: org.openhab.io.transport.serial.telnet.Activator
+Bundle-ActivationPolicy: lazy
