@@ -11,7 +11,10 @@
 		<Class><id>0x43</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETPOINT -->
 		<Class><id>0x44</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_MODE -->
 		<Class><id>0x45</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_STATE -->
+		<Class><id>0x47</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETBACK -->
 		<Class><id>0x72</id></Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class><id>0x80</id></Class>  <!-- COMMAND_CLASS_BATTERY -->
+		<Class><id>0x81</id></Class>  <!-- COMMAND_CLASS_CLOCK -->
 		<Class><id>0x85</id></Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
 		<Class><id>0x86</id></Class>  <!-- COMMAND_CLASS_VERSION -->
 	</CommandClasses>
