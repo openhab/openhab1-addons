@@ -9,7 +9,6 @@
 package org.openhab.binding.sapp.internal;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,11 +48,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	private static final String CONFIG_KEY_PNMAS_ENABLED = "pnmas.ids";
 	private static final String CONFIG_KEY_PNMAS_ID = "pnmas.%s.ip";
 	private static final String CONFIG_KEY_PNMAS_PORT = "pnmas.%s.port";
-
-	/**
-	 * map of existing pnmas. key is pnmas id.
-	 */
-	private Map<String, SappPnmas> pnmasMap = new HashMap<String, SappPnmas>();
 
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
@@ -101,42 +95,45 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			refreshInterval = Long.parseLong(refreshIntervalString);
 			logger.debug("set refresh interval: " + refreshInterval);
 		}
+		
+		SappBindingProvider provider = getFirstSappBindingProvider();
+		if (provider != null) {
+			String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
+			if (pnmasEnabled != null) {
+				String[] pnmasIds = pnmasEnabled.split(",");
+				for (String pnmasId : pnmasIds) {
+					logger.debug(String.format("loading info for pnmas %s", pnmasId));
 
-		String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
-		if (pnmasEnabled != null) {
-			String[] pnmasIds = pnmasEnabled.split(",");
-			for (String pnmasId : pnmasIds) {
-				logger.debug(String.format("loading info for pnmas %s", pnmasId));
-
-				String ip = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_ID, pnmasId));
-				if (ip == null) {
-					logger.warn(String.format("ip not found for pnmas %s", pnmasId));
-					continue;
-				}
-
-				int port;
-				String portString = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_PORT, pnmasId));
-				if (portString == null) {
-					logger.warn(String.format("port not found for pnmas %s", pnmasId));
-					continue;
-				} else {
-					try {
-						port = Integer.parseInt(portString);
-					} catch (NumberFormatException e) {
-						logger.warn(String.format("bad port number for pnmas %s", pnmasId));
+					String ip = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_ID, pnmasId));
+					if (ip == null) {
+						logger.warn(String.format("ip not found for pnmas %s", pnmasId));
 						continue;
 					}
-				}
 
-				if (pnmasMap.containsKey(pnmasId)) {
-					logger.warn(String.format("pnmas %s duplicated, skipping", pnmasId));
-					continue;
-				}
+					int port;
+					String portString = (String) configuration.get(String.format(CONFIG_KEY_PNMAS_PORT, pnmasId));
+					if (portString == null) {
+						logger.warn(String.format("port not found for pnmas %s", pnmasId));
+						continue;
+					} else {
+						try {
+							port = Integer.parseInt(portString);
+						} catch (NumberFormatException e) {
+							logger.warn(String.format("bad port number for pnmas %s", pnmasId));
+							continue;
+						}
+					}
 
-				pnmasMap.put(pnmasId, new SappPnmas(ip, port));
-			}
-			for (String pnmasKey : pnmasMap.keySet()) {
-				logger.debug(String.format("pnmas %s : %s:", pnmasKey, pnmasMap.get(pnmasKey)));
+					if (provider.getPnmasMap().containsKey(pnmasId)) {
+						logger.warn(String.format("pnmas %s duplicated, skipping", pnmasId));
+						continue;
+					}
+
+					provider.getPnmasMap().put(pnmasId, new SappPnmas(ip, port));
+				}
+				for (String pnmasKey : provider.getPnmasMap().keySet()) {
+					logger.debug(String.format("pnmas %s : %s:", pnmasKey, provider.getPnmasMap().get(pnmasKey)));
+				}
 			}
 		}
 
@@ -214,7 +211,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 						isInPolling = true;
 
 						if (isProperlyConfigured()) { // wait until provider is properly configured
-							for (SappBindingProvider provider : providers) {
+							SappBindingProvider provider = getFirstSappBindingProvider();
+							if (provider != null) {
 								if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
 									logger.debug("executing a full refresh");
 									try {
@@ -224,7 +222,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 										logger.error("error while initializing items:" + e.getMessage());
 									}
 								} else { // poll
-									for (SappPnmas pnmas : pnmasMap.values()) { // each pnmas
+									for (SappPnmas pnmas : provider.getPnmasMap().values()) { // each pnmas
 										try {
 											SappConnection sappConnection = new SappConnection(pnmas.getIp(), pnmas.getPort());
 											sappConnection.openConnection();
@@ -263,9 +261,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												Map<Integer, Integer> changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
 												if (changedVirtuals.size() != 0) {
 													// TODO update items
-													for (SappBindingProvider sappBindingProvider : providers) { // TODO rimuovere fake
-														initializeAllItemsInProvider(sappBindingProvider);
-													}
+													// TODO rimuovere fake
+													initializeAllItemsInProvider(provider);
 												}
 											} finally {
 												sappConnection.closeConnection();
@@ -326,7 +323,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		SappBindingConfig bindingConfig = provider.getBindingConfig(itemName);
 		logger.debug("found binding " + bindingConfig);
 
-		if (!pnmasMap.containsKey(bindingConfig.getPnmasId())) {
+		if (!provider.getPnmasMap().containsKey(bindingConfig.getPnmasId())) {
 			logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", bindingConfig.getPnmasId(), bindingConfig));
 			return;
 		}
@@ -342,10 +339,10 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				}
 
 				case VIRTUAL: {
-					SappPnmas pnmas = pnmasMap.get(bindingConfig.getPnmasId());
+					SappPnmas pnmas = provider.getPnmasMap().get(bindingConfig.getPnmasId());
 					SappCommand sappCommand = new Sapp7DCommand(bindingConfig.getAddress(), command.equals(OnOffType.ON) ? 1 : 0);
 					sappCommand.run(pnmas.getIp(), pnmas.getPort());
-					if (sappCommand.isResponseOk()) {
+					if (!sappCommand.isResponseOk()) {
 						throw new SappException("command execution failed");
 					}
 					break;
@@ -407,7 +404,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			switch (bindingConfig.getAddressType()) {
 			case VIRTUAL:
 				try {
-					SappPnmas pnmas = pnmasMap.get(bindingConfig.getPnmasId());
+					SappPnmas pnmas = provider.getPnmasMap().get(bindingConfig.getPnmasId());
 					SappCommand sappCommand = new Sapp7CCommand(bindingConfig.getAddress());
 					sappCommand.run(pnmas.getIp(), pnmas.getPort());
 					if (!sappCommand.isResponseOk()) {
@@ -428,5 +425,12 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		} else { // TODO complete with other items
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
+	}
+
+	private SappBindingProvider getFirstSappBindingProvider() {
+		for (SappBindingProvider provider : providers) {
+			return provider;
+		}
+		return null;
 	}
 }

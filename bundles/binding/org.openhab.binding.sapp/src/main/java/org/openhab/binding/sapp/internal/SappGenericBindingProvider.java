@@ -30,8 +30,19 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	private static final Logger logger = LoggerFactory.getLogger(SappGenericBindingProvider.class);
 
+	/**
+	 * map of existing pnmas. key is pnmas id.
+	 */
+	private Map<String, SappPnmas> pnmasMap = new HashMap<String, SappPnmas>();
+
+	/**
+	 * map of existing items.
+	 */
 	private Map<String, Item> items = new HashMap<String, Item>();
 	
+	/**
+	 * some new items have been loaded  
+	 */
 	private boolean fullRefreshNeeded = false;
 
 	/**
@@ -58,13 +69,17 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		
 		logger.debug("processing binding configuration for context " + context);
+		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
-			addBindingConfig(item, new SappBindingConfig(item.getName(), bindingConfig));
-			fullRefreshNeeded = true;
+			SappBindingConfig sappBindingConfig = new SappBindingConfig(item.getName(), bindingConfig);
+			if (pnmasMap.get(sappBindingConfig.getPnmasId()) != null) {
+	 			addBindingConfig(item, new SappBindingConfig(item.getName(), bindingConfig));
+				fullRefreshNeeded = true;
+			} else {
+				logger.warn("bad pnmasid in bindingConfig: " + sappBindingConfig.getPnmasId() + " -> processing bindingConfig aborted!");
+			}
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
 		}
@@ -84,7 +99,12 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		return (SappBindingConfig) bindingConfigs.get(itemName);
 	}
 
-    @Override
+	@Override
+	public Map<String, SappPnmas> getPnmasMap() {
+		return pnmasMap;
+	}
+
+	@Override
     public Item getItem(String itemName) {
         return items.get(itemName);
     }

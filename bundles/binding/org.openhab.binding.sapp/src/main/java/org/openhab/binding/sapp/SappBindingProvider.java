@@ -8,7 +8,10 @@
  */
 package org.openhab.binding.sapp;
 
+import java.util.Map;
+
 import org.openhab.binding.sapp.internal.SappBindingConfig;
+import org.openhab.binding.sapp.internal.SappPnmas;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -29,6 +32,11 @@ public interface SappBindingProvider extends BindingProvider {
      * @return The bindingConfig for the itemName
      */
 	SappBindingConfig getBindingConfig(String itemName);
+	
+    /**
+     * @return The pnmas Map (by pnmas id)
+     */
+	Map<String, SappPnmas> getPnmasMap();
 
     /**
      * @param itemName The name of the item
