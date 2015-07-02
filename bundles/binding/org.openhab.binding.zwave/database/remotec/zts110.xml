@@ -42,7 +42,7 @@
 			<Default>500</Default>
 			<Minimum>500</Minimum>
 			<Maximum>4000</Maximum>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Set Filter Counter</Label>
 			<Help lang="en"><![CDATA[Set filter replacement timer from 500 to 4000 hours.]]> </Help>
 		</Parameter>
@@ -52,7 +52,7 @@
 			
 			<Minimum>0</Minimum>
 			<Maximum>9999</Maximum>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Report Filter Counter</Label>
 			<Help lang="en"><![CDATA[READ ONLY: Data in hours]]> </Help>
 		</Parameter>
@@ -73,16 +73,68 @@
 			<Minimum>0</Minimum>
 			<Maximum>1</Maximum>
 			<Size>1</Size>
+			<Label lang="en">Upper Limit of Setpoint A</Label>
+			<Help lang="en"><![CDATA[NOTE THIS PARAMETER NEEDS TO BE UPDATED I DONT KNOW THE PROPER WAY TO WRITE IT. ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Lower Limit of Setpoint B</Label>
+			<Help lang="en"><![CDATA[NOTE THIS PARAMETER NEEDS TO BE UPDATED I DONT KNOW THE PROPER WAY TO WRITE IT. ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Size>1</Size>
 			<Label lang="en">Easy Mode</Label>
 			<Help lang="en"><![CDATA[Set Easy Mode 0:DISABLE 1:ENABLED DEFAULT:ENABLED ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Time Format</Label>
+			<Help lang="en"><![CDATA[Set Easy Mode 0: 24 Hours 1: 12 Hours DEFAULT: 12 Hours ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>1</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Repeat Basic Set Counter</Label>
+			<Help lang="en"><![CDATA[NOTE THIS PARAMETER NEEDS TO BE UPDATED I DONT KNOW THE PROPER WAY TO WRITE IT. ]]> </Help>
 		</Parameter>
 	</Configuration>
 	<Associations>
 		<Group>
 			<Index>1</Index>
-			<Maximum>1</Maximum>
-			<Label lang="en">Controller Updates</Label>
-			<SetToController>true</SetToController>
+			<Maximum>4</Maximum>
+			<Label lang="en">Heat Pump</Label>
+			<Help lang="en"><![CDATA[NOTE THIS PARAMETER NEEDS TO BE UPDATED I DONT KNOW THE PROPER WAY TO WRITE IT. ]]> </Help>
 		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Compressor</Label>
+			<Help lang="en"><![CDATA[NOTE THIS PARAMETER NEEDS TO BE UPDATED I DONT KNOW THE PROPER WAY TO WRITE IT. ]]> </Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Update</Label>
+			<SetToController>true</SetToController>
+		</Group>	
 	</Associations>
 </Product>
