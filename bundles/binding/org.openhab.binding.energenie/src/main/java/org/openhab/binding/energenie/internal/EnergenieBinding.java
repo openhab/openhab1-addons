@@ -112,9 +112,9 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 					try {
 						loginResponseString = HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
 						
-						String stateResponseSearch = "var sockstates = ";
+						String stateResponseSearch = "var sockstates =";
 						int findState=loginResponseString.lastIndexOf(stateResponseSearch);
-						if (findState !=0) {
+						if (findState > 0) {
 							logger.trace("searchstring sockstates found at position {}", findState);
 							
 							String slicedResponse = loginResponseString.substring(findState+18, findState+25);
