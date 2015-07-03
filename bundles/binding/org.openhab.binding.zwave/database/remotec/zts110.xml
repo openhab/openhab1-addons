@@ -60,11 +60,17 @@
 		</Parameter>
 		<Parameter>
 			<Index>5</Index>
-			<Type>int</Type>
+			<Type>List</Type>
 			<Default>1</Default>
-			<Minimum>0</Minimum>
-			<Maximum>1</Maximum>
 			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Centigrade</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Farhenheit</Label>
+			</Item>
 			<Label lang="en">Scale of Temperature</Label>
 			<Help lang="en"><![CDATA[Set Temperature Scale to Farhenheit or Centigrade. DEFAULT =1 Farhenheit]]> </Help>
 		</Parameter>
@@ -90,7 +96,7 @@
 		</Parameter>
 		<Parameter>
 			<Index>8</Index>
-			<Type>int</Type>
+			<Type>List</Type>
 			<Default>1</Default>
 			<Size>1</Size>
 			<Item>
@@ -106,7 +112,7 @@
 		</Parameter>
 		<Parameter>
 			<Index>9</Index>
-			<Type>int</Type>
+			<Type>List</Type>
 			<Default>1</Default>
 			<Size>1</Size>
 			<Item>
