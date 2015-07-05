@@ -35,7 +35,7 @@
 			</Reference>
 			<Model>WS15Z-1</Model>
 			<Label lang="en">Wall Mounted Switch</Label>
-			<ConfigFile>linear/wsz15-1.xml</ConfigFile>
+			<ConfigFile>linear/ws15z-1.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
