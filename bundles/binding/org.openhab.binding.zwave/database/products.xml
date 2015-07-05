@@ -1181,6 +1181,15 @@
 		<Name>Fibaro System</Name>
 		<Product>
 			<Reference>
+				<Type>0402</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Model>FGS212</Model>
+			<Label lang="en">Relay Switch 1x2.5kW</Label>
+			<ConfigFile>fibaro/fgs212.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0800</Type>
 				<Id>1001</Id>
 			</Reference>
