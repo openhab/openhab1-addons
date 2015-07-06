@@ -674,6 +674,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 					properlyConfigured = false;
 					break;
 				}
+				// Knowing this OAuthCredentials object is complete, load its tokens from persistent storage.
+				oauthCredentials.load();
 			}
 
 			setProperlyConfigured(properlyConfigured);
@@ -832,6 +834,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	 */
 	static class OAuthCredentials {
 
+		private static final String APP_KEY = "appKey";
 		private static final String AUTH_TOKEN = "authToken";
 		private static final String REFRESH_TOKEN = "refreshToken";
 		private static final String ACCESS_TOKEN = "accessToken";
@@ -884,13 +887,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		private Map<String, Revision> lastRevisionMap = new HashMap<String, Revision>();
 
 		public OAuthCredentials(String userid) {
-
-			try {
-				this.userid = userid;
-				load();
-			} catch (Exception e) {
-				throw new EcobeeException("Cannot create OAuthCredentials.", e);
-			}
+			this.userid = userid;
 		}
 
 		public Map<String, Revision> getLastRevisionMap() {
@@ -907,13 +904,23 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 		private void load() {
 			Preferences prefs = getPrefsNode();
-			this.authToken = prefs.get(AUTH_TOKEN, null);
-			this.refreshToken = prefs.get(REFRESH_TOKEN, null);
-			this.accessToken = prefs.get(ACCESS_TOKEN, null);
+			/*
+			 * Only load the tokens if they were not saved with the app key used to create them (backwards
+			 * compatibility), or if the saved app key matches the current app key specified in openhab.cfg. This
+			 * properly ignores saved tokens when the app key has been changed.
+			 */
+			final String savedAppKey = prefs.get(APP_KEY, null);
+			if (savedAppKey == null || savedAppKey.equals(this.appKey)) {
+				this.authToken = prefs.get(AUTH_TOKEN, null);
+				this.refreshToken = prefs.get(REFRESH_TOKEN, null);
+				this.accessToken = prefs.get(ACCESS_TOKEN, null);
+			}
 		}
 
 		private void save() {
 			Preferences prefs = getPrefsNode();
+			prefs.put(APP_KEY, this.appKey);
+
 			if (this.authToken != null) {
 				prefs.put(AUTH_TOKEN, this.authToken);
 			} else {
@@ -993,6 +1000,14 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 				if (response.isError()) {
 					logger.error("Error retrieving tokens: {}", response.getError());
+					if ("authorization_expired".equals(response.getError())) {
+						this.refreshToken = null;
+						this.accessToken = null;
+						if (request instanceof TokenRequest) {
+							this.authToken = null;
+						}
+						save();
+					}
 					return false;
 				} else {
 					this.refreshToken = response.getRefreshToken();
