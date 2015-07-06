@@ -101,6 +101,7 @@ public class Script {
 		engine.put("ItemRegistry", scriptManager.getItemRegistry());
 		engine.put("DateTime", org.joda.time.DateTime.class);
 		engine.put("oh", Openhab.class);
+		engine.put("pe", org.openhab.core.persistence.extensions.PersistenceExtensions.class);
 
 		// default types, TODO: auto import would be nice
 		engine.put("DateTimeType", DateTimeType.class);
