@@ -1184,6 +1184,15 @@
 			<Model>ZU1401</Model>
 			<Label lang="en">USB Controller</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2016</Type>
+				<Id>1616</Id>
+			</Reference>
+			<Model>ZL7431</Model>
+			<Label lang="en">In Wall Relay Switch</Label>
+			<ConfigFile>vision/zl7431.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
