@@ -30,15 +30,15 @@ public interface CalDavLoader {
 	public void removeListener(EventNotifier notifier);
 
 	/**
-	 * add a new event to the calendar
-	 * @param calDavEvent
-	 */
-	public void addEvent(CalDavEvent calDavEvent);
-
-	/**
 	 * get events for a specific calendar
 	 * @param calendarId
 	 * @return
 	 */
-	public List<CalDavEvent> getEvents(String calendarId);
+	public List<CalDavEvent> getEvents(CalDavQuery query);
+
+	/**
+	 * add a new event to the calendar
+	 * @param calDavEvent
+	 */
+	public void addEvent(CalDavEvent event);
 }

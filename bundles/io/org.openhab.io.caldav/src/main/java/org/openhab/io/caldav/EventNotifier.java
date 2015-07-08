@@ -38,4 +38,10 @@ public interface EventNotifier {
 	 * @param event the interesting event
 	 */
 	void eventEnds(CalDavEvent event);
+	
+	/**
+	 * invoked when an calendar is completely reloaded
+	 * @param calendarId the calendar, which have been reloaded
+	 */
+	void calendarReloaded(String calendarId);
 }

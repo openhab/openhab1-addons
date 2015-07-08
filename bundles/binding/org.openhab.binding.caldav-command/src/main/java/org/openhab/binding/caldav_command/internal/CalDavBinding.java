@@ -9,16 +9,9 @@
 package org.openhab.binding.caldav_command.internal;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -26,6 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.caldav_command.CalDavBindingProvider;
 
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -33,9 +27,9 @@ import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.TypeParser;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
+import org.openhab.io.caldav.CalDavQuery;
 import org.openhab.io.caldav.EventNotifier;
 import org.openhab.io.caldav.EventUtils;
 import org.osgi.service.cm.ConfigurationException;
@@ -84,9 +78,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
 	private List<String> readCalendars = new ArrayList<String>();
 	
-	// key=item config, value=list of item changes to listen to
-	private ConcurrentHashMap<CalDavNextEventConfig, List<NextEventContainer>> itemNextEventMap = new ConcurrentHashMap<CalDavNextEventConfig, List<NextEventContainer>>();
-	
 	private List<String> disabledItems = new ArrayList<String>();
 	
 	public CalDavBinding() {
@@ -131,37 +122,28 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 	}
 	
+	@Override
+	public void allBindingsChanged(BindingProvider provider) {
+		for (String itemName : provider.getItemNames()) {
+			this.bindingChanged(provider, itemName);
+		}
+	}
+
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		if (provider.getItemNames().contains(itemName)) {
+			final CalDavNextEventConfig config = ((CalDavBindingProvider) provider).getConfig(itemName);
+			List<CalDavEvent> events = calDavLoader.getEvents(new CalDavQuery(this.readCalendars, DateTime.now()));
+			this.updateItemState(config, events);
+		}
+	}
+
 	private void reloadCurrentLoadedEvents() {
 		if (this.calDavLoader == null) {
 			return;
 		}
 		for (String calendarKey : this.readCalendars) {
-			for (CalDavEvent calDavEvent : this.calDavLoader.getEvents(calendarKey)) {
-				this.eventLoaded(calDavEvent);
-			}
-		}
-	}
-	
-	private String parseContent(String content, String scope) {
-		try {
-			StringBuilder out = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new StringReader(content));
-		
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				line = line.trim();
-				
-				if (line.startsWith(scope)) {
-					if (out.length() > 0) {
-						out.append(",");
-					}
-					out.append(line.substring(scope.length() + 1));
-				}
-			}
-			return out.toString();
-		} catch (IOException e) {
-			logger.error("cannot parse event content", e);
-			return "";
+			calendarReloaded(calendarKey);
 		}
 	}
 	
@@ -172,57 +154,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		return null;
 	}
 	
-	private synchronized void handleForEventMap(CalDavEvent event, String scope, boolean add) {
-		if (!readCalendars.contains(event.getCalendarId())) {
-			logger.trace("event '{}' is not in used calendars", event.getShortName());
+	private synchronized void handleForEventPreview() {
+		CalDavBindingProvider provider = getCalDavBindingProvider();
+		if (provider == null) {
+			logger.error("cannot find any provider");
 			return;
 		}
 		
-		if (scope.equals(EventUtils.SCOPE_BEGIN) && event.getStart().isBeforeNow()) {
-        	return;
-        }
-		if (scope.equals(EventUtils.SCOPE_END) && event.getEnd().isBeforeNow()) {
-        	return;
-        }
+		List<CalDavEvent> events = calDavLoader.getEvents(new CalDavQuery(this.readCalendars, DateTime.now()));
 		
-		if (event.getContent() == null) {
-			logger.warn("no content for event: {}", event.getShortName());
-			return;
-		}
-		
-		String content = parseContent(event.getContent(), scope);
-		
-		if (content.trim().isEmpty()) {
-			logger.warn("no content for event: {}", event.getShortName());
-			return;
-		}
-		
-		String[] commands = content.split(",");
-		for (String itemCommand : commands) {
-			String[] commandSplit = itemCommand.split(EventUtils.SEPERATOR);
-			String itemName = commandSplit[0];
-			String commandString = commandSplit[1];
-			
-			try {
-				itemRegistry.getItem(itemName);
-			} catch (ItemNotFoundException e) {
-				logger.error("item '" + itemName + "' could not be found");
-				return;
-			}
-			
-			CalDavBindingProvider provider = getCalDavBindingProvider();
-			if (provider == null) {
-				logger.error("cannot find any provider");
-				return;
-			}
-			List<CalDavNextEventConfig> configList = provider.getConfigForListenerItem(itemName);
-			for (CalDavNextEventConfig config : configList) {
-				if (add) {
-					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, scope.equals(EventUtils.SCOPE_BEGIN) ? event.getStart() : event.getEnd(), config.getType(), event.getId(), scope);
-				} else {
-					this.removeFromEventMap(itemName, event.getId(), scope);		
-				}
-			}
+		for (String configItemName : provider.getItemNames()) {
+			final CalDavNextEventConfig config = provider.getConfig(configItemName);
+			this.updateItemState(config, events);
 		}
 	}
 	
@@ -230,6 +173,11 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
+		if (!(command instanceof OnOffType)) {
+			logger.trace("invalid command for DISABLE (just SwitchItems allowed)");
+			return;
+		}
+		
 		// get binding provider
 		CalDavBindingProvider provider = getCalDavBindingProvider();
 		if (provider == null) {
@@ -248,11 +196,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			return;
 		}
 		
-		if (!(command instanceof OnOffType)) {
-			logger.error("invalid command for DISABLE (just SwitchItems allowed)");
-			return;
-		}
-		
 		if (command == OnOffType.ON) {
 			logger.info("execution for '{}' disabled", config.getItemNameToListenTo());
 			this.disabledItems.add(config.getItemNameToListenTo());
@@ -264,263 +207,142 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 
 	@Override
 	public void eventRemoved(CalDavEvent event) {
-		this.handleForEventMap(event, EventUtils.SCOPE_BEGIN, false);
-		this.handleForEventMap(event, EventUtils.SCOPE_END, false);
 	}
 
 	@Override
 	public void eventLoaded(CalDavEvent event) {
-		this.handleForEventMap(event, EventUtils.SCOPE_BEGIN, true);
-		this.handleForEventMap(event, EventUtils.SCOPE_END, true);
 	}
 	
 	@Override
 	public void eventBegins(CalDavEvent event) {
-		this.doAction(event, EventUtils.SCOPE_BEGIN);
-	}
-
-	@Override
-	public void eventEnds(CalDavEvent event) {
-		this.doAction(event, EventUtils.SCOPE_END);
-	}
-	
-	private void doAction(CalDavEvent event, String scope) {
 		if (!readCalendars.contains(event.getCalendarId())) {
 			return;
 		}
 		
-		if (event.getContent() == null) {
-			logger.warn("no content for event: {}", event.getShortName());
+		if (this.itemRegistry == null) {
+			logger.error("item registry is not set");
 			return;
 		}
 		
-		String content = parseContent(event.getContent(), scope);
-		
-		if (content.trim().isEmpty()) {
-			return;
-		}
-		String[] commands = content.split(",");
-		for (String itemCommand : commands) {
-			String[] commandSplit = itemCommand.split(EventUtils.SEPERATOR);
-			String itemName = commandSplit[0];
-			String commandString = commandSplit[1];
-			
-			if (this.disabledItems.contains(itemName)) {
-				logger.info("execution for item '{}' disabled, do nothing");
-			} else {
-				logger.info("executing command '{}' for item '{}'", commandString, itemName);
-				
-				Item item = null;
-				try {
-					item = itemRegistry.getItem(itemName);
-				} catch (ItemNotFoundException e) {
-					logger.error("item '" + itemName + "' could not be found");
-					return;
-				}
-				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandString);
-				eventPublisher.postCommand(itemName, command);
-			}
-			
-			this.removeFromEventMap(itemName, event.getId(), scope);
-		}
+		this.doAction(event, EventUtils.SCOPE_BEGIN);
+		this.handleForEventPreview();
 	}
-	
-	private void removeFromEventMap(String itemName, String eventId, String scope) {
-		for (Entry<CalDavNextEventConfig, List<NextEventContainer>> entry : this.itemNextEventMap.entrySet()) {
-			for (int i = 0; i < entry.getValue().size(); i++) {
-				NextEventContainer container = entry.getValue().get(i);
-				if (itemName.equals(entry.getKey().getItemNameToListenTo())
-						&& container.getEventId().equals(eventId)
-						&& container.getScope().equals(scope)) {
-					
 
-					logger.trace("remove: {}", entry.getValue().get(i).getEventId());
-					entry.getValue().remove(i);
-					
-					for (int j = 0; j < entry.getValue().size(); j++) {
-						logger.trace("{}: {}", j, entry.getValue().get(j).getEventId());
-					}
-					
-					this.updateItemState(entry.getKey().getItemName());
+	@Override
+	public void eventEnds(CalDavEvent event) {
+		if (!readCalendars.contains(event.getCalendarId())) {
+			return;
+		}
+		
+		if (this.itemRegistry == null) {
+			logger.error("item registry is not set");
+			return;
+		}
+		
+		this.doAction(event, EventUtils.SCOPE_END);
+		this.handleForEventPreview();
+	}
+	
+	@Override
+	public void calendarReloaded(String calendarId) {
+		if (!readCalendars.contains(calendarId)) {
+			return;
+		}
+		
+		if (this.itemRegistry == null) {
+			logger.error("item registry is not set");
+			return;
+		}
+		
+		this.doActionInitial();
+		this.handleForEventPreview();
+	}
+	
+	private void doActionInitial() {
+		List<CalDavEvent> events = calDavLoader.getEvents(new CalDavQuery(this.readCalendars, DateTime.now(), DateTime.now()));
+		EventUtils.EventContent currentEventContent = null;
+		for (CalDavEvent calDavEvent : events) {
+			final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, this.itemRegistry, null);
+			for (EventUtils.EventContent eventContent : parseContent) {
+				if (disabledItems.contains(eventContent.getItem().getName())) {
+					continue;
+				}
+				
+				if (eventContent.getTime().isBefore(DateTime.now())
+						&& (currentEventContent == null || eventContent.getTime().isAfter(currentEventContent.getTime()))) {
+					currentEventContent = eventContent;
 				}
 			}
 		}
-	}
-	
-	private void addToEventMap(CalDavNextEventConfig config, String itemName, String command, 
-			DateTime changeDate, CalDavType type, String eventId, String scope) {
-		if (!this.itemNextEventMap.containsKey(config)) {
-			logger.trace("creating initial list for config: {}", config.getItemName());
-			this.itemNextEventMap.put(config, new ArrayList<NextEventContainer>());
+		
+		if (currentEventContent != null) {
+			eventPublisher.postUpdate(currentEventContent.getItem().getName(), currentEventContent.getType());
 		}
-		List<NextEventContainer> eventList = this.itemNextEventMap.get(config);
-		
-		NextEventContainer container = new NextEventContainer();
-		container.setCommand(command);
-		container.setChangeDate(changeDate);
-		container.setType(type);
-		container.setEventId(eventId);
-		container.setScope(scope);
-		eventList.add(container);
-		
-		this.updateItemState(config.getItemName());
 	}
 	
-	private void updateItemState(String itemName) {
+	private void doAction(CalDavEvent event, String scope) {
+		final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(event, this.itemRegistry, scope);
+		for (EventUtils.EventContent eventContent : parseContent) {
+			if (disabledItems.contains(eventContent.getItem().getName())) {
+				continue;
+			}
+			
+			eventPublisher.postUpdate(eventContent.getItem().getName(), eventContent.getType());
+		}
+	}
+	
+	private void updateItemState(CalDavNextEventConfig config, List<CalDavEvent> events) {
+		String itemName = config.getItemNameToListenTo();
+		String itemNamePreview = config.getItemName();
 		logger.trace("update item state for item: {}", itemName);
 		
-		List<NextEventContainer> containerList = new ArrayList<NextEventContainer>();
-		for (Entry<CalDavNextEventConfig, List<NextEventContainer>> entry : this.itemNextEventMap.entrySet()) {
-			if (entry.getKey().getItemName().equals(itemName)) {
-				// handle this
-				containerList = entry.getValue();
-			}
-		}
+		State state = null;
+		DateTime time = null;
 		
-		Collections.sort(containerList, new Comparator<NextEventContainer>() {
-			@Override
-			public int compare(NextEventContainer o1, NextEventContainer o2) {
-				return o1.getChangeDate().compareTo(o2.getChangeDate());
-			}
-		});
-		
-		logger.trace("list all events for item: {}", itemName);
-		int i = 0;
-		for (NextEventContainer c : containerList) {
-			logger.info("{}: {} -> {}", i++, c.getChangeDate(), c.getCommand());
-		}
-		
-		if (containerList.size() == 0) {
+		if (calDavLoader == null) {
+			logger.warn("caldav loader is not set");
 			return;
 		}
 		
-		NextEventContainer container = containerList.get(0);
+		for (CalDavEvent calDavEvent : events) {
+			Item item = null;
+			try {
+				item = this.itemRegistry.getItem(itemName);
+			} catch (ItemNotFoundException e) {
+				logger.error("item {} could not be found", itemName);
+				continue;
+			}
+			
+			final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, item);
+			for (EventUtils.EventContent eventContent : parseContent) {
+				if (eventContent.getTime().isBefore(DateTime.now())) {
+					continue;
+				}
+				
+				if (time == null || time.isAfter(eventContent.getTime())) {
+					time = eventContent.getTime();
+					state = eventContent.getType();
+				}
+			}
+		}
 		
-		CalDavType type = container.getType();
+		if (time == null) {
+			// no item found
+			eventPublisher.postUpdate(itemNamePreview, org.openhab.core.types.UnDefType.UNDEF);
+			return;
+		}
+		
+		CalDavType type = config.getType();
 		logger.trace("handling event of type: {}", type);
 		if (type == CalDavType.VALUE) {
-			Command c = null;
-			try {
-				c = TypeParser.parseCommand(itemRegistry.getItem(itemName).getAcceptedCommandTypes(), container.getCommand());
-			} catch (ItemNotFoundException e) {
-				logger.error("cannot find item: {}", itemName);
-				return;
-			}
-			logger.debug("setting value for '{}' to: {}", itemName, c);
-			eventPublisher.postCommand(itemName, c);
+			logger.debug("setting value for '{}' to: {}", itemNamePreview, state);
+			eventPublisher.postUpdate(itemNamePreview, state);
 		} else if (type == CalDavType.DATE) {
-			State c = new DateTimeType(FORMATTER.print(container.getChangeDate()));
-			logger.debug("setting value for '{}' to: {}", itemName, c);
-			eventPublisher.postUpdate(itemName, c);
+			State c = new DateTimeType(FORMATTER.print(time));
+			logger.debug("setting value for '{}' to: {}", itemNamePreview, c);
+			eventPublisher.postUpdate(itemNamePreview, c);
 		} else {
 			logger.warn("unhandled type: " + type);
 		}
-	}
-	
-	class NextEventContainer {
-		private String command;
-		private DateTime changeDate;
-		private CalDavType type;
-		private String eventId;
-		private String scope;
-		
-		public String getCommand() {
-			return command;
-		}
-		
-		public void setCommand(String command) {
-			this.command = command;
-		}
-
-
-		public DateTime getChangeDate() {
-			return changeDate;
-		}
-
-		public void setChangeDate(DateTime changeDate) {
-			this.changeDate = changeDate;
-		}
-		
-		public CalDavType getType() {
-			return type;
-		}
-
-		public void setType(CalDavType type) {
-			this.type = type;
-		}
-		
-		public String getEventId() {
-			return eventId;
-		}
-
-		public void setEventId(String eventId) {
-			this.eventId = eventId;
-		}
-
-		public String getScope() {
-			return scope;
-		}
-
-		public void setScope(String scope) {
-			this.scope = scope;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result
-					+ ((changeDate == null) ? 0 : changeDate.hashCode());
-			result = prime * result
-					+ ((command == null) ? 0 : command.hashCode());
-			result = prime * result
-					+ ((eventId == null) ? 0 : eventId.hashCode());
-			result = prime * result + ((scope == null) ? 0 : scope.hashCode());
-			result = prime * result + ((type == null) ? 0 : type.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			NextEventContainer other = (NextEventContainer) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
-			if (changeDate == null) {
-				if (other.changeDate != null)
-					return false;
-			} else if (!changeDate.equals(other.changeDate))
-				return false;
-			if (command == null) {
-				if (other.command != null)
-					return false;
-			} else if (!command.equals(other.command))
-				return false;
-			if (eventId == null) {
-				if (other.eventId != null)
-					return false;
-			} else if (!eventId.equals(other.eventId))
-				return false;
-			if (scope == null) {
-				if (other.scope != null)
-					return false;
-			} else if (!scope.equals(other.scope))
-				return false;
-			if (type != other.type)
-				return false;
-			return true;
-		}
-
-		private CalDavBinding getOuterType() {
-			return CalDavBinding.this;
-		}
-
-		
 	}
 }

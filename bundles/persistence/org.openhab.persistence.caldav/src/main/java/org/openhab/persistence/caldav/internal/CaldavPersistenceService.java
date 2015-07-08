@@ -12,17 +12,12 @@ import static org.openhab.persistence.caldav.internal.CaldavConfiguration.calend
 import static org.openhab.persistence.caldav.internal.CaldavConfiguration.duration;
 import static org.openhab.persistence.caldav.internal.CaldavConfiguration.singleEvents;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -39,10 +34,10 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
-import org.openhab.core.types.TypeParser;
 import org.openhab.core.types.UnDefType;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
+import org.openhab.io.caldav.CalDavQuery;
 import org.openhab.io.caldav.EventUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +121,7 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 				if (isOff(item.getState())) {
 					CalDavEvent event = lastOn.getEvent();
 					event.setLastChanged(DateTime.now());
-					String offContent = EventUtils.SCOPE_END + EventUtils.SEPERATOR + alias + EventUtils.SEPERATOR + item.getState();
+					String offContent = EventUtils.createEnd(alias, state);
 					event.setContent(event.getContent() + "\n" + offContent);
 					event.setEnd(DateTime.now());
 					logger.debug("existing event found, updated for persistence: {}", event);
@@ -134,7 +129,8 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 				} else {
 					CalDavEvent event = lastOn.getEvent();
 					event.setLastChanged(DateTime.now());
-					String offContent = DateTimeFormat.forPattern(EventUtils.SCOPE_DATE).print(DateTime.now()) + EventUtils.SEPERATOR + alias + EventUtils.SEPERATOR + item.getState();
+					
+					String offContent = EventUtils.createBetween(alias, state);
 					event.setContent(event.getContent() + "\n" + offContent);
 					logger.debug("existing event found, updated for persistence: {}", event);
 					this.calDavLoader.addEvent(event);
@@ -149,7 +145,7 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 		event.setId(id);
 		event.setName(alias);
 		event.setLastChanged(DateTime.now());
-		event.setContent(EventUtils.SCOPE_BEGIN + EventUtils.SEPERATOR + alias + EventUtils.SEPERATOR + item.getState());
+		event.setContent(EventUtils.createBegin(alias, state));
 		DateTime now = DateTime.now();
 		event.setStart(now);
 		event.setEnd(now.plusMinutes(duration));
@@ -174,7 +170,7 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 	}
 
 	public Iterable<HistoricItem> query(final FilterCriteria filter) {
-		List<CalDavEvent> events = calDavLoader.getEvents(calendarId);
+		List<CalDavEvent> events = calDavLoader.getEvents(new CalDavQuery(calendarId));
 		List<HistoricItem> outList = new ArrayList<HistoricItem>();
 		
 		for (CalDavEvent calDavEvent : events) {
@@ -195,18 +191,18 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 				continue;
 			}
 			
-			final Map<Date, State> parseContent = this.parseContent(calDavEvent, item);
-			for (Date date : parseContent.keySet()) {
+			final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, item);
+			for (EventUtils.EventContent eventContent : parseContent) {
 				if (filter.getBeginDate() != null
-						&& date.before(filter.getBeginDate())) {
+						&& eventContent.getTime().toDate().before(filter.getBeginDate())) {
 					continue;
 				}
 				if (filter.getEndDate() != null
-						&& date.after(filter.getEndDate())) {
+						&& eventContent.getTime().toDate().after(filter.getEndDate())) {
 					continue;
 				}
 				
-				final State eventState = parseContent.get(date);
+				final State eventState = eventContent.getType();
 				
 				if (filter.getState() != null && filter.getOperator() != null) {
 					switch (filter.getOperator()) {
@@ -266,7 +262,7 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 				}
 				
 				// just filtered events are here...
-				final CaldavItem caldavItem = new CaldavItem(filter.getItemName(), eventState, date);
+				final CaldavItem caldavItem = new CaldavItem(filter.getItemName(), eventState, eventContent.getTime().toDate());
 				caldavItem.setEvent(calDavEvent);
 				outList.add(caldavItem);
 			}
@@ -292,52 +288,5 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 		logger.trace("result size for query: {}", outList.size());
 		
 		return outList;
-	}
-	
-	private Map<Date, State> parseContent(CalDavEvent event, Item item) {
-		final Map<Date, State> outMap = new HashMap<Date, State>();
-		
-		try {
-			BufferedReader reader = new BufferedReader(new StringReader(event.getContent()));
-		
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				line = line.trim();
-				
-				String[] split = line.split(EventUtils.SEPERATOR);
-				if (split.length != 3) {
-					logger.error("unknown content format: {}", line);
-					continue;
-				}
-				String scope = split[0];
-				String itemName = split[1];
-				String stateString = split[2];
-				
-				if (!item.getName().equals(itemName)) {
-					continue;
-				}
-				
-				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
-				
-				if (scope.equals(EventUtils.SCOPE_BEGIN)) {
-					outMap.put(event.getStart().toDate(), state);
-				} else if (scope.equals(EventUtils.SCOPE_END)) {
-					outMap.put(event.getEnd().toDate(), state);
-				} else {
-					try {
-						final DateTime parseDateTime = DateTimeFormat.forPattern(EventUtils.SCOPE_DATE).parseDateTime(scope);
-						outMap.put(parseDateTime.toDate(), state);
-					} catch (IllegalArgumentException e) {
-						logger.error("unknown scope: {}", scope);
-						continue;
-					}
-				}
-				
-			}
-		} catch (IOException e) {
-			logger.error("cannot parse event content", e);
-		}
-		
-		return outMap;
 	}
 }

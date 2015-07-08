@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.caldav_personal.internal;
 
+import java.util.List;
+
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -26,12 +28,12 @@ public class CalDavConfig implements BindingConfig {
 		NAME, DESCRIPTION, PLACE, START, END, TIME, NAMEANDTIME
 	}
 	
-	private final String calendar;
+	private final List<String> calendar;
 	private final Type type;
 	private final int eventNr;
 	private final Value value;
 	
-	public CalDavConfig(String calendar, Type type, int eventNr,
+	public CalDavConfig(List<String> calendar, Type type, int eventNr,
 			Value value) {
 		super();
 		this.calendar = calendar;
@@ -40,7 +42,7 @@ public class CalDavConfig implements BindingConfig {
 		this.value = value;
 	}
 
-	public String getCalendar() {
+	public List<String> getCalendar() {
 		return calendar;
 	}
 

@@ -10,12 +10,12 @@ package org.openhab.binding.caldav_personal.internal;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openhab.binding.caldav_personal.CalDavBindingProvider;
@@ -29,7 +29,9 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
+import org.openhab.io.caldav.CalDavQuery;
 import org.openhab.io.caldav.EventNotifier;
+import org.openhab.io.caldav.CalDavQuery.Sort;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -56,8 +58,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
     private List<String> calendars = new ArrayList<String>();
 	private List<String> homeIdentifier = new ArrayList<String>();
-	
-	private ConcurrentHashMap<String, CalDavEvent> eventMap = new ConcurrentHashMap<String, CalDavEvent>();
 	
 	public CalDavBinding() {
 	}
@@ -119,9 +119,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			}
 			logger.trace("reloading events");
 			for (String calendarKey : this.calendars) {
-				for (CalDavEvent calDavEvent : this.calDavLoader.getEvents(calendarKey)) {
-					this.eventLoaded(calDavEvent);
-				}
+				calendarReloaded(calendarKey);
 			}
 		} catch (Exception e) {
 			logger.error("cannot load events", e);
@@ -142,7 +140,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		if (config == null) {
 			return;
 		}
-		this.updateItem(itemName, config);
+		final List<CalDavEvent> events = this.calDavLoader.getEvents(new CalDavQuery(this.calendars, DateTime.now(), Sort.ASCENDING));
+		this.updateItem(itemName, config, events);
 	}
 	
 	
@@ -151,19 +150,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	 */
 	@Override
 	public void eventRemoved(CalDavEvent event) {
-        if (!calendars.contains(event.getCalendarId())) {
-            return;
-        }
-        
-        if (event.getEnd().isBeforeNow()) {
-        	return;
-        }
-
-		this.eventMap.remove(event.getId());
-		
-		logger.debug("remove event from map: {}", event.getShortName());
-		
-		this.updateItemsForEvent();
 	}
 
 	/**
@@ -171,19 +157,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	 */
 	@Override
 	public void eventLoaded(CalDavEvent event) {
-        if (!calendars.contains(event.getCalendarId())) {
-            return;
-        }
-        
-        if (event.getEnd().isBeforeNow()) {
-        	return;
-        }
-
-		this.eventMap.put(event.getId(), event);
-		
-		logger.debug("adding event to map: {}", event.getShortName());
-		
-		this.updateItemsForEvent();
 	}
 	
 	/**
@@ -199,8 +172,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
         	return;
         }
 
-		this.eventMap.put(event.getId(), event);
-		
 		logger.debug("adding event to map: {}", event.getShortName());
 		
 		this.updateItemsForEvent();
@@ -215,13 +186,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
             return;
         }
         
-        if (event.getEnd().isBeforeNow()) {
-        	return;
-        }
-
-		this.eventMap.remove(event.getId());
-		
 		logger.debug("remove event from map: {}", event.getShortName());
+		
+		this.updateItemsForEvent();
+	}
+	
+	@Override
+	public void calendarReloaded(String calendarId) {
+		if (!calendars.contains(calendarId)) {
+            return;
+        }
+        
+		logger.debug("calendar reloaded: {}", calendarId);
 		
 		this.updateItemsForEvent();
 	}
@@ -236,15 +212,23 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			return;
 		}
 		
+		
+		Map<Integer, List<CalDavEvent>> eventCache = new HashMap<Integer, List<CalDavEvent>>();
+		
 		for (String item : bindingProvider.getItemNames()) {
 			CalDavConfig config = bindingProvider.getConfig(item);
-			this.updateItem(item, config);
+			List<CalDavEvent> events = eventCache.get(config.getCalendar().hashCode());
+			if (events == null) {
+				events = this.calDavLoader.getEvents(new CalDavQuery(config.getCalendar(), DateTime.now(), Sort.ASCENDING));
+				eventCache.put(config.getCalendar().hashCode(), events);
+			}
+			this.updateItem(item, config, events);
 		}
 	}
 	
-	private synchronized void updateItem(String itemName, CalDavConfig config) {
+	private synchronized void updateItem(String itemName, CalDavConfig config, List<CalDavEvent> events) {
 		if (config.getType() == Type.PRESENCE) {
-			List<CalDavEvent> subList = getActiveEvents(config.getCalendar());
+			List<CalDavEvent> subList = getActiveEvents(events);
 			subList = this.removeWithMatchingPlace(subList);
 			if (subList.size() == 0) {
 				eventPublisher.sendCommand(itemName, OnOffType.OFF);
@@ -254,11 +238,11 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		} else {
 			List<CalDavEvent> subList = new ArrayList<CalDavEvent>();
 			if (config.getType() == Type.EVENT) {
-				subList = getAllEvents(config.getCalendar());
+				subList = getAllEvents(events);
 			} else if (config.getType() == Type.ACTIVE) {
-				subList = getActiveEvents(config.getCalendar());
+				subList = getActiveEvents(events);
 			} else if (config.getType() == Type.UPCOMING) {
-				subList = getUpcomingEvents(config.getCalendar());
+				subList = getUpcomingEvents(events);
 			}
 			
 			if (config.getEventNr() > subList.size()) {
@@ -299,13 +283,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 	}
 	
-	private List<CalDavEvent> getActiveEvents(String calendar) {
+	private List<CalDavEvent> getActiveEvents(List<CalDavEvent> events) {
 		List<CalDavEvent> subList = new ArrayList<CalDavEvent>();
-		for (CalDavEvent event : this.eventMap.values()) {
-			if (!event.getCalendarId().equals(calendar)) {
-				continue;
-			}
-			
+		for (CalDavEvent event : events) {
 			if (!(event.getStart().isBeforeNow()
 					&& event.getEnd().isAfterNow())) {
 				continue;
@@ -313,37 +293,26 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			
 			subList.add(event);
 		}
-		Collections.sort(subList, new MyComparator());
 		return subList;
 	}
 	
-	private List<CalDavEvent> getUpcomingEvents(String calendar) {
+	private List<CalDavEvent> getUpcomingEvents(List<CalDavEvent> events) {
 		List<CalDavEvent> subList = new ArrayList<CalDavEvent>();
-		for (CalDavEvent event : this.eventMap.values()) {
-			if (!event.getCalendarId().equals(calendar)) {
-				continue;
-			}
-			
+		for (CalDavEvent event : events) {
 			if (event.getStart().isBeforeNow()) {
 				continue;
 			}
 			
 			subList.add(event);
 		}
-		Collections.sort(subList, new MyComparator());
 		return subList;
 	}
 	
-	private List<CalDavEvent> getAllEvents(String calendar) {
+	private List<CalDavEvent> getAllEvents(List<CalDavEvent> events) {
 		List<CalDavEvent> subList = new ArrayList<CalDavEvent>();
-		for (CalDavEvent event : this.eventMap.values()) {
-			if (!event.getCalendarId().equals(calendar)) {
-				continue;
-			}
-			
+		for (CalDavEvent event : events) {
 			subList.add(event);
 		}
-		Collections.sort(subList, new MyComparator());
 		return subList;
 	}
 	
@@ -376,14 +345,4 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		
 		return false;
 	}
-	
-	class MyComparator implements Comparator<CalDavEvent> {
-		@Override
-		public int compare(CalDavEvent arg0, CalDavEvent arg1) {
-			return arg0.getStart().compareTo(arg1.getStart());
-		}
-	}
-
-	
-
 }

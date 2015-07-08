@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.caldav_personal.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider implements CalDavBindingProvider {
 	private static final Logger logger = LoggerFactory.getLogger(CalDavBindingProviderImpl.class);
 	
-	private static final String REGEX_CALENDAR = "calendar:([A-Za-z]+)";
+	private static final String REGEX_CALENDAR = "calendar:([A-Za-z-_]+(,[A-Za-z-_]+)*)";
 	private static final String REGEX_TYPE = "type:([A-Za-z]+)";
 	private static final String REGEX_EVENT_NR = "eventNr:([0-9]+)"; 
 	private static final String REGEX_VALUE = "value:([A-Za-z]+)"; 
@@ -79,7 +81,7 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 		
 		logger.trace("handling config: {}", bindingConfig);
 		
-		String calendar = null;
+		List<String> calendar = new ArrayList<String>();;
 		String type = null;
 		Type typeEnum = null;
 		String eventNr = null;
@@ -91,7 +93,9 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 			logger.trace("handling config part: {}", split);
 			Matcher mCalendar = Pattern.compile(REGEX_CALENDAR).matcher(split);
 			if (mCalendar.matches()) {
-				calendar = mCalendar.group(1);
+				for (String str : mCalendar.group(1).split(",")) {
+					calendar.add(str);
+				}
 			}
 			
 			Matcher mType = Pattern.compile(REGEX_TYPE).matcher(split);
@@ -112,7 +116,7 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 		
 		logger.trace("found values: calendar={}, type={}, eventNr={}, value={}", calendar, type, eventNr, value);
 		
-		if (calendar == null) {
+		if (calendar == null || calendar.size() == 0) {
 			throw new BindingConfigParseException("missing attribute 'calendar'");
 		}
 		if (type == null) {

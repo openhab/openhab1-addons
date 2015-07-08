@@ -83,7 +83,7 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 		}
 		
 		logger.debug("adding item: {}", item.getName());
-		this.bindingConfigs.put(item.getName(), new CalDavNextEventConfig(item.getName(), itemName, type));
+		this.addBindingConfig(item, new CalDavNextEventConfig(item.getName(), itemName, type));
 	}
 
 	@Override
