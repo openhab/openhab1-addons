@@ -191,7 +191,6 @@
             <Type>byte</Type>
             <Default>DDA0DD</Default>
             <Minimum>0</Minimum>
-            <Maximum>FFFFFF</Maximum>
             <Size>3</Size>
             <Label lang="en">RGB value when it is in Night light mode</Label>
             <Help lang="en">Configure the RGB value when it is in Night light mode. 
@@ -205,7 +204,6 @@
             <Type>byte</Type>
             <Default>505050</Default>
             <Minimum>010101</Minimum>
-            <Maximum>999999</Maximum>
             <Size>3</Size>
             <Label lang="en">LED brightness in Energy Mode</Label>
             <Help lang="en">Configure the brightness level of RGB LED (0%‐100%) when 

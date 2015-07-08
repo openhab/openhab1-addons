@@ -673,6 +673,18 @@
 				<Type>0003</Type>
 				<Id>0060</Id>
 			</Reference>
+			<Reference>
+                <Type>0103</Type>
+                <Id>0060</Id>
+            </Reference>
+            <Reference>
+                <Type>0203</Type>
+                <Id>0060</Id>
+            </Reference>
+            <Reference>
+                <Type>1D03</Type>
+                <Id>0060</Id>
+            </Reference>
 			<Model>ZW096</Model>
 			<Label lang="en">Smart Switch 6</Label>
 			<ConfigFile>aeon/zw096.xml</ConfigFile>
