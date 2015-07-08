@@ -29,7 +29,7 @@
 		<Parameter>
 			<Index>1</Index>
 			<Type>list</Type>
-			<Default>1</Default>
+			<Default>2</Default>
 			<Size>1</Size>
 			<Item>
 				<Value>1</Value>
@@ -50,7 +50,6 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Update Controller</Label>
-			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>
