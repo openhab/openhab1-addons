@@ -2123,6 +2123,15 @@
 			<Label lang="en">Flush on/off thermostat</Label>
 			<ConfigFile>qubino/zmnhia.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>3</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHLA</Model>
+			<Label lang="en">Flush PWM thermostat</Label>
+			<ConfigFile>qubino/zmnhla.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>97</Id>
