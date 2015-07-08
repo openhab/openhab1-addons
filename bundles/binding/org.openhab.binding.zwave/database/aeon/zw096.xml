@@ -82,11 +82,17 @@
     <Configuration>
         <Parameter>
             <Index>3</Index>
-            <Type>integer</Type>
+            <Type>list</Type>
             <Size>1</Size>
             <Default>0</Default>
-            <Minimum>0</Minimum>
-            <Maximum>1</Maximum>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
             <Label lang="en">Current overload protection enable</Label>
             <Help lang="en">Current Overload Protection. Load will be closed when the 
                 Current overrun (US: 15.5A, other country: 16.2A) and the 
@@ -95,11 +101,21 @@
         </Parameter>
         <Parameter>
             <Index>20</Index>
-            <Type>integer</Type>
-            <Minimum>0</Minimum>
-            <Maximum>2</Maximum>
+            <Type>list</Type>
             <Default>0</Default>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">last status</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">always on</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">always off</Label>
+            </Item>
             <Label lang="en">Output load after re-power</Label>
             <Help lang="en">Configure the output load status after re‐power on 
                 (0=last status, 1=always on, 2=always off) 
@@ -107,11 +123,21 @@
         </Parameter>
         <Parameter>
             <Index>80</Index>
-            <Type>integer</Type>
+            <Type>list</Type>
             <Default>0</Default>
-            <Minimum>0</Minimum>
-            <Maximum>1</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">noting</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">hail CC</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">basic CC report</Label>
+            </Item>
             <Label lang="en">Enable send to associated devices</Label>
             <Help lang="en">Enable to send notifications to associated devices (Group 1) 
                 when the state of Micro Switch’s load changed (0=nothing, 
@@ -120,11 +146,21 @@
         </Parameter>
         <Parameter>
             <Index>81</Index>
-            <Type>integer</Type>
+            <Type>list</Type>
             <Default>0</Default>
-            <Minimum>0</Minimum>
-            <Maximum>2</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED follows load</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED follows load for 5 seconds</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Night light mode</Label>
+            </Item>
             <Label lang="en">Configure LED</Label>
             <Help lang="en">Configure the state of red LED:  
                 0= The LED will follow the status (on/off) of its load (Energy mode). 
@@ -181,11 +217,17 @@
         </Parameter>
         <Parameter>
             <Index>90</Index>
-            <Type>integer</Type>
+            <Type>list</Type>
             <Default>1</Default>
-            <Minimum>0</Minimum>
-            <Maximum>1</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
             <Label lang="en">Enable items 91 and 92</Label>
             <Help lang="en">Enables/disables parameter 91 and 92 below (1=enabled, 
                 0=disabled). 
@@ -231,11 +273,17 @@
         </Parameter>
         <Parameter>
             <Index>252</Index>
-            <Type>integer</Type>
+            <Type>list</Type>
             <Default>0</Default>
-            <Minimum>0</Minimum>
-            <Maximum>1</Maximum>
             <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
             <Label lang="en">Configuration Locked</Label>
             <Help lang="en">Enable/disable Configuration Locked (0 =disable, 1 = enable). 
             </Help>
