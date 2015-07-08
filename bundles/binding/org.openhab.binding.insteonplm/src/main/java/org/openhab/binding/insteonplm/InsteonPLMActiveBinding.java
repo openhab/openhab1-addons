@@ -94,9 +94,9 @@ public class InsteonPLMActiveBinding
 	private ConcurrentHashMap<InsteonAddress, InsteonDevice>  m_devices = null; // list of all configured devices
 	private HashMap<String, String> m_config			= new HashMap<String, String>();
 	private PortListener			m_portListener 		= new PortListener();
-	private long					m_devicePollInterval 	= 300000L;
+	private long					m_devicePollInterval 	= 300000L;	// in milliseconds
 	private long					m_deadDeviceTimeout 	= -1L;
-	private long					m_refreshInterval		= 600000L;
+	private long					m_refreshInterval		= 600000L;	// in milliseconds
 	private int						m_messagesReceived		= 0;
 	private boolean					m_isActive		  		= false; // state of binding
 	private boolean					m_hasInitialItemConfig	= false;
@@ -262,11 +262,22 @@ public class InsteonPLMActiveBinding
 				logger.debug("global binding config has arrived.");
 			}
 		}
-		long deadDeviceCount = 10;
+		processBindingConfiguration();
+		logger.debug("configuration update complete!");
+		setProperlyConfigured(true);
+		if (m_isActive) {
+			initialize();
+		}
+		if (!m_hasInitialItemConfig) triggerBindingChangedCalls();
+		return;
+	}
+
+	private void processBindingConfiguration() {
 		if (m_config.containsKey("refresh")) {
 			m_refreshInterval = Integer.parseInt(m_config.get("refresh"));
 			logger.info("refresh interval set to {}s", m_refreshInterval / 1000);
 		}
+		long deadDeviceCount = 10;
 		if (m_config.containsKey("device_dead_count")) {
 			deadDeviceCount = s_parseLong(m_config.get("device_dead_count"), 2L, 100000L);
 			logger.info("device_dead_count set to {} per config file", deadDeviceCount);
@@ -284,22 +295,22 @@ public class InsteonPLMActiveBinding
 				logger.error("error reading additional devices from {}", fileName, e);
 			}
 		}
+		if (m_config.containsKey("modem_db_retry_timeout")) {
+			int timeout = Integer.parseInt(m_config.get("modem_db_retry_timeout"));
+			m_driver.setModemDBRetryTimeout(timeout);
+			logger.info("setting modem db retry timeout to {}s", timeout / 1000);
+		}
+
 		if (m_config.containsKey("more_features")) {
 			String fileName = m_config.get("more_features");
 			logger.info("reading additional feature templates from {}", fileName);
 			DeviceFeature.s_readFeatureTemplates(fileName);
 		}
- 		
 		m_deadDeviceTimeout = m_devicePollInterval * deadDeviceCount;
 		logger.info("dead device timeout set to {}s", m_deadDeviceTimeout / 1000);
-		logger.debug("configuration update complete!");
-		setProperlyConfigured(true);
-		if (m_isActive) {
-			initialize();
-		}
-		if (!m_hasInitialItemConfig) triggerBindingChangedCalls();
-		return;
+ 		
 	}
+	
 	/**
 	 * Method to find a device by address
 	 * @param aAddr the insteon address to search for

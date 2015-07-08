@@ -35,7 +35,7 @@
 			</Reference>
 			<Model>WS15Z-1</Model>
 			<Label lang="en">Wall Mounted Switch</Label>
-			<ConfigFile>linear/wsz15-1.xml</ConfigFile>
+			<ConfigFile>linear/ws15z-1.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -72,6 +72,24 @@
 			<Model>LB60Z-1</Model>
 			<Label lang="en">Dimmable LED Light Bulb</Label>
 			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>102</Id>
+			</Reference>
+			<Model>WADWAZ-1</Model>
+			<Label lang="en">Door/Windows Sensor</Label>
+			<ConfigFile>linear/wadwaz-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5246</Type>
+				<Id>3133</Id>
+			</Reference>
+			<Model>FS20Z</Model>
+			<Label lang="en">Isolated Contact Fixture Module</Label>
+			<ConfigFile>linear/fs20z.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -500,6 +518,15 @@
 			</Reference>
 			<Model>12724</Model>
 			<Label lang="en">Lighting Control Dimmer Switch</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4952</Type>
+				<Id>3032</Id>
+			</Reference>
+			<Model>ZW4005</Model>
+			<Label lang="en">On/Off Relay Switch</Label>
+			<ConfigFile>ge/ZW4005.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1157,10 +1184,28 @@
 			<Model>ZU1401</Model>
 			<Label lang="en">USB Controller</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2016</Type>
+				<Id>01616</Id>
+			</Reference>
+			<Model>ZL7431</Model>
+			<Label lang="en">In Wall Relay Switch</Label>
+			<ConfigFile>vision/zl7431.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
 		<Name>Fibaro System</Name>
+		<Product>
+			<Reference>
+				<Type>0402</Type>
+				<Id>1002</Id>
+			</Reference>
+			<Model>FGS212</Model>
+			<Label lang="en">Relay Switch 1x2.5kW</Label>
+			<ConfigFile>fibaro/fgs212.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0800</Type>
@@ -1650,6 +1695,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0121</Type>
+				<Id>0133</Id>
+			</Reference>
+			<Model>TZ68</Model>
+			<Label lang="en">In Wall Micro Switch</Label>
+			<ConfigFile>tkb/tz78.xml</ConfigFile>
+		</Product>
+		<Product>	
+			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -1994,6 +2048,15 @@
 			<Label lang="en">4-Zone Controller</Label>
 			<ConfigFile>leviton/vrcz4-mrz.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1706</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>VRPD3-1LW</Model>
+			<Label lang="en">Scene Capable Plug-in Dimmer</Label>
+			<ConfigFile>leviton/vrpd3-1lw.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>007e</Id>
@@ -2019,6 +2082,15 @@
 			<Model>ZXT-120</Model>
 			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
 			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>200</Type>
+				<Id>8031</Id>
+			</Reference>
+			<Model>ZTS-110</Model>
+			<Label lang="en">Remotec ZTS-110 Z Wave Thermostat</Label>
+			<ConfigFile>remotec/zts110.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2059,6 +2131,15 @@
 			<Model>ZMNHIA</Model>
 			<Label lang="en">Flush on/off thermostat</Label>
 			<ConfigFile>qubino/zmnhia.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>3</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHLA</Model>
+			<Label lang="en">Flush PWM thermostat</Label>
+			<ConfigFile>qubino/zmnhla.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2206,6 +2287,15 @@
 			<Model>123580</Model>
 			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>POPE005206</Model>
+			<Label lang="en">Z Weather</Label>
+			<ConfigFile>popp/zweather.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

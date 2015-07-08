@@ -411,7 +411,7 @@ public class DeviceListResponse extends AbstractResponse {
 			return result;
 		}
 
-		public Integer getAltitude() {
+		public Double getAltitude() {
 			return this.place.altitude;
 		}
 
@@ -566,7 +566,7 @@ public class DeviceListResponse extends AbstractResponse {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Place extends AbstractMessagePart {
 
-		private Integer altitude;
+		private Double altitude;
 		private String country;
 		private List<Double> location;
 		private String timezone;
@@ -576,7 +576,7 @@ public class DeviceListResponse extends AbstractResponse {
 		 * "altitude": 33
 		 */
 		@JsonProperty("altitude")
-		public Integer getAltitude() {
+		public Double getAltitude() {
 			return this.altitude;
 		}
 

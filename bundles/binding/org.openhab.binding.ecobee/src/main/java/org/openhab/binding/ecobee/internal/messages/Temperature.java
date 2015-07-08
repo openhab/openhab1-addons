@@ -9,6 +9,7 @@
 package org.openhab.binding.ecobee.internal.messages;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
@@ -132,7 +133,7 @@ public class Temperature {
 	 *            the Celsius temperature
 	 */
 	public static Temperature fromCelsius(BigDecimal celsius) {
-		return new Temperature(celsius.multiply(NINE).divide(FIVE).add(THIRTY_TWO).movePointRight(1));
+		return new Temperature(celsius.multiply(NINE).divide(FIVE, MathContext.DECIMAL32).add(THIRTY_TWO).movePointRight(1));
 	}
 
 	/**
@@ -159,7 +160,7 @@ public class Temperature {
 	 * @return temperature in Celsius
 	 */
 	public final BigDecimal toCelsius() {
-		return temp.movePointLeft(1).subtract(THIRTY_TWO).divide(NINE.divide(FIVE));
+		return temp.movePointLeft(1).subtract(THIRTY_TWO).divide(NINE.divide(FIVE), MathContext.DECIMAL32);
 	}
 
 	@Override
