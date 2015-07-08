@@ -2123,6 +2123,15 @@
 			<Label lang="en">Flush on/off thermostat</Label>
 			<ConfigFile>qubino/zmnhia.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>3</Type>
+				<Id>2</Id>
+			</Reference>
+			<Model>ZMNHCD</Model>
+			<Label lang="en">Flush Shutter</Label>
+			<ConfigFile>qubino/zmnhcd.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>97</Id>
