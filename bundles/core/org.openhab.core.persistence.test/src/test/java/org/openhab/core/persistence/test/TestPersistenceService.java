@@ -27,6 +27,7 @@ import org.openhab.core.types.State;
  * @since 1.1.0
  */
 public class TestPersistenceService implements QueryablePersistenceService {
+	private boolean useStaticEndValue = true;
 
 	@Override
 	public String getName() {
@@ -48,7 +49,7 @@ public class TestPersistenceService implements QueryablePersistenceService {
 		int endValue = 2012;
 		
 		if(filter.getBeginDate()!=null) startValue = filter.getBeginDate().getYear() + 1900;
-		if(filter.getEndDate()!=null) endValue = filter.getEndDate().getYear() + 1900;
+		if(filter.getEndDate()!=null && !useStaticEndValue) endValue = filter.getEndDate().getYear() + 1900;
 		
 		if(endValue<=startValue || startValue<1950) return Collections.emptyList();
 		
@@ -77,4 +78,9 @@ public class TestPersistenceService implements QueryablePersistenceService {
 		return results;
 	}
 
+	public void setUseStaticEndValue(boolean useStaticEndValue) {
+		this.useStaticEndValue = useStaticEndValue;
+	}
+	
+	
 }
