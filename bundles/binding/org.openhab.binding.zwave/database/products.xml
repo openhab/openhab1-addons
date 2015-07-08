@@ -1184,15 +1184,6 @@
 			<Model>ZU1401</Model>
 			<Label lang="en">USB Controller</Label>
 		</Product>
-		<Product>
-			<Reference>
-				<Type>2016</Type>
-				<Id>01616</Id>
-			</Reference>
-			<Model>ZL7431</Model>
-			<Label lang="en">In Wall Relay Switch</Label>
-			<ConfigFile>vision/zl7431.xml</ConfigFile>
-		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
@@ -2135,21 +2126,12 @@
 		<Product>
 			<Reference>
 				<Type>3</Type>
-				<Id>1</Id>
-			</Reference>
-			<Model>ZMNHLA</Model>
-			<Label lang="en">Flush PWM thermostat</Label>
-			<ConfigFile>qubino/zmnhla.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>3</Type>
 				<Id>2</Id>
 			</Reference>
 			<Model>ZMNHCD</Model>
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhcd.xml</ConfigFile>
-		</Product>	
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>97</Id>
@@ -2296,15 +2278,6 @@
 			<Model>123580</Model>
 			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0001</Type>
-				<Id>0001</Id>
-			</Reference>
-			<Model>POPE005206</Model>
-			<Label lang="en">Z Weather</Label>
-			<ConfigFile>popp/zweather.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
