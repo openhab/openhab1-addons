@@ -670,6 +670,15 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0060</Id>
+			</Reference>
+			<Model>ZW096</Model>
+			<Label lang="en">Smart Switch 6</Label>
+			<ConfigFile>aeon/zw096.xml</ConfigFile>
+		</Product>	
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0059</Id>
 			</Reference>
