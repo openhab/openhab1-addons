@@ -2414,4 +2414,17 @@
 			<ConfigFile>trane/tzemt400bb32maa.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0149</Id>
+		<Name>WiDOM</Name>
+		<Product>
+			<Reference>
+				<Type>1214</Type>
+				<Id>0304</Id>
+			</Reference>
+			<Model>WPS104</Model>
+			<Label lang="en">Energy Driven Switch</Label>
+			<ConfigFile>widom/wps104.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
