@@ -83,15 +83,25 @@ public class ScriptManager {
 	private Script loadScript(File file) {
 		Script script = null;
 		try {
-			script = new Script(this, file);
-			scripts.put(file.getName(), script);
-			List<Rule> newRules = script.getRules();
-			for (Rule rule : newRules) {
-				ruleMap.put(rule, script);
+			//Filtering Directories and not usable Files
+			if(!file.isFile() || file.getName().startsWith(".") || getFileExtension(file) == null){
+				return null;
 			}
+			script = new Script(this, file);
+			if(script.getEngine() == null){
+				logger.warn("No Engine found for File: {}", file.getName());
+				return null;
+			}else{
+				logger.info("Engine found for File: {}", file.getName());
+				scripts.put(file.getName(), script);
+				List<Rule> newRules = script.getRules();
+				for (Rule rule : newRules) {
+					ruleMap.put(rule, script);
+				}
 
-			// add all rules to the needed triggers
-			triggerManager.addRuleModel(newRules);
+				// add all rules to the needed triggers
+				triggerManager.addRuleModel(newRules);
+			}
 
 		} catch(NoSuchMethodException e) {
 			logger.error("Script file misses mandotary function: getRules()", e);
@@ -148,6 +158,15 @@ public class ScriptManager {
 
 	public Script getScript(Rule rule) {
 		return ruleMap.get(rule);
+	}
+
+	private String getFileExtension(File file) {
+		String extension = null;
+		if (file.getName().contains(".")) {
+			String name = file.getName();
+			extension = name.substring(name.lastIndexOf('.') + 1, name.length());
+		}
+		return extension;
 	}
 
 	public void scriptsChanged(List<File> addedScripts, List<File> removedScripts, List<File> modifiedScripts) {
