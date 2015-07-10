@@ -11,6 +11,7 @@ package org.openhab.io.transport.cul.internal;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -248,7 +249,15 @@ public abstract class AbstractCULHandler implements CULHandler,
 			}
 			notifyDataReceived(data);
 			requestCreditReport();
+		} catch (SocketException e) {
+			try {
+				this.openHardware();
+			} catch (CULDeviceException e1) {
+				log.error("Exception while reading from CUL port " + deviceName, e);
+				notifyError(e);
 
+				throw new CULCommunicationException(e);
+			}
 		} catch (IOException e) {
 			log.error("Exception while reading from CUL port " + deviceName, e);
 			notifyError(e);
