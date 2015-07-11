@@ -189,8 +189,9 @@
         <Parameter>
             <Index>83</Index>
             <Type>byte</Type>
-            <Default>DDA0DD</Default>
+            <Default>14524637</Default>
             <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
             <Size>3</Size>
             <Label lang="en">RGB value when it is in Night light mode</Label>
             <Help lang="en">Configure the RGB value when it is in Night light mode. 
@@ -202,8 +203,9 @@
         <Parameter>
             <Index>84</Index>
             <Type>byte</Type>
-            <Default>505050</Default>
-            <Minimum>010101</Minimum>
+            <Default>3289650</Default>
+            <Minimum>0</Minimum>
+            <Maximum>6513507</Maximum>
             <Size>3</Size>
             <Label lang="en">LED brightness in Energy Mode</Label>
             <Help lang="en">Configure the brightness level of RGB LED (0%‐100%) when 
