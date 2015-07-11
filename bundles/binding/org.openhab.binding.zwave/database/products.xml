@@ -1214,6 +1214,15 @@
 			<Label lang="en">In Wall Relay Switch</Label>
 			<ConfigFile>vision/zl7431.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2005</Type>
+				<Id>0508</Id>
+			</Reference>
+			<Model>ZM1601v5</Model>
+			<Label lang="en">Battery Operated Siren</Label>
+			<ConfigFile>vision/zm1601v5.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
