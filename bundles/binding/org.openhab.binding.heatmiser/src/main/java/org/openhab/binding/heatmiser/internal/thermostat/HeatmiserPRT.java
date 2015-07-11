@@ -29,11 +29,9 @@ public class HeatmiserPRT extends HeatmiserThermostat {
 		if (super.setData(in) == false)
 			return false;
 		
-		if ((data[22]==1)||(data[22]==4)){
-			dcbRoomTemperature = getTemp(37);
-		}else{	
-			dcbRoomTemperature = getTemp(41);
-		}
+		
+		dcbRemoteRoomTemperature = getTemp(37);	
+		dcbRoomTemperature = getTemp(41);
 		dcbState = data[30];
 		dcbHeatState = data[44];
 		dcbFrostTemperature = data[26];

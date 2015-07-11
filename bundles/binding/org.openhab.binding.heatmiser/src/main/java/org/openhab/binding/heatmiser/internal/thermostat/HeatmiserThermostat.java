@@ -44,6 +44,7 @@ public class HeatmiserThermostat {
 	protected byte dcbHeatState;
 	protected byte dcbWaterState;
 	protected double dcbRoomTemperature;
+	protected double dcbRemoteRoomTemperature;
 	protected double dcbFrostTemperature;
 	protected double dcbFloorTemperature;
 	protected double dcbSetTemperature;
@@ -343,6 +344,19 @@ public class HeatmiserThermostat {
 		return DecimalType.valueOf(Double.toString(dcbRoomTemperature));
 	}
 
+	/**
+	 * Returns the current remote room temperature
+	 * @param itemType
+	 * @return
+	 */
+	public State getRemoteTemperature(Class<? extends Item> itemType) {
+		if (itemType == StringItem.class)
+			return StringType.valueOf(Double.toString(dcbRemoteRoomTemperature));
+
+		// Default to DecimalType
+		return DecimalType.valueOf(Double.toString(dcbRemoteRoomTemperature));
+	}
+	
 	/**
 	 * Returns the current frost temperature
 	 * @param itemType
