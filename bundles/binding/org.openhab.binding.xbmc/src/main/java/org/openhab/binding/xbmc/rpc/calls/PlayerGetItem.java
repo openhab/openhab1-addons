@@ -21,7 +21,7 @@ import com.ning.http.client.AsyncHttpClient;
 /**
  * Player.GetItem RPC
  * 
- * @author tlan, Ben Jones
+ * @author tlan, Ben Jones, Marcel Erkel
  * @since 1.5.0
  */
 public class PlayerGetItem extends RpcCall {
@@ -80,23 +80,32 @@ public class PlayerGetItem extends RpcCall {
 		Object value = item.get(paramProperty);
 
 		if (value instanceof List<?>) {
+			List<?> values = (List<?>)value;
+			
+			// check if list contains any values
+			if (values.size() == 0)
+				return null;
+			
 			// some properties come back as a list with an indexer
 			String paramPropertyIndex = getPropertyValue(paramProperty + "id");
-			if (StringUtils.isEmpty(paramPropertyIndex))
-				return null;
-			
-			// attempt to parse the property index
 			int propertyIndex;
-			try {
-				propertyIndex = Integer.parseInt(paramPropertyIndex);
-			} catch (NumberFormatException e) {
-				return null;
+			if (!StringUtils.isEmpty(paramPropertyIndex)) {
+				// attempt to parse the property index
+				try {
+					propertyIndex = Integer.parseInt(paramPropertyIndex);
+				} catch (NumberFormatException e) {
+					return null;
+				}
+
+				// check if the index is valid
+				if (propertyIndex < 0 || propertyIndex >= values.size())
+					return null;
 			}
-			
-			// check if the index is valid
-			List<?> values = (List<?>)value;
-			if (propertyIndex < 0 || propertyIndex > values.size())
-				return null;
+			else {
+				// some properties come back as a list without an indexer,
+				// e.g. artist, for these we return the first in the list
+				propertyIndex = 0;
+			}
 			
 			value = values.get(propertyIndex);
 		}
