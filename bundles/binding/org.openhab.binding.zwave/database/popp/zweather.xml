@@ -58,6 +58,29 @@
 			<id>0x5a</id>
 		</Class>
 	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>6</Default>
+			<Minimum>0</Minimum>
+			<Maximum>30</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Wind Speed Action Threshold</Label>
+			<Help lang="en">Available Parameters: 0  - Off
+			1 - 30 in milliseconds Default = 6 m/s</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Default>37</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Twilight Action Threshold</Label>
+			<Help lang="en">Set from 0 - 100 % Default = 37% (street lighting)</Help>
+		</Parameter>
+	</Configuration>	
 	<Associations>
 		<Group>
 			<Index>1</Index>
