@@ -1,0 +1,1 @@
+Switch Test1 "Test 1" (Tests) { i2c="{ busAddress:20, pin:'A0', defaultState:'LOW', direction:'DIGITAL_OUTPUT'} " }

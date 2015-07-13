@@ -1,0 +1,147 @@
+#!/bin/sh
+
+###
+# #%L
+# **********************************************************************
+# ORGANIZATION  :  Pi4J
+# PROJECT       :  Pi4J :: Java Examples
+# FILENAME      :  build
+# 
+# This file is part of the Pi4J project. More information about 
+# this project can be found here:  http://www.pi4j.com/
+# **********************************************************************
+# %%
+# Copyright (C) 2012 - 2015 Pi4J
+# %%
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Lesser Public License for more details.
+#
+# You should have received a copy of the GNU General Lesser Public
+# License along with this program.  If not, see
+# <http://www.gnu.org/licenses/lgpl-3.0.html>.
+# #L%
+###
+
+
+
+cd $(dirname $(readlink -f $0))
+
+echo "---------------------------------------------------------"
+
+# THE FOLLOWING INSTRUCTIONS WILL COMPILE ALL THE EXAMPLE PROJECTS
+echo "[01 of 34] ... compiling : BlinkGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . BlinkGpioExample.java
+
+echo "[02 of 34] ... compiling : BlinkTriggerGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . BlinkTriggerGpioExample.java
+
+echo "[03 of 34] ... compiling : ComputeModuleGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ComputeModuleGpioExample.java
+
+echo "[04 of 34] ... compiling : ControlGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ControlGpioExample.java
+
+echo "[05 of 34] ... compiling : CylonGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . CylonGpioExample.java
+
+echo "[06 of 34] ... compiling : DebounceGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . DebounceGpioExample.java
+
+echo "[07 of 34] ... compiling : FrequencyGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . FrequencyGpioExample.java
+
+echo "[08 of 34] ... compiling : I2CWiiMotionPlusExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . I2CWiiMotionPlusExample.java
+
+echo "[09 of 34] ... compiling : ListenGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ListenGpioExample.java
+
+echo "[10 of 34] ... compiling : ListenMultipleGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ListenMultipleGpioExample.java
+
+echo "[11 of 34] ... compiling : MCP23017GpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . MCP23017GpioExample.java
+
+echo "[12 of 34] ... compiling : MCP23S17GpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . MCP23S17GpioExample.java
+
+echo "[13 of 34] ... compiling : MCP4725GpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . MCP4725GpioExample.java
+
+echo "[14 of 34] ... compiling : MultipurposePinGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . MultipurposePinGpioExample.java
+
+echo "[15 of 34] ... compiling : OlimexGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . OlimexGpioExample.java
+
+echo "[16 of 34] ... compiling : PCF8574GpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PCF8574GpioExample.java
+
+echo "[17 of 34] ... compiling : PCA9685GpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PCA9685GpioExample.java
+
+echo "[18 of 34] ... compiling : PCA9685GpioServoExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PCA9685GpioServoExample.java
+
+echo "[19 of 34] ... compiling : PibrellaExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PibrellaExample.java
+
+echo "[20 of 34] ... compiling : PiFaceExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PiFaceExample.java
+
+echo "[21 of 34] ... compiling : PiFaceGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . PiFaceGpioExample.java
+
+echo "[22 of 34] ... compiling : SerialExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . SerialExample.java
+
+echo "[23 of 34] ... compiling : ShutdownGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . ShutdownGpioExample.java
+
+echo "[24 of 34] ... compiling : SpiExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . SpiExample.java
+
+echo "[25 of 34] ... compiling : StepperMotorGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . StepperMotorGpioExample.java
+
+echo "[26 of 34] ... compiling : SystemInfoExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . SystemInfoExample.java
+
+echo "[27 of 34] ... compiling : TriggerGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . TriggerGpioExample.java
+
+echo "[28 of 34] ... compiling : UsageGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . UsageGpioExample.java
+
+echo "[29 of 34] ... compiling : WiringPiGpioExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiGpioExample.java
+
+echo "[30 of 34] ... compiling : WiringPiGpioInterruptExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiGpioInterruptExample.java
+
+echo "[31 of 34] ... compiling : WiringPiGpioInterruptExample2.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiGpioInterruptExample2.java
+
+echo "[32 of 34] ... compiling : WiringPiSerialExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiSerialExample.java
+
+echo "[33 of 34] ... compiling : WiringPiSoftPWMExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiSoftPWMExample.java
+
+echo "[34 of 34] ... compiling : WiringPiSPIExample.java"
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . WiringPiSPIExample.java
+
+echo "---------------------------------------------------------"
+
+# THE FOLLOWING INSTRUCTIONS WILL EXECUTE ONE OF THE EXAMPLES
+# sudo java -classpath .:classes:/opt/pi4j/lib/'*' BlinkGpioExample
+echo "The following command syntax can be used to execute the sample projects:"
+echo "  sudo java -classpath .:classes:/opt/pi4j/lib/'*' BlinkGpioExample"
+echo "---------------------------------------------------------"

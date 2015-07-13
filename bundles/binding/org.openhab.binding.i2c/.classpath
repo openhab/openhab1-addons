@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry excluding="org/openhab/binding/i2c/internal/_i2cBinding.java" kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="lib" path="lib/pi4j-core.jar" sourcepath="/Users/dfliess/.m2/repository/com/pi4j/pi4j-core/1.0/pi4j-core-1.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pi4j-device.jar"/>
+	<classpathentry kind="lib" path="lib/pi4j-gpio-extension.jar" sourcepath="/Users/dfliess/.m2/repository/com/pi4j/pi4j-gpio-extension/1.0/pi4j-gpio-extension-1.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pi4j-service.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/quick-json-1.0.2.3.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
