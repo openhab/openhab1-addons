@@ -50,6 +50,8 @@
 	<logger name="OSGi" level="WARN" />
 	<logger name="org.eclipse.jetty" level="WARN" />
 
+<logger name="org.openhab.binding.i2c" level="ALL" />
+
 	<root level="INFO">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
