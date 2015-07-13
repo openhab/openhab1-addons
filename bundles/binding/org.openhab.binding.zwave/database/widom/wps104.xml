@@ -54,29 +54,28 @@
 			<Size>1</Size>
 			<Label lang="en"></Label>
 			<Help lang="en">Controlling the relay by means of a single click on the external switch or on the 
-			integrated button.</Help>
+			integrated button. 
+			TOGGLE: If initial status is ON, then final status is OFF. If initial status 
+			is OFF, then final status is ON.
+			ON: If the initial status is OFF the system switches to ON; conversely, it maintains 
+			its status (ON).
+			OFF: If the initial status is ON the system switches to OFF; conversely, it maintains 
+			its status (OFF).</Help>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">TOGGLE:ON/OFF</Label>
-				<Help lang="en">TOGGLE: If initial status is ON, then final status is OFF. If initial status 
-				is OFF, then final status is ON.</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">ON</Label>
-				<Help lang="en">If the initial status is OFF the system switches to ON; conversely, it maintains 
-				its status (ON).</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">OFF</Label>
-				<Help lang="en">If the initial status is ON the system switches to OFF; conversely, it maintains 
-				its status (OFF).</Help>
 			</Item>
 			<Item>	
 				<Value>4</Value>
 				<Label lang="en">IGNORE</Label>
-				<Help lang="en"> The device maintains the initial status.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -86,29 +85,29 @@
 			<Size>1</Size>
 			<Label lang="en">Device Status</Label>
 			<Help lang="en">The final status achieved by the device when it receives a Basic Set command through 
-			the Z-Wave network.</Help>
+			the Z-Wave network. Available Parameters are;
+			AS RECIEVED: If received command is ON, then final status is ON. If received command is OFF, then 
+			final status is OFF.
+			IGNORE IF ON: If received command is ON, then the initial status is maintained. If received command 
+			is OFF, then final status is OFF.
+			IGNORE IF OFF: If received command is ON, then final status is ON. If received command is OFF, then 
+			the initial status is maintained.
+			IGNORE: The device maintains the initial status.</Help>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">AS RECEIVED</Label>
-				<Help lang="en">If received command is ON, then final status is ON. If received command is OFF, then 
-				final status is OFF.</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">IGNORE IF ON</Label>
-				<Help lang="en">If received command is ON, then the initial status is maintained. If received command 
-				is OFF, then final status is OFF.</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">IGNORE IF OFF</Label>
-				<Help lang="en"> If received command is ON, then final status is ON. If received command is OFF, then 
-				the initial status is maintained.</Help>
 			</Item>
 			<Item>	
 				<Value>4</Value>
 				<Label lang="en">IGNORE</Label>
-				<Help lang="en"> The device maintains the initial status.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -139,28 +138,28 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Next State</Label>
-			<Help lang="en">Defines the next state of the device if an overcurrent event has occurred.</Help>
+			<Help lang="en">Defines the next state of the device if an overcurrent event has occurred.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			<Item>	
 				<Value>0</Value>
 				<Label lang="en">IGNORE</Label>
-				<Help lang="en">The device maintains the initial status.</Help>
 			</Item>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">ON</Label>
-				<Help lang="en">If the initial status is OFF the system switches to ON; 
-				conversely, it maintains its status (ON).</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">OFF</Label>
-				<Help lang="en">If the initial status is ON the system switches to OFF: 
-				conversely, it maintains its status (OFF).</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">TOGGLE</Label>
-				<Help lang="en">If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -186,16 +185,17 @@
 			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Energy flow</Label>
-			<Help lang="en">Determines whether energy events are related to energy consumed or energy produced.</Help>
+			<Help lang="en">Determines whether energy events are related to energy consumed or energy produced.
+			Available Parameters are: CONSUMED - Events will be active for Consumed energy flows to which the 
+			positive sign will be attributed.
+			PRODUCED - Events will be active for Produced energy flows to which the negative sign will be attributed.</Help>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">CONSUMED</Label>
-				<Help lang="en">Events will be active for Consumed energy flows to which the positive sign will be attributed.</Help>			
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">PRODUCED</Label>
-				<Help lang="en">Events will be active for Produced energy flows to which the negative sign will be attributed.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -228,28 +228,28 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label>UP Power State</Label>
-			<Help lang="en">Defines the next status of the device in the case of a UP Power event occurring.</Help>
+			<Help lang="en">Defines the next status of the device in the case of a UP Power event occurring.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			<Item>	
 				<Value>0</Value>
 				<Label lang="en">IGNORE</Label>
-				<Help lang="en">The device maintains the initial status.</Help>
 			</Item>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">ON</Label>
-				<Help lang="en">If the initial status is OFF the system switches to ON; 
-				conversely, it maintains its status (ON).</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">OFF</Label>
-				<Help lang="en">If the initial status is ON the system switches to OFF: 
-				conversely, it maintains its status (OFF).</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">TOGGLE</Label>
-				<Help lang="en">If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -296,28 +296,28 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label>DOWN Power State</Label>
-			<Help lang="en">Defines the next state of the device in the case of a DOWN Power event occurring.</Help>
+			<Help lang="en">Defines the next state of the device in the case of a DOWN Power event occurring.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			<Item>	
 				<Value>0</Value>
 				<Label lang="en">IGNORE</Label>
-				<Help lang="en">The device maintains the initial status.</Help>
 			</Item>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">ON</Label>
-				<Help lang="en">If the initial status is OFF the system switches to ON; 
-				conversely, it maintains its status (ON).</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">OFF</Label>
-				<Help lang="en">If the initial status is ON the system switches to OFF: 
-				conversely, it maintains its status (OFF).</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">TOGGLE</Label>
-				<Help lang="en">If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -350,28 +350,28 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label>Energy Limit State</Label>
-			<Help lang="en">Defines the next state of the device in the case of an Energy Limit event occurring.</Help>
+			<Help lang="en">Defines the next state of the device in the case of an Energy Limit event occurring.
+			Available Parameters: IGNORE - The device maintains the initial status.
+			ON - If the initial status is OFF the system switches to ON; 
+			conversely, it maintains its status (ON).
+			OFF - If the initial status is ON the system switches to OFF: 
+			conversely, it maintains its status (OFF).
+			TOGGLE  - If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			<Item>	
 				<Value>0</Value>
 				<Label lang="en">IGNORE</Label>
-				<Help lang="en">The device maintains the initial status.</Help>
 			</Item>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">ON</Label>
-				<Help lang="en">If the initial status is OFF the system switches to ON; 
-				conversely, it maintains its status (ON).</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">OFF</Label>
-				<Help lang="en">If the initial status is ON the system switches to OFF: 
-				conversely, it maintains its status (OFF).</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">TOGGLE</Label>
-				<Help lang="en">If the initial status is ON/OFF the system switches to OFF/ON.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -403,14 +403,15 @@
 			<Size>1</Size>
 			<Label>Variation Total Energy</Label>
 			<Help lang="en">Defines the increase of total energy required to generate a report listing the level 
-			of total energy to the devices associated to the Energy Notification Group.</Help>
+			of total energy to the devices associated to the Energy Notification Group.
+			</Help>
 			<Item>	
 				<Value>0</Value>
 				<Label lang="en">IGNORE: No report provided.</Label>
 			</Item>
 			<Item>	
 				<Value>1</Value>
-				<Label lang="en">Report at 1 thousandth of KWh</Label>
+				<Label lang="en">No report provided.</Label>
 			</Item>
 			<Item>	
 				<Value>2</Value>
@@ -580,9 +581,6 @@
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">AUTOMATIC RECOGNITION:</Label> 
-				<Help lang="en">After the first single click on the external switch, 
-				the system automatically determines the type of external switch used 
-				and sets the parameter with the new value accordingly.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -591,30 +589,30 @@
 			<Default>1</Default>
 			<Size>1</Size>
 			<Label>Load Control</Label>
-			<Help lang="en">Defines the load control mode.</Help>
+			<Help lang="en">Defines the load control mode. Available Parameters are:
+			1 - DIRECT CONTROL The external load is controlled directly by the relay. 
+				Reference diagram local load control.
+			2 - The external load is controlled by a contactor that in a resting state has open contacts 
+				(load control by means of external contactor).	
+			3 - The external load is controlled by a contactor that in a resting state has closed contacts 
+				(load control by means of external contactor).	
+			4 - The relay is only used to control the ignition of an external warning light, as, 
+				for example, in the case of notification of excess loads and surges (remote load control).</Help>
 			<Item>	
 				<Value>1</Value>
 				<Label lang="en">DIRECT CONTROL</Label>
-				<Help lang="en">The external load is controlled directly by the relay. 
-				Reference diagram local load control.</Help>
 			</Item>
 			<Item>	
 				<Value>2</Value>
 				<Label lang="en">CONTROL BY MEANS OF A CONTACTOR WITH NORMALLY OPEN COMMAND:</Label>
-				<Help lang="en">The external load is controlled by a contactor that in a resting state has open contacts 
-				(load control by means of external contactor).</Help>
 			</Item>
 			<Item>	
 				<Value>3</Value>
 				<Label lang="en">CONTROL BY MEANS OF A CONTACTOR WITH NORMALLY CLOSED COMMAND:</Label>
-				<Help lang="en">The external load is controlled by a contactor that in a resting state has closed contacts 
-				(load control by means of external contactor).</Help>
 			</Item>
 			<Item>	
 				<Value>4</Value>
 				<Label lang="en">AS AN EXTERNAL INDICATOR:</Label> 
-				<Help lang="en">The relay is only used to control the ignition of an external warning light, as, 
-				for example, in the case of notification of excess loads and surges (remote load control).</Help>
 			</Item>
 		</Parameter>
 	</Configuration>
