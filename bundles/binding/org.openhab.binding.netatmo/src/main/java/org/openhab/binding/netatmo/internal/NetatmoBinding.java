@@ -111,6 +111,10 @@ public class NetatmoBinding extends
 				}
 
 				DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials);
+				if (deviceMeasureValueMap == null) {
+					return;
+				}
+
 				for (final NetatmoBindingProvider provider : this.providers) {
 					for (final String itemName : provider.getItemNames()) {
 						final String deviceId = provider.getDeviceId(itemName);
@@ -152,8 +156,10 @@ public class NetatmoBinding extends
 						case RAIN:
 							final String requestKey = createKey(deviceId,
 									moduleId);
-							final BigDecimal value = deviceMeasureValueMap.get(
-									requestKey).get(measureType.getMeasure());
+							final Map<String, BigDecimal> map = deviceMeasureValueMap
+									.get(requestKey);
+							final BigDecimal value = map != null ? map
+									.get(measureType.getMeasure()) : null;
 							// Protect that sometimes Netatmo returns null where
 							// numeric value is awaited (issue #1848)
 							if (value != null) {
@@ -264,11 +270,11 @@ public class NetatmoBinding extends
 				if (error.isAccessTokenExpired()) {
 					oauthCredentials.refreshAccessToken();
 					execute();
+
+					return null;
 				} else {
 					throw new NetatmoException(error.getMessage());
 				}
-
-				break; // abort processing measurement requests
 			} else {
 				processMeasurementResponse(request, response,
 						deviceMeasureValueMap);
