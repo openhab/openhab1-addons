@@ -105,7 +105,7 @@
             <Default>0</Default>
             <Label lang="en">Enable/disable the selective reporting only when measurements 
                              reach a certain threshold or percentage set in 41-44 below.</Label>
-            <help lang="en">This is used to reduce network traffic. (0 == disable, 1 == enable)</help>
+            <help lang="en">This is used to reduce network traffic.</help>
             <Item>
                 <Value>0</Value>
                 <Label lang="en">Disable the selective reporting.</Label>
@@ -178,11 +178,11 @@
             <Label lang="en">Enable/disable to send the alarm report of low temperature</Label>
             <Item>
                 <Value>0</Value>
-                <Label lang="en">Disable to send the alarm report of low temperature less than -15 degrees C)</Label>
+                <Label lang="en">Disable to send the alarm report of low temperature less than -15 degrees C</Label>
             </Item>
             <Item>
                 <Value>1</Value>
-                <Label lang="en">Enable to send the alarm report of low temperature less than -15 degrees C)</Label>
+                <Label lang="en">Enable to send the alarm report of low temperature less than -15 degrees C</Label>
             </Item>
         </Parameter>
 		<Parameter>
@@ -193,7 +193,7 @@
 			<Label lang="en">Which reports need to send automatically in timing intervals for Group 1</Label>
 			<Help lang="en">The value is a combination number made up of the sum of the values for the individual sensors and battery.
 							The sensors have the values: Battery=1, Ultraviolet=16, Temperature=32, Humidity=64, Light=128
-							Therefore if you want all sensors and the battery sending regular reports, set the parameter to 241 (1 + 16 + 32 + 64 + 128 ).</Help>
+							Therefore if you want all sensors and the battery sending regular reports, set the parameter to 241 (1 + 16 + 32 + 64 + 128).</Help>
 		</Parameter>
 		<Parameter>
             <Index>102</Index>
