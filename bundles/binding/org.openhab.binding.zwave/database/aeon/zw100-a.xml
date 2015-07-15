@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-    <!-- 
-        Information captured from http://products.z-wavealliance.org/products/1390
-        Product Identifier: ZW100-A
-        Brand Name: Aeotec
-        Z-Wave Certification Number: ZC10-15070011 
-     -->
 	<Model>MultiSensor 6</Model>
 	<Label lang="en">MultiSensor 6</Label>
 	<CommandClasses>
@@ -184,11 +178,11 @@
             <Label lang="en">Enable/disable to send the alarm report of low temperature</Label>
             <Item>
                 <Value>0</Value>
-                <Label lang="en">Disable to send the alarm report of low temperature(< -15 degrees C)</Label>
+                <Label lang="en">Disable to send the alarm report of low temperature less than -15 degrees C)</Label>
             </Item>
             <Item>
                 <Value>1</Value>
-                <Label lang="en">Enable to send the alarm report of low temperature(< -15 degrees C)</Label>
+                <Label lang="en">Enable to send the alarm report of low temperature less than -15 degrees C)</Label>
             </Item>
         </Parameter>
 		<Parameter>
