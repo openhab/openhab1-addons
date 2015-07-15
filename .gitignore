@@ -15,11 +15,3 @@ distribution/openhabhome/etc/rrd4j/*.rrd
 *.xml_gen
 *.orig
 *~
-
-bundles/model/org.openhab.model.persistence/xtend-gen/org/openhab/model/persistence/generator/PersistenceGenerator.java
-
-bundles/model/org.openhab.model.persistence/xtend-gen/org/openhab/model/persistence/generator/PersistenceGenerator.java
-
-bundles/model/org.openhab.model.rule/xtend-gen/org/openhab/model/rule/jvmmodel/RulesJvmModelInferrer.java
-
-bundles/model/org.openhab.model.script/xtend-gen/org/openhab/model/script/jvmmodel/ScriptJvmModelInferrer.java
