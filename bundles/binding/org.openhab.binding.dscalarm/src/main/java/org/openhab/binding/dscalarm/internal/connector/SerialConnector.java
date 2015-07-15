@@ -74,6 +74,7 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
         try {
         	serialOutput.write(writeString);
             serialOutput.flush();
+    		logger.debug("write(): Message Sent: {}",writeString);
         }catch (IOException ioException) {
         	logger.error("write(): {}",ioException);
 			connected = false;
@@ -91,6 +92,7 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 
         try {
         	message = readLine();
+    		logger.debug("read(): Message Received: {}",message);
         }
         catch (IOException ioException) {
 			logger.error("read(): IO Exception: ", ioException);

@@ -73,6 +73,9 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	/** User Code for some DSC Alarm commands */
 	private String userCode = null;
 
+	/** Suppress Acknowledge Messages when received */
+	private boolean suppressAcknowledgementMsgs = false;
+	
 	/** API Session for EyezOn Envisalink 3/2DS */
 	private API api = null;
 	private boolean connected = false;
@@ -391,6 +394,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 					if(StringUtils.isNotBlank((String) config.get("baud")))
 						baudRate = Integer.parseInt((String) config.get("baud"));
 				} catch(NumberFormatException numberFormatException) {
+					baudRate=0;
 					logger.error("updated(): Baud Rate not configured correctly!");
 					return;
 				}
@@ -428,6 +432,16 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 			} else {
 				pollPeriod = DEFAULT_POLL_PERIOD;
 			}
+			
+			if(StringUtils.isNotBlank((String) config.get("suppressAcknowledgementMsgs"))) {
+				try {
+					suppressAcknowledgementMsgs = Boolean.parseBoolean((String) config.get("suppressAcknowledgementMsgs"));				
+				} catch (NumberFormatException numberFormatException) {
+					suppressAcknowledgementMsgs = false;
+					logger.error("updated(): Error parsing 'suppressAcknowledgementMsgs'. This must be boolean!");
+				}
+			}
+			
 		}
 		else {
 			logger.debug("updated(): No Configuration!");
@@ -846,6 +860,40 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	}
 	
 	/**
+	 * Handle Verbose Trouble Status events for the EyezOn Envisalink 3/2DS DSC Alarm Interface
+	 * 
+	 * @param event
+	 */	
+	private void verboseTroubleStatusHandler(EventObject event) {
+		DSCAlarmEvent dscAlarmEvent = (DSCAlarmEvent) event;
+		APIMessage apiMessage = dscAlarmEvent.getAPIMessage();
+		DSCAlarmItemType[] dscAlarmItemTypes =
+		{
+			DSCAlarmItemType.PANEL_SERVICE_REQUIRED,DSCAlarmItemType.PANEL_AC_TROUBLE,
+			DSCAlarmItemType.PANEL_TELEPHONE_TROUBLE,DSCAlarmItemType.PANEL_FTC_TROUBLE,
+			DSCAlarmItemType.PANEL_ZONE_FAULT,DSCAlarmItemType.PANEL_ZONE_TAMPER,
+			DSCAlarmItemType.PANEL_ZONE_LOW_BATTERY,DSCAlarmItemType.PANEL_TIME_LOSS
+		};
+
+		String itemName;
+		
+		int bitField = Integer.decode("0x" + apiMessage.getAPIData());
+		int[] masks = {1,2,4,8,16,32,64,128};
+		int[] bits = new int[8];
+
+		for(int i=0; i < 8; i++) {
+			bits[i] = bitField & masks[i];
+			
+			itemName = getItemName(dscAlarmItemTypes[i],0,0);
+
+			if(itemName != "") {				
+				updateDeviceProperties(itemName, bits[i] != 0 ? 1:0, "");
+				updateItem(itemName);
+			}
+		}		
+	}
+
+	/**
 	 * DSC Alarm incoming message event handler
 	 * 
 	 * @param event
@@ -863,11 +911,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		String itemName = "";
 
 		boolean found = false;
+		boolean suppressPanelMsg = false;
 		int state = 0;
 		int partitionId = apiMessage.getPartition();		
 		int zoneId = apiMessage.getZone();
 		
-		setPanelMessage(apiMessage.getAPIDescription());
 		setTimeStampState(apiMessage.getTimeStamp());
 		
 		switch(apiCode) {
@@ -876,6 +924,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				if(apiData.equals("000")) {
 					dscAlarmItemType = DSCAlarmItemType.PANEL_CONNECTION;
 				}
+
+				if(suppressAcknowledgementMsgs) {
+					suppressPanelMsg = true;
+				}
+				
 				break;
 			case SystemError: /*502*/
 				dscAlarmItemType = DSCAlarmItemType.PANEL_SYSTEM_ERROR;
@@ -887,6 +940,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 			case TimeDateBroadcast: /*550*/
 				dscAlarmItemType = DSCAlarmItemType.PANEL_TIME;
 				updateItemType(DSCAlarmItemType.PANEL_TIME_BROADCAST, 0, 0, 1);
+
+				if(suppressAcknowledgementMsgs) {
+					suppressPanelMsg = true;
+				}
+				
 				break;
 			case PartitionReady: /*650*/
 			case PartitionNotReady: /*651*/
@@ -896,9 +954,6 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
 				break;
 			case PartitionArmed: /*652*/
-			case UserClosing: /*700*/
-			case SpecialClosing: /*701*/
-			case PartialClosing: /*702*/
 				updateItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 1);
 
 				updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
@@ -908,8 +963,6 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				setPartitionStatus(partitionId, 0, apiMessage.getAPIName());
 				break;
 			case PartitionDisarmed: /*655*/
-			case UserOpening: /*750*/
-			case SpecialOpening: /*751*/
 				updateItemType(DSCAlarmItemType.PARTITION_ARMED, apiMessage.getPartition(), -1, 0);
 
 				updateItemType(DSCAlarmItemType.PARTITION_ENTRY_DELAY, apiMessage.getPartition(), -1, 0);
@@ -973,6 +1026,57 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 			case ExitDelayInProgress: /*656*/
 				updateItemType(DSCAlarmItemType.PARTITION_EXIT_DELAY, apiMessage.getPartition(), -1, 1);
 				break;
+			case UserClosing: /*700*/
+			case SpecialClosing: /*701*/
+			case PartialClosing: /*702*/
+			case UserOpening: /*750*/
+			case SpecialOpening: /*751*/
+				dscAlarmItemType = DSCAlarmItemType.PARTITION_OPENING_CLOSING_MODE;
+				break;
+			case TroubleLEDOn: /*840*/
+				dscAlarmItemType = DSCAlarmItemType.PANEL_TROUBLE_LED;
+				break;
+			case TroubleLEDOff: /*841*/
+				updateItemType(DSCAlarmItemType.PANEL_SERVICE_REQUIRED, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_AC_TROUBLE, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_TELEPHONE_TROUBLE, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_FTC_TROUBLE, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_ZONE_FAULT, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_ZONE_TAMPER, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_ZONE_LOW_BATTERY, 0, 0, 0);
+				updateItemType(DSCAlarmItemType.PANEL_TIME_LOSS, 0, 0, 0);
+				dscAlarmItemType = DSCAlarmItemType.PANEL_TROUBLE_LED;
+				break;
+			case PanelBatteryTrouble: /*800*/
+			case PanelACTrouble: /*802*/
+			case SystemBellTrouble: /*806*/
+			case TLMLine1Trouble: /*810*/
+			case TLMLine2Trouble: /*812*/
+			case FTCTrouble: /*814*/
+			case GeneralDeviceLowBattery: /*821*/
+			case WirelessKeyLowBatteryTrouble: /*825*/
+			case HandheldKeypadLowBatteryTrouble: /*827*/
+			case GeneralSystemTamper: /*829*/
+			case HomeAutomationTrouble: /*831*/
+			case KeybusFault: /*896*/
+				dscAlarmItemType = DSCAlarmItemType.PANEL_TROUBLE_MESSAGE;
+				break;
+			case PanelBatteryTroubleRestore: /*801*/
+			case PanelACRestore: /*803*/
+			case SystemBellTroubleRestore: /*807*/
+			case TLMLine1TroubleRestore: /*811*/
+			case TLMLine2TroubleRestore: /*813*/
+			case GeneralDeviceLowBatteryRestore: /*822*/
+			case WirelessKeyLowBatteryTroubleRestore: /*826*/
+			case HandheldKeypadLowBatteryTroubleRestore: /*828*/
+			case GeneralSystemTamperRestore: /*830*/
+			case HomeAutomationTroubleRestore: /*832*/
+			case KeybusFaultRestore: /*897*/
+				updateItemType(DSCAlarmItemType.PANEL_TROUBLE_MESSAGE, 0, 0, 0);
+				break;
+			case VerboseTroubleStatus: /*849*/
+				verboseTroubleStatusHandler(event);
+				break;			
 			case CodeRequired: /*900*/
 				api.sendCommand(APICode.CodeSend);
 				break;
@@ -1011,7 +1115,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				break;
 		
 		}
-		
+
+		if(!suppressPanelMsg) {
+			setPanelMessage(apiMessage.getAPIDescription());
+		}
+
 		logger.debug("dscAlarmEventRecieved(): Event received! Looking for item: {}", dscAlarmItemType);
 
 		if(dscAlarmItemType != null) {
