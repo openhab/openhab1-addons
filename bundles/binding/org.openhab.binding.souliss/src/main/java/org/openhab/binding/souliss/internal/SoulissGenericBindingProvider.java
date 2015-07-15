@@ -14,6 +14,7 @@ import org.openhab.binding.souliss.internal.network.typicals.Constants;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissGenericTypical;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissNetworkParameter;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT31;
+import org.openhab.binding.souliss.internal.network.typicals.SoulissT12;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTypicals;
 import org.openhab.binding.souliss.internal.network.typicals.StateTraslator;
 import org.openhab.binding.souliss.internal.network.typicals.TypicalFactory;
@@ -63,6 +64,9 @@ public class SoulissGenericBindingProvider extends
 		// logic with a predefined set of inputs and outputs and a know
 		// behavior, are used to standardize the user interface and have a
 		// configuration-less behavior.
+		final String itemName = item.getName();
+		logger.trace("Starting to load Souliss config for item {}", itemName);
+		
 		super.processBindingConfiguration(context, item, bindingConfig);
 		String[] sNameArray = bindingConfig.split("\\:");
 		String sTypical = sNameArray[0];
@@ -73,7 +77,7 @@ public class SoulissGenericBindingProvider extends
 		// gestisce i casi particolari per T31 e T1A, per la presenza del terzo
 		// parametro
 		if (sNameArray.length > 3) {
-			if (StateTraslator.stringToSOULISSTypicalCode(sTypical) == Constants.Souliss_T31)
+			if ((StateTraslator.stringToSOULISSTypicalCode(sTypical) == Constants.Souliss_T31) || (StateTraslator.stringToSOULISSTypicalCode(sTypical) == Constants.Souliss_T12))
 				sUseSlot = sNameArray[3];
 			else
 				iBit = Byte.parseByte(sNameArray[3]);
@@ -85,7 +89,7 @@ public class SoulissGenericBindingProvider extends
 		// gestisce il caso particolare del T31.
 		// nel caso del T31 tre definizioni OH devono confluire in un unico
 		// Tipico Souliss
-		if (StateTraslator.stringToSOULISSTypicalCode(sTypical) == Constants.Souliss_T31) {
+		if ((StateTraslator.stringToSOULISSTypicalCode(sTypical) == Constants.Souliss_T31) || (StateTraslator.stringToSOULISSTypicalCode(sTypical) == Constants.Souliss_T12)){
 			soulissTypicalNew = SoulissTypicalsRecipients
 					.getTypicalFromAddress(iNodeID, iSlot, 0);
 			
@@ -101,6 +105,14 @@ public class SoulissGenericBindingProvider extends
 			if (soulissTypicalNew != null) {
 //in base al campo use slot inserisco nel tipico il nome item di riferimento				
 				switch (sUseSlot) { 
+				case Constants.Souliss_T12_Use_Of_Slot_AUTOMODE:
+					((SoulissT12) soulissTypicalNew).setsItemNameAutoModeValue(item.getName());
+					((SoulissT12) soulissTypicalNew).setsItemTypeAutoModeValue(sNote);
+					break;
+				case Constants.Souliss_T12_Use_Of_Slot_SWITCH:
+					((SoulissT12) soulissTypicalNew).setsItemNameSwitchValue(item.getName());
+					((SoulissT12) soulissTypicalNew).setsItemTypeSwitchValue(sNote);
+					break;
 				case Constants.Souliss_T31_Use_Of_Slot_SETPOINT:
 					((SoulissT31) soulissTypicalNew).setsItemNameSetpointValue(item.getName());
 					((SoulissT31) soulissTypicalNew).setsItemTypeSetpointValue(sNote);
@@ -150,12 +162,12 @@ public class SoulissGenericBindingProvider extends
 					((SoulissT31) soulissTypicalNew).power.setNote(sNote);
 					break;
 				}
-				logger.info("Add parameter to T31 : " + sUseSlot);
+				logger.info("Add parameter to T31/T12 : " + sUseSlot);
 			}
 			}
 		
 			
-		//creazione tipico, solo se non si tratta di un T31 al quale è stato aggiunto un parametro
+		//creazione tipico, solo se non si tratta di un T31 / T12 al quale è stato aggiunto un parametro
 				if(soulissTypicalNew==null){
 					soulissTypicalNew = TypicalFactory.getClass(
 							StateTraslator.stringToSOULISSTypicalCode(sTypical),
@@ -169,12 +181,11 @@ public class SoulissGenericBindingProvider extends
 							soulissTypicalNew);
 					SoulissNetworkParameter.nodes = SoulissTypicalsRecipients
 							.getNodeNumbers();
-				} 
-	}
-
+				}
+	}		
+	
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		logger.trace("validateItemType for item {} called with bindingConfig={}", item.getName(), bindingConfig);
 	}
-
 }
