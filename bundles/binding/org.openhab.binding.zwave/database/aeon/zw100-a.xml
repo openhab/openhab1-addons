@@ -56,8 +56,8 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<WriteOnly>true</WriteOnly>
-			<Label lang="en">Enable/Disable waking up for 10 minutes when
-				re-power on (battery mode) the MultiSensor.
+			<Label lang="en">Stay awake for 10 minutes when
+				re-powering the Multisensor (battery mode)
 			</Label>
 			<Item>
 				<Value>0</Value>
@@ -79,7 +79,7 @@
 			<Maximum>15300</Maximum>
 			<Default>240</Default>
 			<Size>2</Size>
-			<Label lang="en">Timeout of the motion sensor (in seconds)</Label>
+			<Label lang="en">Motion Sensor Timeout</Label>
 			<Help lang="en">How long should the device associated to MultiSensor
 				keep state On
 				before sending it Off command (if the value is bigger
@@ -93,15 +93,15 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">Enable/disable the function of motion sensor.
+			<Label lang="en">Motion sensor
 			</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable the function of motion sensor.</Label>
+				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable the function of motion sensor.</Label>
+				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -109,16 +109,14 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">Which command would be sent when the motion sensor
-				triggered.
-			</Label>
+			<Label lang="en">Motion Sensor Triggered command</Label>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Send Basic Set CC.</Label>
+				<Label lang="en">Send Basic Set CC</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">Send Sensor Binary Report CC.</Label>
+				<Label lang="en">Send Sensor Binary Report CC</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -129,7 +127,7 @@
 			<Default>127</Default>
 			<Size>1</Size>
 			<Label lang="en">PIR sensitivity configuration</Label>
-			<Help lang="en">The range of PIR Sensitivity is 0 to 127.</Help>
+			<Help lang="en">The range of PIR Sensitivity is 0 to 127</Help>
 		</Parameter>
 		<Parameter>
 			<Index>39</Index>
@@ -138,26 +136,25 @@
 			<Minimum>10</Minimum>
 			<Maximum>50</Maximum>
 			<Default>20</Default>
-			<Label lang="en">Low battery value configuration.</Label>
-			<Help lang="en">The range of low battery value is 10% to 50%.</Help>
+			<Label lang="en">Low battery value configuration</Label>
+			<Help lang="en">The range of low battery value is 10% to 50%</Help>
 		</Parameter>
 		<Parameter>
 			<Index>40</Index>
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Enable/disable the selective reporting only when
-				measurements
-				reach a certain threshold or percentage set in 41-44
-				below.
+			<Label lang="en">Selective reporting only when
+				measurements reach a certain threshold or 
+                percentage set in 41-44 below.
 			</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable the selective reporting.</Label>
+				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable the selective reporting.</Label>
+				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -167,7 +164,7 @@
 			<Minimum>0</Minimum>
 			<Maximum>65535</Maximum>
 			<Default>256</Default>
-			<Label lang="en">Threshold of temperature.</Label>
+			<Label lang="en">Temperature Threshold</Label>
 			<Help lang="en">Threshold change in temperature to induce an
 				automatic report.
 				When the unit is Celsius, threshold=Value.
@@ -186,7 +183,7 @@
 			<Minimum>0</Minimum>
 			<Maximum>100</Maximum>
 			<Default>5</Default>
-			<Label lang="en">Threshold of humidity.</Label>
+			<Label lang="en">Humidity Threshold</Label>
 			<Help lang="en">Threshold change in humidity to induce an automatic
 				report.
 			</Help>
@@ -198,7 +195,7 @@
 			<Minimum>0</Minimum>
 			<Maximum>1000</Maximum>
 			<Default>100</Default>
-			<Label lang="en">Threshold of luminance.</Label>
+			<Label lang="en">Luminance Threshold</Label>
 			<Help lang="en">Threshold change in luminance to induce an automatic
 				report.
 			</Help>
@@ -210,7 +207,7 @@
 			<Minimum>0</Minimum>
 			<Maximum>100</Maximum>
 			<Default>5</Default>
-			<Label lang="en">Threshold of battery level.</Label>
+			<Label lang="en">Battery Threshold</Label>
 			<Help lang="en">Threshold change in battery level to induce an
 				automatic report.
 			</Help>
@@ -222,7 +219,7 @@
 			<Minimum>0</Minimum>
 			<Maximum>11</Maximum>
 			<Default>2</Default>
-			<Label lang="en">Threshold of ultraviolet.</Label>
+			<Label lang="en">Ultraviolet Threshold</Label>
 			<Help lang="en">Threshold change in ultraviolet to induce an
 				automatic report.
 			</Help>
@@ -232,19 +229,19 @@
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Enable/disable to send the alarm report of low
+			<Label lang="en">Send alarm report if low
 				temperature
 			</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable to send the alarm report of low
-					temperature less than -15 degrees C
+				<Label lang="en">Disable sending and alarm report if
+					temperature is less than -15 degrees C
 				</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable to send the alarm report of low temperature
-					less than -15 degrees C
+				<Label lang="en">Enable sending and alarm report if
+					temperature is less than -15 degrees C
 				</Label>
 			</Item>
 		</Parameter>
@@ -253,8 +250,7 @@
 			<Type>int</Type>
 			<Default>241</Default>
 			<Size>4</Size>
-			<Label lang="en">Which reports need to send automatically in timing
-				intervals for Group 1
+			<Label lang="en">Group 1 Periodic Reports
 			</Label>
 			<Help lang="en">The value is a combination number made up of the sum
 				of the values for the individual sensors and battery.
@@ -272,8 +268,7 @@
 			<Type>int</Type>
 			<Default>0</Default>
 			<Size>4</Size>
-			<Label lang="en">Which reports need to send automatically in timing
-				intervals for Group 2
+			<Label lang="en">Group 2 Periodic Reports
 			</Label>
 			<Help lang="en">The value is a combination number made up of the sum
 				of the values for the individual sensors and battery.
@@ -291,8 +286,7 @@
 			<Type>int</Type>
 			<Default>0</Default>
 			<Size>4</Size>
-			<Label lang="en">Which reports need to send automatically in timing
-				intervals for Group 3
+			<Label lang="en">Group 3 Periodic Reports
 			</Label>
 			<Help lang="en">The value is a combination number made up of the sum
 				of the values for the individual sensors and battery.
@@ -312,7 +306,7 @@
 			<Minimum>5</Minimum>
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
-			<Label lang="en">Interval to send out reports of Group 1</Label>
+			<Label lang="en">Group 1 Report Interval</Label>
 		</Parameter>
 		<Parameter>
 			<Index>112</Index>
@@ -321,7 +315,7 @@
 			<Minimum>5</Minimum>
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
-			<Label lang="en">Interval to send out reports of Group 2</Label>
+			<Label lang="en">Group 2 Report Interval</Label>
 		</Parameter>
 		<Parameter>
 			<Index>113</Index>
@@ -330,7 +324,7 @@
 			<Minimum>5</Minimum>
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
-			<Label lang="en">Interval to send out reports of Group 3</Label>
+			<Label lang="en">Group 3 Report Interval</Label>
 		</Parameter>
 		<Parameter>
 			<Index>201</Index>
@@ -339,8 +333,9 @@
 			<Minimum>-32768</Minimum>
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
-			<Label lang="en">Temperature calibration. The range of calibration
-				value is -32768 to 32767.</Label>
+			<Label lang="en">Temperature Calibration</Label>
+            <Help lang="en">The range of calibration
+				value is -32768 to 32767</Help>
 		</Parameter>
 		<Parameter>
 			<Index>202</Index>
@@ -349,8 +344,9 @@
 			<Minimum>-32768</Minimum>
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
-			<Label lang="en">Humidity sensor calibration. The range of
-				calibration value is -32768 to 32767.</Label>
+			<Label lang="en">Humidity Sensor Calibration</Label>
+             <Help lang="en">The range of calibration
+				value is -32768 to 32767</Help>
 		</Parameter>
 		<Parameter>
 			<Index>203</Index>
@@ -359,8 +355,9 @@
 			<Minimum>-32768</Minimum>
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
-			<Label lang="en">Luminance sensor calibration. The range of
-				calibration value is -32768 to 32767.</Label>
+			<Label lang="en">Luminance Sensor Calibration</Label>
+             <Help lang="en">The range of calibration
+				value is -32768 to 32767</Help>
 		</Parameter>
 		<Parameter>
 			<Index>204</Index>
@@ -369,33 +366,31 @@
 			<Minimum>-11</Minimum>
 			<Maximum>11</Maximum>
 			<Default>0</Default>
-			<Label lang="en">Ultraviolet sensor calibration. The range of
-				calibration value is -11 to 11.</Label>
+            <Label lang="en">Ultraviolet Sensor Calibration</Label>
+            <Help lang="en">The range of
+				calibration value is -11 to 11.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>252</Index>
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>1</Default>
-			<Label lang="en">Enable/disable all configuration parameters to be
-				locked
+			<Label lang="en">Lock Configuration Parameters
 			</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable all configuration parameters to be locked.
-				</Label>
+				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable all configuration parameters to be locked.
-				</Label>
+				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>255</Index>
 			<Type>list</Type>
 			<Size>4</Size>
-			<Label lang="en">Reset to default factory settings.</Label>
+			<Label lang="en">Reset to default factory settings</Label>
 			<Item>
 				<Value>1</Value>
 				<Label lang="en">Resets all configuration parameters to default
@@ -415,11 +410,12 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<SetToController>true</SetToController>
-			<Label lang="en">Group 1 is assigned to the Lifeline association
+			<Label lang="en">Group 1</Label>
+            <Help lang="en">Group 1 is assigned to the Lifeline association
 				group and every device has 5 nodes to associate. The Motion sensor,
 				Humidity sensor, thermometer, light sensor and Ultraviolet sensor
 				reports will be sent to the associated nodes in Group 1
-			</Label>
+			</Help>
 		</Group>
 		<Group>
 			<Index>2</Index>
@@ -435,4 +431,3 @@
 		</Group>
 	</Associations>
 </Product>
-
