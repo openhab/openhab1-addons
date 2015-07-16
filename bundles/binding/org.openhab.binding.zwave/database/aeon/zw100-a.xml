@@ -57,7 +57,8 @@
 			<Size>1</Size>
 			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Stay awake for 10 minutes when
-				re-powering the Multisensor (battery mode)
+				re-powering the
+				Multisensor (battery mode)
 			</Label>
 			<Item>
 				<Value>0</Value>
@@ -145,8 +146,9 @@
 			<Size>1</Size>
 			<Default>0</Default>
 			<Label lang="en">Selective reporting only when
-				measurements reach a certain threshold or 
-                percentage set in 41-44 below.
+				measurements reach a
+				certain threshold or
+				percentage set in 41-44 below.
 			</Label>
 			<Item>
 				<Value>0</Value>
@@ -235,13 +237,15 @@
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disable sending and alarm report if
-					temperature is less than -15 degrees C
+					temperature is
+					less than -15 degrees C
 				</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
 				<Label lang="en">Enable sending and alarm report if
-					temperature is less than -15 degrees C
+					temperature is
+					less than -15 degrees C
 				</Label>
 			</Item>
 		</Parameter>
@@ -334,8 +338,9 @@
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Temperature Calibration</Label>
-            <Help lang="en">The range of calibration
-				value is -32768 to 32767</Help>
+			<Help lang="en">The range of calibration
+				value is -32768 to 32767
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>202</Index>
@@ -345,8 +350,9 @@
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Humidity Sensor Calibration</Label>
-             <Help lang="en">The range of calibration
-				value is -32768 to 32767</Help>
+			<Help lang="en">The range of calibration
+				value is -32768 to 32767
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>203</Index>
@@ -356,8 +362,9 @@
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Luminance Sensor Calibration</Label>
-             <Help lang="en">The range of calibration
-				value is -32768 to 32767</Help>
+			<Help lang="en">The range of calibration
+				value is -32768 to 32767
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>204</Index>
@@ -366,9 +373,10 @@
 			<Minimum>-11</Minimum>
 			<Maximum>11</Maximum>
 			<Default>0</Default>
-            <Label lang="en">Ultraviolet Sensor Calibration</Label>
-            <Help lang="en">The range of
-				calibration value is -11 to 11.</Help>
+			<Label lang="en">Ultraviolet Sensor Calibration</Label>
+			<Help lang="en">The range of
+				calibration value is -11 to 11.
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>252</Index>
@@ -411,8 +419,9 @@
 			<Maximum>5</Maximum>
 			<SetToController>true</SetToController>
 			<Label lang="en">Group 1</Label>
-            <Help lang="en">Group 1 is assigned to the Lifeline association
-				group and every device has 5 nodes to associate. The Motion sensor,
+			<Help lang="en">Group 1 is assigned to the Lifeline association
+				group
+				and every device has 5 nodes to associate. The Motion sensor,
 				Humidity sensor, thermometer, light sensor and Ultraviolet sensor
 				reports will be sent to the associated nodes in Group 1
 			</Help>
