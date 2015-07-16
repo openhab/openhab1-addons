@@ -803,6 +803,15 @@
 			<Label lang="en">4 in One MultiSensor (G5)</Label>
 			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
 		</Product>
+        <Product>
+            <Reference>
+                <Type>0102</Type>
+                <Id>0064</Id>
+            </Reference>
+            <Model>ZW100-A</Model>
+            <Label lang="en">MultiSensor 6</Label>
+            <ConfigFile>aeon/zw100-a.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>0006</Type>
