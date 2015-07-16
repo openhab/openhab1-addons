@@ -56,21 +56,18 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<WriteOnly>true</WriteOnly>
-			<Label lang="en">Stay awake for 10 minutes when
-				re-powering the
-				Multisensor (battery mode)
+			<Label lang="en">Stay Awake in Battery Mode
 			</Label>
+			<Help lang="en">Stay awake for 10 minutes when re-powering the
+				MultiSensor (battery mode)
+			</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable waking up for 10 minutes when re-power on
-					(battery mode) the MultiSensor.
-				</Label>
+				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable waking up for 10 minutes when re-power on
-					(battery mode) the MultiSensor.
-				</Label>
+				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -82,11 +79,9 @@
 			<Size>2</Size>
 			<Label lang="en">Motion Sensor Timeout</Label>
 			<Help lang="en">How long should the device associated to MultiSensor
-				keep state On
-				before sending it Off command (if the value is bigger
-				than 255, the
-				value would be rounded to next integer in minutes, else
-				seconds)
+				keep state On before sending it Off command (if the value is bigger
+				than 255, the value would be rounded to next integer in minutes,
+				else seconds)
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -110,7 +105,7 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">Motion Sensor Triggered command</Label>
+			<Label lang="en">Motion Sensor Triggered Command</Label>
 			<Item>
 				<Value>1</Value>
 				<Label lang="en">Send Basic Set CC</Label>
@@ -127,8 +122,10 @@
 			<Maximum>127</Maximum>
 			<Default>127</Default>
 			<Size>1</Size>
-			<Label lang="en">PIR sensitivity configuration</Label>
-			<Help lang="en">The range of PIR Sensitivity is 0 to 127</Help>
+			<Label lang="en">PIR Sensitivity</Label>
+			<Help lang="en">The range of PIR Sensitivity is 0 to 127 (127 max
+				sensitivity)
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>39</Index>
@@ -137,19 +134,19 @@
 			<Minimum>10</Minimum>
 			<Maximum>50</Maximum>
 			<Default>20</Default>
-			<Label lang="en">Low battery value configuration</Label>
-			<Help lang="en">The range of low battery value is 10% to 50%</Help>
+			<Label lang="en">Low Battery Report</Label>
+			<Help lang="en">Low Battery report if bellow this value. The range of
+				low battery value is 10% to 50%</Help>
 		</Parameter>
 		<Parameter>
 			<Index>40</Index>
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Selective reporting only when
-				measurements reach a
-				certain threshold or
-				percentage set in 41-44 below.
-			</Label>
+			<Label lang="en">Selective Reporting</Label>
+			<Help lang="en">Send reports only when measurements reach a certain
+				threshold or percentage. Set in parameters 41-44
+			</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disable</Label>
@@ -168,14 +165,10 @@
 			<Default>256</Default>
 			<Label lang="en">Temperature Threshold</Label>
 			<Help lang="en">Threshold change in temperature to induce an
-				automatic report.
-				When the unit is Celsius, threshold=Value.
-				When the
-				unit is Fahrenheit, threshold=Value*1.8.
-				The accuracy is 0.1.
-				The high
-				byte is the part of integer, the low byte is the fractional
-				part.
+				automatic report. When the unit is Celsius, threshold=Value. When
+				the unit is Fahrenheit, threshold=Value*1.8. The accuracy is 0.1.
+				The high byte is the part of integer, the low byte is the fractional
+				part
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -187,7 +180,7 @@
 			<Default>5</Default>
 			<Label lang="en">Humidity Threshold</Label>
 			<Help lang="en">Threshold change in humidity to induce an automatic
-				report.
+				report
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -199,7 +192,7 @@
 			<Default>100</Default>
 			<Label lang="en">Luminance Threshold</Label>
 			<Help lang="en">Threshold change in luminance to induce an automatic
-				report.
+				report
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -211,7 +204,7 @@
 			<Default>5</Default>
 			<Label lang="en">Battery Threshold</Label>
 			<Help lang="en">Threshold change in battery level to induce an
-				automatic report.
+				automatic report
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -223,7 +216,7 @@
 			<Default>2</Default>
 			<Label lang="en">Ultraviolet Threshold</Label>
 			<Help lang="en">Threshold change in ultraviolet to induce an
-				automatic report.
+				automatic report
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -231,21 +224,20 @@
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Send alarm report if low
+			<Label lang="en">Send Alarm Report if low
 				temperature
 			</Label>
+			<Help lang="en">Send an alarm report if temperature is less than
+				-15 degrees C
+			</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable sending and alarm report if
-					temperature is
-					less than -15 degrees C
+				<Label lang="en">Disable
 				</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable sending and alarm report if
-					temperature is
-					less than -15 degrees C
+				<Label lang="en">Enable
 				</Label>
 			</Item>
 		</Parameter>
@@ -257,13 +249,10 @@
 			<Label lang="en">Group 1 Periodic Reports
 			</Label>
 			<Help lang="en">The value is a combination number made up of the sum
-				of the values for the individual sensors and battery.
-				The sensors
+				of the values for the individual sensors and battery. The sensors
 				have the values: Battery=1, Ultraviolet=16, Temperature=32,
-				Humidity=64, Light=128
-				Therefore if you want all sensors and the
-				battery sending regular reports,
-				set the parameter to 241 (1 + 16 +
+				Humidity=64, Light=128 Therefore if you want all sensors and the
+				battery sending regular reports, set the parameter to 241 (1 + 16 +
 				32 + 64 + 128).
 			</Help>
 		</Parameter>
@@ -275,14 +264,11 @@
 			<Label lang="en">Group 2 Periodic Reports
 			</Label>
 			<Help lang="en">The value is a combination number made up of the sum
-				of the values for the individual sensors and battery.
-				The sensors
+				of the values for the individual sensors and battery. The sensors
 				have the values: Battery=1, Ultraviolet=16, Temperature=32,
-				Humidity=64, Light=128
-				Therefore if you want all sensors and the
-				battery sending regular reports,
-				set the parameter to 241 (1 + 16 +
-				32 + 64 + 128 ).
+				Humidity=64, Light=128 Therefore if you want all sensors and the
+				battery sending regular reports, set the parameter to 241 (1 + 16 +
+				32 + 64 + 128).
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -293,14 +279,11 @@
 			<Label lang="en">Group 3 Periodic Reports
 			</Label>
 			<Help lang="en">The value is a combination number made up of the sum
-				of the values for the individual sensors and battery.
-				The sensors
+				of the values for the individual sensors and battery. The sensors
 				have the values: Battery=1, Ultraviolet=16, Temperature=32,
-				Humidity=64, Light=128
-				Therefore if you want all sensors and the
-				battery sending regular reports,
-				set the parameter to 241 (1 + 16 +
-				32 + 64 + 128 ).
+				Humidity=64, Light=128 Therefore if you want all sensors and the
+				battery sending regular reports, set the parameter to 241 (1 + 16 +
+				32 + 64 + 128).
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -338,8 +321,7 @@
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Temperature Calibration</Label>
-			<Help lang="en">The range of calibration
-				value is -32768 to 32767
+			<Help lang="en">The range of calibration value is -32768 to 32767
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -350,8 +332,7 @@
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Humidity Sensor Calibration</Label>
-			<Help lang="en">The range of calibration
-				value is -32768 to 32767
+			<Help lang="en">The range of calibration value is -32768 to 32767
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -362,8 +343,7 @@
 			<Maximum>32767</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Luminance Sensor Calibration</Label>
-			<Help lang="en">The range of calibration
-				value is -32768 to 32767
+			<Help lang="en">The range of calibration value is -32768 to 32767
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -374,9 +354,7 @@
 			<Maximum>11</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Ultraviolet Sensor Calibration</Label>
-			<Help lang="en">The range of
-				calibration value is -11 to 11.
-			</Help>
+			<Help lang="en">The range of calibration value is -11 to 11</Help>
 		</Parameter>
 		<Parameter>
 			<Index>252</Index>
@@ -402,14 +380,12 @@
 			<Item>
 				<Value>1</Value>
 				<Label lang="en">Resets all configuration parameters to default
-					setting.
-				</Label>
+					settings</Label>
 			</Item>
 			<Item>
 				<Value>1431655765</Value>
-				<Label lang="en">Reset the product to default factory setting and
-					be excluded from the Z-wave network.
-				</Label>
+				<Label lang="en">Reset to default factory settings and be excluded
+					from the Z-wave network</Label>
 			</Item>
 		</Parameter>
 	</Configuration>
@@ -419,8 +395,7 @@
 			<Maximum>5</Maximum>
 			<SetToController>true</SetToController>
 			<Label lang="en">Group 1</Label>
-			<Help lang="en">Group 1 is assigned to the Lifeline association
-				group
+			<Help lang="en">Group 1 is assigned to the Lifeline association group
 				and every device has 5 nodes to associate. The Motion sensor,
 				Humidity sensor, thermometer, light sensor and Ultraviolet sensor
 				reports will be sent to the associated nodes in Group 1
