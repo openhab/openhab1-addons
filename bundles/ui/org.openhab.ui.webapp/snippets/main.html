@@ -6,26 +6,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		
+
 		<link rel="shortcut icon" href="images/favicon.ico" />
-		
+
 		<link rel="apple-touch-icon" href="images/app-icon.png" />
 		<link rel="apple-touch-startup-image" href="images/splash-ipad-h.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)" />
 		<link rel="apple-touch-startup-image" href="images/splash-ipad-v.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)" />
-		<link rel="apple-touch-startup-image" href="images/splash-iphone.png" media="screen and (max-device-width: 320px)" />		
+		<link rel="apple-touch-startup-image" href="images/splash-iphone.png" media="screen and (max-device-width: 320px)" />
 
-		<link rel="stylesheet" type="text/css" href="WebApp/Design/Render.css" />
-		<link rel="stylesheet" type="text/css" href="WebApp/Design/RenderRTL.css" />
-		<link rel="stylesheet" type="text/css" href="WebApp/Design/Firefox.css" />
-		<link rel="stylesheet" type="text/css" href="WebApp/Design/openHAB.css" />
-		<link rel="stylesheet" type="text/css" href="jquery.miniColors.css" />
+		<link rel="stylesheet" type="text/css" href="classicui/WebApp/Design/Render.css" />
+		<link rel="stylesheet" type="text/css" href="classicui/WebApp/Design/RenderRTL.css" />
+		<link rel="stylesheet" type="text/css" href="classicui/WebApp/Design/Firefox.css" />
+		<link rel="stylesheet" type="text/css" href="classicui/WebApp/Design/openHAB.css" />
+		<link rel="stylesheet" type="text/css" href="classicui/jquery.miniColors.css" />
 
-		<script type="text/javascript" src="WebApp/Action/Logic.min.js"></script>
-		<script src="jquery.min.js"></script>
-		<script src="jquery.miniColors.js"></script>
+		<script src="classicui/WebApp/Action/Logic.min.js"></script>
+		<script src="classicui/jquery.min.js"></script>
+		<script src="classicui/jquery.miniColors.js"></script>
 
 		<script>
-		
+
       WA.AddEventListener("endasync", function (evt) {
         var hash = document.location.hash.substring(2);
         if (hash === 'Colorpicker') return; // Skip refresh on colorpicker view
@@ -51,34 +51,34 @@
         search = search + "sitemap=%sitemap%&w=" + hash.substring(2) + "&poll=true";
         url = path + search;
         OH.pollURL = url;
-        OH.pollingRequest = WA.Request(url, null, -1, true, null); 
+        OH.pollingRequest = WA.Request(url, null, -1, true, null);
         OH.images.refresh = OH.images.countOnPage;
         OH.images.countOnPage = 0;
       });
 
       WA.AddEventListener("load", function () {
-    	var url = '../%servletname%?sitemap=%sitemap%&poll=true';
+    	var url = '?sitemap=%sitemap%&poll=true';
     	OH.pollURL = url;
-    	
+
     	setTimeout(function() {
-          OH.pollingRequest = WA.Request(url, null, -1, true, null);	
+          OH.pollingRequest = WA.Request(url, null, -1, true, null);
         }, 1500);
       });
 
       // Global scope for openHAB
       document.OH = OH = {};
-      
+
       $(document).ready(function() {
-    	  
+
     	  var resetAllTimers = function() {
     		OH.dimmer.resetTimer();
-      	  	OH.rollershutter.resetTimer();  
+      	  	OH.rollershutter.resetTimer();
     	  }
-    	  
-    	  var stopEventDefault = function(event) { 
+
+    	  var stopEventDefault = function(event) {
     		  event.preventDefault();
           }
-    	  
+
     	  var resetVideos = function() {
     		$("video").each(function(){
     		  var videoEl = $(this).get(0);
@@ -86,15 +86,15 @@
     		  videoEl.currentTime = 0;
   			});
     	  }
-    	  
+
      	  // Stop all intervals to prevent left repeated XHRs on page change (multitouch)
           WA.AddEventListener("endslide", resetAllTimers);
           WA.AddEventListener("endslide", resetVideos);
-          
+
           WA.AddEventListener("sliderchange", function(ev) {
             var data = ev.context;
-            var request = '../CMD?' + data.item + '=' + data.value;
-            
+            var request = '/CMD?' + data.item + '=' + data.value;
+
             switch(data.type) {
             case "start":
             	WA.CancelRequest(OH.pollingRequest);
@@ -103,17 +103,17 @@
             	OH.pollingRequest = WA.Request(OH.pollURL, null, -1, true, null);
             	break;
             }
-            
+
             WA.Request(request, null, null, true, null);
           });
-                    
+
           // Disable dragging to prevent accidential infinite loop
           $('body')
           	.on('dragstart', 'img', stopEventDefault) 	// dragstart on an img tag
     	  	.on('mouseup', resetAllTimers); 			// mouseup everywhere
-    	  	
+
       });
-      
+
       OH.stopEvent = function (event) {
       	if (event && event.stopPropagation) {
         		event.stopPropagation();
@@ -175,7 +175,7 @@
       OH.rollershutter = {
         pressed: false,
         longPress: false,
-        
+
         resetTimer: function () {
           if (OH.rollershutter.longPressTimeout) clearTimeout(OH.rollershutter.longPressTimeout);
           OH.rollershutter.longPressTimeout = null;
@@ -205,14 +205,14 @@
       };
 
       OH.asyncLoad = function AsyncLoad(widgetId) {
-        WA.Request("../%servletname%?sitemap=%sitemap%&w=" + widgetId, null, -1, true, null);
+        WA.Request("?sitemap=%sitemap%&w=" + widgetId, null, -1, true, null);
       };
 
       // script code for the color picker widget
       OH.colorpicker = {
         colorItem: null,
         debounce: new Debounce(300), // do request max every 300ms
-        
+
         onChange: function() {
         	if (!OH.colorpicker.colorItem) {
         		throw new Error('No color item selected!');
@@ -222,7 +222,7 @@
 				WA.Request("/CMD?" + OH.colorpicker.colorItem + "=" + cmd, null, -1, true);
 			});
         },
-        
+
       	setup: function(item, label, state) {
       		OH.colorpicker.colorItem=item;
 			$('#waColorpicker').attr('title', label);
@@ -231,11 +231,11 @@
 			document.location.href='#_Colorpicker';
       	}
       };
-      
+
       function Debounce(time) {
     	  this.timeToWait = time;
       }
-      
+
       Debounce.prototype.exec = function(cb, scope) {
     	  var now = new Date().getTime();
     	  if (!this.lastCallTime || this.lastCallTime + this.timeToWait < now) {
@@ -243,8 +243,8 @@
     		  this.lastCallTime = now;
     	  }
       }
-      
-      
+
+
 
     </script>
 
@@ -270,8 +270,8 @@
 					<ul class="iArrow">
 						<p>
 							<center>
-								<img style="padding:10px;width:1%" src="images/none.png" />
-								<input id="colorPickerInput" onchange="OH.colorpicker.onChange()" type="minicolors" value="#ffffff" 
+								<img style="padding:10px;width:1%" src="/images/none.png" />
+								<input id="colorPickerInput" onchange="OH.colorpicker.onChange()" type="minicolors" value="#ffffff"
 									data-control="inline" data-slider="wheel" data-style="margin: 10px;" />
 							</center>
 						</p>

@@ -16,6 +16,7 @@ import org.openhab.core.library.types.HSBType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Colorpicker;
 import org.openhab.model.sitemap.Widget;
+import org.openhab.ui.webapp.internal.servlet.BaseServlet;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
@@ -74,7 +75,7 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%purelabel%", purelabel);
 		snippet = StringUtils.replace(snippet, "%state%", hexValue);
 		snippet = StringUtils.replace(snippet, "%frequency%", frequency);
-		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_PATH);
 
 		String style = "";
 		String color = itemUIRegistry.getLabelColor(w);

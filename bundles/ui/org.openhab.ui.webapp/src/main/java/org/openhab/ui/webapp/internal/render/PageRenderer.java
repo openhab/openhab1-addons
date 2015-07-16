@@ -74,7 +74,7 @@ public class PageRenderer extends AbstractWidgetRenderer {
 			label = label.replace("[", "").replace("]", "");
 		}
 		snippet = StringUtils.replace(snippet, "%label%", label);
-		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_PATH);
 		snippet = StringUtils.replace(snippet, "%sitemap%", sitemap);
 
 		String[] parts = snippet.split("%children%");

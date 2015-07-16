@@ -52,7 +52,9 @@ public class WebAppServlet extends BaseServlet {
 	private static final long TIMEOUT_IN_MS = 10000L;
 
 	/** the name of the servlet to be used in the URL */
-	public static final String SERVLET_NAME = "openhab.app";
+	public static final String SERVLET_NAME = "/openhab.app";
+	
+	public static final String SERVLET_PATH = WEBAPP_ALIAS + SERVLET_NAME;
 		
 	private PageRenderer renderer;
 	protected SitemapProvider sitemapProvider;
@@ -70,13 +72,12 @@ public class WebAppServlet extends BaseServlet {
 		this.renderer = renderer;
 	}
 	
-	
 	protected void activate() {
 		try {			
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
+			httpService.registerServlet(SERVLET_NAME, this, props, createHttpContext());
 			httpService.registerResources(WEBAPP_ALIAS, "web", null);
-			logger.info("Started Classic UI at " + WEBAPP_ALIAS + SERVLET_NAME);
+			logger.info("Started Classic UI at " + SERVLET_PATH);
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
 		} catch (ServletException e) {
@@ -85,7 +86,7 @@ public class WebAppServlet extends BaseServlet {
 	}
 	
 	protected void deactivate() {
-		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
+		httpService.unregister(SERVLET_PATH);
 		httpService.unregister(WEBAPP_ALIAS);
 		logger.info("Stopped Classic UI");
 	}

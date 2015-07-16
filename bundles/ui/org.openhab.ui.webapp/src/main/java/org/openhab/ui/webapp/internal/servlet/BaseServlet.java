@@ -26,7 +26,7 @@ import org.osgi.service.http.HttpService;
 public abstract class BaseServlet implements Servlet {
 	
 	/** the root path of this web application */
-	public static final String WEBAPP_ALIAS = "/";
+	public static final String WEBAPP_ALIAS = "/classicui";
 		
 	protected HttpService httpService;
 	protected ItemRegistry itemRegistry;

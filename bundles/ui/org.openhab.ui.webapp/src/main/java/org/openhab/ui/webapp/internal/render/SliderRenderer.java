@@ -56,7 +56,7 @@ public class SliderRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%state%", itemUIRegistry.getState(s).toString());
 		snippet = StringUtils.replace(snippet, "%frequency%", frequency);
 		snippet = StringUtils.replace(snippet, "%switch%", s.isSwitchEnabled() ? "1" : "0");
-		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_PATH);
 
 		// Process the color tags
 		snippet = processColor(w, snippet);
