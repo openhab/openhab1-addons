@@ -16,14 +16,53 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.core.library.types.DateTimeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * CosemDate represents a datetime value
+ * CosemDate represents a datetime value and will try to autodetect the format
  * 
  * @author M. Volaart
  * @since 1.7.0
  */
 public class CosemDate extends CosemValue<DateTimeType> {
+	// logger
+	private static final Logger logger = LoggerFactory
+			.getLogger(CosemDate.class);
+
+	/**
+	 * This enum contains the known date formats for the DSMR-specification
+	 */
+	private enum CosemDateFormat {
+		/*
+		 * Ignore DST setting for general format. We use local time that is
+		 * already DST
+		 */
+		COSEM_DATE_GENERAL("(\\d{12})([S,W]?)", "yyMMddHHmmss"), 
+		COSEM_DATE_DSMR_V2("(\\d{2}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})",
+				"yy-MM-dd HH:mm:ss");
+
+		/* Cached compiled pattern */
+		final Pattern pattern;
+
+		/* Cached java date formatter */
+		final SimpleDateFormat formatter;
+
+		/**
+		 * Constructs a new CosemDateFormat
+		 * 
+		 * @param regex
+		 *            String containing the regular expression to check the
+		 *            value against (the date format should at least contain 1
+		 *            regex group
+		 * @param javaDateFormat
+		 *            String containing the datetime format to use for parsing
+		 */
+		private CosemDateFormat(String regex, String javaDateFormat) {
+			pattern = Pattern.compile(regex);
+			formatter = new SimpleDateFormat(javaDateFormat);
+		}
+	}
 
 	/**
 	 * Creates a new CosemDate
@@ -58,25 +97,26 @@ public class CosemDate extends CosemValue<DateTimeType> {
 	 */
 	@Override
 	protected DateTimeType parse(String cosemValue) throws ParseException {
-		/*
-		 * Ignore the DST setting. We use local time that has already DST
-		 */
-		Pattern p = Pattern.compile("(\\d{12})([S,W]?)");
+		for (CosemDateFormat cosemDateFormat : CosemDateFormat.values()) {
+			logger.debug("Trying pattern:" + cosemDateFormat.pattern);
 
-		Matcher m = p.matcher(cosemValue);
+			Matcher m = cosemDateFormat.pattern.matcher(cosemValue);
 
-		if (m.matches()) {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmss");
+			if (m.matches()) {
+				logger.debug(cosemValue + " matches pattern:"
+						+ cosemDateFormat.pattern);
 
-			Date date = formatter.parse(m.group(1));
+				Date date = cosemDateFormat.formatter.parse(m.group(1));
 
-			Calendar c = Calendar.getInstance();
-			c.setTime(date);
+				Calendar c = Calendar.getInstance();
+				c.setTime(date);
 
-			return new DateTimeType(c);
-		} else {
-			throw new ParseException("value: " + cosemValue
-					+ " is not a valid CosemDate string (yyMMddHHmmss)", 0);
+				return new DateTimeType(c);
+			}
+			logger.debug(cosemValue + " does not match pattern:"
+					+ cosemDateFormat.pattern);
 		}
+		throw new ParseException("value: " + cosemValue
+				+ " is not a known CosemDate string", 0);
 	}
 }
