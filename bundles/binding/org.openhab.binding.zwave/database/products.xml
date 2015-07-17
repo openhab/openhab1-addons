@@ -2177,8 +2177,8 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>3</Type>
-				<Id>1</Id>
+				<Type>5</Type>
+				<Id>3</Id>
 			</Reference>
 			<Model>ZMNHLA</Model>
 			<Label lang="en">Flush PWM thermostat</Label>
