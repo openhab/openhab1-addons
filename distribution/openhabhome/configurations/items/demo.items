@@ -126,11 +126,11 @@ Location DemoLocation			"Brandenburg Gate Berlin"
 
 /* Sapp */
 Group gSapp 		(All)
-Switch SappSwitch1				"SappSwitch1" (gSapp) { sapp="office:V:700:*" }
-Switch SappSwitch2				"SappSwitch2" (gSapp) { sapp="office:I:200:1" }
+Switch SappSwitch1				"SappSwitch1" (gSapp) { sapp="home:V:700:*" }
+Switch SappSwitch2				"SappSwitch2" (gSapp) { sapp="home:I:200:1" }
 Switch SappSwitch3				"SappSwitch3" (gSapp) { sapp="home:O:10:H" }
-Switch SappSwitch4				"SappSwitch4" (gSapp) { sapp="office:V:200:1" }
-Switch SappSwitch5				"SappSwitch5" (gSapp) { sapp="office:V:200:2" }
-Switch SappSwitch6				"SappSwitch6" (gSapp) { sapp="office:V:200:L" }
-Switch SappSwitch7				"SappSwitch7" (gSapp) { sapp="office:V:200:H" }
-Switch SappSwitch8				"SappSwitch8" (gSapp) { sapp="office:V:200:*" }
+Switch SappSwitch4				"SappSwitch4" (gSapp) { sapp="home:V:200:1" }
+Switch SappSwitch5				"SappSwitch5" (gSapp) { sapp="home:V:200:2" }
+Switch SappSwitch6				"SappSwitch6" (gSapp) { sapp="home:V:200:L" }
+Switch SappSwitch7				"SappSwitch7" (gSapp) { sapp="home:V:200:H" }
+Switch SappSwitch8				"SappSwitch8" (gSapp) { sapp="home:V:200:*" }

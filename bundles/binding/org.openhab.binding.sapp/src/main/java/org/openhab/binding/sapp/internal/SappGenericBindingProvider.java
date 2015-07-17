@@ -59,7 +59,9 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		logger.debug(String.format("validating item '%s' against config '%s'", item, bindingConfig));
 
-		if (!(item instanceof SwitchItem)) {
+		if (item instanceof SwitchItem) {
+			; // OK, nothing to validate
+		} else {
 			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 		}
 	}
@@ -73,12 +75,16 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
-			SappBindingConfig sappBindingConfig = new SappBindingConfig(item.getName(), bindingConfig);
-			if (pnmasMap.get(sappBindingConfig.getPnmasId()) != null) {
-	 			addBindingConfig(item, new SappBindingConfig(item.getName(), bindingConfig));
-				fullRefreshNeeded = true;
+			if (item instanceof SwitchItem) {
+				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item, bindingConfig);
+				if (pnmasMap.get(sappBindingConfigSwitchItem.getPnmasId()) != null) {
+		 			addBindingConfig(item, sappBindingConfigSwitchItem);
+					fullRefreshNeeded = true;
+				} else {
+					logger.warn("bad pnmasid in bindingConfig: " + sappBindingConfigSwitchItem.getPnmasId() + " -> processing bindingConfig aborted!");
+				}
 			} else {
-				logger.warn("bad pnmasid in bindingConfig: " + sappBindingConfig.getPnmasId() + " -> processing bindingConfig aborted!");
+				throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 			}
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
