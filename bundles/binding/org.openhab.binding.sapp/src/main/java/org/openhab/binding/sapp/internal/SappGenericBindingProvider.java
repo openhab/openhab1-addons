@@ -77,11 +77,11 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		if (bindingConfig != null) {
 			if (item instanceof SwitchItem) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item, bindingConfig);
-				if (pnmasMap.get(sappBindingConfigSwitchItem.getPnmasId()) != null) {
+				if (pnmasMap.get(sappBindingConfigSwitchItem.getStatus().getPnmasId()) != null && sappBindingConfigSwitchItem.getControl().getPnmasId() != null) {
 		 			addBindingConfig(item, sappBindingConfigSwitchItem);
 					fullRefreshNeeded = true;
 				} else {
-					logger.warn("bad pnmasid in bindingConfig: " + sappBindingConfigSwitchItem.getPnmasId() + " -> processing bindingConfig aborted!");
+					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
 				}
 			} else {
 				throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");

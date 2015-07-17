@@ -6,67 +6,78 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 public class SappBindingConfigSwitchItem extends SappBindingConfig {
 
-	private String pnmasId;
-	private SappAddressType addressType;
-	private int address;
-	private String subAddress;
+	private SappAddress status;
+	private SappAddress control;
 
 	public SappBindingConfigSwitchItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
+		
+		String[] bindingConfigParts = bindingConfig.split("/");
+		if (bindingConfigParts.length != 2) {
+			throw new BindingConfigParseException(errorMessage(bindingConfig));
+		}
+		
+		this.status = parseSappAddress(bindingConfigParts[0]);
+		this.control = parseSappAddress(bindingConfigParts[1]);
+	}
 
-		// check syntax
-		String[] bindingConfigParts = bindingConfig.split(":");
-		if (bindingConfigParts.length != 4) {
-			throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
+	public SappAddress getStatus() {
+		return status;
+	}
+
+	public SappAddress getControl() {
+		return control;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[itemName:%s: status:%s - control: %s ]", getItemName(), this.status.toString(), this.control.toString());
+	}
+	
+	private String errorMessage(String bindingConfig) {
+		return String.format("Invalid Sapp binding configuration for SwitchItem '%s'", bindingConfig);
+	}
+	
+	private SappAddress parseSappAddress(String bindingStringAddress) throws BindingConfigParseException {
+		
+		String pnmasId;
+		SappAddressType addressType;
+		int address;
+		String subAddress;
+
+		String[] bindingAddress = bindingStringAddress.split(":");
+		if (bindingAddress.length != 4) {
+			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
 		// pnmasId
-		this.pnmasId = bindingConfigParts[0];
-		if (this.pnmasId.length() == 0) {
-			throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
+		pnmasId = bindingAddress[0];
+		if (pnmasId.length() == 0) {
+			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
 		// addressType
-		this.addressType = SappAddressType.fromString(bindingConfigParts[1].toUpperCase());
-		if (!validAddresses.keySet().contains(this.addressType)) {
-			throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
+		addressType = SappAddressType.fromString(bindingAddress[1].toUpperCase());
+		if (!validAddresses.keySet().contains(addressType)) {
+			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
 		// address
 		try {
-			this.address = Integer.parseInt(bindingConfigParts[2]);
-			if (this.address < validAddresses.get(this.addressType).getLoRange() || this.address > validAddresses.get(this.addressType).getHiRange()) {
-				throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
+			address = Integer.parseInt(bindingAddress[2]);
+			if (address < validAddresses.get(addressType).getLoRange() || address > validAddresses.get(addressType).getHiRange()) {
+				throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 			}
 		} catch (NumberFormatException e) {
-			throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
+			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
-		this.subAddress = bindingConfigParts[3].toUpperCase();
-		if (!ArrayUtils.contains(validSubAddresses, this.subAddress)) {
-			throw new BindingConfigParseException(String.format("Invalid Sapp binding configuration '%s'", bindingConfig));
+		subAddress = bindingAddress[3].toUpperCase();
+		if (!ArrayUtils.contains(validSubAddresses, subAddress)) {
+			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
-	}
 
-	public String getPnmasId() {
-		return pnmasId;
-	}
-
-	public SappAddressType getAddressType() {
-		return addressType;
-	}
-
-	public int getAddress() {
-		return address;
-	}
-
-	public String getSubAddress() {
-		return subAddress;
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("%s: [ %s:%s:%d:%s ]", getItemName(), this.pnmasId, this.addressType, this.address, this.subAddress);
+		return new SappAddress(pnmasId, addressType, address, subAddress);
 	}
 }

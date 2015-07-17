@@ -327,24 +327,26 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
 			
-			if (!provider.getPnmasMap().containsKey(sappBindingConfigSwitchItem.getPnmasId())) {
-				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", sappBindingConfigSwitchItem.getPnmasId(), sappBindingConfigSwitchItem));
+			SappAddress controlAddress = sappBindingConfigSwitchItem.getControl();
+			
+			if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
+				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigSwitchItem));
 				return;
 			}
 
 			try {
 				if (command instanceof OnOffType) { // set bit
-					switch (sappBindingConfigSwitchItem.getAddressType()) {
+					switch (controlAddress.getAddressType()) {
 					case ALARM:
 					case INPUT:
 					case OUTPUT: {
-						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + sappBindingConfigSwitchItem.getAddressType() + " type");
+						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + controlAddress.getAddressType() + " type");
 						break;
 					}
 
 					case VIRTUAL: {
-						SappPnmas pnmas = provider.getPnmasMap().get(sappBindingConfigSwitchItem.getPnmasId());
-						SappCommand sappCommand = new Sapp7DCommand(sappBindingConfigSwitchItem.getAddress(), command.equals(OnOffType.ON) ? 1 : 0);
+						SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
+						SappCommand sappCommand = new Sapp7DCommand(controlAddress.getAddress(), command.equals(OnOffType.ON) ? 1 : 0);
 						sappCommand.run(pnmas.getIp(), pnmas.getPort());
 						if (!sappCommand.isResponseOk()) {
 							throw new SappException("command execution failed");
@@ -406,16 +408,18 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		if (item instanceof SwitchItem) {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 
-			switch (sappBindingConfigSwitchItem.getAddressType()) {
+			SappAddress statusAddress = sappBindingConfigSwitchItem.getStatus();
+
+			switch (statusAddress.getAddressType()) {
 			case VIRTUAL:
 				try {
-					SappPnmas pnmas = provider.getPnmasMap().get(sappBindingConfigSwitchItem.getPnmasId());
-					SappCommand sappCommand = new Sapp7CCommand(sappBindingConfigSwitchItem.getAddress());
+					SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+					SappCommand sappCommand = new Sapp7CCommand(statusAddress.getAddress());
 					sappCommand.run(pnmas.getIp(), pnmas.getPort());
 					if (!sappCommand.isResponseOk()) {
 						throw new SappException("command execution failed");
 					}
-					int result = SappBindingUtils.filter(sappBindingConfigSwitchItem.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
 
 					eventPublisher.postUpdate(itemName, result == 0 ? OnOffType.OFF : OnOffType.ON);
 				} catch (SappException e) {
@@ -424,7 +428,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				break;
 
 			default:
-				logger.error("wrong item type " + item.getClass().getSimpleName() + " for address type " + sappBindingConfigSwitchItem.getAddressType());
+				logger.error("wrong item type " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
 				break;
 			}
 		} else { // TODO complete with other items
