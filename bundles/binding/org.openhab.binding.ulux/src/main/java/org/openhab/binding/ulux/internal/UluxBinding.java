@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class UluxBinding extends AbstractBinding<UluxBindingProvider> implements ManagedService, Runnable {
 

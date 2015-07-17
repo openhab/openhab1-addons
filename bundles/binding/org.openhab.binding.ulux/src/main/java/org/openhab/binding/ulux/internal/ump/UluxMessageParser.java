@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * The message parser class allows the binding to convert a raw byte buffer into a list of messages.
  * 
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class UluxMessageParser {
 

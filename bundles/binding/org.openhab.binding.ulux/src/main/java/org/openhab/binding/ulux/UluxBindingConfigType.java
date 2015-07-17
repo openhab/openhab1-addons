@@ -10,7 +10,7 @@ package org.openhab.binding.ulux;
 
 /**
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public enum UluxBindingConfigType {
 

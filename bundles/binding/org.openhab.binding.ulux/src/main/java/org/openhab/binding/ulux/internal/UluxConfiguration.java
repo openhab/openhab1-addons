@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * This class contains the u:Lux binding configuration from {@code openhab.cfg}.
  * 
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class UluxConfiguration {
 

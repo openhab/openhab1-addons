@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * A factory for {@link UluxMessage}s.
  * 
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class UluxMessageFactory {
 

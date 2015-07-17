@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public abstract class AbstractMessageHandler<T extends UluxMessage> implements UluxMessageHandler<T> {
 

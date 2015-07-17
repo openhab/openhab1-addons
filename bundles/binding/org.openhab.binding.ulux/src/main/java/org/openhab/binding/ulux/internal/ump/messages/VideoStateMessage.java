@@ -17,7 +17,7 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
 
 /**
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class VideoStateMessage extends AbstractUluxMessage {
 

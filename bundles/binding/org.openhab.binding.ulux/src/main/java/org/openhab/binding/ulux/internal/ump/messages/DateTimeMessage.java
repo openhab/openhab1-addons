@@ -19,7 +19,7 @@ import org.openhab.binding.ulux.internal.ump.UluxMessageId;
  * Message to query or set the date and time of a switch.
  * 
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class DateTimeMessage extends AbstractUluxMessage {
 

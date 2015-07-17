@@ -19,7 +19,7 @@ import org.openhab.core.binding.BindingConfig;
 
 /**
  * @author Andreas Brenk
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class UluxBindingConfig implements BindingConfig {
 
