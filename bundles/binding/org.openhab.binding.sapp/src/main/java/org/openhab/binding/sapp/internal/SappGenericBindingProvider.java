@@ -61,7 +61,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 
 		if (item instanceof SwitchItem) {
 			; // OK, nothing to validate
-		} else {
+		} else { // TODO aggiungere altri items
 			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 		}
 	}
@@ -83,7 +83,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 				} else {
 					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
 				}
-			} else {
+			} else { // TODO aggiungere altri items
 				throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 			}
 		} else {

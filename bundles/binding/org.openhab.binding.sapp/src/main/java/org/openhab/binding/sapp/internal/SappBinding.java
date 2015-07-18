@@ -66,7 +66,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * syncronization object used to avoid overlapping pollings
 	 */
-	private boolean isInPolling = false;
+	private static boolean isInPolling = false;
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
@@ -201,8 +201,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 */
 	@Override
 	protected void execute() {
-
-		// the frequently executed code (polling) goes here ...
 
 		if (!isInPolling) {
 			synchronized (this) { // do not overlap execute()
