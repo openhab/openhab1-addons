@@ -2349,6 +2349,10 @@
 			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0169</Id>
+		<Name>POPP_NEW</Name>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -2358,7 +2362,7 @@
 			<Label lang="en">Z Weather</Label>
 			<ConfigFile>popp/zweather.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+	</Manufacturer>	
 	<Manufacturer>
 		<Id>0129</Id>
 		<Name>Yale Locks</Name>
