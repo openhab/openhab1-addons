@@ -1002,6 +1002,15 @@
 			<Label lang="en">Siren</Label>
 			<ConfigFile>aeon/siren.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0062</Id>
+			</Reference>
+			<Model>ZW098-C55</Model>
+			<Label lang="en">LED Bulb</Label>
+			<ConfigFile>aeon/zw098.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
