@@ -6,13 +6,17 @@ public class SappAddress {
 	private SappAddressType addressType;
 	private int address;
 	private String subAddress;
+	private int onValue;
+	private int offValue;
 
-	public SappAddress(String pnmasId, SappAddressType addressType, int address, String subAddress) {
+	public SappAddress(String pnmasId, SappAddressType addressType, int address, String subAddress, int onValue, int offValue) {
 		super();
 		this.pnmasId = pnmasId;
 		this.addressType = addressType;
 		this.address = address;
 		this.subAddress = subAddress;
+		this.onValue = onValue;
+		this.offValue = offValue;
 	}
 
 	public String getPnmasId() {
@@ -29,6 +33,14 @@ public class SappAddress {
 
 	public String getSubAddress() {
 		return subAddress;
+	}
+
+	public int getOnValue() {
+		return onValue;
+	}
+
+	public int getOffValue() {
+		return offValue;
 	}
 
 	@Override

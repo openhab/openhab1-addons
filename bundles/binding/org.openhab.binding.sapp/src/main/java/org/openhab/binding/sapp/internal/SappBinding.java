@@ -346,7 +346,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 					case VIRTUAL: {
 						SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
-						SappCommand sappCommand = new Sapp7DCommand(controlAddress.getAddress(), command.equals(OnOffType.ON) ? 1 : 0);
+						SappCommand sappCommand = new Sapp7DCommand(controlAddress.getAddress(), command.equals(OnOffType.ON) ? controlAddress.getOnValue() : controlAddress.getOffValue());
 						sappCommand.run(pnmas.getIp(), pnmas.getPort());
 						if (!sappCommand.isResponseOk()) {
 							throw new SappException("command execution failed");
@@ -421,7 +421,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					}
 					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
 
-					eventPublisher.postUpdate(itemName, result == 0 ? OnOffType.OFF : OnOffType.ON);
+					eventPublisher.postUpdate(itemName, result == statusAddress.getOffValue() ? OnOffType.OFF : OnOffType.ON);
 				} catch (SappException e) {
 					logger.error("could not run sappcommand: " + e.getMessage());
 				}

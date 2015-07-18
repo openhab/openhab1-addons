@@ -45,9 +45,11 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 		SappAddressType addressType;
 		int address;
 		String subAddress;
+		int onValue = 1;
+		int offValue = 0;
 
 		String[] bindingAddress = bindingStringAddress.split(":");
-		if (bindingAddress.length != 4) {
+		if (bindingAddress.length != 4 && bindingAddress.length != 6) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
@@ -73,11 +75,22 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
+		// subaddress
 		subAddress = bindingAddress[3].toUpperCase();
 		if (!ArrayUtils.contains(validSubAddresses, subAddress)) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
+		
+		// onvalue, offvalue
+		if (bindingAddress.length == 6) {
+			try {
+				onValue = Integer.parseInt(bindingAddress[4]);
+				offValue = Integer.parseInt(bindingAddress[5]);
+			} catch (NumberFormatException e) {
+				throw new BindingConfigParseException(errorMessage(bindingStringAddress));
+			}
+		}
 
-		return new SappAddress(pnmasId, addressType, address, subAddress);
+		return new SappAddress(pnmasId, addressType, address, subAddress, onValue, offValue);
 	}
 }
