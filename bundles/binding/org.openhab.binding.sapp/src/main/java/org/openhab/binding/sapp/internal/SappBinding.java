@@ -10,6 +10,7 @@ package org.openhab.binding.sapp.internal;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
@@ -66,7 +67,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * syncronization object used to avoid overlapping pollings
 	 */
-	private static boolean isInPolling = false;
+	private static final AtomicInteger runningPollings = new AtomicInteger(0);
+	private static final Object pollingLock = new Object(); 
+	private static final int MAX_CONCURRENT_POLLINGS = 1;
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
@@ -202,11 +205,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	@Override
 	protected void execute() {
 
-		if (!isInPolling) {
-			synchronized (this) { // do not overlap execute()
-				if (!isInPolling) {
+		if (runningPollings.get() < MAX_CONCURRENT_POLLINGS) {
+			synchronized (pollingLock) { // do not overlap execute()
+				if (runningPollings.get() < MAX_CONCURRENT_POLLINGS) { // double check in synchronized part
 					try {
-						isInPolling = true;
+						runningPollings.incrementAndGet();
 
 						if (isProperlyConfigured()) { // wait until provider is properly configured
 							SappBindingProvider provider = getFirstSappBindingProvider();
@@ -275,7 +278,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 							}
 						}
 					} finally {
-						isInPolling = false;
+						runningPollings.decrementAndGet();
 					}
 				}
 			}
