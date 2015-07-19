@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>TZEMT400BB32MAA</Model>
+	<Label lang="en">Trane Z-Wave Programmable Thermostat</Label>
+
+	<!-- Z-Wave Device Class: -->
+	<!-- GENERIC_TYPE_THERMOSTAT -->
+	<!-- SPECIFIC_TYPE_THERMOSTAT_V2 -->
+
+	<CommandClasses>                  <!-- Z-Wave Supported Command Classes: -->
+		<Class><id>0x20</id></Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class><id>0x31</id></Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class><id>0x40</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_MODE -->
+		<Class><id>0x42</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_OPERATING_STATE -->
+		<Class><id>0x43</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETPOINT -->
+		<Class><id>0x44</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_MODE -->
+		<Class><id>0x45</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_STATE -->
+		<Class><id>0x70</id></Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class><id>0x72</id></Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class><id>0x85</id></Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class><id>0x86</id></Class>  <!-- COMMAND_CLASS_VERSION -->
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>132</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Schedule Mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Hold</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Schedule</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+
+</Product>

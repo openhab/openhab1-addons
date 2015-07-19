@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>MultiSensor 6</Model>
+	<Label lang="en">MultiSensor 6</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x30</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x59</id>
+		</Class>
+		<Class>
+			<id>0x5E</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x71</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x7A</id>
+		</Class>
+		<Class>
+			<id>0x80</id>
+		</Class>
+		<Class>
+			<id>0x84</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x5A</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
+			<Label lang="en">Stay Awake in Battery Mode
+			</Label>
+			<Help lang="en">Stay awake for 10 minutes when re-powering the
+				MultiSensor (battery mode)
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>15300</Maximum>
+			<Default>240</Default>
+			<Size>2</Size>
+			<Label lang="en">Motion Sensor Timeout</Label>
+			<Help lang="en">How long should the device associated to MultiSensor
+				keep state On before sending it Off command (if the value is bigger
+				than 255, the value would be rounded to next integer in minutes,
+				else seconds)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Motion sensor
+			</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Motion Sensor Triggered Command</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send Basic Set CC</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Send Sensor Binary Report CC</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>127</Default>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensitivity</Label>
+			<Help lang="en">The range of PIR Sensitivity is 0 to 127 (127 max
+				sensitivity)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Minimum>10</Minimum>
+			<Maximum>50</Maximum>
+			<Default>20</Default>
+			<Label lang="en">Low Battery Report</Label>
+			<Help lang="en">Low Battery report if bellow this value. The range of
+				low battery value is 10% to 50%</Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Selective Reporting</Label>
+			<Help lang="en">Send reports only when measurements reach a certain
+				threshold or percentage. Set in parameters 41-44
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>41</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Default>256</Default>
+			<Label lang="en">Temperature Threshold</Label>
+			<Help lang="en">Threshold change in temperature to induce an
+				automatic report. When the unit is Celsius, threshold=Value. When
+				the unit is Fahrenheit, threshold=Value*1.8. The accuracy is 0.1.
+				The high byte is the part of integer, the low byte is the fractional
+				part
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Default>5</Default>
+			<Label lang="en">Humidity Threshold</Label>
+			<Help lang="en">Threshold change in humidity to induce an automatic
+				report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+			<Default>100</Default>
+			<Label lang="en">Luminance Threshold</Label>
+			<Help lang="en">Threshold change in luminance to induce an automatic
+				report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Default>5</Default>
+			<Label lang="en">Battery Threshold</Label>
+			<Help lang="en">Threshold change in battery level to induce an
+				automatic report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>45</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>11</Maximum>
+			<Default>2</Default>
+			<Label lang="en">Ultraviolet Threshold</Label>
+			<Help lang="en">Threshold change in ultraviolet to induce an
+				automatic report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>46</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Send Alarm Report if low
+				temperature
+			</Label>
+			<Help lang="en">Send an alarm report if temperature is less than
+				-15 degrees C
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable
+				</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable
+				</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>101</Index>
+			<Type>int</Type>
+			<Default>241</Default>
+			<Size>4</Size>
+			<Label lang="en">Group 1 Periodic Reports
+			</Label>
+			<Help lang="en">The value is a combination number made up of the sum
+				of the values for the individual sensors and battery. The sensors
+				have the values: Battery=1, Ultraviolet=16, Temperature=32,
+				Humidity=64, Light=128 Therefore if you want all sensors and the
+				battery sending regular reports, set the parameter to 241 (1 + 16 +
+				32 + 64 + 128).
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>102</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Group 2 Periodic Reports
+			</Label>
+			<Help lang="en">The value is a combination number made up of the sum
+				of the values for the individual sensors and battery. The sensors
+				have the values: Battery=1, Ultraviolet=16, Temperature=32,
+				Humidity=64, Light=128 Therefore if you want all sensors and the
+				battery sending regular reports, set the parameter to 241 (1 + 16 +
+				32 + 64 + 128).
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>103</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Group 3 Periodic Reports
+			</Label>
+			<Help lang="en">The value is a combination number made up of the sum
+				of the values for the individual sensors and battery. The sensors
+				have the values: Battery=1, Ultraviolet=16, Temperature=32,
+				Humidity=64, Light=128 Therefore if you want all sensors and the
+				battery sending regular reports, set the parameter to 241 (1 + 16 +
+				32 + 64 + 128).
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>111</Index>
+			<Type>int</Type>
+			<Size>4</Size>
+			<Minimum>5</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>3600</Default>
+			<Label lang="en">Group 1 Report Interval</Label>
+		</Parameter>
+		<Parameter>
+			<Index>112</Index>
+			<Type>int</Type>
+			<Size>4</Size>
+			<Minimum>5</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>3600</Default>
+			<Label lang="en">Group 2 Report Interval</Label>
+		</Parameter>
+		<Parameter>
+			<Index>113</Index>
+			<Type>int</Type>
+			<Size>4</Size>
+			<Minimum>5</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>3600</Default>
+			<Label lang="en">Group 3 Report Interval</Label>
+		</Parameter>
+		<Parameter>
+			<Index>201</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>-32768</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Temperature Calibration</Label>
+			<Help lang="en">The range of calibration value is -32768 to 32767
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>202</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>-32768</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Humidity Sensor Calibration</Label>
+			<Help lang="en">The range of calibration value is -32768 to 32767
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>203</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>-32768</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Luminance Sensor Calibration</Label>
+			<Help lang="en">The range of calibration value is -32768 to 32767
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>204</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Minimum>-11</Minimum>
+			<Maximum>11</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Ultraviolet Sensor Calibration</Label>
+			<Help lang="en">The range of calibration value is -11 to 11</Help>
+		</Parameter>
+		<Parameter>
+			<Index>252</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>1</Default>
+			<Label lang="en">Lock Configuration Parameters
+			</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>255</Index>
+			<Type>list</Type>
+			<Size>4</Size>
+			<Label lang="en">Reset to default factory settings</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Resets all configuration parameters to default
+					settings</Label>
+			</Item>
+			<Item>
+				<Value>1431655765</Value>
+				<Label lang="en">Reset to default factory settings and be excluded
+					from the Z-wave network</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en">Group 1 is assigned to the Lifeline association group
+				and every device has 5 nodes to associate. The Motion sensor,
+				Humidity sensor, thermometer, light sensor and Ultraviolet sensor
+				reports will be sent to the associated nodes in Group 1
+			</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<SetToController>false</SetToController>
+			<Label lang="en">Group 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<SetToController>false</SetToController>
+			<Label lang="en">Group 3</Label>
+		</Group>
+	</Associations>
+</Product>

@@ -397,6 +397,17 @@ public enum SonosCommandType {
 		}
 
 	},
+	FAVORITE {
+		{
+			command = "favorite";
+			service = null;
+			action = null;
+			variable = null;
+			typeClass = StringType.class;
+			direction = Direction.OUT;
+		}
+
+	},
 	
 	SAVEALL {
 		{

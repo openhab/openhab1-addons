@@ -10,6 +10,7 @@ package org.openhab.persistence.mysql.internal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -79,6 +80,7 @@ import org.slf4j.LoggerFactory;
  * keep the best resolution, we store as a number in SQL and convert to
  * DecimalType before persisting to MySQL.
  * 
+ * @author Helmut Lehmeyer #2705
  * @author Henrik Sjöstrand
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson
@@ -153,7 +155,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	}
 
 	private String getTable(Item item) {
-		Statement statement = null;
+		PreparedStatement statement = null;
 		String sqlCmd = null;
 		int rowId = 0;
 
@@ -165,14 +167,17 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		if (tableName != null)
 			return tableName;
 
+		logger.debug("mySQL: no Table found for itemName={} get:{}", itemName, sqlTables.get(itemName));
+		
 		// Create a new entry in the Items table. This is the translation of
 		// item name to table
 		try {
-			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES ('" + itemName + "')");
+			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES (?)");
 
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlCmd, Statement.RETURN_GENERATED_KEYS);
-
+			statement = connection.prepareStatement(sqlCmd, Statement.RETURN_GENERATED_KEYS);
+			statement.setString(1, itemName);
+			statement.executeUpdate();
+			
 			ResultSet resultSet = statement.getGeneratedKeys();
 			if (resultSet != null && resultSet.next()) {
 				rowId = resultSet.getInt(1);
@@ -212,16 +217,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		}
 
 		// We have a rowId, create the table for the data
-		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType
-				+ ", PRIMARY KEY(Time));");
+		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType + ", PRIMARY KEY(Time));");
 		logger.debug("SQL: " + sqlCmd);
 
 		try {
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlCmd);
+			statement = connection.prepareStatement(sqlCmd);
+			statement.executeUpdate();
 
-			logger.debug("mySQL: Table created for item '" + itemName + "' with datatype " + mysqlType
-					+ " in SQL database.");
+			logger.debug("mySQL: Table created for item '" + itemName + "' with datatype " + mysqlType + " in SQL database.");
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
 			errCnt++;
@@ -242,12 +245,13 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// The item needs to be removed from the index table to avoid duplicates
 		if(sqlTables.get(itemName) == null) {
 			logger.error("mySQL: Item '{}' was not added to the table - removing index", itemName);
-			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
+			sqlCmd = new String("DELETE FROM Items WHERE ItemName=?");
 			logger.debug("SQL: {}", sqlCmd);
 	
 			try {
-				statement = connection.createStatement();
-				statement.executeUpdate(sqlCmd);	
+				statement = connection.prepareStatement(sqlCmd);
+				statement.setString(1, itemName);
+				statement.executeUpdate();	
 			} catch (Exception e) {
 				errCnt++;
 				
@@ -313,13 +317,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		}
 
 		String sqlCmd = null;
-		Statement statement = null;
+		//Statement statement = null;
+		PreparedStatement statement = null;
 		try {
-			statement = connection.createStatement();
-			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
-					+ item.getState().toString() + "') ON DUPLICATE KEY UPDATE VALUE='"
-					+ item.getState().toString() + "';");
-			statement.executeUpdate(sqlCmd);
+			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
+			statement = connection.prepareStatement(sqlCmd);
+			statement.setString(1, item.getState().toString());
+			statement.setString(2, item.getState().toString());
+			statement.executeUpdate();
 
 			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
 					.toString(), value, (new java.util.Date()).toString());

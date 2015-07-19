@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZL7431</Model>
+	<Label lang="en">In-Wall Relay Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x25</id>
+		</Class>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Set to 1 for a Single Wall Switch without
+					Indicator Light or for Two
+					Wall Switches
+				</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Set to 2 for a Single Wall Switch with Indicator
+					Light</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Update Controller</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

@@ -243,7 +243,9 @@ public enum OBISMsgType {
 			"Equipment identifier"),
 	GMETER_24H_DELIVERY_V2_X(new OBISIdentifier(7, 0, 23, 1, 0, null), 
 			DSMRMeterType.GAS, 
-			new CosemValueDescriptor(CosemString.class, "m3", "gValue"),
+			new CosemValueDescriptor[]{ 
+				new CosemValueDescriptor(CosemString.class, "m3", "gValue"),
+				new CosemValueDescriptor(CosemDate.class, "", "gValueTS") },
 			"Delivery of the past hour(v3.0 and up) or 24 hours (v2.1 / v2.2)"), 
 	GMETER_24H_DELIVERY_COMPENSATED_V2_X(new OBISIdentifier(7, 0, 23, 2, 0, null),
 			DSMRMeterType.GAS, 
