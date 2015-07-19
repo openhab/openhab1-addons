@@ -166,7 +166,32 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private List<String> ignoreEventList = Collections.synchronizedList(new ArrayList<String>());
+	private static class Update {
+		private String itemName;
+		private State state;
+
+		Update(final String itemName, final State state) {
+			this.itemName = itemName;
+			this.state = state;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || !(o instanceof Update)) {
+				return false;
+			}
+			return (this.itemName == null ? ((Update) o).itemName == null : this.itemName.equals(((Update) o).itemName))
+					&& (this.state == null ? ((Update) o).state == null : this.state.equals(((Update) o).state));
+		}
+
+		@Override
+		public int hashCode() {
+			return (this.itemName == null ? 0 : this.itemName.hashCode())
+					^ (this.state == null ? 0 : this.state.hashCode());
+		}
+	}
+
+	private List<Update> ignoreEventList = Collections.synchronizedList(new ArrayList<Update>());
 
 	public EcobeeBinding() {
 	}
@@ -349,8 +374,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 					 * we need to make sure that we won't send out this event to Ecobee again, when receiving it on the
 					 * openHAB bus
 					 */
-					ignoreEventList.add(itemName + newState.toString());
-					logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName, newState);
+					ignoreEventList.add(new Update(itemName, newState));
+					logger.trace("Added event (item='{}', newState='{}') to the ignore event list (size={})", itemName,
+							newState, ignoreEventList.size());
 					this.eventPublisher.postUpdate(itemName, newState);
 				}
 			}
@@ -464,8 +490,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	private boolean isEcho(String itemName, State state) {
-		String ignoreEventListKey = itemName + state.toString();
-		if (ignoreEventList.remove(ignoreEventListKey)) {
+		if (ignoreEventList.remove(new Update(itemName, state))) {
 			logger.trace(
 					"We received this event (item='{}', state='{}') from Ecobee, so we don't send it back again -> ignore!",
 					itemName, state.toString());
@@ -497,52 +522,57 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		if (provider == null) {
 			logger.warn("no matching binding provider found [itemName={}, newState={}]", itemName, newState);
 			return;
-		} else {
-			final Selection selection = new Selection(selectionMatch);
-			List<AbstractFunction> functions = null;
-			logger.trace("Selection for update: {}", selection);
+		}
 
-			String property = provider.getProperty(itemName);
+		if (!provider.isOutBound(itemName)) {
+			logger.warn("attempt to update non-outbound item skipped [itemName={}, newState={}]", itemName, newState);
+			return;
+		}
 
-			try {
-				final Thermostat thermostat = new Thermostat(null);
+		final Selection selection = new Selection(selectionMatch);
+		List<AbstractFunction> functions = null;
+		logger.trace("Selection for update: {}", selection);
 
-				logger.debug("About to set property '{}' to '{}'", property, newState);
+		String property = provider.getProperty(itemName);
 
-				thermostat.setProperty(property, newState);
+		try {
+			final Thermostat thermostat = new Thermostat(null);
 
-				logger.trace("Thermostat for update: {}", thermostat);
+			logger.debug("About to set property '{}' to '{}'", property, newState);
 
-				OAuthCredentials oauthCredentials = getOAuthCredentials(provider.getUserid(itemName));
+			thermostat.setProperty(property, newState);
 
-				if (oauthCredentials == null) {
-					logger.warn("Unable to locate credentials for item {}; aborting update.", itemName);
+			logger.trace("Thermostat for update: {}", thermostat);
+
+			OAuthCredentials oauthCredentials = getOAuthCredentials(provider.getUserid(itemName));
+
+			if (oauthCredentials == null) {
+				logger.warn("Unable to locate credentials for item {}; aborting update.", itemName);
+				return;
+			}
+
+			if (oauthCredentials.noAccessToken()) {
+				if (!oauthCredentials.refreshTokens()) {
+					logger.warn("Sending update skipped.");
 					return;
 				}
-
-				if (oauthCredentials.noAccessToken()) {
-					if (!oauthCredentials.refreshTokens()) {
-						logger.warn("Sending update skipped.");
-						return;
-					}
-				}
-
-				UpdateThermostatRequest request = new UpdateThermostatRequest(oauthCredentials.accessToken, selection,
-						functions, thermostat);
-				ApiResponse response = request.execute();
-				if (response.isError()) {
-					final Status status = response.getStatus();
-					if (status.isAccessTokenExpired()) {
-						if (oauthCredentials.refreshTokens()) {
-							updateEcobee(itemName, newState);
-						}
-					} else {
-						logger.error("Error updating thermostat(s): {}", response);
-					}
-				}
-			} catch (Exception e) {
-				logger.error("Unable to update thermostat(s)", e);
 			}
+
+			UpdateThermostatRequest request = new UpdateThermostatRequest(oauthCredentials.accessToken, selection,
+					functions, thermostat);
+			ApiResponse response = request.execute();
+			if (response.isError()) {
+				final Status status = response.getStatus();
+				if (status.isAccessTokenExpired()) {
+					if (oauthCredentials.refreshTokens()) {
+						updateEcobee(itemName, newState);
+					}
+				} else {
+					logger.error("Error updating thermostat(s): {}", response);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Unable to update thermostat(s)", e);
 		}
 	}
 
