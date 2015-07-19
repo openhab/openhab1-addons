@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/main/resources=UTF-8
 encoding//src/main/resources/common-configuration.json=UTF-8
 encoding//src/main/resources/testing-configuration.json=UTF-8
 encoding//src/main/resources/vaillant-configuration.json=UTF-8
-encoding//src/main/resources/wolf-configuration.json=UTF-8
+encoding//src/main/resources/wolf-35-configuration.json=UTF-8
 encoding/readme.md=UTF-8

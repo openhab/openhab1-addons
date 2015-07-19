@@ -200,10 +200,26 @@ public class EBusGenericBindingProvider extends
 	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommand(java.lang.String)
 	 */
 	@Override
+	public String getId(String itemName) {
+		return get(itemName, "id", null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommand(java.lang.String)
+	 */
+	@Override
 	public String getCommand(String itemName) {
 		return get(itemName, "cmd", null);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommand(java.lang.String)
+	 */
+	@Override
+	public String getSet(String itemName) {
+		return get(itemName, "set", null);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommandClass(java.lang.String)
 	 */

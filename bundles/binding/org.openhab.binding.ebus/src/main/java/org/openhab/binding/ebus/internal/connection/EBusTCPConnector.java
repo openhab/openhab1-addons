@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author Christian Sowada
  * @since 1.7.0
  */
-public class EBusTCPConnector extends AbstractEBusConnector {
+public class EBusTCPConnector extends AbstractEBusWriteConnector {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusTCPConnector.class);
@@ -54,17 +54,25 @@ public class EBusTCPConnector extends AbstractEBusConnector {
 	public boolean connect() throws IOException  {
 		try {
 			socket = new Socket(hostname, port);
-			socket.setSoTimeout(10000);
+			socket.setSoTimeout(20000);
 			socket.setKeepAlive(true);
+			
+			socket.setTcpNoDelay(true);
+			socket.setTrafficClass((byte)0x10);
+			
+			// Useful? We try it
+//			socket.setReceiveBufferSize(1);
+			socket.setSendBufferSize(1);
 			
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
-
+			
 			return true;
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}
-		return false;
+		
+		return super.connect();
 	}
 
 	/* (non-Javadoc)
