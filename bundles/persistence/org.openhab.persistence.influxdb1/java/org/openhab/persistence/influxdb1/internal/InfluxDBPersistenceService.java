@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.persistence.influxdb.internal;
+package org.openhab.persistence.influxdb1.internal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,9 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDB.ConsistencyLevel;
 import org.influxdb.InfluxDBFactory;
-import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
@@ -69,10 +67,9 @@ import retrofit.RetrofitError;
  * The defaults for the database name, the database user and the database url are "openhab",
  * "openhab" and "http://127.0.0.1:8086".
  * 
- * @author Theo Weiss - Initial Contribution, rewritten for influxdb > 0.9 support
- * @author Ben Jones - Upgraded influxdb-java version
- * @author Dan Byers - Allow more item types to be handled
- * @since 1.5.0
+ * @author Theo Weiss - Initial Contribution, rewrite of org.openhab.persistence.influxdb > 0.9
+ *         support
+ * @since 1.7.1
  */
 public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
 
@@ -85,14 +82,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private ItemRegistry itemRegistry;
   private InfluxDB influxDB;
   private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceService.class);
-  private static final Object TIME_COLUMN_NAME = "time";
+  private static final String TIME_COLUMN_NAME = "time";
   private String dbName;
   private String url;
   private String user;
   private String password;
   private boolean isProperlyConfigured;
   private boolean connected;
-  
+
   private PersistentStateRestorer persistentStateRestorer;
 
   public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
@@ -125,13 +122,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       // reuse an existing InfluxDB object because it has no state concerning the database
       // connection
       influxDB = InfluxDBFactory.connect(url, user, password);
+      influxDB.enableBatch(200, 100, TimeUnit.MILLISECONDS);
     }
     connected = true;
   }
 
   private boolean checkConnection() {
     boolean dbStatus = false;
-    if (! connected) {
+    if (!connected) {
       logger.error("checkConnection: database is not connected");
       dbStatus = false;
     } else {
@@ -196,28 +194,32 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     String realName = item.getName();
     String name = (alias != null) ? alias : realName;
-    
+
     State state = null;
     if (item instanceof DimmerItem || item instanceof RollershutterItem) {
       state = item.getStateAs(PercentType.class);
     } else if (item instanceof ColorItem) {
       state = item.getStateAs(HSBType.class);
     } else {
-        // All other items should return the best format by default
-        state = item.getState();
+      // All other items should return the best format by default
+      state = item.getState();
     }
     Object value = stateToObject(state);
     logger.trace("storing {} in influxdb1 {}", name, value);
 
     // TODO check this: better use influxDB.enableBatch() tag?
-    BatchPoints batchPoints =
-        BatchPoints.database(dbName).time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-            .retentionPolicy("default").consistency(ConsistencyLevel.ALL)
-            .build();
-    Point point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).build();
-    batchPoints.point(point);
+    // BatchPoints batchPoints =
+    // BatchPoints.database(dbName).time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+    // .retentionPolicy("default").consistency(ConsistencyLevel.ALL)
+    // .build();
+    // Point point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).build();
+    // batchPoints.point(point);
+    Point point =
+        Point.measurement(name).field(VALUE_COLUMN_NAME, value)
+            .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).build();
     try {
-      influxDB.write(batchPoints);
+      influxDB.write(dbName, "default", point);
+      // influxDB.write(batchPoints);
     } catch (RuntimeException e) {
       logger.error("storing failed with exception for item: {}", name);
       handleDatabaseException(e);
@@ -230,10 +232,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       logger.error("database connection error {}", e.getMessage());
     } else if (e instanceof RuntimeException) {
       // e.g. raised by authentication errors
-      logger
-          .error(
-              "database error: {}",
-              e.getMessage());
+      logger.error("database error: {}", e.getMessage());
     }
   }
 
@@ -274,8 +273,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     connect();
 
-    // check connection; errors will only be logged, hoping the connection will work at a later time. 
-    if ( ! checkConnection()){
+    // check connection; errors will only be logged, hoping the connection will work at a later
+    // time.
+    if (!checkConnection()) {
       logger.error("database connection does not work for now, will retry to use the database.");
     }
     persistentStateRestorer.initializeItems(getName());
@@ -300,8 +300,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     StringBuffer query = new StringBuffer();
     query.append("select ");
     query.append(VALUE_COLUMN_NAME);
-    query.append(", ");
-    query.append(TIME_COLUMN_NAME);
+    // query.append(", ");
+    // query.append(TIME_COLUMN_NAME);
     query.append(" ");
     query.append("from ");
 
@@ -362,82 +362,98 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     }
 
-    // InfluxDB returns results in DESCENDING order by default: TODO this has changed for 0.9?
-    if (filter.getOrdering() == Ordering.ASCENDING) {
-      query.append(" order asc");
-    }
-
     int limit = (filter.getPageNumber() + 1) * filter.getPageSize();
     query.append(" limit " + limit);
     logger.trace("appending limit {}", limit);
 
+    // InfluxDB returns results in ASCENDING order. TODO For now I don't know how to change the
+    // ordering.
+    // It seems that Ordering.DESCENDING is often combined with limit 1
+    if (filter.getOrdering() == Ordering.DESCENDING && limit > 1) {
+      logger.error("descending ordering not (yet) supported!");
+    }
+
     int totalEntriesAffected = ((filter.getPageNumber() + 1) * filter.getPageSize());
-    int startEntryNum = totalEntriesAffected - (totalEntriesAffected - (filter.getPageSize() * filter.getPageNumber()));
+    int startEntryNum =
+        totalEntriesAffected
+            - (totalEntriesAffected - (filter.getPageSize() * filter.getPageNumber()));
     logger.trace("startEntryNum {}", startEntryNum);
-    
+
     logger.debug("query string: {}", query.toString());
     Query influxdbQuery = new Query(query.toString(), dbName);
 
     List<Result> results = Collections.emptyList();
-    try {
-      results = influxDB.query(influxdbQuery).getResults();
-      for (Result result : results) {
-        List<Series> seriess = result.getSeries();
+    results = influxDB.query(influxdbQuery).getResults();
+    for (Result result : results) {
+      List<Series> seriess = result.getSeries();
+      if (result.getError() != null) {
+        logger.error(result.getError());
+        continue;
+      }
+      if (seriess == null) {
+        logger.debug("query returned no series");
+      } else {
         for (Series series : seriess) {
           String historicItemName = series.getName();
           List<List<Object>> valuess = series.getValues();
-          List<String> columns = series.getColumns();
-          for (int i = 0; i < columns.size() - 1; i++) {
-            String columnName = columns.get(i);
-            List<Object> values = Collections.emptyList();
-            List<Object> timestamps = Collections.emptyList();
-            if (columnName.equals(TIME_COLUMN_NAME)) {
-              timestamps = valuess.get(i);
-            } else if (columnName.equals(VALUE_COLUMN_NAME)) {
-              values = valuess.get(i);
-            }
-            for (int j = 0; j < timestamps.size() - 1; j++) {
-              Date time = new Date(((Double) timestamps.get(j)).longValue());
-              State value = objectToState(values.get(j), historicItemName);
-              logger.trace("adding historic item {}: time {} value {}", historicItemName, time,
-                  value);
-              historicItems.add(new InfluxdbItem(historicItemName, value, time));
+          if (valuess == null) {
+            logger.debug("query returned no values");
+          } else {
+            List<String> columns = series.getColumns();
+            for (int i = 0; i < columns.size() - 1; i++) {
+              String columnName = columns.get(i);
+              List<Object> values = Collections.emptyList();
+              List<Object> timestamps = Collections.emptyList();
+              if (columnName.equals(TIME_COLUMN_NAME)) {
+                timestamps = valuess.get(i);
+              } else if (columnName.equals(VALUE_COLUMN_NAME)) {
+                values = valuess.get(i);
+              }
+              for (int j = 0; j < timestamps.size() - 1; j++) {
+                logger.debug("=====Timestamp: " + timestamps.get(j));
+                // Date time = new Date(((Double) timestamps.get(j)).longValue());
+                Calendar.this
+                // State value = objectToState(values.get(j), historicItemName);
+                // logger.trace("adding historic item {}: time {} value {}", historicItemName, time,
+                // value);
+                // historicItems.add(new InfluxdbItem(historicItemName, value, time));
+              }
             }
           }
-          }
+        }
       }
-    } catch (RuntimeException e) {
-      logger.error("query failed with database error");
-      handleDatabaseException(e);
     }
-//    QueryResult results;
-//    // List<Serie> results = Collections.emptyList();
-//    try {
-//      List<Result> results2 = influxDB.query(influxdbQuery).getResults();
-//      results = influxDB.query(influxdbQuery).getResults();
-//    } catch (RuntimeException e) {
-//      logger.error("query failed with database error");
-//      handleDatabaseException(e);
-//    }
-//    for (Serie result : results) {
-//      String historicItemName = result.getName();
-//      logger.trace("item name {}", historicItemName);
-//      int entryCount = 0;
-//      for (Map<String, Object> row : result.getRows()) {
-//        entryCount++;
-//        if (entryCount >= startEntryNum) {
-//          Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
-//          Object rawValue = row.get(VALUE_COLUMN_NAME);
-//          logger.trace("adding historic item {}: time {} value {}", historicItemName, rawTime,
-//              rawValue);
-//          Date time = new Date(rawTime.longValue());
-//          State value = objectToState(rawValue, historicItemName);
-//          historicItems.add(new InfluxdbItem(historicItemName, value, time));
-//        } else {
-//          logger.trace("omitting item value for {}", historicItemName);
-//        }
-//      }
-//    }
+    // TODO add error handling
+
+
+    // QueryResult results;
+    // // List<Serie> results = Collections.emptyList();
+    // try {
+    // List<Result> results2 = influxDB.query(influxdbQuery).getResults();
+    // results = influxDB.query(influxdbQuery).getResults();
+    // } catch (RuntimeException e) {
+    // logger.error("query failed with database error");
+    // handleDatabaseException(e);
+    // }
+    // for (Serie result : results) {
+    // String historicItemName = result.getName();
+    // logger.trace("item name {}", historicItemName);
+    // int entryCount = 0;
+    // for (Map<String, Object> row : result.getRows()) {
+    // entryCount++;
+    // if (entryCount >= startEntryNum) {
+    // Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
+    // Object rawValue = row.get(VALUE_COLUMN_NAME);
+    // logger.trace("adding historic item {}: time {} value {}", historicItemName, rawTime,
+    // rawValue);
+    // Date time = new Date(rawTime.longValue());
+    // State value = objectToState(rawValue, historicItemName);
+    // historicItems.add(new InfluxdbItem(historicItemName, value, time));
+    // } else {
+    // logger.trace("omitting item value for {}", historicItemName);
+    // }
+    // }
+    // }
 
     return historicItems;
   }
@@ -472,11 +488,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   /**
    * Converts {@link State} to objects fitting into influxdb values.
    * 
-   * @param     state to be converted
-   * @return    integer or double value for DecimalType, 
-   *            0 or 1 for OnOffType and OpenClosedType,
-   *            integer for DateTimeType,
-   *            String for all others
+   * @param state to be converted
+   * @return integer or double value for DecimalType, 0 or 1 for OnOffType and OpenClosedType,
+   *         integer for DateTimeType, String for all others
    */
   private Object stateToObject(State state) {
     Object value;
@@ -509,7 +523,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     } else if (state instanceof OnOffType) {
       value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
     } else if (state instanceof OpenClosedType) {
-      value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;  
+      value =
+          ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
     } else if (state instanceof HSBType) {
       value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
@@ -526,8 +541,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * 
    * @param value to be converted to a {@link State}
    * @param itemName name of the {@link Item} to get the {@link State} for
-   * @return the state of the item represented by the itemName parameter, 
-   *         else the string value of the Object parameter
+   * @return the state of the item represented by the itemName parameter, else the string value of
+   *         the Object parameter
    */
   private State objectToState(Object value, String itemName) {
     String valueStr = String.valueOf(value);
@@ -542,12 +557,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
           return new PercentType(valueStr);
         } else if (item instanceof SwitchItem) {
           return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
-            ? OnOffType.OFF
-            : OnOffType.ON;
+              ? OnOffType.OFF
+              : OnOffType.ON;
         } else if (item instanceof ContactItem) {
           return (string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF))
-            ? OpenClosedType.CLOSED
-            : OpenClosedType.OPEN;
+              ? OpenClosedType.CLOSED
+              : OpenClosedType.OPEN;
         } else if (item instanceof RollershutterItem) {
           return new PercentType(valueStr);
         } else if (item instanceof DateTimeItem) {
@@ -558,7 +573,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
           return new StringType(valueStr);
         }
       } catch (ItemNotFoundException e) {
-          logger.warn("Could not find item '{}' in registry", itemName);
+        logger.warn("Could not find item '{}' in registry", itemName);
       }
     }
     // just return a StringType as a fallback

@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.influxdb1">
-   <implementation class="org.openhab.persistence.influxdb.internal.InfluxDBPersistenceService"/>
+   <implementation class="org.openhab.persistence.influxdb1.internal.InfluxDBPersistenceService"/>
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
