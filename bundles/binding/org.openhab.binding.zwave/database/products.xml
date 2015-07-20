@@ -1695,6 +1695,15 @@
 			<Model>ZME_UZB1</Model>
 			<Label lang="en">Z-Wave Plus USB Controller</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0005</Id>
+			</Reference>
+			<Model>ZME_05457</Model>
+			<Label lang="en">Wall Switch Set for Busch Jaeger</Label>
+			<ConfigFile>zwaveme/zme_05457.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
