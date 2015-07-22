@@ -799,9 +799,18 @@
 				<Type>0102</Type>
 				<Id>004A</Id>
 			</Reference>
-			<Model>4in1MS</Model>
+			<Model>4in1MS-G5</Model>
 			<Label lang="en">4 in One MultiSensor (G5)</Label>
 			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0064</Id>
+			</Reference>
+			<Model>4in1MS-G6</Model>
+			<Label lang="en">4 in One MultiSensor (G6)</Label>
+			<ConfigFile>aeon/4in1ms_g6.xml</ConfigFile>
 		</Product>
         <Product>
             <Reference>
