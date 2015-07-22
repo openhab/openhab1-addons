@@ -51,6 +51,7 @@ abstract public class ResourceStateChangeListener {
 	final static long CACHE_TIME = 300 * 1000; // 5 mins
 	
 	final static ConcurrentMap<String, CacheEntry> cachedEntries = new ConcurrentHashMap<String, CacheEntry>();
+	protected Item lastChange;
 	
 	static ScheduledFuture<?> executorFuture;
 	
@@ -149,6 +150,7 @@ abstract public class ResourceStateChangeListener {
 			}
 			
 			public void stateChanged(final Item item, State oldState, State newState) {
+				lastChange = item;
 				broadcaster.broadcast(item);
 //				Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
 //				if(!resources.isEmpty()) {
@@ -212,6 +214,10 @@ abstract public class ResourceStateChangeListener {
 			GenericItem genericItem = (GenericItem) item;
 			genericItem.removeStateChangeListener(stateChangeListener);
 		}
+	}
+	
+	public Item getLastChange() {
+		return this.lastChange;
 	}
 
 	/**

@@ -64,14 +64,6 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
 	private boolean isDoubleBroadcast(HttpServletRequest request,
 			Object responseEntity) throws JsonGenerationException,
 			JsonMappingException, IOException {
-		
-		if (request.getPathInfo().endsWith("state")) {
-			// extra handling for state requests.
-			// if an item and another item is switched to the same state
-			// the message must be broadcasted as well
-			return false;
-		}
-	
 		String clientId = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRACKING_ID);
 
 		// return false if the X-Atmosphere-tracking-id is not set

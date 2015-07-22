@@ -12,10 +12,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,10 +33,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.atmosphere.cpr.AtmosphereResourceEventListener;
+import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
+import org.atmosphere.cpr.MetaBroadcaster;
+import org.atmosphere.jersey.JerseyBroadcaster;
 import org.atmosphere.jersey.SuspendResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -49,6 +59,7 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.ItemStateChangeListener;
+import org.openhab.io.rest.internal.listeners.ItemsStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.GroupItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemBean;
 import org.openhab.io.rest.internal.resources.beans.ItemListBean;
@@ -113,6 +124,41 @@ public class ItemResource {
     	BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
     	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
+		
+		return new SuspendResponse.SuspendResponseBuilder<String>()
+				.scope(SCOPE.REQUEST)
+				.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+				.broadcaster(itemBroadcaster)
+				.outputComments(true).build();
+    }
+    
+    @GET 
+    @Path("/state") 
+	@Produces( { MediaType.TEXT_PLAIN })
+    public SuspendResponse<String> registerPlainItemsState(
+    		@Context AtmosphereResource resource,
+    		@HeaderParam("keepAlive") String keepAlive) {
+    	if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
+    		if (logger.isDebugEnabled()) logger.info("Received HTTP GET request at '{}' for the unknown transport.", uriInfo.getPath());
+    		ItemUIRegistry registry = RESTApplication.getItemUIRegistry();
+    		StringBuilder sb = new StringBuilder();
+    		for (Item item : registry.getItems()) {
+    			String itemAndState = ItemsStateChangeListener.getItemAndState(item);
+    			sb.append(itemAndState).append("\n");
+    		}
+    		throw new WebApplicationException(Response.ok(sb.toString()).build());
+		}
+    	
+    	BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+    	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		final ItemsStateChangeListener listener = new ItemsStateChangeListener();
+		itemBroadcaster.addStateChangeListener(listener);
+		
+		if (BooleanUtils.isTrue(BooleanUtils.toBooleanObject(keepAlive))) {
+			final JerseyBroadcaster metaBroadcaster = broadcasterFactory.lookup(MetaBroadcaster.class, true);
+			metaBroadcaster.scheduleFixedBroadcast(listener.getResponseObject(resource.getRequest()), 1, TimeUnit.MINUTES);
+		}
+		
 		return new SuspendResponse.SuspendResponseBuilder<String>()
 				.scope(SCOPE.REQUEST)
 				.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
