@@ -16,35 +16,6 @@
 	</CommandClasses>
 	<Configuration>
 		<Parameter>
-			<Index>1</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<WriteOnly>true</WriteOnly>
-			<Label lang="en">Sensor report type on Get without endpoint</Label>
-			<Label lang="de">Berichtstyp bei GET ohne Sensorendpunkt</Label>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Temperature, humidity and luminance</Label>
-				<Label lang="de">Temperatur, Feuchtigkeit und Helligkeit</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Temperature</Label>
-				<Label lang="de">Temperatur</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Luminance</Label>
-				<Label lang="de">Helligkeit</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Humidity</Label>
-				<Label lang="de">Feuchtigkeit</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
 			<Index>2</Index>
 			<Type>list</Type>
 			<Default>0</Default>
@@ -92,6 +63,39 @@
 				<Label lang="en">Enabled</Label>
 				<Label lang="de">Aktiviert</Label>
 			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Motion sensor command</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Basic SET</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Sensor Binary</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensitivity</Label>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>short</Type>
+			<Minimum>10</Minimum>
+			<Maximum>50</Maximum>
+			<Default>20</Default>
+			<Size>1</Size>
+			<Label lang="en">Low battery alarm level</Label>
 		</Parameter>
 		<Parameter>
 			<Index>101</Index>
@@ -171,8 +175,19 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<SetToController>true</SetToController>
-			<Label lang="en">Devices to be switched on when motion detected and off after on time</Label>
-			<Label lang="de">Geräte die durch den Bewegungsmelder ein und nach der Aktivitätsdauer ausgeschaltet werden</Label>
+			<Label lang="en">Group 1</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Group 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Group 3</Label>
 		</Group>
 	</Associations>
 </Product>
