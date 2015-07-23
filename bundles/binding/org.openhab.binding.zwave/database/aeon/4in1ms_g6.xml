@@ -97,6 +97,109 @@
 			<Size>1</Size>
 			<Label lang="en">Low battery alarm level</Label>
 		</Parameter>
+				<Parameter>
+			<Index>40</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Selective Reporting</Label>
+			<Help lang="en">Send reports only when measurements reach a certain
+				threshold or percentage. Set in parameters 41-44
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>41</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Default>256</Default>
+			<Label lang="en">Temperature Threshold</Label>
+			<Help lang="en">Threshold change in temperature to induce an
+				automatic report. When the unit is Celsius, threshold=Value. When
+				the unit is Fahrenheit, threshold=Value*1.8. The accuracy is 0.1.
+				The high byte is the part of integer, the low byte is the fractional
+				part
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Default>5</Default>
+			<Label lang="en">Humidity Threshold</Label>
+			<Help lang="en">Threshold change in humidity to induce an automatic
+				report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+			<Default>100</Default>
+			<Label lang="en">Luminance Threshold</Label>
+			<Help lang="en">Threshold change in luminance to induce an automatic
+				report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Default>5</Default>
+			<Label lang="en">Battery Threshold</Label>
+			<Help lang="en">Threshold change in battery level to induce an
+				automatic report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>45</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>11</Maximum>
+			<Default>2</Default>
+			<Label lang="en">Ultraviolet Threshold</Label>
+			<Help lang="en">Threshold change in ultraviolet to induce an
+				automatic report
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>46</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Send Alarm Report if low
+				temperature
+			</Label>
+			<Help lang="en">Send an alarm report if temperature is less than
+				-15 degrees C
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable
+				</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable
+				</Label>
+			</Item>
+		</Parameter>
 		<Parameter>
 			<Index>101</Index>
 			<Type>int</Type>
@@ -169,6 +272,81 @@
 			<Label lang="en">Interval to send out reports of group 3</Label>
 			<Label lang="de">Interval in welchem die Berichte der Gruppe 3 gesendet werden</Label>
 		</Parameter>
+				<Parameter>
+			<Index>201</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>-32768</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Temperature Calibration</Label>
+			<Help lang="en">The range of calibration value is -32768 to 32767
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>202</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>-32768</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Humidity Sensor Calibration</Label>
+			<Help lang="en">The range of calibration value is -32768 to 32767
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>203</Index>
+			<Type>short</Type>
+			<Size>2</Size>
+			<Minimum>-32768</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Luminance Sensor Calibration</Label>
+			<Help lang="en">The range of calibration value is -32768 to 32767
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>204</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Minimum>-11</Minimum>
+			<Maximum>11</Maximum>
+			<Default>0</Default>
+			<Label lang="en">Ultraviolet Sensor Calibration</Label>
+			<Help lang="en">The range of calibration value is -11 to 11</Help>
+		</Parameter>
+		<Parameter>
+			<Index>252</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>1</Default>
+			<Label lang="en">Lock Configuration Parameters
+			</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>255</Index>
+			<Type>list</Type>
+			<Size>4</Size>
+			<Label lang="en">Reset to default factory settings</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Resets all configuration parameters to default
+					settings</Label>
+			</Item>
+			<Item>
+				<Value>1431655765</Value>
+				<Label lang="en">Reset to default factory settings and be excluded
+					from the Z-wave network</Label>
+			</Item>
+		</Parameter>
 	</Configuration>
 	<Associations>
 		<Group>
@@ -176,6 +354,11 @@
 			<Maximum>5</Maximum>
 			<SetToController>true</SetToController>
 			<Label lang="en">Group 1</Label>
+			<Help lang="en">Group 1 is assigned to the Lifeline association group
+				and every device has 5 nodes to associate. The Motion sensor,
+				Humidity sensor, thermometer, light sensor and Ultraviolet sensor
+				reports will be sent to the associated nodes in Group 1
+			</Help>
 		</Group>
 		<Group>
 			<Index>2</Index>
