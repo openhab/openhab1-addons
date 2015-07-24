@@ -12,6 +12,15 @@
 			<Label lang="en">Home Control Metering Plug</Label>
 			<ConfigFile>devolo/mt02646.xml</ConfigFile>
 		</Product>
+		<Product>
+            <Reference>
+                <Type>0100</Type>
+                <Id>0101</Id>
+            </Reference>
+            <Model>MT2652</Model>
+            <Label lang="en">Scene Switch</Label>
+            <ConfigFile>devolo/mt2652.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0000</Id>
