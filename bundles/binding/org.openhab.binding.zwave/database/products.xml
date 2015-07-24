@@ -2038,6 +2038,15 @@
 			<Label lang="en">Wall Switch/Transmitter (2-gang)</Label>
 			<ConfigFile>act/zrm230.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4952</Type>
+				<Id>3130</Id>
+			</Reference>
+			<Model>ZIR010</Model>
+			<Label lang="en">PIR Motion Sensor</Label>
+			<ConfigFile>act/zir010.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>001d</Id>
