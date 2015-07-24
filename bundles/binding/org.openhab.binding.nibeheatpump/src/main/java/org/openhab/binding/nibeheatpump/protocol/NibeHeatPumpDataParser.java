@@ -34,7 +34,7 @@ public class NibeHeatPumpDataParser {
 
 	public static class VariableInformation {
 
-		public int factor;
+		public double factor;
 		public String variable;
 		public NibeDataType dataType;
 		public Type type;
@@ -42,7 +42,7 @@ public class NibeHeatPumpDataParser {
 		public VariableInformation() {
 		}
 
-		public VariableInformation(int factor, String variable,
+		public VariableInformation(double factor, String variable,
 				NibeDataType dataType, Type type) {
 			this.factor = factor;
 			this.variable = variable;
@@ -129,7 +129,8 @@ public class NibeHeatPumpDataParser {
 		put(43137, new VariableInformation(1,	"Inverter alarm code",							NibeDataType.U16,	Type.Sensor));		// Unit: 
 		put(43138, new VariableInformation(1,	"Inverter fault code",							NibeDataType.U16,	Type.Sensor));		// Unit: 
 		put(43140, new VariableInformation(10,	"compr. temp.",									NibeDataType.S16,	Type.Sensor));		// Unit: °C
-		put(43141, new VariableInformation(1,	"compr. in power",								NibeDataType.U16,	Type.Sensor));		// Unit: W
+//		put(43141, new VariableInformation(1,	"compr. in power",								NibeDataType.U16,	Type.Sensor));		// Unit: W
+		put(43141, new VariableInformation(0.1,	"compr. in power",								NibeDataType.U16,	Type.Sensor));		// Unit: W
 		put(43144, new VariableInformation(100,	"Compr. energy total",							NibeDataType.U32,	Type.Sensor));		// Unit: kWh
 		put(43147, new VariableInformation(1,	"Compr. in current",							NibeDataType.S16,	Type.Sensor));		// Unit: A
 		put(43181, new VariableInformation(1,	"Chargepump speed",								NibeDataType.S16,	Type.Sensor));		// Unit: 

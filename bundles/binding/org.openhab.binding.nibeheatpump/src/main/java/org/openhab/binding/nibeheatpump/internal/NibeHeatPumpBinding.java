@@ -112,26 +112,6 @@ public class NibeHeatPumpBinding extends
 		}
 	}
 
-	private State convertNibeValueToState(NibeHeatPumpDataParser.NibeDataType dataType, double value) {
-		org.openhab.core.types.State state = UnDefType.UNDEF;
-
-		switch (dataType) {
-			case U8:
-			case U16:
-			case U32:
-				state = new DecimalType((long) value);
-				break;
-			case S8:
-			case S16:
-			case S32:
-				BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN);
-				state = new DecimalType(bd);
-				break;
-		}
-
-		return state;
-	}
-
 	/**
 	 * The NibeHeatPumpMessageListener runs as a separate thread. The Thread is listening 
 	 * message from heat pump and send updates to openHAB bus.
@@ -199,29 +179,26 @@ public class NibeHeatPumpBinding extends
 								logger.debug("Unknown variable {}", key);
 							} else {
 								// 32bit handling:
-								// The "correct" way:
-//								if ( variableInfo.dataType == NibeDataType.U32 || variableInfo.dataType == NibeDataType.S32 )
-								// The working way:
-								if ( key == 40079 || key == 40081 || key == 40083 || key == 43144 || key == 43239 || key == 43305 || key == 43416 || key == 43420 || key == 43424 )
+								if ( variableInfo.dataType == NibeHeatPumpDataParser.NibeDataType.U32 || variableInfo.dataType == NibeHeatPumpDataParser.NibeDataType.S32 )
 								{
-									logger.debug("32bit variableInfo detected {}", key);
-									int keyValue 		= regValues.get(key);
-									int keyPlusOneValue = regValues.get(key + 1);
+									logger.debug("{}:32bit dataType", key);
+									int keyValue 		= (int) regValues.get(key) & 0xffff;		// Handling the short-value as unsigned when casting to int
+									int keyPlusOneValue = (int) regValues.get(key + 1) & 0xffff;
 //									if (keys.hasMoreElements())
 									{
 //										if ( regValues.get(key + 1) != null )
 										{
-											keyPlusOneValue = regValues.get(key + 1);
+//											keyPlusOneValue = regValues.get(key + 1);
 										}
 									}
-									logger.debug("Value " + keyValue + " PlusOneValue " + keyPlusOneValue);
-//									value = (int) ((Number) regValues.get(key + 1) ).intValue() << 16 | ((Number) regValues.get(key + 0) ).intValue(); 
+									logger.debug(key + ":" + Integer.toHexString(keyValue) + " " + Integer.toHexString(keyPlusOneValue));
 									value = (int) keyPlusOneValue << 16 | keyValue;
 								}
 								
 								value = value / variableInfo.factor;
-								org.openhab.core.types.State state = convertNibeValueToState(
-										variableInfo.dataType, value);
+//								org.openhab.core.types.State state = new DecimalType(value);	// Updates the item with unchanged resolution from 'value' (double)
+								BigDecimal bd = new BigDecimal(value).setScale( (int) Math.log10(variableInfo.factor) , RoundingMode.HALF_EVEN );
+								org.openhab.core.types.State state = new DecimalType(bd);	// Updates the item with correct resolution based on 'variableInfo.factor'
 
 								logger.debug("{}={}", key + ":"
 										+ variableInfo.variable, value);
