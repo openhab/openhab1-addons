@@ -2075,6 +2075,14 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>1902</Type>
+				<Id>0334</Id>
+			</Reference>
+			<Model>DZPD3</Model>
+			<Label lang="en">Universal Lamp Module</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0301</Type>
 				<Id>0209</Id>
 			</Reference>
