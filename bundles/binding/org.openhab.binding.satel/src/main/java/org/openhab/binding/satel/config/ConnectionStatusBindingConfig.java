@@ -25,11 +25,13 @@ import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * This class implements binding configuration for various connection status values.
+ * This class implements binding configuration for various connection status
+ * values.
  * 
  * Supported options:
  * <ul>
- * <li>invert_state - for "connected" status, active state is <code>false</code></li>
+ * <li>invert_state - for "connected" status, active state is <code>false</code>
+ * </li>
  * </ul>
  * 
  * @author Krzysztof Goworek
@@ -70,7 +72,7 @@ public class ConnectionStatusBindingConfig extends SatelBindingConfig {
 			return null;
 
 		return new ConnectionStatusBindingConfig(iterator.nextOfType(StatusType.class, "status type"),
-				parseOptions(iterator));
+				iterator.parseOptions());
 	}
 
 	/**
