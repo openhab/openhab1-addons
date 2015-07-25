@@ -314,4 +314,11 @@ Example entry:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
+ <device productKey="F00.00.1B">
+     <model>2635-222</model>
+     <description>On/Off Module</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
 </xml>
