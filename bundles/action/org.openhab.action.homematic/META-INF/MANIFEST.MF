@@ -10,7 +10,10 @@ Bundle-Activator: org.openhab.action.homematic.internal.HomematicActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Homematic action of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.openhab.core.items,
+Import-Package: org.openhab.binding.homematic.internal.common,
+ org.openhab.binding.homematic.internal.communicator.client,
+ org.openhab.binding.homematic.internal.communicator.client.interfaces,
+ org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.scriptengine.action,
@@ -24,4 +27,3 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.openhab.binding.homematic;bundle-version="1.5.0"

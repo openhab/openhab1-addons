@@ -6,7 +6,6 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.io.myopenhab.internal;
 
 import org.openhab.core.scriptengine.action.ActionDoc;
@@ -20,11 +19,11 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Victor Belov
  * @since 1.3.0
- *
  */
-
 public class MyOpenHAB {
+	
 	private static final Logger logger = LoggerFactory.getLogger(MyOpenHAB.class);
+	
 	static MyOpenHABService mMyOpenHABService = null;
 	
 	/**
@@ -46,13 +45,13 @@ public class MyOpenHAB {
 	 * @param message the body of the notification
 	 * @param icon name for the notification
 	 * @param severity category for the notification
-	 * 
 	 */
 	@ActionDoc(text="Sends a push notification to mobile devices of user with userId")
 	static public void sendNotification(String userId, String message, String icon, String severity) {
 		logger.debug("sendNotification '{}' to user {}", message, userId);
-		if (mMyOpenHABService != null)
+		if (mMyOpenHABService != null) {
 			mMyOpenHABService.sendNotification(userId, message, icon, severity);
+		}
 	}
 	
 	/**
@@ -60,13 +59,13 @@ public class MyOpenHAB {
 	 * 
 	 * @param phone the user's phone number in international format like +49XXXXXXXXXX
 	 * @param message the body of the sms
-	 * 
 	 */
 	@ActionDoc(text="Sends an SMS to mobile phone of user")
 	static public void sendSms(String phone, String message) {
 		logger.debug("sendSMS()");
-		if (mMyOpenHABService != null)
+		if (mMyOpenHABService != null) {
 			mMyOpenHABService.sendSMS(phone, message);
+		}
 	}
 
 }
