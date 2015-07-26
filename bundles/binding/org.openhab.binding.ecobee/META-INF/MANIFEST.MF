@@ -41,3 +41,4 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: lib/commons-beanutils-1.8.3.jar,
  .
 Require-Bundle: org.openhab.io.rest.lib
+Bundle-ActivationPolicy: lazy
