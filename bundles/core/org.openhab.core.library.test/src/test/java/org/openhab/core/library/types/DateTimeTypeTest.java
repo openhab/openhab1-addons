@@ -10,6 +10,7 @@ package org.openhab.core.library.types;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
@@ -31,6 +32,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class DateTimeTypeTest {
 	
+	private SimpleDateFormat dateFormatter = new SimpleDateFormat(DateTimeType.DATE_PATTERN);
+
 	/**
 	 * parameter test set class.
 	 * each instance of this class represents a test which executes the test once.
@@ -157,7 +160,7 @@ public class DateTimeTypeTest {
 		if (parameterSet.inputTimeString == null) {
 			final Calendar calendar = Calendar.getInstance(parameterSet.inputTimeZone);
 			calendar.set(parameterSet.inputTimeMap.get("year"), parameterSet.inputTimeMap.get("month"), parameterSet.inputTimeMap.get("date"), parameterSet.inputTimeMap.get("hourOfDay"), parameterSet.inputTimeMap.get("minute"), parameterSet.inputTimeMap.get("second"));
-			inputTimeString = DateTimeType.DATE_FORMATTER.format(calendar.getTime());
+			inputTimeString = dateFormatter.format(calendar.getTime());
 		} else {
 			inputTimeString = parameterSet.inputTimeString;
 		}
