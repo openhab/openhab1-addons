@@ -70,8 +70,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
 	static private final Logger logger = LoggerFactory.getLogger(KNXCoreTypeMapper.class);
 
-	private final static SimpleDateFormat TIME_DAY_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
-	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+	static private final String TIME_DAY_FORMAT = new String("EEE, HH:mm:ss");
+	static private final String DATE_FORMAT = new String("yyyy-MM-dd");
 
 	/** stores the openHAB type class for all (supported) KNX datapoint types */
 	static private Map<String, Class<? extends Type>> dptTypeMap;
@@ -415,7 +415,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 				if (translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && !translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
 					// Pure date format, no time information
 					cal.setTimeInMillis(translatorDateTime.getValueMilliseconds());
-					value=DateTimeType.DATE_FORMATTER.format(cal.getTime());
+					value=new SimpleDateFormat(DateTimeType.DATE_PATTERN).format(cal.getTime());
 					return DateTimeType.valueOf(value);
 				}
 				else if (!translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
@@ -424,13 +424,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					cal.set(Calendar.HOUR_OF_DAY, translatorDateTime.getHour());
 					cal.set(Calendar.MINUTE, translatorDateTime.getMinute());
 					cal.set(Calendar.SECOND, translatorDateTime.getSecond());
-					value=DateTimeType.DATE_FORMATTER.format(cal.getTime());
+					value=new SimpleDateFormat(DateTimeType.DATE_PATTERN).format(cal.getTime());
 					return DateTimeType.valueOf(value);
 				}
 				else if (translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
 					// Date format and time information
 					cal.setTimeInMillis(translatorDateTime.getValueMilliseconds());
-					value=DateTimeType.DATE_FORMATTER.format(cal.getTime());
+					value=new SimpleDateFormat(DateTimeType.DATE_PATTERN).format(cal.getTime());
 					return DateTimeType.valueOf(value);
 				}
 				break;
@@ -517,7 +517,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
 		try {
 			if (DPTXlatorDate.DPT_DATE.getID().equals(dpt)) {
-				date = DATE_FORMATTER.parse(value);
+				date = new SimpleDateFormat(DATE_FORMAT).parse(value);
 			}
 			else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
 				if (value.contains("no-day")) {
@@ -532,7 +532,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					stb.replace(start, end, String.format(Locale.US, "%1$ta", Calendar.getInstance()));
 					value = stb.toString();
 				}
-				date = TIME_DAY_FORMATTER.parse(value);
+				date = new SimpleDateFormat(TIME_DAY_FORMAT, Locale.US).parse(value);
 			}
 		}
 		catch (ParseException pe) {
@@ -540,7 +540,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			logger.warn("Could not parse '{}' to a valid date", value);
 		}
 
-		return date != null ? DateTimeType.DATE_FORMATTER.format(date) : "";
+		return date != null ? new SimpleDateFormat(DateTimeType.DATE_PATTERN).format(date) : "";
 	}
 
 	/**
