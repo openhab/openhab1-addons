@@ -448,10 +448,10 @@ public class APIMessage {
 						
 					case UserClosing: /*700*/
 						apiName = "User Closing";
-						apiDescription = apiCodeReceived + ": A partition has been armed by a user.";
 						partition = Integer.parseInt(apiMessage.substring(3, 4));
 						user = apiMessage.substring(4);
 						apiName = apiName.concat(": " + user);
+						apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition) + " has been armed by user " + user + ".";
 						apiMessageType = APIMessageType.PARTITION_EVENT;
 						break;
 					case SpecialClosing: /*701*/
@@ -468,10 +468,10 @@ public class APIMessage {
 						break;
 					case UserOpening: /*750*/
 						apiName = "User Opening";
-						apiDescription = apiCodeReceived + ": A partition has been disarmed by a user.";
 						partition = Integer.parseInt(apiMessage.substring(3, 4));
 						user = apiMessage.substring(4);
 						apiName = apiName.concat(": " + user);
+						apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition) + " has been disarmed by user " + user + ".";
 						apiMessageType = APIMessageType.PARTITION_EVENT;
 						break;
 					case SpecialOpening: /*751*/
