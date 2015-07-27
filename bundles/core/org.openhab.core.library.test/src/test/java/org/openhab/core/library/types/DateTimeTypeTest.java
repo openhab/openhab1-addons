@@ -32,8 +32,6 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class DateTimeTypeTest {
 	
-	private SimpleDateFormat dateFormatter = new SimpleDateFormat(DateTimeType.DATE_PATTERN);
-
 	/**
 	 * parameter test set class.
 	 * each instance of this class represents a test which executes the test once.
@@ -77,9 +75,7 @@ public class DateTimeTypeTest {
 		 * @param inputTimeZone
 		 * @param expectedResult
 		 */
-		public ParameterSet(TimeZone defaultTimeZone,
-				Map<String, Integer> inputTimeMap, TimeZone inputTimeZone,
-				String expectedResult) {
+		public ParameterSet(TimeZone defaultTimeZone, Map<String, Integer> inputTimeMap, TimeZone inputTimeZone, String expectedResult) {
 			this.defaultTimeZone = defaultTimeZone;
 			this.inputTimeMap = inputTimeMap;
 			this.inputTimeZone = inputTimeZone;
@@ -93,8 +89,7 @@ public class DateTimeTypeTest {
 		 * @param inputTimeString
 		 * @param expectedResult
 		 */
-		public ParameterSet(TimeZone defaultTimeZone, String inputTimeString,
-				String expectedResult) {
+		public ParameterSet(TimeZone defaultTimeZone, String inputTimeString, String expectedResult) {
 			this.defaultTimeZone = defaultTimeZone;
 			this.inputTimeMap = null;
 			this.inputTimeZone = null;
@@ -112,25 +107,30 @@ public class DateTimeTypeTest {
 	@Parameters
 	public static Collection<Object[]> parameters() {
 		// for simplicity we use always the same input time.
+		return Arrays.asList(new Object[][] {
+			{ new ParameterSet(TimeZone.getTimeZone("UTC")  , initTimeMap(), TimeZone.getTimeZone("UTC")   , "2014-03-30T10:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("UTC")  , initTimeMap(), TimeZone.getTimeZone("CET")   , "2014-03-30T08:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("UTC")  , "2014-03-30T10:58:47UTS"                    , "2014-03-30T10:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("CET")  , initTimeMap(), TimeZone.getTimeZone("UTC")   , "2014-03-30T12:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("CET")  , initTimeMap(), TimeZone.getTimeZone("CET")   , "2014-03-30T10:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("CET")  , "2014-03-30T10:58:47UTS"                    , "2014-03-30T10:58:47") },
+			
+			{ new ParameterSet(TimeZone.getTimeZone("GMT"),   initTimeMap(), TimeZone.getTimeZone("GMT")   , "2014-03-30T10:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("GMT+2"), initTimeMap(), TimeZone.getTimeZone("GML") , "2014-03-30T12:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("GMT-2"), initTimeMap(), TimeZone.getTimeZone("GMT+3") , "2014-03-30T05:58:47") },
+			{ new ParameterSet(TimeZone.getTimeZone("GMT-2"), initTimeMap(), TimeZone.getTimeZone("GMT-4") , "2014-03-30T12:58:47") },
+		});
+	}
+
+	private static Map<String, Integer> initTimeMap() {
 		Map<String, Integer> inputTimeMap = new HashMap<String,Integer>();
 		inputTimeMap.put("year", 2014);
 		inputTimeMap.put("month", 2);
 		inputTimeMap.put("date", 30);
-		inputTimeMap.put("hourOfDay", 4);
+		inputTimeMap.put("hourOfDay", 10);
 		inputTimeMap.put("minute", 58);
 		inputTimeMap.put("second", 47);
-
-		return Arrays.asList(new Object[][] {
-			{ new ParameterSet(TimeZone.getTimeZone("UTC")  , inputTimeMap, TimeZone.getTimeZone("UTC")   , "2014-03-30T04:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("UTC")  , inputTimeMap, TimeZone.getTimeZone("CET")   , "2014-03-30T02:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("UTC")  , "2014-03-30T04:58:47UTS"                    , "2014-03-30T04:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("CET")  , inputTimeMap, TimeZone.getTimeZone("UTC")   , "2014-03-30T04:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("CET")  , inputTimeMap, TimeZone.getTimeZone("CET")   , "2014-03-30T02:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("CET")  , "2014-03-30T04:58:47UTS"                    , "2014-03-30T04:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("GMT+2"), inputTimeMap, TimeZone.getTimeZone("GMT+3") , "2014-03-30T01:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("GMT-2"), inputTimeMap, TimeZone.getTimeZone("GMT+3") , "2014-03-30T01:58:47") },
-			{ new ParameterSet(TimeZone.getTimeZone("GMT-2"), inputTimeMap, TimeZone.getTimeZone("GMT-3") , "2014-03-30T07:58:47") },
-		});
+		return inputTimeMap;
 	}
 
 	private ParameterSet parameterSet;
@@ -156,18 +156,21 @@ public class DateTimeTypeTest {
 		
 		// set default time zone
 		TimeZone.setDefault(parameterSet.defaultTimeZone);
-		// get formated time string
+		
+		// get formatted time string
 		if (parameterSet.inputTimeString == null) {
 			final Calendar calendar = Calendar.getInstance(parameterSet.inputTimeZone);
 			calendar.set(parameterSet.inputTimeMap.get("year"), parameterSet.inputTimeMap.get("month"), parameterSet.inputTimeMap.get("date"), parameterSet.inputTimeMap.get("hourOfDay"), parameterSet.inputTimeMap.get("minute"), parameterSet.inputTimeMap.get("second"));
-			inputTimeString = dateFormatter.format(calendar.getTime());
+			
+			inputTimeString = new SimpleDateFormat(DateTimeType.DATE_PATTERN).format(calendar.getTime());
 		} else {
 			inputTimeString = parameterSet.inputTimeString;
 		}
+		
 		DateTimeType dt = DateTimeType.valueOf(inputTimeString);
 		
 		// create debug output to reproduce
-		System.out.println("createDate (Default TimeZone: " + parameterSet.defaultTimeZone.getDisplayName(false, TimeZone.SHORT, Locale.ROOT) + "):");
+		System.out.println("createDate (Default TimeZone: expected=" + parameterSet.defaultTimeZone.getDisplayName(false, TimeZone.SHORT, Locale.ROOT) + "|current="+TimeZone.getDefault().getDisplayName()+"):");
 		if (parameterSet.inputTimeZone == null) {
 			System.out.println("\tInput: " + inputTimeString);
 		} else {
@@ -175,6 +178,7 @@ public class DateTimeTypeTest {
 		}
 		System.out.println("\tExpected: " + parameterSet.expectedResult);
 		System.out.println("\tResult  : " + dt.toString());
+		
 		// Test
 		assertEquals(parameterSet.expectedResult, dt.toString());
 	}
