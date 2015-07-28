@@ -161,7 +161,7 @@ public abstract class AbstractEBusConnector extends Thread {
 					bufferSize = inputStream.available();
 					
 					if(read == -1) {
-						logger.info("eBUS read timeout occured, no data on bus ...");
+						logger.debug("eBUS read timeout occured, no data on bus ...");
 
 						// currently disabled because of file handler issues!
 						// reconnect
