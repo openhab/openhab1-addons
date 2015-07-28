@@ -160,6 +160,10 @@
 				<Value>1</Value>
 				<Label lang="en">Bi-stable input (switch)</Label>
 			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Roller blind switch (UP / DOWN)</Label>
+			</Item>
 			<Help lang="en">Binary inputs type configuration</Help>
 		</Parameter>
 
