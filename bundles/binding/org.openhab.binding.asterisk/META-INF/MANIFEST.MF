@@ -27,4 +27,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.openhab.binding.asterisk
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
 Bundle-ClassPath: .,
- lib/asterisk-java-1.0.0-20090923.194527-626.jar
+ lib/asterisk-java.jar
