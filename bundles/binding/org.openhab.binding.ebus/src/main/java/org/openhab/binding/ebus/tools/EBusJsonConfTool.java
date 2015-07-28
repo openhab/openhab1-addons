@@ -40,22 +40,16 @@ public class EBusJsonConfTool {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-
 
 		EBusJsonConfTool m = new EBusJsonConfTool();
 		try {
 			m.run();
 
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -198,10 +192,6 @@ public class EBusJsonConfTool {
 				sb.append("No comment item ...\n");
 			}
 
-//			if(entryMap.containsKey("filter")) {
-//				sb.append("Replace filter with command if nessessary\n");
-//			}
-
 			if(entryMap.containsKey("debug")) {
 				sb.append("Remove debug switch ...\n");
 			}
@@ -232,7 +222,7 @@ public class EBusJsonConfTool {
 		mainOut.println();
 		
 		EBusConfigurationProvider ebuscfg = new EBusConfigurationProvider();
-//		ebuscfg.loadConfigurationFile(url);
+
 		for (File file : listOfFiles) {
 			if(file.getName().endsWith("configuration.json")) {
 				String string = StringUtils.substringBefore(file.getName(), "-configuration.json");
@@ -260,15 +250,7 @@ public class EBusJsonConfTool {
 		mainOut.flush();
 		mainOut.close();
 
-		//        List<Map<String, ?>> configurationMap = mapper.readValue(new File("C:\\Users\\csowada\\Downloads\\vaillant-bai00-configuration.json"), List.class);
-
-
-
-		
-
 		checkConfiguration(configurationMap);
-//
-//		writeMarkdownIdTable(configurationMap, out);
 	}
 
 }
