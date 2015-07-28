@@ -9,6 +9,7 @@
 package org.openhab.binding.asterisk.internal;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,12 @@ import org.asteriskjava.manager.ManagerConnection;
 import org.asteriskjava.manager.ManagerConnectionFactory;
 import org.asteriskjava.manager.ManagerEventListener;
 import org.asteriskjava.manager.action.StatusAction;
+import org.asteriskjava.manager.event.DtmfEvent;
 import org.asteriskjava.manager.event.HangupEvent;
 import org.asteriskjava.manager.event.ManagerEvent;
 import org.asteriskjava.manager.event.NewChannelEvent;
 import org.openhab.binding.asterisk.AsteriskBindingProvider;
+import org.openhab.binding.asterisk.internal.AsteriskGenericBindingProvider.AsteriskBindingConfig;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
@@ -149,11 +152,10 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider> im
 		 */
 		public void onManagerEvent(ManagerEvent managerEvent) {
 			for (AsteriskBindingProvider provider : providers) {
-				for (AsteriskBindingTypes type : AsteriskBindingTypes.values()) {
-					for (String itemName : provider.getItemNamesByType(type)) {
-						Class<? extends Item> itemType = provider.getItemType(itemName);
-						handleManagerEvent(itemName, itemType, managerEvent);								
-					}
+				for(String itemName: provider.getItemNames()) {
+					Class<? extends Item> itemType = provider.getItemType(itemName);
+					AsteriskBindingConfig config = (AsteriskBindingConfig) provider.getConfig(itemName);
+					handleManagerEvent(itemName, itemType, managerEvent, config);
 				}
 			}
 		}
@@ -166,16 +168,56 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider> im
 		 * @param itemType the Type of the corresponding item
 		 * @param managerEvent the {@link ManagerEvent} to dispatch
 		 */
-		private void handleManagerEvent(String itemName, Class<? extends Item> itemType, ManagerEvent managerEvent) {
+		private void handleManagerEvent(String itemName, Class<? extends Item> itemType, ManagerEvent managerEvent, AsteriskBindingConfig config) {
 			if (managerEvent instanceof NewChannelEvent) {
-				handleNewCall(itemName, itemType, (NewChannelEvent) managerEvent);
+				handleNewCall(itemName, itemType, (NewChannelEvent) managerEvent, config);
 			}
 			else if (managerEvent instanceof HangupEvent) {
-				handleHangupCall(itemName, itemType, (HangupEvent) managerEvent);
+				handleHangupCall(itemName, itemType, (HangupEvent) managerEvent, config);
+			}
+			else if (managerEvent instanceof DtmfEvent) {
+				handleDtmfEvent(itemName, itemType, (DtmfEvent) managerEvent, config);
 			}
 		}
 
-		private void handleNewCall(String itemName, Class<? extends Item> itemType, NewChannelEvent event) {
+		private void handleDtmfEvent(String itemName, Class<? extends Item> itemType, DtmfEvent event, AsteriskBindingConfig config) {
+			if(config.type.equals("digit") && event.isBegin()) {
+				CallType call = eventCache.get(event.getUniqueId());
+				if(call != null){
+					String reqCid = config.getCallerId();
+					String reqExt = config.getExtension();
+					String reqDigit = config.getDigit();
+					
+					String src = null;
+					String dst = null;
+					
+					if(event.getDirection().toString().equals("Sent")){
+						src = call.getDestNum().toString();
+						dst = call.getOrigNum().toString();
+					} else	{
+						src = call.getOrigNum().toString();
+						dst = call.getDestNum().toString();
+					}
+					
+					
+					if( (reqCid == null || (reqCid != null && reqCid.equals(src))) &&
+						(reqExt == null || (reqExt != null && reqExt.equals(dst))) &&
+						(reqDigit.equals(event.getDigit().toString()))  ) {
+						
+						if (itemType.isAssignableFrom(SwitchItem.class)) {
+							eventPublisher.postUpdate(itemName, OnOffType.ON);
+						} else {
+							logger.warn("DTMF event not appliable to item {}", itemName);
+						}
+						
+					}
+					
+					logger.info("DTMF Event received. Digit '"+event.getDigit()+"' sent from '"+src+"' to '"+dst+"'");
+				}	
+			}
+		}
+
+		private void handleNewCall(String itemName, Class<? extends Item> itemType, NewChannelEvent event, AsteriskBindingConfig config) {
 			if (event.getCallerIdNum() == null || event.getExten() == null) {
 				logger.debug("calleridnum or exten is null -> handle new call aborted!");
 				return;
@@ -186,15 +228,27 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider> im
 					new StringType(event.getExten()));
 			eventCache.put(event.getUniqueId(), call);
 			
-			if (itemType.isAssignableFrom(SwitchItem.class)) {
-				eventPublisher.postUpdate(itemName, OnOffType.ON);
+			if(config.type.equals("active")) {
+
+				String reqCid = config.getCallerId();
+				String reqExt = config.getExtension();
+				
+				if( (reqCid == null || (reqCid != null && reqCid.equals(event.getCallerIdNum().toString()))) &&
+					(reqExt == null || (reqExt != null && reqExt.equals(event.getExten().toString()))) ) {
+					
+					if (itemType.isAssignableFrom(SwitchItem.class)) {
+						eventPublisher.postUpdate(itemName, OnOffType.ON);
+					}
+					else if (itemType.isAssignableFrom(CallItem.class)) {
+						eventPublisher.postUpdate(itemName, call);
+					}
+					else {
+						logger.warn("handle call for item type '{}' is undefined", itemName);
+					}
+					
+				}
 			}
-			else if (itemType.isAssignableFrom(CallItem.class)) {
-				eventPublisher.postUpdate(itemName, call);
-			}
-			else {
-				logger.warn("handle call for item type '{}' is undefined", itemName);
-			}
+
 		}
 		
 		/**
@@ -208,23 +262,47 @@ public class AsteriskBinding extends AbstractBinding<AsteriskBindingProvider> im
 		 * @param itemType 
 		 * @param event
 		 */
-		private void handleHangupCall(String itemName, Class<? extends Item> itemType, HangupEvent event) {
+		private void handleHangupCall(String itemName, Class<? extends Item> itemType, HangupEvent event, AsteriskBindingConfig config) {
 			eventCache.remove(event.getUniqueId());
-			if (itemType.isAssignableFrom(SwitchItem.class)) {
-				OnOffType activeState = 
-					(eventCache.size() == 0 ? OnOffType.OFF : OnOffType.ON); 
-				eventPublisher.postUpdate(itemName, activeState);
-			}
-			else if (itemType.isAssignableFrom(CallItem.class)) {
-				CallType call = (CallType)
-					(eventCache.size() == 0 ? CallType.EMPTY : eventCache.values().toArray()[0]);
-				eventPublisher.postUpdate(itemName, call);
-			}
-			else {
-				logger.warn("handleHangupCall - postUpdate for itemType '{}' is undefined", itemName);
+			
+			if(config.type.equals("active")) {
+
+				String reqCid = config.getCallerId();
+				String reqExt = config.getExtension();
+				
+				if( reqCid == null && reqExt == null ) { // if both requirements are null, toggle the switch or call the old way
+					
+					if (itemType.isAssignableFrom(SwitchItem.class)) {
+						OnOffType activeState =
+							(eventCache.size() == 0 ? OnOffType.OFF : OnOffType.ON);
+						eventPublisher.postUpdate(itemName, activeState);
+					}
+					else if (itemType.isAssignableFrom(CallItem.class)) {
+						CallType call = (CallType)
+							(eventCache.size() == 0 ? CallType.EMPTY : eventCache.values().toArray()[0]);
+						eventPublisher.postUpdate(itemName, call);
+					}
+					else {
+						logger.warn("handleHangupCall - postUpdate for itemType '{}' is undefined", itemName);
+					}
+
+				} else {
+					if( (reqCid == null || (reqCid != null && reqCid.equals(event.getCallerIdNum().toString()))) &&
+						(reqExt == null || (reqExt != null && reqExt.equals(event.getExten().toString()))) ) {
+						
+						if (itemType.isAssignableFrom(SwitchItem.class)) {
+							eventPublisher.postUpdate(itemName, OnOffType.OFF);
+						}
+						else if (itemType.isAssignableFrom(CallItem.class)) {
+							eventPublisher.postUpdate(itemName, CallType.EMPTY);
+						}
+						else {
+							logger.warn("handleHangupCall - postUpdate for itemType '{}' is undefined", itemName);
+						}
+					}
+				}
 			}
 		}
-		
 	}
 	
 	
