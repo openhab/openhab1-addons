@@ -21,6 +21,7 @@ import javax.script.ScriptException;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.openhab.binding.ebus.internal.EBusTelegram;
+import org.openhab.binding.ebus.internal.utils.EBusCodecUtils;
 import org.openhab.binding.ebus.internal.utils.EBusUtils;
 import org.openhab.binding.ebus.internal.utils.NumberUtils;
 import org.slf4j.Logger;
@@ -44,10 +45,12 @@ public class EBusTelegramParser {
 	private static final Logger loggerBrutforce = LoggerFactory
 			.getLogger(EBusTelegramParser.class.getPackage().getName() + ".BruteForce");
 
-//	private Map<String, Object> settings;
-
 	// The configuration provider to parse the ebus telegram
-	private EBusConfigurationProvider configurationProvider; 
+	private EBusConfigurationProvider configurationProvider;
+
+	private EBusTelegramCSVWriter debugWriter;
+
+	private String debugWriteMode; 
 
 	/**
 	 * Constructor
@@ -57,6 +60,16 @@ public class EBusTelegramParser {
 		this.configurationProvider = configurationProvider;
 	}
 
+	/**
+	 * Sets the csv writer to log telegrams
+	 * @param debugWriter
+	 * @param debugWriteMode
+	 */
+	public void setDebugCSVWriter(EBusTelegramCSVWriter debugWriter, String debugWriteMode) {
+		this.debugWriter = debugWriter;
+		this.debugWriteMode = debugWriteMode;
+	}
+	
 	/**
 	 * @param byteBuffer
 	 * @param settings 
@@ -75,12 +88,7 @@ public class EBusTelegramParser {
 		BigDecimal replaceValue = NumberUtils.toBigDecimal(settings.get("replaceValue"));
 		BigDecimal factor = NumberUtils.toBigDecimal(settings.get("factor"));
 		
-		
 		Object value = null;
-		byte hByte = 0;
-		byte lByte = 0;
-
-		BigDecimal repVal = null;
 
 		// requested pos is greater as whole buffer
 		if(pos > byteBuffer.position()) {
@@ -88,73 +96,33 @@ public class EBusTelegramParser {
 			logger.warn("eBus buffer pos error! Can happen ...");
 		}
 
-		if(type.equals("data2b")) {
-			hByte = byteBuffer.get(pos);
-			lByte = byteBuffer.get(pos-1);
-			repVal = BigDecimal.valueOf(-128);
-			value = new BigDecimal(EBusUtils.decodeDATA2b(hByte, lByte));
-
-		} else if(type.equals("data2c")) {
-			hByte = byteBuffer.get(pos);
-			lByte = byteBuffer.get(pos-1);
-			repVal = BigDecimal.valueOf(-2048);
-			value = new BigDecimal(EBusUtils.decodeDATA2c(hByte, lByte));
-
-		} else if(type.equals("data1c")) {
-			lByte = byteBuffer.get(pos-1);
-			repVal = BigDecimal.valueOf(255);
-			value = new BigDecimal(EBusUtils.decodeDATA1c(lByte));
-
-		} else if(type.equals("data1b")) {
-			lByte = byteBuffer.get(pos-1);
-			repVal = BigDecimal.valueOf(-128);
-			value = new BigDecimal(EBusUtils.decodeDATA1b(lByte));
-
-		} else if(type.equals("bcd")) {
-			lByte = byteBuffer.get(pos-1);
-			repVal = BigDecimal.valueOf(266);
-			value = new BigDecimal(EBusUtils.decodeBCD(lByte));
-
-		} else if(type.equals("word")) {
-			hByte = byteBuffer.get(pos);
-			lByte = byteBuffer.get(pos-1);
-			repVal = BigDecimal.valueOf(65535);
-			value = new BigDecimal(EBusUtils.decodeWORD(hByte, lByte));
-
-		} else if(type.equals("uchar") || type.equals("byte")) {
-			repVal = BigDecimal.valueOf(255);
-			value = new BigDecimal(byteBuffer.get(pos-1) & 0xFF);
-
-		} else if(type.equals("char")) {
-			repVal = BigDecimal.valueOf(255);
-			value = new BigDecimal(byteBuffer.get(pos-1));
-
-		} else if(type.equals("bit")) {
+		// replace similar data types
+		if(type.equals("uint"))
+			type = "word";
+		if(type.equals("byte"))
+			type = "uchar";
+		
+		byte[] bytes = null;
+		if(type.equals("data2b") || type.equals("data2c") || type.equals("word")) {
+			bytes = new byte[] {byteBuffer.get(pos), byteBuffer.get(pos-1)};
+		} else {
+			bytes = new byte[] {byteBuffer.get(pos-1)};
+		}
+		
+		if(type.equals("bit")) {
 			int bit = ((Integer) settings.get("bit"));
-			value = byteBuffer.get(pos-1);
+			value = bytes[0];
 
 			boolean isSet = ((Byte)value >> bit& 0x1) == 1;
 			value = isSet;
 
 		} else {
-			logger.warn("Configuration Error: Unknown command type! {}", type);
-
-		}
-
-		// if replace value paramter set
-		if(replaceValue != null) {
-			repVal = replaceValue;
+			value = NumberUtils.toBigDecimal(EBusCodecUtils.decode(type, bytes, replaceValue));
 		}
 
 		// if BigDecimal check for min, max and replace value
 		if(value instanceof BigDecimal) {
 			BigDecimal b = (BigDecimal)value;
-
-			// equals replace value, than return null
-			if(repVal != null && b.compareTo(repVal) == 0) {
-				logger.trace("Replace value found, skip value ...");
-				value = b = null;
-			}
 			
 			// multiply before check min and max
 			if(b != null && factor != null) {
@@ -174,7 +142,7 @@ public class EBusTelegramParser {
 			}
 
 		}
-
+		
 		return value;
 	}
 
@@ -226,12 +194,12 @@ public class EBusTelegramParser {
 		// Check all possible positions with known data types
 		for (int i = 0; i < data.length; i++) {
 
-			Object word = i == data.length-1 ? "---" : EBusUtils.decodeWORD(data[i+1], data[i]);
-			Object data2b = i == data.length-1 ? "---" : EBusUtils.decodeDATA2b(data[i+1], data[i]);
-			Object data2c = i == data.length-1 ? "---" : EBusUtils.decodeDATA2c(data[i+1], data[i]);
-			Object data1c = i == data.length-1 ? "---" : EBusUtils.decodeDATA1c(data[i+1]);
+			Object word = i == data.length-1 ? "---" : EBusCodecUtils.decodeWord(new byte[] {data[i+1], data[i]});
+			Object data2b = i == data.length-1 ? "---" : EBusCodecUtils.decodeDATA2b(new byte[] {data[i+1], data[i]});
+			Object data2c = i == data.length-1 ? "---" : EBusCodecUtils.decodeDATA2c(new byte[] {data[i+1], data[i]});
+			Object data1c = i == data.length-1 ? "---" : EBusCodecUtils.decodeDATA1c(data[i+1]);
 			
-			int bcd = EBusUtils.decodeBCD(data[i]);
+			int bcd = EBusCodecUtils.decodeBCD(data[i]);
 			int uint = data[i] & 0xFF;
 			
 			format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s", i+6, word, uint, data2b, data2c, data1c, bcd);
@@ -239,19 +207,19 @@ public class EBusTelegramParser {
 		}
 
 		// Parse slave data
-		if(telegram.getType() == EBusTelegram.MASTER_SLAVE) {
+		if(telegram.getType() == EBusTelegram.TYPE_MASTER_SLAVE) {
 			data = telegram.getSlaveData();
 
 			loggerBrutforce.trace("    ---------------------------------- Answer ----------------------------------");
 
 			for (int i = 0; i < data.length; i++) {
 
-				Object word = i == data.length-1 ? "---" : EBusUtils.decodeWORD(data[i+1], data[i]);
-				Object data2b = i == data.length-1 ? "---" : EBusUtils.decodeDATA2b(data[i+1], data[i]);
-				Object data2c = i == data.length-1 ? "---" : EBusUtils.decodeDATA2c(data[i+1], data[i]);
-				Object data1c = i == data.length-1 ? "---" : EBusUtils.decodeDATA1c(data[i+1]);
+				Object word = i == data.length-1 ? "---" : EBusCodecUtils.decodeWord(new byte[] {data[i+1], data[i]});
+				Object data2b = i == data.length-1 ? "---" : EBusCodecUtils.decodeDATA2b(new byte[] {data[i+1], data[i]});
+				Object data2c = i == data.length-1 ? "---" : EBusCodecUtils.decodeDATA2c(new byte[] {data[i+1], data[i]});
+				Object data1c = i == data.length-1 ? "---" : EBusCodecUtils.decodeDATA1c(data[i+1]);
 				
-				int bcd = EBusUtils.decodeBCD(data[i]);
+				int bcd = EBusCodecUtils.decodeBCD(data[i]);
 				int uint = data[i] & 0xFF;
 
 				format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s", i+6, word, uint, data2b, data2c, data1c, bcd);
@@ -272,13 +240,11 @@ public class EBusTelegramParser {
 		// Check if a configuration provider is set
 		if(configurationProvider == null) {
 			logger.error("Configuration not loaded, can't parse telegram!");
-			// FIXME: Return empty map
 			return null;
 		}
 
 		// Secure null check
 		if(telegram == null) {
-			// FIXME: Return empty map
 			return null;
 		}
 		
@@ -301,13 +267,18 @@ public class EBusTelegramParser {
 
 		// No registry entries found, so this is a unknown telegram
 		if(matchedTelegramRegistry.isEmpty()) {
+			
+			if(debugWriter != null && (debugWriteMode.contains("unknown") || 
+					debugWriteMode.contains("all"))) {
+				debugWriter.writeTelegram(telegram, "<unknown>");
+			}
+			
 			loggerAnalyses.debug("  >>> Unknown ----------------------------------------");
 			if(loggerBrutforce.isTraceEnabled()) {
 				loggerBrutforce.trace(bufferString);
 				bruteforceEBusTelegram(telegram);
 			}
 
-			// FIXME: Return empty map
 			return null;
 		}
 
@@ -323,8 +294,16 @@ public class EBusTelegramParser {
 			// load debug level for this configuration entry if available
 			if(registryEntry.containsKey("debug")) {
 				debugLevel = ((Integer)registryEntry.get("debug"));
+				
+				if(debugWriter != null && debugWriteMode.contains("debug")) {
+					debugWriter.writeTelegram(telegram, "DEBUG:" + (String) registryEntry.get("comment"));
+				}
 			}
 
+			if(debugWriter != null && debugWriteMode.equals("all")) {
+				debugWriter.writeTelegram(telegram, (String) registryEntry.get("comment"));
+			}
+			
 			// get values block of configuration
 			@SuppressWarnings("unchecked")
 			Map<String, Map<String, Object>> values = (Map<String, Map<String, Object>>) registryEntry.get("values");
@@ -363,13 +342,29 @@ public class EBusTelegramParser {
 					}
 				}
 
+
+
+				
 				// debug
 				String label = (String) (settings.containsKey("label") ? settings.get("label") : "");
 				String format = String.format("%-35s%-10s%s", uniqueKey, value, label);
+				String alias = null;
+				
+				if(settings.containsKey("mapping")) {
+					@SuppressWarnings("unchecked")
+					Map<String, String> mapping = (Map<String, String>) settings.get("mapping");
+					alias = mapping.get(value.toString());
+//					logger.warn(mapping.get(value.toString()));
+				}
+				
 				if(debugLevel >= 2) {
 					loggerAnalyses.debug("    >>> " + format);
+					if(alias != null)
+						loggerAnalyses.debug("      >>> " + alias);
 				} else {
 					loggerAnalyses.trace("    >>> " + format);
+					if(alias != null)
+						loggerAnalyses.trace("      >>> " + alias);
 				}
 
 				// Add result to registry

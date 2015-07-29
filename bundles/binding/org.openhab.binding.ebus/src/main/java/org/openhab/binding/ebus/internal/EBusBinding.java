@@ -16,19 +16,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.ebus.Activator;
 import org.openhab.binding.ebus.EBusBindingProvider;
-import org.openhab.binding.ebus.internal.connection.AbstractEBusConnector;
+import org.openhab.binding.ebus.internal.connection.AbstractEBusWriteConnector;
 import org.openhab.binding.ebus.internal.connection.EBusCommandProcessor;
 import org.openhab.binding.ebus.internal.connection.EBusConnectorEventListener;
 import org.openhab.binding.ebus.internal.connection.EBusSerialConnector;
 import org.openhab.binding.ebus.internal.connection.EBusTCPConnector;
 import org.openhab.binding.ebus.internal.parser.EBusConfigurationProvider;
+import org.openhab.binding.ebus.internal.parser.EBusTelegramCSVWriter;
 import org.openhab.binding.ebus.internal.parser.EBusTelegramParser;
 import org.openhab.binding.ebus.internal.utils.EBusUtils;
 import org.openhab.binding.ebus.internal.utils.StateUtils;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.osgi.framework.Bundle;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
@@ -51,7 +54,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 	private EBusCommandProcessor commandProcessor;
 	
 	// The connector to serial or ethernet
-	private AbstractEBusConnector connector;
+	private AbstractEBusWriteConnector connector;
 	
 	// The parser to converts received bytes to key/value maps
 	private EBusTelegramParser parser;
@@ -59,8 +62,9 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 	// Used to check binding configuration
 	private ConfigurationAdmin configurationAdminService;
 	
-	// 
 	private EBusConfigurationProvider configurationProvider;
+
+	private EBusTelegramCSVWriter debugWriter;
 
 	/* (non-Javadoc)
 	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String, org.openhab.core.types.Command)
@@ -68,13 +72,11 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 
-		final String type = command.toString().toLowerCase();
-
 		for (EBusBindingProvider provider : providers) {
 			byte[] data = commandProcessor.composeSendData(
-					provider, itemName, type);
+					provider, itemName, command);
 
-			connector.send(data);
+			connector.addToSendQueue(data);
 		}
 	}
 
@@ -110,6 +112,10 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 
 		logger.info("Update eBus Binding configuration ...");
 
+		if(properties == null || properties.isEmpty()) {
+			throw new RuntimeException("No properties in openhab.cfg set!");
+		}
+		
 		try {
 			// stop last thread if active
 			if(connector != null && connector.isAlive()) {
@@ -130,7 +136,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 
 			if(StringUtils.isEmpty(parsers)) {
 				// set to current stable configurations as default
-				parsers = "common,wolf";
+				parsers = "common";
 			}
 
 			for (String elem : parsers.split(",")) {
@@ -146,8 +152,15 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 
 				} else {
 					logger.debug("Load eBus Parser Configuration \"{}\" ...", elem.trim());
-					configurationUrl = this.getClass().getResource(
-							"/" + elem.trim() + "-configuration.json");
+					String filename = "src/main/resources/"+elem.trim() + "-configuration.json";
+
+					Bundle bundle = Activator.getInstance().getBundle();
+					configurationUrl = bundle.getResource(filename);
+					
+					if(configurationUrl == null) {
+						logger.error("Unable to load file {} ...",
+								elem.trim() + "-configuration.json");
+					}
 				}
 
 				if(configurationUrl != null) {
@@ -180,7 +193,22 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 				connector.setSenderId(
 						EBusUtils.toByte((String) properties.get("senderId")));
 			}
-
+			
+			// Set slow mode if needed
+			if(StringUtils.equals((String)properties.get("writeMode"), "slow")) {
+				connector.setWriteSlow(true);
+			}
+			
+			if(properties.get("record") != null) {
+				String debugWriterMode = (String)properties.get("record");
+				logger.info("Enable CSV writer for eBUS {}", debugWriterMode);
+				
+				debugWriter = new EBusTelegramCSVWriter();
+				debugWriter.openInUserData("ebus-" + debugWriterMode + ".csv");
+				
+				parser.setDebugCSVWriter(debugWriter, debugWriterMode);
+			}
+			
 			// add event listener
 			connector.addEBusEventListener(this);
 
@@ -290,6 +318,15 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 			commandProcessor.deactivate();
 			commandProcessor = null;
 		}
+		
+		if(debugWriter != null) {
+			try {
+				debugWriter.close();
+			} catch (IOException e) {
+				logger.error("io error", e);
+			}
+			debugWriter = null;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -300,9 +337,9 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 
 		// parse the raw telegram to a key/value map
 		final Map<String, Object> results = parser.parse(telegram);
-
+		
 		if(results == null) {
-			logger.debug("No valid parser result for raw telegram!");
+			logger.trace("No valid parser result for raw telegram!");
 			return;
 		}
 		

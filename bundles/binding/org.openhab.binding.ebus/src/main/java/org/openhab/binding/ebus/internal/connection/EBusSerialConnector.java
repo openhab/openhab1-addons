@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 * @author Christian Sowada
 * @since 1.7.0
 */
-public class EBusSerialConnector extends AbstractEBusConnector {
+public class EBusSerialConnector extends AbstractEBusWriteConnector {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusSerialConnector.class);
@@ -65,7 +65,7 @@ public class EBusSerialConnector extends AbstractEBusConnector {
 				outputStream = serialPort.getOutputStream();
 				inputStream = serialPort.getInputStream();
 				
-				return true;
+				return super.connect();
 			}
 			
 		} catch (NoSuchPortException e) {

@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,20 @@ public class EBusConfigurationProvider {
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusConfigurationProvider.class);
 
+	// filter: ??
+	private static Pattern P_PLACEHOLDER = Pattern.compile("\\?\\?");
+	
+	// filter: (00)
+	private static Pattern P_BRACKETS_VALS = Pattern.compile("(\\([0-9A-Z]{2}\\))");
+	
+	// filter: (|)
+	private static Pattern P_BRACKETS_CLEAN = Pattern.compile("(\\(|\\))");
+	
 	// The registry with all loaded configuration entries
 	private ArrayList<Map<String, Object>> telegramRegistry = new ArrayList<Map<String, Object>>();
 
+	private Map<String, String> loadedFilters = new HashMap<String, String>();
+	
 	// The script engine if available
 	private Compilable compEngine; 
 
@@ -58,23 +70,23 @@ public class EBusConfigurationProvider {
 	public boolean isEmpty() {
 		return telegramRegistry.isEmpty();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
 	public EBusConfigurationProvider() {
 		final ScriptEngineManager mgr = new ScriptEngineManager();
-		
+
 		// load script engine if available
 		if(mgr != null) {
 			final ScriptEngine engine = mgr.getEngineByName("JavaScript");
-			
+
 			if(engine == null) {
 				logger.warn("Unable to load \"JavaScript\" engine! Skip every eBus value calculated by JavaScript.");
-				
+
 			} else if (engine instanceof Compilable) {
 				compEngine = (Compilable) engine;
-				
+
 			}
 		}
 	}
@@ -87,7 +99,7 @@ public class EBusConfigurationProvider {
 			telegramRegistry.clear();
 		}
 	}
-	
+
 	/**
 	 * Loads a JSON configuration file by url
 	 * @param url The url to a configuration file
@@ -102,10 +114,22 @@ public class EBusConfigurationProvider {
 
 		final ArrayList<Map<String, Object>> loadedTelegramRegistry = 
 				(ArrayList<Map<String, Object>>) mapper.readValue(inputStream, List.class);
-		
+
 		for (Iterator<Map<String, Object>> iterator = loadedTelegramRegistry.iterator(); iterator.hasNext();) {
 			Map<String, Object> object = iterator.next();
 			transformDataTypes(object);
+			
+			// check if this filter pattern is already loaded
+			String filter = ((Pattern)object.get("cfilter")).toString();
+			String fileComment = StringUtils.substringAfterLast(url.getFile(), "/") + 
+					" >>> " + object.get("comment");
+			
+			if(loadedFilters.containsKey(filter)) {
+				logger.info("Identical filter already loaded ... {} AND {}", 
+						loadedFilters.get(filter), fileComment);
+			} else {
+				loadedFilters.put(filter, fileComment);
+			}
 		}
 
 		if(loadedTelegramRegistry != null && !loadedTelegramRegistry.isEmpty()) {
@@ -113,42 +137,49 @@ public class EBusConfigurationProvider {
 		}
 	}
 
+
 	/**
 	 * @param configurationEntry
 	 */
 	@SuppressWarnings("unchecked")
 	protected void transformDataTypes(Map<String, Object> configurationEntry) {
-		
+
 		// Use filter property if set
 		if(configurationEntry.get("filter") instanceof String) {
 			String filter = (String)configurationEntry.get("filter");
-			filter = filter.replaceAll("\\?\\?", "[0-9A-Z]{2}");
+			filter = P_PLACEHOLDER.matcher(filter).replaceAll("[0-9A-Z]{2}");
 			logger.trace("Compile RegEx filter: {}", filter);
 			configurationEntry.put("cfilter", Pattern.compile(filter));
-		
+
 		} else {
 			// Build filter string
-			
-			
+
 			// Always ignore first two hex bytes
 			String filter = "[0-9A-Z]{2} [0-9A-Z]{2}";
-			
+
 			// Add command to filter string
 			if(configurationEntry.containsKey("command")) {
 				filter += " " + configurationEntry.get("command");
 				filter += " [0-9A-Z]{2}";
 			}
-			
-			// Add commdata to filter string
+
+			// Add data to filter string
 			if(configurationEntry.containsKey("data")) {
-				filter += " " + configurationEntry.get("data");
+				Matcher matcher = P_BRACKETS_VALS.matcher((String) configurationEntry.get("data"));
+				filter += " " + matcher.replaceAll("[0-9A-Z]{2}");
 			}
-			
+
 			// Finally add .* to end with everthing
 			filter += " .*";
-			
+
 			logger.trace("Compile RegEx filter: {}", filter);
 			configurationEntry.put("cfilter", Pattern.compile(filter));
+		}
+
+		// remove brackets if used
+		if(configurationEntry.get("data") instanceof String) {
+			Matcher matcher = P_BRACKETS_CLEAN.matcher((String)configurationEntry.get("data"));
+			configurationEntry.put("data", matcher.replaceAll(""));
 		}
 		
 		// compile scipt's if available also once
@@ -157,7 +188,7 @@ public class EBusConfigurationProvider {
 			for (Entry<String, Map<String, Object>> entry : values.entrySet()) {
 				if(entry.getValue().containsKey("script")) {
 					String script = (String) entry.getValue().get("script");
-					
+
 					// check if engine is available
 					if(StringUtils.isNotEmpty(script) && compEngine != null) {
 						try {
@@ -170,14 +201,14 @@ public class EBusConfigurationProvider {
 				}
 			}
 		}
-		
+
 		// compile scipt's if available
 		if(configurationEntry.containsKey("computed_values")) {
 			Map<String, Map<String, Object>> cvalues = (Map<String, Map<String, Object>>) configurationEntry.get("computed_values");
 			for (Entry<String, Map<String, Object>> entry : cvalues.entrySet()) {
 				if(entry.getValue().containsKey("script")) {
 					String script = (String) entry.getValue().get("script");
-					
+
 					// check if engine is available
 					if(StringUtils.isNotEmpty(script) && compEngine != null) {
 						try {
@@ -190,9 +221,9 @@ public class EBusConfigurationProvider {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Return all configuration which filter match the bufferString paramter
 	 * @param bufferString The byte string to check against all loaded filters
@@ -228,8 +259,6 @@ public class EBusConfigurationProvider {
 			}
 		}
 
-		//FIXME: Return empty map
 		return null;
 	}
-
 }

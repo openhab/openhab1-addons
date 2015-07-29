@@ -31,6 +31,8 @@ public class NumberUtils {
 			return BigDecimal.valueOf((Long)obj);
 		} else if (obj instanceof Short ) {
 			return BigDecimal.valueOf((Short)obj);
+		} else if (obj instanceof Byte ) {
+			return BigDecimal.valueOf((Byte)obj);
 		} else if (obj instanceof Double ) {
 			return BigDecimal.valueOf((Double)obj);
 		} else if (obj instanceof Float ) {

@@ -1,0 +1,119 @@
+[
+    {
+        "comment":  "<Heating> Heat curve flow temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_hcurve_flow",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(A7) 7C 27",
+
+        "values": {
+            "temp_hcurve_flow":    {"type": "word", "pos": 12, "label": "Heat curve flow temperature (°C)", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Heat curve standard outside temp (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_hcurve_standard_outside",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(43) 7F 27",
+
+        "values": {
+            "temp_hcurve_standard_outside":    {"type": "word", "pos": 12, "label": "Heat curve standard outside temp (°C)", "min": -30, "max": 30, "factor": 0.1}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Heat curve flow temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_hcurve_flow",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(21) 48 01",
+
+        "values": {
+            "temp_hcurve_flow": {"type": "word", "pos": 12, "label": "Heat curve flow temperature (°C)"}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Day temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_day",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(FB) 7D 27",
+
+        "values": {
+            "temp_day":    {"type": "word", "pos": 12, "label": "Day temperature (°C)", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Heat curve start point (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_hcurve_start",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(1F) 7E 27",
+
+        "values": {
+            "temp_hcurve_start": {"type": "word", "pos": 12, "label": "Heat curve start point (°C)", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Low end temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "performance",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(6F) 7B 27",
+
+        "values": {
+            "temp_hcurve_low_end": {"type": "word", "pos": 12, "label": "Low end temperature (°C)", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Winter/Summer Changeover (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_summer_winter_switch",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(25) 16 01",
+
+        "values": {
+            "temp_summer_winter_switch":    {"type": "word", "pos": 12, "label": "Winter/Summer Changeover (°C)", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Economy factor",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "economy_factor",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(8B) 81 27",
+
+        "values": {
+            "economy_factor": {"type": "word", "pos": 12, "label": "Economy factor", "factor": 0.1, "min":0, "max":10}
+        }
+    },
+
+    {
+		"comment":	"<Heating> ECO/ABS (°C)",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"temp_eco_abs",
+		"class":	"heating",
+		"command":	"50 22",
+		"data": 	"(79) 17 01",
+
+		"values": {
+			"temp_eco_abs":	{"type": "word", "pos": 12, "label": "ECO/ABS (°C)", "min": -30, "max": 30, "factor": 0.1}
+		}
+	}
+	
+]
