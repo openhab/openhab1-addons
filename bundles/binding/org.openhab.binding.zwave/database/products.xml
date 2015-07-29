@@ -440,6 +440,15 @@
 			<Label lang="en">Wall Mounted Dimmer</Label>
 			<ConfigFile>evolve/lrm-as.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4556</Type>
+				<Id>4C32</Id>
+			</Reference>
+			<Model>EVLCD-1</Model>
+			<Label lang="en">LCD Keypad</Label>
+			<ConfigFile>evolve/lcd1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0063</Id>
