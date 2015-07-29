@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>EVLCD-1</Model>
+	<Label lang="en">LCD Keypad</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x2b</id>
+		</Class>
+		<Class>
+			<id>0x2d</id>
+		</Class>
+		<Class>
+			<id>0x2c</id>
+		</Class>
+		<Class>
+			<id>0x43</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x87</id>
+		</Class>
+		<Class>
+			<id>0x92</id>
+		</Class>
+		<Class>
+			<id>0x93</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 1 Type</Label>
+			<Help lang="en">Sends Scene command to association group (Group 1 for
+				ON, Group 6 for OFF) when
+				un-inverted, sends BASIC_SET OFF to
+				association group when inverted.
+				Only one button can be defined as
+				privacy or housekeeping.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene Control Momentary</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Control Toggle</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">BASICSET Toggle</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Privacy</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">HouseKeeping</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Scene Control/BASICSET toggle</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 2 Type</Label>
+			<Help lang="en">Sends Scene command to association group (Group 2 for
+				ON, Group 7 for OFF) when
+				un-inverted, sends BASIC_SET OFF to
+				association group when inverted.
+				Only one button can be defined as
+				privacy or housekeeping.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene Control Momentary</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Control Toggle</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">BASICSET Toggle</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Stat (Setpoint Up)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Privacy</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">HouseKeeping</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Scene Control/BASICSET toggle</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 3 Type</Label>
+			<Help lang="en">Sends Scene command to association group (Group 3 for
+				ON, Group 8 for OFF) when
+				un-inverted, sends BASIC_SET OFF to
+				association group when inverted.
+				Only one button can be defined as
+				privacy or housekeeping.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene Control Momentary</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Control Toggle</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">BASICSET Toggle</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Stat (Temperature)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Privacy</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">HouseKeeping</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Scene Control/BASICSET toggle</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 4 Type</Label>
+			<Help lang="en">Sends Scene command to association group (Group 4 for
+				ON, Group 9 for OFF) when
+				un-inverted, sends BASIC_SET OFF to
+				association group when inverted.
+				Only one button can be defined as
+				privacy or housekeeping.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene Control Momentary</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Control Toggle</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">BASICSET Toggle</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Stat (Setpoint Down)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Privacy</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">HouseKeeping</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Scene Control/BASICSET toggle</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 5 Type</Label>
+			<Help lang="en">Sends Scene command to association group (Group 5 for
+				ON, Group 10 for OFF) when
+				un-inverted, sends BASIC_SET OFF to
+				association group when inverted.
+				Only one button can be defined as
+				privacy or housekeeping.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene Control Momentary</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Control Toggle</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">BASICSET Toggle</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Privacy</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">HouseKeeping</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Scene Control/BASICSET toggle</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Language</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">English</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Spanish</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Chinese</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">German</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">French</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Italian</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Punjabi</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>list</Type>
+			<Default>17</Default>
+			<Size>1</Size>
+			<Label lang="en">Keypad Type</Label>
+			<Help lang="en">Select a predefined set of labels, or custom to set
+				your own
+			</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ENTRY2GANG</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">RESORTROOMWALL</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">RESORTROOM3GANGTABLE</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">SLIVINGROOMLEFT</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">SLIVINGROOMRIGHT</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">SLIVINGROOM3GANG</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">SBEDROOM1GANG</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">SBEDROOM1GANGTABLE</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">SBEDROOM3GANGTABLE</Label>
+			</Item>
+			<Item>
+				<Value>10</Value>
+				<Label lang="en">Drape Control 1 Gang</Label>
+			</Item>
+			<Item>
+				<Value>11</Value>
+				<Label lang="en">Vanity Bath 1 Gang</Label>
+			</Item>
+			<Item>
+				<Value>12</Value>
+				<Label lang="en">Sonosta 1 Gang</Label>
+			</Item>
+			<Item>
+				<Value>13</Value>
+				<Label lang="en">Inatpenn 1 Gang</Label>
+			</Item>
+			<Item>
+				<Value>14</Value>
+				<Label lang="en">Type 14</Label>
+			</Item>
+			<Item>
+				<Value>15</Value>
+				<Label lang="en">Lowell 1</Label>
+			</Item>
+			<Item>
+				<Value>16</Value>
+				<Label lang="en">Lowell 2</Label>
+			</Item>
+			<Item>
+				<Value>17</Value>
+				<Label lang="en">Custom Metadata</Label>
+			</Item>
+			<Item>
+				<Value>18</Value>
+				<Label lang="en">CES3DEMO</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>15</Default>
+			<Label lang="en">Display Timeout</Label>
+			<Help lang="en">Timeout in Seconds</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>15</Default>
+			<Label lang="en">Backlight ON Level</Label>
+			<Minimum>1</Minimum>
+			<Maximum>20</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Backlight OFF Level</Label>
+			<Minimum>1</Minimum>
+			<Maximum>20</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>23</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>15</Default>
+			<Label lang="en">Button ON Level</Label>
+			<Minimum>1</Minimum>
+			<Maximum>20</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>24</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Button OFF Level</Label>
+			<Minimum>1</Minimum>
+			<Maximum>20</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>25</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>14</Default>
+			<Label lang="en">LCD Contrast</Label>
+			<Minimum>5</Minimum>
+			<Maximum>20</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>26</Index>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Screen Orientation</Label>
+			<Type>list</Type>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Normal</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Rotated 180</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>27</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">Network Update</Label>
+			<Minimum>0</Minimum>
+			<Maximum>60</Maximum>
+			<Help lang="en">Units: Seconds. When loaded, LCD will trigger a
+				Network Update after timeout
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>29</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>100</Default>
+			<Label lang="en">Red Backlight ON Level</Label>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>100</Default>
+			<Label lang="en">Blue Backlight ON Level</Label>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>31</Index>
+			<Type>short</Type>
+			<Size>1</Size>
+			<Default>100</Default>
+			<Label lang="en">Green Backlight ON Level</Label>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Default>0</Default>
+			<Label lang="en">RGB Demo Mode</Label>
+			<Help lang="en">Scrolls through RGB levels</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 1 (ON Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 2</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 2 (ON Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 3</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 3 (ON Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 4</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 4 (ON Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 5</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 5 (ON Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 6</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 1 (OFF Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 7</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 2 (OFF Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>8</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 8</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 3 (OFF Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>9</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 9</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 4 (OFF Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>10</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 10</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Nodes associated with button 5 (OFF Scene).
+				Nodes are
+				turned ON/OFF, or dimmed/brightened by tapping or holding the
+				button.
+				The LED will indicate the status of this group.
+			</Help>
+		</Group>
+		<Group>
+			<Index>16</Index>
+			<Maximum>30</Maximum>
+			<Label lang="en">Group 16</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en">Upon a change to a “toggle” type of button, the
+				Indicator Report command will be sent to all the nodes in
+				Association Group 16. The least significant bit of the “Value” field
+				will correspond to pushbutton 1, the next most bit pushbutton 2 and
+				so forth. Nodes in this group are turned ON/OFF by tapping the
+				paddle or dimmed/brightened by holding the paddle. The LED will
+				indicate the status of this group.
+
+				If the button is defined as a
+				Housekeeping or Privacy type of button,
+				it is used to indicate the
+				state of the Privacy or Housekeeping
+				status indications. Upon a
+				change in the Privacy or Housekeeping
+				status on any of the keypads,
+				the Indicator Set command will be sent
+				to all the keypads in
+				Association Group 16. The least significant
+				bit of the “Value” field
+				will be the Privacy indicator; the next
+				most bit will be the
+				Housekeeping Indicator.
+			</Help>
+		</Group>
+	</Associations>
+</Product>
