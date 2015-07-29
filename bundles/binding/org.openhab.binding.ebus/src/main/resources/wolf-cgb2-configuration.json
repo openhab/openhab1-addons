@@ -1,0 +1,232 @@
+[
+    {
+        "comment":  "<Heating> Set Heating program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "set_program_heating_circuit",
+        "class":    "heating",
+        "command":  "50 23",
+        "data":     "00 74 27 00 00 5D 01 00 00",
+        "dst":      "35",
+
+        "values": {
+            "_crc":    {"type": "crc-kw", "pos": 6},
+            "program": {"type": "byte", "pos": 9, "label": "Heating program", "min": 0, "max": 3,
+                "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Heating program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "program_heating_circuit",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(FF) 74 27",
+        "dst":      "35",
+
+        "values": {
+            "program": {"type": "byte", "pos": 12, "label": "Heating program", "min": 0, "max": 3,
+                "mapping": {"0": "standby", "1": "auto", "2": "heating mode", "3":"economy mode"}}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Set DHW program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "set_program_dhw_circuit",
+        "class":    "dhw",
+        "command":  "50 23",
+        "data":     "00 75 27 00 00 5D 01 00 00",
+        "dst":      "35",
+
+        "values": {
+            "_crc":    {"type": "crc-kw", "pos": 6},
+            "program": {"type": "byte", "pos": 9, "label": "DHW program", "min": 0, "max": 2,
+                "mapping": {"0": "standby", "1": "auto", "2": "always on"}}
+        }
+    },
+
+    {
+        "comment":  "<DHW> DHW program",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "program_dhw_circuit",
+        "class":    "dhw",
+        "command":  "50 22",
+        "data":     "(A3) 75 27",
+        "dst":      "35",
+
+        "values": {
+            "program": {"type": "byte", "pos": 12, "label": "DHW program", "min": 0, "max": 2,
+                "mapping": {"0": "standby", "1": "auto", "2": "always on"}}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Modulation level (%)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "modulation",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 6F 01",
+
+        "values": {
+            "modulation": {"type": "word", "pos": 12, "label": "Modulation level (%)", "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Heating circuit pump speed (%)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "modulation_pump",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(CC) 57 27",
+
+        "values": {
+            "modulation_pump": {"type": "word", "pos": 12, "label": "Heating circuit pump speed (%)", "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> System pressure (bar)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "pressure",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 1A 27",
+
+        "values": {
+            "pressure": {"type": "word", "pos": 12, "label": "System pressure (bar)", "factor": 0.01, "min": 0, "max": 10 }
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Software Version HCM2",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "fw_version",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 9A 01",
+
+        "values": {
+            "software_version": {"type": "word", "pos": 12, "label": "Software Version HCM2", "factor": 0.01 }
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Burner starts",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "starts",
+        "class":    "burner",
+        "command":  "50 22",
+        "data":     "(CC) 26 02",
+
+        "values": {
+            "starts": {"type": "word", "pos": 12, "label": "Burner starts"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Actual I/O value",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "value_io",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 4F 27",
+
+        "values": {
+            "value_io": {"type": "word", "pos": 12, "label": "Actual I/O value"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Power ON count",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "count_power_on",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 5E 27",
+
+        "values": {
+            "count_power_on": {"type": "word", "pos": 12, "label": "Power ON count"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Burner hours run (h)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "runtime",
+        "class":    "burner",
+        "command":  "50 22",
+        "data":     "(CC) 2A 02",
+
+        "values": {
+            "runtime": {"type": "word", "pos": 12, "label": "Burner hours run (h)"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Current flue gas temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_exhaust",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 1D 27",
+
+        "values": {
+            "temp_exhaust": {"type": "word", "pos": 12, "label": "Current flue gas temperature (°C)", "factor": 0.1 , "min": 1, "max":140 }
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Mains hours (h)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "runtime",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 28 02",
+
+        "values": {
+            "runtime": {"type": "word", "pos": 12, "label": "Mains hours (h)"}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Boiler temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_flow",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 0D 00",
+
+        "values": {
+            "temp_flow": {"type": "word", "pos": 12, "label": "Boiler temperature (°C)", "factor": 0.1, "min": 1, "max": 100 }
+        }
+    },
+
+    {
+        "comment":  "<DHW> DHW temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_dhw",
+        "class":    "dhw",
+        "command":  "50 22",
+        "data":     "(CC) 0E 00",
+
+        "values": {
+            "temp_dhw": {"type": "word", "pos": 12, "label": "DHW temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Boiler> Boiler return temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_return",
+        "class":    "boiler",
+        "command":  "50 22",
+        "data":     "(CC) 16 00",
+
+        "values": {
+            "temp_return": {"type": "word", "pos": 12, "label": "Boiler return temperature (°C)", "factor": 0.1, "min": 1, "max": 100}
+        }
+    }
+]

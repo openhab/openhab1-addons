@@ -1,0 +1,207 @@
+[
+    {
+        "comment":  "<Heating-?2> Anforderung Heizkreis",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "heating_mode",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(57) AB 27",
+        "dst":      "35",
+        "debug":    2,
+
+        "values": {
+            "heating_mode": {"type": "word", "pos": 12, "label": "Anforderung Heizkreis",
+                "mapping": {"7": "Automatic on", "8":"Automatic off", "11":"Off"}}
+        }
+    },
+    
+    {
+        "comment":  "<Heating-?2> ?? (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_eco_abs",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(9F) AC 27",
+
+        "values": {
+            "temp_eco_abs": {"type": "word", "pos": 12, "label": "ECO/ABS (°C)", "factor": -1}
+        }
+    },
+    
+    {
+        "comment":  "<Heating-?1> Heat curve flow temperature (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_hcurve_flow",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(21) 48 01",
+
+        "values": {
+            "temp_hcurve_flow": {"type": "word", "pos": 12, "label": "Heat curve flow temperature (°C)"}
+        }
+    },
+    
+    {
+        "comment":  "<Heating-?1> Heat curve standard outside temp (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_hcurve_standard_outside",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(A1) 9A 01",
+
+        "values": {
+            "temp_hcurve_standard_outside": {"type": "word", "pos": 12, "label": "Heat curve standard outside temp (°C)", "factor": -0.1}
+        }
+    },
+    
+    {
+        "comment":  "<Heating> (?) HG22 Kesselmaximaltemperatur TK-max o. HG17 Pumpenleistung HK maximal",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_000",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(F4) 27 00",
+        "debug":    2,
+
+        "values": {
+            "temp_000": {"type": "word", "pos": 12, "label": "HG22 Kesselmaximaltemperatur TK-max o. HG17 Pumpenleistung HK maximal", "factor": 0.1}
+        }
+    },
+
+    {
+        "comment":  "<Heating> (?) Raumtemperatur (°C)",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "temp_room",
+        "class":    "heating",
+        "command":  "50 22",
+        "data":     "(77) B4 27",
+        "debug":    2,
+
+        "values": {
+            "temp_room": {"type": "word", "pos": 12, "label": "(?) Raumtemperatur (°C)", "factor": 0.1, "min": -30, "max": 60}
+        }
+    },
+
+    {
+        "comment":  "<DHW> Warmwassersolltemperatur eingestellt",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "performance",
+        "class":    "heating_kw",
+        "command":  "50 22",
+        "data":     "(54) 13 00",
+
+        "values": {
+            "temp_t": {"type": "word", "pos": 12, "label": "Warmwassersolltemperatur eingestellt", "factor": 0.1, "min": 0, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Heating> Sollwertkorrektur",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "performance",
+        "class":    "heating_kw",
+        "command":  "50 22",
+        "data":     "(2B) B5 27",
+
+        "values": {
+            "temp_setpoint_correction": {"type": "word", "pos": 12, "label": "Sollwertkorrektur", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<System> Kromschröder/Wolf: Gemittelte Außentemperatur",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "performance",
+        "class":    "heating_kw",
+        "command":  "50 22",
+        "data":     "(4B) C3 27",
+
+        "values": {
+            "temp_outside_avg": {"type": "word", "pos": 12, "label": "Gemittelte Außentemperatur", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Regler> Kromschröder/Wolf: Vorlauftemperatur",
+        "device":   "Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+        "id":       "performance",
+        "class":    "heating_kw",
+        "command":  "50 22",
+        "data":     "(1F) 87 27",
+
+        "values": {
+            "temp_flow": {"type": "word", "pos": 12, "label": "Vorlauftemperatur", "factor": 0.1, "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Service Data> Aussentemperatur (°C)",
+        "class":    "burner",
+        "filter":   "?? FE 03 01 0E .*",
+        "debug":    2,
+
+        "values": {
+            "temp_outside0":    {"type": "word", "pos": 6, "label": "Aussentemperatur", "factor": 0.1 }
+        }
+    },
+
+    {
+        "comment":  "[Analyse] <Brenner> Kromschröder/Wolf: Status 2  - Heizung Status ? Taksperre etc.",
+        "id":       "uflags2",
+        "class":    "burnerw",
+        "command":  "50 22",
+        "data":     "CC 54 27",
+        "debug":    2,
+
+        "values": {
+            "_w_unknown2":    {"type": "byte", "pos": 12, "label": "-> 09 Taksperre, 05 Brenner ein ..."},
+            "_w_unknown20":    {"type": "word", "pos": 12, "label": "-> 09 Taksperre, 05 Brenner ein ..."}
+        }
+    },
+
+    {
+        "comment":  "[Analyse] <Brenner> Kromschröder/Wolf: Status 4  - Heizung Status",
+        "id":       "uflags4",
+        "class":    "burnerw",
+        "command":  "50 22",
+        "data":     "CC 73 01",
+        "debug":    2,
+
+        "values": {
+            "_w_unknown4":    {"type": "byte", "pos": 12, "label": "-> 09 Taksperre, 05 Brenner ein ..."},
+            "_w_unknown40":    {"type": "word", "pos": 12, "label": "-> 09 Taksperre, 05 Brenner ein ..."}
+        }
+    },
+
+    {
+        "comment":  "[Analyse] <Brenner> Kromschröder/Wolf: Flags Status 3",
+        "_filter":  "?? ?? 50 22 03 CC 53 27 .*",
+        "id":       "uflags3",
+        "class":    "burnerw",
+        "command":  "50 22",
+        "data":     "CC 53 27",
+        "debug":    2,
+
+        "values": {
+            "_w_unknown3":    {"type": "word", "pos": 12, "label": "Flags 3"}
+        }
+    },
+
+    {
+        "comment":  "[??] <Brenner?> Kromschröder/Wolf: Regler - Es werden Daten gesendet, die Antworten ist unverändert. Uninteressant ?",
+        "filter":   "?? 50 50 14 .*",
+        "class":	"test",
+        "debug":    2,
+        
+        "values": {
+            "_unknown80":            {"type": "byte", "pos":6, "label": "Unknown 80 - 6-bit"},
+            "_unknown81":            {"type": "byte", "pos":7, "label": "Unknown 81 - 7-bit maske"},
+            "_unknown83":            {"type": "byte", "pos":9, "label": "Unknown 83 - 9-10 word  temp"},
+            "_unknown84":            {"type": "byte", "pos":10, "label": "Unknown 84, 9-10 word  temp"},
+            "_unknown_bit_11":        {"type": "byte", "pos":11, "label": "08 WW, 00 aus"},
+
+            "soll_vl":                {"type": "byte", "pos":8, "label": "Unknown 82 - 8-temp verlauf, Nachtabsenkung auf 5"},
+            "soll_ww":                {"type": "data1c", "pos":12, "label": "Warmwassertemperatur °C", "min": 1, "max": 100 }
+        }
+    }
+]

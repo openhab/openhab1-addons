@@ -27,18 +27,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-* This class can parse information from the binding format and provides eBus
-* binding informations.
-* 
-* @author Christian Sowada
-* @since 1.7.0
-*/
+ * This class can parse information from the binding format and provides eBus
+ * binding informations.
+ * 
+ * @author Christian Sowada
+ * @since 1.7.0
+ */
 public class EBusGenericBindingProvider extends
-		AbstractGenericBindingProvider implements EBusBindingProvider {
+AbstractGenericBindingProvider implements EBusBindingProvider {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusGenericBindingProvider.class);
-	
+
 	/* (non-Javadoc)
 	 * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
 	 */
@@ -52,54 +52,49 @@ public class EBusGenericBindingProvider extends
 	 */
 	@Override
 	public List<String> getItemNames(String uniqueId) {
-		
+
 		ArrayList<String> list = new ArrayList<String>();
-		
-		String id = uniqueId;
-		String className = null;
-		
-		// Split the unique back into class and id part
-		if(uniqueId.contains(".")) {
-			String[] split = StringUtils.split(uniqueId, '.');
-			id = split[1];
-			className = split[0];
-		}
-		
-		
-		// Search for id and class
+
+		// Search for id
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
 			EBusBindingConfig cfg = (EBusBindingConfig) entry.getValue();
-			if(cfg.map.containsKey("id")) {
-				if(StringUtils.equals((String) cfg.map.get("id"), id)) {
-					if(className == null || StringUtils.equals((String) cfg.map.get("class"), className)) {
-						list.add(entry.getKey());
-					}
-				}
+			
+			String clazz = (String) cfg.map.get("class");
+			String id = (String) cfg.map.get("id");
+			
+			if(clazz != null) {
+				//logger.warn("Use of property class \"{}\" for id \"{}\" is deprecated!", clazz, id);
+			}
+			
+			id = clazz == null ? id : clazz + "." + id;
+			
+			if(StringUtils.equals(id, uniqueId)) {
+				list.add(entry.getKey());
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openhab.model.item.binding.AbstractGenericBindingProvider#processBindingConfiguration(java.lang.String, org.openhab.core.items.Item, java.lang.String)
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
-		
+
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		logger.debug("Process binding cfg for {} with settings {} [Context:{}]",
 				item.getName(), bindingConfig, context);
-		
+
 		EBusBindingConfig config = new EBusBindingConfig();
 		for (String set : bindingConfig.trim().split(",")) {
 			String[] configParts = set.split(":");
 			if (configParts.length > 2) {
 				throw new BindingConfigParseException("eBus binding configuration must not contain more than two parts");
 			}
-			
+
 			configParts[0] = configParts[0].trim().toLowerCase();
 			configParts[1] = configParts[1].trim();
 
@@ -108,10 +103,10 @@ public class EBusGenericBindingProvider extends
 
 			} else if(configParts[0].equals("src")) {
 				config.map.put(configParts[0], DatatypeConverter.parseHexBinary(configParts[1])[0]);
-				
+
 			} else if(configParts[0].equals("dst")) {
 				config.map.put(configParts[0], DatatypeConverter.parseHexBinary(configParts[1])[0]);
-			
+
 			} else if(configParts[0].equals("refresh")) {
 				config.map.put(configParts[0], Integer.parseInt(configParts[1]));
 
@@ -119,17 +114,17 @@ public class EBusGenericBindingProvider extends
 				if(!config.map.containsKey("data-map")) {
 					config.map.put("data-map", new HashMap<String, byte[]>());
 				}
-				
+
 				@SuppressWarnings("unchecked")
 				HashMap<String, byte[]> m = (HashMap<String, byte[]>) config.map.get("data-map");
 				String key = configParts[0].substring(5);
 				m.put(key, EBusUtils.toByteArray(configParts[1]));
-				
+
 			} else {
 				config.map.put(configParts[0], configParts[1]);
 			}
 		}
-		
+
 		addBindingConfig(item, config);
 	}
 
@@ -167,7 +162,7 @@ public class EBusGenericBindingProvider extends
 		}
 		return defaultValue;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommandData(java.lang.String)
 	 */
@@ -189,11 +184,19 @@ public class EBusGenericBindingProvider extends
 	 */
 	@Override
 	public byte[] getTelegramData(String itemName, String type) {
-		Map<String, Object> m = get(itemName, "refresh", null);
+		Map<String, Object> m = get(itemName, "data-map", null);
 		if(m != null && m.containsKey(type)) {
 			return (byte[]) m.get(type);
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommand(java.lang.String)
+	 */
+	@Override
+	public String getId(String itemName) {
+		return get(itemName, "id", null);
 	}
 
 	/* (non-Javadoc)
@@ -205,13 +208,13 @@ public class EBusGenericBindingProvider extends
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommandClass(java.lang.String)
+	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommand(java.lang.String)
 	 */
 	@Override
-	public String getCommandClass(String itemName) {
-		return get(itemName, "class", null);
+	public String getSet(String itemName) {
+		return get(itemName, "set", null);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.ebus.EBusBindingProvider#getTelegramSource(java.lang.String)
 	 */

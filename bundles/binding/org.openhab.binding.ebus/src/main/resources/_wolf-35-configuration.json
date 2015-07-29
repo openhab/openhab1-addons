@@ -1,0 +1,148 @@
+[
+
+	{
+		"comment":	"1<???> Kromschröder/Wolf: HG22 Kesselmaximaltemperatur TK-max o. HG17 Pumpenleistung HK maximal",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(F4) 27 00",
+
+		"values": {
+			"temp_room":	{"type": "word", "pos": 12, "label": "HG22 Kesselmaximaltemperatur TK-max o. HG17 Pumpenleistung HK maximal", "factor": 0.1}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: ??? Raumtemperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(77) B4 27",
+
+		"values": {
+			"temp_room":	{"type": "word", "pos": 12, "label": "Raumtemperatur", "factor": 0.1, "min": -30, "max": 60}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Warmwassersolltemperatur eingestellt",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(54) 13 00",
+
+		"values": {
+			"temp_t":	{"type": "word", "pos": 12, "label": "Warmwassersolltemperatur eingestellt", "factor": 0.1, "min": 0, "max": 100}
+		}
+	},
+
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: ECO/ABS",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"set_heating_circuit_program",
+		"class":	"temp_outside_hc",
+		"command":	"50 22",
+		"data": 	"(79) 17 01",
+		
+		"values": {
+			"temp_eco":	{"type": "word", "pos": 12, "label": "ECO/ABS", "min": -30, "max": 30, "factor": 0.1}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Normaußentemperatur Heizkurve",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"set_heating_circuit_program",
+		"class":	"temp_outside_hc",
+		"command":	"50 22",
+		"data": 	"(43) 7F 27",
+		
+		"values": {
+			"temp_outside_hc":	{"type": "word", "pos": 12, "label": "Normaußentemperatur Heizkurve", "min": -30, "max": 30, "factor": 0.1}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Tagtemperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(FB) 7D 27",
+
+		"values": {
+			"temp_day":	{"type": "word", "pos": 12, "label": "Tagtemperatur", "factor": 0.1, "min":0, "max":100}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: ECO/ABS",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(9F) AC 27",
+
+		"values": {
+			"temp_eco":	{"type": "word", "pos": 12, "label": "ECO/ABS", "factor": -1}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Sollwertkorrektur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(2B) B5 27",
+
+		"values": {
+			"temp_setpoint_correction":	{"type": "word", "pos": 12, "label": "Sollwertkorrektur", "factor": 0.1, "min":0, "max":100}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Gemittelte Außentemperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(4B) C3 27",
+
+		"values": {
+			"temp_outside_avg":	{"type": "word", "pos": 12, "label": "Gemittelte Außentemperatur", "factor": 0.1, "min":0, "max":100}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Vorlauftemperatur Heizkurve",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(A7) 7C 27",
+
+		"values": {
+			"temp_hc_flow":	{"type": "word", "pos": 12, "label": "Vorlauftemperatur Heizkurve", "factor": 0.1, "min":0, "max":100}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Vorlauftemperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"(1F) 87 27",
+
+		"values": {
+			"temp_flow":	{"type": "word", "pos": 12, "label": "Vorlauftemperatur", "factor": 0.1, "min":0, "max":100}
+		}
+	}
+
+
+]

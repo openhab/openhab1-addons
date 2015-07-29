@@ -1,100 +1,175 @@
 [
-	{
-		"comment":	"Identifikation",
-		"filter":	"?? ?? 07 04 00 .*",
-		"class":	"common",
-		
-		"values": {
-			"vendor":				{"type": "byte", "pos":9, "label": "Hersteller"},
-			"_device_id0":			{"type": "byte", "pos":10, "label": "Geräte ID 0"},
-			"_device_id1":			{"type": "byte", "pos":11, "label": "Geräte ID 1"},
-			"_device_id2":			{"type": "byte", "pos":12, "label": "Geräte ID 2"},
-			"_device_id3":			{"type": "byte", "pos":13, "label": "Geräte ID 3"},
-			"_device_id4":			{"type": "byte", "pos":14, "label": "Geräte ID 4"},
-			"_software_ver":		{"type": "bcd", "pos":15, "label": "Software Version"},
-			"_software_rev":		{"type": "bcd", "pos":16, "label": "Software Revision"},
-			"_hardware_ver":		{"type": "bcd", "pos":17, "label": "Software Version"},
-			"_hardware_rev":		{"type": "bcd", "pos":18, "label": "Software Revision"}
-		},
-		"computed_values": {
-			"device":					{"type": "script", "script": "String.fromCharCode(_device_id0, _device_id1, _device_id2, _device_id3, _device_id4)", "label": "Geräte ID"},
-			"software_version":			{"type": "script", "script": "_software_ver && _software_rev ? _software_ver + (_software_rev / 100): 0", "label": "Software Version"},
-			"hardware_version":			{"type": "script", "script": "_hardware_ver && _hardware_rev ? _hardware_ver + (_hardware_rev / 100): 0", "label": "Hardware Version"}
-		}
-	},
+    {
+        "comment":  "<Service Data> Aussentemperatur (°C)",
+        "class":    "burner",
+        "filter":   "?? FE 03 01 0E .*",
 
-	{
-		"comment":	"Betriebsdaten des Feuerungsautomaten an den Regler - Block 1",
-		"filter":	"?? ?? 05 03 08 01 .*",
-		"class":	"auto_stroker",
-		
-		"values": {
-			"status_auto_stroker":	{"type": "byte", "pos":7, "label": "Statusanzeige"},
-			"state_ldw":			{"type": "bit", "pos":8, "bit": 0, "label": "LDW"},
-			"state_gdw":			{"type": "bit", "pos":8, "bit": 1, "label": "GDW"},
-			"state_ws":				{"type": "bit", "pos":8, "bit": 2, "label": "WS"},
-			"state_flame":			{"type": "bit", "pos":8, "bit": 3, "label": "Flame"},
-			"state_valve1":			{"type": "bit", "pos":8, "bit": 4, "label": "Valve1"},
-			"state_valve2":			{"type": "bit", "pos":8, "bit": 5, "label": "Valve2"},
-			"state_uwp":			{"type": "bit", "pos":8, "bit": 6, "label": "UWP"},
-			"state_alarm":			{"type": "bit", "pos":8, "bit": 7, "label": "Alarm"},
-			"performance_burner":	{"type": "uchar", "pos":9, "label": "Stellgrad MIN-MAX Kesselleistung in %","min":0.0, "max":100.0},
-			"temp_vessel": 			{"type": "data1c", "pos":10, "label": "Kesseltemperatur", "min":0, "max":100},
-			"temp_return": 			{"type": "uchar", "pos":11, "label": "Rücklauftemperatur", "min":0, "max":100},
-			"temp_boiler": 			{"type": "uchar", "pos":12, "label": "Boilertemperatur", "min":0, "max":100},
-			"temp_outdoor": 		{"type": "char", "pos":13, "label": "Außentemperatur", "min":-30, "max":50}
-		}
-	},
-	
-	{
-		"comment":	"Betriebsdaten des Reglers an den Feuerungsautomaten",
-		"filter":	"?? ?? 05 07 09 .*",
-		"class":	"controller",
-		
-		"values": {
-			"status_warm_req1":		{"type": "byte", "pos":6, "label": "Statuswärmeanforderung"},
-			"status_warm_req2": 	{"type": "byte", "pos":7, "label": "Statuswärmeanforderung2"},
-			"temp_t_vessel": 		{"type": "data2c", "pos":8, "label": "Kesselsollwert-Temperatur", "min":0, "max":100},
-			"pressure_t_vessel": 	{"type": "data2b", "pos":10, "label": "Kesselsollwert-Druck", "min":0, "max":100},
-			"performance_burner": 	{"type": "data1c", "pos":12, "label": "Stellgrad", "min":0, "max":100},
-			"temp_t_boiler":		{"type": "data1c", "pos":13, "label": "Brauchwassersollwert", "min":0, "max":100},
-			"value_fuel": 			{"type": "byte", "pos":14, "label": "Brennstoffwert", "replaceValue": 255}
-		}
-	},
-	
-	{
-		"comment":	"Datum/Zeitmeldung eines eBUS Masters",
-		"filter":	"?? ?? 07 00 09 .*",
-		"class":	"common",
-		
-		"values": {
-			"temp_outdoor":			{"type": "data2b", "pos":6, "label": "Außentemperatur"},
-			"time_sec":				{"type": "bcd", "pos":8, "label": "Zeit Sek."},
-			"time_min":				{"type": "bcd", "pos":9, "label": "Zeit Min"},
-			"time_hour":			{"type": "bcd", "pos":10, "label": "Zeit Stunde"},
-			
-			"date_day":				{"type": "bcd", "pos":11, "label": "Zeit Stunde"},
-			"date_month":			{"type": "bcd", "pos":12, "label": "Zeit Stunde"},
-			"date_year":			{"type": "bcd", "pos":14, "label": "Zeit Stunde", "debug": 1}
-		},
-		"computed_values": {
-			"time":					{"type": "script", "script": "time_hour + ':' + time_hour + ':' + time_sec", "label": "Aktuelle Zeit"},
-			"date":					{"type": "script", "script": "date_year + '-' + date_month + '-' + date_year", "label": "Aktuelles Datum"}
-		}
-	},
-	
-	{
-		"comment":	"Sollwertübertragung des Reglers an andere Regler",
-		"filter":	"?? ?? 08 00 .*",
-		"class":	"controller2",
-		
-		"values": {
-			"temp_t_vessel":		{"type": "data2b", "pos": 6, "label": "Kesselsollwert", "min":0, "max":100},
-			"temp_outdoor":			{"type": "data2b", "pos":8, "label": "Außentemperatur", "min":-30, "max":50},
-			"power_enforcement":	{"type": "data1b", "pos":10, "label": "Leistungszwang"},
-			"status_bwr":			{"type": "bit", "pos":11, "bit": 0, "label": "BWR aktiv (Wärmepumpen?)"},
-			"status_heat_circuit":	{"type": "bit", "pos":11, "bit": 1, "label": "Heizkreis aktiv"},
-			"temp_t_boiler":		{"type": "data2b", "pos":12, "label": "Brauchwassersoll", "min":0, "max":100}
-		}
-	}
+        "values": {
+            "temp_outside":  {"type": "word", "pos": 6, "label": "Aussentemperatur", "factor": 0.1 }
+        }
+    },
+
+    {
+        "comment":  "<Burner Control> Operational Data of Burner Control unit to Room Control Unit - Block 1",
+        "filter":   "?? ?? 05 03 08 01 .*",
+        "class":    "auto_stroker",
+
+        "values": {
+            "status_auto_stroker": {"type": "byte", "pos":7, "label": "Status indication"},
+            "state_air_pressure":  {"type": "bit", "pos":8, "bit": 0, "label": "Air pressure monitor"},
+            "state_gas_pressure":  {"type": "bit", "pos":8, "bit": 1, "label": "Gas pressure monitor"},
+            "state_water_flow":    {"type": "bit", "pos":8, "bit": 2, "label": "Water flow"},
+            "state_flame":         {"type": "bit", "pos":8, "bit": 3, "label": "Flame"},
+            "state_valve1":        {"type": "bit", "pos":8, "bit": 4, "label": "Valve1"},
+            "state_valve2":        {"type": "bit", "pos":8, "bit": 5, "label": "Valve2"},
+            "state_pump":          {"type": "bit", "pos":8, "bit": 6, "label": "State heating pump"},
+            "state_alarm":         {"type": "bit", "pos":8, "bit": 7, "label": "Alarm"},
+            "performance_burner":  {"type": "uchar", "pos":9, "label": "Setting degree between min. and max. boiler performance (%)","min":0.0, "max":100.0},
+            "temp_boiler":         {"type": "data1c", "pos":10, "label": "Boiler temperature (°C)", "min":0, "max":100},
+            "temp_return":         {"type": "uchar", "pos":11, "label": "Return temperature (°C)", "min":0, "max":100},
+            "temp_dhw":            {"type": "uchar", "pos":12, "label": "DHW temperature (°C)", "min":0, "max":100},
+            "temp_outside":        {"type": "char", "pos":13, "label": "Outside temperature (°C)", "min":-30, "max":50}
+        }
+    },
+
+    {
+        "comment":  "<Burner Control> Operational Data from Room Controller to Burner Control Unit",
+        "filter":   "?? ?? 05 07 09 .*",
+        "class":    "controller",
+
+        "values": {
+            "status_heat_req1":  {"type": "byte", "pos":6, "label": "Status heat request 1"},
+            "status_heat_req2":  {"type": "byte", "pos":7, "label": "Status heat request 2"},
+            "temp_d_boiler":     {"type": "data2c", "pos":8, "label": "Boiler desire temperature (°C)", "min":0, "max":100},
+            "pressure_d_boiler": {"type": "data2b", "pos":10, "label": "Boiler desire pressure (bar)", "min":0, "max":100},
+            "modulation":        {"type": "data1c", "pos":12, "label": "Setting degree", "min":0, "max":100, "step": 0.5},
+            "temp_d_dhw":        {"type": "data1c", "pos":13, "label": "DWH desire temperature (°C)", "min":0, "max":100},
+            "value_fuel":        {"type": "byte", "pos":14, "label": "Election of fuel", "replaceValue": 255}
+        }
+    },
+
+    {
+        "comment":  "<System Data> Date/Time of an eBUS Master",
+        "filter":   "?? ?? 07 00 09 .*",
+        "class":    "common",
+
+        "values": {
+            "temp_ouside": {"type": "data2b", "pos":6, "label": "Outside temperature (°C)"},
+            "time_sec":    {"type": "bcd", "pos":8, "label": "Time sec."},
+            "time_min":    {"type": "bcd", "pos":9, "label": "Time min"},
+            "time_hour":   {"type": "bcd", "pos":10, "label": "Time hour"},
+
+            "date_day":    {"type": "bcd", "pos":11, "label": "Date day"},
+            "date_month":  {"type": "bcd", "pos":12, "label": "Date month"},
+            "date_year":   {"type": "bcd", "pos":14, "label": "Date year"}
+        },
+        "computed_values": {
+            "time":        {"type": "script", "script": "time_hour + ':' + time_hour + ':' + time_sec", "label": "Current time", "type_hint":"string"},
+            "date":        {"type": "script", "script": "date_year + '-' + date_month + '-' + date_year", "label": "Current date", "type_hint":"string"}
+        }
+    },
+
+    {
+        "comment":  "<System Data> Identification of eBUS devices - Request",
+        "id":       "identification",
+        "class":    "common",
+        "command":  "07 04",
+        "data":     "",
+
+        "values": {
+            "vendor":           {"type": "byte", "pos":8, "label": "Vendor"},
+            "_device_id0":      {"type": "byte", "pos":9, "label": "Device ID 0"},
+            "_device_id1":      {"type": "byte", "pos":10, "label": "Device ID 1"},
+            "_device_id2":      {"type": "byte", "pos":11, "label": "Device ID 2"},
+            "_device_id3":      {"type": "byte", "pos":12, "label": "Device ID 3"},
+            "_device_id4":      {"type": "byte", "pos":13, "label": "Device ID 4"},
+            "_software_ver":    {"type": "bcd", "pos":14, "label": "Software Version"},
+            "_software_rev":    {"type": "bcd", "pos":15, "label": "Software Revision"},
+            "_hardware_ver":    {"type": "bcd", "pos":16, "label": "Hardware Version"},
+            "_hardware_rev":    {"type": "bcd", "pos":17, "label": "Hardware Revision"}
+        },
+        "computed_values": {
+            "device":           {"type": "script", "script": "String.fromCharCode(_device_id0, _device_id1, _device_id2, _device_id3, _device_id4)", "label": "Device ID", "type_hint":"string"},
+            "software_version": {"type": "script", "script": "_software_ver && _software_rev ? _software_ver + (_software_rev / 100): 0", "label": "Software Version", "type_hint":"string"},
+            "hardware_version": {"type": "script", "script": "_hardware_ver && _hardware_rev ? _hardware_ver + (_hardware_rev / 100): 0", "label": "Hardware Version", "type_hint":"string"}
+        }
+    },
+
+    {
+        "comment":  "<System Data> Identification of eBUS devices - Broadcast",
+        "filter":   "?? FE 07 04 0A .*",
+        "class":    "common",
+        "command":  "07 04",
+        "data":     "",
+
+        "values": {
+            "vendor":           {"type": "byte", "pos":6, "label": "Vendor"},
+            "_device_id0":      {"type": "byte", "pos":7, "label": "Device ID 0"},
+            "_device_id1":      {"type": "byte", "pos":8, "label": "Device ID 1"},
+            "_device_id2":      {"type": "byte", "pos":9, "label": "Device ID 2"},
+            "_device_id3":      {"type": "byte", "pos":10, "label": "Device ID 3"},
+            "_device_id4":      {"type": "byte", "pos":11, "label": "Device ID 4"},
+            "_software_ver":    {"type": "bcd", "pos":12, "label": "Software Version"},
+            "_software_rev":    {"type": "bcd", "pos":13, "label": "Software Revision"},
+            "_hardware_ver":    {"type": "bcd", "pos":14, "label": "Hardware Version"},
+            "_hardware_rev":    {"type": "bcd", "pos":15, "label": "Hardware Revision"}
+        },
+        "computed_values": {
+            "device":           {"type": "script", "script": "String.fromCharCode(_device_id0, _device_id1, _device_id2, _device_id3, _device_id4)", "label": "Device ID", "type_hint":"string"},
+            "software_version": {"type": "script", "script": "_software_ver && _software_rev ? _software_ver + (_software_rev / 100): 0", "label": "Software Version", "type_hint":"string"},
+            "hardware_version": {"type": "script", "script": "_hardware_ver && _hardware_rev ? _hardware_ver + (_hardware_rev / 100): 0", "label": "Hardware Version", "type_hint":"string"}
+        }
+    },
+
+    {
+        "comment":  "<System Data> Inquiry of Existence",
+        "id":       "inquiry_of_existence",
+        "class":    "common",
+        "command":  "07 FE",
+        "data":     "",
+        "dst":      "FE"
+    },
+
+    {
+        "comment":  "<System Data> Inquiry of Existence",
+        "id":       "sign_of_life",
+        "class":    "common",
+        "command":  "07 FF",
+        "data":     "",
+        "dst":      "FE"
+    },
+
+    {
+        "comment":  "<Room Controller> Transmission of Target Values of the Room Controllers to other Room Controllers",
+        "filter":   "?? ?? 08 00 .*",
+        "class":    "controller2",
+
+        "values": {
+            "temp_d_boiler":      {"type": "data2b", "pos": 6, "label": "Boiler desire temperature (°C)", "min":0, "max":100},
+            "temp_outside":       {"type": "data2b", "pos":8, "label": "Outside temperature (°C)", "min":-30, "max":50},
+            "performance_forced": {"type": "data1b", "pos":10, "label": "Forced performance"},
+            "state_dhw":          {"type": "bit", "pos":11, "bit": 0, "label": "State DHW(?) active"},
+            "state_hc":           {"type": "bit", "pos":11, "bit": 1, "label": "State heating circuit active"},
+            "temp_d_dhw":         {"type": "data2b", "pos":12, "label": "DWH desire temperature (°C)", "min":0, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<General> Error Message",
+        "filter":   "?? FE FE 01 0A .*",
+        "class":    "common",
+
+        "values": {
+            "_error_message1": {"type": "char", "pos": 6},
+            "_error_message2": {"type": "char", "pos": 7},
+            "_error_message3": {"type": "char", "pos": 8},
+            "_error_message4": {"type": "char", "pos": 9},
+            "_error_message5": {"type": "char", "pos": 10},
+            "_error_message6": {"type": "char", "pos": 11},
+            "_error_message7": {"type": "char", "pos": 12},
+            "_error_message8": {"type": "char", "pos": 13},
+            "_error_message9": {"type": "char", "pos": 14},
+            "_error_message10": {"type": "char", "pos": 15}
+        }
+    }
 ]

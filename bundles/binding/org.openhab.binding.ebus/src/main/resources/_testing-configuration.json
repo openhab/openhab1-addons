@@ -1,0 +1,22 @@
+[
+	{
+		"comment":	"<Regler> Vaillant: Set Timer Program",
+		"device": 	"xxxxxxVaillant BAI000 VSC 196/2- C 150",
+		"id":		"set-timer-program",
+		"class":	"bai00",
+		"command":	"B5 05",
+		"data":		"09 00 00 00 00 00 00 00 00",
+		"dst":		"08",
+		
+		"values": {
+			"dy":			{"type": "byte", "pos": 7, "label": "Temperatur"},
+			"t1a":			{"type": "byte", "pos": 8, "label": "Temperatur"},
+			"t1o":			{"type": "byte", "pos": 9, "label": "Temperatur"},
+			"t2a":			{"type": "byte", "pos": 10, "label": "Temperatur"},
+			"t2o":			{"type": "byte", "pos": 11, "label": "Temperatur"},
+			"t3a":			{"type": "byte", "pos": 12, "label": "Temperatur"},
+			"t3o":			{"type": "byte", "pos": 13, "label": "Temperatur"},
+			"ms":			{"type": "byte", "pos": 14, "label": "Temperatur"}
+		}
+	}
+]

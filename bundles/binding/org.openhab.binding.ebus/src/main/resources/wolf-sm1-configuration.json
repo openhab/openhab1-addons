@@ -1,0 +1,155 @@
+[
+    {
+        "comment":  "<Solar> Cylinder temperature (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_cylinder",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(32) 29 0A",
+
+        "values": {
+            "temp_cylinder": {"type": "word", "pos": 12, "label": "Solar cylinder temperature (°C)", "factor": 0.1 , "min": 1, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Return temperature (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_return",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(CC) FB 02",
+
+        "values": {
+            "temp_return": {"type": "word", "pos": 12, "label": "Solar return temperature (°C)", "factor": 0.1 , "min": -30, "max": 150}
+        }
+    },
+    
+    {
+        "comment":  "<Solar> E1 - Return temp (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "e1",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(CC) 2B 0A",
+
+        "values": {
+            "e1": {"type": "word", "pos": 12, "label": "E1 - Return temp (°C)", "factor": 0.1, "min": 1, "max": 120}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Hours run circuit pump 1 (h)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "runtime_pump",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(CC) F9 02",
+
+        "values": {
+            "runtime_pump": {"type": "word", "pos": 12, "label": "Runtime solar circuit pump 1 (h)"}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Collector temperature (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_collector",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(D6) 2A 0A",
+
+        "values": {
+            "temp_collector": {"type": "word", "pos": 12, "label": "Solar collector temperature (°C)", "factor": 0.1 , "min": -40, "max": 300}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Min. cylinder temperature 24h (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_cylinder_24h_min",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(41) 7B 09",
+
+        "values": {
+            "temp_cylinder_24h_min": {"type": "word", "pos": 12, "label": "Min. cylinder temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Max. Cylinder Temperature 24h (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_cylinder_24h_max",
+        "class":    "solar",
+        "command":   "50 22",
+        "data":     "(89) 7C 09",
+
+        "values": {
+            "temp_cylinder_24h_max": {"type": "word", "pos": 12, "label": "Max. cylinder temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Min. collector temperature 24h (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_collector_24h_min",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(35) 77 09",
+
+        "values": {
+            "temp_collector_24h_min": {"type": "word", "pos": 12, "label": "Min. collector temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Max. collector temperature 24h (°C)",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "id":       "temp_collector_24h_max",
+        "class":    "solar",
+        "command":  "50 22",
+        "data":     "(A5) 78 09",
+
+        "values": {
+            "temp_collector_24h_max": {"type": "word", "pos": 12, "label": "Max. collector temperature 24h (°C)", "factor": 0.1 , "min": 1, "max": 100}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Solar Broadcast 1",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "filter":   "?? ?? 50 17 .*",
+        "id":       "solar_data",
+        "class":    "solar",
+
+        "values": {
+            "_solar_status":  {"type": "byte", "pos":6, "label": "Solar status (Multiple bits)"},
+            "_unknown1":      {"type": "byte", "pos":7},
+            "state_pump":     {"type": "bit", "pos":6, "bit": 0, "label": "Pump status"},
+            "temp_collector": {"type": "data2c", "pos":8, "label": "Temperature, collector 1 °C", "min":-20, "max":160},
+            "temp_cylinder":  {"type": "data2c", "pos":10, "label": "Temperature, solar cylinder 1 °C", "min":1, "max":100}
+        }
+    },
+
+    {
+        "comment":  "<Solar> Solar Yield Broadcast",
+        "device":   "Wolf CSZ-2 > SM1, FW: 10/2014",
+        "filter":   "?? ?? 50 18 .*",
+        "id":       "solar_yield",
+        "class":    "solar",
+
+        "values": {
+            "output_current": {"type": "data2c", "pos": 6, "label": "Current output (kW)"},
+            "_yield_today_l":  {"type": "word", "pos":8},
+            "_yield_today_h":  {"type": "word", "pos":10},
+            "_yield_total_l":  {"type": "word", "pos":12},
+            "_yield_total_h":  {"type": "word", "pos":14},
+            "_yield_total_m":  {"type": "word", "pos":16}
+        },
+        "computed_values": {
+            "yield_today":    {"type": "script", "script": "(_yield_today_h * 1000 + _yield_today_l) / 1000", "label": "Yield today (kW/h)", "type_hint":"string"},
+            "yield_total":    {"type": "script", "script": "(_yield_total_m * 1000000  + _yield_total_h * 1000 + _yield_total_l) / 1000", "label": "Total yield (kW/h)", "type_hint":"string"}
+        }
+    }
+]

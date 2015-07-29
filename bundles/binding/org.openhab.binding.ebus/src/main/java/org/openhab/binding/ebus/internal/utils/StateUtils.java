@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,28 @@ public class StateUtils {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(StateUtils.class);
+	
+	/**
+	 * Converts an openhab command to a native java datatype
+	 * @param command
+	 * @return
+	 */
+	public static Object convertFromState(Command command) {
+		
+		if(command == OnOffType.ON) {
+			return Boolean.TRUE;
+			
+		} else if(command == OnOffType.OFF) {
+			return Boolean.FALSE;
+
+		} else if(command instanceof DecimalType) {
+			return ((DecimalType)command).toBigDecimal();
+
+		}
+		
+		throw new RuntimeException("Sorry, data type " + 
+		command.toString() + " not supported ...");
+	}
 	
 	/**
 	 * Converts a value to a openhab state

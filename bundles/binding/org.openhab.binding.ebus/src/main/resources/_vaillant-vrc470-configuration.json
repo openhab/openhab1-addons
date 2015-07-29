@@ -1,0 +1,184 @@
+[
+	{
+		"comment":	"VRC 470 Displayed room temperature",
+		"id":		"displayedroomtemp",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 80 00",
+		"dst":		"15",
+		"values": {
+			"displayedroomtemp":		{"type": "data2c", "pos": 12, "label": "Displayed room temperature"}
+		}
+	},
+
+	{
+		"comment":	"VRC 470 Raw current room temperature",
+		"id":		"roomtemp",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 00 00",
+		"dst":		"15",
+		"values": {
+			"roomtemp":		{"type": "data2c", "pos": 12, "label": "Room temperature"},
+			"roomtemp_s":		{"type": "uchar", "pos": 14, "label": "Room temperature status (0=ok;85=circuit;170=cutoff)"}
+		}
+	},
+
+		{
+		"comment":	"VRC 470 Outside temperature",
+		"id":		"outsidetemp",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 62 00",
+		"dst":		"15",
+		"values": {
+			"outsidetemp":		{"type": "data2c", "pos": 12, "label": "Outside temperature"},
+			"outsidetemp_s":		{"type": "uchar", "pos": 14, "label": "Outside temperature status (0=ok;85=circuit;170=cutoff)"}
+		}
+	},
+	
+	
+	{
+		"comment":	"VRC 470 Currently displayed room temperature setpoint",
+		"id":		"displayedhc1roomtempdesired",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 96 00",
+		"dst":		"15",
+		"values": {
+			"displayedhc1roomtempdesired":		{"type": "data1c", "pos": 12, "label": "HC1 Currently displayed room temperature setpoint"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 Global system off",
+		"id":		"globalsystemoff",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 01 00",
+		"dst":		"15",
+		"values": {
+			"globalsystemoff":		{"type": "uchar", "pos": 12, "label": "Activation of operation mode system off (0=off;1=on)"}
+		}
+	},	
+	
+	{
+		"comment":	"VRC 470 HC1 Operation mode",
+		"id":		"hc1opmode",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 2F 00",
+		"dst":		"15",
+		"values": {
+			"hc1opmode":		{"type": "uchar", "pos": 12, "label": "HC1 Operation mode (0 = off, 1 = manual, 2 = auto, 3 = on, 4 = night, 5 = summer)"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 Set HC1 Operation mode",
+		"id":		"set_hc1opmode",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0E 2F 00 00",
+		"dst":		"15",
+		"values": {
+			"hc1opmode":		{"type": "uchar", "pos": 9, "label": "HC1 Operation mode (0 = off, 1 = manual, 2 = auto, 3 = on, 4 = night, 5 = summer)"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 HC1 Night Setpoint",
+		"id":		"hc1nighttemp",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 30 00",
+		"dst":		"15",
+		"values": {
+			"hc1nighttemp":		{"type": "data1c", "pos": 12, "label": "HC1 Night setpoint"}
+		}
+	},
+
+	{
+		"comment":	"VRC 470 HC1 Day Setpoint",
+		"id":		"hc1daytemp",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 27 00",
+		"dst":		"15",
+		"values": {
+			"hc1daytemp":		{"type": "data1c", "pos": 12, "label": "HC1 Day setpoint"}
+		}
+	},
+
+	{
+		"comment":	"VRC 470 HC1 Manual override setpoint",
+		"id":		"hc1quickvetotemp",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 3C 00",
+		"dst":		"15",
+		"values": {
+			"hc1quickvetotemp":		{"type": "data1c", "pos": 12, "label": "HC1 Manual override setpoint"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 HC1 Temporary operating mode",
+		"id":		"hc1sfmode",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 5D 00",
+		"dst":		"15",
+		"values": {
+			"hc1sfmode":		{"type": "uchar", "pos": 12, "label": "HC1 Temporary operating mode (0=Nothing,1=Party,2=OneDayBankHoliday,3=OneDayHoliday,4=HolidayPeriod,5=BankHolidayPeriod,6=QuickVeto,7=OneTimeVentilation,8=WhisperMode,9=LoadOnceDHW)"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 Domestic Hot Water Setpoint",
+		"id":		"hwctempdesired",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 44 00",
+		"dst":		"15",
+		"values": {
+			"hwctempdesired":		{"type": "data1c", "pos": 12, "label": "DHW setpoint"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 Domestic Hot Water Operating mode",
+		"id":		"hwcopmode",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 42 00",
+		"dst":		"15",
+		"values": {
+			"hwcopmode":		{"type": "uchar", "pos": 12, "label": "DHW operating mode (0=off,1=on,2=auto,3=auto sunday,4=party,6=one time tank loading,7=holiday)"}
+		}
+	},
+	
+	{
+		"comment":	"VRC 470 Domestic Hot Water actual desired temperature",
+		"id":		"hwctempdesired",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 86 00",
+		"dst":		"15",
+		"values": {
+			"hwctempdesired":		{"type": "data1c", "pos": 12, "label": "DHW actual desired temperature"}
+		}
+	},	
+	
+	{
+		"comment":	"VRC 470 HC1 Heating curve",
+		"id":		"hc1heatcurve",
+		"class":	"vrc470",
+		"command":	"B5 09",
+		"data": 	"0D 31 00",
+		"dst":		"15",
+		"values": {
+			"hc1heatcurve":		{"type": "word", "pos": 12, "label": "HC1 Heating curve"}
+		}
+	}
+]

@@ -1,0 +1,35 @@
+<configuration scan="true">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line] - %msg%n%ex{0}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.openhab.binding.ebus" level="INFO" />
+	<logger name="org.openhab.binding.ebus.internal.connection.AbstractEBusWriteConnector" level="INFO" additivity="false">
+			<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.openhab.binding.ebus.internal.utils.EBusUtils" level="INFO" additivity="false">
+			<appender-ref ref="STDOUT" />
+	</logger>
+	<!-- disable packet logging -->
+	
+	<logger name="org.openhab.binding.ebus.internal.parser.Analyses" level="INFO" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.openhab.binding.ebus.internal.parser.BruteForce" level="INFO" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="org.openhab.binding.ebus.tools" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<root level="WARN">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>

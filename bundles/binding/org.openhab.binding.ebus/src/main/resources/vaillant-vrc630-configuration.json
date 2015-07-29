@@ -1,0 +1,91 @@
+[
+    {
+        "comment":  "<Controller> Outside temperature (°C)",
+        "device":   "Vaillant VRC 630",
+        "id":       "temp_outside",
+        "class":    "controller",
+        "command":  "B5 09",
+        "data":     "0D 01 00",
+        "dst":      "15",
+
+        "values": {
+            "temp_outside": {"type": "data2c", "pos": 12, "label": "Outside temperature"},
+            "status":       {"type": "uchar", "pos": 14, "label": "Outside temperature status",
+                "mapping":  {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Controller> Flow temperature (°C)",
+        "device":   "Vaillant VRC 630",
+        "id":       "temp_flow",
+        "class":    "controller",
+        "command":  "B5 09",
+        "data":     "0D 02 00",
+        "dst":      "15",
+
+        "values": {
+            "temp_flow": {"type": "data2c", "pos": 12, "label": "Flow temperature"},
+            "status":       {"type": "uchar", "pos": 14, "label": "Flow temperature status",
+                "mapping":  {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Controller> Flow temperature target value (°C)",
+        "device":   "Vaillant VRC 630",
+        "id":       "temp_d_flow",
+        "class":    "controller",
+        "command":  "B5 09",
+        "data":     "0D 05 00",
+        "dst":      "15",
+
+        "values": {
+            "temp_d_flow": {"type": "data2c", "pos": 12, "label": "Flow temperature target value (°C)"}
+        }
+    },
+
+    {
+        "comment": "<Controller> Room temperature (°C)",
+        "device":  "Vaillant VRC 630",
+        "id":      "temp_room",
+        "class":   "controller",
+        "command": "B5 09",
+        "data":    "0D 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_room":   {"type": "data2c", "pos": 12, "label": "Room temperature"},
+            "status":      {"type": "uchar", "pos": 14, "label": "Room temperature status",
+                "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment": "<Heating> Holiday Setpoint (°C)",
+        "device":  "Vaillant VRC 630",
+        "id":      "temp_d_holiday",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0D 22 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_holiday": {"type": "data2c", "pos": 12, "label": "Holiday setpoint"}
+        }
+    },
+
+    {
+        "comment": "<Heating> Holiday Setpoint",
+        "device":  "Vaillant VRC 630",
+        "id":      "set_temp_d_holiday",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0E 22 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_holiday": {"type": "data2c", "pos": 9, "label": "Holiday setpoint"}
+        }
+    }
+]
