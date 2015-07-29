@@ -8,13 +8,16 @@
  */
 package org.openhab.binding.zwave.internal.config;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+//import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+//import java.util.concurrent.RejectedExecutionException;
 
-import org.osgi.framework.FrameworkUtil;
+//import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,13 +74,31 @@ public class ZWaveProductDatabase {
 	}
 
 	private void loadDatabase() {
-		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/products.xml");
+		/* URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/products.xml");
 		if (entry == null) {
 			database = null;
 			logger.error("Unable to load ZWave product database!");
 			return;
 		}
-
+        */
+		String name =   "configurations" + File.separator 
+				      + "zwave" + File.separator  
+				      + "database" + File.separator 
+				      + "products.xml";
+		File file = new File(name);
+		logger.error("ZWAVE Product file:" + name);
+		logger.error("ZWAVE Product file Absolute path:" + file.getAbsolutePath());
+		try {
+			logger.error("ZWAVE Product file Canonical path:" + file.getCanonicalPath());
+		}
+		catch(Exception e) {}
+		
+		if (!file.exists()) {
+			database = null;
+			logger.error("Unable to load ZWave product database!");
+			return;
+		}
+		
 		XStream xstream = new XStream(new StaxDriver());
 		xstream.alias("Manufacturers", ZWaveDbRoot.class);
 		xstream.alias("Manufacturer", ZWaveDbManufacturer.class);
@@ -88,7 +109,8 @@ public class ZWaveProductDatabase {
 
 		try {
 			// this.Manufacturer = (ZWaveDbManufacturer)
-			InputStream x = entry.openStream();
+			InputStream x = new FileInputStream(file);
+			//InputStream x = entry.openStream();
 			database = (ZWaveDbRoot) xstream.fromXML(x);
 			if (database == null) {
 				return;
@@ -119,10 +141,31 @@ public class ZWaveProductDatabase {
 			return null;
 		}
 
+		/*
 		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/" + cfgFile);
 		if (entry == null) {
 			database = null;
 			logger.error("Unable to load ZWave product file: '{}'", cfgFile);
+			return null;
+		}*/
+		String name =   "configurations" + File.separator 
+			      + "zwave" + File.separator  
+			      + "database" + File.separator 
+			      + cfgFile;
+		
+		File file = new File(name);
+		logger.error("ZWAVE LoadProductFile:" + name);
+		
+		logger.error("ZWAVE Product file LoadProductFile:" + name);
+		logger.error("ZWAVE Product file LoadProductFile Absolute path:" + file.getAbsolutePath());
+		try {
+			logger.error("ZWAVE Product file LoadProductFile Canonical path:" + file.getCanonicalPath());
+		}
+		catch(Exception e) {}
+		
+		if (!file.exists()) {
+			database = null;
+			logger.error("Unable to load ZWave product database!");
 			return null;
 		}
 
@@ -140,7 +183,8 @@ public class ZWaveProductDatabase {
 
 		try {
 			// this.Manufacturer = (ZWaveDbManufacturer)
-			InputStream x = entry.openStream();
+			//InputStream x = entry.openStream();
+			InputStream x = new FileInputStream(file);
 			productFile = (ZWaveDbProductFile) xstream.fromXML(x);
 		} catch (IOException e) {
 			logger.error("Unable to load ZWave product file '{}' : {}", cfgFile, e.toString());
