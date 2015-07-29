@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.diyonxbee.internal
+Ignore-Package: org.openhab.binding.diyonxbee.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB DiyOnXBee Binding
+Bundle-SymbolicName: org.openhab.binding.diyonxbee;singleton:=true
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.8.0.qualifier
+Bundle-ManifestVersion: 2
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm;version="1.4.0",
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.diyonxbee
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/diyonxbeebinding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .,
+ lib/log4j.jar,
+ lib/RXTXcomm.jar,
+ lib/xbee-api-0.9.jar
