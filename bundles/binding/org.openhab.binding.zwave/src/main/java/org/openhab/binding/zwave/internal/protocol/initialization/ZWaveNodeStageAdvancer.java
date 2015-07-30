@@ -22,7 +22,7 @@ import org.openhab.binding.zwave.internal.config.ZWaveDbConfigurationParameter;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -362,7 +362,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// It seems that PC_CONTROLLERs don't respond to a lot of requests, so let's
 				// just assume their OK!
 				// If this is a controller, we're done
-				if (node.getDeviceClass().getGenericDeviceClass() == Generic.STATIC_CONTOLLER) {
+				if (node.getDeviceClass().getSpecificDeviceClass() == Specific.PC_CONTROLLER) {
 					logger.debug("NODE {}: Node advancer: FAILED_CHECK - Controller - terminating initialisation", node.getNodeId());
 					currentStage = ZWaveNodeInitStage.DONE;
 					break;
