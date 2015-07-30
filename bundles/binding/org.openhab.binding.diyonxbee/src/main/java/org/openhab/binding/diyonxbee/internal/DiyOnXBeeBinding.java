@@ -212,10 +212,13 @@ public class DiyOnXBeeBinding extends AbstractBinding<DiyOnXBeeBindingProvider> 
 		
 		xbee = new XBee();
 		
-		String canonical = null;
+		String canonical = serialPort;
 		try {
+			// This code below enables to use a device name in /dev/serial/by-id/... on linux
 			File device = new File(serialPort);
-			canonical = device.getCanonicalPath();
+			if(device.canRead()) {
+				canonical = device.getCanonicalPath();
+			}
 		} catch (IOException e1) {
 			logger.info("unable to get canonical path for '" + serialPort + "'");
 			canonical = serialPort;
