@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0175</Id>
@@ -457,15 +457,6 @@
 			<Model>LRM-AS</Model>
 			<Label lang="en">Wall Mounted Dimmer</Label>
 			<ConfigFile>evolve/lrm-as.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>4556</Type>
-				<Id>4C32</Id>
-			</Reference>
-			<Model>EVLCD-1</Model>
-			<Label lang="en">LCD Keypad</Label>
-			<ConfigFile>evolve/lcd1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
