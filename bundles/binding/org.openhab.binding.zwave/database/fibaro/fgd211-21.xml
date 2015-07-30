@@ -131,7 +131,7 @@
 			<Type>byte</Type>
 			<Minimum>2</Minimum>
 			<Maximum>99</Maximum>
-			<Default>2</Default>
+			<Default>99</Default>
 			<Size>1</Size>
 			<Label lang="en">Maximum dimmer level control</Label>
 			<Help lang="en">Options for changing parameter 2-99</Help>
@@ -140,7 +140,9 @@
 		<Parameter>
 			<Index>13</Index>
 			<Type>byte</Type>
-			<Default>0</Default>
+			<Minimum>1</Minimum>
+			<Maximum>98</Maximum>
+			<Default>2</Default>
 			<Size>1</Size>
 			<Label lang="en">Minimum dimmer level control</Label>			
 			<Help lang="en">Options for changing parameter 1-98</Help>
@@ -170,7 +172,7 @@
 		<Parameter>
 			<Index>15</Index>
 			<Type>list</Type>
-			<Default>0</Default>
+			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Parm 15</Label>			
 			<Item>
@@ -303,6 +305,8 @@
 		<Parameter>
 			<Index>40</Index>
 			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
 			<Default>99</Default>
 			<Size>1</Size>
 			<Label lang="en">Updating the dimming level without switch.</Label>			
