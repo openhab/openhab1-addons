@@ -24,7 +24,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
- * Handles the Indicator command class. 
+ * Handles the Indicator command class.
+ * The indicator command class operates the indicator on the physical device if available. 
+ * This can be used to identify a device or use the indicator for special purposes.
+ * Example is the Evolve LCD panel that uses the Indicator class to toggle the labels 
+ * displayed on the LCD. The Indicator class is also used to sync multiple panels' labels
+ * 
  * @author Pedro Paixao
  * @since 1.8.0
  */
