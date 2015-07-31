@@ -1577,9 +1577,9 @@
 				<Type>0001</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>TILTZWAVE1</Model>
+			<Model>TILTZWAVE2</Model>
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
-			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
+			<ConfigFile>eco/tiltzwave2.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
