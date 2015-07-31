@@ -50,7 +50,6 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -99,7 +98,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
-	private PersistentStateRestorer persistentStateRestorer;
 
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
@@ -142,14 +140,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		this.itemRegistry = null;
 	}
 	
-	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
-	}
-	
-	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
-	}
-
 	/**
 	 * @{inheritDoc
 	 */
