@@ -110,11 +110,11 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 							sample.setTime(now - 1);
 							sample.setValue(DATASOURCE_STATE, lastValue);
 							sample.update();
-							logger.debug("Stored '{}' with state '{}' in rrd4j database", name, mapToState(lastValue, item.getName()));
+							logger.debug("Stored '{}' with state '{}' in rrd4j database (again)", name, mapToState(lastValue, item.getName()));
 						}
 					}
 				} catch (IOException e) {
-					logger.debug("Error re-storing last value: {}", e.getMessage());
+					logger.debug("Error storing last value (again): {}", e.getMessage());
 				}
 			}
 			try {
@@ -129,7 +129,7 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 					}
 					sample.setValue(DATASOURCE_STATE, value);
 					sample.update();
-					logger.debug("Stored '{}' with state '{}' in rrd4j database", name, item.getState());
+					logger.debug("Stored '{}' with state '{}' in rrd4j database", name, state);
 				}
 			} catch (IllegalArgumentException e) {
 				if(e.getMessage().contains("at least one second step is required")) {
