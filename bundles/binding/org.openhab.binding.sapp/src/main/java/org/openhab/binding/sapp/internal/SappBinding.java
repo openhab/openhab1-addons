@@ -60,15 +60,15 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 	/**
 	 * the refresh interval which is used to poll values from the Sapp server
-	 * (optional, defaults to 60000ms)
+	 * (optional, defaults to 1000ms)
 	 */
-	private long refreshInterval = 60000;
+	private long refreshInterval = 1000;
 
 	/**
 	 * syncronization object used to avoid overlapping pollings
 	 */
 	private static final AtomicInteger runningPollings = new AtomicInteger(0);
-	private static final Object pollingLock = new Object(); 
+	private static final Object pollingLock = new Object();
 	private static final int MAX_CONCURRENT_POLLINGS = 1;
 
 	/**
@@ -98,7 +98,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			refreshInterval = Long.parseLong(refreshIntervalString);
 			logger.debug("set refresh interval: " + refreshInterval);
 		}
-		
+
 		SappBindingProvider provider = getFirstSappBindingProvider();
 		if (provider != null) {
 			String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
@@ -223,7 +223,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 										logger.error("error while initializing items:" + e.getMessage());
 									}
 								} else { // poll
-									for (SappPnmas pnmas : provider.getPnmasMap().values()) { // each pnmas
+									for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
+										SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 										try {
 											SappConnection sappConnection = new SappConnection(pnmas.getIp(), pnmas.getPort());
 											sappConnection.openConnection();
@@ -235,7 +236,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												sappCommand = new Sapp80Command();
 												sappCommand.run(sappConnection);
 												if (!sappCommand.isResponseOk()) {
-													throw new SappException("command execution failed");
+													throw new SappException("Sapp80Command command execution failed");
 												}
 												Map<Byte, Integer> changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
 												if (changedOutputs.size() != 0) {
@@ -246,7 +247,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												sappCommand = new Sapp81Command();
 												sappCommand.run(sappConnection);
 												if (!sappCommand.isResponseOk()) {
-													throw new SappException("command execution failed");
+													throw new SappException("Sapp81Command command execution failed");
 												}
 												Map<Byte, Integer> changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
 												if (changedInputs.size() != 0) {
@@ -257,13 +258,14 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												sappCommand = new Sapp82Command();
 												sappCommand.run(sappConnection);
 												if (!sappCommand.isResponseOk()) {
-													throw new SappException("command execution failed");
+													throw new SappException("Sapp82Command command execution failed");
 												}
 												Map<Integer, Integer> changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
 												if (changedVirtuals.size() != 0) {
-													// TODO update items
-													// TODO rimuovere fake
-													initializeAllItemsInProvider(provider);
+													for (Integer virtualAddress : changedVirtuals.keySet()) {
+														logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, changedVirtuals.get(virtualAddress)));
+														updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, changedVirtuals.get(virtualAddress), provider);
+													}
 												}
 											} finally {
 												sappConnection.closeConnection();
@@ -320,16 +322,16 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		if (provider == null) {
 			logger.error("cannot find a provider, skipping command");
 		}
-		
+
 		Item item = provider.getItem(itemName);
 		logger.debug("found item " + item);
-		
+
 		if (item instanceof SwitchItem) {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
-			
+
 			SappAddress controlAddress = sappBindingConfigSwitchItem.getControl();
-			
+
 			if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
 				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigSwitchItem));
 				return;
@@ -429,7 +431,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				break;
 
 			default:
-				logger.error("wrong item type " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+				logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
 				break;
 			}
 		} else { // TODO complete with other items
@@ -442,5 +444,23 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			return provider;
 		}
 		return null;
+	}
+
+	private void updateState(String pnmasId, SappAddressType sappAddressType, Integer addressToUpdate, Integer newState, SappBindingProvider provider) {
+		logger.debug(String.format("Updating %s %d with new value %d", SappAddressType.VIRTUAL, addressToUpdate, newState));
+		for (String itemName : provider.getItemNames()) {
+			Item item = provider.getItem(itemName);
+			if (item instanceof SwitchItem) {
+				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
+				SappAddress statusAddress = sappBindingConfigSwitchItem.getStatus();
+				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate.intValue() == statusAddress.getAddress()) {
+					logger.debug("found binding to update " + sappBindingConfigSwitchItem);
+					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), newState);
+					eventPublisher.postUpdate(itemName, result == statusAddress.getOffValue() ? OnOffType.OFF : OnOffType.ON);
+				}
+			} else { // TODO complete with other items
+				logger.error("unimplemented item type: " + item.getClass().getSimpleName());
+			}
+		}
 	}
 }
