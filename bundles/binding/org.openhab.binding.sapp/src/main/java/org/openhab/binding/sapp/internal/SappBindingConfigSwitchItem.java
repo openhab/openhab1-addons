@@ -6,8 +6,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 public class SappBindingConfigSwitchItem extends SappBindingConfig {
 
-	private SappAddressSwitchItemStatus status;
-	private SappAddressSwitchItemControl control;
+	private SappAddressOnOffStatus status;
+	private SappAddressOnOffControl control;
 
 	public SappBindingConfigSwitchItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
@@ -20,16 +20,13 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 
 		this.status = parseSappAddressStatus(bindingConfigParts[0]);
 		this.control = parseSappAddressControl(bindingConfigParts[1]);
-		if (this.control.getAddressType() != SappAddressType.VIRTUAL) {
-			throw new BindingConfigParseException(errorMessage(bindingConfigParts[1]));
-		}
 	}
 
-	public SappAddressSwitchItemStatus getStatus() {
+	public SappAddressOnOffStatus getStatus() {
 		return status;
 	}
 
-	public SappAddressSwitchItemControl getControl() {
+	public SappAddressOnOffControl getControl() {
 		return control;
 	}
 
@@ -42,7 +39,7 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 		return String.format("Invalid Sapp binding configuration for SwitchItem '%s'", bindingConfig);
 	}
 
-	private SappAddressSwitchItemStatus parseSappAddressStatus(String bindingStringAddress) throws BindingConfigParseException {
+	private SappAddressOnOffStatus parseSappAddressStatus(String bindingStringAddress) throws BindingConfigParseException {
 
 		String pnmasId;
 		SappAddressType addressType;
@@ -92,10 +89,10 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 			}
 		}
 
-		return new SappAddressSwitchItemStatus(pnmasId, addressType, address, subAddress, onValue);
+		return new SappAddressOnOffStatus(pnmasId, addressType, address, subAddress, onValue);
 	}
 
-	private SappAddressSwitchItemControl parseSappAddressControl(String bindingStringAddress) throws BindingConfigParseException {
+	private SappAddressOnOffControl parseSappAddressControl(String bindingStringAddress) throws BindingConfigParseException {
 
 		String pnmasId;
 		SappAddressType addressType;
@@ -150,6 +147,6 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 			}
 		}
 
-		return new SappAddressSwitchItemControl(pnmasId, addressType, address, subAddress, onValue, offValue);
+		return new SappAddressOnOffControl(pnmasId, addressType, address, subAddress, onValue, offValue);
 	}
 }

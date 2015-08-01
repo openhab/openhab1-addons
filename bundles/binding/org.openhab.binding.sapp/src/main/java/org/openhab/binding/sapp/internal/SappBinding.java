@@ -15,8 +15,10 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -319,7 +321,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
 
-			SappAddressSwitchItemControl controlAddress = sappBindingConfigSwitchItem.getControl();
+			SappAddressOnOffControl controlAddress = sappBindingConfigSwitchItem.getControl();
 
 			if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
 				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigSwitchItem));
@@ -343,12 +345,14 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + controlAddress.getAddressType() + " type");
 						break;
 					}
-				} else { // TODO
-					logger.error("command " + command.getClass().getSimpleName() + " not yet implemented");
+				} else {
+					logger.error("command " + command.getClass().getSimpleName() + " not applicable");
 				}
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
+		} else { // TODO complete with other items
+			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
 	}
 
@@ -394,62 +398,15 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		if (item instanceof SwitchItem) {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 
-			SappAddressSwitchItemStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
+			SappAddressOnOffStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
 
-			switch (statusAddress.getAddressType()) {
-			case VIRTUAL:
-				try {
-					SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
-					SappCommand sappCommand = new Sapp7CCommand(statusAddress.getAddress());
-					sappCommand.run(pnmas.getIp(), pnmas.getPort());
-					if (!sappCommand.isResponseOk()) {
-						throw new SappException("command execution failed");
-					}
-					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+			updateOnOffItem(provider, statusAddress, itemName, item);
+		} else if (item instanceof ContactItem) {
+			SappBindingConfigContactItem sappBindingConfigContactItem = (SappBindingConfigContactItem) provider.getBindingConfig(itemName);
 
-					eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
-				} catch (SappException e) {
-					logger.error("could not run sappcommand: " + e.getMessage());
-				}
-				break;
+			SappAddressOpenClosedStatus statusAddress = sappBindingConfigContactItem.getStatus();
 
-			case INPUT:
-				try {
-					SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
-					SappCommand sappCommand = new Sapp74Command((byte) statusAddress.getAddress());
-					sappCommand.run(pnmas.getIp(), pnmas.getPort());
-					if (!sappCommand.isResponseOk()) {
-						throw new SappException("command execution failed");
-					}
-					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
-
-					eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
-				} catch (SappException e) {
-					logger.error("could not run sappcommand: " + e.getMessage());
-				}
-				break;
-
-
-			case OUTPUT:
-				try {
-					SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
-					SappCommand sappCommand = new Sapp75Command((byte) statusAddress.getAddress());
-					sappCommand.run(pnmas.getIp(), pnmas.getPort());
-					if (!sappCommand.isResponseOk()) {
-						throw new SappException("command execution failed");
-					}
-					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
-
-					eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
-				} catch (SappException e) {
-					logger.error("could not run sappcommand: " + e.getMessage());
-				}
-				break;
-
-			default:
-				logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
-				break;
-			}
+			updateOpenClosedItem(provider, statusAddress, itemName, item);
 		} else { // TODO complete with other items
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
@@ -466,17 +423,140 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		logger.debug(String.format("Updating %s %d with new value %d", sappAddressType, addressToUpdate, newState));
 		for (String itemName : provider.getItemNames()) {
 			Item item = provider.getItem(itemName);
+			
 			if (item instanceof SwitchItem) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
-				SappAddressSwitchItemStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
+				SappAddressOnOffStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
 				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
 					logger.debug("found binding to update " + sappBindingConfigSwitchItem);
 					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), newState);
 					eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
 				}
+			} else if (item instanceof ContactItem) {
+				SappBindingConfigContactItem sappBindingConfigContactItem = (SappBindingConfigContactItem) provider.getBindingConfig(itemName);
+				SappAddressOpenClosedStatus statusAddress = sappBindingConfigContactItem.getStatus();
+				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
+					logger.debug("found binding to update " + sappBindingConfigContactItem);
+					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), newState);
+					eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+				}
 			} else { // TODO complete with other items
 				logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 			}
+		}
+	}
+
+	private void updateOnOffItem(SappBindingProvider provider, SappAddressOnOffStatus statusAddress, String itemName, Item item) {
+
+		switch (statusAddress.getAddressType()) {
+		case VIRTUAL:
+			try {
+				SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+				SappCommand sappCommand = new Sapp7CCommand(statusAddress.getAddress());
+				sappCommand.run(pnmas.getIp(), pnmas.getPort());
+				if (!sappCommand.isResponseOk()) {
+					throw new SappException("command execution failed");
+				}
+				int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case INPUT:
+			try {
+				SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+				SappCommand sappCommand = new Sapp74Command((byte) statusAddress.getAddress());
+				sappCommand.run(pnmas.getIp(), pnmas.getPort());
+				if (!sappCommand.isResponseOk()) {
+					throw new SappException("command execution failed");
+				}
+				int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case OUTPUT:
+			try {
+				SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+				SappCommand sappCommand = new Sapp75Command((byte) statusAddress.getAddress());
+				sappCommand.run(pnmas.getIp(), pnmas.getPort());
+				if (!sappCommand.isResponseOk()) {
+					throw new SappException("command execution failed");
+				}
+				int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		default:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+		}
+	}
+
+	private void updateOpenClosedItem(SappBindingProvider provider, SappAddressOpenClosedStatus statusAddress, String itemName, Item item) {
+
+		switch (statusAddress.getAddressType()) {
+		case VIRTUAL:
+			try {
+				SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+				SappCommand sappCommand = new Sapp7CCommand(statusAddress.getAddress());
+				sappCommand.run(pnmas.getIp(), pnmas.getPort());
+				if (!sappCommand.isResponseOk()) {
+					throw new SappException("command execution failed");
+				}
+				int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case INPUT:
+			try {
+				SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+				SappCommand sappCommand = new Sapp74Command((byte) statusAddress.getAddress());
+				sappCommand.run(pnmas.getIp(), pnmas.getPort());
+				if (!sappCommand.isResponseOk()) {
+					throw new SappException("command execution failed");
+				}
+				int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case OUTPUT:
+			try {
+				SappPnmas pnmas = provider.getPnmasMap().get(statusAddress.getPnmasId());
+				SappCommand sappCommand = new Sapp75Command((byte) statusAddress.getAddress());
+				sappCommand.run(pnmas.getIp(), pnmas.getPort());
+				if (!sappCommand.isResponseOk()) {
+					throw new SappException("command execution failed");
+				}
+				int result = SappBindingUtils.filter(statusAddress.getSubAddress(), sappCommand.getResponse().getDataAsWord());
+
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		default:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
 		}
 	}
 }

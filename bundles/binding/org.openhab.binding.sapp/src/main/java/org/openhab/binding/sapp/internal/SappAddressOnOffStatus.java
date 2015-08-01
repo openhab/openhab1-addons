@@ -1,10 +1,10 @@
 package org.openhab.binding.sapp.internal;
 
-public class SappAddressSwitchItemStatus extends SappAddress {
+public class SappAddressOnOffStatus extends SappAddress {
 
 	private int onValue;
 
-	public SappAddressSwitchItemStatus(String pnmasId, SappAddressType addressType, int address, String subAddress, int onValue) {
+	public SappAddressOnOffStatus(String pnmasId, SappAddressType addressType, int address, String subAddress, int onValue) {
 		super(pnmasId, addressType, address, subAddress);
 		this.onValue = onValue;
 	}

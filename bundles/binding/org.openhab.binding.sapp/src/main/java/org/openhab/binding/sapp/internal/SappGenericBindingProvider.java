@@ -14,6 +14,7 @@ import java.util.Map;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -39,7 +40,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * map of existing items.
 	 */
 	private Map<String, Item> items = new HashMap<String, Item>();
-	
+
 	/**
 	 * some new items have been loaded  
 	 */
@@ -61,6 +62,8 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 
 		if (item instanceof SwitchItem) {
 			; // OK, nothing to validate
+		} else if (item instanceof ContactItem) {
+			; // OK, nothing to validate
 		} else { // TODO aggiungere altri items
 			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 		}
@@ -78,7 +81,15 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 			if (item instanceof SwitchItem) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item, bindingConfig);
 				if (pnmasMap.get(sappBindingConfigSwitchItem.getStatus().getPnmasId()) != null && sappBindingConfigSwitchItem.getControl().getPnmasId() != null) {
-		 			addBindingConfig(item, sappBindingConfigSwitchItem);
+					addBindingConfig(item, sappBindingConfigSwitchItem);
+					fullRefreshNeeded = true;
+				} else {
+					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
+				}
+			} else if (item instanceof ContactItem) {
+				SappBindingConfigContactItem sappBindingConfigContactItem = new SappBindingConfigContactItem(item, bindingConfig);
+				if (pnmasMap.get(sappBindingConfigContactItem.getStatus().getPnmasId()) != null) {
+					addBindingConfig(item, sappBindingConfigContactItem);
 					fullRefreshNeeded = true;
 				} else {
 					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
@@ -111,9 +122,9 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 
 	@Override
-    public Item getItem(String itemName) {
-        return items.get(itemName);
-    }
+	public Item getItem(String itemName) {
+		return items.get(itemName);
+	}
 
 	@Override
 	public boolean isFullRefreshNeeded() {
@@ -123,6 +134,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public void setFullRefreshNeeded(boolean fullRefreshNeeded) {
 		this.fullRefreshNeeded = fullRefreshNeeded;
-		
+
 	}
 }

@@ -1,11 +1,11 @@
 package org.openhab.binding.sapp.internal;
 
-public class SappAddressSwitchItemControl extends SappAddress {
+public class SappAddressOnOffControl extends SappAddress {
 
 	private int onValue;
 	private int offValue;
 
-	public SappAddressSwitchItemControl(String pnmasId, SappAddressType addressType, int address, String subAddress, int onValue, int offValue) {
+	public SappAddressOnOffControl(String pnmasId, SappAddressType addressType, int address, String subAddress, int onValue, int offValue) {
 		super(pnmasId, addressType, address, subAddress);
 		this.onValue = onValue;
 		this.offValue = offValue;
