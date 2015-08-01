@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
  */
 public enum SappAddressType {
 	
-	ALARM("A"),
 	INPUT("I"),
 	OUTPUT("O"),
 	VIRTUAL("V");

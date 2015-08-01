@@ -24,7 +24,6 @@ public abstract class SappBindingConfig implements BindingConfig {
 	protected static final Map<SappAddressType, SappAddressRange> validAddresses = new HashMap<SappAddressType, SappAddressRange>() {
 		protected static final long serialVersionUID = 592091386684476669L;
 		{
-			put(SappAddressType.ALARM, new SappAddressRange(1, 250));
 			put(SappAddressType.INPUT, new SappAddressRange(1, 255));
 			put(SappAddressType.OUTPUT, new SappAddressRange(1, 255));
 			put(SappAddressType.VIRTUAL, new SappAddressRange(1, 2500));

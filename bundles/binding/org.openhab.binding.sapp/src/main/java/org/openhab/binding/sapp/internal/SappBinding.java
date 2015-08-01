@@ -240,7 +240,10 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												}
 												Map<Byte, Integer> changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
 												if (changedOutputs.size() != 0) {
-													// TODO update items
+													for (Byte outputAddress : changedOutputs.keySet()) {
+														logger.debug(String.format("Output %d changed, new value is %d", outputAddress.intValue(), changedOutputs.get(outputAddress)));
+														// TODO
+													}
 												}
 
 												// poll inputs
@@ -251,7 +254,10 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												}
 												Map<Byte, Integer> changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
 												if (changedInputs.size() != 0) {
-													// TODO update items
+													for (Byte inputAddress : changedInputs.keySet()) {
+														logger.debug(String.format("Input %d changed, new value is %d", inputAddress.intValue(), changedInputs.get(inputAddress)));
+														// TODO
+													}
 												}
 
 												// poll virtuals
@@ -263,7 +269,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 												Map<Integer, Integer> changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
 												if (changedVirtuals.size() != 0) {
 													for (Integer virtualAddress : changedVirtuals.keySet()) {
-														logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, changedVirtuals.get(virtualAddress)));
+														logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress.intValue(), changedVirtuals.get(virtualAddress)));
 														updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, changedVirtuals.get(virtualAddress), provider);
 													}
 												}
@@ -340,7 +346,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			try {
 				if (command instanceof OnOffType) { // set bit
 					switch (controlAddress.getAddressType()) {
-					case ALARM:
 					case INPUT:
 					case OUTPUT: {
 						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + controlAddress.getAddressType() + " type");
