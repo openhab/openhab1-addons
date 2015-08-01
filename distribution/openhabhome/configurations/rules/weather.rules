@@ -1,0 +1,98 @@
+// Rule to split up the BBC String from the XML <description>
+// L Kellett g8kmh August 2014
+//
+import org.openhab.core.library.types.*
+var String[] buffer
+var String[] lhsrhs
+var int indexer
+
+rule "Parse BBC Forecast Today"
+when
+	Time cron "0 0/1 * * * ?"
+then
+	if (wxToday.state instanceof StringType){
+		logInfo("wxToday ", wxToday.state.toString)
+		buffer = wxToday.state.toString.split(',')
+// Now split the string at the :
+		indexer = 0 
+        lhsrhs = buffer.get(0).split(':')
+// So the BBC drop the Max Temp at somepoint during the afternoon!
+		if (lhsrhs.get(0) == "Maximum Temperature"){
+			postUpdate(wxTodayTempMax, lhsrhs.get(1))
+			indexer = indexer + 1
+		}
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayTempMin, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayWindDir, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayWindSpeed, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayVis, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayPres, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayHum, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayUV, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTodayPol, lhsrhs.get(1))
+		indexer = indexer + 1
+//... and sunrise
+		if (buffer.get(indexer).split(':').get(0) == "Sunrise"){
+			postUpdate(wxTodaySunrise, buffer.get(indexer))
+			indexer = indexer + 1
+		}
+		postUpdate(wxTodaySunset, buffer.get(indexer))
+	}
+	}
+end
+
+rule "Parse BBC Forecast Tomorrow"
+when
+	Time cron "30 0/1 * * * ?"
+then
+	if (wxTomorrow.state instanceof StringType){
+		logInfo("wxTomorrow ", wxTomorrow.state.toString)
+		buffer = wxTomorrow.state.toString.split(',')
+// Now split the string at the :
+		indexer = 0 
+        lhsrhs = buffer.get(0).split(':')
+		postUpdate(wxTomorrowTempMax, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowTempMin, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowWindDir, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowWindSpeed, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowVis, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowPres, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowHum, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowUV, lhsrhs.get(1))
+		indexer = indexer + 1
+		lhsrhs = buffer.get(indexer).split(':')
+		postUpdate(wxTomorrowPol, lhsrhs.get(1))
+		indexer = indexer + 1
+		postUpdate(wxTomorrowSunrise, buffer.get(indexer))
+		indexer = indexer + 1
+		postUpdate(wxTomorrowSunset, buffer.get(indexer))
+	}
+end

@@ -1,0 +1,21 @@
+sitemap demo label="Main Menu"
+{
+	Frame label="Logo!"{
+				Text item=Boiler
+				Switch item=HWDemand
+				Switch item=CHDemand
+				Text item=DHWDemand
+				Text item=TestLogoContact 
+				Text item=TestLogoNumber 
+				Text item=AI1Volts{
+				Frame {
+					Switch item=AI1Volts_Period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week", 3="Month"]
+					Chart item=AI1Volts period=h refresh=600 visibility=[AI1Volts_Period==0, AI1Volts_Period=="Uninitialized"]
+					Chart item=AI1Volts period=D refresh=3600 visibility=[AI1Volts_Period==1]
+					Chart item=AI1Volts period=W refresh=3600 visibility=[AI1Volts_Period==2]
+					Chart item=AI1Volts period=M refresh=3600 visibility=[AI1Volts_Period==3]
+				}
+				}
+	}
+
+}

@@ -118,3 +118,14 @@ Number Temperature_Setpoint		"Temperature [%.1f °C]" <temperature>
 
 String UnknownDevices    "Unknown Devices in Range: [%s]" { bluetooth="?" }
 Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }
+
+Switch HWDemand "Hot Water " {plclogo="bcu:VB1.1"}
+Switch CHDemand "Central Heating " {plclogo="bcu:VB1.2"}
+Switch DHWDemand "DHW Loop[MAP(flow.map):%s]" {plclogo="bcu:I1"}
+Switch Boiler "Boiler" {plclogo="bcu:Q2"}
+Contact TestLogoContact "Contact" {plclogo="bcu:VB1.1 activelow:yes"}
+Number TestLogoNumber "Number [%d]" {plclogo="bcu:VW12"}
+Number TestLogoAnalogNumber "Analog in [%f]" {plclogo="bcu:AI1"}
+Number AI1Volts "AI1 in volts [%.2f]" <meter2>
+Number AI1Volts_Period "Chart Period"
+

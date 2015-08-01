@@ -31,7 +31,7 @@ public final class PLCLogoActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("PlcLogo binding has been started.");
+		logger.info("PLCLogo binding has been started.");
 	}
 
 	/**
@@ -39,7 +39,7 @@ public final class PLCLogoActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("PlcLogo binding has been stopped.");
+		logger.info("PLCLogo binding has been stopped.");
 	}
 	
 	/**

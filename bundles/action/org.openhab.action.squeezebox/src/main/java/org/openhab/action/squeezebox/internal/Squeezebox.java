@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
+import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.io.squeezeserver.SqueezePlayer;
@@ -22,6 +24,7 @@ import org.openhab.io.squeezeserver.SqueezeServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openhab.core.types.UnDefType;
 
 /**
  * This class contains the methods that are made available in scripts and rules
@@ -160,6 +163,13 @@ public class Squeezebox {
    			squeezeServer.playUrl(playerId, url);
    		}
 		return true;
+	}
+	public static String squeezeNextAlarm( String playerId){
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null) return null;
+		
+		return "";
+	
 	}
 	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")

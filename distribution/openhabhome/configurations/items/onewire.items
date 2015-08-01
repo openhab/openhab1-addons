@@ -1,0 +1,14 @@
+Group Temperature_Chart                     (temperature)
+Group temperature
+Number Ensuite_Temp "Ensuite temperature is [%.2f C]" <temperature> (temperature) { onewire="28.7F489A000000#temperature" }
+Number Slab_Temp "Slab temperature is [%.2f C]" <temperature> (temperature) { onewire="28.10ECA9000000#temperature" }  
+Number Boiler1_Temp "Boiler 1 temperature is [%.2f C]" <temperature> (temperature) { onewire="28.DA059A000000#temperature" }  
+Number Boiler2_Temp "Boiler 2 temperature is [%.2f C]" <temperature> (temperature) { onewire="28.53559A000000#temperature" }  
+Number Temperature_HC_Outside    "Outside Temperature [%.1f C] " <temperature>   (temperature)     { onewire="28.21E199000000#temperature" }
+Number Temperature_Chart_Period "Chart Period"
+Number Lounge_Temp "Lounge temperature is [%.2f C]" <temperature> (temperature) { onewire="28.DC189A000000#temperature" }
+Number Bedroom1_Temp "Bedroom 1 temperature is [%.2f C]" <temperature> (temperature) { onewire="28.16549A000000#temperature" }
+Number Landing_Temp "Landing temperature is [%.2f C]" <temperature> (temperature) { onewire="28.F61C9A000000#temperature" }
+// Number Hall_Temp "Hall temperature is [%.2f C]" <temperature> (temperature) { onewire="28.BB689B000000#temperature" }
+// Number Bedroom3_Temp "Bedroom 3 temperature is [%.2f C]" <temperature> (temperature) { onewire="28.E12E9A000000#temperature" }
+

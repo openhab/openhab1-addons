@@ -1,0 +1,12 @@
+Group All
+Switch HWDemand "Hot Water " {plclogo="bcu:VB1.1"}
+Switch CHDemand "Central Heating " {plclogo="bcu:VB1.2"}
+Switch DHWDemand "DHW Loop[MAP(flow.map):%s]" {plclogo="bcu:I6"}
+Contact TestLogoContact "Contact [%s]" {plclogo="bcu:VB1.1"}
+Contact Boiler "Boiler [%s]" {plclogo="bcu:Q2"}
+Number TestLogoNumber "Number [%d]" {plclogo="bcu:VW12"}
+Number TestLogoAnalogNumber "Analog in [%f]" {plclogo="bcu:AI1"}
+Number AI1Volts "AI1 in volts [%.2f]" <meter2>
+Number AI1Volts_Period "Chart Period"
+
+

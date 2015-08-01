@@ -1,0 +1,19 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+rule "AI1 convert"
+	when
+		Item TestLogoAnalogNumber received update
+	then
+		if (TestLogoAnalogNumber.state instanceof DecimalType)
+		{
+			var value = TestLogoAnalogNumber.state as DecimalType
+				value=value/100
+				postUpdate(AI1Volts, value)
+
+				sendCommand(TestLogoNumber, 999)
+
+		}
+end
+

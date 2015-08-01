@@ -1,0 +1,30 @@
+Group Weather
+String wxTodayTempMax "Today [%s]"
+String wxTodayTempMin
+String wxTodayWindSpeed
+String wxTodayWindDir
+String wxTodayVis
+String wxTodayPres
+String wxTodayHum
+String wxTodayUV
+String wxTodayPol
+String wxTodaySunrise
+String wxTodaySunset 
+String wxTomorrowTempMax "Tomorrow [%s]"
+String wxTomorrowTempMin
+String wxTomorrowWindSpeed
+String wxTomorrowWindDir
+String wxTomorrowVis
+String wxTomorrowPres
+String wxTomorrowHum
+String wxTomorrowUV
+String wxTomorrowPol
+String wxTomorrowSunrise
+String wxTomorrowSunset 
+String wxToday "Today [%s]"   <Weather>  { http="<[http://open.live.bbc.co.uk/weather/feeds/en/2657324/3dayforecast.rss:3600000:XSLT(bbc_weather_forecast_today.xsl)]"}
+String wxTomorrow "Tomorrow [%s]"   <Weather>  { http="<[http://open.live.bbc.co.uk/weather/feeds/en/2657324/3dayforecast.rss:3600000:XSLT(bbc_weather_forecast_tomorrow.xsl)]"}
+Group Astro
+// azimuth and elevation
+Number   Azimuth        "Azimuth [%.2f]"     {astro="planet=sun, type=position, property=azimuth"}
+Number   Elevation      "Elevation [%.2f]"   {astro="planet=sun, type=position, property=elevation"}
+

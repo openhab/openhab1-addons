@@ -1,0 +1,23 @@
+sitemap onewire label="Main Menu"
+Frame label="Sun"{
+	Text item=Azimuth
+	Text item=Elevation
+}
+Frame label="Temperatures"{
+	Text item=Temperature_HC_Outside
+	Text item=Boiler1_Temp
+	Text item=Boiler2_Temp
+	Text item=Lounge_Temp
+	Text item=Bedroom1_Temp
+	Text item=Landing_Temp
+	Text item=Ensuite_Temp
+	Text item=Slab_Temp
+	Switch item=Temperature_Chart_Period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week"]
+	Chart item=Temperature_HC_Outside period=h refresh=600 visibility=[Temperature_Chart_Period==0, Temperature_Chart_Period=="Uninitialized"]
+	Chart item=Temperature_HC_Outside period=D refresh=3600 visibility=[Temperature_Chart_Period==1]
+	Chart item=Temperature_HC_Outside period=W refresh=3600 visibility=[Temperature_Chart_Period==2]
+}
+Frame label="Weather Forecast"{
+	Text item=wxTodayTempMax
+	Text item=wxTomorrowTempMax
+}

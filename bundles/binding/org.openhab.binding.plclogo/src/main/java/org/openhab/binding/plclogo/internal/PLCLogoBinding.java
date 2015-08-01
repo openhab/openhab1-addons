@@ -70,6 +70,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 	private static Map<String,PLCLogoConfig> controllers = new HashMap<String, PLCLogoConfig>();
 
 	public PLCLogoBinding(){
+		logger.info("PLCLogoBinding constuctor");
 	}
 		
 	
@@ -352,6 +353,7 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 				matcher.find();
 				String controllerName = matcher.group(1);
 				PLCLogoConfig deviceConfig = controllers.get(controllerName);
+				logger.info("Config for "+ controllerName );
 
 				if (deviceConfig == null) {
 					deviceConfig = new PLCLogoConfig(controllerName);
@@ -361,16 +363,21 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 					// matcher.find();
 					String IP = config.get(key).toString();
 					deviceConfig.setIP(IP);
+					logger.info("Config for "+ IP );
 					configured=true;
 				}
 				if (matcher.group(2).equals("remoteTSAP")){
 					// matcher.find();
 					String remoteTSAP = config.get(key).toString();
+					logger.info("Config for " + remoteTSAP );
+
 					deviceConfig.setremoteTSAP(Integer.decode(remoteTSAP));
 				}
 				if (matcher.group(2).equals("localTSAP")){
 					// matcher.find();
 					String localTSAP = config.get(key).toString();
+					logger.info("Config for "+ localTSAP );
+
 					deviceConfig.setlocalTSAP(Integer.decode(localTSAP));
 				}
 			} //while
@@ -385,19 +392,26 @@ public class PLCLogoBinding extends AbstractActiveBinding<PLCLogoBindingProvider
 			else
 				LogoS7Client.Disconnect();
 			LogoS7Client.SetConnectionParams(logoConfig.getlogoIP(), logoConfig.getlocalTSAP(), logoConfig.getremoteTSAP());
+			logger.info("About to connect to "+ controllerName );
+
 			int connectPDU = LogoS7Client.Connect();
 			if ((connectPDU == 0) && LogoS7Client.Connected ){
-				logger.debug("Connected to PLC LOGO! device "+ controllerName );
+				logger.info("Connected to PLC LOGO! device "+ controllerName );
 			}
 			else {
-				logger.debug("Could not connect to PLC LOGO! device "+ controllerName );
+				logger.info("Could not connect to PLC LOGO! device "+ controllerName );
 				throw new ConfigurationException("Could not connect to PLC device ",controllerName +" " + logoConfig.getlogoIP().toString() );
 			}
 			logoConfig.setS7Client(LogoS7Client);
 		}
 				
+		setProperlyConfigured(configured);		}
+		else
+		{
+			logger.info("No configuration for PLCLogoBinding" );
+
 		}
-		setProperlyConfigured(configured);
+
 	}
 	
 	
