@@ -87,6 +87,13 @@ rule "Initialize contact states"
 		)
 end
 
+rule "Initialize Location"
+	when 
+		System started
+	then
+		DemoLocation.postUpdate(new PointType("52.5200066,13.4049540"))
+end
+
 rule "Set random room temperatures"
 	when 
 		System started or

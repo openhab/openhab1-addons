@@ -73,6 +73,10 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	 * {@inheritDoc}
 	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		if( context == null ) {
+			throw new BindingConfigParseException("context is not permitted to be null for item "+item);
+		}
+
 		Set<Item> items = contextMap.get(context);
 		if (items==null) {
 			items = new HashSet<Item>();

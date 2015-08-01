@@ -62,7 +62,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
-			<Label lang="en">Enable Parameter 91</Label>
+			<Label lang="en">Enable/disable Parameter 91 and 92</Label>
 			<Help lang="en">Enables/disables parameter 91 and 92 below</Help>
 			<Item>
 				<Value>1</Value>
@@ -178,8 +178,8 @@
 			<Type>word</Type>
 			<Default>600</Default>
 			<Size>4</Size>
-			<Label lang="en">Interval group 1</Label>
-			<Help lang="en">The time interval of sending Report group 1</Help>
+			<Label lang="en">Interval Group 1</Label>
+			<Help lang="en">The time interval (in seconds) for sending report to Group 1</Help>
 			<Minimum>0</Minimum>
 			<Maximum>65535</Maximum>
 		</Parameter>
@@ -188,8 +188,8 @@
 			<Type>word</Type>
 			<Default>600</Default>
 			<Size>4</Size>
-			<Label lang="en">Interval group 1</Label>
-			<Help lang="en">The time interval of sending Report group 2</Help>
+			<Label lang="en">Interval Group 2</Label>
+			<Help lang="en">The time interval (in seconds) for sending report to Group 2</Help>
 			<Minimum>0</Minimum>
 			<Maximum>65535</Maximum>
 		</Parameter>
@@ -198,8 +198,8 @@
 			<Type>word</Type>
 			<Default>600</Default>
 			<Size>4</Size>
-			<Label lang="en">Interval group 1</Label>
-			<Help lang="en">The time interval of sending Report group 3</Help>
+			<Label lang="en">Interval Group 3</Label>
+			<Help lang="en">The time interval (in seconds) for sending report to Group 3</Help>
 			<Minimum>0</Minimum>
 			<Maximum>65535</Maximum>
 		</Parameter>

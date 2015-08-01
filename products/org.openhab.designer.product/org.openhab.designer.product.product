@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="openHAB Designer" uid="org.openhab.designer.product" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="1.7.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="openHAB Designer" uid="org.openhab.designer.product" id="org.openhab.designer.core.product" application="org.openhab.designer.ui.application" version="1.8.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.openhab.designer.core/icons/openhab400.png"/>
@@ -15,8 +15,10 @@ http://p.yusukekamiyamane.com, http://www.icons-land.com
    </configIni>
 
    <launcherArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.awt.headless=true</vmArgsMac>
-      <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../addons -DnoRules=true -Xmx256m -XX:PermSize=128M -Dorg.eclipse.swt.browser.DefaultType=mozilla</vmArgs>
+      <vmArgs>-Dorg.eclipse.equinox.p2.reconciler.dropins.directory=../../addons -DnoRules=true -Xmx256m -XX:PermSize=128M
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Djava.awt.headless=true
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.openhab.designer.core/icons/openhab_logo_16.png" i32="/org.openhab.designer.core/icons/openhab_logo_32.png" i128="/org.openhab.designer.core/icons/openhab_logo_128.png"/>

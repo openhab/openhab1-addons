@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,42 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public abstract class SatelBindingConfig implements BindingConfig {
 
+	public enum Options {
+		COMMANDS_ONLY, FORCE_ARM, INVERT_STATE
+	}
+
 	private static final DecimalType DECIMAL_ONE = new DecimalType(1);
+
+	private Map<String, String> options;
+
+	/**
+	 * Checks whether given option is set to <code>true</code>.
+	 * 
+	 * @param option option to check
+	 * @return <code>true</code> if option is enabled
+	 */
+	public boolean hasOptionEnabled(Options option) {
+		return Boolean.parseBoolean(getOption(option));
+	}
+
+	/**
+	 * Returns value of given option.
+	 * 
+	 * @param option option to get value for
+	 * @return string value or <code>null</code> if option is not present
+	 */
+	public String getOption(Options option) {
+		return this.options.get(option.name());
+	}
+
+	/**
+	 * Returns string representation of option map.
+	 * 
+	 * @return string as pairs of [name]=[value] separated by comma
+	 */
+	public String optionsAsString() {
+		return this.options.toString();
+	}
 
 	/**
 	 * Converts data from {@link SatelEvent} to openHAB state of specified item.
@@ -71,6 +106,10 @@ public abstract class SatelBindingConfig implements BindingConfig {
 	 * @return a message to send
 	 */
 	public abstract SatelMessage buildRefreshMessage(IntegraType integraType);
+
+	protected SatelBindingConfig(Map<String, String> options) {
+		this.options = options;
+	}
 
 	/**
 	 * Helper class to iterate over elements of binding configuration.

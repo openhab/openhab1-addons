@@ -166,6 +166,7 @@ public abstract class MessageHandler {
 			m = new GroupMessageStateMachine();
 			m_groupState.put(new Integer(group), m);
 		}
+		logger.debug("updating group state for {} to {}", group, a);
 		return (m.action(a, hops));
 	}
 	
@@ -262,6 +263,8 @@ public abstract class MessageHandler {
 				logger.info("{}: device {} was switched on.", nm(),
 								f.getDevice().getAddress());
 				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
+			} else {
+				logger.debug("ignored message: {} or {}", isDuplicate(msg), isMybutton(msg,f));
 			}
 		}
 	}
@@ -509,16 +512,20 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			if (msg.isExtended()) {
 				try {
+					// see iMeter developer notes 2423A1dev-072013-en.pdf
 					int b7	= msg.getByte("userData7")	& 0xff;
 					int b8	= msg.getByte("userData8")	& 0xff;
 					int watts = (b7 << 8) | b8;
+					if (watts > 32767) {
+						watts -= 65535;
+					}
 
 					int b9	= msg.getByte("userData9")	& 0xff;
 					int b10	= msg.getByte("userData10")	& 0xff;
 					int b11	= msg.getByte("userData11")	& 0xff;
 					int b12	= msg.getByte("userData12")	& 0xff;
 					BigDecimal kwh = BigDecimal.ZERO;
-					if (b9 != 0xff) {
+					if (b9 < 254) {
 						int e = (b9 << 24) | (b10 << 16) | (b11 << 8) | b12;
 						kwh = new BigDecimal(e * 65535.0 / (1000 * 60 * 60 * 60)).setScale(4, RoundingMode.HALF_UP);
 					}
@@ -747,6 +754,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad TEMPERATURE reply from {}", nm(), dev.getAddress());
+					return;
+				}
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
 				int level = cmd2/2;
 				logger.info("{}: got TEMPERATURE from {} of value: {}", nm(), dev.getAddress(), level);
@@ -769,6 +781,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad HUMIDITY reply from {}", nm(), dev.getAddress());
+					return;
+				}
 				int cmd2 = (int) msg.getByte("command2");
 				logger.info("{}: got HUMIDITY from {} of value: {}", nm(), dev.getAddress(), cmd2);
 				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), cmd2);

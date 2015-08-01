@@ -261,7 +261,7 @@ public class SitemapResource {
 		bean.label = sitemap.getLabel();
 
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
+    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
     }
     
@@ -330,18 +330,7 @@ public class SitemapResource {
     		Switch switchWidget = (Switch) widget;
     		for(Mapping mapping : switchWidget.getMappings()) {
     			MappingBean mappingBean = new MappingBean();
-				// Remove quotes - if they exist
-				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
-						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
-					}
-					else {
-						mappingBean.command = mapping.getCmd();
-					}
-				}
-				else {
-					mappingBean.command = mapping.getCmd();
-				}
+				mappingBean.command = mapping.getCmd();
 				mappingBean.label = mapping.getLabel();
 				bean.mappings.add(mappingBean);
 			}
@@ -350,18 +339,7 @@ public class SitemapResource {
 			Selection selectionWidget = (Selection) widget;
 			for (Mapping mapping : selectionWidget.getMappings()) {
 				MappingBean mappingBean = new MappingBean();
-				// Remove quotes - if they exist
-				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
-						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
-					}
-					else {
-						mappingBean.command = mapping.getCmd();
-					}				
-				}
-				else {
-					mappingBean.command = mapping.getCmd();
-				}
+				mappingBean.command = mapping.getCmd();
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}
@@ -422,6 +400,9 @@ public class SitemapResource {
 				catch (UnsupportedEncodingException ex) {
 					throw new RuntimeException(ex.getMessage(), ex);
 				}
+			}
+			if(uri.getFragment() != null) {
+				sb.append("#" + uri.getFragment());
 			}
 			sbBaseUrl.append(sb.toString());
 			bean.url = sbBaseUrl.toString();

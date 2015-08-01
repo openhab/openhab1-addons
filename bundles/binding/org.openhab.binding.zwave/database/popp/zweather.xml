@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>POPE005206</Model>
+	<Label lang="en">Z Weather Sensor</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x32</id>
+		</Class>
+		<Class>
+			<id>0x59</id>
+		</Class>
+		<Class>
+			<id>0x5e</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x80</id>
+		</Class>
+		<Class>
+			<id>0x84</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x8e</id>
+		</Class>
+		<Class>
+			<id>0x8f</id>
+		</Class>
+		<Class>
+			<id>0x9b</id>
+		</Class>
+		<Class>
+			<id>0x89</id>
+		</Class>
+		<Class>
+			<id>0x60</id>
+		</Class>
+		<Class>
+			<id>0x5a</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>6</Default>
+			<Minimum>0</Minimum>
+			<Maximum>30</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Wind Speed Action Threshold</Label>
+			<Help lang="en">Available Parameters: 0  - Off
+			1 - 30 in milliseconds Default = 6 m/s</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Default>37</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Twilight Action Threshold</Label>
+			<Help lang="en">Set from 0 - 100 % Default = 37% (street lighting)</Help>
+		</Parameter>
+	</Configuration>	
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Life Line</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Wind Speed</Label>
+			<Help lang="en">Wind speed is higher than 6 m/s (22 Km/h)</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">End of Dawn</Label>
+			<Help lang="en">At the end of the dawn if it becomes bright</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">End of Dusk</Label>
+			<Help lang="en">At the end of the dusk if it becomes bright</Help>
+		</Group>
+	</Associations>
+</Product>
