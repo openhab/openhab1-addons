@@ -20,6 +20,9 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 		
 		this.status = parseSappAddress(bindingConfigParts[0]);
 		this.control = parseSappAddress(bindingConfigParts[1]);
+		if (this.control.getAddressType() != SappAddressType.VIRTUAL) {
+			throw new BindingConfigParseException(errorMessage(bindingConfigParts[1]));
+		}
 	}
 
 	public SappAddress getStatus() {
