@@ -10,7 +10,6 @@ package org.openhab.binding.sapp.internal;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
@@ -33,6 +32,7 @@ import com.github.paolodenti.jsapp.core.command.Sapp82Command;
 import com.github.paolodenti.jsapp.core.command.base.SappCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappConnection;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
+import com.github.paolodenti.jsapp.core.util.SappUtils;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -63,13 +63,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 * (optional, defaults to 1000ms)
 	 */
 	private long refreshInterval = 1000;
-
-	/**
-	 * syncronization object used to avoid overlapping pollings
-	 */
-	private static final AtomicInteger runningPollings = new AtomicInteger(0);
-	private static final Object pollingLock = new Object();
-	private static final int MAX_CONCURRENT_POLLINGS = 1;
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
@@ -205,88 +198,76 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	@Override
 	protected void execute() {
 
-		if (runningPollings.get() < MAX_CONCURRENT_POLLINGS) {
-			synchronized (pollingLock) { // do not overlap execute()
-				if (runningPollings.get() < MAX_CONCURRENT_POLLINGS) { // double check in synchronized part
+		if (isProperlyConfigured()) { // wait until provider is properly configured
+			SappBindingProvider provider = getFirstSappBindingProvider();
+			if (provider != null) {
+				if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
+					logger.debug("executing a full refresh");
 					try {
-						runningPollings.incrementAndGet();
+						initializeAllItemsInProvider(provider);
+						provider.setFullRefreshNeeded(false);
+					} catch (SappException e) {
+						logger.error("error while initializing items:" + e.getMessage());
+					}
+				} else { // poll
+					for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
+						try {
+							SappConnection sappConnection = new SappConnection(pnmas.getIp(), pnmas.getPort());
+							sappConnection.openConnection();
 
-						if (isProperlyConfigured()) { // wait until provider is properly configured
-							SappBindingProvider provider = getFirstSappBindingProvider();
-							if (provider != null) {
-								if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
-									logger.debug("executing a full refresh");
-									try {
-										initializeAllItemsInProvider(provider);
-										provider.setFullRefreshNeeded(false);
-									} catch (SappException e) {
-										logger.error("error while initializing items:" + e.getMessage());
-									}
-								} else { // poll
-									for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
-										SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
-										try {
-											SappConnection sappConnection = new SappConnection(pnmas.getIp(), pnmas.getPort());
-											sappConnection.openConnection();
+							try {
+								SappCommand sappCommand;
 
-											try {
-												SappCommand sappCommand;
-
-												// poll outputs
-												sappCommand = new Sapp80Command();
-												sappCommand.run(sappConnection);
-												if (!sappCommand.isResponseOk()) {
-													throw new SappException("Sapp80Command command execution failed");
-												}
-												Map<Byte, Integer> changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
-												if (changedOutputs.size() != 0) {
-													for (Byte outputAddress : changedOutputs.keySet()) {
-														logger.debug(String.format("Output %d changed, new value is %d", outputAddress.intValue(), changedOutputs.get(outputAddress)));
-														// TODO
-													}
-												}
-
-												// poll inputs
-												sappCommand = new Sapp81Command();
-												sappCommand.run(sappConnection);
-												if (!sappCommand.isResponseOk()) {
-													throw new SappException("Sapp81Command command execution failed");
-												}
-												Map<Byte, Integer> changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
-												if (changedInputs.size() != 0) {
-													for (Byte inputAddress : changedInputs.keySet()) {
-														logger.debug(String.format("Input %d changed, new value is %d", inputAddress.intValue(), changedInputs.get(inputAddress)));
-														// TODO
-													}
-												}
-
-												// poll virtuals
-												sappCommand = new Sapp82Command();
-												sappCommand.run(sappConnection);
-												if (!sappCommand.isResponseOk()) {
-													throw new SappException("Sapp82Command command execution failed");
-												}
-												Map<Integer, Integer> changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
-												if (changedVirtuals.size() != 0) {
-													for (Integer virtualAddress : changedVirtuals.keySet()) {
-														logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress.intValue(), changedVirtuals.get(virtualAddress)));
-														updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, changedVirtuals.get(virtualAddress), provider);
-													}
-												}
-											} finally {
-												sappConnection.closeConnection();
-											}
-										} catch (IOException e) {
-											logger.error("polling failed on pnmas " + pnmas);
-										} catch (SappException e) {
-											logger.error("polling failed on pnmas " + pnmas);
-										}
+								// poll outputs
+								sappCommand = new Sapp80Command();
+								sappCommand.run(sappConnection);
+								if (!sappCommand.isResponseOk()) {
+									throw new SappException("Sapp80Command command execution failed");
+								}
+								Map<Byte, Integer> changedOutputs = sappCommand.getResponse().getDataAsByteWordMap();
+								if (changedOutputs.size() != 0) {
+									for (Byte outputAddress : changedOutputs.keySet()) {
+										logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), changedOutputs.get(outputAddress)));
+										// TODO
 									}
 								}
+
+								// poll inputs
+								sappCommand = new Sapp81Command();
+								sappCommand.run(sappConnection);
+								if (!sappCommand.isResponseOk()) {
+									throw new SappException("Sapp81Command command execution failed");
+								}
+								Map<Byte, Integer> changedInputs = sappCommand.getResponse().getDataAsByteWordMap();
+								if (changedInputs.size() != 0) {
+									for (Byte inputAddress : changedInputs.keySet()) {
+										logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), changedInputs.get(inputAddress)));
+										// TODO
+									}
+								}
+
+								// poll virtuals
+								sappCommand = new Sapp82Command();
+								sappCommand.run(sappConnection);
+								if (!sappCommand.isResponseOk()) {
+									throw new SappException("Sapp82Command command execution failed");
+								}
+								Map<Integer, Integer> changedVirtuals = sappCommand.getResponse().getDataAsWordWordMap();
+								if (changedVirtuals.size() != 0) {
+									for (Integer virtualAddress : changedVirtuals.keySet()) {
+										logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, changedVirtuals.get(virtualAddress)));
+										updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, changedVirtuals.get(virtualAddress), provider);
+									}
+								}
+							} finally {
+								sappConnection.closeConnection();
 							}
+						} catch (IOException e) {
+							logger.error("polling failed on pnmas " + pnmas);
+						} catch (SappException e) {
+							logger.error("polling failed on pnmas " + pnmas);
 						}
-					} finally {
-						runningPollings.decrementAndGet();
 					}
 				}
 			}
