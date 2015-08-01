@@ -319,7 +319,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
 
-			SappAddress controlAddress = sappBindingConfigSwitchItem.getControl();
+			SappAddressSwitchItemControl controlAddress = sappBindingConfigSwitchItem.getControl();
 
 			if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
 				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigSwitchItem));
@@ -394,7 +394,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		if (item instanceof SwitchItem) {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 
-			SappAddress statusAddress = sappBindingConfigSwitchItem.getStatus();
+			SappAddressSwitchItemStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
 
 			switch (statusAddress.getAddressType()) {
 			case VIRTUAL:
@@ -468,7 +468,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			Item item = provider.getItem(itemName);
 			if (item instanceof SwitchItem) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
-				SappAddress statusAddress = sappBindingConfigSwitchItem.getStatus();
+				SappAddressSwitchItemStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
 				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
 					logger.debug("found binding to update " + sappBindingConfigSwitchItem);
 					int result = SappBindingUtils.filter(statusAddress.getSubAddress(), newState);
