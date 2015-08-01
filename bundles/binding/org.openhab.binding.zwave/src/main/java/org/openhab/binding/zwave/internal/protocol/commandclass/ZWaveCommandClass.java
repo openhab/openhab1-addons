@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,11 +14,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.NumberFormatException;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.proprietary.FibaroFGRM222CommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +37,9 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 public abstract class ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveCommandClass.class);
+
 	private static final int MAX_SUPPORTED_VERSION = 1;
 	private static final int SIZE_MASK = 0x07;
 //	private static final SCALE_MASK = 0x18; // unused
@@ -46,7 +51,7 @@ public abstract class ZWaveCommandClass {
 	private ZWaveNode node;
 	@XStreamOmitField
 	private ZWaveController controller;
-	@XStreamOmitField
+
 	private ZWaveEndpoint endpoint;
 	
 	private int version = 0;
@@ -136,7 +141,17 @@ public abstract class ZWaveCommandClass {
 	public int getMaxVersion () {
 		return MAX_SUPPORTED_VERSION;
 	}
-	
+
+	/**
+	 * Set options for this command class.
+	 * Options are provided from the device configuration database 
+	 * @param options class
+	 * @return true if options set ok
+	 */
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		return false;
+	}
+
 	/**
 	 * Returns the number of instances of this command class
 	 * in case the node supports the MULTI_INSTANCE command class (Version 1).
@@ -145,7 +160,7 @@ public abstract class ZWaveCommandClass {
 	public int getInstances() {
 		return instances;
 	}
-	
+
 	/**
 	 * Returns the number of instances of this command class
 	 * in case the node supports the MULTI_INSTANCE command class (Version 1).
@@ -154,13 +169,13 @@ public abstract class ZWaveCommandClass {
 	public void setInstances(int instances) {
 		this.instances = instances;
 	}
-	
+
 	/**
 	 * Returns the command class.
 	 * @return command class
 	 */
 	public abstract CommandClass getCommandClass();
-	
+
 	/**
 	 * Handles an incoming application command request.
 	 * @param serialMessage the incoming message to process.
@@ -180,31 +195,34 @@ public abstract class ZWaveCommandClass {
 	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller) {
 		return ZWaveCommandClass.getInstance(i, node, controller, null);
 	}
-	
+
 	/**
 	 * Gets an instance of the right command class.
 	 * Returns null if the command class is not found.
-	 * @param i the code to instantiate
+	 * @param classId the code to instantiate
 	 * @param node the node this instance commands.
 	 * @param controller the controller to send messages to.
 	 * @param endpoint the endpoint this Command class belongs to
 	 * @return the ZWaveCommandClass instance that was instantiated, null otherwise 
 	 */
-	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
-		logger.debug(String.format("Creating new instance of command class 0x%02X", i));
+	public static ZWaveCommandClass getInstance(int classId, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
 		try {
-			CommandClass commandClass = CommandClass.getCommandClass(i);
+			CommandClass commandClass = CommandClass.getCommandClass(classId);
+			if (commandClass != null && commandClass.equals(CommandClass.MANUFACTURER_PROPRIETARY)){
+				commandClass = CommandClass.getCommandClass(node.getManufacturer(), node.getDeviceType());
+			}
 			if (commandClass == null) {
-				logger.warn(String.format("Unsupported command class 0x%02x", i));
+				logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
 				return null;
 			}
 			Class<? extends ZWaveCommandClass> commandClassClass = commandClass.getCommandClassClass();
 			
 			if (commandClassClass == null) {
-				logger.warn(String.format("Unsupported command class %s (0x%02x)", commandClass.getLabel(), i, endpoint));
+				logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(), classId);
 				return null;
 			}
-				
+			logger.debug("NODE {}: Creating new instance of command class {}", node.getNodeId(), commandClass.getLabel());
+
 			Constructor<? extends ZWaveCommandClass> constructor = commandClassClass.getConstructor(ZWaveNode.class, ZWaveController.class, ZWaveEndpoint.class);
 			return constructor.newInstance(new Object[] {node, controller, endpoint});
 		} catch (InstantiationException e) {
@@ -214,7 +232,7 @@ public abstract class ZWaveCommandClass {
 		} catch (NoSuchMethodException e) {
 		} catch (SecurityException e) {
 		}
-		logger.error(String.format("Error instantiating command class 0x%02x", i));
+		logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), classId));
 		return null;
 	}
 	
@@ -231,7 +249,7 @@ public abstract class ZWaveCommandClass {
 		if((size+offset) >= buffer.length) {
 			logger.error("Error extracting value - length={}, offset={}, size={}.", 
 					new Object[] { buffer.length, offset, size});
-			return BigDecimal.ZERO;
+			throw new NumberFormatException();
 		}
 		
 		int value = 0;
@@ -295,33 +313,37 @@ public abstract class ZWaveCommandClass {
 	 */
 	protected byte[] encodeValue(BigDecimal value) throws ArithmeticException {
 		
-		if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+		// Remove any trailing zero's so we send the least amount of bytes possible
+		BigDecimal normalizedValue = value.stripTrailingZeros();
+
+		// Make our scale at least 0, precision cannot be more than 7 but
+		// this is guarded by the Integer min / max values already.
+		if (normalizedValue.scale() < 0)
+		{
+			normalizedValue = normalizedValue.setScale(0);
+		}
+
+		if (normalizedValue.unscaledValue().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
 			throw new ArithmeticException();
-		} else if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0)
+		} else if (normalizedValue.unscaledValue().compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0)
 			throw new ArithmeticException();
 		
 		// default size = 4
 		int size = 4;
 		
 		// it might fit in a byte or short
-		if (value.unscaledValue().intValue() >= Byte.MIN_VALUE && value.unscaledValue().intValue() <= Byte.MAX_VALUE) {
+		if (normalizedValue.unscaledValue().intValue() >= Byte.MIN_VALUE && normalizedValue.unscaledValue().intValue() <= Byte.MAX_VALUE) {
 			size = 1;
-		} else if (value.unscaledValue().intValue() >= Short.MIN_VALUE && value.unscaledValue().intValue() <= Short.MAX_VALUE) {
+		} else if (normalizedValue.unscaledValue().intValue() >= Short.MIN_VALUE && normalizedValue.unscaledValue().intValue() <= Short.MAX_VALUE) {
 			size = 2;
 		}
 		
-		int precision = value.scale();
-		
-		// precision cannot be negative, cannot be more than 7 as well, 
-		// but this is guarded by the Integer min / max values already.
-		if (precision < 0) {
-			throw new ArithmeticException();
-		}
-		
+		int precision = normalizedValue.scale();
+
 		byte[] result = new byte[size + 1];
 		// precision + scale (unused) + size
 		result[0] = (byte) ((precision << PRECISION_SHIFT) | size);
-		int unscaledValue = value.unscaledValue().intValue(); // ie. 22.5 = 225
+		int unscaledValue = normalizedValue.unscaledValue().intValue(); // ie. 22.5 = 225
 		for (int i = 0; i < size; i++) {
 			result[size - i] = (byte) ((unscaledValue >> (i * 8)) & 0xFF);
 		}
@@ -340,7 +362,7 @@ public abstract class ZWaveCommandClass {
 		NO_OPERATION(0x00,"NO_OPERATION", ZWaveNoOperationCommandClass.class),
 		BASIC(0x20,"BASIC",ZWaveBasicCommandClass.class),
 		CONTROLLER_REPLICATION(0x21,"CONTROLLER_REPLICATION",null),
-		APPLICATION_STATUS(0x22,"APPLICATION_STATUS",null),
+		APPLICATION_STATUS(0x22,"APPLICATION_STATUS",ZWaveApplicationStatusClass.class),
 		ZIP_SERVICES(0x23,"ZIP_SERVICES",null),
 		ZIP_SERVER(0x24,"ZIP_SERVER",null),
 		SWITCH_BINARY(0x25,"SWITCH_BINARY",ZWaveBinarySwitchCommandClass.class),
@@ -364,22 +386,26 @@ public abstract class ZWaveCommandClass {
 		METER_TBL_MONITOR(0x3D,"METER_TBL_MONITOR",null),
 		METER_TBL_PUSH(0x3E,"METER_TBL_PUSH",null),
 		THERMOSTAT_HEATING(0x38,"THERMOSTAT_HEATING",null),
-		THERMOSTAT_MODE(0x40,"THERMOSTAT_MODE",null),
-		THERMOSTAT_OPERATING_STATE(0x42,"THERMOSTAT_OPERATING_STATE",null),
+		THERMOSTAT_MODE(0x40,"THERMOSTAT_MODE",ZWaveThermostatModeCommandClass.class),
+		THERMOSTAT_OPERATING_STATE(0x42,"THERMOSTAT_OPERATING_STATE",ZWaveThermostatOperatingStateCommandClass.class),
 		THERMOSTAT_SETPOINT(0x43,"THERMOSTAT_SETPOINT",ZWaveThermostatSetpointCommandClass.class),
-		THERMOSTAT_FAN_MODE(0x44,"THERMOSTAT_FAN_MODE",null),
-		THERMOSTAT_FAN_STATE(0x45,"THERMOSTAT_FAN_STATE",null),
+		THERMOSTAT_FAN_MODE(0x44,"THERMOSTAT_FAN_MODE",ZWaveThermostatFanModeCommandClass.class),
+		THERMOSTAT_FAN_STATE(0x45,"THERMOSTAT_FAN_STATE",ZWaveThermostatFanStateCommandClass.class),
 		CLIMATE_CONTROL_SCHEDULE(0x46,"CLIMATE_CONTROL_SCHEDULE",null),
 		THERMOSTAT_SETBACK(0x47,"THERMOSTAT_SETBACK",null),
 		DOOR_LOCK_LOGGING(0x4C,"DOOR_LOCK_LOGGING",null),
 		SCHEDULE_ENTRY_LOCK(0x4E,"SCHEDULE_ENTRY_LOCK",null),
 		BASIC_WINDOW_COVERING(0x50,"BASIC_WINDOW_COVERING",null),
 		MTP_WINDOW_COVERING(0x51,"MTP_WINDOW_COVERING",null),
+		CRC_16_ENCAP(0x56,"CRC_16_ENCAP",ZWaveCRC16EncapsulationCommandClass.class),
+		ASSOCIATION_GROUP_INFO(0x59,"ASSOCIATION_GROUP_INFO",null),
+		DEVICE_RESET_LOCALLY(0x5a,"DEVICE_RESET_LOCALLY",null),
+		ZWAVE_PLUS_INFO(0x5e,"ZWAVE_PLUS_INFO",null),
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),
 		CONFIGURATION(0x70,"CONFIGURATION",ZWaveConfigurationCommandClass.class),
-		ALARM(0x71,"ALARM",null),
+		ALARM(0x71,"ALARM",ZWaveAlarmCommandClass.class),
 		MANUFACTURER_SPECIFIC(0x72,"MANUFACTURER_SPECIFIC",ZWaveManufacturerSpecificCommandClass.class),
 		POWERLEVEL(0x73,"POWERLEVEL",null),
 		PROTECTION(0x75,"PROTECTION",null),
@@ -403,8 +429,11 @@ public abstract class ZWaveCommandClass {
 		GEOGRAPHIC_LOCATION(0x8C,"GEOGRAPHIC_LOCATION",null),
 		COMPOSITE(0x8D,"COMPOSITE",null),
 		MULTI_INSTANCE_ASSOCIATION(0x8E,"MULTI_INSTANCE_ASSOCIATION",null),
-		MULTI_CMD(0x8F,"MULTI_CMD",null),
+		MULTI_CMD(0x8F,"MULTI_CMD",ZWaveMultiCommandCommandClass.class),
 		ENERGY_PRODUCTION(0x90,"ENERGY_PRODUCTION",null),
+		// Note that MANUFACTURER_PROPRIETARY shouldn't be instantiated directly
+		// The getInstance method will catch this and translate to the correct
+		// class for the device.
 		MANUFACTURER_PROPRIETARY(0x91,"MANUFACTURER_PROPRIETARY",null),
 		SCREEN_MD(0x92,"SCREEN_MD",null),
 		SCREEN_ATTRIBUTES(0x93,"SCREEN_ATTRIBUTES",null),
@@ -420,7 +449,10 @@ public abstract class ZWaveCommandClass {
 		SILENCE_ALARM(0x9D,"SILENCE_ALARM",null),
 		SENSOR_CONFIGURATION(0x9E,"SENSOR_CONFIGURATION",null),
 		MARK(0xEF,"MARK",null),
-		NON_INTEROPERABLE(0xF0,"NON_INTEROPERABLE",null);
+		NON_INTEROPERABLE(0xF0,"NON_INTEROPERABLE",null),
+
+		// MANUFACTURER_PROPRIETARY class definitions are defined by the manufacturer and device id
+		FIBARO_FGRM_222(0x010F, 0x0301, "FIBARO_FGRM_222", FibaroFGRM222CommandClass.class);
 
 		/**
 		 * A mapping between the integer code and its corresponding
@@ -434,15 +466,32 @@ public abstract class ZWaveCommandClass {
 		 */
 		private static Map<String, CommandClass> labelToCommandClassMapping;
 
+		/**
+		 * Get unique command class code for manufacturer and device ID.
+		 *
+		 * To support manufacturer specific implementations of a manufacturer proprietary command class we use the
+		 * manufacturer and the device id to generate a unique key.
+		 *
+		 * @param manufacturer the manufacturer ID
+		 * @param deviceId the device ID
+		 * @return a unique command class key
+		 */
+		private static int getKeyFromManufacturerAndDeviceId(int manufacturer, int deviceId) {
+			return manufacturer << 16 | deviceId;
+		}
+
 		private int key;
 		private String label;
 		private Class<? extends ZWaveCommandClass> commandClassClass;
-
 
 		private CommandClass(int key, String label, Class<? extends ZWaveCommandClass> commandClassClass) {
 			this.key = key;
 			this.label = label;
 			this.commandClassClass = commandClassClass;
+		}
+
+		private CommandClass(int manufacturer, int deviceId, String label, Class<? extends ZWaveCommandClass> commandClassClass) {
+			this(getKeyFromManufacturerAndDeviceId(manufacturer, deviceId), label, commandClassClass);
 		}
 
 		private static void initMapping() {
@@ -467,7 +516,18 @@ public abstract class ZWaveCommandClass {
 			
 			return codeToCommandClassMapping.get(i);
 		}
-		
+
+		/**
+		 * Lookup function based on the manufacturer and device ID.
+		 *
+		 * @param manufacturer the manufacturer ID
+		 * @param deviceId the device ID
+		 * @return enumeration value of the command class or null if there is no command class.
+		 */
+		public static CommandClass getCommandClass(int manufacturer, int deviceId) {
+			return getCommandClass(getKeyFromManufacturerAndDeviceId(manufacturer, deviceId));
+		}
+
 		/**
 		 * Lookup function based on the command class label.
 		 * Returns null if there is no command class with that label.

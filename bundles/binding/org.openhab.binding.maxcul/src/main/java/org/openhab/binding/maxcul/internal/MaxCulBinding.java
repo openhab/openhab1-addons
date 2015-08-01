@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package org.openhab.binding.maxcul.internal;
 
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This binding allows integration of the MAX! devices via the CUL device - so
  * without the need for the Max!Cube device.
- *
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -216,6 +217,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 				break;
 			}
 		}
+		updateCreditMonitors();
 	}
 
 	/**
@@ -241,7 +243,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
 				logger.debug("Setting up device " + deviceString);
-				setupDevice(deviceString);
+				setupDevice(deviceString, config);
 				if (cul == null)
 					throw new ConfigurationException("device",
 							"Configuration failed. Unable to access CUL device "
@@ -253,14 +255,15 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 		}
 	}
 
-	private void setupDevice(String device) {
+	private void setupDevice(String device, Dictionary<String, ?> config) {
 		if (cul != null) {
 			CULManager.close(cul);
 		}
 		try {
 			accessDevice = device;
 			logger.debug("Opening CUL device on " + accessDevice);
-			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
+			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX,
+					convertDictionaryToMap(config));
 			messageHandler = new MaxCulMsgHandler(this.srcAddr, cul,
 					super.providers);
 			messageHandler.registerMaxCulBindingMessageProcessor(this);
@@ -269,6 +272,26 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			cul = null;
 			accessDevice = null;
 		}
+	}
+
+	private Map<String, Object> convertDictionaryToMap(
+			Dictionary<String, ?> config) {
+
+		Map<String, Object> myMap = new HashMap<String, Object>();
+		
+		if (config == null) {
+			return null;
+		}
+		if (config.size() == 0) {
+			return myMap;
+		}
+
+		Enumeration<String> allKeys = config.keys();
+		while (allKeys.hasMoreElements()) {
+			String key = allKeys.nextElement();
+			myMap.put(key, config.get(key));
+		}
+		return myMap;
 	}
 
 	private Collection<MaxCulBindingConfig> getBindingsBySerial(String serial) {
@@ -284,6 +307,20 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			return null;
 		}
 		return bindingConfigs;
+	}
+
+	private void updateCreditMonitors() {
+		/* find and update credit monitor binding if it exists */
+		int credit10ms = messageHandler.getCreditStatus();
+		for (MaxCulBindingProvider provider : super.providers) {
+			Collection<MaxCulBindingConfig> bindingConfigs = provider
+					.getCreditMonitorBindings();
+			for (MaxCulBindingConfig bc : bindingConfigs) {
+				String itemName = provider.getItemNameForConfig(bc);
+				eventPublisher
+						.postUpdate(itemName, new DecimalType(credit10ms));
+			}
+		}
 	}
 
 	@Override
@@ -310,7 +347,8 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			 * binding config
 			 */
 			if (bindingConfigs != null) {
-				logger.debug("Found "+bindingConfigs.size()+" configs for "+pkt.serial);
+				logger.debug("Found " + bindingConfigs.size() + " configs for "
+						+ pkt.serial);
 				for (MaxCulBindingConfig bc : bindingConfigs) {
 					/* Set pairing information */
 					bc.setPairedInfo(pkt.srcAddrStr); /*
@@ -336,8 +374,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 					associations = provider
 							.getAssociations(configWithTempsConfig
 									.getSerialNumber());
-					if (associations != null && associations.isEmpty() == false)
-					{
+					if (associations != null && associations.isEmpty() == false) {
 						logger.debug("Found associations");
 						break;
 					}
@@ -349,14 +386,16 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 						this.DEFAULT_GROUP_ID, messageHandler,
 						configWithTempsConfig, associations);
 				messageHandler.startSequence(ps, pkt);
-			} else
-			{
+			} else {
 				logger.error("Pairing failed: Unable to find binding config for device "
 						+ pkt.serial);
 			}
 		} else {
 			switch (msgType) {
-			/* TODO handle all other incoming messages */
+			/*
+			 * TODO there are other incoming messages that aren't handled that
+			 * could be
+			 */
 			case WALL_THERMOSTAT_CONTROL:
 				WallThermostatControlMsg wallThermCtrlMsg = new WallThermostatControlMsg(
 						data);
@@ -380,7 +419,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 									new DecimalType(wallThermCtrlMsg
 											.getMeasuredTemperature()));
 						}
-						// TODO switch mode?
+						// TODO switch mode between manual/automatic?
 					}
 				}
 
@@ -402,7 +441,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 									new DecimalType(setTempMsg
 											.getDesiredTemperature()));
 						}
-						// TODO switch mode?
+						// TODO switch mode between manual/automatic?
 					}
 				}
 				/* respond to device */
@@ -442,7 +481,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 									.postUpdate(itemName, new DecimalType(
 											thermStateMsg.getValvePos()));
 						}
-						// TODO switch mode?
+						// TODO switch mode between manual/automatic?
 					}
 				}
 				/* respond to device */
@@ -515,11 +554,13 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 				}
 				if (isBroadcast == false)
 					this.messageHandler.sendAck(pbMsg);
+				break;
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());
 				break;
 
 			}
 		}
+		updateCreditMonitors();
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,9 @@
 package org.openhab.binding.hue.internal;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +22,9 @@ import org.slf4j.LoggerFactory;
  * 
  * <ul>
  * <li>The device number the bulb has on the Hue bridge. The bulbs should have
- * numbers from 1 up to the number of connected bulbs.</li>
+ * numbers from 1 up to the number of connected bulbs.
+ * (Since the option to delete items on the bridge the assumption of continuous sequence 
+ * of item numbers is no longer correct, but this is now handled in HueBinding execute correctly)</li>
  * <li>The binding type of the hue item</li>
  * <ul>
  * <li>Switch</li>
@@ -52,9 +57,9 @@ public class HueBindingConfig implements BindingConfig {
 	}
 
 	/**
-	 * The number under which the bulb is filed in the Hue bridge.
+	 * The id under which the bulb is filed in the Hue bridge.
 	 */
-	private final int deviceNumber;
+	private final String deviceId;
 
 	/**
 	 * The binding type of the hue item.
@@ -66,12 +71,27 @@ public class HueBindingConfig implements BindingConfig {
 	 * dimmed up or down. Default is 25.
 	 */
 	private final int stepSize;
-
+	
+	/**
+	 * On / Off Item State
+	 */
+	public OnOffType itemStateOnOffType;
+	
+	/**
+	 * Percentage Item State
+	 */
+	public PercentType itemStatePercentType;
+	
+	/**
+	 * HSBType Item State
+	 */
+	public HSBType itemStateHSBType;
+	
 	/**
 	 * Constructor of the HueBindingConfig.
 	 * 
-	 * @param deviceNumber
-	 *            The number under which the bulb is filed in the Hue bridge.
+	 * @param deviceId
+	 *            The id under which the bulb is filed in the Hue bridge.
 	 * @param type
 	 *            The optional binding type of the hue binding.
 	 *            <ul>
@@ -85,10 +105,10 @@ public class HueBindingConfig implements BindingConfig {
 	 *            the bulb is dimmed up or down. Default is 25.
 	 * @throws BindingConfigParseException
 	 */
-	public HueBindingConfig(String deviceNumber, String type, String stepSize)
+	public HueBindingConfig(String deviceId, String type, String stepSize)
 			throws BindingConfigParseException {
 
-		this.deviceNumber = parseDeviceNumberConfigString(deviceNumber);
+		this.deviceId = deviceId;
 
 		if (type != null) {
 			this.type = parseBindingTypeConfigString(type);
@@ -118,7 +138,7 @@ public class HueBindingConfig implements BindingConfig {
 			return Integer.parseInt(configString);
 		} catch (Exception e) {
 			throw new BindingConfigParseException(
-					"Error parsing device number.");
+					"Error parsing step size.");
 		}
 	}
 
@@ -144,29 +164,11 @@ public class HueBindingConfig implements BindingConfig {
 	}
 
 	/**
-	 * Parses a device number string that has been found in the configuration.
-	 * 
-	 * @param configString
-	 *            The device number as a string.
-	 * @return The device number as an integer value.
-	 * @throws BindingConfigParseException
-	 */
-	private int parseDeviceNumberConfigString(String configString)
-			throws BindingConfigParseException {
-		try {
-			return Integer.parseInt(configString);
-		} catch (Exception e) {
-			throw new BindingConfigParseException(
-					"Error parsing device number.");
-		}
-	}
-
-	/**
-	 * @return The device number that has been declared in the binding
+	 * @return The device id that has been declared in the binding
 	 *         configuration.
 	 */
-	public int getDeviceNumber() {
-		return deviceNumber;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,6 +56,7 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
+ * @author Jan N. Klug - modified binding to change protocol version
  * @since 0.9.0
  */
 public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
@@ -89,7 +90,6 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 	public void activate() {
 		logger.debug("SNMP binding activated");
 		super.activate();
-		setProperlyConfigured(true);
 	}
 
 	public void deactivate() {
@@ -287,7 +287,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 			target.setAddress(providerCmd.getAddress(itemName, command));
 			target.setRetries(retries);
 			target.setTimeout(timeout);
-			target.setVersion(SnmpConstants.version1);
+			target.setVersion(providerCmd.getSnmpVersion(itemName, command));
 
 		Variable var = providerCmd.getValue(itemName, command);
 		OID oid = providerCmd.getOID(itemName, command);
@@ -340,7 +340,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 						target.setAddress(provider.getAddress(itemName));
 						target.setRetries(retries);
 						target.setTimeout(timeout);
-						target.setVersion(SnmpConstants.version1);
+						target.setVersion(provider.getSnmpVersion(itemName));
 
 					// Create the PDU
 					PDU pdu = new PDU();
@@ -431,6 +431,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 		if (mapping) {
 			listen();
 		}
+		setProperlyConfigured(true);
 	}
 
 	private void sendPDU(CommunityTarget target, PDU pdu) {

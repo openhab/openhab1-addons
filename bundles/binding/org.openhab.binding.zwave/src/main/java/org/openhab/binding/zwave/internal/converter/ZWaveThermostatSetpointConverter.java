@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,7 @@ package org.openhab.binding.zwave.internal.converter;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.converter.command.DecimalCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.BigDecimalCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * status and receiving of setpoint events.
  * @author Matthew Bowman
  * @author Dave Hock
+ * @author Chris Jackson
  * @since 1.4.0
  */
 public class ZWaveThermostatSetpointConverter extends
@@ -51,7 +52,7 @@ public class ZWaveThermostatSetpointConverter extends
 	public ZWaveThermostatSetpointConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
-		this.addCommandConverter(new DecimalCommandConverter());
+		this.addCommandConverter(new BigDecimalCommandConverter());
 		this.addStateConverter(new BigDecimalDecimalTypeConverter());
 	}
 
@@ -59,25 +60,17 @@ public class ZWaveThermostatSetpointConverter extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatSetpointCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
-		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-		SerialMessage serialMessage;
+		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 		String setpointType = arguments.get("setpoint_type");
-		
+
 		if (setpointType != null) {
-			serialMessage = node.encapsulate(commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass, endpointId);
+			return node.encapsulate(commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass, endpointId);
 		} else {
-			serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+			return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 		}
-		
-		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-			return;
-		}
-		
-		this.getController().sendData(serialMessage);
 	}
 
 	/**
@@ -92,7 +85,7 @@ public class ZWaveThermostatSetpointConverter extends
 		ZWaveThermostatSetpointValueEvent setpointEvent = (ZWaveThermostatSetpointValueEvent)event;
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {} endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 		
@@ -135,8 +128,10 @@ public class ZWaveThermostatSetpointConverter extends
 		int scale = 0;
 		if (scaleString !=null ) scale= Integer.parseInt(scaleString);
 
+		logger.debug("NODE {}: Thermostat command received for {}", node.getNodeId(), command.toString());
+
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(), item.getName(), endpointId);
 			return;
 		}
 		
@@ -149,15 +144,31 @@ public class ZWaveThermostatSetpointConverter extends
 		}
 		
 		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 			return;
 		}
 
-		logger.debug("Sending Message: {}", serialMessage);
+		logger.debug("NODE {}: Sending Message: {}", node.getNodeId(), serialMessage);
 		this.getController().sendData(serialMessage);
 		
-		if (command instanceof State)
+		if (command instanceof State) {
 			this.getEventPublisher().postUpdate(item.getName(), (State)command);
+		}
+		
+		// Request an update so that OH knows when the setpoint has changed.
+		if (setpointType != null) {
+			serialMessage = node.encapsulate(commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass, endpointId);
+		} else {
+			serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+		}
+		
+		if (serialMessage == null) {
+			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
+			return;
+		}
+
+		logger.debug("NODE {}: Sending Message: {}", node.getNodeId(), serialMessage);
+		this.getController().sendData(serialMessage);
 	}
 
 	/**

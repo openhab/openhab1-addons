@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,5 +77,27 @@ public interface KNXBindingProvider extends BindingProvider {
 	 */
 	public boolean isCommandGA(final GroupAddress groupAddress);
 
+	/**
+	 * Retrieves the auto refresh time in seconds for <code>dataPoint</code>. 
+	 * <code>0</code> is returned if no auto refresh time is available.
+	 * 
+	 * @param dataPoint the data point to check
+	 * 
+	 * @return the auto refresh time in seconds if configured for 
+	 * <code>dataPoint</code> and <code>0</code> in all other cases.
+	 */
+	public int getAutoRefreshTime(Datapoint dataPoint);
+	
+	
+	/**
+	 * Checks whether the given <code>dataPoint</code> has a auto refresh time configured
+	 * or not. 
+	 * 
+	 * @param dataPoint the data point to check
+	 * 
+	 * @return <code>true</code> if <code>dataPoint</code> has a auto refresh time
+	 * configured and <code>false</code> in all other cases.
+	 */
+	public boolean isAutoRefreshEnabled(Datapoint dataPoint);
 
 }

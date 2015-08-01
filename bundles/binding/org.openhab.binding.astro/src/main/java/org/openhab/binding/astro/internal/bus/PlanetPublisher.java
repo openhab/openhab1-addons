@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.openhab.binding.astro.AstroBindingProvider;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.binding.astro.internal.model.Planet;
@@ -54,7 +55,7 @@ public class PlanetPublisher {
 	/**
 	 * Returns the singleton instance of PlanetPublisher.
 	 */
-	public static PlanetPublisher getInstance() {
+	public static synchronized PlanetPublisher getInstance() {
 		if (instance == null) {
 			instance = new PlanetPublisher();
 		}
@@ -66,6 +67,24 @@ public class PlanetPublisher {
 	 */
 	public void clear() {
 		itemCache.clear();
+	}
+
+	/**
+	 * Republish the state of the item.
+	 */
+	public void republishItem(String itemName) {
+		AstroBindingConfig bindingConfig = null;
+		for (AstroBindingProvider provider : context.getProviders()) {
+			if (bindingConfig == null) {
+				bindingConfig = provider.getBindingFor(itemName);
+			}
+		}
+		if (bindingConfig == null) {
+			logger.warn("Astro binding for item {} not found", itemName);
+		} else {
+			itemCache.remove(itemName);
+			publish(bindingConfig.getPlanetName());
+		}
 	}
 
 	/**

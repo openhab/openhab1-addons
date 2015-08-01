@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2010-2014, openHAB.org and others. All rights reserved. 
+<!--
+
+    Copyright (c) 2010-2015, openHAB.org and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<!-- Copyright (c) 2010-2015, openHAB.org and others. All rights reserved. 
 	This program and the accompanying materials are made available under the 
 	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
 	and is available at http://www.eclipse.org/legal/epl-v10.html -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"
-	activate="activate" deactivate="deactivate" immediate="true"
-	name="org.openhab.binding.withings.authenticator">
-	<implementation
-		class="org.openhab.binding.withings.internal.api.WithingsAuthenticator" />
+	activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.withings.authenticator">
+	
+	<implementation class="org.openhab.binding.withings.internal.api.WithingsAuthenticator" />
 
 	<property name="osgi.command.scope" type="String" value="withings" />
 	<property name="osgi.command.function">
@@ -16,8 +25,9 @@
 	</property>
 
 	<service>
-  <provide interface="org.osgi.service.cm.ManagedService"/>
+		<provide interface="org.osgi.service.cm.ManagedService"/>
 	</service>
- <property name="service.pid" type="String" value="org.openhab.withings-oauth"/>
+	
+	<property name="service.pid" type="String" value="org.openhab.withings-oauth"/>
 
 </scr:component>

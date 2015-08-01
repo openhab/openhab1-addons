@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.enocean.internal.profiles;
 
-import org.enocean.java.common.Parameter;
-import org.enocean.java.common.ParameterAddress;
-import org.enocean.java.common.values.Value;
+import org.opencean.core.common.Parameter;
+import org.opencean.core.common.ParameterAddress;
+import org.opencean.core.common.values.Value;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.OnOffType;

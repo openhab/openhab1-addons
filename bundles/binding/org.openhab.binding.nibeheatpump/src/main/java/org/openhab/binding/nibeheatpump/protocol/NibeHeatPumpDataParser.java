@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -125,7 +125,7 @@ public class NibeHeatPumpDataParser {
 		put(43239, new VariableInformation(1,	"Total hot water operation time add",	NibeDataType.S32,	Type.Sensor));   // Unit: hours
 		put(43395, new VariableInformation(1,	"HPAC relays",							NibeDataType.U8,	Type.Sensor));   // Unit: none
 		put(43416, new VariableInformation(1,	"Compressor starts EB100-EP14",			NibeDataType.S32,	Type.Sensor));   // Unit: none
-		put(43420, new VariableInformation(10,	"Total operation time compressor",		NibeDataType.S32,	Type.Sensor));   // Unit: hours
+		put(43420, new VariableInformation(1,	"Total operation time compressor",		NibeDataType.S32,	Type.Sensor));   // Unit: hours
 		put(43424, new VariableInformation(1,	"Total hot water operation time compr",	NibeDataType.S32,	Type.Sensor));   // Unit: hours
 		put(43427, new VariableInformation(1,	"Compressor state EP14",				NibeDataType.U8,	Type.Sensor));   // Unit: none, // 20 = Stopped, 40 = Starting, 60 = Running, 100 = Stopping 
 		put(43514, new VariableInformation(1,	"PCA-Base relayes EP14",				NibeDataType.U8,	Type.Sensor));   // Unit: none 

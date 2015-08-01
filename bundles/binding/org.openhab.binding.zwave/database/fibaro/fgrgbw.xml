@@ -6,7 +6,33 @@
 		<Class><id>0x60</id></Class>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x86</id></Class>
-		<Class><id>0x26</id></Class>
+
+		<Class>
+			<id>0x26</id>
+			<endpoint>1</endpoint>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		<Class>
+			<id>0x26</id>
+			<endpoint>2</endpoint>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		<Class>
+			<id>0x26</id>
+			<endpoint>3</endpoint>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		<Class>
+			<id>0x26</id>
+			<endpoint>4</endpoint>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		<Class>
+			<id>0x26</id>
+			<endpoint>5</endpoint>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		
 		<Class><id>0x27</id></Class>
 		<Class><id>0x72</id></Class>
 		<Class><id>0x70</id></Class>
@@ -15,6 +41,9 @@
 		<Class><id>0x73</id></Class>
 		<Class><id>0x7a</id></Class>
 		<Class><id>0x85</id></Class>
+		<Class>
+			<id>0x33</id>
+		</Class>
 	</CommandClasses>
 	<Configuration>
 		<Parameter>
@@ -36,7 +65,7 @@
 				<Label lang="en">ALL ON active ALL OFF inactive</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">ALL ON active ALL OFF active</Label>
 			</Item>
 			<Help lang="en"><![CDATA[Activation/deactivation of ALL ON/ALL OFF functions. By default, ALL ON active ALL OFF active.<BR/>

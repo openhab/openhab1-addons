@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,7 +52,7 @@ public class HttpTransport {
 			BufferedReader in = null;
 			try {
 				URL url = new URL(this.uri+request);
-				
+								
 				connection = (HttpURLConnection) url.openConnection();
 				int responseCode =-1;
 				if (connection != null) {

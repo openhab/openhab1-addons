@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * method call.
  * <p>
  * Sample response:
- * 
+ *
  * <pre>
  * {
  *   "status":  "ok",
@@ -43,10 +43,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
  *            "country":  "FR",
  *            "location":  [
  *             2.35222,
- *              48.85661 
+ *              48.85661
  *           ],
  *            "timezone":  "Europe/Paris",
- *            "trust_location":  true 
+ *            "trust_location":  true
  *         },
  *          "public_ext_data":  true,
  *         "station_name":  "LA",
@@ -71,7 +71,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  *   "time_exec":  0.019799947738647
  * }
  * </pre>
- * 
+ *
  * @author Andreas Brenk
  * @since 1.4.0
  */
@@ -84,6 +84,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>type</code> constant of the main indoor station.
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MAIN = "NAMain";
 
 	/**
@@ -94,21 +95,25 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>type</code> constant of the rain gauge module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_3 = "NAModule3";
 
 	/**
 	 * <code>type</code> constant of the additional indoor module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_4 = "NAModule4";
 
 	/**
 	 * <code>type</code> constant of the thermostat relay/plug
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_PLUG = "NAPlug";
 
 	/**
 	 * <code>type</code> constant of the thermostat module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_THERM_1 = "NATherm1";
 
 	/**
@@ -228,6 +233,7 @@ public class DeviceListResponse extends AbstractResponse {
 		private String type;
 		private List<String> owner;
 		private List<String> measurements;
+		private Integer wifiStatus;
 
 		/**
 		 * "firmware": 1
@@ -324,10 +330,10 @@ public class DeviceListResponse extends AbstractResponse {
 		 * 	 "country":  "FR",
 		 * 	 "location":  [
 		 * 	   2.35222,
-		 * 	   48.85661 
+		 * 	   48.85661
 		 * 	 ],
 		 * 	 "timezone":  "Europe/Paris",
-		 * 	 "trust_location":  true 
+		 * 	 "trust_location":  true
 		 * }
 		 * </pre>
 		 */
@@ -379,8 +385,42 @@ public class DeviceListResponse extends AbstractResponse {
 			builder.append("stationName", this.stationName);
 			builder.append("type", this.type);
 			builder.append("owner", this.owner);
+			builder.append("wifistatus", this.wifiStatus);
 
 			return builder.toString();
+		}
+
+		/**
+		 * "wifi_status"
+		 */
+		@JsonProperty("wifi_status")
+		public Integer getWifiStatus() {
+			return this.wifiStatus;
+		}
+
+		public int getWifiLevel() {
+			int level = this.wifiStatus.intValue();
+			int result = 3;
+			if (level < WIFI_STATUS_THRESHOLD_2)
+				result = 2;
+			else if (level < WIFI_STATUS_THRESHOLD_1)
+				result = 1;
+			else if (level < WIFI_STATUS_THRESHOLD_0)
+				result = 0;
+
+			return result;
+		}
+
+		public Double getAltitude() {
+			return this.place.altitude;
+		}
+
+		public Double getLatitude() {
+			return this.place.location.get(1);
+		}
+
+		public Double getLongitude() {
+			return this.place.location.get(0);
 		}
 
 	}
@@ -394,6 +434,7 @@ public class DeviceListResponse extends AbstractResponse {
 		private String moduleName;
 		private Boolean publicData;
 		private Integer rfStatus;
+		private Integer batteryVp;
 		private String type;
 		private List<String> measurements;
 
@@ -445,6 +486,51 @@ public class DeviceListResponse extends AbstractResponse {
 			return this.rfStatus;
 		}
 
+		public int getRfLevel() {
+			int level = this.rfStatus.intValue();
+			int result = 4; // not found
+
+			if (level < RF_STATUS_THRESHOLD_3)
+				result = 3;
+			else if (level < RF_STATUS_THRESHOLD_2)
+				result = 2;
+			else if (level < RF_STATUS_THRESHOLD_1)
+				result = 1;
+			else if (level < RF_STATUS_THRESHOLD_0)
+				result = 0;
+
+			return result;
+		}
+
+		/**
+		 * "battery_vp"
+		 */
+		@JsonProperty("battery_vp")
+		public Integer getBatteryVp() {
+			return this.batteryVp;
+		}
+
+		public Double getBatteryLevel() {
+			int value;
+			int minima;
+			int spread;
+			if (this.type.equalsIgnoreCase(TYPE_MODULE_1)) {
+				value = Math.min(this.batteryVp, BATTERY_MODULE_1_THRESHOLD_0);
+				minima = BATTERY_MODULE_1_THRESHOLD_3
+						+ BATTERY_MODULE_1_THRESHOLD_2
+						- BATTERY_MODULE_1_THRESHOLD_1;
+				spread = BATTERY_MODULE_1_THRESHOLD_0 - minima;
+			} else {
+				value = Math.min(this.batteryVp, BATTERY_MODULE_4_THRESHOLD_0);
+				minima = BATTERY_MODULE_4_THRESHOLD_3
+						+ BATTERY_MODULE_4_THRESHOLD_2
+						- BATTERY_MODULE_4_THRESHOLD_1;
+				spread = BATTERY_MODULE_4_THRESHOLD_0 - minima;
+			}
+			double percent = 100 * (value - minima) / spread;
+			return new Double(percent);
+		}
+
 		/**
 		 * "type": "NAModule1"
 		 */
@@ -480,9 +566,9 @@ public class DeviceListResponse extends AbstractResponse {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Place extends AbstractMessagePart {
 
-		private Integer altitude;
+		private Double altitude;
 		private String country;
-		private List<Integer> location;
+		private List<Double> location;
 		private String timezone;
 		private Boolean trustedLocation;
 
@@ -490,7 +576,7 @@ public class DeviceListResponse extends AbstractResponse {
 		 * "altitude": 33
 		 */
 		@JsonProperty("altitude")
-		public Integer getAltitude() {
+		public Double getAltitude() {
 			return this.altitude;
 		}
 
@@ -506,12 +592,12 @@ public class DeviceListResponse extends AbstractResponse {
 		 * <pre>
 		 * "location": [
 		 *   2.35222,
-		 *   48.85661 
+		 *   48.85661
 		 * ]
 		 * </pre>
 		 */
 		@JsonProperty("location")
-		public List<Integer> getlocation() {
+		public List<Double> getlocation() {
 			return this.location;
 		}
 

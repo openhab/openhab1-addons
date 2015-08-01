@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,7 @@ public class SonosEntry implements Serializable {
     private final String albumArtUri;
     private final String creator;
     private final int originalTrackNumber;
+    private final SonosResourceMetaData resourceMetaData;
     
     public SonosEntry(String id, String title, String parentId, String album, String albumArtUri, 
             String creator, String upnpClass, String res) {
@@ -40,6 +41,11 @@ public class SonosEntry implements Serializable {
     
     public SonosEntry(String id, String title, String parentId, String album, String albumArtUri, 
         String creator, String upnpClass, String res, int originalTrackNumber) {
+    	this(id, title, parentId, album, albumArtUri, creator, upnpClass, res, originalTrackNumber,null);
+    }
+    
+    public SonosEntry(String id, String title, String parentId, String album, String albumArtUri, 
+            String creator, String upnpClass, String res, int originalTrackNumber, SonosResourceMetaData resourceMetaData) {
       this.id = id;
       this.title=title;
       this.parentId = parentId;
@@ -49,6 +55,7 @@ public class SonosEntry implements Serializable {
       this.upnpClass = upnpClass;
       this.res = res;
       this.originalTrackNumber = originalTrackNumber;
+      this.resourceMetaData = resourceMetaData;
     }
     
     /**
@@ -113,6 +120,15 @@ public class SonosEntry implements Serializable {
      */
     public String getCreator() {
       return creator;
+    }
+    
+    /**
+     * The resourceMetaData field from the ResMD parent, this will be login info for 
+     * streaming accounts to use in favorites
+     * @return
+     */
+    public SonosResourceMetaData getResourceMetaData(){
+    	return resourceMetaData;
     }
     
     public int getOriginalTrackNumber() {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,8 +27,10 @@ import org.apache.commons.io.IOUtils;
 import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.sitemap.Image;
+import org.openhab.model.sitemap.Mapview;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Video;
+import org.openhab.model.sitemap.Webview;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.service.http.HttpContext;
@@ -129,14 +131,17 @@ public class ProxyServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String sitemapName = request.getParameter("sitemap");
 		String widgetId = request.getParameter("widgetId");
+		String baseUrl = request.getParameter("baseUrl");
 
-		if(sitemapName==null) {
+		if(sitemapName == null) {
 			throw new ServletException("Parameter 'sitemap' must be provided!");
 		}
-		if(widgetId==null) {
-			throw new ServletException("Parameter 'widget' must be provided!");
+		if(widgetId == null) {
+			throw new ServletException("Parameter 'widgetId' must be provided!");
 		}
-		
+		if(baseUrl == null) {
+			baseUrl = "";
+		}
 		String uriString = null;
 		
 		Sitemap sitemap = (Sitemap) modelRepository.getModel(sitemapName);
@@ -144,10 +149,15 @@ public class ProxyServlet extends HttpServlet {
 			Widget widget = itemUIRegistry.getWidget(sitemap, widgetId);
 			if(widget instanceof Image) {
 				Image image = (Image) widget;
-				uriString = image.getUrl();
+				uriString = baseUrl + image.getUrl();
 			} else if(widget instanceof Video) {
 				Video video = (Video) widget;
-				uriString = video.getUrl();
+				uriString = baseUrl + video.getUrl();
+			} else if(widget instanceof Webview) {
+				Webview webview = (Webview) widget;
+				uriString = baseUrl + webview.getUrl();
+			} else if(widget instanceof Mapview) {
+				uriString = baseUrl;
 			} else {
 				if(widget==null) {
 					throw new ServletException("Widget '" + widgetId + "' could not be found!");

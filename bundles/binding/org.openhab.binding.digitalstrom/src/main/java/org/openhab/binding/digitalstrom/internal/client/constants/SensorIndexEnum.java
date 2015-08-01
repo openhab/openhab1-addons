@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,11 @@ public enum SensorIndexEnum {
 	
 	ACTIVE_POWER	(2),
 	OUTPUT_CURRENT	(3),
-	ELECTRIC_METER	(4);
+	ELECTRIC_METER	(4),
+	TEMPERATURE_INDOORS (2), 
+	RELATIVE_HUMIDITY_INDOORS (3),
+	TEMPERATURE_OUTDOORS (2), 
+	RELATIVE_HUMIDITY_OUTDOORS (3);
 	
 	private final int index;
 	

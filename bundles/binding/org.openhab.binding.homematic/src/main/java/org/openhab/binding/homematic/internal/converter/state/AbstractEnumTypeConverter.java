@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,8 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 		stateInvertDevices.add(new StateInvertInfo("ZEL STG RM FFK"));
 		stateInvertDevices.add(new StateInvertInfo("HM-SEC-TIS"));
 		stateInvertDevices.add(new StateInvertInfo("HMW-IO-12-SW14-DR", 15, 26));
+		stateInvertDevices.add(new StateInvertInfo("BC-SC-RD-WM"));
+		stateInvertDevices.add(new StateInvertInfo("HM-SCI-3-FM"));
 	}
 
 	/**

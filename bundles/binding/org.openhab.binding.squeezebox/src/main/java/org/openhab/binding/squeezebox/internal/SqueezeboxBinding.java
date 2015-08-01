@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,14 +54,8 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		logger.trace("internalReceiveCommand(itemname = {}, command = {})", itemName, command.toString());
 		for (SqueezeboxBindingProvider provider : providers) {
 			SqueezeboxBindingConfig bindingConfig = provider.getSqueezeboxBindingConfig(itemName);
-
-			String playerId = bindingConfig.getPlayerId();
-			SqueezePlayer player = squeezeServer.getPlayer(playerId);
-			if (player == null) {
-				logger.warn("No Squeezebox player configured with id '{}'. Ignoring.", playerId);
-				continue;
-			}
-		
+			String playerId = bindingConfig.getPlayerId();		
+			
 			try {
 				switch (bindingConfig.getCommandType()) {
 					case POWER:
@@ -135,8 +129,14 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 						if (command.equals(OnOffType.ON))
 							squeezeServer.syncPlayer(playerId, bindingConfig.getExtra()); 
 						else if (command.equals(OnOffType.OFF))
-							squeezeServer.unSyncPlayer(playerId);
+							squeezeServer.unSyncPlayer(bindingConfig.getExtra());
 						break;
+					case COMMAND:
+					    if (command instanceof StringType)
+					    	squeezeServer.playerCommand(playerId, command.toString());
+					    else
+						squeezeServer.playerCommand(playerId, bindingConfig.getExtra());
+					    	break;
 
 					default:
 						logger.warn("Unsupported command type '{}'", bindingConfig.getCommandType()); 
@@ -163,6 +163,28 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		numberChangeEvent(event.getPlayerId(), CommandType.VOLUME, event.getPlayer().getVolume());
 	}
 	
+	@Override
+	public void currentPlaylistIndexEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.CURRTRACK, event.getPlayer().getCurrentPlaylistIndex());
+	}
+	
+	@Override
+	public void currentPlayingTimeEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.PLAYTIME, event.getPlayer().getCurrentPlayingTime());
+	}
+	
+	@Override
+	public void numberPlaylistTracksEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.NUMTRACKS, event.getPlayer().getNumberPlaylistTracks());
+	}
+	@Override
+	public void currentPlaylistShuffleEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.SHUFFLE, event.getPlayer().getCurrentPlaylistShuffle());
+	}
+	@Override
+	public void currentPlaylistRepeatEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.REPEAT, event.getPlayer().getCurrentPlaylistRepeat());
+	}
 	@Override
 	public void modeChangeEvent(PlayerEvent event) {
 		booleanChangeEvent(event.getPlayerId(), CommandType.PLAY, event.getPlayer().isPlaying());
@@ -258,10 +280,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	 */
 	public void setSqueezeServer(SqueezeServer squeezeServer) {
 		this.squeezeServer = squeezeServer;
-		
-		for (SqueezePlayer player : squeezeServer.getPlayers()) {
-			player.addPlayerEventListener(this);
-		}
+		this.squeezeServer.addPlayerEventListener(this);
 	}
 
 	/**
@@ -271,10 +290,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	 *            Service to remove.
 	 */
 	public void unsetSqueezeServer(SqueezeServer squeezeServer) {
+		this.squeezeServer.removePlayerEventListener(this);
 		this.squeezeServer = null;
-		
-		for (SqueezePlayer player : squeezeServer.getPlayers()) {
-			player.removePlayerEventListener(this);
-		}
 	}
 }

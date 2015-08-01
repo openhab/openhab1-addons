@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>Smart Strip</Model>
+	<Label lang="en">Smart Strip</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>5</endpoint>
+			<add>true</add>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>6</endpoint>
+			<add>true</add>
+		</Class>
+		<Class>
+			<id>0x60</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x80</id>
+		</Class>
+		<Class>
+			<id>0x84</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>integer</Type>
+			<Size>2</Size>
+			<Default>240</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32000</Maximum>
+			<Label lang="en">Voltage to calculate power</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>16</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Selective Reporting</Label>
+			<Help lang="en">Enable selective reporting only when power change
+				reaches
+				a certain threshold or percentage set in 4-11 below. This is
+				used to reduce network traffic.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Whole strip</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Whole HEM). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Socket 1</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Socket 1). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Socket 2</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Socket 2). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Socket 3</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Socket 3). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Socket 4</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Socket 4). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Socket 5</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Socket 5). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>25</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Current Threshold - Socket 6</Label>
+			<Help lang="en">Threshold change in wattage to induce a automatic
+				report (Socket 6). (Valid values 0-60000)
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Whole Strip</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Whole Smart Strip). (Valid values 0-100)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Socket 1</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Socket 1). (Valid values 0-100)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Socket 2</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Socket 2). (Valid values 0-100)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Socket 3</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Socket 3). (Valid values 0-100)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Socket 4</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Socket 4). (Valid values 0-100)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Socket 5</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Socket 5). (Valid values 0-100)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Percent Change - Socket 6</Label>
+			<Help lang="en">Percentage change in wattage to induce a automatic
+				report (Socket 6). (Valid values 0-100)
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>80</Index>
+			<Type>list</Type>
+			<Default>8</Default>
+			<Size>4</Size>
+			<Label lang="en">Status of load changed</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Not sent</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send Hail</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Send Basic</Label>
+			</Item>
+			<Help lang="en">Status of load changed,send group 1 associate nodes
+				Hail CC or Basic report CC.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>90</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Get Temperature</Label>
+			<ReadOnly>true</ReadOnly>
+			<Help lang="en">Get temperature of Smart Strip (Only GET is valid)
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>100</Index>
+			<Type>List</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset 0x65~0x67 to default value</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Reset</Label>
+			</Item>
+			<Help lang="en">Reset 0x65~0x67 to default value</Help>
+		</Parameter>
+		<Parameter>
+			<Index>101</Index>
+			<Type>int</Type>
+			<Default>8</Default>
+			<Size>4</Size>
+			<Label lang="en">Which reports need to send automatically for Group
+				1
+			</Label>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>102</Index>
+			<Type>int</Type>
+			<Default>8</Default>
+			<Size>4</Size>
+			<Label lang="en">Which reports need to send automatically for Group
+				2
+			</Label>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>103</Index>
+			<Type>int</Type>
+			<Default>8</Default>
+			<Size>4</Size>
+			<Label lang="en">Which reports need to send automatically for Group
+				3
+			</Label>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>111</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>600</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval to send out reports of Group 1</Label>
+			<Label lang="de">Interval in welchem die Berichte der Gruppe 1
+				gesendet werden
+			</Label>
+		</Parameter>
+		<Parameter>
+			<Index>112</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>600</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval to send out reports of Group 2</Label>
+			<Label lang="de">Interval in welchem die Berichte der Gruppe 2
+				gesendet werden
+			</Label>
+		</Parameter>
+		<Parameter>
+			<Index>113</Index>
+			<Type>int</Type>
+			<Minimum>1</Minimum>
+			<Maximum>2678400</Maximum>
+			<Default>600</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval to send out reports of Group 3</Label>
+			<Label lang="de">Interval in welchem die Berichte der Gruppe 3
+				gesendet werden
+			</Label>
+		</Parameter>
+	</Configuration>
+</Product>

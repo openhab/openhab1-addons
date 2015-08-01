@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,11 +28,15 @@ public class HeatmiserPRT extends HeatmiserThermostat {
 	public boolean setData(byte in[]) {
 		if (super.setData(in) == false)
 			return false;
-
+		
+		if ((data[22]==1)||(data[22]==4)){
+			dcbRoomTemperature = getTemp(37);
+		}else{	
+			dcbRoomTemperature = getTemp(41);
+		}
 		dcbState = data[30];
 		dcbHeatState = data[44];
 		dcbFrostTemperature = data[26];
-		dcbRoomTemperature = getTemp(41);
 		dcbSetTemperature = data[27];
 		dcbFloorTemperature = getTemp(39);
 		dcbHolidayTime = (data[34] & 0xFF) + ((data[33] & 0xFF) * 256);

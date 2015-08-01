@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  */
 package org.openhab.model.rule;
 
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.scoping.IScopeProvider;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
@@ -21,6 +22,7 @@ import org.openhab.model.script.scoping.ActionClassLoader;
 import org.openhab.model.script.scoping.ActionClasspathBasedTypeScopeProvider;
 import org.openhab.model.script.scoping.ActionClasspathTypeProviderFactory;
 import org.openhab.model.script.scoping.StateAndCommandProvider;
+import org.openhab.model.rule.valueconverter.RuleConverters;
 
 
 /**
@@ -44,6 +46,11 @@ public class RulesRuntimeModule extends org.openhab.model.rule.AbstractRulesRunt
 	@Override
 	public Class<? extends IScopeProvider> bindIScopeProvider() {
 		return RulesScopeProvider.class;
+	}
+
+	@Override
+	public Class<? extends IValueConverterService> bindIValueConverterService() {
+		return RuleConverters.class;
 	}
 	
 	/* we need this so that our pluggable actions can be resolved at design time */

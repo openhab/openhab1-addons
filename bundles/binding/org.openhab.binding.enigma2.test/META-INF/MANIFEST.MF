@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the Enigma2 binding
+Bundle-SymbolicName: org.openhab.binding.enigma2.test
+Bundle-Version: 1.8.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.enigma2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.1"

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,14 +49,12 @@ import org.xml.sax.InputSource;
 public class IhcResourceInteractionService extends IhcHttpsClient {
 	
 	private String url;
-	List<String> cookies;
+	private int timeout;
 	
-	IhcResourceInteractionService(String host) {
+	IhcResourceInteractionService(String host, int timeout) {
 		url = "https://" + host + "/ws/ResourceInteractionService";
-	}
-
-	public void setCookies(List<String> cookies) {
-		this.cookies = cookies;
+		this.timeout = timeout;
+		super.setConnectTimeout(timeout);
 	}
 
 	/**
@@ -80,8 +78,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 		String query = String.format(soapQuery, String.valueOf(resoureId));
 
 		openConnection(url);
-		super.setCookies(cookies);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 
 		NodeList nodeList;
@@ -573,8 +570,8 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 			throws IhcExecption {
 
 		openConnection(url);
-		super.setCookies(cookies);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
+		closeConnection();
 
 		return Boolean.parseBoolean(WSBaseDataType.parseValue(response,
 				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:setResourceValue2"));
@@ -607,9 +604,8 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 		query += soapQuerySuffix;
 
 		openConnection(url);
-		super.setCookies(cookies);
 		@SuppressWarnings("unused")
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 	}
 
@@ -637,9 +633,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
 		String query = String.format(soapQuery, timeoutInSeconds);
 		openConnection(url);
-		super.setCookies(cookies);
-		setTimeout(getTimeout() + timeoutInSeconds * 1000);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout + timeoutInSeconds * 1000);
 		closeConnection();
 		
 		List<WSResourceValue> resourceValueList = new ArrayList<WSResourceValue>();

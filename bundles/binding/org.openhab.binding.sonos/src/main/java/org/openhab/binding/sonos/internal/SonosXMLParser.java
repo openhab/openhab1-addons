@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -75,7 +76,7 @@ public class SonosXMLParser {
 		      "<dc:title>{2}</dc:title>" +
 		      "<upnp:class>{3}</upnp:class>" +
 		      "<desc id=\"cdudn\" nameSpace=\"urn:schemas-rinconnetworks-com:metadata-1-0/\">" +
-		      "RINCON_AssociatedZPUDN</desc>" +
+		      "{4}</desc>" +
 		      "</item></DIDL-Lite>");
 
 	private enum Element {
@@ -85,7 +86,9 @@ public class SonosXMLParser {
 		ALBUM_ART_URI,
 		CREATOR,
 		RES,
-		TRACK_NUMBER
+		TRACK_NUMBER,
+		RESMD,
+		DESC
 	}
 
 	private enum CurrentElement {
@@ -97,7 +100,8 @@ public class SonosXMLParser {
 		upnpClass,
 		creator,
 		album,
-		albumArtist;
+		albumArtist,
+		desc;
 	}
 
 	/**
@@ -135,6 +139,25 @@ public class SonosXMLParser {
 			logger.error("Could not parse Entries from String {}",xml);
 		}
 		return handler.getArtists();
+	}
+	
+	/**
+	 * Returns the meta data which is needed to play Pandora 
+	 * (and others?) favorites
+	 * @param xml
+	 * @return The value of the desc xml tag
+	 * @throws SAXException
+	 */
+	public static SonosResourceMetaData getEmbededMetaDataFromResource(String xml) throws SAXException {
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		EmbededMetaDataHandler handler = new EmbededMetaDataHandler();
+		reader.setContentHandler(handler);
+		try {
+			reader.parse(new InputSource(new StringReader(xml)));
+		} catch (IOException e) {
+			logger.error("Could not parse Entries from String {}",xml);
+		}
+		return handler.getMetaData();
 	}
 
 	/**
@@ -211,7 +234,8 @@ public class SonosXMLParser {
 			// This should never happen - we're not performing I/O!
 			logger.error("Could not parse AV Transport Event: {}", e);
 		}
-		return handler.getMetaData();  }
+		return handler.getMetaData();  
+	}
 
 
 	static private class EntryHandler extends DefaultHandler {
@@ -229,6 +253,7 @@ public class SonosXMLParser {
 		private StringBuilder albumArtUri = new StringBuilder();
 		private StringBuilder creator = new StringBuilder();
 		private StringBuilder trackNumber = new StringBuilder();
+		private StringBuilder desc = new StringBuilder();
 		private Element element = null;
 
 		private List<SonosEntry> artists = new ArrayList<SonosEntry>();
@@ -256,10 +281,15 @@ public class SonosXMLParser {
 				element = Element.ALBUM_ART_URI;
 			} else if (qName.equals("upnp:originalTrackNumber")) {
 				element = Element.TRACK_NUMBER;
+			} else if (qName.equals("r:resMD")) {
+					element = Element.RESMD;
 			} else {
 				if (ignore == null) {
 					ignore = new ArrayList<String>();
 					ignore.add("DIDL-Lite");
+					ignore.add("type");
+					ignore.add("ordinal");
+					ignore.add("description");
 				}
 
 				if (!ignore.contains(localName)) {
@@ -296,6 +326,9 @@ public class SonosXMLParser {
 			case TRACK_NUMBER:
 				trackNumber.append(ch, start, length);
 				break;
+			case RESMD:
+				desc.append(ch, start, length);
+				break;
 				// no default
 			}
 		}
@@ -311,8 +344,17 @@ public class SonosXMLParser {
 				} catch (Exception e) {
 				}
 
+				SonosResourceMetaData md = null;
+				
+				//The resource description is needed for playing favorites on pandora
+				try {
+					md = getEmbededMetaDataFromResource(desc.toString());
+				} catch (SAXException ignore){
+					logger.debug("Failed to parse embeded",ignore);
+				}
+				
 				artists.add(new SonosEntry(id, title.toString(), parentId, album.toString(), 
-						albumArtUri.toString(), creator.toString(), upnpClass.toString(), res.toString(), trackNumberVal));
+						albumArtUri.toString(), creator.toString(),upnpClass.toString(), res.toString(),trackNumberVal, md));
 				title= new StringBuilder();
 				upnpClass = new StringBuilder();
 				res = new StringBuilder();
@@ -320,6 +362,7 @@ public class SonosXMLParser {
 				albumArtUri = new StringBuilder();
 				creator = new StringBuilder();
 				trackNumber = new StringBuilder();
+				desc = new StringBuilder();
 			}
 		}
 
@@ -328,6 +371,73 @@ public class SonosXMLParser {
 		}
 	}
 	
+	static private class EmbededMetaDataHandler extends DefaultHandler {
+
+		private String id;
+		private String parentId;
+		private StringBuilder title = new StringBuilder();
+		private StringBuilder upnpClass = new StringBuilder();
+		private StringBuilder desc = new StringBuilder();
+		private Element element = null;
+		private SonosResourceMetaData metaData = null;
+
+		EmbededMetaDataHandler() {
+			// shouldn't be used outside of this package.
+		}
+
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+
+			if (qName.equals("container") || qName.equals("item")) {
+				id = attributes.getValue("id");
+				parentId = attributes.getValue("parentID");
+			} else if (qName.equals("desc")) {
+				element = Element.DESC;
+			} else if (qName.equals("upnp:class")) {
+				element = Element.CLASS;
+			} else if (qName.equals("dc:title")) {
+				element = Element.TITLE;
+			} else {
+				element = null;
+			}
+		}
+
+		@Override
+		public void characters(char[] ch, int start, int length) throws SAXException {
+			if (element == null) {
+				return;
+			}
+			switch (element) {
+			case TITLE: 
+				title.append(ch, start, length);
+				break;
+			case CLASS:
+				upnpClass.append(ch, start, length);
+				break;
+			case DESC:
+				desc.append(ch, start, length);;
+				break;
+			default:
+				break;
+			}
+		}
+
+		@Override
+		public void endElement(String uri, String localName, String qName) throws SAXException {
+			if (qName.equals("DIDL-Lite") ) {
+				metaData = new SonosResourceMetaData(id, parentId, title.toString(), upnpClass.toString(),desc.toString());
+				element = null;
+				desc = new StringBuilder();
+				upnpClass = new StringBuilder();
+				title = new StringBuilder();
+			}
+		}
+
+		public SonosResourceMetaData getMetaData() {
+			return metaData;
+		}
+	}
+
 	static private class AlarmHandler extends DefaultHandler {
 
 		private String id;
@@ -708,11 +818,38 @@ public class SonosXMLParser {
 	}
 	
 	public static  String compileMetadataString(SonosEntry entry) {
-		String upnpClass = entry.getUpnpClass();
 //		if (upnpClass.startsWith("object.container")) {
 //			upnpClass = "object.container";
 //		}
-		String metadata = METADATA_FORMAT.format(new Object[] {entry.getId(), entry.getParentId(), entry.getTitle(), upnpClass});
+		/**
+		 * If the entry contains resource meta data we will override this with
+		 * that data.
+		 */
+		String id = entry.getId();
+		String parentId = entry.getParentId();
+		String title = entry.getTitle();
+		String upnpClass = entry.getUpnpClass();
+		
+		/**
+		 * By default 'RINCON_AssociatedZPUDN' is used for most operations, 
+		 * however when playing a favorite entry that is associated withh a 
+		 * subscription like pandora we need to use the desc string asscoiated
+		 * with that item.
+		 */
+		String desc = "RINCON_AssociatedZPUDN";
+		
+		/**
+		 * If resource meta data exists, use it over the parent data
+		 */
+		if(entry.getResourceMetaData() != null){
+			id = entry.getResourceMetaData().getId();
+			parentId = entry.getResourceMetaData().getParentId();
+			title = entry.getResourceMetaData().getTitle();
+			desc = entry.getResourceMetaData().getDesc();
+			upnpClass = entry.getResourceMetaData().getUpnpClass();
+		}
+		
+		String metadata = METADATA_FORMAT.format(new Object[] {id, parentId, title, upnpClass, desc});
 
 		return metadata;
 	}

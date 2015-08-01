@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.persistence.rrd4j.internal.charts;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,9 @@ import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.rrd4j.ConsolFun;
+import org.rrd4j.core.RrdDb;
+import org.rrd4j.core.RrdDef;
 import org.rrd4j.graph.RrdGraph;
 import org.rrd4j.graph.RrdGraphDef;
 import org.slf4j.Logger;
@@ -53,6 +57,7 @@ import org.slf4j.LoggerFactory;
  *  
  * @author Kai Kreuzer
  * @author Chris Jackson
+ * @author Jan N. Klug
  * @since 1.0.0
  *
  */
@@ -172,18 +177,27 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	protected void addLine(RrdGraphDef graphDef, Item item, int counter) {
 		Color color = LINECOLORS[counter%LINECOLORS.length];
 		String label = itemUIRegistry.getLabel(item.getName());
+		String rrdName = RRD4jService.DB_FOLDER + File.separator + item.getName() + ".rrd";
+		ConsolFun consolFun;
 		if(label!=null && label.contains("[") && label.contains("]")) {
 			label = label.substring(0, label.indexOf('['));
 		}
+		try {
+			RrdDb db = new RrdDb(rrdName);
+			consolFun = db.getRrdDef().getArcDefs()[0].getConsolFun();
+			db.close();
+		} catch (IOException e) {
+			consolFun = ConsolFun.MAX;
+		}
 		if(item instanceof NumberItem) {
 			// we only draw a line
-			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.datasource(Integer.toString(counter), rrdName, "state", consolFun); //RRD4jService.getConsolidationFunction(item));
 			graphDef.line(Integer.toString(counter), color, label, 2);
 		} else {
 			// we draw a line and fill the area beneath it with a transparent color
-			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.datasource(Integer.toString(counter), rrdName, "state", consolFun); //RRD4jService.getConsolidationFunction(item));
 			Color areaColor = AREACOLORS[counter%LINECOLORS.length];
-			
+
 			graphDef.area(Integer.toString(counter), areaColor);
 			graphDef.line(Integer.toString(counter), color, label, 2);
 		}
@@ -228,7 +242,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 
 	// ----------------------------------------------------------
 	// The following methods implement the ChartServlet interface
-	
+
 	@Override
 	public String getName() {
 		return "rrd4j";

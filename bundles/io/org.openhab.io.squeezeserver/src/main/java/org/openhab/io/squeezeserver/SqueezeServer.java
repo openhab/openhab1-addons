@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.io.squeezeserver.SqueezePlayer.Mode;
 import org.osgi.service.cm.ConfigurationException;
@@ -81,6 +83,9 @@ public class SqueezeServer implements ManagedService {
 	private Socket clientSocket;
 	private SqueezeServerListener listener;
 
+	// player listeners
+	private final List<SqueezePlayerEventListener> playerEventListeners = Collections.synchronizedList(new ArrayList<SqueezePlayerEventListener>());
+	
 	// configured players - keyed by playerId and MAC address
 	private final Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
 	private final Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
@@ -98,192 +103,263 @@ public class SqueezeServer implements ManagedService {
 		return clientSocket.isConnected() && !clientSocket.isClosed();
 	}
 
+	public synchronized void addPlayerEventListener(SqueezePlayerEventListener playerEventListener) {
+		if (!playerEventListeners.contains(playerEventListener))
+			playerEventListeners.add(playerEventListener);
+	}
+		
+	public synchronized void removePlayerEventListener(SqueezePlayerEventListener playerEventListener) {
+		playerEventListeners.remove(playerEventListener);
+	}
+		
+	public synchronized List<SqueezePlayerEventListener> getPlayerEventListeners() {
+		return new ArrayList<SqueezePlayerEventListener>(playerEventListeners);
+	}
+
 	public synchronized List<SqueezePlayer> getPlayers() {
 		return new ArrayList<SqueezePlayer>(playersById.values());
 	}
 
 	public synchronized SqueezePlayer getPlayer(String playerId) {
-		if (!playersById.containsKey(playerId)) {
+		if (StringUtils.isEmpty(playerId))
+			throw new NullArgumentException("playerId");
+		String key = playerId.toLowerCase();
+		if (!playersById.containsKey(key)) {
 			logger.warn("No player exists for '{}'", playerId);
 			return null;
 		}
-		return playersById.get(playerId);
+		return playersById.get(key);
 	}
 
 	public synchronized SqueezePlayer getPlayerByMacAddress(String macAddress) {
-		if (!playersByMacAddress.containsKey(macAddress)) {
+		String key = macAddress.toLowerCase();
+		if (!playersByMacAddress.containsKey(key)) {
 			logger.warn("No player exists for MAC {}", macAddress);
 			return null;
 		}
-		return playersByMacAddress.get(macAddress);
+		return playersByMacAddress.get(key);
 	}
 
-	public void mute(String playerId) {
+	public boolean mute(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		if (player.getVolume() > 0) {
-			setVolume(playerId, 0);
-		}
+			return false;
+		if (player.getVolume() == 0)
+			return true;
+		return setVolume(playerId, 0);
 	}
 
-	public void unMute(String playerId) {
+	public boolean unMute(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		if (player.getVolume() == 0) {
-			setVolume(playerId, player.getUnmuteVolume());
-		}
+			return false;
+		if (player.getVolume() > 0)
+			return true;
+		return setVolume(playerId, player.getUnmuteVolume());
 	}
 
-	public void powerOn(String playerId) {
+	public boolean powerOn(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " power 1");
+			return false;
+		return sendCommand(player.getMacAddress() + " power 1");
 	}
 
-	public void powerOff(String playerId) {
+	public boolean powerOff(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " power 0");
+			return false;
+		return sendCommand(player.getMacAddress() + " power 0");
 	}
 
-	public void syncPlayer(String playerId1, String playerId2) {
+	public boolean syncPlayer(String playerId1, String playerId2) {
 		SqueezePlayer player1 = getPlayer(playerId1);
 		SqueezePlayer player2 = getPlayer(playerId2);
 		if (player1 == null || player2 == null)
-			return;
-		sendCommand(player1.getMacAddress() + " sync "
+			return false;
+		return sendCommand(player1.getMacAddress() + " sync "
 				+ player2.getMacAddress());
 	}
 
-	public void unSyncPlayer(String playerId) {
+	public boolean unSyncPlayer(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " sync -");
+			return false;
+		return sendCommand(player.getMacAddress() + " sync -");
 	}
 
-	public void play(String playerId) {
+	public boolean play(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " play");
+			return false;
+		return sendCommand(player.getMacAddress() + " play");
 	}
 
-	public void playUrl(String playerId, String url) {
+	public boolean playUrl(String playerId, String url) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " playlist play " + url);
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist play " + url);
 	}
 
-	public void pause(String playerId) {
+	public boolean pause(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " pause 1");
+			return false;
+		return sendCommand(player.getMacAddress() + " pause 1");
 	}
 
-	public void unPause(String playerId) {
+	public boolean unPause(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " pause 0");
+			return false;
+		return sendCommand(player.getMacAddress() + " pause 0");
 	}
 
-	public void stop(String playerId) {
+	public boolean stop(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " stop");
+			return false;
+		return sendCommand(player.getMacAddress() + " stop");
 	}
 
-	public void prev(String playerId) {
+	public boolean prev(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " playlist index -1");
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist index -1");
 	}
 
-	public void next(String playerId) {
+	public boolean next(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " playlist index +1");
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist index +1");
 	}
 
-	public void clearPlaylist(String playerId) {
+	public boolean clearPlaylist(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " playlist clear");
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist clear");
+	}
+	
+	public boolean deletePlaylistItem(String playerId, int playlistIndex) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist delete " + playlistIndex);
+	}
+	
+	public boolean playPlaylistItem(String playerId, int playlistIndex) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist index " + playlistIndex);
+	}
+	
+	public boolean addPlaylistItem(String playerId, String url) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist add " + url);
+	}
+	
+	public boolean setPlayingTime(String playerId, int time) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " time " + time);
+	}
+	
+	public boolean setRepeatMode(String playerId, int repeatMode) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist repeat " + repeatMode);
+	}
+	
+	public boolean setShuffleMode(String playerId, int shuffleMode) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " playlist shuffle " + shuffleMode);
 	}
 
-	public void volumeUp(String playerId) {
+	public boolean volumeUp(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		setVolume(playerId, player.getVolume() + VOLUME_CHANGE_SIZE);
+			return false;
+		return setVolume(playerId, player.getVolume() + VOLUME_CHANGE_SIZE);
 	}
 
-	public void volumeDown(String playerId) {
+	public boolean volumeDown(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		setVolume(playerId, player.getVolume() - VOLUME_CHANGE_SIZE);
+			return false;
+		return setVolume(playerId, player.getVolume() - VOLUME_CHANGE_SIZE);
 	}
 
-	public void setVolume(String playerId, int volume) {
+	public boolean setVolume(String playerId, int volume) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
+			return false;
 		if (0 > volume) {
 			volume = 0;
 		} else if (volume > 100) {
 			volume = 100;
 		}
-		sendCommand(player.getMacAddress() + " mixer volume "
+		return sendCommand(player.getMacAddress() + " mixer volume "
 				+ String.valueOf(volume));
 	}
 
-	public void showString(String playerId, String line) {
-		showString(playerId, line, 5);
+	public boolean showString(String playerId, String line) {
+		return showString(playerId, line, 5);
 	}
 
-	public void showString(String playerId, String line, int duration) {
+	public boolean showString(String playerId, String line, int duration) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " show line1:" + line
+			return false;
+		return sendCommand(player.getMacAddress() + " show line1:" + line
 				+ " duration:" + String.valueOf(duration));
 	}
 
-	public void showStringHuge(String playerId, String line) {
-		showStringHuge(playerId, line, 5);
+	public boolean showStringHuge(String playerId, String line) {
+		return showStringHuge(playerId, line, 5);
 	}
 
-	public void showStringHuge(String playerId, String line, int duration) {
+	public boolean showStringHuge(String playerId, String line, int duration) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " show line1:" + line
+			return false;
+		return sendCommand(player.getMacAddress() + " show line1:" + line
 				+ " font:huge duration:" + String.valueOf(duration));
 	}
 
-	public void showStrings(String playerId, String line1, String line2) {
-		showStrings(playerId, line1, line2, 5);
+	public boolean showStrings(String playerId, String line1, String line2) {
+		return showStrings(playerId, line1, line2, 5);
 	}
 
-	public void showStrings(String playerId, String line1, String line2,
+	public boolean showStrings(String playerId, String line1, String line2,
 			int duration) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
-			return;
-		sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:"
+			return false;
+		return sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:"
 				+ line2 + " duration:" + String.valueOf(duration));
+	}
+	
+	/**
+	 * Send a generic command to a given player
+	 * @param playerId
+	 * @param command
+	 */
+	public boolean playerCommand(String playerId, String command) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return false;
+		return sendCommand(player.getMacAddress() + " " + command);
 	}
 	
 	public String language() {
@@ -293,7 +369,7 @@ public class SqueezeServer implements ManagedService {
 	/**
 	 * Send a command to the Squeeze Server.
 	 */
-	private synchronized void sendCommand(String command) {
+	private synchronized boolean sendCommand(String command) {
 		if (!isConnected()) {
 			logger.debug("No connection to SqueezeServer, will attempt to reconnect now...");
 			connect();
@@ -301,7 +377,7 @@ public class SqueezeServer implements ManagedService {
 				logger.error(
 						"Failed to reconnect to SqueezeServer, unable to send command {}",
 						command);
-				return;
+				return false;
 			}
 		}
 		logger.debug("Sending command: {}", command);
@@ -310,9 +386,11 @@ public class SqueezeServer implements ManagedService {
 					clientSocket.getOutputStream()));
 			writer.write(command + NEW_LINE);
 			writer.flush();
+			return true;
 		} catch (IOException e) {
 			logger.error("Error while sending command to Squeeze Server ("
 					+ command + ")", e);
+			return false;
 		}
 	}
 
@@ -365,10 +443,10 @@ public class SqueezeServer implements ManagedService {
 			} else if (playerMatcher.matches()) {
 				String playerId = playerMatcher.group(1);
 				String macAddress = value;
-				SqueezePlayer player = new SqueezePlayer(playerId, macAddress);
-
-				playersById.put(playerId, player);
-				playersByMacAddress.put(macAddress, player);
+				
+				SqueezePlayer player = new SqueezePlayer(this, playerId, macAddress);
+				playersById.put(playerId.toLowerCase(), player);
+				playersByMacAddress.put(macAddress.toLowerCase(), player);
 			} else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
 				language=value;
 			} else {
@@ -616,6 +694,36 @@ public class SqueezeServer implements ManagedService {
 				else if (messagePart.startsWith("mode%3A")) {
 					String value = messagePart.substring("mode%3A".length());
 					player.setMode(Mode.valueOf(value));
+				}
+				// Parameter Playing Time
+				else if (messagePart.startsWith("time%3A")) {
+					String value = messagePart.substring("time%3A".length());
+					player.setCurrentPlayingTime((int) Double.parseDouble(value));
+				}
+				// Parameter Playing Playlist Index
+				else if (messagePart.startsWith("playlist_cur_index%3A")) {
+					String value = messagePart.substring("playlist_cur_index%3A".length());
+					player.setCurrentPlaylistIndex((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Number Tracks
+				else if (messagePart.startsWith("playlist_tracks%3A")) {
+					String value = messagePart.substring("playlist_tracks%3A".length());
+					player.setNumberPlaylistTracks((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Repeat Mode
+				else if (messagePart.startsWith("playlist%20repeat%3A")) {
+					String value = messagePart.substring("playlist%20repeat%3A".length());
+					player.setCurrentPlaylistRepeat((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Shuffle Mode
+				else if (messagePart.startsWith("playlist%20shuffle%3A")) {
+					String value = messagePart.substring("playlist%20shuffle%3A".length());
+					player.setCurrentPlaylistShuffle((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Number Tracks
+				else if (messagePart.startsWith("playlist_tracks%3A")) {
+					String value = messagePart.substring("playlist_tracks%3A".length());
+					player.setNumberPlaylistTracks((int) Integer.parseInt(value));
 				}
 				// Parameter Title
 				else if (messagePart.startsWith("title%3A")) {

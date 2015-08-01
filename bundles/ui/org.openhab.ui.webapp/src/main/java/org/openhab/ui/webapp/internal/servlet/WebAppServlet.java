@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -142,6 +142,8 @@ public class WebAppServlet extends BaseServlet {
 					result.append(renderer.processPage(renderer.getItemUIRegistry().getWidgetId(w), sitemapName, label, children, async));
 				}
 				
+			} else if (widgetId.equals("Colorpicker")) {
+				result.append("<root></root>");
 			}
 		} catch(RenderException e) {
 			throw new ServletException(e.getMessage(), e);

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZXT-120</Model>
+	<Label lang="en">Air Conditioner IR Remote</Label>
+
+	<!-- Z-Wave Device Class: -->
+	<!-- GENERIC_TYPE_THERMOSTAT -->
+	<!-- SPECIFIC_TYPE_THERMOSTAT_V2 -->
+
+	<CommandClasses>                  <!-- Z-Wave Supported Command Classes: -->
+		<Class><id>0x20</id></Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class><id>0x31</id></Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class><id>0x40</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_MODE -->
+		<Class><id>0x70</id></Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
+		<Class><id>0x80</id></Class>  <!-- COMMAND_CLASS_BATTERY -->
+		<Class><id>0x43</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETPOINT -->
+		<Class><id>0x44</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_MODE -->
+		<Class><id>0x72</id></Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class><id>0x86</id></Class>  <!-- COMMAND_CLASS_VERSION -->
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>25</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>22</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Indicate a location for IR code learning and start learning</Label>
+			<Label lang="de">Geben Sie einen Speicherort für IR-Code-Lernen und Lernen beginnen</Label>
+		</Parameter>
+		<Parameter>
+			<Index>26</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>4</Maximum>
+			<Size>1</Size>
+			<Label lang="en">(Read Only) Learning status register</Label>
+			<Label lang="de">(Read Only) Lernstatusregister</Label>
+		</Parameter>
+		<Parameter>
+			<Index>27</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>512</Maximum>
+			<Size>1</Size>
+			<Label lang="en">IR code number for built-in code library</Label>
+			<Label lang="de">IR-Code-Nummer für integrierten Code-Bibliothek</Label>
+		</Parameter>
+		<Parameter>
+			<Index>28</Index>
+			<Type>list</Type>
+			<Default>-1</Default>
+			<Size>1</Size>
+			<Label lang="en">External IR Emitter power level</Label>
+			<Label lang="de">Externe IR-Emitter Leistungspegel</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Normal power mode</Label>
+				<Label lang="de">Normalen Power-Modus</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">High power mode</Label>
+				<Label lang="de">Hochleistungsmodus</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Default>-1</Default>
+			<Size>1</Size>
+			<Label lang="en">Surround IR control</Label>
+			<Label lang="de">Surround-IR-Steuerung</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable Surround IR Emitters</Label>
+				<Label lang="de">Deaktivieren Surround IR-Strahler</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">Enable Surround IR Emitters</Label>
+				<Label lang="de">Ermöglichen Surround-IR-Strahler</Label>
+			</Item>
+		</Parameter>		
+		<Parameter>
+			<Index>33</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">AC function Swing control</Label>
+			<Label lang="de">AC Funktion Schaukel Steuer</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Swing Off</Label>
+				<Label lang="de">Aus schwingen</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Swing Auto</Label>
+				<Label lang="de">schwingen Auto</Label>
+			</Item>
+		</Parameter>		
+		<Parameter>
+			<Index>35</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">(Read Only) Learn location status. Bitmask.</Label>
+			<Label lang="de">(Read Only) Erfahren Standortstatus. Bitmaske.</Label>
+		</Parameter>		
+		<Parameter>
+			<Index>37</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Sensor temperature compensation</Label>
+			<Label lang="de">Sensor Temperaturkompensation</Label>
+		</Parameter>		
+	</Configuration>
+</Product>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.converter;
 
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
@@ -46,7 +47,7 @@ public abstract class ZWaveCommandClassConverter<COMMAND_CLASS_TYPE extends ZWav
 	 * @param commandClass the {@link ZWaveCommandClass} that will be used to send a polling message.
 	 * @param endpointId the endpoint id to send the message.
 	 */
-	abstract void executeRefresh(ZWaveNode node, COMMAND_CLASS_TYPE commandClass, int endpointId, Map<String,String> arguments);
+	abstract SerialMessage executeRefresh(ZWaveNode node, COMMAND_CLASS_TYPE commandClass, int endpointId, Map<String,String> arguments);
 
 	/**
 	 * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement

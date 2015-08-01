@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2014, openHAB.org and others.
+    Copyright (c) 2010-2015, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -16,4 +16,5 @@
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <reference bind="setModelRepository" cardinality="1..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="static"/>
    <reference bind="setDiscoveryService" cardinality="0..1" interface="org.openhab.io.servicediscovery.DiscoveryService" name="DiscoveryService" policy="dynamic" unbind="unsetDiscoveryService"/>
+   <reference bind="addPersistenceService" cardinality="0..n" interface="org.openhab.core.persistence.PersistenceService" name="PersistenceService" policy="dynamic" unbind="removePersistenceService"/>
 </scr:component>

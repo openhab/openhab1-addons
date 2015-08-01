@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import org.openhab.binding.rfxcom.RFXComBindingProvider;
 import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
 import org.openhab.binding.rfxcom.internal.messages.RFXComMessageFactory;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -120,7 +121,7 @@ public class RFXComGenericBindingProvider extends
 
 			} catch (Exception e) {
 				throw new BindingConfigParseException("Invalid sub type '"
-						+ types[1] + "'!");
+						+ types[1] + "' in type '" + config.packetType + "'!");
 			}
 
 			valueSelectorString = configParts[2].trim();
@@ -152,48 +153,57 @@ public class RFXComGenericBindingProvider extends
 		addBindingConfig(item, config);
 	}
 
-	class RFXComBindingConfig implements BindingConfig {
+	static class RFXComBindingConfig implements BindingConfig {
 		String id;
 		RFXComValueSelector valueSelector;
 		boolean inBinding;
 		PacketType packetType;
 		Object subType;
-
 	}
 
 	@Override
 	public String getId(String itemName) {
-		RFXComBindingConfig config = (RFXComBindingConfig) bindingConfigs
-				.get(itemName);
+		RFXComBindingConfig config = getBindingConfig(itemName);
 		return config != null ? config.id : null;
 	}
 
 	@Override
 	public RFXComValueSelector getValueSelector(String itemName) {
-		RFXComBindingConfig config = (RFXComBindingConfig) bindingConfigs
-				.get(itemName);
+		RFXComBindingConfig config = getBindingConfig(itemName);
 		return config != null ? config.valueSelector : null;
+	}
+
+	private RFXComBindingConfig getBindingConfig(String itemName) {
+		return (RFXComBindingConfig) bindingConfigs
+				.get(itemName);
 	}
 
 	@Override
 	public boolean isInBinding(String itemName) {
-		RFXComBindingConfig config = (RFXComBindingConfig) bindingConfigs
-				.get(itemName);
-		return config != null ? config.inBinding : null;
+		RFXComBindingConfig config = getBindingConfig(itemName);
+		return config != null ? config.inBinding : null; // null as boolean?
 	}
 
 	@Override
 	public PacketType getPacketType(String itemName) {
-		RFXComBindingConfig config = (RFXComBindingConfig) bindingConfigs
-				.get(itemName);
+		RFXComBindingConfig config = getBindingConfig(itemName);
 		return config != null ? config.packetType : null;
 	}
 
 	@Override
 	public Object getSubType(String itemName) {
-		RFXComBindingConfig config = (RFXComBindingConfig) bindingConfigs
-				.get(itemName);
+		RFXComBindingConfig config = getBindingConfig(itemName);
 		return config != null ? config.subType : null;
 	}
 
+	@Override
+	public Boolean autoUpdate(final String itemName) {
+		if(!providesBindingFor(itemName)) 
+			return null;
+		
+		RFXComBindingConfig bindingConfig = getBindingConfig(itemName);
+		if(bindingConfig == null) return null;
+		if(bindingConfig.inBinding) return true;
+		return false;
+	}
 }

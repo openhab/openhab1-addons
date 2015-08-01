@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,7 @@ public class RequestNodeInfoMessageClass  extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(RequestNodeInfoMessageClass.class);
 
 	public SerialMessage doRequest(int nodeId) {
-		SerialMessage newMessage = new SerialMessage(nodeId, SerialMessageClass.RequestNodeInfo, SerialMessageType.Request, SerialMessageClass.ApplicationUpdate, SerialMessagePriority.High);
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RequestNodeInfo, SerialMessageType.Request, SerialMessageClass.ApplicationUpdate, SerialMessagePriority.High);
     	byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;
@@ -34,11 +34,13 @@ public class RequestNodeInfoMessageClass  extends ZWaveCommandProcessor {
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle RequestNodeInfo Response");
-		if(incomingMessage.getMessagePayloadByte(0) != 0x00)
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.debug("Request node info successfully placed on stack.");
-		else
+		}
+		else {
 			logger.error("Request node info not placed on stack due to error.");
-		
+		}
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return true;

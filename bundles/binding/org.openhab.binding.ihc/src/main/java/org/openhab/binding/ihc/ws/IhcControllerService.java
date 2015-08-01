@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.ihc.ws;
-
-import java.util.List;
 
 import org.openhab.binding.ihc.ws.datatypes.WSBaseDataType;
 import org.openhab.binding.ihc.ws.datatypes.WSControllerState;
@@ -33,14 +31,12 @@ public class IhcControllerService extends IhcHttpsClient {
 			+ "</soapenv:Envelope>";
 
 	private String url;
-	List<String> cookies;
-	
-	IhcControllerService(String host) {
-		url = "https://" + host + "/ws/ControllerService";
-	}
+	private int timeout;
 
-	public void setCookies(List<String> cookies) {
-		this.cookies = cookies;
+	IhcControllerService(String host, int timeout) {
+		url = "https://" + host + "/ws/ControllerService";
+		this.timeout = timeout;
+		super.setConnectTimeout(timeout);
 	}
 
 	/**
@@ -52,9 +48,8 @@ public class IhcControllerService extends IhcHttpsClient {
 	public synchronized WSProjectInfo getProjectInfo() throws IhcExecption {
 		
 		openConnection(url);
-		super.setCookies(cookies);
 		setRequestProperty("SOAPAction", "getProjectInfo");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
 		closeConnection();
 		WSProjectInfo projectInfo = new WSProjectInfo();
 		projectInfo.encodeData(response);
@@ -69,14 +64,13 @@ public class IhcControllerService extends IhcHttpsClient {
 	public synchronized int getProjectNumberOfSegments() throws IhcExecption {
 		
 		openConnection(url);
-		super.setCookies(cookies);
 		setRequestProperty("SOAPAction", "getIHCProjectNumberOfSegments");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
+		closeConnection();
 
 		String numberOfSegments = WSBaseDataType.parseValue(response,
 				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getIHCProjectNumberOfSegments1");
 
-		closeConnection();
 		return Integer.parseInt(numberOfSegments);
 	}
 
@@ -88,14 +82,13 @@ public class IhcControllerService extends IhcHttpsClient {
 	public synchronized int getProjectSegmentationSize() throws IhcExecption {
 		
 		openConnection(url);
-		super.setCookies(cookies);
 		setRequestProperty("SOAPAction", "getIHCProjectSegmentationSize");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
+		closeConnection();
 
 		String segmentationSize = WSBaseDataType.parseValue(response,
 				"/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getIHCProjectSegmentationSize1");
 
-		closeConnection();
 		return Integer.parseInt(segmentationSize);
 	}
 
@@ -125,9 +118,8 @@ public class IhcControllerService extends IhcHttpsClient {
 
 		String query = String.format(soapQuery, index, major, minor);
 		openConnection(url);
-		super.setCookies(cookies);
 		setRequestProperty("SOAPAction", "getIHCProjectSegment");
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		closeConnection();
 		WSFile file = new WSFile();
 		file.encodeData(response);
@@ -143,9 +135,9 @@ public class IhcControllerService extends IhcHttpsClient {
 			throws IhcExecption {
 		
 		openConnection(url);
-		super.setCookies(cookies);
 		setRequestProperty("SOAPAction", "getState");
-		String response = sendQuery(emptyQuery);
+		String response = sendQuery(emptyQuery, timeout);
+		closeConnection();
 		WSControllerState controllerState = new WSControllerState();
 		controllerState.encodeData(response);
 		return controllerState;
@@ -177,10 +169,8 @@ public class IhcControllerService extends IhcHttpsClient {
 
 		String query = String.format(soapQuery, previousState.getState(), timeoutInSeconds);
 		openConnection(url);
-		super.setCookies(cookies);
 		setRequestProperty("SOAPAction", "waitForControllerStateChange");
-		setTimeout(getTimeout() + timeoutInSeconds * 1000);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout + timeoutInSeconds * 1000);
 		closeConnection();
 		WSControllerState controllerState = new WSControllerState();
 		controllerState.encodeData(response);

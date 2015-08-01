@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,12 +20,13 @@ import org.openhab.binding.netatmo.internal.NetatmoException;
  * modules.
  * 
  * @author Andreas Brenk
+ * @author Rob Nielsen
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/devicelist">devicelist</a>
  */
 public class DeviceListRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = "http://api.netatmo.net/api/devicelist";
+	private static final String RESOURCE_URL = API_BASE_URL + "devicelist";
 
 	private final String accessToken;
 

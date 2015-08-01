@@ -2,14 +2,14 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line] - %msg%n%ex{10}</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%-5level] [%-30.30logger{36}:%-5line] - %msg%n</pattern>
 		</encoder>
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 		<file>${openhab.logdir:-logs}/openhab.log</file>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{30}[:%line]- %msg%n%ex</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%-5level] [%-30.30logger{36}:%-5line] - %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -20,7 +20,7 @@
 			<!-- weekly rollover and archiving -->
 			<fileNamePattern>events-%d{yyyy-ww}.log.zip</fileNamePattern>
 
-			<!-- keep 30 days' worth of history -->
+			<!-- maximum number of archive files to keep -->
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<encoder>
@@ -49,16 +49,20 @@
 
 	<logger name="OSGi" level="WARN" />
 	<logger name="org.eclipse.jetty" level="WARN" />
-	<logger name="org.drools.SystemEventListener" level="INFO" />
 
+	<logger name="org.openhab.io.dropbox" level="DEBUG" />
+
+	<!-- temporary workaround for https://github.com/openhab/jupnp/issues/9 -->
+    <logger name="javax.jmdns.impl.DNSIncoming" level="ERROR"/>
+	
+	<!-- temporary workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=402750 -->
+	<logger name="OSGi" level="OFF" />
+	
+	<logger name="tuwien.auto.calimero" level="WARN" />
+	
 	<root level="INFO">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
 	</root>
-
-	<logger name="org.openhab.io.dropbox" level="DEBUG" />
-	
-	<!-- temporary workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=402750 -->
-	<logger name="OSGi" level="OFF" />
 	
 </configuration>

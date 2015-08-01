@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,7 +55,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 	// string to prepend to data being sent
 	private static String preAmble = "";
 	// string to append to data being sent
-	private static String postAmble = "\r\n";
+	private static String postAmble = "";
 	// flag to use the reply of the remote end to update the status of the Item receving the data
 	private static boolean updateWithResponse = true;
 	// used character set
@@ -180,14 +180,24 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 
 			String preambleString = (String) config.get("preamble");
 			if (StringUtils.isNotBlank(preambleString)) {
-				preAmble = preambleString.replaceAll("\\\\", "\\");
+				try {
+					preAmble = preambleString.replaceAll("\\\\", "\\");
+				}
+				catch(Exception e) {
+					preAmble = preambleString;
+				}
 			} else {
 				logger.info("The preamble for all write operations will be set to the default vaulue of {}",preAmble);
 			}
 
 			String postambleString = (String) config.get("postamble");
 			if (StringUtils.isNotBlank(postambleString)) {
-				postAmble = postambleString.replaceAll("\\\\", "\\");;
+				try {
+					postAmble = postambleString.replaceAll("\\\\", "\\");
+				}
+				catch(Exception e) {
+					postAmble = postambleString;
+				}
 			} else {
 				logger.info("The postamble for all write operations will be set to the default vaulue of {}",postAmble);
 			}
@@ -253,7 +263,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 				logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
 			}
 		}
-		catch (TransformationException te) {
+		catch (Exception te) {
 			logger.error("transformation throws exception [transformation="
 					+ transformation + ", response=" + response + "]", te);
 

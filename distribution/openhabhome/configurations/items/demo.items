@@ -97,6 +97,8 @@ Contact Garage_Door 			"Garage Door [MAP(en.map):%s]"		(Outdoor, Windows)
 
 Group Weather_Chart													(Weather)
 Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather_Chart) { http="<[http://weather.yahooapis.com/forecastrss?w=638242&u=c:60000:XSLT(yahoo_weather_temperature.xsl)]" }
+Number Weather_Humidity 		"Outside Humidity [%.1f %%]"	<temperature> (Weather) { http="<[http://weather.yahooapis.com/forecastrss?w=638242&u=c:60000:XSLT(yahoo_weather_humidity.xsl)]" }
+Number Weather_Humidex			"Humidex [SCALE(humidex.scale):%s]" 			(Weather)
 Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather_Chart)
 Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather_Chart)
 Number Weather_Chart_Period		"Chart Period"
@@ -119,13 +121,5 @@ Number Temperature_Setpoint		"Temperature [%.1f °C]" <temperature>
 String UnknownDevices    "Unknown Devices in Range: [%s]" { bluetooth="?" }
 Number NoOfPairedDevices "Paired Devices in Range: [%d]"  { bluetooth="!" }
 
-Switch HWDemand "Hot Water " {plclogo="bcu:VB1.1"}
-Switch CHDemand "Central Heating " {plclogo="bcu:VB1.2"}
-Switch DHWDemand "DHW Loop[MAP(flow.map):%s]" {plclogo="bcu:I1"}
-Switch Boiler "Boiler" {plclogo="bcu:Q2"}
-Contact TestLogoContact "Contact" {plclogo="bcu:VB1.1 activelow:yes"}
-Number TestLogoNumber "Number [%d]" {plclogo="bcu:VW12"}
-Number TestLogoAnalogNumber "Analog in [%f]" {plclogo="bcu:AI1"}
-Number AI1Volts "AI1 in volts [%.2f]" <meter2>
-Number AI1Volts_Period "Chart Period"
-
+/* Locations */
+Location DemoLocation			"Brandenburg Gate Berlin"

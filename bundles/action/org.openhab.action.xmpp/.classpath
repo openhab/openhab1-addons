@@ -2,10 +2,13 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/smack-core-4.0.6.jar" sourcepath="lib-src/smack-core-4.0.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/smack-extensions-4.0.6.jar" sourcepath="lib-src/smack-extensions-4.0.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/smack-resolver-javax-4.0.6.jar" sourcepath="lib-src/smack-resolver-javax-4.0.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/smack-tcp-4.0.6.jar" sourcepath="lib/smack-tcp-4.0.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/smack.jar"/>
-	<classpathentry kind="lib" path="lib/smackx-jingle.jar"/>
-	<classpathentry kind="lib" path="lib/smackx.jar"/>
+	<classpathentry kind="lib" path="lib/xpp3-1.1.4c.jar" sourcepath="lib-src/xpp3-1.1.4c-sources.jar"/>
+	<classpathentry kind="lib" path="lib/java-pinning-jar-1.0.1.jar" sourcepath="lib-src/java-pinning-jar-1.0.1-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

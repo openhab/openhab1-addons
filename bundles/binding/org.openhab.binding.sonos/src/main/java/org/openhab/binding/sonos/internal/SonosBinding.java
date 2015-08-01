@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,7 +67,6 @@ import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.registry.RegistryListener;
 import org.teleal.cling.transport.impl.apache.StreamClientConfigurationImpl;
-import org.teleal.cling.transport.impl.apache.StreamClientImpl;
 import org.teleal.cling.transport.impl.apache.StreamServerConfigurationImpl;
 import org.teleal.cling.transport.impl.apache.StreamServerImpl;
 import org.teleal.cling.transport.spi.NetworkAddressFactory;
@@ -225,7 +224,7 @@ implements ManagedService {
 						service, interval);
 				upnpService.getControlPoint().execute(callback);
 			} else {
-				logger.info("A non-Sonos device ({}) is found and will be ignored",device.getDisplayString());
+				logger.debug("A non-Sonos device ({}) is found and will be ignored",device.getDisplayString());
 			}
 		}
 
@@ -647,6 +646,9 @@ implements ManagedService {
 					break;
 				case RADIO:
 					result = player.playRadio(commandAsString);
+					break;
+				case FAVORITE:
+					result = player.playFavorite(commandAsString);
 					break;
 				case SETALARM:
 					result = player.setAlarm(commandAsString);

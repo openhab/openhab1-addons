@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +11,10 @@ package org.openhab.binding.zwave.internal.converter;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
-import org.openhab.binding.zwave.internal.converter.state.BinaryDecimalTypeConverter;
-import org.openhab.binding.zwave.internal.converter.state.BinaryPercentTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerPercentTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -51,8 +51,8 @@ public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter<ZWaveA
 		super(controller, eventPublisher);
 		
 		// State and commmand converters used by this converter. 
-		this.addStateConverter(new BinaryDecimalTypeConverter());
-		this.addStateConverter(new BinaryPercentTypeConverter());
+		this.addStateConverter(new IntegerDecimalTypeConverter());
+		this.addStateConverter(new IntegerPercentTypeConverter());
 		this.addStateConverter(new IntegerOnOffTypeConverter());
 		this.addStateConverter(new IntegerOpenClosedTypeConverter());
 	}
@@ -61,24 +61,16 @@ public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter<ZWaveA
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void executeRefresh(ZWaveNode node, 
+	public SerialMessage executeRefresh(ZWaveNode node, 
 			ZWaveAlarmSensorCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-		SerialMessage serialMessage;
+		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 		String alarmType = arguments.get("alarm_type");
 		
 		if (alarmType != null) {
-			serialMessage = node.encapsulate(commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))), commandClass, endpointId);
+			return node.encapsulate(commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))), commandClass, endpointId);
 		} else {
-			serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+			return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 		}
-			
-		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-			return;
-		}
-		
-		this.getController().sendData(serialMessage);
 	}
 
 	/**

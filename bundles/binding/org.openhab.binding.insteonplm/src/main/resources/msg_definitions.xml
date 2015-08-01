@@ -93,12 +93,11 @@
 			<byte name = "Cmd">0x55</byte>
 		</header>
 	</msg>
-	<msg name = "ALLLinkCleanupFailureReport" length = "7" direction = "FROM_MODEM">
+	<msg name = "ALLLinkCleanupFailureReport" length = "6" direction = "FROM_MODEM">
 		<header length="2">
 			<byte>0x02</byte>
 			<byte name = "Cmd">0x56</byte>
 		</header>
-		<byte name = "indicator">0x01</byte>
 		<byte name = "ALLLinkGroup"/>
 		<address name = "address"/>
 	</msg>
@@ -139,6 +138,25 @@
 		<byte name = "FirmwareVersion"/>
 		<byte name = "ACK/NACK"/>
 	</msg>
+	<msg name = "SendALLLinkCommand" length="5" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x61</byte>
+		</header>
+		<byte name = "ALLLinkGroup">0x00</byte>
+		<byte name = "ALLLinkCommand">0x00</byte>
+		<byte name = "BroadcastCommand2">0x00</byte>
+	</msg>
+	<msg name = "SendALLLinkCommandReply" length="6" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x61</byte>
+		</header>
+		<byte name = "ALLLinkGroup">0x00</byte>
+		<byte name = "ALLLinkCommand">0x00</byte>
+		<byte name = "BroadcastCommand2">0x00</byte>
+		<byte name = "ACK/NACK"/>
+	</msg>
 	<msg name = "SendStandardMessage" length="8" direction = "TO_MODEM">
 		<header length="6">
 		 	<byte>0x02</byte>
@@ -167,22 +185,22 @@
 			<address name = "toAddress"/>
 			<byte name = "messageFlags">0x10</byte>
 		</header>
-		<byte name="command1"/>
-		<byte name="command2"/>
-		<byte name = "userData1"/>
-		<byte name = "userData2"/>
-		<byte name = "userData3"/>
-		<byte name = "userData4"/>
-		<byte name = "userData5"/>
-		<byte name = "userData6"/>
-		<byte name = "userData7"/>
-		<byte name = "userData8"/>
-		<byte name = "userData9"/>
-		<byte name = "userData10"/>
-		<byte name = "userData11"/>
-		<byte name = "userData12"/>
-		<byte name = "userData13"/>
-		<byte name = "userData14"/>
+		<byte name="command1">0x00</byte>
+		<byte name="command2">0x00</byte>
+		<byte name = "userData1">0x00</byte>
+		<byte name = "userData2">0x00</byte>
+		<byte name = "userData3">0x00</byte>
+		<byte name = "userData4">0x00</byte>
+		<byte name = "userData5">0x00</byte>
+		<byte name = "userData6">0x00</byte>
+		<byte name = "userData7">0x00</byte>
+		<byte name = "userData8">0x00</byte>
+		<byte name = "userData9">0x00</byte>
+		<byte name = "userData10">0x00</byte>
+		<byte name = "userData11">0x00</byte>
+		<byte name = "userData12">0x00</byte>
+		<byte name = "userData13">0x00</byte>
+		<byte name = "userData14">0x00</byte>
 	</msg>
 	<msg name = "SendExtendedMessageReply" length="23" direction = "FROM_MODEM">
 		<header length="6">
@@ -207,6 +225,100 @@
 		<byte name = "userData12"/>
 		<byte name = "userData13"/>
 		<byte name = "userData14"/>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "SendX10Message" length="4" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x63</byte>
+		</header>
+		<byte name = "rawX10"></byte>
+		<byte name = "X10Flag">0x00</byte>
+	</msg>
+	<msg name = "SendX10MessageReply" length="5" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x63</byte>
+		</header>
+		<byte name = "rawX10"></byte>
+		<byte name = "X10Flag">0x00</byte>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "StartALLLinking" length="4" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x64</byte>
+		</header>
+		<byte name = "LinkCode"></byte>
+		<byte name = "ALLLinkGroup">0x00</byte>
+	</msg>
+	<msg name = "StartALLLinkingReply" length="5" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x64</byte>
+		</header>
+		<byte name = "LinkCode"></byte>
+		<byte name = "ALLLinkGroup">0x00</byte>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "CancelALLLinking" length="2" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x65</byte>
+		</header>
+	</msg>
+	<msg name = "CancelALLLinkingReply" length="3" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x65</byte>
+		</header>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "SetHostDeviceCategory" length="5" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x66</byte>
+		</header>
+		<byte name = "DeviceCategory"/>
+		<byte name = "DeviceSubcategory"/>
+		<byte name = "FirmwareVersion"/>		
+	</msg>
+	<msg name = "SetHostDeviceCategoryReply" length="6" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x66</byte>
+		</header>
+		<byte name = "DeviceCategory"/>
+		<byte name = "DeviceSubcategory"/>
+		<byte name = "FirmwareVersion"/>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "ResetIM" length="2" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x67</byte>
+		</header>
+	</msg>
+	<msg name = "ResetIMReply" length="3" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x67</byte>
+		</header>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "SetAckMessageByte" length="3" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x68</byte>
+		</header>
+		<byte name = "Command2"/>
+	</msg>
+	<msg name = "SetAckMessageByteReply" length="4" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x68</byte>
+		</header>
+		<byte name = "Command2"/>
 		<byte name = "ACK/NACK"/>
 	</msg>
 	<msg name = "GetFirstALLLinkRecord" length="2" direction = "TO_MODEM">
@@ -260,6 +372,27 @@
 		<byte name="linkData1"/>
 		<byte name="linkData2"/>
 		<byte name="linkData3"/>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "Beep" length="2" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x77</byte>
+		</header>
+	</msg>
+	<msg name = "BeepReply" length="3" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x77</byte>
+		</header>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "UnknownMessage7F" length="4" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x7F</byte>
+		</header>
+		<byte name="Command2"/>
 		<byte name = "ACK/NACK"/>
 	</msg>
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,6 +36,7 @@ import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmDeviceList;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmResult;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.binding.homematic.internal.model.HmVariable;
 import org.openhab.binding.homematic.internal.model.HmVariableList;
@@ -81,8 +82,9 @@ public class CcuClient extends BaseHomematicClient {
 
 		httpClient = new HttpClient(new SimpleHttpConnectionManager(true));
 		HttpClientParams params = httpClient.getParams();
-		params.setConnectionManagerTimeout(5000);
-		params.setSoTimeout(30000);
+		Long timeout = context.getConfig().getTimeout() * 1000L;
+		params.setConnectionManagerTimeout(timeout);
+		params.setSoTimeout(timeout.intValue());
 		params.setContentCharset("ISO-8859-1");
 	}
 
@@ -103,6 +105,7 @@ public class CcuClient extends BaseHomematicClient {
 	public void registerCallback() throws HomematicClientException {
 		rpcClient.init(getDefaultInterface());
 		rpcClient.init(HmInterface.WIRED);
+		rpcClient.init(HmInterface.CUXD);
 	}
 
 	/**
@@ -112,29 +115,77 @@ public class CcuClient extends BaseHomematicClient {
 	public void releaseCallback() throws HomematicClientException {
 		rpcClient.release(getDefaultInterface());
 		rpcClient.release(HmInterface.WIRED);
+		rpcClient.release(HmInterface.CUXD);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
+		Map<String, HmRssiInfo> rssiList = rpcClient.getRssiInfo(HmInterface.RF);
 		for (HmDevice device : devices) {
 			addBatteryInfo(device);
+			boolean deviceHasRssiDatapoint = false;
 
 			for (HmChannel channel : device.getChannels()) {
+				boolean isChannelZero = "0".equals(channel.getNumber());
 				for (HmDatapoint dp : channel.getDatapoints()) {
 					DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
 							dp.getName());
+					HmRssiInfo rssiInfo = rssiList.get(bindingConfig.getAddress());
+					if (rssiInfo != null) {
+						if ("RSSI_DEVICE".equals(bindingConfig.getParameter())) {
+							dp.setValue(rssiInfo.getDevice());
+							deviceHasRssiDatapoint = true;
+						} else if ("RSSI_PEER".equals(bindingConfig.getParameter())) {
+							dp.setValue(rssiInfo.getPeer());
+							deviceHasRssiDatapoint = true;
+						}
+					}
 					callback.iterate(bindingConfig, dp);
+				}
+
+				if (isChannelZero && !deviceHasRssiDatapoint) {
+					HmRssiInfo rssiInfo = rssiList.get(device.getAddress());
+					if (rssiInfo != null) {
+						logger.debug("Adding missing RSSI datapoints to device {} with address {}", device.getType(), device.getAddress());
+						addRssiDatapoint(channel, "RSSI_DEVICE", rssiInfo.getDevice(), callback);
+						addRssiDatapoint(channel, "RSSI_PEER", rssiInfo.getPeer(), callback);
+					}
 				}
 			}
 		}
 	}
 
 	/**
+	 * Generates a missing RSSI datapoint, workaround for a CCU bug.
+	 */
+	private void addRssiDatapoint(HmChannel channel, String name, Object value, HmValueItemIteratorCallback callback) {
+		HmDatapoint dp = new HmDatapoint();
+		dp.setName(name);
+		dp.setValueType(8);
+		dp.setWriteable(false);
+		dp.setValue(value);
+		channel.addDatapoint(dp);
+		DatapointConfig bindingConfig = new DatapointConfig(channel.getDevice().getAddress(), channel.getNumber(),
+				dp.getName());
+		callback.iterate(bindingConfig, dp);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException {
+		return rpcClient.getRssiInfo(HmInterface.RF);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
 		for (HmVariable variable : variables) {
@@ -146,6 +197,7 @@ public class CcuClient extends BaseHomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void executeProgram(String programName) throws HomematicClientException {
 		logger.debug("Executing program on CCU: {}", programName);
 		HmResult result = sendScriptByName("executeProgram", HmResult.class, new String[] { "program_name" },
@@ -181,6 +233,7 @@ public class CcuClient extends BaseHomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
 		String strValue = ObjectUtils.toString(value);
 		if (hmValueItem.isStringValue()) {

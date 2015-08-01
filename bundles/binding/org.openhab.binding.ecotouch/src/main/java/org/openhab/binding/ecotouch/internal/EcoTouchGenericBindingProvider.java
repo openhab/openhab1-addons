@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,18 +43,26 @@ public class EcoTouchGenericBindingProvider extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof NumberItem)) {
+		EcoTouchTags tag;
+		try {
+			tag = EcoTouchTags.fromString(bindingConfig);
+		} catch (Exception e) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', only NumberItems are allowed - please check your *.items configuration");
+							+ "' tries to bind to '"
+							+ bindingConfig
+							+ "', which is unknown - please check your *.items configuration");
+		}
+		if (!tag.getItemClass().isInstance(item)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only " + tag.getItemClass().getSimpleName()
+					+ " are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -122,6 +130,15 @@ public class EcoTouchGenericBindingProvider extends
 			}
 		}
 		return itemNames.toArray(new String[itemNames.size()]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public EcoTouchTags getTypeForItemName(String itemName) {
+		EcoTouchBindingConfig heatpumpConfig = (EcoTouchBindingConfig) bindingConfigs
+				.get(itemName);
+		return heatpumpConfig.getType();
 	}
 
 	/**

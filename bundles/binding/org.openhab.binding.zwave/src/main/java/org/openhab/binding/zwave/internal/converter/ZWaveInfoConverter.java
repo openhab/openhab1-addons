@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -138,6 +138,8 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 				return node.isListening();
 			case REPORT_DEAD:
 				return node.isDead();
+			case REPORT_LASTUPDATE:
+				return node.getLastReceived();
 			case REPORT_NAK:
 				return this.getController().getNAKCount();
 			case REPORT_SOF:
@@ -150,8 +152,8 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 				return this.getController().getOOFCount();
 			case REPORT_TIME_OUT:
 				return this.getController().getTimeOutCount();
-			case REPORT_LASTUPDATE:
-				return node.getLastUpdated();
+			case REPORT_TX_QUEUE:
+				return this.getController().getSendQueueLength();
 		}
         
         return null;
@@ -275,7 +277,12 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 		/**
 		 * Reports the amount of out of timed out packets this node has received.
 		 */
-		REPORT_TIME_OUT("TIME_OUT");
+		REPORT_TIME_OUT("TIME_OUT"),
+		
+		/**
+		 * Reports the total number of frames in the transmit queue(s)
+		 */
+		REPORT_TX_QUEUE("TX_QUEUE");
 		
 		private String label;
 		private static Map<String, ZWaveInformationItem> labelToZWaveInfoItemMapping;

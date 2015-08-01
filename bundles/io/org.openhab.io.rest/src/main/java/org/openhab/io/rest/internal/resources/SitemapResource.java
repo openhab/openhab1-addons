@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,15 @@
  */
 package org.openhab.io.rest.internal.resources;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,9 +33,9 @@ import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.jersey.SuspendResponse;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -61,12 +62,12 @@ import org.openhab.model.sitemap.Slider;
 import org.openhab.model.sitemap.Switch;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
+import org.openhab.model.sitemap.Mapview;
 import org.openhab.model.sitemap.Widget;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
  * <p>This class acts as a REST resource for sitemaps and provides different methods to interact with them,
@@ -78,6 +79,7 @@ import com.sun.jersey.api.json.JSONWithPadding;
  *
  * @author Kai Kreuzer
  * @author Chris Jackson
+ * @author Gaël L'hopital
  * @since 0.8.0
  */
 @Path(SitemapResource.PATH_SITEMAPS)
@@ -102,11 +104,11 @@ public class SitemapResource {
     		@Context HttpHeaders headers,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);
+		final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 		if(responseType!=null) {
-	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build())), callback) : new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build()));
+			final SitemapListBean content = new SitemapListBean(getSitemapBeans(uriInfo.getAbsolutePathBuilder().build()));
+			final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content);
 	    	return Response.ok(responseObject, responseType).build();
 		} else {
 			return Response.notAcceptable(null).build();
@@ -120,16 +122,17 @@ public class SitemapResource {
     		@PathParam("sitemapname") String sitemapname, 
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);
+		final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 		if(responseType!=null) {
-	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build()), callback) : getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build());
+			final SitemapBean content = getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build());
+			final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content);
 	    	return Response.ok(responseObject, responseType).build();
 		} else {
 			return Response.notAcceptable(null).build();
 		}
     }
+
 
     @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
 	@Produces( { MediaType.WILDCARD })
@@ -139,29 +142,33 @@ public class SitemapResource {
     		@PathParam("pageid") String pageId,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
     		@Context AtmosphereResource resource) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
-			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+   		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);	
+   		
+		if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
+			final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
-		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-		    			new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
-		    	throw new WebApplicationException(Response.ok(responseObject, responseType).header(ATMOS_TIMEOUT_HEADER, DEFAULT_TIMEOUT_SECS + "").build());
+				final PageBean content = getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
+				final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content);
+		    	throw new WebApplicationException(
+		    			Response.ok(responseObject, responseType)
+		    			.header(ATMOS_TIMEOUT_HEADER, DEFAULT_TIMEOUT_SECS + "")
+		    			.build());
 			} else {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
 		
-		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
+		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+		GeneralBroadcaster sitemapBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
 		
 		boolean resume = false;
 		try {
-		AtmosphereRequest request = resource.getRequest();
-		resume = !ResponseTypeHelper.isStreamingTransport(request);
+			AtmosphereRequest request = resource.getRequest();
+			resume = !ResponseTypeHelper.isStreamingTransport(request);
 		} catch (Exception e) {
-			logger.debug(e.getMessage());
+			logger.debug(e.getMessage(), e);
 		}
 
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
@@ -218,7 +225,7 @@ public class SitemapResource {
 
 	public Collection<SitemapBean> getSitemapBeans(URI uri) {
 		Collection<SitemapBean> beans = new LinkedList<SitemapBean>();
-		logger.debug("Received HTTP GET request at '{}'.", UriBuilder.fromUri(uri).build().toASCIIString());
+		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}'.", UriBuilder.fromUri(uri).build().toASCIIString());
 		ModelRepository modelRepository = RESTApplication.getModelRepository();
 		for(String modelName : modelRepository.getAllModelNamesOfType("sitemap")) {
 			Sitemap sitemap = (Sitemap) modelRepository.getModel(modelName);
@@ -237,7 +244,7 @@ public class SitemapResource {
 	}
 
 	public SitemapBean getSitemapBean(String sitemapname, URI uri) {
-		Sitemap sitemap = getSitemap(sitemapname);
+		final Sitemap sitemap = getSitemap(sitemapname);
 		if(sitemap!=null) {
 			return createSitemapBean(sitemapname, sitemap, uri);
 		} else {
@@ -247,14 +254,14 @@ public class SitemapResource {
 	}
 
 	private SitemapBean createSitemapBean(String sitemapName, Sitemap sitemap, URI uri) {
-    	SitemapBean bean = new SitemapBean();
+    	final SitemapBean bean = new SitemapBean();
 		
     	bean.name = sitemapName;
 		bean.icon = sitemap.getIcon();
 		bean.label = sitemap.getLabel();
 
     	bean.link = UriBuilder.fromUri(uri).path(SitemapResource.PATH_SITEMAPS).path(bean.name).build().toASCIIString();
-    	bean.homepage = createPageBean(sitemap.getName(), sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
+    	bean.homepage = createPageBean(sitemapName, sitemap.getLabel(), sitemap.getIcon(), sitemap.getName(), sitemap.getChildren(), true, false, uri);
     	return bean;
     }
     
@@ -323,18 +330,7 @@ public class SitemapResource {
     		Switch switchWidget = (Switch) widget;
     		for(Mapping mapping : switchWidget.getMappings()) {
     			MappingBean mappingBean = new MappingBean();
-				// Remove quotes - if they exist
-				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
-						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
-					}
-					else {
-						mappingBean.command = mapping.getCmd();
-					}
-				}
-				else {
-					mappingBean.command = mapping.getCmd();
-				}
+				mappingBean.command = mapping.getCmd();
 				mappingBean.label = mapping.getLabel();
 				bean.mappings.add(mappingBean);
 			}
@@ -343,18 +339,7 @@ public class SitemapResource {
 			Selection selectionWidget = (Selection) widget;
 			for (Mapping mapping : selectionWidget.getMappings()) {
 				MappingBean mappingBean = new MappingBean();
-				// Remove quotes - if they exist
-				if(mapping.getCmd() != null) {
-					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
-						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
-					}
-					else {
-						mappingBean.command = mapping.getCmd();
-					}				
-				}
-				else {
-					mappingBean.command = mapping.getCmd();
-				}
+				mappingBean.command = mapping.getCmd();
     			mappingBean.label = mapping.getLabel();
     			bean.mappings.add(mappingBean);
     		}
@@ -368,34 +353,59 @@ public class SitemapResource {
     		List listWidget = (List) widget;
     		bean.separator = listWidget.getSeparator();
     	}
-    	if(widget instanceof Image) {
-    		Image imageWidget = (Image) widget;
-    		String wId = itemUIRegistry.getWidgetId(widget);
-			if (uri.getPort() < 0 || uri.getPort() == 80) {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
-			} else {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+    	if (widget instanceof Image ||
+    		widget instanceof Video ||
+    		widget instanceof Webview || 
+    		widget instanceof Mapview) {
+
+        	if(widget instanceof Image) {
+        		Image imageWidget = (Image) widget;
+        		if(imageWidget.getRefresh() > 0) {
+        			bean.refresh = imageWidget.getRefresh(); 
+        		}
+        		bean.url = imageWidget.getUrl();
+        	}
+        	else if (widget instanceof Video) {
+        		Video videoWidget = (Video) widget;
+        		if(videoWidget.getEncoding() != null) {
+        			bean.encoding = videoWidget.getEncoding();
+        		}
+        		bean.url = videoWidget.getUrl();
+        	}        	
+        	else if (widget instanceof Webview) {
+				Webview webViewWidget = (Webview) widget;
+				bean.height = webViewWidget.getHeight();
+				bean.url = webViewWidget.getUrl();
+        	}
+        	else if (widget instanceof Mapview) {
+				Mapview mapViewWidget = (Mapview) widget;
+				bean.height = mapViewWidget.getHeight();
+        	}
+
+			String wId = itemUIRegistry.getWidgetId(widget);
+
+			StringBuilder sbBaseUrl = new StringBuilder();
+			sbBaseUrl.append(uri.getScheme()).append("://").append(uri.getHost());
+			if (uri.getPort() >= 0 && uri.getPort() != 80) {
+				sbBaseUrl.append(":").append(uri.getPort());
 			}
-    		if(imageWidget.getRefresh()>0) {
-    			bean.refresh = imageWidget.getRefresh(); 
-    		}
-    	}
-    	if(widget instanceof Video) {
-    		Video videoWidget = (Video) widget;
-    		String wId = itemUIRegistry.getWidgetId(widget);
-    		if(videoWidget.getEncoding()!=null) {
-    			bean.encoding = videoWidget.getEncoding();
-    		}
-			if (uri.getPort() < 0 || uri.getPort() == 80) {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
-			} else {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName	+ ".sitemap&widgetId=" + wId;
+			StringBuilder sb = new StringBuilder();
+			sb.append("/proxy?");
+			sb.append("sitemap=").append(sitemapName).append(".sitemap&");
+			sb.append("widgetId=").append(wId);
+			if (bean.url != null && bean.url.startsWith("/")) {
+	        	try {
+	        		sb.append("&").append("baseUrl=").append(URLEncoder.encode(sbBaseUrl.toString(), "UTF-8"));
+	        	}
+				catch (UnsupportedEncodingException ex) {
+					throw new RuntimeException(ex.getMessage(), ex);
+				}
 			}
-    	}
-    	if(widget instanceof Webview) {
-    		Webview webViewWidget = (Webview) widget;
-    		bean.url = webViewWidget.getUrl();
-    		bean.height = webViewWidget.getHeight();
+			if(uri.getFragment() != null) {
+				sb.append("#" + uri.getFragment());
+			}
+			sbBaseUrl.append(sb.toString());
+			bean.url = sbBaseUrl.toString();
     	}
     	if(widget instanceof Chart) {
     		Chart chartWidget = (Chart) widget;

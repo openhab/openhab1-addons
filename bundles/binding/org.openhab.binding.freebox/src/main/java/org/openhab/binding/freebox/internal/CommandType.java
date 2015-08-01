@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.freebox.internal;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,8 +40,28 @@ public enum CommandType {
 	CALLNUMBER("call_number"),
 	CALLDURATION("call_duration"),
 	CALLTIMESTAMP("call_timestamp"),
-	CALLSTATUS("call_status");
-	
+	CALLNAME("call_name"),
+	CALLSTATUS("call_status"),
+	// xDSL Status
+	XDSLSTATUS("xdsl_status"),
+	// LCD Configuration
+	LCDBRIGHTNESS("lcd_brightness"),
+	LCDORIENTATION("lcd_orientation"),
+	LCDFORCED("lcd_forced"),
+	// FTP status
+	FTPSTATUS("ftp_status"),
+	// UPnP AV status
+	UPNPAVSTATUS("upnpav_status"),
+	// Air Media status
+	AIRMEDIASTATUS("airmedia_status"),
+	// Samba file share status
+	SAMBAFILESTATUS("sambafileshare_status"),
+	// Samba printer share status
+	SAMBAPRINTERSTATUS("sambaprintershare_status"),
+	// Network device reachable status
+	REACHABLENAME("reachable_name"),
+	REACHABLEMAC("reachable_mac"),
+	REACHABLEIP("reachable_ip");
 	
 
 	String command;

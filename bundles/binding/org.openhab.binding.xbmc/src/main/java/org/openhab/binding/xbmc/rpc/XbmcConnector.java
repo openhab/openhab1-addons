@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
 package org.openhab.binding.xbmc.rpc;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,25 +19,33 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import org.openhab.binding.xbmc.internal.XbmcHost;
-import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
-import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
-import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
-import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
-import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
-import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
-import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
-import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
-import org.openhab.core.events.EventPublisher;
-import org.openhab.core.library.types.StringType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openhab.binding.xbmc.internal.XbmcHost;
+import org.openhab.binding.xbmc.rpc.calls.ApplicationGetProperties;
+import org.openhab.binding.xbmc.rpc.calls.ApplicationSetVolume;
+import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
+import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
+import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
+import org.openhab.binding.xbmc.rpc.calls.PVRGetChannels;
+import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
+import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
+import org.openhab.binding.xbmc.rpc.calls.PlayerOpen;
+import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
+import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
+import org.openhab.binding.xbmc.rpc.calls.SystemHibernate;
+import org.openhab.binding.xbmc.rpc.calls.SystemReboot;
+import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
+import org.openhab.binding.xbmc.rpc.calls.SystemSuspend;
+import org.openhab.binding.xbmc.rpc.calls.XBMCGetInfoBooleans;
+import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -51,15 +60,20 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 /**
  * Manages the web socket connection for a single XBMC instance.
  * 
- * @author tlan, Ben Jones
+ * @author tlan, Ben Jones, Ard van der Leeuw
  * @since 1.5.0
  */
 public class XbmcConnector {
+
+	private static final String SCREENSAVER_STATE = "Screensaver.State";
 
 	private static final Logger logger = LoggerFactory.getLogger(XbmcConnector.class);
 
 	// request timeout (configurable?)
 	private static final int REQUEST_TIMEOUT_MS = 60000;
+
+	// the amount to increase/decrease the volume when receiving INCREASE/DECREASE commands
+	private static final BigDecimal VOLUMESTEP = new BigDecimal(10);
 	
 	// the XBMC instance and openHAB event publisher handles
 	private final XbmcHost xbmc;
@@ -76,7 +90,10 @@ public class XbmcConnector {
 	// the async connection to the XBMC instance
 	private WebSocket webSocket;
 	private boolean connected = false;
-
+	
+	// the current volume
+	private BigDecimal volume = BigDecimal.ZERO;
+	
 	// the current player state
 	private State currentState = State.Stop;
 	
@@ -173,6 +190,10 @@ public class XbmcConnector {
 		public void onOpen(WebSocket webSocket) {
 			logger.debug("[{}]: Websocket opened", xbmc.getHostname());
 			connected = true;
+			requestApplicationUpdate();
+			requestScreenSaverStateUpdate();
+			updatePlayerStatus();
+			updateProperty("System.State", OnOffType.ON);
 		}
 		
 		@Override
@@ -191,6 +212,7 @@ public class XbmcConnector {
 			logger.warn("[{}]: Websocket closed", xbmc.getHostname());
 			webSocket = null;
 			connected = false;
+			updateProperty("System.State", OnOffType.OFF);
 		}
 		
 		@Override
@@ -218,6 +240,12 @@ public class XbmcConnector {
 					String method = (String)json.get("method");
 					if (method.startsWith("Player.On")) {
 						processPlayerStateChanged(method, json);
+					} else if (method.startsWith("Application.On")) {
+						processApplicationStateChanged(method, json);
+					} else if (method.startsWith("System.On")) {
+						processSystemStateChanged(method, json);
+					}else if (method.startsWith("GUI.OnScreensaver")){
+						processScreensaverStateChanged(method, json);
 					}
 				}
 			} catch (Exception e) {
@@ -258,22 +286,59 @@ public class XbmcConnector {
 			watches.put(itemName, property);
 		}
 	}
-	
+
+	public void updateSystemStatus() {
+		if (connected) {
+			updateProperty("System.State" ,OnOffType.ON);
+		} else {
+			updateProperty("System.State" ,OnOffType.OFF);
+		}
+	}
+
+
+	/**
+	 * Update the status of the current player 
+	 */
 	public void updatePlayerStatus() {
+		updatePlayerStatus(false);
+	}
+	
+	/**
+	 * Update the status of the current player
+	 * 
+	 * @param updatePolledPropertiesOnly
+	 * 			If updatePolledPropertiesOnly is true, only update the Player properties that need to be polled
+	 * 			If updatePolledPropertiesOnly is false, update the Player state itself as well
+	 */
+	public void updatePlayerStatus(final boolean updatePolledPropertiesOnly) {
 		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
 		
 		activePlayers.execute(new Runnable() {
 			@Override
 			public void run() {
 				if (activePlayers.isPlaying()) {
-					updateState(State.Play);
-					requestPlayerUpdate(activePlayers.getPlayerId());
+					if (!updatePolledPropertiesOnly) {
+						updateState(State.Play);
+					}
+					requestPlayerUpdate(activePlayers.getPlayerId(), updatePolledPropertiesOnly);
 				} else {
-					updateState(State.Stop);
+					if (!updatePolledPropertiesOnly) {
+						updateState(State.Stop);
+					}
 				}
 			}
 		});
 	}
+	
+	private void updateScreenSaverStatus(boolean screenSaverActive) {
+		if (screenSaverActive) {
+			updateProperty(SCREENSAVER_STATE, OnOffType.ON);
+		} else {
+			updateProperty(SCREENSAVER_STATE, OnOffType.OFF);
+		}
+	}
+
+	
 
 	public void playerPlayPause() {
 		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
@@ -312,6 +377,56 @@ public class XbmcConnector {
 		shutdown.execute();
 	}
 
+	public void systemSuspend() {
+		final SystemSuspend suspend = new SystemSuspend(client, httpUri);
+		suspend.execute();
+	}
+
+	public void systemHibernate() {
+		final SystemHibernate hibernate = new SystemHibernate(client, httpUri);
+		hibernate.execute();
+	}
+
+	public void systemReboot() {
+		final SystemReboot reboot = new SystemReboot(client, httpUri);
+		reboot.execute();
+	}
+
+	public void playerOpen(String file) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setFile(file);
+		playeropen.execute();
+	}
+
+	public void applicationSetVolume(String volume) {
+		final ApplicationSetVolume applicationsetvolume = new ApplicationSetVolume(client, httpUri);
+				
+		if (volume.equals("ON")) {
+			this.volume = new BigDecimal(100);
+		}
+		else if (volume.equals("OFF")) {
+			this.volume = new BigDecimal(0);
+		}
+		else if (volume.equals("DECREASE")) {
+			this.volume = this.volume.subtract(VOLUMESTEP);
+		}
+		else if (volume.equals("INCREASE"))	{
+			this.volume = this.volume.add(VOLUMESTEP);
+		}
+		else {
+			try	{
+				this.volume = new BigDecimal(volume);
+			}
+			catch (NumberFormatException e)	{				
+				logger.error("applicationSetVolume cannot parse volume parameter: " + volume);
+				this.volume = BigDecimal.ZERO;
+			}
+		}
+				
+		applicationsetvolume.setVolume(this.volume.intValue());
+		applicationsetvolume.execute();
+	}
+
 	private void processPlayerStateChanged(String method, Map<String, Object> json) {
 		if ("Player.OnPlay".equals(method)) {
 			// get the player id and make a new request for the media details
@@ -340,6 +455,48 @@ public class XbmcConnector {
 		}
 	}
 
+	private void processApplicationStateChanged(String method, Map<String, Object> json) {
+		if ("Application.OnVolumeChanged".equals(method)) {
+			// get the player id and make a new request for the media details
+			Map<String, Object> params = RpcCall.getMap(json, "params");
+			Map<String, Object> data = RpcCall.getMap(params, "data");
+			
+			Object o = data.get("volume");
+			PercentType volume = new PercentType(0);
+			
+ 			if (o instanceof Integer) {
+				volume = new PercentType((Integer)o);
+			}
+			else {
+				if (o instanceof Double) {
+					volume = new PercentType(((Double)o).intValue());
+				}
+			}
+			 
+			updateProperty("Application.Volume", volume);
+			this.volume = new BigDecimal(volume.intValue());
+		}
+
+	}
+
+	private void processSystemStateChanged(String method, Map<String, Object> json) {
+		if ("System.OnQuit".equals(method) ||
+				"System.OnSleep".equals(method) ||
+				"System.OnRestart".equals(method) 
+				) {
+			updateProperty("System.State", OnOffType.OFF);
+		} 	
+	}
+	
+	private void processScreensaverStateChanged(String method, Map<String, Object> json) {
+		if ("GUI.OnScreensaverDeactivated".equals(method)) {
+			updateScreenSaverStatus(false);
+		}else if ("GUI.OnScreensaverActivated".equals(method)) {
+			updateScreenSaverStatus(true);
+		}  	
+		
+	}
+
 	private void updateState(State state) {
 		// sometimes get a Pause immediately after a Stop - so just ignore
 		if (currentState.equals(State.Stop) && state.equals(State.Pause))
@@ -351,15 +508,58 @@ public class XbmcConnector {
 		// if this is a Stop then clear everything else
 		if (state == State.Stop) {
 			for (String property : getPlayerProperties()) {				
-				updateProperty(property, null);
+				updateProperty(property, (String)null);
 			}
 		}
 		
 		// keep track of our current state
 		currentState = state;
 	}
+
+	public void requestApplicationUpdate() {
+		final ApplicationGetProperties app = new ApplicationGetProperties(client, httpUri);
+		
+		app.execute(new Runnable() {
+			public void run() {
+				// now update each of the openHAB items for each property
+				volume = new BigDecimal(app.getVolume());
+				updateProperty("Application.Volume", new PercentType(volume));								
+			}
+		});
+
+	}
 	
+	public void requestScreenSaverStateUpdate(){
+		final XBMCGetInfoBooleans xbmc= new XBMCGetInfoBooleans(client,httpUri);
+		xbmc.execute(new Runnable() {
+			public void run() {
+				updateScreenSaverStatus(xbmc.isScreenSaverActive());
+			}
+		});
+		
+	}
+
+
+	/**
+	 * Request an update for the Player properties from XBMC
+	 * 
+	 * @param playerId
+	 * 			The id of the currently active player
+	 */
 	private void requestPlayerUpdate(int playerId) {
+		requestPlayerUpdate(playerId, false);
+	}
+	
+	/**
+	 * Request an update for the Player properties from XBMC
+	 * 
+	 * @param playerId
+	 * 			The id of the currently active player
+	 * @param updatePolledPropertiesOnly
+	 * 			if updatePolledPropertiesOnly is true, only retrieve the properties that need to be polled
+	 * 			if updatePolledPropertiesOnly is false, retrieve all properties that have items defined for
+	 */
+	private void requestPlayerUpdate(int playerId, boolean updatePolledPropertiesOnly) {
 		// CRIT: if a PVR recording is played in XBMC the playerId is reported as -1
 		if (playerId == -1) {
 			logger.warn("[{}]: Invalid playerId ({}) - assume this is a PVR recording playback and update playerId -> 1 (video player)", xbmc.getHostname(), playerId);
@@ -372,26 +572,29 @@ public class XbmcConnector {
 		}
 		
 		// get the list of properties we are interested in
-		final List<String> properties = getPlayerProperties();
+		final List<String> properties = getPlayerProperties(updatePolledPropertiesOnly);
 		
-		// make the request for the player item details
-		final PlayerGetItem item = new PlayerGetItem(client, httpUri);
-		item.setPlayerId(playerId);
-		item.setProperties(properties);
-		
-		item.execute(new Runnable() {
-			public void run() {
-				// now update each of the openHAB items for each property
-				for (String property : properties) {
-					String value = item.getPropertyValue(property);			
-					if (property.equals("Player.Fanart")) {
-						updateFanartUrl(property, value);
-					} else {
-						updateProperty(property, value);				
+		if (!properties.isEmpty()) {
+			logger.debug("[{}]: Retrieving properties ({}) for playerId {}", xbmc.getHostname(), properties.size(), playerId);
+			// make the request for the player item details
+			final PlayerGetItem item = new PlayerGetItem(client, httpUri);
+			item.setPlayerId(playerId);
+			item.setProperties(properties);
+
+			item.execute(new Runnable() {
+				public void run() {
+					// now update each of the openHAB items for each property
+					for (String property : properties) {
+						String value = item.getPropertyValue(property);			
+						if (property.equals("Player.Fanart")) {
+							updateFanartUrl(property, value);
+						} else {
+							updateProperty(property, value);				
+						}
 					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private void updateFanartUrl(final String property, String imagePath) {
@@ -418,20 +621,94 @@ public class XbmcConnector {
 			}
 		}
 	}
-	
+
+	private void updateProperty(String property, PercentType value) {
+		value = (value == null ? new PercentType(0) : value);
+		
+		for (Entry<String, String> e : watches.entrySet()) {
+			if (property.equals(e.getValue())) {
+				eventPublisher.postUpdate(e.getKey(), value);
+			}
+		}
+	}
+
+	private void updateProperty(String property, OnOffType value) {
+		value = (value == null ?  OnOffType.OFF : value);
+		
+		for (Entry<String, String> e : watches.entrySet()) {
+			if (property.equals(e.getValue())) {
+				eventPublisher.postUpdate(e.getKey(), value);
+			}
+		}
+	}
+
+
+	/**
+	 * get a distinct list of player properties we have items configured for
+	 * 
+	 * @return
+	 * 			A list of property names
+	 */
 	private List<String> getPlayerProperties() {
-		// get a distinct list of player properties we have items configured for
+		return getPlayerProperties(false);
+	}
+	
+	/**
+	 * get a distinct list of player properties we have items configured for
+	 * 
+	 * @param updatePolledPropertiesOnly 
+	 * 			Only get the properties that need to be refreshed by polling if true, 
+	 * 			otherwise get all the properties that have items configured for
+	 * @return
+	 * 			A list of property names
+	 */
+	private List<String> getPlayerProperties(boolean updatePolledPropertiesOnly) {		
 		List<String> properties = new ArrayList<String>();
-		for (String property : watches.values()) {
-			if (!property.startsWith("Player."))
-				continue;
-			if (property.equals("Player.State"))
-				continue;
-			if (properties.contains(property))
-				continue;
-			
-			properties.add(property);
+
+		if (updatePolledPropertiesOnly) {
+			for (String property : watches.values()) {
+				if (properties.contains(property)) {
+					continue;
+				} else if (property.equals("Player.Label")) {
+					properties.add(property);
+				} else if (property.equals("Player.Title")) {
+					properties.add(property);
+				}
+			}
+		} else {
+			for (String property : watches.values()) {
+				if (!property.startsWith("Player."))
+					continue;
+				if (property.equals("Player.State"))
+					continue;
+				if (properties.contains(property))
+					continue;
+
+				properties.add(property);
+			}
 		}
 		return properties;
+	}
+
+	public void playerOpenPVR(String channelName,int channelgroupid) {
+		final PVRGetChannels pvrGetChannels=new PVRGetChannels(client, httpUri);
+		pvrGetChannels.setChannelgroupid(channelgroupid);
+		pvrGetChannels.setChannelName(channelName);
+		logger.debug("channelName:" +channelName);
+		pvrGetChannels.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				logger.debug("channelId:" +pvrGetChannels.getChannelId());
+				if(pvrGetChannels.getChannelId()!=null){
+					PlayerOpen playerOpen=new PlayerOpen(client, httpUri);
+					playerOpen.setChannelId(pvrGetChannels.getChannelId());
+					playerOpen.execute();
+				}
+				
+			}
+		});
+
+		
 	}
 }

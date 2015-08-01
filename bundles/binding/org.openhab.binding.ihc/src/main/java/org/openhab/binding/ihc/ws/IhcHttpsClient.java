@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,34 +8,22 @@
  */
 package org.openhab.binding.ihc.ws;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
+import java.net.SocketTimeoutException;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
+import org.apache.http.HttpResponse;
+import org.apache.http.NoHttpResponseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Simple HTTP Client for IHC / ELKO LS Controller connection purposes.
- * 
- * Controller accepts only HTTPS connections and because normally IP address are
- * used on home network rather than DNS names, class accepts all host names on
- * TLS handshake.
  * 
  * @author Pauli Anttila
  * @since 1.1.0
@@ -45,21 +33,27 @@ public abstract class IhcHttpsClient {
 	private static final Logger logger = LoggerFactory
 			.getLogger(IhcHttpsClient.class);
 
-	HttpsURLConnection conn = null;
-	private int timeout = 5000;
-	
+	final int DEF_CONNECT_TIMEOUT = 10000;
+
+	private int connectTimeout = DEF_CONNECT_TIMEOUT;
+
+	private HttpClient client = null;
+	private HttpPost postReq = null;
+
 	/**
-	 * @return the timeout
+	 * @return the timeout in milliseconds
+	 * 
 	 */
-	public int getTimeout() {
-		return timeout;
+	public int getConnectTimeout() {
+		return connectTimeout;
 	}
 
 	/**
-	 * @param timeout the timeout to set
+	 * @param timeout
+	 *            the timeout in milliseconds
 	 */
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
+	public void setConnectTimeout(int timeout) {
+		connectTimeout = timeout;
 	}
 
 	/**
@@ -68,83 +62,16 @@ public abstract class IhcHttpsClient {
 	 * @param url
 	 *            Url to connect.
 	 */
-	protected void openConnection(String url)
-			throws IhcExecption {
+	protected void openConnection(String url) throws IhcExecption {
 
-		// For debugging purposes
-		//System.setProperty("javax.net.debug","all");
-
-		try {
-			conn = (HttpsURLConnection) new URL(url).openConnection();
-		} catch (MalformedURLException e) {
-			throw new IhcExecption(e);
-		} catch (IOException e) {
-			throw new IhcExecption(e);
+		if (client == null) {
+			client = IhcConnectionPool.getInstance().getHttpClient();
 		}
 
-		conn.setHostnameVerifier(new HostnameVerifier() {
-
-			@Override
-			public boolean verify(String arg0, SSLSession arg1) {
-				 logger.trace( "HostnameVerifier: arg0 = " + arg0 );
-				 logger.trace( "HostnameVerifier: arg1 = " + arg1 );
-				return true;
-			}
-		});
-
-		conn.setUseCaches(false);
-		conn.setDoInput(true);
-		conn.setDoOutput(true);
-		conn.setRequestProperty("accept-charset", "UTF-8");
-		conn.setRequestProperty("content-type", "text/xml");
-		conn.setConnectTimeout(timeout);
+		postReq = new HttpPost(url);
 	}
 
 	protected void closeConnection() {
-		//conn.disconnect();
-	}
-	
-	@SuppressWarnings("unused")
-	private void trustEveryone() {
-
-		// Create a trust manager that does not validate certificate chains,
-		// but accept all.
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-
-			@Override
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
-
-			@Override
-			public void checkClientTrusted(
-					java.security.cert.X509Certificate[] certs, String authType) {
-			}
-
-			@Override
-			public void checkServerTrusted(
-					java.security.cert.X509Certificate[] certs, String authType) {
-				logger.debug( "checkServerTrusted: certs = " +
-				 certs.toString() );
-				 logger.debug( "checkServerTrusted: authType = " + authType );
-			}
-		} };
-
-		// Install the all-trusting trust manager
-		try {
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-
-			sslContext.init(null, trustAllCerts,
-					new java.security.SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext
-					.getSocketFactory());
-
-		} catch (NoSuchAlgorithmException e) {
-			logger.warn("Exception", e);
-		} catch (KeyManagementException e) {
-			logger.warn("Exception", e);
-		}
-
 	}
 
 	/**
@@ -152,74 +79,52 @@ public abstract class IhcHttpsClient {
 	 * 
 	 * @param query
 	 *            Data to send.
-	 * @param timeoutInMilliseconds
-	 *            Timeout in milliseconds to wait response.
+	 * @param timeout
+	 *            the timeout to set in milliseconds
 	 * @return Response from server.
 	 */
-	protected String sendQuery(String query)
-			throws IhcExecption {
-		
-		conn.setReadTimeout(timeout);
-
+	protected String sendQuery(String query, int timeout) throws IhcExecption {
 		try {
-			OutputStreamWriter writer = new OutputStreamWriter(
-					conn.getOutputStream(), "UTF-8");
-
-			logger.trace("Send query: {}", query);
-			writer.write(query);
-			writer.flush();
-			writer.close();
-	
-			InputStreamReader reader = new InputStreamReader(conn.getInputStream(),
-					"UTF-8");
-			String response = readInputStreamAsString(reader);
-			logger.trace("Receive response: {}", response);
-			return response;
-		
-		} catch (UnsupportedEncodingException e) {
-			throw new IhcExecption(e);
+			return sendQ(query, timeout);
+		} catch (NoHttpResponseException e) {
+			try {
+				logger.debug("No response received, resend query");
+				return sendQ(query, timeout);
+			} catch (IOException ee) {
+				throw new IhcExecption(ee);
+			}
+		} catch (SocketTimeoutException e) {
+			try {
+				logger.debug("Timeout received, resend query");
+				return sendQ(query, timeout);
+			} catch (IOException ee) {
+				throw new IhcExecption(ee);
+			}
 		} catch (IOException e) {
 			throw new IhcExecption(e);
-		}
+		} 
 	}
 
-	/**
-	 * Get cookies values from last response.
-	 * 
-	 * @return List of cookie values.
-	 */
-	public List<String> getCookies() {
-		return conn.getHeaderFields().get("set-cookie");
+	private String sendQ(String query, int timeout) throws ClientProtocolException, IOException, NoHttpResponseException {
+		logger.trace("Send query (timeout={}): {}", timeout, query);
+		
+		postReq.setEntity(new StringEntity(query, "UTF-8"));
+		postReq.addHeader("content-type", "text/xml");
+
+		final RequestConfig params = RequestConfig.custom()
+				.setConnectTimeout(connectTimeout)
+				.setSocketTimeout(timeout).build();
+		postReq.setConfig(params);
+
+		// Execute POST
+		HttpResponse response = client.execute(postReq, IhcConnectionPool
+				.getInstance().getHttpContext());
+
+		String resp = EntityUtils.toString(response.getEntity());
+		logger.trace("Received response: {}", resp);
+		return resp;
 	}
-
-	/**
-	 * Set cookie values to use in next query.
-	 * 
-	 * @param cookies
-	 *            List of cookie values.
-	 * @return
-	 */
-	public void setCookies(List<String> cookies) {
-		for (String cookie : cookies) {
-			logger.trace("Use cookie value '{}'", cookie.split(";", 2)[0]);
-			conn.addRequestProperty("Cookie", cookie.split(";", 2)[0]);
-		}
-	}
-
-	/**
-	 * Set request properties.
-	 * 
-	 * @param List
-	 *            of request property values.
-	 * @return
-	 */
-	public void setRequestProperties(Map<String, String> listOfProperties) {
-
-		for (Map.Entry<String, String> entry : listOfProperties.entrySet()) {
-			conn.addRequestProperty(entry.getKey(), entry.getValue());
-		}
-	}
-
+	
 	/**
 	 * Set request property.
 	 * 
@@ -230,21 +135,6 @@ public abstract class IhcHttpsClient {
 	 */
 	public void setRequestProperty(String key, String value) {
 
-		conn.addRequestProperty(key, value);
-	}
-
-	static String readInputStreamAsString(InputStreamReader in)
-			throws IOException {
-
-		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		int result = in.read();
-
-		while (result != -1) {
-			byte b = (byte) result;
-			buf.write(b);
-			result = in.read();
-		}
-
-		return buf.toString();
+		postReq.setHeader(key, value);
 	}
 }

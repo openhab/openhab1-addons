@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -69,9 +69,6 @@ public class IhcClient {
 	/** Thread to handle controller's state change notifications */
 	private IhcControllerStateListener controllerStateListener = null;
 
-	/** Holds cookie information (session id) from authentication procedure */
-	private static List<String> cookies = null;
-
 	private String username = "";
 	private String password = "";
 	private String ip = "";
@@ -83,8 +80,6 @@ public class IhcClient {
 	private HashMap<Integer, ArrayList<IhcEnumValue>> enumDictionary = new HashMap<Integer, ArrayList<IhcEnumValue>>();
 	private List<IhcEventListener> eventListeners = new ArrayList<IhcEventListener>();
 	private WSControllerState controllerState = null;
-
-	List<? extends Integer> resourceIdList = null;
 	
 	public IhcClient(String ip, String username, String password) {
 		this.ip = ip;
@@ -216,19 +211,16 @@ public class IhcClient {
 
 		logger.debug("Connection successfully opened");
 
-		cookies = authenticationService.getCookies();
-		resourceInteractionService = new IhcResourceInteractionService(ip);
-		resourceInteractionService.setCookies(cookies);
-		controllerService = new IhcControllerService(ip);
-		controllerService.setCookies(cookies);
+		resourceInteractionService = new IhcResourceInteractionService(ip, timeout);
+		controllerService = new IhcControllerService(ip, timeout);
 		controllerState = controllerService.getControllerState();
 		loadProject();
-		startIhcListener();
+		startIhcListeners();
 		setConnectionState(ConnectionState.CONNECTED);
 	}
 
-	private void startIhcListener() {
-		logger.debug("startIhcListener");
+	private void startIhcListeners() {
+		logger.debug("startIhcListeners");
 		resourceValueNotificationListener = new IhcResourceValueNotificationListener();
 		resourceValueNotificationListener.start();
 		controllerStateListener = new IhcControllerStateListener();
@@ -353,8 +345,7 @@ public class IhcClient {
 			WSControllerState previousState, int timeoutInSeconds)
 			throws IhcExecption {
 
-		IhcControllerService service = new IhcControllerService(ip);
-		service.setCookies(cookies);
+		IhcControllerService service = new IhcControllerService(ip, timeout);
 		return service.waitStateChangeNotifications(previousState, timeoutInSeconds);
 	}
 
@@ -381,8 +372,6 @@ public class IhcClient {
 			List<? extends Integer> resourceIdList)
 			throws IhcExecption {
 		
-		this.resourceIdList = resourceIdList;
-		
 		resourceInteractionService.enableRuntimeValueNotifications(resourceIdList);
 	}
 
@@ -400,9 +389,7 @@ public class IhcClient {
 	private List<? extends WSResourceValue> waitResourceValueNotifications(
 			int timeoutInSeconds) throws IhcExecption, SocketTimeoutException {
 
-		IhcResourceInteractionService service = new IhcResourceInteractionService(ip);
-		service.setCookies(cookies);
-
+		IhcResourceInteractionService service = new IhcResourceInteractionService(ip, timeout);
 		List<? extends WSResourceValue> list = service.waitResourceValueNotifications(timeoutInSeconds);
 		
 		for (WSResourceValue val : list) {
@@ -535,6 +522,7 @@ public class IhcClient {
 				logger.error(
 						"New notifications wait failed...", e);
 				
+				sendErrorEvent(e);
 				mysleep(1000L);
 			}
 
@@ -619,7 +607,7 @@ public class IhcClient {
 						logger.error(
 								"New controller state change notification wait failed...", 
 								e);
-						
+						sendErrorEvent(e);
 						mysleep(1000L);
 						
 					} 
@@ -633,6 +621,26 @@ public class IhcClient {
 			} catch (InterruptedException e) {
 				interrupted = true;
 			}
+		}
+	}
+
+
+	private void sendErrorEvent(IhcExecption err) {
+
+		// send error to event listeners
+
+		try {
+			Iterator<IhcEventListener> iterator = eventListeners.iterator();
+
+			IhcErrorEvent event = new IhcErrorEvent(this);
+
+			while (iterator.hasNext()) {
+				((IhcEventListener) iterator.next()).errorOccured(event,
+						err);
+			}
+
+		} catch (Exception e) {
+			logger.error("Event listener invoking error", e);
 		}
 	}
 

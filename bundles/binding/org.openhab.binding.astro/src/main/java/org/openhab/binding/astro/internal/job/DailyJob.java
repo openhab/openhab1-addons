@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,12 +13,13 @@ import java.util.Calendar;
 import org.openhab.binding.astro.internal.calc.MoonCalc;
 import org.openhab.binding.astro.internal.calc.SeasonCalc;
 import org.openhab.binding.astro.internal.calc.SunCalc;
-import org.openhab.binding.astro.internal.calc.ZodiacCalc;
+import org.openhab.binding.astro.internal.calc.SunZodiacCalc;
 import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
-import org.openhab.binding.astro.internal.model.SunPosition;
 import org.quartz.JobDataMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Calculates and publishes the Sun data.
@@ -27,6 +28,7 @@ import org.quartz.JobDataMap;
  * @since 1.6.0
  */
 public class DailyJob extends AbstractBaseJob {
+	private static final Logger logger = LoggerFactory.getLogger(DailyJob.class);
 
 	@Override
 	protected void executeJob(JobDataMap jobDataMap) {
@@ -35,13 +37,9 @@ public class DailyJob extends AbstractBaseJob {
 		// sun
 		SunCalc sunCalc = new SunCalc();
 		Sun sun = sunCalc.getSunInfo(now, context.getConfig().getLatitude(), context.getConfig().getLongitude());
+		sunCalc.setSunPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), sun);
 
-		SunPosition sp = sunCalc.getSunPosition(now, context.getConfig().getLatitude(), context.getConfig()
-				.getLongitude());
-
-		sun.setPosition(sp);
-
-		ZodiacCalc zodiacCalc = new ZodiacCalc();
+		SunZodiacCalc zodiacCalc = new SunZodiacCalc();
 		sun.setZodiac(zodiacCalc.getZodiac(now));
 
 		SeasonCalc seasonCalc = new SeasonCalc();
@@ -49,12 +47,14 @@ public class DailyJob extends AbstractBaseJob {
 		context.getJobScheduler().scheduleSeasonJob(sun.getSeason());
 
 		context.setPlanet(PlanetName.SUN, sun);
+		logger.debug("{}", sun);
 		planetPublisher.publish(PlanetName.SUN);
 
 		// moon
 		MoonCalc moonCalc = new MoonCalc();
 		Moon moon = moonCalc.getMoonInfo(now, context.getConfig().getLatitude(), context.getConfig().getLongitude());
 		context.setPlanet(PlanetName.MOON, moon);
+		logger.debug("{}", moon);
 		planetPublisher.publish(PlanetName.MOON);
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -69,11 +69,11 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case ADD_NODE_STATUS_LEARN_READY:
-			logger.debug("Learn ready.");
+			logger.debug("Add Node: Learn ready.");
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeStart));
 			break;
 		case ADD_NODE_STATUS_NODE_FOUND:
-			logger.debug("New node found.");
+			logger.debug("Add Node: New node found.");
 			break;
 		case ADD_NODE_STATUS_ADDING_SLAVE:
 			logger.debug("NODE {}: Adding slave.", incomingMessage.getMessagePayloadByte(2));
@@ -84,18 +84,17 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeControllerFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_PROTOCOL_DONE:
-			logger.debug("Protocol done.");
+			logger.debug("Add Node: Protocol done.");
 			break;
 		case ADD_NODE_STATUS_DONE:
-			logger.debug("Done.");
-			zController.sendData(doRequestStop());
+			logger.debug("Add Node: Done.");
 			// If the node ID is 0, ignore!
-			if(incomingMessage.getMessagePayloadByte(2) != 0)
+			if(incomingMessage.getMessagePayloadByte(2) > 0 && incomingMessage.getMessagePayloadByte(2) <= 232) {
 				zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeDone, incomingMessage.getMessagePayloadByte(2)));
+			}
 			break;
 		case ADD_NODE_STATUS_FAILED:
-			logger.debug("Failed.");
-			zController.sendData(doRequestStop());
+			logger.debug("Add Node: Failed.");
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeFail));
 			break;
 		default:

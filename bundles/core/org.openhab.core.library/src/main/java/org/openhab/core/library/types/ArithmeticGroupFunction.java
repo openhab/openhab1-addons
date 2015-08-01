@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@ package org.openhab.core.library.types;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openhab.core.items.GroupFunction;
 import org.openhab.core.items.Item;
@@ -57,7 +59,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		public State calculate(List<Item> items) {
 			if(items!=null && items.size()>0) {
 				for(Item item : items) {
-					if(!activeState.equals(item.getState())) {
+					if(!activeState.equals(item.getStateAs(activeState.getClass()))) {
 						return passiveState;
 					}
 				}
@@ -132,7 +134,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		public State calculate(List<Item> items) {	
 			if(items!=null) {
 				for(Item item : items) {
-					if(activeState.equals(item.getState())) {
+					if(activeState.equals(item.getStateAs(activeState.getClass()))) {
 						return activeState;
 					}
 				}
@@ -250,6 +252,58 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			}
 		}
 		
+		/**
+		 * @{inheritDoc
+		 */
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
+			State state = calculate(items);
+			if(stateClass.isInstance(state)) {
+				return state;
+			} else {
+				return null;
+			}
+		}
+	}
+	
+	/**
+	 * This calculates the number of items in the group matching the
+	 * regular expression passed in parameter
+	 * Group:String:COUNT(".") will count all items having a string state of one character
+	 * Group:String:COUNT("[5-9]") will count all items having a string state between 5 and 9
+	 * ...
+	 * 
+	 * @author Gaël L'hopital
+	 * @since 1.7.0
+	 *
+	 */
+	static class Count implements GroupFunction {
+		
+		protected final Pattern pattern;
+		
+		public Count(State regExpr) {
+			if(regExpr==null) {
+				throw new IllegalArgumentException("Parameter must not be null!");
+			}
+			this.pattern = Pattern.compile(regExpr.toString());
+		}
+
+		/**
+		 * @{inheritDoc
+		 */
+		public State calculate(List<Item> items) {
+			int count = 0;
+			if(items!=null) {
+				for(Item item : items) {
+					Matcher matcher = pattern.matcher(item.getState().toString());
+					if (matcher.matches()) {
+						count++;
+					}
+				}
+			}
+			
+			return new DecimalType(count);
+		}
+
 		/**
 		 * @{inheritDoc
 		 */

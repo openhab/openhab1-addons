@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,7 +61,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	}
 
 	/**
-	 * Type of data porived by the physical device
+	 * Type of data provided by the physical device
 	 * "coil" and "discrete" use boolean (bit) values
 	 * "input" and "holding" use byte values
 	 */
@@ -74,6 +74,25 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	private int start = 0;
 
 	private int length = 0;
+
+	/**
+	 * How to interpret Modbus register values. 
+	 * Examples: 
+	 *   uint16 - one register - one unsigned integer value (default)
+	 *   int32  - every two registers will be interpreted as single 32-bit integer value
+	 *   bit    - every register will be interpreted as 16 independent 1-bit values  
+	 */
+	private String valueType = ModbusBindingProvider.VALUE_TYPE_UINT16;
+
+	/**
+	 * A multiplier for the raw incoming data
+	 * @note rawMultiplier can also be used for divisions, by simply
+	 * setting the value smaller than zero.
+	 * 
+	 * E.g.:
+	 * - data/100 ... rawDataMultiplier=0.01
+	 */
+	private double rawDataMultiplier = 1.0;
 
 	private Object storage;
 	protected ModbusTransaction transaction = null; 
@@ -194,10 +213,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		transaction.setRequest(request);
 
 		try {
-			logger.debug("ModbusSlave: FC" +request.getFunctionCode()+" ref=" + writeRegister + " value=" + newValue.getValue());				
+			logger.debug("ModbusSlave: FC{} ref={} value={}", 
+					request.getFunctionCode(), writeRegister, newValue.getValue());
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave: {}", e.getMessage());
 			return;
 		}
 	}
@@ -223,10 +243,10 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		request.setUnitID(getId());
 		transaction.setRequest(request);
 		try {
-			logger.debug("ModbusSlave: FC05 ref=" + writeRegister + " value=" + b);				
+			logger.debug("ModbusSlave: FC05 ref={} value={}", writeRegister, b);
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave:{}", e.getMessage());
 			return;
 		}
 	}
@@ -314,7 +334,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		try {
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave:{}", e.getMessage());
 			return null;
 		}
 
@@ -358,4 +378,19 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		this.type = type;
 	}
 
+	String getValueType() {
+		return valueType;
+	}
+
+	void setValueType(String valueType) {
+		this.valueType = valueType;
+	}
+
+	void setRawDataMultiplier(double value) {
+		this.rawDataMultiplier = value;
+	}
+
+	double getRawDataMultiplier() {
+		return rawDataMultiplier;
+	}
 }

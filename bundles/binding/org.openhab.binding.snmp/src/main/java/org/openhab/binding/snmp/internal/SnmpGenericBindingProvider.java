@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,6 +37,7 @@ import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
+import org.snmp4j.mp.SnmpConstants;
 
 /**
  * <p>
@@ -69,6 +70,7 @@ import org.snmp4j.smi.OctetString;
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP
  *         GET) and setting values (SNMP SET).
+ * @author Jan N. Klug - modified binding to change protocol version
  * @since 0.9.0
  */
 public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider implements SnmpBindingProvider {
@@ -88,10 +90,16 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 			.compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
 	private static final Pattern IN_BINDING_PATTERN_TRANSFORM = Pattern
 			.compile("<\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
+	private static final Pattern IN_BINDING_PATTERN_VERSION = Pattern
+			.compile("<\\[([0-9.a-zA-Z]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+	private static final Pattern IN_BINDING_PATTERN_VERSION_TRANSFORM = Pattern
+			.compile("<\\[([0-9.a-zA-Z]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+):(.*)?\\]");
 
 	/** {@link Pattern} which matches an In-Binding */
 	private static final Pattern OUT_BINDING_PATTERN = Pattern
 			.compile(">\\[([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
+	private static final Pattern OUT_BINDING_PATTERN_VERSION = Pattern
+			.compile(">\\[([0-9.a-zA-Z]+):(v1|v2c|v3):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)\\]");
 
 	/**
 	 * {@inheritDoc}
@@ -151,22 +159,24 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * <code>([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
 	 * Where the groups should contain the following content:
 	 * <ul>
-	 * <li>1 - Command
-	 * <li>2 - url</li>
-	 * <li>3 - SNMP community</li>
-	 * <li>4 - OID</li>
-	 * <li>5 - Value</li>
+	 * <li> Command </li>
+	 * <li> url</li>
+	 * <li> [Optional]Version: v1, v2c, v3</li>
+	 * <li> SNMP community</li>
+	 * <li> OID</li>
+	 * <li> Value</li>
 	 * </ul>
 	 * 
 	 * Parses a SNMP-IN configuration by using the regular expression
 	 * <code>([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)</code>.
 	 * Where the groups should contain the following content:
 	 * <ul>
-	 * <li>1 - url</li>
-	 * <li>2 - SNMP community</li>
-	 * <li>3 - OID</li>
-	 * <li>4 - Refresh interval (ms)</li>
-	 * <li>5 - [Optional]transformation rule</li>
+	 * <li> url</li>
+	 * <li> [Optional]Version: v1, v2c, v3</li>
+	 * <li> SNMP community</li>
+	 * <li> OID</li>
+	 * <li> Refresh interval (ms)</li>
+	 * <li> [Optional]transformation rule</li>
 	 * </ul>
 	 * 
 	 * Setting refresh interval to 0 will only receive SNMP traps
@@ -186,44 +196,99 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		config.itemType = item.getClass();
 
 		if (bindingConfig != null) {
+			// try in without version first
 			Matcher inMatcher = IN_BINDING_PATTERN.matcher(bindingConfig);
-			Matcher outMatcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
-
-			// If no matched for the input, try the version with the transformation string
-			if(!inMatcher.matches())
+			if (!inMatcher.matches()) {
 				inMatcher = IN_BINDING_PATTERN_TRANSFORM.matcher(bindingConfig);
-
-			if (!outMatcher.matches() && !inMatcher.matches()) {
-				throw new BindingConfigParseException(getBindingType()
-						+ " binding configuration must consist of four [config=" + inMatcher
-						+ "] or five parts [config=" + outMatcher + "]");
-			} else {
+			}
+			if (inMatcher.matches()) {
 				SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
+				newElement.address = GenericAddress.parse("udp:" + inMatcher.group(1).toString() + "/161");
+				newElement.snmpVersion = SnmpConstants.version1;
+				newElement.community = new OctetString(inMatcher.group(2).toString());
+				newElement.oid = new OID(inMatcher.group(3).toString());
+				newElement.refreshInterval = Integer.valueOf(inMatcher.group(4)).intValue();
+				if(inMatcher.groupCount() == 5)
+					newElement.setTransformationRule(inMatcher.group(5));
+				config.put(IN_BINDING_KEY, newElement);
+			} else { 
+				// not matched, try with version
+				inMatcher = IN_BINDING_PATTERN_VERSION.matcher(bindingConfig);
+				if (!inMatcher.matches()) {
+					inMatcher = IN_BINDING_PATTERN_VERSION_TRANSFORM.matcher(bindingConfig);
+				}
+				if (inMatcher.matches()) {
+					SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
+					newElement.address = GenericAddress.parse("udp:" + inMatcher.group(1).toString() + "/161");
+					String version = inMatcher.group(2).toString();
+					if (version.equals("v3")) {
+						newElement.snmpVersion = SnmpConstants.version3;
+					} else if (version.equals("v2c")) {
+						newElement.snmpVersion = SnmpConstants.version2c;
+					} else {
+						newElement.snmpVersion = SnmpConstants.version1;
+					}
+					newElement.community = new OctetString(inMatcher.group(3).toString());
+					newElement.oid = new OID(inMatcher.group(4).toString());
+					newElement.refreshInterval = Integer.valueOf(inMatcher.group(5)).intValue();
+					if(inMatcher.groupCount() == 6)
+						newElement.setTransformationRule(inMatcher.group(6));
+					config.put(IN_BINDING_KEY, newElement);              
+				}
+			}
+            
+			Matcher outMatcher = OUT_BINDING_PATTERN.matcher(bindingConfig);
+			if (outMatcher.matches()) {
+				SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
+				String commandAsString = outMatcher.group(1).toString();
+				newElement.address = GenericAddress.parse("udp:" + outMatcher.group(2).toString() + "/161");
+				newElement.snmpVersion = SnmpConstants.version1;
+				newElement.community = new OctetString(outMatcher.group(3).toString());
+				newElement.oid = new OID(outMatcher.group(4).toString());
+
+				// Only Integer commands accepted at this time.
+				newElement.value = new Integer32(Integer.parseInt(outMatcher.group(5).toString()));
+
+				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
+				if (command == null) {
+					logger.error("SNMP can't resolve command {} for item {}", commandAsString, item);
+				} else {
+					config.put(command, newElement);
+				}
+			} else {
+				outMatcher = OUT_BINDING_PATTERN_VERSION.matcher(bindingConfig);
 				if (outMatcher.matches()) {
+					SnmpBindingConfigElement newElement = new SnmpBindingConfigElement();
 					String commandAsString = outMatcher.group(1).toString();
 					newElement.address = GenericAddress.parse("udp:" + outMatcher.group(2).toString() + "/161");
-					newElement.community = new OctetString(outMatcher.group(3).toString());
-					newElement.oid = new OID(outMatcher.group(4).toString());
+					String version = inMatcher.group(3).toString();
+					if (version.equals("v3")) {
+						newElement.snmpVersion = SnmpConstants.version3;
+					} else if (version.equals("v2c")) {
+						newElement.snmpVersion = SnmpConstants.version2c;
+					} else {
+						newElement.snmpVersion = SnmpConstants.version1;
+					}
+					newElement.community = new OctetString(outMatcher.group(4).toString());
+					newElement.oid = new OID(outMatcher.group(5).toString());
 
 					// Only Integer commands accepted at this time.
-					newElement.value = new Integer32(Integer.parseInt(outMatcher.group(5).toString()));
+					newElement.value = new Integer32(Integer.parseInt(outMatcher.group(6).toString()));
 
 					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
 					if (command == null) {
 						logger.error("SNMP can't resolve command {} for item {}", commandAsString, item);
 					} else {
 						config.put(command, newElement);
-					}
-				} else if (inMatcher.matches()) {
-					newElement.address = GenericAddress.parse("udp:" + inMatcher.group(1).toString() + "/161");
-					newElement.community = new OctetString(inMatcher.group(2).toString());
-					newElement.oid = new OID(inMatcher.group(3).toString());
-					newElement.refreshInterval = Integer.valueOf(inMatcher.group(4)).intValue();
-					if(inMatcher.groupCount() == 5)
-						newElement.setTransformationRule(inMatcher.group(5));
-
-					config.put(IN_BINDING_KEY, newElement);
+					}                    
 				}
+			}
+            
+			// have we found any matches?
+			if (!outMatcher.matches() && !inMatcher.matches()) {
+				throw new BindingConfigParseException(getBindingType()
+						+ " binding configuration must consist of four/five/six [config=" + inMatcher
+						+ "] or five/six parts [config=" + outMatcher + "]");
 			}
 		} else {
 			return;
@@ -269,6 +334,24 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 	public OID getOID(String itemName, Command command) {
 		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command).oid : new OID("");
+	}
+
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public int getSnmpVersion(String itemName) {
+		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.get(IN_BINDING_KEY).snmpVersion : SnmpConstants.version1;
+	}
+
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public int getSnmpVersion(String itemName, Command command) {
+		SnmpBindingConfig config = (SnmpBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.get(command).snmpVersion : SnmpConstants.version1;
 	}
 
 	/**
@@ -348,6 +431,7 @@ public class SnmpGenericBindingProvider extends AbstractGenericBindingProvider i
 		public OID oid;
 		public int refreshInterval;
 		public OctetString community;
+		public int snmpVersion;
 		public Address address;
 		public Integer32 value;
 		public TransformationService transformationService;

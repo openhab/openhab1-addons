@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.config;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -30,11 +31,23 @@ public class ZWaveDbProductFile {
 	public ZWaveDbAssociation Associations;
 
 	List<ZWaveDbConfigurationParameter> getConfiguration() {
-		return Configuration.Parameter;
+		final List<ZWaveDbConfigurationParameter> params;
+		if (Configuration == null) {
+			params = Collections.emptyList();
+		} else {
+			params = Configuration.Parameter;
+		}
+		return params;
 	}
 	
 	List<ZWaveDbAssociationGroup> getAssociations() {
-		return Associations.Group;
+		final List<ZWaveDbAssociationGroup> groups;
+		if (Associations == null) {
+			groups = Collections.emptyList();
+		} else {
+			groups = Associations.Group;
+		}
+		return groups;
 	}
 
 	class ZWaveDbCommandClassList {

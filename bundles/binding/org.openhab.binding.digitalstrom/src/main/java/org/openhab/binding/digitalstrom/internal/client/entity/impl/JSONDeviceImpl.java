@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -69,6 +69,9 @@ public class JSONDeviceImpl implements Device {
 	
 	private int electricMeterValue = 0;
 	
+	private int temperatureSensorValue = 0;
+	
+	private int humiditySensorValue = 0;
 	
 	private	List<Short> groupList = new LinkedList<Short>();
 	
@@ -244,7 +247,7 @@ public class JSONDeviceImpl implements Device {
 		if (outputMode == null) {
 			return false;
 		}
-		return outputMode.equals(OutputModeEnum.DIMMED);
+		return outputMode.equals(OutputModeEnum.DIMMED) || outputMode.equals(OutputModeEnum.DIMMED_2);
 	}
 
 	@Override
@@ -340,6 +343,40 @@ public class JSONDeviceImpl implements Device {
 		notifyDeviceListener(this.dsid.getValue());
 	}
 
+	@Override
+	public int getTemperatureSensorValue() {
+		return temperatureSensorValue;
+	}
+
+	@Override
+	public synchronized void setTemperatureSensorValue(int sensorValue) {
+		if (sensorValue < 0) {
+			this.temperatureSensorValue = 0;
+		}
+		else {
+			this.temperatureSensorValue = sensorValue;
+		}
+		
+		notifyDeviceListener(this.dsid.getValue());
+	}	
+	
+	@Override
+	public int getHumiditySensorValue() {
+		return humiditySensorValue;
+	}
+
+	@Override
+	public synchronized void setHumiditySensorValue(int sensorValue) {
+		if (sensorValue < 0) {
+			this.humiditySensorValue = 0;
+		}
+		else {
+			this.humiditySensorValue = sensorValue;
+		}
+		
+		notifyDeviceListener(this.dsid.getValue());
+	}		
+	
 	@Override
 	public int getPowerConsumption() {
 		return powerConsumption;

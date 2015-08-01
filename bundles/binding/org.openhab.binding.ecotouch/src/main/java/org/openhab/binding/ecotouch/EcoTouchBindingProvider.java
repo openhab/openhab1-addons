@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,6 +27,15 @@ public interface EcoTouchBindingProvider extends BindingProvider {
 	 *         type
 	 */
 	public String[] getItemNamesForType(EcoTouchTags bindingType);
+
+	/**
+	 * Returns the type for an specific item.
+	 * 
+	 * @param itemName
+	 *            the name of the item (set inside a *.items config file)
+	 * @return type of this binding
+	 */
+	public EcoTouchTags getTypeForItemName(String itemName);
 
 	/**
 	 * Provides an array of all active tag names of this provider

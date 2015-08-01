@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,12 +37,12 @@ public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 			.getLogger(ResponseObjectFilter.class);
 
 	@Override
-	public BroadcastAction filter(Object originalMessage, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(AtmosphereResource resource,
+	public BroadcastAction filter(String broadcasterId, AtmosphereResource resource,
 			Object originalMessage, Object message) {
 		final HttpServletRequest request = resource.getRequest();
 		try {

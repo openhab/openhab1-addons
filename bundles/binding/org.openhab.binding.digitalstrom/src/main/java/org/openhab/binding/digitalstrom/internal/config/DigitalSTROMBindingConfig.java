@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ public class DigitalSTROMBindingConfig implements BindingConfig{
 	public DSID dsid = null;
 	public DSID dsmid = null;
 	public ConsumptionConfig consumption = ConsumptionConfig.ACTIVE_POWER;
+	public SensorConfig sensor = null;
 	public int timeinterval = 0;
 	public ContextConfig context = null;
 	public short groupID = -1;
@@ -89,7 +90,15 @@ public class DigitalSTROMBindingConfig implements BindingConfig{
 				this.consumption = ConsumptionConfig.ACTIVE_POWER;
 			}
 			break;
-		
+
+		case sensor:
+			try {
+				this.sensor = SensorConfig.valueOf(valueStr);
+			}catch (Exception e) {
+				logger.error("WRONG sensor type: "+valueStr+"; "+e.getLocalizedMessage());
+			}
+			break;
+			
 		case timeinterval:
 			int interval = -1;
 			try {

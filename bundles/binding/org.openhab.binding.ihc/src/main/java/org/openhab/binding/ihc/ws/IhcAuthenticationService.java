@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,14 +27,16 @@ public class IhcAuthenticationService extends IhcHttpsClient {
 	private static final Logger logger = LoggerFactory.getLogger(IhcAuthenticationService.class);
 
 	private String url;
-	
+	private int timeout;
+
 	IhcAuthenticationService(String host) {
 		url = "https://" + host + "/ws/AuthenticationService";
 	}
 
 	IhcAuthenticationService(String host, int timeout) {
 		this(host);
-		super.setTimeout(timeout);
+		this.timeout = timeout;
+		super.setConnectTimeout(timeout);
 	}
 	
 	public WSLoginResult authenticate(String username, String password, String application) throws IhcExecption {
@@ -54,7 +56,7 @@ public class IhcAuthenticationService extends IhcHttpsClient {
 		String query = String.format(soapQuery, password, username, application);
 		
 		openConnection(url);
-		String response = sendQuery(query);
+		String response = sendQuery(query, timeout);
 		WSLoginResult loginResult = new WSLoginResult();
 		loginResult.encodeData(response);
 		return loginResult;

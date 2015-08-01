@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,7 @@ import com.sun.jersey.api.client.WebResource;
  * 
  * @author Roman Hartmann
  * @author Kai Kreuzer
+ * @author Jos Schering
  * @since 1.2.0
  * 
  */
@@ -37,15 +38,25 @@ public class HueBulb {
 	}
 
 	private HueBridge bridge = null;
-	private int deviceNumber = 1;
+	private String deviceId;
 	private boolean isOn = false;
-	private int brightness = 0; // possible values are 0 - 255
+	private boolean isReachable = false;
+	private int brightness = 0; // possible values are 0 - 254
 	private int colorTemperature = 154; // possible values are 154 - 500
 	private int hue = 0; // 0 - 65535
-	private int saturation = 0; // 0 - 255
+	private int saturation = 0; // 0 - 254
+	
+	/** The maximum brightness value of the Hue bulb */
+	public static final int MAX_BRIGHTNESS = 254;
+	/** The maximum saturation value of the Hue bulb */
+	public static final int MAX_SATURATION = 254;
 
 	private Client client;
 
+	public HueBulb(HueBridge connectedBridge, String deviceId) {
+		this(connectedBridge, deviceId, connectedBridge.getSettings());
+	}
+	
 	/**
 	 * Constructor for the HueBulb.
 	 * 
@@ -54,18 +65,31 @@ public class HueBulb {
 	 * @param deviceNumber
 	 *            The number under which the bulb is filed in the bridge.
 	 */
-	public HueBulb(HueBridge connectedBridge, int deviceNumber) {
-		HueSettings settings = connectedBridge.getSettings();
+	public HueBulb(HueBridge connectedBridge, String deviceId, HueSettings settings) {
 		this.bridge = connectedBridge;
-		this.deviceNumber = deviceNumber;
-		this.isOn = settings.isBulbOn(deviceNumber);
-		this.colorTemperature = settings.getColorTemperature(deviceNumber);
-		this.brightness = settings.getBrightness(deviceNumber);
-		this.hue = settings.getHue(deviceNumber);
-		this.saturation = settings.getSaturation(deviceNumber);
+		this.deviceId = deviceId;
+		getStatus(settings);
+
 		this.client = Client.create();
 		this.client.setReadTimeout(1000);
 		this.client.setConnectTimeout(2000);
+	}
+	
+	/**
+	 * Update the internal bulb status according to the Philips hub 
+	 * @param HueSettings retrieved from hub
+	 */
+	public void getStatus(HueSettings settings){
+		if(settings.isValidId(deviceId)){
+			this.isOn = settings.isBulbOn(this.deviceId);
+			this.isReachable = settings.isReachable(this.deviceId);
+			this.colorTemperature = settings.getColorTemperature(this.deviceId);
+			this.brightness = settings.getBrightness(this.deviceId);
+			this.hue = settings.getHue(this.deviceId);
+			this.saturation = settings.getSaturation(this.deviceId);			
+		}else{
+			logger.warn("Not a valid id on the bridge: " + deviceId);
+		}
 	}
 
 	/**
@@ -84,9 +108,9 @@ public class HueBulb {
 		int newHueCalculated = new Long(Math.round(newHue * 360.0 * 182.0))
 				.intValue();
 		int newSaturationCalculated = new Long(
-				Math.round(newSaturation * 255.0)).intValue();
+				Math.round(newSaturation * MAX_SATURATION)).intValue();
 		int newBrightnessCalculated = new Long(
-				Math.round(newBrightness * 255.0)).intValue();
+				Math.round(newBrightness * MAX_BRIGHTNESS)).intValue();
 
 		colorizeByHSBInternally(newHueCalculated, newSaturationCalculated,
 				newBrightnessCalculated);
@@ -94,7 +118,7 @@ public class HueBulb {
 
 	/**
 	 * Increases the brightness of the bulb by the given amount to a maximum of
-	 * 255. If the bulb is not switched on this will be done implicitly.
+	 * {@link #MAX_BRIGHTNESS}. If the bulb is not switched on this will be done implicitly.
 	 * 
 	 * @param amount
 	 *            The amount by which the brightness shall be increased.
@@ -128,7 +152,7 @@ public class HueBulb {
 
 		this.brightness = brightness;
 		this.brightness = this.brightness < 0 ? 0 : this.brightness;
-		this.brightness = this.brightness > 255 ? 255 : this.brightness;
+		this.brightness = this.brightness > MAX_BRIGHTNESS ? MAX_BRIGHTNESS : this.brightness;
 
 		if (this.brightness > 0) {
 			this.isOn = true;
@@ -138,7 +162,7 @@ public class HueBulb {
 			executeMessage("{\"on\":false}");
 		}
 
-		return (int) Math.round((100.0 / 255.0) * this.brightness);
+		return (int) Math.round((100.0 / MAX_BRIGHTNESS) * this.brightness);
 
 	}
 	
@@ -196,9 +220,6 @@ public class HueBulb {
 				: this.colorTemperature;
 
 		executeMessage("{\"ct\":" + this.colorTemperature + "}");
-
-//		return (int) Math.round((100.0 / (500.0 - 154.0)) * (this.colorTemperature - 154.0));
-
 	}
 
 	/**
@@ -210,9 +231,9 @@ public class HueBulb {
 	 */
 	public void setOnAtFullBrightness(boolean newState) {
 		if (newState) {
-			increaseBrightness(255);
+			increaseBrightness(MAX_BRIGHTNESS);
 		} else {
-			decreaseBrightness(255);
+			decreaseBrightness(MAX_BRIGHTNESS);
 		}
 	}
 
@@ -222,9 +243,9 @@ public class HueBulb {
 	 * @param hue
 	 *            The hue of the color. (0..65535)
 	 * @param saturation
-	 *            The saturation of the color. (0..255)
+	 *            The saturation of the color. (0..{@link #MAX_SATURATION})
 	 * @param brightness
-	 *            The brightness of the color. (0..255)
+	 *            The brightness of the color. (0..{@link #MAX_BRIGHTNESS})
 	 */
 	private void colorizeByHSBInternally(int hue, int saturation, int brightness) {
 
@@ -246,8 +267,9 @@ public class HueBulb {
 	 *            bulb.
 	 */
 	private void executeMessage(String message) {
-		String targetURL = bridge.getUrl() + "lights/" + deviceNumber + "/state";
+		String targetURL = bridge.getUrl() + "lights/" + deviceId + "/state";
 		WebResource webResource = client.resource(targetURL);
+
 		ClientResponse response = webResource.type("application/json").put(
 				ClientResponse.class, message);
 
@@ -258,5 +280,46 @@ public class HueBulb {
 					+ response.getStatus());
 		}
 	}
-
+	
+	/**
+	 * Return on / off status of bulb
+	 * @return
+	 */
+	public boolean getIsOn()
+	{
+		return isOn;
+	}
+	
+	/**
+	 * Return isReachable status of bulb
+	 * @return
+	 */
+	public boolean getIsReachable()
+	{
+		return isReachable;
+	}
+	
+	/**
+	 * Return Hue value of bulb
+	 * @return
+	 */
+	public int getHue(){
+		return hue;
+	}
+	
+	/**
+	 * Return Saturation of bulb
+	 * @return
+	 */
+	public int getSaturation(){
+		return saturation;
+	}
+	
+	/**
+	 * Return Brightness of bulb
+	 * @return
+	 */
+	public int getBrightness(){
+		return brightness;
+	}
 }
