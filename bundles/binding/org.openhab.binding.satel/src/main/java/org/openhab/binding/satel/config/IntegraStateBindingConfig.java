@@ -44,6 +44,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <ul>
  * <li>commands_only - binding does not update state of the item, but accepts commands</li>
  * <li>force_arm - forces arming for items that accept arming commands</li>
+ * <li>invert_state - uses 0 as active state</li>
  * </ul>
  * 
  * @author Krzysztof Goworek

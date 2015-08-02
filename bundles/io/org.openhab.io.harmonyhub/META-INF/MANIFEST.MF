@@ -29,3 +29,4 @@ Bundle-ClassPath: .,
  lib/smack-tcp-4.0.2.jar,
  lib/harmony-java-client-1.0.3.jar,
  lib/xpp3-1.1.4c.jar
+Bundle-ActivationPolicy: lazy

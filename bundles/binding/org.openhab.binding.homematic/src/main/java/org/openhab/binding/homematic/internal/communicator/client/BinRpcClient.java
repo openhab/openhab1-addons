@@ -191,7 +191,7 @@ public class BinRpcClient implements RpcClient {
 				logger.trace("Client BinRpcRequest {}", request);
 			}
 			socket = new Socket(context.getConfig().getHost(), hmInterface.getPort());
-			socket.setSoTimeout(5000);
+			socket.setSoTimeout(context.getConfig().getTimeout() * 1000);
 			socket.getOutputStream().write(request.createMessage());
 			BinRpcResponse resp = new BinRpcResponse(socket.getInputStream(), false);
 

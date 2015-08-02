@@ -34,7 +34,7 @@ public class ConfigurationParameter {
 	 */
 	public ConfigurationParameter(Integer index, Integer value, Integer size) throws IllegalArgumentException {
 		
-		if (size != 1 && size != 2 && size != 4) {
+		if (size < 1 || size > 4) {
 			throw new IllegalArgumentException("illegal parameter size");
 		}
 		

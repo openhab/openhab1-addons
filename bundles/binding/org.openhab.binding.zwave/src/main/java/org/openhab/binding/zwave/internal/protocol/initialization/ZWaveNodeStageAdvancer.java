@@ -22,7 +22,7 @@ import org.openhab.binding.zwave.internal.config.ZWaveDbConfigurationParameter;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -362,7 +362,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// It seems that PC_CONTROLLERs don't respond to a lot of requests, so let's
 				// just assume their OK!
 				// If this is a controller, we're done
-				if (node.getDeviceClass().getGenericDeviceClass() == Generic.STATIC_CONTOLLER) {
+				if (node.getDeviceClass().getSpecificDeviceClass() == Specific.PC_CONTROLLER) {
 					logger.debug("NODE {}: Node advancer: FAILED_CHECK - Controller - terminating initialisation", node.getNodeId());
 					currentStage = ZWaveNodeInitStage.DONE;
 					break;
@@ -745,13 +745,19 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 						.getCommandClass(CommandClass.CONFIGURATION);
 
+				// If there are no configuration entries for this node, then continue.
+				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+				if(configList.size() == 0) {
+					break;
+				}
+
+				// If the node doesn't support configuration class, then we better let people know!
 				if (configurationCommandClass == null) {
 					logger.error("NODE {}: Node advancer: GET_CONFIGURATION - CONFIGURATION class not supported", node.getNodeId());
 					break;
 				}
 
 				// Request all parameters for this node
-				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 				for (ZWaveDbConfigurationParameter parameter : configList) {
 					// Some parameters don't return anything, so don't request them!
 					if(parameter.WriteOnly != null && parameter.WriteOnly == true) {

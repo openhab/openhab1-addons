@@ -39,3 +39,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

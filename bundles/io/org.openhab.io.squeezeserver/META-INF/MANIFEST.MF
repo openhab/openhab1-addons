@@ -13,3 +13,4 @@ Import-Package: org.apache.commons.lang;version="2.6.0",
 Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/squeezeserver.xml
 Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

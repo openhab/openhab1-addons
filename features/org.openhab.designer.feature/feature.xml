@@ -21,7 +21,7 @@
    </description>
 
    <copyright>
-      Copyright (c) 2010-2014, openHAB.org &lt;admin@openhab.org&gt;
+      Copyright (c) 2010-2015, openHAB.org &lt;admin@openhab.org&gt;
    </copyright>
 
    <license url="%licenseURL">
@@ -115,6 +115,13 @@
       <import plugin="org.openhab.core.transform"/>
       <import plugin="org.eclipse.xtext.common.types"/>
       <import plugin="org.eclipse.xtext.xbase"/>
+      <import plugin="javax.xml"/>
+      <import plugin="javax.xml.bind"/>
+      <import plugin="javax.xml.stream"/>
+      <import plugin="org.eclipse.jetty.client"/>
+      <import plugin="org.eclipse.jetty.http"/>
+      <import plugin="org.eclipse.jetty.io"/>
+      <import plugin="org.eclipse.jetty.util"/>
    </requires>
 
    <plugin
@@ -263,7 +270,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.openhab.core.persistence"
          download-size="0"
@@ -371,6 +378,90 @@
 
    <plugin
          id="org.openhab.action.tinkerforge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.harmonyhub"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.mios"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.weather"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.astro"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.harmonyhub"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.transport.xpl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.tinkerforge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.weather"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.squeezeserver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.binding.homematic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.io.myopenhab"
          download-size="0"
          install-size="0"
          version="0.0.0"
