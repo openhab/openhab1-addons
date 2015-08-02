@@ -13,6 +13,15 @@
 			<ConfigFile>devolo/mt02646.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000E</Id>
+			</Reference>
+			<Model>MT02648</Model>
+			<Label lang="en">Door/Window Contact</Label>
+			<ConfigFile>devolo/mt02648.xml</ConfigFile>
+		</Product>
+		<Product>
             <Reference>
                 <Type>0100</Type>
                 <Id>0101</Id>
