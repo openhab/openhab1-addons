@@ -33,3 +33,4 @@ Service-Component: OSGI-INF/activebinding.xml,
  OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/async-http-client-1.8.4.jar
+Bundle-ActivationPolicy: lazy

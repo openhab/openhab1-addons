@@ -2,7 +2,7 @@
 <Product>
 	<Model>ZIR010</Model>
 	<Label lang="en">PIR Motion Sensor</Label>
-	<CommandClass>
+	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x80</id></Class>
 		<Class><id>0x84</id></Class>
@@ -12,12 +12,12 @@
 		<Class><id>0x30</id></Class>
 		<Class><id>0x71</id></Class>
 		<Class><id>0x72</id></Class>
-	</CommandClass>
+	</CommandClasses>
 	<Configuration>
 		<Parameter>
 			<Index>17</Index>
 			<Type>list</Type>
-			<Default>0/Default>
+			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Mode</Label>
 			<Help lang="en">The ZIR010 can be configured to operate in 1 of 3 modes.

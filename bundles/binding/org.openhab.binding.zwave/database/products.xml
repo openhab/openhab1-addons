@@ -13,14 +13,23 @@
 			<ConfigFile>devolo/mt02646.xml</ConfigFile>
 		</Product>
 		<Product>
-            <Reference>
-                <Type>0100</Type>
-                <Id>0101</Id>
-            </Reference>
-            <Model>MT2652</Model>
-            <Label lang="en">Scene Switch</Label>
-            <ConfigFile>devolo/mt2652.xml</ConfigFile>
-        </Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000E</Id>
+			</Reference>
+			<Model>MT02648</Model>
+			<Label lang="en">Door/Window Contact</Label>
+			<ConfigFile>devolo/mt02648.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>MT2652</Model>
+			<Label lang="en">Scene Switch</Label>
+			<ConfigFile>devolo/mt2652.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -683,17 +692,17 @@
 				<Id>0060</Id>
 			</Reference>
 			<Reference>
-                <Type>0103</Type>
-                <Id>0060</Id>
-            </Reference>
-            <Reference>
-                <Type>0203</Type>
-                <Id>0060</Id>
-            </Reference>
-            <Reference>
-                <Type>1D03</Type>
-                <Id>0060</Id>
-            </Reference>
+				<Type>0103</Type>
+				<Id>0060</Id>
+			</Reference>
+			<Reference>
+				<Type>0203</Type>
+				<Id>0060</Id>
+			</Reference>
+			<Reference>
+				<Type>1D03</Type>
+				<Id>0060</Id>
+			</Reference>
 			<Model>ZW096</Model>
 			<Label lang="en">Smart Switch 6</Label>
 			<ConfigFile>aeon/zw096.xml</ConfigFile>
@@ -812,23 +821,23 @@
 			<Label lang="en">4 in One MultiSensor (G5)</Label>
 			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
 		</Product>
-        <Product>
+		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0064</Id>
 			</Reference>
-            <Reference>
-                <Type>0102</Type>
-                <Id>0064</Id>
-            </Reference>
+			<Reference>
+				<Type>0102</Type>
+				<Id>0064</Id>
+			</Reference>
 			<Reference>
 				<Type>0202</Type>
 				<Id>0064</Id>
 			</Reference>
-            <Model>ZW100-A</Model>
-            <Label lang="en">MultiSensor 6</Label>
-            <ConfigFile>aeon/zw100-a.xml</ConfigFile>
-        </Product>
+			<Model>ZW100-A</Model>
+			<Label lang="en">MultiSensor 6</Label>
+			<ConfigFile>aeon/zw100-a.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0006</Type>
@@ -1577,9 +1586,9 @@
 				<Type>0001</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>TILTZWAVE1</Model>
+			<Model>TILTZWAVE2</Model>
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
-			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
+			<ConfigFile>eco/tiltzwave2.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
