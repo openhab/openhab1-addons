@@ -1037,6 +1037,15 @@
 			<Label lang="en">LED Bulb</Label>
 			<ConfigFile>aeon/zw098.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>002d</Id>
+			</Reference>
+			<Model>DSB45-ZWUS</Model>
+			<Label lang="en">Water Sensor</Label>
+			<ConfigFile>aeon/dsb45-zwus.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
