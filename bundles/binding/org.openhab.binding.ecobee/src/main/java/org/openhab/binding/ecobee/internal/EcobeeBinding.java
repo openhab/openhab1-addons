@@ -585,8 +585,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		// different thermostats or properties than before.
 		if (provider instanceof EcobeeBindingProvider) {
 			String userid = ((EcobeeBindingProvider) provider).getUserid(itemName);
-			getOAuthCredentials(userid).getLastRevisionMap().clear();
+			if (userid != null) {
+				getOAuthCredentials(userid).getLastRevisionMap().clear();
+			}
 		}
+		super.bindingChanged(provider, itemName);
 	}
 
 	/**
@@ -601,6 +604,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				getOAuthCredentials(userid).getLastRevisionMap().clear();
 			}
 		}
+		super.allBindingsChanged(provider);
 	}
 
 	/**
