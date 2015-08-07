@@ -241,7 +241,7 @@
 		<Parameter>
 			<Index>113</Index>
 			<Type>int</Type>
-			<Minimum>o</Minimum>
+			<Minimum>0</Minimum>
 			<Maximum>65535</Maximum>
 			<Default>65535</Default>
 			<Size>4</Size>
