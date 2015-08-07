@@ -215,7 +215,7 @@
 		<Parameter>
 			<Index>111</Index>
 			<Type>byte</Type>
-			<Minimum>o</Minimum>
+			<Minimum>0</Minimum>
 			<Maximum>65535</Maximum>
 			<Default>720</Default>
 			<Size>4</Size>
