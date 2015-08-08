@@ -111,7 +111,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 				}
 				else {
 					logger.debug("NODE {}: Calling handleApplicationCommandRequest.", this.getNode().getNodeId());
-					zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 1);
+					zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 0);
 				}
 			}
 
