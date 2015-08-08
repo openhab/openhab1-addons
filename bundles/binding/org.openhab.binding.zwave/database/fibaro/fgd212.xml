@@ -64,7 +64,7 @@
 			<Minimum>0</Minimum>
 			<Maximum>255</Maximum>
 			<Default>0</Default>
-			<Size>1</Size>			
+			<Size>2</Size>			
 			<Label lang="en">Incandescence time of dimmable compact fluorescent lamps</Label>
 			<Help lang="en">This parameter determines the time required for switching compact fluorescent lamps and certain types of light sources. Setting this parameter to 0 will disable the incandescence functionality. Available settings: 0-255 (0s - 25,5s)</Help>
 		</Parameter>
@@ -83,7 +83,7 @@
 			<Type>short</Type>
 			<Minimum>1</Minimum>
 			<Maximum>255</Maximum>
-			<Default>1</Default>
+			<Default>2</Default>
 			<Size>1</Size>			
 			<Label lang="en">Dimming Step Timing at Automatic Control</Label>
 			<Help lang="en">The parameter defines the time of a dimming step at automatic control. Available settings: 0-255 (0s - 2,55s)</Help>
@@ -104,7 +104,7 @@
 			<Minimum>1</Minimum>
 			<Maximum>255</Maximum>
 			<Default>1</Default>
-			<Size>1</Size>			
+			<Size>2</Size>			
 			<Label lang="en">Dimming Step Timing at Manual Control</Label>
 			<Help lang="en">The parameter defines the time of a dimming step at manual control. Available settings: 0-255 (0s - 2,55s)</Help>
 		</Parameter>
