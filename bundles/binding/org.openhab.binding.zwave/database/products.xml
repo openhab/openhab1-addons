@@ -1541,6 +1541,15 @@
 			<Label lang="en">Fibaro FGR221 Roller Shutter Controller</Label>
 			<ConfigFile>fibaro/fgr221.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGD212</Model>
+			<Label lang="en">Fibaro Dimmer 2</Label>
+			<ConfigFile>fibaro/fgd212.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
