@@ -19,7 +19,7 @@
 	
    <!-- <property name="service.pid" type="String" value="org.openhab.wr3223"/> -->	
 
-	<property name="event.topics" type="String" value="openhab/command/*" />
+	<property name="event.topics" type="String" value="openhab/*" />
 
 	<reference bind="setEventPublisher" cardinality="1..1"
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
@@ -27,5 +27,6 @@
 	<reference bind="addBindingProvider" cardinality="1..n"
 		interface="org.openhab.binding.wr3223.WR3223BindingProvider" name="WR3223BindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
+	
 	
 </scr:component>

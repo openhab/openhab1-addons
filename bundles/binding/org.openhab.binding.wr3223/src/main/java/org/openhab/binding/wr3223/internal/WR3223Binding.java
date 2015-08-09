@@ -9,9 +9,8 @@
 package org.openhab.binding.wr3223.internal;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +46,10 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		WR3223CommandType.TEMPERATURE_AFTER_PREHEATING_RADIATOR,
 		WR3223CommandType.VENTILATION_LEVEL,
 		WR3223CommandType.ROTATION_SPEED_SUPPLY_AIR_MOTOR,
-		WR3223CommandType.ROTATION_SPEED_EXHAUST_AIR_MOTOR
+		WR3223CommandType.ROTATION_SPEED_EXHAUST_AIR_MOTOR,
+		WR3223CommandType.OPERATION_MODE
 	};
+	
 	
 	private static final Logger logger = 
 		LoggerFactory.getLogger(WR3223Binding.class);
@@ -92,10 +93,27 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	 */
 	private AbstractWR3223Connector connector;
 	
+	private boolean wpOn = false;
+	private boolean additionalHieaterOn = false;
+	private boolean cooling = false;
+	private int ventilationLevel = 2;
+	private int operationMode = 2;
+	private int targetTemperatureSupplyAir = 20;
+	
+	private boolean hasUpdate = false;
 	
 	public WR3223Binding() {
 	}
 		
+	
+//	private ItemRegistry itemRegistry;
+//	public void setItemRegistry(ItemRegistry itemRegistry) {
+//		this.itemRegistry = itemRegistry;
+//	}
+//
+//	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+//		this.itemRegistry = null;
+//	}	
 	
 	/**
 	 * Called by the SCR to activate the component with its configuration read from CAS
@@ -215,7 +233,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	 */
 	@Override
 	protected void execute() {
-		
+
 		//setup connector
 		try{
 			if(connector == null){
@@ -227,10 +245,44 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 					
 				}
 			}
-		}catch(IOException ex){
+		}catch(IOException ex){			
 			logger.error("Couldn't establish connection to WR3223.", ex);
+			connector = null;
+			return;
 		}
 	
+		
+		try {		
+			int data = 0;
+			if(wpOn){
+				data += 1;
+			}
+			if(ventilationLevel == 2 || ventilationLevel == 1){
+				data += 2;
+			}
+			if(ventilationLevel == 3|| ventilationLevel == 1){
+				data += 4;
+			}
+			if(additionalHieaterOn){
+				data += 8;
+			}
+			if(ventilationLevel == 0){
+				data += 16;
+			}
+			if(cooling){
+				data += 32;
+			}		
+			connector.write(controllerAddr, WR3223Commands.SW, String.valueOf(data));
+			
+			if(hasUpdate){
+				connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(operationMode));
+				connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(targetTemperatureSupplyAir));
+			}
+									
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//Read values from WR3223
 		for(WR3223CommandType readCommand : READ_COMMANDS){
@@ -274,6 +326,8 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 						connector.close();
 					}catch(IOException ex2){
 						logger.error("Error by closing connector.", ex2);
+					}finally{
+						connector = null;
 					}
 				}				
 			}
@@ -290,27 +344,66 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		return itemNames;
 	}
 	
+	private WR3223CommandType getWR3223BindingConfig(String itemName) {
+		WR3223CommandType type = null;
+		Iterator<WR3223BindingProvider> providerIt = providers.iterator();
+		while(providerIt.hasNext() && type == null){
+			type = providerIt.next().getWR3223CommandTypeForItemName(itemName);
+		}
+		return type;
+	}	
+	
 	
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+		WR3223CommandType type = getWR3223BindingConfig(itemName);
+		if(type == null){
+			logger.error("Item {} is not bound to WR3223 binding.", itemName);
+		}else{
+			switch(type){
+			case TEMPERATURE_SUPPLY_AIR_TARGET:
+				if(command instanceof DecimalType){
+					targetTemperatureSupplyAir = ((DecimalType)command).intValue();
+					hasUpdate = true;
+				}else{
+					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
+				}
+				break;
+			case VENTILATION_LEVEL:
+				if(command instanceof DecimalType){
+					int value = ((DecimalType)command).intValue();
+					if(value >= 0 && value <= 3){
+						ventilationLevel = value;
+					}else{
+						//FIXME Error
+					}
+				}else{
+					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
+				}
+				break;
+			case OPERATION_MODE:
+				if(command instanceof DecimalType){
+					int value = ((DecimalType)command).intValue();
+					if(value >= 0 && value <= 3){
+						operationMode = value;
+						hasUpdate = true;
+					}else{
+						
+					}
+				}else{
+					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
+				}
+				break;
+			default:
+				logger.warn("Can't receive commands of type {}.", type.getCommand());
+			}
+		}
 	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
-	}
+
 
 }

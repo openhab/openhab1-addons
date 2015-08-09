@@ -71,6 +71,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 			logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
 		}		
 	}
+
 	
 	
 	public String[] getItemNamesForType(WR3223CommandType eventType) {
@@ -83,6 +84,14 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 		}
 		return itemNames.toArray(new String[itemNames.size()]);
 	}	
+	
+	public WR3223CommandType getWR3223CommandTypeForItemName(String itemName){
+		WR3223BindingConfig config = (WR3223BindingConfig)bindingConfigs.get(itemName);
+		if(config != null){
+			return config.type;
+		}
+		return null;
+	}
 	
 	
 	/**

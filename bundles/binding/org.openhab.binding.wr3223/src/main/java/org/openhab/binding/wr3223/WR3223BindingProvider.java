@@ -21,6 +21,8 @@ public interface WR3223BindingProvider extends BindingProvider {
 	 * @param bindingType the binding type of the items
 	 * @return an array of all item names of this provider for the given binding type
 	 */
-	public String[] getItemNamesForType(WR3223CommandType bindingType);	
+	public String[] getItemNamesForType(WR3223CommandType bindingType);
+	
+	public WR3223CommandType getWR3223CommandTypeForItemName(String itemName);
 
 }

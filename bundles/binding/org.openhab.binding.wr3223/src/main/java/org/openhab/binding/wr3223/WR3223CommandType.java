@@ -2,6 +2,7 @@ package org.openhab.binding.wr3223;
 
 import org.openhab.binding.wr3223.internal.WR3223Commands;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 
 public enum WR3223CommandType {
@@ -94,7 +95,34 @@ public enum WR3223CommandType {
 			itemClass = NumberItem.class;
 			wr3223Command = WR3223Commands.NA;			
 		}
+	},
+	
+	/** (de: Betriebsart) */
+	OPERATION_MODE {
+		{
+			command = "operation_mode";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.MD;			
+		}
+	},
+	
+	/** (de: Bypass) */
+	BYPASS {
+		{
+			command = "bypass";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
 	},	
+	
+	/** (de: Zuluftsoll Temperatur) */
+	TEMPERATURE_SUPPLY_AIR_TARGET {
+		{
+			command = "temperature_supply_air_target";
+			itemClass = NumberItem.class;
+			wr3223Command = null;			
+		}
+	}
 	;	
 	
 	/** Represents the WR3223 command as it will be used in *.items configuration */
