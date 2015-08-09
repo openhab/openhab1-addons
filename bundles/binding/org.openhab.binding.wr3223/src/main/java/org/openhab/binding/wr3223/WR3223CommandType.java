@@ -222,7 +222,7 @@ public enum WR3223CommandType {
 		{
 			command = "temperature_supply_air_target";
 			itemClass = NumberItem.class;
-			wr3223Command = null;			
+			wr3223Command = WR3223Commands.SP;			
 		}
 	}
 	;	

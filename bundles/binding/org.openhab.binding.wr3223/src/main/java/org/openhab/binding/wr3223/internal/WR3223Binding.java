@@ -51,7 +51,8 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		WR3223CommandType.VENTILATION_LEVEL,
 		WR3223CommandType.ROTATION_SPEED_SUPPLY_AIR_MOTOR,
 		WR3223CommandType.ROTATION_SPEED_EXHAUST_AIR_MOTOR,
-		WR3223CommandType.OPERATION_MODE
+		WR3223CommandType.OPERATION_MODE,
+		WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET
 	};
 	
 	
@@ -261,7 +262,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			publishValue(WR3223CommandType.COMPRESSOR,relais.isCompressor());
 			publishValue(WR3223CommandType.ADDITIONAL_HEATER,relais.isAdditionalHeater());
 			publishValue(WR3223CommandType.PREHEATING_RADIATOR_ACTIVE,relais.isPreHeaterRadiatorActive());
-			publishValue(WR3223CommandType.BYPASS,relais.isBypass());
+			publishValue(WR3223CommandType.BYPASS,!relais.isBypass());
 			publishValue(WR3223CommandType.BYPASS_RELAY,relais.isBypassRelay());
 			publishValue(WR3223CommandType.CONTROL_DEVICE_ACTIVE,relais.isControlDeviceActive());
 			publishValue(WR3223CommandType.EARTH_HEAT_EXCHANGER,relais.isEarthHeatExchanger());
@@ -408,7 +409,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		private int ventilationLevel = 2;
 		private boolean additionalHeatingOn = false;
 		private boolean coolingOn = false;
-		private int operationMode = 2;
+		private int operationMode = 3;
 		private int targetTemperatureSupplyAir = 20;		
 		
 		
@@ -487,7 +488,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
 		public String getStatusValue(){
 			int data = 0;
-			if(heatPumpOn){
+			if(!heatPumpOn){
 				data += 1;
 			}
 			if(ventilationLevel == 2 || ventilationLevel == 1){
@@ -496,13 +497,13 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			if(ventilationLevel == 3|| ventilationLevel == 1){
 				data += 4;
 			}
-			if(additionalHeatingOn){
+			if(!additionalHeatingOn){
 				data += 8;
 			}
 			if(ventilationLevel == 0){
 				data += 16;
 			}
-			if(coolingOn){
+			if(!coolingOn){
 				data += 32;
 			}
 			return String.valueOf(data);
