@@ -2254,7 +2254,7 @@
 			<Label lang="en">Flush PWM thermostat</Label>
 			<ConfigFile>qubino/zmnhla.xml</ConfigFile>
 		</Product>
-	<Product>
+		<Product>
 			<Reference>
 				<Type>3</Type>
 				<Id>2</Id>
@@ -2262,6 +2262,15 @@
 			<Model>ZMNHCD</Model>
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhcd.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>3</Type>
+				<Id>53</Id>
+			</Reference>
+			<Model>ZMNHOD</Model>
+			<Label lang="en">Flush Shutter</Label>
+			<ConfigFile>qubino/zmnhod.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
