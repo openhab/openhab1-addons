@@ -18,8 +18,12 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.wr3223.WR3223BindingProvider;
 import org.openhab.binding.wr3223.WR3223CommandType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -93,27 +97,15 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	 */
 	private AbstractWR3223Connector connector;
 	
-	private boolean wpOn = false;
-	private boolean additionalHieaterOn = false;
-	private boolean cooling = false;
-	private int ventilationLevel = 2;
-	private int operationMode = 2;
-	private int targetTemperatureSupplyAir = 20;
+	/**
+	 * Status of the WR3223
+	 */
+	private StatusValueHolder statusHolder = new StatusValueHolder();
 	
-	private boolean hasUpdate = false;
+	private boolean hasUpdate = true;
 	
 	public WR3223Binding() {
 	}
-		
-	
-//	private ItemRegistry itemRegistry;
-//	public void setItemRegistry(ItemRegistry itemRegistry) {
-//		this.itemRegistry = itemRegistry;
-//	}
-//
-//	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-//		this.itemRegistry = null;
-//	}	
 	
 	/**
 	 * Called by the SCR to activate the component with its configuration read from CAS
@@ -252,87 +244,93 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		}
 	
 		
-		try {		
-			int data = 0;
-			if(wpOn){
-				data += 1;
-			}
-			if(ventilationLevel == 2 || ventilationLevel == 1){
-				data += 2;
-			}
-			if(ventilationLevel == 3|| ventilationLevel == 1){
-				data += 4;
-			}
-			if(additionalHieaterOn){
-				data += 8;
-			}
-			if(ventilationLevel == 0){
-				data += 16;
-			}
-			if(cooling){
-				data += 32;
-			}		
-			connector.write(controllerAddr, WR3223Commands.SW, String.valueOf(data));
+		try {	
 			
-			if(hasUpdate){
-				connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(operationMode));
-				connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(targetTemperatureSupplyAir));
+			RelaisValueDecoder relais = RelaisValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.RL));
+			
+			//Write values if no control device connected
+			if(!relais.isControlDeviceActive()){			
+				connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue());				
+				if(hasUpdate){
+					connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(statusHolder.getOperationMode()));
+					connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(statusHolder.getTargetTemperatureSupplyAir()));
+				}
 			}
-									
+			
+			//Relay Values
+			publishValue(WR3223CommandType.COMPRESSOR,relais.isCompressor());
+			publishValue(WR3223CommandType.ADDITIONAL_HEATER,relais.isAdditionalHeater());
+			publishValue(WR3223CommandType.PREHEATING_RADIATOR_ACTIVE,relais.isPreHeaterRadiatorActive());
+			publishValue(WR3223CommandType.BYPASS,relais.isBypass());
+			publishValue(WR3223CommandType.BYPASS_RELAY,relais.isBypassRelay());
+			publishValue(WR3223CommandType.CONTROL_DEVICE_ACTIVE,relais.isControlDeviceActive());
+			publishValue(WR3223CommandType.EARTH_HEAT_EXCHANGER,relais.isEarthHeatExchanger());
+			publishValue(WR3223CommandType.MAGNET_VALVE,relais.isMagnetValve());
+			publishValue(WR3223CommandType.OPENHAB_INTERFACE_ACTIVE,relais.isOpenhabInterfaceActive());
+			publishValue(WR3223CommandType.PREHEATING_RADIATOR,relais.isPreheatingRadiator());
+			publishValue(WR3223CommandType.VENTILATION_LEVEL_AVAILABLE,relais.isVentilationLevelAvailable());
+			publishValue(WR3223CommandType.WARM_WATER_POST_HEATER,relais.isWarmWaterPostHeater());
+					
+			//Read values from WR3223
+			for(WR3223CommandType readCommand : READ_COMMANDS){
+				readAndPublishValue(readCommand);
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//Read values from WR3223
-		for(WR3223CommandType readCommand : READ_COMMANDS){
-			readAndPublishValue(readCommand);
-		}
-	
+			logger.error("Communication error to WR3223.", e);
+			connector = null;
+		}		
 
 	}
 	
 	/**
 	 * Read value of given command and publish it to the bus.
 	 * @param wr3223CommandType
+	 * @throws IOException 
 	 */
-	private void readAndPublishValue(WR3223CommandType wr3223CommandType) {
+	private void readAndPublishValue(WR3223CommandType wr3223CommandType) throws IOException {
 		List<String> itemNames = getBoundItemsForType(wr3223CommandType);
 		if(itemNames.size()>0){
-			try {
-				String value = connector.read(controllerAddr, wr3223CommandType.getWr3223Command());
-				if(value != null){
-					State state = null;
-					if(wr3223CommandType.getItemClass() == NumberItem.class){
-						try{
-							state = DecimalType.valueOf(value.trim());
-						}catch(NumberFormatException nfe){
-							logger.error("Can't set value {} to item type {} because it's not a decimal number.", value, wr3223CommandType.getCommand());
-						}
-					}
-					if(state != null){
-						for(String itemName : itemNames){
-							eventPublisher.postUpdate(itemName, state);
-						}
-					}
-				}else{
-					logger.error("Can't set NULL value to item type {}.", wr3223CommandType.getCommand());
-					
-				}
-			} catch (IOException ex) {
-				logger.error("Error by reading values from WR3223:", ex);
-				if(connector != null){
-					try{
-						connector.close();
-					}catch(IOException ex2){
-						logger.error("Error by closing connector.", ex2);
-					}finally{
-						connector = null;
-					}
-				}				
-			}
+			String value = connector.read(controllerAddr, wr3223CommandType.getWr3223Command());
+			publishValueToBoundItems(itemNames, wr3223CommandType, value);
 		}
-	}	
+	}
+	
+	private void publishValue(WR3223CommandType wr3223CommandType, Object value) {
+		List<String> itemNames = getBoundItemsForType(wr3223CommandType);
+		if(itemNames.size()>0){
+			publishValueToBoundItems(itemNames, wr3223CommandType, value);
+		}
+	}
+
+	private void publishValueToBoundItems(List<String> itemNames,
+			WR3223CommandType wr3223CommandType, Object value) {
+		if(value != null){
+			State state = null;
+			if(wr3223CommandType.getItemClass() == NumberItem.class){
+				try{
+					state = DecimalType.valueOf(value.toString().trim());
+				}catch(NumberFormatException nfe){
+					logger.error("Can't set value {} to item type {} because it's not a decimal number.", value, wr3223CommandType.getCommand());
+				}
+			}else if(wr3223CommandType.getItemClass() == SwitchItem.class && value instanceof Boolean){
+				Boolean bolValue = (Boolean)value;
+				state = bolValue ? OnOffType.ON : OnOffType.OFF;
+			}else if(wr3223CommandType.getItemClass() == ContactItem.class && value instanceof Boolean){
+				Boolean bolValue = (Boolean)value;
+				state = bolValue ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+			}else{
+				logger.error("Can't set value {} to item type {}.", value, wr3223CommandType.getCommand());
+			}
+			if(state != null){
+				for(String itemName : itemNames){
+					eventPublisher.postUpdate(itemName, state);
+				}
+			}
+		}else{
+			logger.error("Can't set NULL value to item type {}.", wr3223CommandType.getCommand());
+			
+		}
+	}		
 	
 	private List<String> getBoundItemsForType( WR3223CommandType wr3223CommandType) {
 		List<String> itemNames = new ArrayList<String>(); 
@@ -367,7 +365,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			switch(type){
 			case TEMPERATURE_SUPPLY_AIR_TARGET:
 				if(command instanceof DecimalType){
-					targetTemperatureSupplyAir = ((DecimalType)command).intValue();
+					statusHolder.setTargetTemperatureSupplyAir(((DecimalType)command).intValue());
 					hasUpdate = true;
 				}else{
 					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
@@ -377,7 +375,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 				if(command instanceof DecimalType){
 					int value = ((DecimalType)command).intValue();
 					if(value >= 0 && value <= 3){
-						ventilationLevel = value;
+						statusHolder.setVentilationLevel(value);
 					}else{
 						//FIXME Error
 					}
@@ -389,7 +387,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 				if(command instanceof DecimalType){
 					int value = ((DecimalType)command).intValue();
 					if(value >= 0 && value <= 3){
-						operationMode = value;
+						statusHolder.setOperationMode(value);
 						hasUpdate = true;
 					}else{
 						
@@ -404,6 +402,292 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		}
 	}
 	
+	private static final class StatusValueHolder {
+		
+		private boolean heatPumpOn = false;
+		private int ventilationLevel = 2;
+		private boolean additionalHeatingOn = false;
+		private boolean coolingOn = false;
+		private int operationMode = 2;
+		private int targetTemperatureSupplyAir = 20;		
+		
+		
+		/**
+		 * "Soll Temperatur"
+		 * @return
+		 */
+		public int getTargetTemperatureSupplyAir() {
+			return targetTemperatureSupplyAir;
+		}
 
 
+		/**
+		 * "Soll Temperatur"
+		 * @param targetTemperatureSupplyAir
+		 */
+		public void setTargetTemperatureSupplyAir(int targetTemperatureSupplyAir) {
+			this.targetTemperatureSupplyAir = targetTemperatureSupplyAir;
+		}
+
+
+		/**
+		 * "Betriebsart"
+		 * @return
+		 */
+		public int getOperationMode() {
+			return operationMode;
+		}
+
+
+		/**
+		 * "Betriebsart"
+		 * @param operationMode
+		 */
+		public void setOperationMode(int operationMode) {
+			this.operationMode = operationMode;
+		}
+
+
+
+		/**
+		 * @param "Wärmepumpe  ein (bei Anlagen mit Wärmepumpe)"
+		 */
+		public void setHeatPumpOn(boolean heatPumpOn) {
+			this.heatPumpOn = heatPumpOn;
+		}
+
+
+
+		/**
+		 * @param "Lüftungsstufe 0-3, 0=Aus"
+		 */
+		public void setVentilationLevel(int ventilationLevel) {
+			this.ventilationLevel = ventilationLevel;
+		}
+
+
+
+		/**
+		 * @param "Zusatzheizung ein"
+		 */
+		public void setAdditionalHeatingOn(boolean additionalHeatingOn) {
+			this.additionalHeatingOn = additionalHeatingOn;
+		}
+
+
+
+		/**
+		 * @param "kühlen      (bei Anlagen mit Wärmepumpe)"
+		 */
+		public void setCoolingOn(boolean coolingOn) {
+			this.coolingOn = coolingOn;
+		}
+
+
+
+		public String getStatusValue(){
+			int data = 0;
+			if(heatPumpOn){
+				data += 1;
+			}
+			if(ventilationLevel == 2 || ventilationLevel == 1){
+				data += 2;
+			}
+			if(ventilationLevel == 3|| ventilationLevel == 1){
+				data += 4;
+			}
+			if(additionalHeatingOn){
+				data += 8;
+			}
+			if(ventilationLevel == 0){
+				data += 16;
+			}
+			if(coolingOn){
+				data += 32;
+			}
+			return String.valueOf(data);
+		}
+	}
+	
+
+	/**
+	 * Coding of the RL command.
+	 * @author MFr
+	 *
+	 */
+	private static final class RelaisValueDecoder{
+		
+		private static final int FLAG_COMPRESSOR = 1;
+		private static final int FLAG_ADDITIONAL_HEATER = 2;
+		private static final int FLAG_EARTH_HEAT_EXCHANGER = 4;
+		private static final int FLAG_BYPASS = 8;
+		private static final int FLAG_PREHEATING_RADIATOR = 16;
+		private static final int FLAG_BYPASS_RELAY = 32;
+		private static final int FLAG_CONTROL_DEVICE_ACTIVE =64;
+		private static final int FLAG_OPENHAB_INTERFACE_ACTIVE = 128;
+		private static final int FLAG_VENTILATION_LEVEL_AVAILABLE = 256;
+		private static final int FLAG_WARM_WATER_POST_HEATER = 512;
+		private static final int FLAG_MAGNET_VALVE = 2048;
+		private static final int FLAG_PRE_HEATER_RADIATOR_ACTIVE = 4096;
+
+		private boolean compressor;
+		private boolean additionalHeater;
+		private boolean earthHeatExchanger;
+		private boolean bypass;
+		private boolean bypassRelay;
+		private boolean preheatingRadiator;
+		private boolean controlDeviceActive;
+		private boolean openhabInterfaceActive;
+		private boolean ventilationLevelAvailable;
+		private boolean warmWaterPostHeater;
+		private boolean magnetValve;
+		private boolean preHeaterRadiatorActive;
+		
+
+		public static RelaisValueDecoder valueOf(String read) {
+			RelaisValueDecoder relaisValue = new RelaisValueDecoder();
+			read = read.trim();
+			int decPoint = read.indexOf(".");
+			if(decPoint > 0){
+				read = read.substring(0,decPoint);
+			}
+			int value = Integer.valueOf(read.trim());
+			if ((value & FLAG_COMPRESSOR) == FLAG_COMPRESSOR)
+			{
+				relaisValue.compressor = true;
+			}
+			if ((value & FLAG_ADDITIONAL_HEATER) == FLAG_ADDITIONAL_HEATER)
+			{
+				relaisValue.additionalHeater = true;
+			}
+			if ((value & FLAG_EARTH_HEAT_EXCHANGER) == FLAG_EARTH_HEAT_EXCHANGER)
+			{
+				relaisValue.earthHeatExchanger = true;
+			}
+			if ((value & FLAG_BYPASS) == FLAG_BYPASS)
+			{
+				relaisValue.bypass = true;
+			}
+			if ((value & FLAG_PREHEATING_RADIATOR) == FLAG_PREHEATING_RADIATOR)
+			{
+				relaisValue.preheatingRadiator = true;
+			}
+			if ((value & FLAG_BYPASS_RELAY) == FLAG_BYPASS_RELAY)
+			{
+				relaisValue.bypassRelay = true;
+			}
+			if ((value & FLAG_CONTROL_DEVICE_ACTIVE) == FLAG_CONTROL_DEVICE_ACTIVE)
+			{
+				relaisValue.controlDeviceActive = true;
+			}
+			if ((value & FLAG_OPENHAB_INTERFACE_ACTIVE) == FLAG_OPENHAB_INTERFACE_ACTIVE)
+			{
+				relaisValue.openhabInterfaceActive = true;
+			}
+			if ((value & FLAG_VENTILATION_LEVEL_AVAILABLE) == FLAG_VENTILATION_LEVEL_AVAILABLE)
+			{
+				relaisValue.ventilationLevelAvailable = true;
+			}
+			if ((value & FLAG_WARM_WATER_POST_HEATER) == FLAG_WARM_WATER_POST_HEATER)
+			{
+				relaisValue.warmWaterPostHeater = true;
+			}			
+			if ((value & FLAG_MAGNET_VALVE) == FLAG_MAGNET_VALVE)
+			{
+				relaisValue.magnetValve = true;
+			}			
+			if ((value & FLAG_PRE_HEATER_RADIATOR_ACTIVE) == FLAG_PRE_HEATER_RADIATOR_ACTIVE)
+			{
+				relaisValue.preHeaterRadiatorActive = true;
+			}		
+			return relaisValue;
+		}
+
+		/**
+		 * @return "Kompressor Relais"
+		 */
+		public boolean isCompressor() {
+			return compressor;
+		}
+
+		/**
+		 * @return "Zusatzheizung Relais"
+		 */
+		public boolean isAdditionalHeater() {
+			return additionalHeater;
+		}
+
+		/**
+		 * @return "Erdwärmetauscher"
+		 */
+		public boolean isEarthHeatExchanger() {
+			return earthHeatExchanger;
+		}
+
+		/**
+		 * @return "Bypass"
+		 */
+		public boolean isBypass() {
+			return bypass;
+		}
+		
+		/**
+		 * "Netzrelais Bypass"
+		 * @return
+		 */
+		public boolean isBypassRelay() {
+			return bypassRelay;
+		}
+
+		/**
+		 * @return "Vorheizregister"
+		 */
+		public boolean isPreheatingRadiator() {
+			return preheatingRadiator;
+		}
+
+		/**
+		 * @return "Bedienteil aktiv"
+		 */
+		public boolean isControlDeviceActive() {
+			return controlDeviceActive;
+		}
+
+		/**
+		 * @return "Bedienung über RS Schnittstelle"
+		 */
+		public boolean isOpenhabInterfaceActive() {
+			return openhabInterfaceActive;
+		}
+
+		/**
+		 * @return "Luftstufe vorhanden"
+		 */
+		public boolean isVentilationLevelAvailable() {
+			return ventilationLevelAvailable;
+		}
+
+		/**
+		 * @return "WW_Nachheizrgister"
+		 */
+		public boolean isWarmWaterPostHeater() {
+			return warmWaterPostHeater;
+		}
+
+		/**
+		 * @return "Magnetventil"
+		 */
+		public boolean isMagnetValve() {
+			return magnetValve;
+		}
+
+		/**
+		 * @return "Vorheizen aktiv"
+		 */
+		public boolean isPreHeaterRadiatorActive() {
+			return preHeaterRadiatorActive;
+		}
+		
+		
+	}
 }

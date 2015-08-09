@@ -70,15 +70,6 @@ public enum WR3223CommandType {
 		}
 	},		
 	
-	/** (de: aktuelle Luftstufe) */
-	VENTILATION_LEVEL {
-		{
-			command = "ventilation_level";
-			itemClass = NumberItem.class;
-			wr3223Command = WR3223Commands.LS;			
-		}
-	},
-	
 	/** (de: Drehzahl Zuluftmotor) */
 	ROTATION_SPEED_SUPPLY_AIR_MOTOR {
 		{
@@ -97,15 +88,6 @@ public enum WR3223CommandType {
 		}
 	},
 	
-	/** (de: Betriebsart) */
-	OPERATION_MODE {
-		{
-			command = "operation_mode";
-			itemClass = NumberItem.class;
-			wr3223Command = WR3223Commands.MD;			
-		}
-	},
-	
 	/** (de: Bypass) */
 	BYPASS {
 		{
@@ -114,6 +96,126 @@ public enum WR3223CommandType {
 			wr3223Command = null;			
 		}
 	},	
+	
+	/** (de: Kompressor Relais) */
+	COMPRESSOR {
+		{
+			command = "compressor";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},
+	
+	/** (de: Zusatzheizung Relais) */
+	ADDITIONAL_HEATER {
+		{
+			command = "additional_heater";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},	
+	
+	/** (de: Netzrelais Bypass) */
+	BYPASS_RELAY {
+		{
+			command = "bypass_relay";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},
+	
+	/** (de: Vorheizen aktiv) */
+	PREHEATING_RADIATOR_ACTIVE {
+		{
+			command = "preheating_radiator_active";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},	
+	
+	/** (de: Bedienteil aktiv) */
+	CONTROL_DEVICE_ACTIVE {
+		{
+			command = "control_device_active";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},	
+	
+	/** (de: Erdwärmetauscher) */
+	EARTH_HEAT_EXCHANGER {
+		{
+			command = "earth_heat_exchanger";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},	
+	
+	/** (de: Magnetventil) */
+	MAGNET_VALVE {
+		{
+			command = "magnet_valve";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},	
+	
+	/** (de: Bedienung über RS Schnittstelle) */
+	OPENHAB_INTERFACE_ACTIVE {
+		{
+			command = "openhab_interface_active";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},
+	
+	/** (de: Vorheizregister) */
+	PREHEATING_RADIATOR {
+		{
+			command = "preheating_radiator";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},
+	
+	
+	/** (de: WW_Nachheizrgister) */
+	WARM_WATER_POST_HEATER {
+		{
+			command = "warm_water_post_heater";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},	
+	
+	/** (de: Luftstufe vorhanden) */
+	VENTILATION_LEVEL_AVAILABLE {
+		{
+			command = "ventilation_level_available";
+			itemClass = ContactItem.class;
+			wr3223Command = null;			
+		}
+	},
+	
+	/** (de: aktuelle Luftstufe) */
+	VENTILATION_LEVEL {
+		{
+			command = "ventilation_level";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.LS;			
+		}
+	},	
+	
+	/** (de: Betriebsart) */
+	OPERATION_MODE {
+		{
+			command = "operation_mode";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.MD;			
+		}
+	},	
+	
+	
 	
 	/** (de: Zuluftsoll Temperatur) */
 	TEMPERATURE_SUPPLY_AIR_TARGET {
