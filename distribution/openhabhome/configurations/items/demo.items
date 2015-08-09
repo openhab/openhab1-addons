@@ -128,9 +128,11 @@ Location DemoLocation			"Brandenburg Gate Berlin"
 Group gSapp 		(All)
 // switch binding
 // <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>:<on value>/<pnmasid control>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<on value>:<off value>
-Switch SappSwitch1				"SappSwitch1" (gSapp) { sapp="home:V:700:*:1/home:V:701:*:1:1" }
-Switch SappSwitch2				"SappSwitch2" (gSapp) { sapp="home:I:150:1:1/home:V:701:*:1:1" }
-Switch SappSwitch3				"SappSwitch3" (gSapp) { sapp="home:O:200:L:5/home:V:701:*:1:1" }
+Switch SappSwitch1				"SappSwitch *" (gSapp) { sapp="home:V:700:*:1/home:V:701:*:1:1" }
+Switch SappSwitch2				"SappSwitch 1" (gSapp) { sapp="home:I:150:1:1/home:V:701:1:1:1" }
+Switch SappSwitch3				"SappSwitch 2" (gSapp) { sapp="home:O:200:L:5/home:V:701:2:1:1" }
+Switch SappSwitch4				"SappSwitch H" (gSapp) { sapp="home:O:200:L:5/home:V:701:H:1:1" }
+Switch SappSwitch5				"SappSwitch L" (gSapp) { sapp="home:O:200:L:5/home:V:701:L:1:1" }
 // <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>:<open value>
 Contact SappContact3			"SappContact3" (gSapp) { sapp="home:V:750:*:5" }
 //Switch SappSwitch2				"SappSwitch2" (gSapp) { sapp="home:I:200:1:1:0/home:I:200:1:1:0" }
