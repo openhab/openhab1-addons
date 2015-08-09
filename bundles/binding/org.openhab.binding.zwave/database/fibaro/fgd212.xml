@@ -864,6 +864,7 @@
 		</Group>
 		<Group>
 			<Index>5</Index>
+			<Maximum>10</Maximum>
 			<Label lang="en">Sends BASIC SET command class frame according to the state of the device. The Dimmer in 2nd to 5th group allows for controlling 5 regular and 5 multichannel devices per an association group, out of which 1 field is reserved for the Z-Wave network main controller.</Label>
 			<SetToController>false</SetToController>
 		</Group>		
