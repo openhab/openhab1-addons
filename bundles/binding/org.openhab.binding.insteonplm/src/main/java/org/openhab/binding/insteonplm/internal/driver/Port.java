@@ -10,6 +10,8 @@ package org.openhab.binding.insteonplm.internal.driver;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.openhab.binding.insteonplm.internal.device.ModemDBBuilder;
@@ -67,6 +69,7 @@ public class Port {
 	private boolean			m_modemDBComplete = false;
 	private MsgFactory		m_msgFactory = new MsgFactory();
 	private Driver			m_driver	 = null;
+	private ModemDBBuilder	m_mdbb 		 = null;
 	private ArrayList<MsgListener>	 m_listeners = new ArrayList<MsgListener>();
 	private LinkedBlockingQueue<Msg> m_writeQueue = new LinkedBlockingQueue<Msg>();
 
@@ -84,6 +87,7 @@ public class Port {
 		m_ioStream 	= IOStream.s_create(devName);
 		m_reader	= new IOStreamReader();
 		m_writer	= new IOStreamWriter();
+		m_mdbb 		= new ModemDBBuilder(this);
 	}
 
 	public synchronized boolean isModemDBComplete() { return (m_modemDBComplete); }
@@ -92,7 +96,11 @@ public class Port {
 	public String			getDeviceName()	{ return m_devName; }
 	public Driver			getDriver()		{ return m_driver; }
 
-	
+
+	public void setModemDBRetryTimeout(int timeout) {
+		m_mdbb.setRetryTimeout(timeout);
+	}
+
 	public void addListener (MsgListener l) {
 		synchronized(m_listeners) {
 			if (!m_listeners.contains(l)) m_listeners.add(l);
@@ -107,6 +115,16 @@ public class Port {
 		}
 	}
 
+	/**
+	 * Clear modem database that has been queried so far.
+	 */
+	public void clearModemDB() {
+		logger.debug("clearing modem db!");
+		HashMap<InsteonAddress, ModemDBEntry> dbes = getDriver().lockModemDBEntries();
+		dbes.clear();
+		getDriver().unlockModemDBEntries();
+	}
+	
 	/**
 	 * Starts threads necessary for reading and writing
 	 */
@@ -126,8 +144,7 @@ public class Port {
 		m_readThread.start();
 		m_writeThread.start();
 		m_modem.initialize();
-		ModemDBBuilder mdbb = new ModemDBBuilder(this);
-		mdbb.start(); // start downloading the device list
+		m_mdbb.start(); // start downloading the device list
 		m_running = true;
 	}
 
@@ -138,6 +155,9 @@ public class Port {
 		if (!m_running) {
 			logger.debug("port {} not running, no need to stop it", m_logName);
 			return;
+		}
+		if (m_mdbb != null) {
+			m_mdbb = null;
 		}
 		if (m_readThread != null) m_readThread.interrupt();
 		if (m_writeThread != null) m_writeThread.interrupt();
@@ -207,6 +227,7 @@ public class Port {
 		
 		private ReplyType	m_reply = ReplyType.GOT_ACK;
 		private	Object		m_replyLock = new Object();
+		private	boolean		m_dropRandomBytes = false; // set to true for fault injection
 		/**
 		 * Helper function for implementing synchronization between reader and writer
 		 * @return reference to the RequesReplyLock
@@ -217,12 +238,16 @@ public class Port {
 		public void run() {
 			logger.debug("starting reader...");
 			byte[] buffer = new byte[2 * m_readSize];
+			Random rng	  = new Random();
 			for (int len = -1; (len = m_ioStream.read(buffer, 0, m_readSize)) > 0;) {
+				if (m_dropRandomBytes && rng.nextInt(100) < 20) {
+					len = dropBytes(buffer, len);
+				}
 				m_msgFactory.addData(buffer, len);
 				processMessages();
 			}
+			logger.error("reader thread exiting!");
 		}
-		
 		private void processMessages() {
 			try {
 				// must call processData() until we get a null pointer back
@@ -234,7 +259,7 @@ public class Port {
 			} catch (IOException e) {
 				// got bad data from modem,
 				// unblock those waiting for ack
-				logger.warn("bad data received: {}", e.toString());
+				logger.warn("bad data received: {}", e.getMessage());
 				synchronized (getRequestReplyLock()) {
 					if (m_reply == ReplyType.WAITING_FOR_ACK) {
 						logger.warn("got bad data back, must assume message was acked.");
@@ -263,6 +288,28 @@ public class Port {
 			}
 		}
 
+		/**
+		 * Drops bytes randomly from buffer to simulate errors seen
+		 * from the InsteonHub using the raw interface
+		 * @param buffer byte buffer from which to drop bytes
+		 * @param len original number of valid bytes in buffer
+		 * @return length of byte buffer after dropping from it
+		 */
+		private int dropBytes(byte [] buffer, int len) {
+			final int DROP_RATE = 2; // in percent
+			Random rng	  = new Random();
+			ArrayList<Byte> l = new ArrayList<Byte>();
+			for (int i = 0; i < len; i++) {
+				if (rng.nextInt(100) >= DROP_RATE) {
+					l.add(new Byte(buffer[i]));
+				}
+			}
+			for (int i = 0; i < l.size(); i++) {
+				buffer[i] = l.get(i);
+			}
+			return (l.size());
+		}
+
 		@SuppressWarnings("unchecked")
 		private void toAllListeners(Msg msg) {
 			// When we deliver the message, the recipient
@@ -289,8 +336,19 @@ public class Port {
 			while (m_reply == ReplyType.WAITING_FOR_ACK) {
 				try {
 					logger.trace("writer waiting for ack.");
-					getRequestReplyLock().wait();
-					logger.trace("writer got ack: {}", (m_reply == ReplyType.GOT_ACK));
+					// There have been cases observed, in particular for
+					// the Hub, where we get no ack or nack back, causing the binding
+					// to hang in the wait() below, because unsolicited messages
+					// do not trigger a notify(). For this reason we request retransmission
+					// if the wait() times out.
+					getRequestReplyLock().wait(30000); // be patient for 30 msec
+					if (m_reply == ReplyType.WAITING_FOR_ACK) { // timeout expired without getting ACK or NACK
+						logger.trace("writer timeout expired, asking for retransmit!");
+						m_reply = ReplyType.GOT_NACK;
+						break;
+					} else {
+						logger.trace("writer got ack: {}", (m_reply == ReplyType.GOT_ACK));
+					}
 				} catch (InterruptedException e) {
 					// do nothing
 				}

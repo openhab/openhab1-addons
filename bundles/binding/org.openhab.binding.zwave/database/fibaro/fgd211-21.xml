@@ -131,7 +131,7 @@
 			<Type>byte</Type>
 			<Minimum>2</Minimum>
 			<Maximum>99</Maximum>
-			<Default>2</Default>
+			<Default>99</Default>
 			<Size>1</Size>
 			<Label lang="en">Maximum dimmer level control</Label>
 			<Help lang="en">Options for changing parameter 2-99</Help>
@@ -140,7 +140,9 @@
 		<Parameter>
 			<Index>13</Index>
 			<Type>byte</Type>
-			<Default>0</Default>
+			<Minimum>1</Minimum>
+			<Maximum>98</Maximum>
+			<Default>2</Default>
 			<Size>1</Size>
 			<Label lang="en">Minimum dimmer level control</Label>			
 			<Help lang="en">Options for changing parameter 1-98</Help>
@@ -160,13 +162,17 @@
 				<Value>1</Value>
 				<Label lang="en">Bi-stable input (switch)</Label>
 			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Roller blind switch (UP / DOWN)</Label>
+			</Item>
 			<Help lang="en">Binary inputs type configuration</Help>
 		</Parameter>
 
 		<Parameter>
 			<Index>15</Index>
 			<Type>list</Type>
-			<Default>0</Default>
+			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Parm 15</Label>			
 			<Item>
@@ -294,6 +300,17 @@
 			<Size>2</Size>
 			<Label lang="en">ALARM FLASHING alarm time</Label>			
 			<Help lang="en">Amount of time (ms) the device keeps on flashing after receipt of Alarm Frame</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Updating the dimming level without switch.</Label>			
+			<Help lang="en">Available settings: from 1 to 99. Parameter’s value changes depending on the dimming level.</Help>
 		</Parameter>
 
 		<Parameter>

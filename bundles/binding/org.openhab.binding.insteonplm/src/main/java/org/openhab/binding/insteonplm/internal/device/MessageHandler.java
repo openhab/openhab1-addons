@@ -754,6 +754,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad TEMPERATURE reply from {}", nm(), dev.getAddress());
+					return;
+				}
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
 				int level = cmd2/2;
 				logger.info("{}: got TEMPERATURE from {} of value: {}", nm(), dev.getAddress(), level);
@@ -776,6 +781,11 @@ public abstract class MessageHandler {
 				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
+				int cmd1Msg = (int) (msg.getByte("command1") & 0xff);
+				if (cmd1Msg != 0x6a) {
+					logger.warn("{}: ignoring bad HUMIDITY reply from {}", nm(), dev.getAddress());
+					return;
+				}
 				int cmd2 = (int) msg.getByte("command2");
 				logger.info("{}: got HUMIDITY from {} of value: {}", nm(), dev.getAddress(), cmd2);
 				logger.info("{}: set device {} to level {}", nm(), dev.getAddress(), cmd2);

@@ -133,6 +133,26 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'rn:demo-paradox-com:serviceId:ParadoxSecurityEVO1'"  >Paradox</xsl:when>
 <xsl:when test="@service = 'urn:macrho-com:serviceId:LiftMasterOpener1'"         >LiftMasterOpener1</xsl:when>
 <xsl:when test="@service = 'urn:directv-com:serviceId:DVR1'"                     >DirecTVDVR1</xsl:when>
+<xsl:when test="@service = 'urn:upnp-org:serviceId:DigitalSecurityCameraSettings1'">DigitalSecurityCameraSettings1</xsl:when>
+<xsl:when test="@service = 'urn:upnp-org:serviceId:DigitalSecurityCameraStillImage1'">DigitalSecurityCameraStillImage1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:CameraMotionDetection1'">CameraMotionDetection1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:DiscretePower1'"       >DiscretePower1</xsl:when>
+<xsl:when test="@service = 'urn:upnp-org:serviceId:EnergyCalculator1'"           >EnergyCalculator1</xsl:when>
+<xsl:when test="@service = 'urn:upnp-org:serviceId:FanSpeed1'"                   >FanSpeed1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:InputSelection1'"      >InputSelection1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:Keypad1'"              >Keypad1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:MediaNavigation1'"     >MediaNavigation1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:MenuNavigation1'"      >MenuNavigation1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:Misc1'"                >Misc1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:NumericEntry1'"        >NumericEntry1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:PIP1'"                 >PIP1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:Scene1'"               >Scene1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:TV1'"                  >TV1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:TogglePower1'"         >TogglePower1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:Tuning1'"              >Tuning1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:VideoAdjustment1'"     >VideoAdjustment1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:Volume1'"              >Volume1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:WMC1'"                 >WMC1</xsl:when>
 <xsl:otherwise><xsl:value-of select="@service"/></xsl:otherwise>
 </xsl:choose>
 </xsl:variable>

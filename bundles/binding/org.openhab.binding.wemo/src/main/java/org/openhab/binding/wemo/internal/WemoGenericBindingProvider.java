@@ -11,6 +11,7 @@ package org.openhab.binding.wemo.internal;
 import org.openhab.binding.wemo.WemoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -29,11 +30,6 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 	static final Logger logger = LoggerFactory
 			.getLogger(WemoGenericBindingProvider.class);
 
-	/**
-	 * The friendly name given to your Wemo switch.
-	 */
-	public String wemoFriendlyName;
-
 	
 	/**
 	 * {@inheritDoc}
@@ -47,10 +43,10 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof NumberItem)) {
+		if (!(item instanceof ContactItem || item instanceof NumberItem || item instanceof SwitchItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch- and NumberItems are allowed - please check your *.items configuration");
+					+ "', only Contact-, Number- and SwitchItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -62,10 +58,25 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 		super.processBindingConfiguration(context, item, bindingConfig);
 		try {
 			if (bindingConfig != null) {
+				
 				WemoBindingConfig config = new WemoBindingConfig();
+				
 				item.getName();
-				config.wemoFriendlyName = bindingConfig;
-				addBindingConfig(item,config);
+								
+				String[] configParts = bindingConfig.split(";");
+				if (configParts.length > 2 ) {
+					throw new BindingConfigParseException("wemo binding configuration must not have more than two parts");
+				}
+				
+				config.udn = configParts[0];
+				config.channelType = configParts.length < 2 ? WemoChannelType.state : WemoChannelType.valueOf(configParts[1]);
+				logger.debug("Configuration for WeMo item '{}':", item.getName());
+				logger.debug("        UDN = '{}'", config.udn);
+				logger.debug("channelType = '{}'", config.channelType);
+
+				addBindingConfig(item, config);
+				
+				
 		
 	} else {
 		logger.warn("bindingConfig is NULL (item=" + item
@@ -78,15 +89,55 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 	
 	}
 	
-	public String getWemoFriendlyName(String itemName) {
-		WemoBindingConfig config = (WemoBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.wemoFriendlyName : null;
-	}
-	
+	/**
+	 * This is an internal data structure to store information from the binding
+	 * config strings and use it to answer the requests to the WeMo binding
+	 * provider.
+	 */
 	static private class WemoBindingConfig implements BindingConfig {
-	
-		public String wemoFriendlyName;
-	
+		public String udn;
+		public WemoChannelType channelType;
 	}
+
+	/**
+	 * Return the friendlyName for the given <code>itemName</code>.
+	 * 
+	 * @param itemName
+	 *            the itemName to return the corresponding WeMo friendlyName
+	 */
+	@Override
+	public String getUDN(String itemName) {
+		WemoBindingConfig config = (WemoBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.udn : null;
+	}
+	
+
+	/**
+	 * Return the specified channel type for the given <code>itemName</code> if specified, <code>null</code> otherwise.
+	 * 
+	 * @param itemName
+	 *            the itemName to return the channel type specified
+	 */
+	@Override
+	public WemoChannelType getChannelType(String itemName) {
+		WemoBindingConfig config = (WemoBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.channelType : null;
+	}
+
+
+	/**
+	 * The channel type of the WeMo item.
+	 * <ul>
+	 * <li>state</li>
+	 * <li>currentPower</li>
+	 * <li>lastOnFor</li>
+	 * <li>onToday</li>
+	 * <li>onTotal</li>
+	 * </ul>
+	 */
+	public enum WemoChannelType {
+		state, currentPower, lastOnFor, onToday, onTotal
+	}
+
 	
 }

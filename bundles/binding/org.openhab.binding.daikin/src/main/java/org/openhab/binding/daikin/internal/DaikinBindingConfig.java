@@ -16,6 +16,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * The binding configuration for a Daikin controller item.
  *  
  * @author Ben Jones
+ * @author Jos schering
  * @since 1.5.0
  */
 public class DaikinBindingConfig implements BindingConfig {

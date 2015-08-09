@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.openhab.binding.satel.SatelBindingConfig;
 import org.openhab.binding.satel.SatelBindingProvider;
+import org.openhab.binding.satel.config.ConnectionStatusBindingConfig;
 import org.openhab.binding.satel.config.IntegraStateBindingConfig;
 import org.openhab.binding.satel.config.IntegraStatusBindingConfig;
 import org.openhab.core.items.Item;
@@ -94,8 +95,14 @@ public class SatelGenericBindingProvider extends AbstractGenericBindingProvider 
 				return bc;
 			}
 
-			// try IntegraStatusBindingConfig
+			// next try IntegraStatusBindingConfig
 			bc = IntegraStatusBindingConfig.parseConfig(bindingConfig);
+			if (bc != null) {
+				return bc;
+			}
+
+			// next try ConnectionStatusBindingConfig
+			bc = ConnectionStatusBindingConfig.parseConfig(bindingConfig);
 			if (bc != null) {
 				return bc;
 			}
