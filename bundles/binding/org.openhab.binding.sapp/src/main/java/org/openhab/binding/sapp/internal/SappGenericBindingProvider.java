@@ -47,6 +47,21 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	private boolean fullRefreshNeeded = false;
 
 	/**
+	 * virtuals cache.
+	 */
+	private Map<Integer, Integer> virtualsCache = new HashMap<Integer, Integer>();
+
+	/**
+	 * inputs cache.
+	 */
+	private Map<Integer, Integer> inputsCache = new HashMap<Integer, Integer>();
+
+	/**
+	 * outputs cache.
+	 */
+	private Map<Integer, Integer> outputsCache = new HashMap<Integer, Integer>();
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public String getBindingType() {
@@ -135,5 +150,35 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	public void setFullRefreshNeeded(boolean fullRefreshNeeded) {
 		this.fullRefreshNeeded = fullRefreshNeeded;
 
+	}
+
+	@Override
+	public Integer getVirtualCachedValue(int address) {
+		return virtualsCache.get(address);
+	}
+
+	@Override
+	public void setVirtualCachedValue(int address, int value) {
+		virtualsCache.put(address, value);
+	}
+
+	@Override
+	public Integer getInputCachedValue(int address) {
+		return inputsCache.get(address);
+	}
+
+	@Override
+	public void setInputCachedValue(int address, int value) {
+		inputsCache.put(address, value);
+	}
+
+	@Override
+	public Integer getOutputCachedValue(int address) {
+		return outputsCache.get(address);
+	}
+
+	@Override
+	public void setOutputCachedValue(int address, int value) {
+		outputsCache.put(address, value);
 	}
 }

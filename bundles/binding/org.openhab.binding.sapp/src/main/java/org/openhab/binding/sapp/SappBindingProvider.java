@@ -53,4 +53,40 @@ public interface SappBindingProvider extends BindingProvider {
      * @param fullRefreshNeeded should be used by the actual provider after a full refresh
      */
     void setFullRefreshNeeded(boolean fullRefreshNeeded);
+    
+    /**
+     * @param address virtual address
+     * @return returns cached virtual address or null if not found
+     */
+    Integer getVirtualCachedValue(int address);
+    
+    /**
+     * @param address virtual address
+     * @param value virtual value
+     */
+    void setVirtualCachedValue(int address, int value);
+    
+    /**
+     * @param address input address
+     * @return returns cached input address or null if not found
+     */
+    Integer getInputCachedValue(int address);
+    
+    /**
+     * @param address input address
+     * @param value input value
+     */
+    void setInputCachedValue(int address, int value);
+    
+    /**
+     * @param address output address
+     * @return returns cached output address or null if not found
+     */
+    Integer getOutputCachedValue(int address);
+    
+    /**
+     * @param address output address
+     * @param value output value
+     */
+    void setOutputCachedValue(int address, int value);
 }
