@@ -300,15 +300,22 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			}
 
 			try {
-				if (command instanceof OnOffType) { // set bit
+				if (command instanceof OnOffType) {
 					switch (controlAddress.getAddressType()) {
 					case VIRTUAL: {
+						// mask bits on previous value
 						int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
 						int newValue = SappBindingUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), command.equals(OnOffType.ON) ? controlAddress.getOnValue() : controlAddress.getOffValue(), previousValue);
 						
+						// update pnmas
 						SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
 						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
 						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), controlAddress.getAddress(), newValue);
+						
+						// update immediately changed value, without waiting for polling
+						provider.setVirtualCachedValue(controlAddress.getAddress(), newValue);
+						updateState(controlAddress.getPnmasId(), SappAddressType.VIRTUAL, controlAddress.getAddress(), newValue, provider);
+
 						break;
 					}
 

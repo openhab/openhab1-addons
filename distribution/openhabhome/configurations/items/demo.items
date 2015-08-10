@@ -95,18 +95,6 @@ Contact Window_FF_Office_Door 	"Balcony Door [MAP(en.map):%s]"		(FF_Office, Wind
 
 Contact Garage_Door 			"Garage Door [MAP(en.map):%s]"		(Outdoor, Windows)
 
-Group Weather_Chart													(Weather)
-Number Weather_Temperature 		"Outside Temperature [%.1f °C]"	<temperature> (Weather_Chart) { http="<[http://weather.yahooapis.com/forecastrss?w=638242&u=c:60000:XSLT(yahoo_weather_temperature.xsl)]" }
-Number Weather_Humidity 		"Outside Humidity [%.1f %%]"	<temperature> (Weather) { http="<[http://weather.yahooapis.com/forecastrss?w=638242&u=c:60000:XSLT(yahoo_weather_humidity.xsl)]" }
-Number Weather_Humidex			"Humidex [SCALE(humidex.scale):%s]" 			(Weather)
-Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather_Chart)
-Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather_Chart)
-Number Weather_Chart_Period		"Chart Period"
-DateTime Weather_LastUpdate		"Last Update [%1$ta %1$tR]"	<clock>
-
-/* NTP binding demo item */
-DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berlin:de_DE" }
-
 /* Demo items */
 Switch DemoSwitch				"Switch"
 Dimmer DimmedLight				"Dimmer [%d %%]"		<slider>
@@ -127,10 +115,14 @@ Location DemoLocation			"Brandenburg Gate Berlin"
 /* Sapp */
 Group gSapp 		(All)
 
-Switch CCliclamimo "Carta Ciclamino" (gSapp) { sapp="home:V:60:1/home:V:2202:1:1:1" }
-Switch PCliclamimo "Parcheggio Ciclamino" (gSapp) { sapp="home:V:60:5/home:V:2202:9:1:1" }
+Switch CCliclamimo "Carta Ciclamino" (gSapp) { sapp="home:V:60:1/home:V:192:1:1:0" }
+Switch PCliclamimo "Parcheggio Ciclamino" (gSapp) { sapp="home:V:60:5/home:V:192:9:1:0" }
 Contact CCliclamimo11 "Carta Ciclamino" (gSapp) { sapp="home:V:60:1" }
 Contact PCliclamimo12 "Parcheggio Ciclamino" (gSapp) { sapp="home:V:60:5" }
+
+Contact CCliclamimoC11 "CTRL Carta Ciclamino" (gSapp) { sapp="home:V:192:1" }
+Contact PCliclamimoC12 "CTRL Parcheggio Ciclamino" (gSapp) { sapp="home:V:192:9" }
+
 
 // switch binding
 // <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>:<on value>/<pnmasid control>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<on value>:<off value>
