@@ -6,6 +6,7 @@ import java.util.Map;
 import com.github.paolodenti.jsapp.core.command.Sapp74Command;
 import com.github.paolodenti.jsapp.core.command.Sapp75Command;
 import com.github.paolodenti.jsapp.core.command.Sapp7CCommand;
+import com.github.paolodenti.jsapp.core.command.Sapp7DCommand;
 import com.github.paolodenti.jsapp.core.command.Sapp80Command;
 import com.github.paolodenti.jsapp.core.command.Sapp81Command;
 import com.github.paolodenti.jsapp.core.command.Sapp82Command;
@@ -108,6 +109,17 @@ public class SappCentralExecuter {
 				throw new SappException("command execution failed");
 			}
 			return sappCommand.getResponse().getDataAsWord();
+		}
+	}
+
+	public void executeSapp7DCommand(String ip, int port, int address, int value) throws SappException {
+
+		synchronized (this) {
+			SappCommand sappCommand = new Sapp7DCommand(address, value);
+			sappCommand.run(ip, port);
+			if (!sappCommand.isResponseOk()) {
+				throw new SappException("command execution failed");
+			}
 		}
 	}
 

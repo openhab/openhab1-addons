@@ -26,8 +26,6 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.paolodenti.jsapp.core.command.Sapp7DCommand;
-import com.github.paolodenti.jsapp.core.command.base.SappCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
 import com.github.paolodenti.jsapp.core.util.SappUtils;
 
@@ -302,13 +300,10 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					case VIRTUAL: {
 						int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
 						int newValue = SappBindingUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), command.equals(OnOffType.ON) ? controlAddress.getOnValue() : controlAddress.getOffValue(), previousValue);
-
+						
 						SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
-						SappCommand sappCommand = new Sapp7DCommand(controlAddress.getAddress(), newValue);
-						sappCommand.run(pnmas.getIp(), pnmas.getPort());
-						if (!sappCommand.isResponseOk()) {
-							throw new SappException("command execution failed");
-						}
+						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), controlAddress.getAddress(), newValue);
 						break;
 					}
 
