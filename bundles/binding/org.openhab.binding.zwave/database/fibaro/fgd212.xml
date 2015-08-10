@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGD212</Model>
+	<Label lang="en">Universal Dimmer 2 250W</Label>
+	<CommandClasses>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x22</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x56</id></Class>
+		<Class><id>0x98</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x8b</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>98</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">Minimum brightness level</Label>
+			<Help lang="en">The parameter is set automatically during the calibration process. The parameter can be changed manually after the calibration.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Default>99</Default>
+			<Size>1</Size>			
+			<Label lang="en">Maximum brightness level</Label>
+			<Help lang="en">The parameter is set automatically during the calibration process. The parameter can be changed manually after the calibration.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">Incandescence level of dimmable compact fluorescent lamps</Label>
+			<Help lang="en">Virtual value set as a percentage level between parameters MIN (1%) and MAX. (99%). The Dimmer will set to this value after first switch on. It is required for warming up and switching dimmable compact fluorescent lamps and certain types of light sources.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>			
+			<Label lang="en">Incandescence time of dimmable compact fluorescent lamps</Label>
+			<Help lang="en">This parameter determines the time required for switching compact fluorescent lamps and certain types of light sources. Setting this parameter to 0 will disable the incandescence functionality. Available settings: 0-255 (0s - 25,5s)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">Dimming Step at Automatic Control</Label>
+			<Help lang="en">The parameter defines the percentage of a dimming step at automatic control. 1-99</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>1</Default>
+			<Size>2</Size>			
+			<Label lang="en">Dimming Step Timing at Automatic Control</Label>
+			<Help lang="en">The parameter defines the time of a dimming step at automatic control. Available settings: 0-255 (0s - 2,55s)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>			
+			<Label lang="en">Dimming Step at Manual Control</Label>
+			<Help lang="en">The parameter defines the percentage of a dimming step at manual control. 1-99</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>1</Default>
+			<Size>2</Size>			
+			<Label lang="en">Dimming Step Timing at Manual Control</Label>
+			<Help lang="en">The parameter defines the time of a dimming step at manual control. Available settings: 0-255 (0s - 2,55s)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving state before power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">State NOT saved at power failure, all outputs are set to OFF upon power restore</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">State saved at power failure, all outputs are set to previous state upon power restore</Label>
+			</Item>
+			<Help lang="en">Saving state before power failure</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>			
+			<Label lang="en">Timer functionality (auto - off). 0 disables the function</Label>
+			<Help lang="en">The parameter defines the setting of the timer. Available settings:1-32767 - time to turn off measured in seconds (1s - 9,1h)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>2</Size>
+			<Label lang="en">ALL ON/ALL OFF function</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON not active, ALL OFF not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON not active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active, ALL OFF not active</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Help lang="en">The parameter specifies the available functions.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Force auto-calibration</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">readout</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">force auto-calibration of the load using advanced parameter</Label>
+			</Item>
+			<Help lang="en">Changing the value of this parameter to 1 will force the calibration process. During the calibration parameter is set to 1 and switched to 0 upon completion.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<ReadOnly>true</ReadOnly>
+			<Label lang="en">Auto-calibration status (read-only parameter)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">calibration procedure not performed or Dimmer operates on manual settings</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Dimmer operates on auto-calibration settings</Label>
+			</Item>
+			<Help lang="en">This parameter determines operating mode of the Dimmer (automatic/manual settings).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Label lang="en">Burnt out bulb detection</Label>
+			<Help lang="en">percentage value of power variation, compared to standard power consumption, measured during the calibration procedure (to be interpreted as load error/burnt out bulb). 1-99, 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>5</Default>
+			<Size>2</Size>
+			<Label lang="en">Time delay of a burnt out bulb (parameter 15) or overload (parameter 39) detection</Label>
+			<Help lang="en">Time of delay (in seconds) for power variation detection, interpreted as a LOAD ERROR or OVERLOAD detection (too much power connected to the Dimmer 2). 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Forced switch on brightness level</Label>
+			<Help lang="en">If the parameter is active, switching on the Dimmer 2 (S1 single click) will always set this brightness level. 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Inputs Button/Switch configuration</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Mono-stable input (button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Bi-stable input (switch)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Roller blind switch (UP / DOWN)</Label>
+			</Item>
+			<Help lang="en">Binary inputs type configuration</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Value sent to associated devices on single click</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0xFF value is sent, which will set associated devices to their last saved state</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">current Dimmer 2 state is sent, which will synchronize brightness level of associated devices (other dimmers for example)</Label>
+			</Item>
+			<Help lang="en">The value sent to associated devices on single click.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Change [On-Off] bi-stable keys</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Device changes status on key status change</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Device status depends on key status; ON when the key is ON, OFF when the key is OFF</Label>
+			</Item>
+			<Help lang="en">This function allow user to change [On-Off] bi-stable keys (parameter no. 14) (default value 0)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>23</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Double click option</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable double click</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable double click</Label>
+			</Item>
+			<Help lang="en">Double-click set lighting at 100%</Help>
+		</Parameter>	
+		<Parameter>
+			<Index>24</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Command frames sent in 2nd and 3rd association groups (S1 associations)</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">all actions send to association groups</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">do not send when switching ON (single click)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">do not send when switching OFF (single click)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">do not send when changing dimming level (holding and releasing)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">do not send on double click</Label>
+			</Item>
+			<Item>
+				<Value>16</Value>
+				<Label lang="en">send 0xFF value on double click</Label>
+			</Item>
+			<Help lang="en">Parameter determines, which actions will not result in sending frames to association groups.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>25</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Command frames sent in 4th and 5th association groups (S2associations)</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">all actions send to association groups</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">do not send when switching ON (single click)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">do not send when switching OFF (single click)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">do not send when changing dimming level (holding and releasing)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">do not send on double click</Label>
+			</Item>
+			<Item>
+				<Value>16</Value>
+				<Label lang="en">send 0xFF value on double click</Label>
+			</Item>
+			<Help lang="en">Parameter determines, which actions will not result in sending frames to association groups.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>26</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">The function of 3-way switch</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">3-way switch function for S2 disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">3-way switch function for S2 enabled</Label>
+			</Item>
+			<Help lang="en">Key no. 2 controls the Dimmer additionally (in 3-way switch mode). Function disabled for parameter 20 set to 2 (roller blind switch).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>27</Index>
+			<Type>list</Type>
+			<Default>15</Default>
+			<Size>1</Size>
+			<Label lang="en">Associations in Z-Wave network security mode</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">all groups (II-V) sent as non-secure</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">2nd group sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">3rd group sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">4th group sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">5th group sent as secure</Label>
+			</Item>
+			<Item>
+				<Value>15</Value>
+				<Label lang="en">all groups (II-V) sent as secure</Label>
+			</Item>
+			<Help lang="en">This parameter defines how commands are sent in specified association groups: as secure or non-secure. Parameter is active only in Z-Wave network security mode. It does not apply to 1st Lifeline group.</Help>
+		</Parameter>		
+		<Parameter>
+			<Index>28</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Scene activation functionality</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene functionality deactivated</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene functionality activated</Label>
+			</Item>
+			<Help lang="en">SCENE ID depends on the switch type configuration</Help>
+		</Parameter>
+		<Parameter>
+			<Index>29</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch functionality of S1 and S2</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">standard mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">S1 operates as S2, S2 operates as S1</Label>
+			</Item>
+			<Help lang="en">Switch S1 and S2 buttons</Help>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Load control mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">forced leading edge control</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">forced trailing edge control</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">control mode selected automatically (based on auto-calibration)</Label>
+			</Item>			
+			<Help lang="en">The parameter defines the used control mode.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>31</Index>
+			<Type>list</Type>
+			<ReadOnly>true</ReadOnly>
+			<Label lang="en">Load control mode recognized during auto-calibration</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">leading edge control</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">trailing edge control</Label>
+			</Item>
+			<Help lang="en">Load control mode recognized during auto-calibration</Help>
+		</Parameter>
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">On/Off mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">on/off mode disabled (dimming is possible)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">on/off mode enabled (dimming is not possible)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">mode selected automatically</Label>
+			</Item>			
+			<Help lang="en">This mode is necessary while connecting non-dimmable light sources. Enabling parameter 32 automatically ignores brightening/- dimming time settings.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>33</Index>
+			<Type>list</Type>
+			<ReadOnly>true</ReadOnly>
+			<Label lang="en">Dimmability of the load (read only)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Load recognized as dimmable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Load recognized as non-dimmable</Label>
+			</Item>
+			<Help lang="en">Dimmability of the load (read only)</Help>
+		</Parameter>	
+		<Parameter>
+			<Index>34</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Soft-Start functionality</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">no soft-start</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">short soft-start (0,1s)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">long soft-start (0,5s)</Label>
+			</Item>			
+			<Help lang="en">Time required to warm up the filament of halogen bulb.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>35</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto-calibration after power on</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No auto-calibration of the load after power on</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Auto-calibration performed after first power on</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Auto-calibration performed after each power on</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Auto-calibration performed after first power on or after each LOAD ERROR alarm (no load, load failure, burnt out bulb), SURGE alarm (Dimmer output overvoltage), OVERLOAD alarm (load power consumption too high)</Label>
+			</Item>			
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Auto-calibration performed after each power on or after each LOAD ERROR alarm (no load, load failure, burnt out bulb), SURGE alarm (Dimmer output overvoltage), OVERLOAD alarm (load power consumption too high)</Label>
+			</Item>
+			<Help lang="en">This parameter determines the trigger of auto-calibration procedure, e.g. power on, load error, etc.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>37</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Behaviour of the Dimmer after overload or surge</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">device permanently disabled until re-enabling by comand or push-button</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">three attempts to turn on the load</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>250</Maximum>
+			<Default>250</Default>
+			<Size>2</Size>			
+			<Label lang="en">Power limit - OVERLOAD</Label>
+			<Help lang="en">Reaching the defined value will result in turning off the load. Parameter 39 is relevant only in a 3-wire connection i or a 2-wire connection for load of cosφ ≥ 0.99. (1 W - 250 W). 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">General Purpose Alarm</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn on the load</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn off the load</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Load blinking</Label>
+			</Item>
+			<Help lang="en">The parameter specifies the response to an alarm.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>41</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Water Flooding Alarm</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn on the load</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn off the load</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Load blinking</Label>
+			</Item>
+			<Help lang="en">The parameter specifies the response to an alarm.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Smoke, CO or CO2 Alarm</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn on the load</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn off the load</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Load blinking</Label>
+			</Item>
+			<Help lang="en">The parameter specifies the response to an alarm.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature Alarm</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Turn on the load</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Turn off the load</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Load blinking</Label>
+			</Item>
+			<Help lang="en">The parameter specifies the response to an alarm.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>600</Default>
+			<Size>2</Size>			
+			<Label lang="en">Time of alarm state</Label>
+			<Help lang="en">Alarm state may be cancelled earlier, as a result of pushing the wall-switch keys or sending the Z-Wave command frame. Available settings: 1-32767 (1s - 32767s).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>45</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">OVERLOAD alarm report</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send an alarm frame</Label>
+			</Item>
+			<Help lang="en">(load power consumption too high)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>46</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LOAD ERROR alarm report</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send an alarm frame</Label>
+			</Item>
+			<Help lang="en">(no load, load failure, burnt out bulb)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>47</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">OVERCURRENT alarm report</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send an alarm frame</Label>
+			</Item>
+			<Help lang="en">(short circuit, burnt out bulb causing overcurrent)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>48</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">SURGE alarm report</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send an alarm frame</Label>
+			</Item>
+			<Help lang="en">(Dimmer output overvoltage)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>49</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">OVERHEAT (critical temperature) and VOLTAGE DROP (low voltage) alarm report</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No reaction</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send an alarm frame</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>50</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Default>10</Default>
+			<Size>1</Size>			
+			<Label lang="en">Active power reports</Label>
+			<Help lang="en">The parameter defines the power level change that will result in a new power report being sent. The value is a percentage of the previous report. 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>52</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>3600</Default>
+			<Size>2</Size>			
+			<Label lang="en">Periodic active power and energy reports</Label>
+			<Help lang="en">Parameter 52 defines a time period between consecutive reports. Timer is reset and counted from zero after each report (1 sec - 32767 sec). 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>53</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>10</Default>
+			<Size>2</Size>			
+			<Label lang="en">Energy reports</Label>
+			<Help lang="en">Energy level change which will result in sending a new energy report. Available settings: 1-255 (0,01 - 2,55 kWh). 0 disables the function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>54</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Self-measurement</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Self-measurement inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Self-measurement active</Label>
+			</Item>
+			<Help lang="en">The Dimmer may include active power and energy used by itself in reports sent to the main controller.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>58</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Method of calculating the active power</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">measurement based on the standard algorithm</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">approximation based on the calibration data</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">approximation based on the control angle</Label>
+			</Item>
+			<Help lang="en">This parameter defines how to calculate active power. It is useful in a case of 2-wire connection with light sources other than resistive. Note: Parameter 58 is set to 0 after forced auto-calibration</Help>
+		</Parameter>
+		<Parameter>
+			<Index>59</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>500</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>			
+			<Label lang="en">Approximated power at the maximum brightness level</Label>
+			<Help lang="en">This parameter determines the approximate value of the power that will be reported by the device at its maximum brightness level. Available settings: 0-500 (0-500W). Note: Parameter 59 works only when parameter 58 has a value other than 0.</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Lifeline - Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Sends BASIC SET command class frame according to the state of the device. The Dimmer in 2nd to 5th group allows for controlling 5 regular and 5 multichannel devices per an association group, out of which 1 field is reserved for the Z-Wave network main controller.</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Sends BASIC SET command class frame according to the state of the device. The Dimmer in 2nd to 5th group allows for controlling 5 regular and 5 multichannel devices per an association group, out of which 1 field is reserved for the Z-Wave network main controller.</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Sends BASIC SET command class frame according to the state of the device. The Dimmer in 2nd to 5th group allows for controlling 5 regular and 5 multichannel devices per an association group, out of which 1 field is reserved for the Z-Wave network main controller.</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Sends BASIC SET command class frame according to the state of the device. The Dimmer in 2nd to 5th group allows for controlling 5 regular and 5 multichannel devices per an association group, out of which 1 field is reserved for the Z-Wave network main controller.</Label>
+			<SetToController>false</SetToController>
+		</Group>		
+	</Associations>
+</Product>

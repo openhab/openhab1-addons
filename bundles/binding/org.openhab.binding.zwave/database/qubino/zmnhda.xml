@@ -18,6 +18,25 @@
 	</CommandClasses>
 	<Configuration>
 		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch (push button)</Label>
+				<Label lang="de">Taster</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable (toggle) switch</Label>
+				<Label lang="de">Schalter</Label>
+			</Item>
+			<Help lang="en">Switch type (input I1)</Help>
+			<Help lang="de">Schaltertyp (an Input I1)</Help>
+		</Parameter>
+		
+		<Parameter>
 			<Index>2</Index>
 			<Type>list</Type>
 			<Default>0</Default>

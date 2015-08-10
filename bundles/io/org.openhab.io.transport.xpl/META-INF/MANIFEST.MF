@@ -18,3 +18,4 @@ Export-Package: org.cdp1802.xpl; uses:="org.cdp1802.xpl.tracker,  org.
 Service-Component: OSGI-INF/xpl-*.xml
 Bundle-ClassPath: .,
  lib/xPL4Java.jar
+Bundle-ActivationPolicy: lazy

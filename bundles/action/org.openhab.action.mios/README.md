@@ -34,12 +34,14 @@ or
 
     <ServiceAlias>/<ServiceAction>
 
-where _ServiceURN_, _ServiceAlias_ and _ServiceAction_ have the same form as decribed in [MiOS Bridge Binding](https://github.com/openhab/openhab/wiki/MiOS-Binding) commands.
+where _ServiceURN_, _ServiceAlias_ and _ServiceAction_ have the same form as described in [MiOS Bridge Binding](https://github.com/openhab/openhab/wiki/MiOS-Binding) commands.
 
 You can use the MiOS `invoke` URL to discover the _Actions_, and _Action-parameters_, your particular MiOS Device supports:
  
     http://<mios:host>:3480/data_request?id=invoke
- 
+
+The available _ServiceAction_s are described in the [MiOS Luup UPnP Variables and Actions](http://wiki.micasaverde.com/index.php/Luup_UPnP_Variables_and_Actions) documentation.
+
 ## Examples
 
 * Invoking a Device Action and calling a Scene to turn off the AV.

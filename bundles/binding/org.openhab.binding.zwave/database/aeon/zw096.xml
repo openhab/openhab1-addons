@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Product>
+    <Model>ZW096</Model>
+    <Label lang="en">Smart Switch 6</Label>
+    <CommandClasses>
+        <Class>
+            <id>0x20</id>
+        </Class> <!--COMMAND_CLASS_BASIC -->
+        <Class>
+            <id>0x25</id>
+        </Class> <!--COMMAND_CLASS_SWITCH_BINARY -->
+        <Class>
+            <id>0x27</id>
+        </Class> <!--COMMAND_CLASS_SWITCH_ALL -->
+        <Class>
+            <id>0x31</id>
+        </Class> <!--COMMAND_CLASS_SENSOR_MULTILEVEL -->
+        <Class>
+            <id>0x32</id>
+            <endpoint>5</endpoint>
+            <add>true</add>
+        </Class> <!--COMMAND_CLASS_METER -->
+        <Class>
+            <id>0x32</id>
+            <endpoint>6</endpoint>
+            <add>true</add>
+        </Class> <!--COMMAND_CLASS_METER -->
+        <Class>
+            <id>0x59</id>
+        </Class> <!--COMMAND_CLASS_ASSOCIATION_GRP_INFO -->
+        <Class>
+            <id>0x5A</id>
+        </Class> <!--COMMAND_CLASS_DEVICE_RESET_LOCALLY -->
+        <Class>
+            <id>0x5E</id>
+        </Class> <!--COMMAND_CLASS_ZWAVEPLUS_INFO -->
+        <Class>
+            <id>0x70</id>
+        </Class> <!--COMMAND_CLASS_CONFIGURATION -->
+        <Class>
+            <id>0x72</id>
+        </Class> <!--COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+        <Class>
+            <id>0x73</id>
+        </Class> <!--COMMAND_CLASS_POWERLEVEL -->
+        <Class>
+            <id>0x7A</id>
+        </Class> <!--COMMAND_CLASS_FIRMWARE_UPDATE_MD_V2 -->
+        <Class>
+            <id>0x81</id>
+        </Class> <!--COMMAND_CLASS_CLOCK -->
+        <Class>
+            <id>0x82</id>
+        </Class> <!--COMMAND_CLASS_HAIL -->
+        <Class>
+            <id>0x85</id>
+        </Class> <!--COMMAND_CLASS_ASSOCIATION -->
+        <Class>
+            <id>0x86</id>
+        </Class> <!--COMMAND_CLASS_VERSION -->
+        <Class>
+            <id>0x98</id>
+        </Class> <!-- COMMAND_CLASS_SECURITY -->
+        <Class>
+            <id>0xEF</id>
+        </Class> <!-- COMMAND_CLASS_MARK -->
+    </CommandClasses>
+    <Associations>
+        <Group>
+            <Index>1</Index>
+            <Maximum>5</Maximum>
+            <Label lang="en">Lifeline</Label>
+            <SetToController>true</SetToController>
+        </Group>
+        <Group>
+            <Index>2</Index>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+            <Label lang="en">Retransmit</Label>
+        </Group>
+    </Associations>
+    <Configuration>
+        <Parameter>
+            <Index>3</Index>
+            <Type>list</Type>
+            <Size>1</Size>
+            <Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+            <Label lang="en">Current overload protection enable</Label>
+            <Help lang="en">Current Overload Protection. Load will be closed when the 
+                Current overrun (US: 15.5A, other country: 16.2A) and the 
+                time more than 2 minutes (0=disabled, 1=enabled).
+            </Help> 
+        </Parameter>
+        <Parameter>
+            <Index>20</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">last status</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">always on</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">always off</Label>
+            </Item>
+            <Label lang="en">Output load after re-power</Label>
+            <Help lang="en">Configure the output load status after re‐power on 
+                (0=last status, 1=always on, 2=always off) 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>80</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">noting</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">hail CC</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">basic CC report</Label>
+            </Item>
+            <Label lang="en">Enable send to associated devices</Label>
+            <Help lang="en">Enable to send notifications to associated devices (Group 1) 
+                when the state of Micro Switch’s load changed (0=nothing, 
+                1=hail CC, 2=basic CC report). 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>81</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED follows load</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED follows load for 5 seconds</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Night light mode</Label>
+            </Item>
+            <Label lang="en">Configure LED</Label>
+            <Help lang="en">Configure the state of red LED:  
+                0= The LED will follow the status (on/off) of its load (Energy mode). 
+                1= When the state of Switch’s load changed, The LED will 
+                follow the status (on/off) of its load, but the red LED will 
+                turn off after 5 seconds if there is no any switch action 
+                (momentary indicate mode). 
+                2= Night light mode.
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>82</Index>
+            <Type>byte</Type>
+            <Default>18000730</Default>
+            <Minimum>0</Minimum>
+            <Maximum>23592359</Maximum>
+            <Size>4</Size>
+            <Label lang="en">Time of Nightlight mode</Label>
+            <Help lang="en">Set the time of night light mode 
+                Value1: the time of LED on (unit is hour). 
+                Value2: the time of LED on (unit is minute). 
+                Value3: the time of LED off (unit is hour) 
+                Value4: the time of LED off (unit is minute) 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>83</Index>
+            <Type>byte</Type>
+            <Default>14524637</Default>
+            <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
+            <Size>3</Size>
+            <Label lang="en">RGB value when it is in Night light mode</Label>
+            <Help lang="en">Configure the RGB value when it is in Night light mode. 
+                Value1: Red color value 
+                Value2: Green color value 
+                Value3: Blue color value 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>84</Index>
+            <Type>byte</Type>
+            <Default>3289650</Default>
+            <Minimum>0</Minimum>
+            <Maximum>6513507</Maximum>
+            <Size>3</Size>
+            <Label lang="en">LED brightness in Energy Mode</Label>
+            <Help lang="en">Configure the brightness level of RGB LED (0%‐100%) when 
+                it is in Energy Mode/momentary indicate mode. 
+                Value1: green color value.  
+                Value2: yellow color value. 
+                Value3: red color value. 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>90</Index>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+            <Label lang="en">Enable items 91 and 92</Label>
+            <Help lang="en">Enables/disables parameter 91 and 92 below (1=enabled, 
+                0=disabled). 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>91</Index>
+            <Type>byte</Type>
+            <Default>25</Default>
+            <Minimum>0</Minimum>
+            <Maximum>60000</Maximum>
+            <Size>2</Size>
+            <Label lang="en">Wattage Threshold</Label>
+            <Help lang="en">The value here represents minimum change in wattage (in 
+                terms of wattage) for a REPORT to be sent (Valid values 0‐
+                60000). 
+            </Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>92</Index>
+            <Type>byte</Type>
+            <Default>5</Default>
+            <Minimum>0</Minimum>
+            <Maximum>100</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Wattage Percent Change</Label>
+            <Help lang="en">The value here represents minimum change in wattage 
+                percent (in terms of percentage) for a REPORT to be sent 
+                (Valid values 0‐100). 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>100</Index>
+            <Type>byte</Type>
+            <Default>NA</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Set 101‐103 to default. </Label>
+            <Help lang="en">Set 101‐103 to default. 
+            </Help>
+        </Parameter>
+        <Parameter>
+            <Index>252</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">disabled</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">enabled</Label>
+            </Item>
+            <Label lang="en">Configuration Locked</Label>
+            <Help lang="en">Enable/disable Configuration Locked (0 =disable, 1 = enable). 
+            </Help>
+        </Parameter>
+    </Configuration>
+</Product>

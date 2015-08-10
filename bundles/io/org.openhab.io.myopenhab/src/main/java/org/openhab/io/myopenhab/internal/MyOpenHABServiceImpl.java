@@ -15,17 +15,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
-import org.openhab.io.myopenhab.MyOpenHABService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -33,11 +27,16 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.scriptengine.action.ActionService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.TypeParser;
-import org.openhab.core.persistence.PersistenceService;
+import org.openhab.io.myopenhab.MyOpenHABService;
 import org.openhab.ui.items.ItemUIRegistry;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class starts my.openHAB connection service and implements interface to communicate with my.openHAB.
@@ -51,18 +50,23 @@ import org.openhab.ui.items.ItemUIRegistry;
 
 public class MyOpenHABServiceImpl implements MyOpenHABService, PersistenceService, ManagedService, ActionService, MyOHClientListener {
 
-	public static String myohVersion = "1.7.0.0";
 	private static Logger logger = LoggerFactory.getLogger(MyOpenHABServiceImpl.class);
+
+	public static String myohVersion = "1.7.0.0";
 	private MyOHClient myOHClient;
+	
 	private static final String STATIC_CONTENT_DIR = "webapps" + File.separator + "static";
 	private static final String UUID_FILE_NAME = "uuid";
 	private static final String SECRET_FILE_NAME = "secret";	
-	private static final String VERSION_FILE_NAME = "version";	
+	private static final String VERSION_FILE_NAME = "version";
+	
 	private String mMyOHBaseUrl;
 	private int mLocalPort = 8080;
+	
 	protected ItemUIRegistry mItemUIRegistry = null;
 	protected EventPublisher mEventPublisher = null;
 
+	
 	public MyOpenHABServiceImpl() {
 	}
 		

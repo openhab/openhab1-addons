@@ -1,6 +1,6 @@
 /**
  * openHAB, the open Home Automation Bus.
- * Copyright (c) 2010-2014, openHAB.org <admin@openhab.org>
+ * Copyright (c) 2010-2015, openHAB.org <admin@openhab.org>
  *
  * See the contributors.txt file in the distribution for a
  * full listing of individual contributors.
@@ -302,7 +302,7 @@ int checkNibeMessage(const byte* const data, byte len)
               
               // check special case, if checksum is 0x5C (start character), 
               // heat pump seems to send 0xC5 checksum
-              if (checksum != 0x5C && msg_checksum != 0xC5
+              if (checksum != 0x5C && msg_checksum != 0xC5)
                 return -2;
             }  
             

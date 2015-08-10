@@ -21,9 +21,9 @@ import org.openhab.core.types.State;
 
 public class DateTimeType implements PrimitiveType, State, Command {
 	
-	public final static SimpleDateFormat DATE_FORMATTER_WITH_TZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
-	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
+	public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+	public static final String DATE_PATTERN_WITH_TZ = "yyyy-MM-dd'T'HH:mm:ssz";
+	
 	protected Calendar calendar;
 	
 	
@@ -40,10 +40,10 @@ public class DateTimeType implements PrimitiveType, State, Command {
 		
 		try {
 			try {
-				date = DATE_FORMATTER_WITH_TZ.parse(calendarValue);
+				date = new SimpleDateFormat(DATE_PATTERN_WITH_TZ).parse(calendarValue);
 			}
 			catch (ParseException fpe2) {
-				date = DATE_FORMATTER.parse(calendarValue);
+				date = new SimpleDateFormat(DATE_PATTERN).parse(calendarValue);
 			}
 		}
 		catch (ParseException fpe) {
@@ -56,11 +56,11 @@ public class DateTimeType implements PrimitiveType, State, Command {
 		}
 	}
 	
-	
 	public Calendar getCalendar() {
 		return calendar;
 	}
-		
+	
+	
 	public static DateTimeType valueOf(String value) {
 		return new DateTimeType(value);
 	}
@@ -69,17 +69,17 @@ public class DateTimeType implements PrimitiveType, State, Command {
 		try {
 			return String.format(pattern, calendar);
 		} catch (NullPointerException npe) {
-			return DATE_FORMATTER.format(calendar.getTime());
+			return new SimpleDateFormat(DATE_PATTERN).format(calendar.getTime());
 		}
 	}
 	
 	public String format(Locale locale, String pattern) {
 		return String.format(locale, pattern, calendar);
 	}
-
+	
 	@Override
 	public String toString() {
-		return DATE_FORMATTER.format(calendar.getTime());
+		return new SimpleDateFormat(DATE_PATTERN).format(calendar.getTime());
 	}
 	
 	@Override
@@ -107,5 +107,4 @@ public class DateTimeType implements PrimitiveType, State, Command {
 		return true;
 	}
 	
-
 }
