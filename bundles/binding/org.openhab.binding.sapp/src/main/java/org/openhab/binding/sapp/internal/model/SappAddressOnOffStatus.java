@@ -1,4 +1,5 @@
-package org.openhab.binding.sapp.internal;
+package org.openhab.binding.sapp.internal.model;
+
 
 public class SappAddressOnOffStatus extends SappAddress {
 

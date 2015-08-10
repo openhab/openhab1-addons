@@ -11,7 +11,7 @@ package org.openhab.binding.sapp;
 import java.util.Map;
 
 import org.openhab.binding.sapp.internal.SappBindingConfig;
-import org.openhab.binding.sapp.internal.SappPnmas;
+import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 

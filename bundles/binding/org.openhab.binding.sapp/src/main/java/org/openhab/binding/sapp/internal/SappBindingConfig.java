@@ -11,6 +11,8 @@ package org.openhab.binding.sapp.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.binding.sapp.internal.model.SappAddressRange;
+import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.core.binding.BindingConfig;
 
 /**

@@ -1,6 +1,9 @@
 package org.openhab.binding.sapp.internal;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openhab.binding.sapp.internal.model.SappAddressOnOffControl;
+import org.openhab.binding.sapp.internal.model.SappAddressOnOffStatus;
+import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
