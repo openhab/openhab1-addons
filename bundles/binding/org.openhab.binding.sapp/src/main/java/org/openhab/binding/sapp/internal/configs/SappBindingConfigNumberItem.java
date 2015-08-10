@@ -1,23 +1,23 @@
 package org.openhab.binding.sapp.internal.configs;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openhab.binding.sapp.internal.model.SappAddressOpenClosedStatus;
+import org.openhab.binding.sapp.internal.model.SappAddressDecimal;
 import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
-public class SappBindingConfigContactItem extends SappBindingConfig {
+public class SappBindingConfigNumberItem extends SappBindingConfig {
 
-	private SappAddressOpenClosedStatus status;
+	private SappAddressDecimal status;
 
-	public SappBindingConfigContactItem(Item item, String bindingConfig) throws BindingConfigParseException {
+	public SappBindingConfigNumberItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
 
 		this.status = parseSappAddressStatus(bindingConfig);
 	}
 
-	public SappAddressOpenClosedStatus getStatus() {
+	public SappAddressDecimal getStatus() {
 		return status;
 	}
 
@@ -27,19 +27,18 @@ public class SappBindingConfigContactItem extends SappBindingConfig {
 	}
 
 	private String errorMessage(String bindingConfig) {
-		return String.format("Invalid Sapp binding configuration for ContactItem '%s'", bindingConfig);
+		return String.format("Invalid Sapp binding configuration for NumberItem '%s'", bindingConfig);
 	}
 
-	private SappAddressOpenClosedStatus parseSappAddressStatus(String bindingStringAddress) throws BindingConfigParseException {
+	private SappAddressDecimal parseSappAddressStatus(String bindingStringAddress) throws BindingConfigParseException {
 
 		String pnmasId;
 		SappAddressType addressType;
 		int address;
 		String subAddress;
-		int openValue = 1;
 
 		String[] bindingAddress = bindingStringAddress.split(":");
-		if (bindingAddress.length != 4 && bindingAddress.length != 5) {
+		if (bindingAddress.length != 4) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
@@ -71,15 +70,6 @@ public class SappBindingConfigContactItem extends SappBindingConfig {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
-		// openvalue
-		if (bindingAddress.length == 5) {
-			try {
-				openValue = Integer.parseInt(bindingAddress[4]);
-			} catch (NumberFormatException e) {
-				throw new BindingConfigParseException(errorMessage(bindingStringAddress));
-			}
-		}
-
-		return new SappAddressOpenClosedStatus(pnmasId, addressType, address, subAddress, openValue);
+		return new SappAddressDecimal(pnmasId, addressType, address, subAddress);
 	}
 }

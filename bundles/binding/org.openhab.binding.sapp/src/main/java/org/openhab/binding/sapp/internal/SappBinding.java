@@ -13,10 +13,12 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigNumberItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigSwitchItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigUtils;
 import org.openhab.binding.sapp.internal.executer.SappCentralExecuter;
 import org.openhab.binding.sapp.internal.executer.SappCentralExecuter.PollingResult;
+import org.openhab.binding.sapp.internal.model.SappAddressDecimal;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffControl;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffStatus;
 import org.openhab.binding.sapp.internal.model.SappAddressOpenClosedStatus;
@@ -25,7 +27,9 @@ import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
@@ -401,6 +405,12 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappAddressOpenClosedStatus statusAddress = sappBindingConfigContactItem.getStatus();
 
 			updateOpenClosedItem(provider, statusAddress, itemName, item);
+		} else if (item instanceof NumberItem) {
+			SappBindingConfigNumberItem sappBindingConfigNumberItem = (SappBindingConfigNumberItem) provider.getBindingConfig(itemName);
+
+			SappAddressDecimal statusAddress = sappBindingConfigNumberItem.getStatus();
+
+			updateDecimalItem(provider, statusAddress, itemName, item);
 		} else { // TODO complete with other items
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
@@ -433,6 +443,14 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					logger.debug("found binding to update " + sappBindingConfigContactItem);
 					int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState);
 					eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
+				}
+			} else if (item instanceof NumberItem) {
+				SappBindingConfigNumberItem sappBindingConfigNumberItem = (SappBindingConfigNumberItem) provider.getBindingConfig(itemName);
+				SappAddressDecimal address = sappBindingConfigNumberItem.getStatus();
+				if (address.getAddressType() == sappAddressType && address.getPnmasId().equals(pnmasId) && addressToUpdate == address.getAddress()) {
+					logger.debug("found binding to update " + sappBindingConfigNumberItem);
+					int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), newState);
+					eventPublisher.postUpdate(itemName, new DecimalType(result));
 				}
 			} else { // TODO complete with other items
 				logger.error("unimplemented item type: " + item.getClass().getSimpleName());
@@ -508,6 +526,42 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		default:
 			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+		}
+	}
+
+	private void updateDecimalItem(SappBindingProvider provider, SappAddressDecimal address, String itemName, Item item) {
+
+		switch (address.getAddressType()) {
+		case VIRTUAL:
+			try {
+				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
+				eventPublisher.postUpdate(itemName, new DecimalType(result));
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case INPUT:
+			try {
+				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getInputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
+				eventPublisher.postUpdate(itemName, new DecimalType(result));
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case OUTPUT:
+			try {
+				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getOutputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
+				eventPublisher.postUpdate(itemName, new DecimalType(result));
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		default:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + address.getAddressType());
 			break;
 		}
 	}
