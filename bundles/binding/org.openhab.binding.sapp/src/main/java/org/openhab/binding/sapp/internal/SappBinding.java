@@ -12,11 +12,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
-import org.openhab.binding.sapp.executer.SappCentralExecuter;
-import org.openhab.binding.sapp.executer.SappCentralExecuter.PollingResult;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigSwitchItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigUtils;
+import org.openhab.binding.sapp.internal.executer.SappCentralExecuter;
+import org.openhab.binding.sapp.internal.executer.SappCentralExecuter.PollingResult;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffControl;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffStatus;
 import org.openhab.binding.sapp.internal.model.SappAddressOpenClosedStatus;
