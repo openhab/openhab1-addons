@@ -219,25 +219,37 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 							if (pollingResult.changedOutputs.size() != 0) {
 								for (Byte outputAddress : pollingResult.changedOutputs.keySet()) {
-									logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
-									provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
-									updateState(pnmasId, SappAddressType.OUTPUT, SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue(), provider);
+									logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
+									if (! pollingResult.changedOutputs.get(outputAddress).equals(provider.getOutputCachedValue(SappUtils.byteToUnsigned(outputAddress)))) {
+										// different value, save & update state
+										logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
+										provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
+										updateState(pnmasId, SappAddressType.OUTPUT, SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue(), provider);
+									}
 								}
 							}
 
 							if (pollingResult.changedInputs.size() != 0) {
 								for (Byte inputAddress : pollingResult.changedInputs.keySet()) {
-									logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
-									provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
-									updateState(pnmasId, SappAddressType.INPUT, SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue(), provider);
+									logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
+									if (! pollingResult.changedInputs.get(inputAddress).equals(provider.getInputCachedValue(SappUtils.byteToUnsigned(inputAddress)))) {
+										// different value, save & update state
+										logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
+										provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
+										updateState(pnmasId, SappAddressType.INPUT, SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue(), provider);
+									}
 								}
 							}
 
 							if (pollingResult.changedVirtuals.size() != 0) {
 								for (Integer virtualAddress : pollingResult.changedVirtuals.keySet()) {
-									logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
-									provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
-									updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue(), provider);
+									logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
+									if (! pollingResult.changedVirtuals.get(virtualAddress).equals(provider.getVirtualCachedValue(virtualAddress))) {
+										// different value, save & update state
+										logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
+										provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
+										updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue(), provider);
+									}
 								}
 							}
 						} catch (SappException e) {

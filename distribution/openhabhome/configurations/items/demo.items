@@ -4,7 +4,6 @@ Group gFF 		(All)
 Group gC 		(All)
 Group Outdoor 	(All)
 Group Shutters 	(All)
-Group Weather 	(All)
 Group Status 	(All)
 
 Group GF_Living 	"Living Room" 	<video> 	(gGF)
