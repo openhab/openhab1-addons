@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.sapp.SappBindingProvider;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfig;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigSwitchItem;
 import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;

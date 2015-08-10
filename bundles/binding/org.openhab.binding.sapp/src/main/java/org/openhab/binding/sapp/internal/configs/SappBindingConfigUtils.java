@@ -1,6 +1,6 @@
-package org.openhab.binding.sapp.internal;
+package org.openhab.binding.sapp.internal.configs;
 
-public class SappBindingUtils {
+public class SappBindingConfigUtils {
 	
 	/**
 	 * mask the value against the subAddress

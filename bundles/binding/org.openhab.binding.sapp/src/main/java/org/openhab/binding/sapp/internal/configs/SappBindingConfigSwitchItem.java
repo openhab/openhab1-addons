@@ -1,4 +1,4 @@
-package org.openhab.binding.sapp.internal;
+package org.openhab.binding.sapp.internal.configs;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffControl;

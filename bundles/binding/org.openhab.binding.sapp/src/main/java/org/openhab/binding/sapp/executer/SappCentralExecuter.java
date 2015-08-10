@@ -1,4 +1,4 @@
-package org.openhab.binding.sapp.internal;
+package org.openhab.binding.sapp.executer;
 
 import java.io.IOException;
 import java.util.Map;

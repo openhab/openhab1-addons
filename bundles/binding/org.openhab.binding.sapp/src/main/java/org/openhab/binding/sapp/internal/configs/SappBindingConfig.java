@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.sapp.internal;
+package org.openhab.binding.sapp.internal.configs;
 
 import java.util.HashMap;
 import java.util.Map;
