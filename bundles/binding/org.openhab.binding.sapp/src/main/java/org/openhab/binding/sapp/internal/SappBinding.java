@@ -496,7 +496,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 			
 			SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
-			value = sappCentralExecuter.executeSapp7CCommand(pnmas.getIp(), pnmas.getPort(),address);
+			value = sappCentralExecuter.executeSapp7CCommand(pnmas.getIp(), pnmas.getPort(), address);
 			provider.setVirtualCachedValue(address, value);
 		}
 
@@ -510,7 +510,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 
 			SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
-			value = sappCentralExecuter.executeSapp74Command(pnmas.getIp(), pnmas.getPort(),(byte) address);
+			value = sappCentralExecuter.executeSapp74Command(pnmas.getIp(), pnmas.getPort(), (byte) address);
 			provider.setInputCachedValue(address, value);
 		}
 		return value.intValue();
@@ -523,7 +523,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 
 			SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
-			value = sappCentralExecuter.executeSapp75Command(pnmas.getIp(), pnmas.getPort(),(byte) address);
+			value = sappCentralExecuter.executeSapp75Command(pnmas.getIp(), pnmas.getPort(), (byte) address);
 			provider.setOutputCachedValue(address, value);
 		}
 		return value.intValue();
