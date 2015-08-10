@@ -38,7 +38,6 @@ public class DaikinGenericBindingProvider extends AbstractGenericBindingProvider
 	 * @{inheritDoc}
 	 */
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-
 		DaikinBindingConfig config = new DaikinBindingConfig(item.getName(), bindingConfig);
 		if (item.getClass() != config.getCommandType().getSupportedItemType()) {
 			throw new BindingConfigParseException("Item '" + item.getName()
@@ -54,7 +53,6 @@ public class DaikinGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-
 		super.processBindingConfiguration(context, item, bindingConfig);
 		if (bindingConfig != null) {
 			DaikinBindingConfig config = new DaikinBindingConfig(item.getName(), bindingConfig);
@@ -66,7 +64,6 @@ public class DaikinGenericBindingProvider extends AbstractGenericBindingProvider
 	}
 
 	public DaikinBindingConfig getBindingConfig(String itemName) {
-
 		return (DaikinBindingConfig) bindingConfigs.get(itemName);
 	}	
 }
