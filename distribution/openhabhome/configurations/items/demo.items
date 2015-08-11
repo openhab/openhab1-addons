@@ -141,8 +141,8 @@ Contact PCliclamimoC12 "CTRL Parcheggio Ciclamino" (gSapp) { sapp="home:V:192:9"
 
 // number binding
 // <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>
-Number SappNumber1		"Sapp Number * : Value [%d]" (gSapp) { sapp="home:V:200:*" }
-Number SappNumber2		"Sapp Number H : Value [%d]" (gSapp) { sapp="home:V:200:H" }
+Number SappNumber1		"Sapp Number * : Value [%d]" (gSapp) { sapp="home:V:200:*:1:1000" }
+Number SappNumber2		"Sapp Number H : Value [%d]" (gSapp) { sapp="home:V:200:H:0:2500" }
 Number SappNumber3		"Sapp Number L : Value [%d]" (gSapp) { sapp="home:V:200:L" }
 Number SappNumber4		"Sapp Number 1 : Value [%d]" (gSapp) { sapp="home:V:200:1" }
 Number SappNumber5		"Sapp Number 2 : Value [%d]" (gSapp) { sapp="home:V:200:2" }

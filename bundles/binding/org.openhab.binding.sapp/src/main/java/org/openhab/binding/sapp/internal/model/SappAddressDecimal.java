@@ -2,32 +2,30 @@ package org.openhab.binding.sapp.internal.model;
 
 public class SappAddressDecimal extends SappAddress {
 
+	private int originalMinScale;
+	private int originalMaxScale;
 	private int minScale;
 	private int maxScale;
 
 	public SappAddressDecimal(String pnmasId, SappAddressType addressType, int address, String subAddress, int minScale, int maxScale) {
 		super(pnmasId, addressType, address, subAddress);
 
-		this.minScale = minScale;
-		this.maxScale = maxScale;
+		setOriginalScale(subAddress);
+		if (minScale != maxScale) { // check against bad parameters, division by zero
+			this.minScale = minScale;
+			this.maxScale = maxScale;
+		} else {
+			this.minScale = originalMinScale;
+			this.maxScale = originalMaxScale;
+		}
 	}
 
 	public SappAddressDecimal(String pnmasId, SappAddressType addressType, int address, String subAddress) {
 		super(pnmasId, addressType, address, subAddress);
-
-		if (subAddress.equals("*")) {
-			minScale = 0;
-			maxScale = 0xFFFF;
-		} else if (subAddress.equals("L")) {
-			minScale = 0;
-			maxScale = 0x00FF;
-		} else if (subAddress.equals("H")) {
-			minScale = 0;
-			maxScale = 0x00FF;
-		} else {
-			minScale = 0;
-			maxScale = 0x0001;
-		}
+		
+		setOriginalScale(subAddress);
+		this.minScale = originalMinScale;
+		this.maxScale = originalMaxScale;
 	}
 
 	public int getMinScale() {
@@ -36,6 +34,27 @@ public class SappAddressDecimal extends SappAddress {
 
 	public int getMaxScale() {
 		return maxScale;
+	}
+	
+	private void setOriginalScale(String subAddress) {
+		
+		if (subAddress.equals("*")) {
+			originalMinScale = 0;
+			originalMaxScale = 0xFFFF;
+		} else if (subAddress.equals("L")) {
+			originalMinScale = 0;
+			originalMaxScale = 0x00FF;
+		} else if (subAddress.equals("H")) {
+			originalMinScale = 0;
+			originalMaxScale = 0x00FF;
+		} else {
+			originalMinScale = 0;
+			originalMaxScale = 0x0001;
+		}
+	}
+	
+	public int scaledValue(int value) {
+		return ((value - originalMinScale) * (maxScale - minScale) / (originalMaxScale - originalMinScale)) + minScale;
 	}
 
 	@Override
