@@ -68,9 +68,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 	/**
 	 * the refresh interval which is used to poll values from the Sapp server
-	 * (optional, defaults to 1000ms)
+	 * (optional, defaults to 100ms)
 	 */
-	private long refreshInterval = 1000;
+	private long refreshInterval = 100;
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
