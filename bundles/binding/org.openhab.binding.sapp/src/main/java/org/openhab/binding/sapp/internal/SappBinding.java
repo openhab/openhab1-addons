@@ -381,9 +381,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		logger.debug("Updating item state for items {}", provider.getItemNames());
 		for (String itemName : provider.getItemNames()) {
-			logger.debug("querying and setting item" + itemName);
+			logger.debug("checking for querying and setting item " + itemName);
 			State actualState = provider.getItem(itemName).getState();
+			logger.debug("current state for " + itemName + " is " + provider.getItem(itemName).getState().getClass().getName());
 			if (actualState instanceof UnDefType) { // item just added, refresh
+				logger.debug("refresh needed: querying and setting item " + itemName);
 				queryAndSendActualState(provider, itemName);
 			}
 		}
