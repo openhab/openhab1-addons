@@ -452,8 +452,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 				if (address.getAddressType() == sappAddressType && address.getPnmasId().equals(pnmasId) && addressToUpdate == address.getAddress()) {
 					logger.debug("found binding to update " + sappBindingConfigNumberItem);
 					int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), newState);
-					result = address.scaledValue(result);
-					eventPublisher.postUpdate(itemName, new DecimalType(result));
+					eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 				}
 			} else {
 				logger.error("unimplemented item type: " + item.getClass().getSimpleName());
@@ -539,8 +538,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		case VIRTUAL:
 			try {
 				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
-				result = address.scaledValue(result);
-				eventPublisher.postUpdate(itemName, new DecimalType(result));
+				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
@@ -549,8 +547,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		case INPUT:
 			try {
 				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getInputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
-				result = address.scaledValue(result);
-				eventPublisher.postUpdate(itemName, new DecimalType(result));
+				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
@@ -559,8 +556,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		case OUTPUT:
 			try {
 				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getOutputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
-				result = address.scaledValue(result);
-				eventPublisher.postUpdate(itemName, new DecimalType(result));
+				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
