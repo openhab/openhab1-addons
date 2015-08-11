@@ -1,8 +1,5 @@
 sitemap demo label="Demo House"
 {
-	Frame label="Sapp" {
-		Group item=gSapp label="Sapp test items" icon="firstfloor"
-	}
 	Frame {
 		Group item=gFF label="First Floor" icon="firstfloor"
 		Group item=gGF label="Ground Floor" icon="groundfloor"
