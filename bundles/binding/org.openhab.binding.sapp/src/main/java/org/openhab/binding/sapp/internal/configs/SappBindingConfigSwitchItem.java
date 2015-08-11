@@ -7,6 +7,10 @@ import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+// Switch binding format
+// <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>:<on value>/<pnmasid control>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<on value>:<off value>
+// example: { sapp="home:V:60:1/home:V:192:1:1:0" }
+
 public class SappBindingConfigSwitchItem extends SappBindingConfig {
 
 	private SappAddressOnOffStatus status;

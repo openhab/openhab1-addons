@@ -6,6 +6,10 @@ import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+// Number binding format
+// <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>
+// example: { sapp="home:V:200:L" }
+
 public class SappBindingConfigNumberItem extends SappBindingConfig {
 
 	private SappAddressDecimal status;
