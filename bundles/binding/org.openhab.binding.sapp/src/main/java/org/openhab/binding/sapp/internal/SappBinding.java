@@ -349,7 +349,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
-		} else { // TODO complete with other items
+		} else {
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
 	}
@@ -411,7 +411,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappAddressDecimal statusAddress = sappBindingConfigNumberItem.getStatus();
 
 			updateDecimalItem(provider, statusAddress, itemName, item);
-		} else { // TODO complete with other items
+		} else {
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
 	}
@@ -452,7 +452,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), newState);
 					eventPublisher.postUpdate(itemName, new DecimalType(result));
 				}
-			} else { // TODO complete with other items
+			} else {
 				logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 			}
 		}
