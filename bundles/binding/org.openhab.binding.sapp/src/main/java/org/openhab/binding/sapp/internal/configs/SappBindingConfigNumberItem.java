@@ -7,8 +7,10 @@ import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 // Number binding format
-// <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>
+// <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>:<min value>:<max value>
+// <min value>:<max value> can be omitted. If present value is scaled
 // example: { sapp="home:V:200:L" }
+// example: { sapp="home:V:200:L:10:180" }
 
 public class SappBindingConfigNumberItem extends SappBindingConfig {
 
@@ -40,9 +42,11 @@ public class SappBindingConfigNumberItem extends SappBindingConfig {
 		SappAddressType addressType;
 		int address;
 		String subAddress;
+		int minScale;
+		int maxScale;
 
 		String[] bindingAddress = bindingStringAddress.split(":");
-		if (bindingAddress.length != 4) {
+		if (bindingAddress.length != 4 && bindingAddress.length != 6) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
 
@@ -73,7 +77,18 @@ public class SappBindingConfigNumberItem extends SappBindingConfig {
 		if (!ArrayUtils.contains(validSubAddresses, subAddress)) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
+		
+		if (bindingAddress.length == 6) {
+			try {
+				minScale = Integer.parseInt(bindingAddress[4]);
+				maxScale = Integer.parseInt(bindingAddress[5]);
+			} catch (NumberFormatException e) {
+				throw new BindingConfigParseException(errorMessage(bindingStringAddress));
+			}
 
-		return new SappAddressDecimal(pnmasId, addressType, address, subAddress);
+			return new SappAddressDecimal(pnmasId, addressType, address, subAddress, minScale, maxScale);
+		} else {
+			return new SappAddressDecimal(pnmasId, addressType, address, subAddress);
+		}
 	}
 }
