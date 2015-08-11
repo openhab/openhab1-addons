@@ -39,7 +39,7 @@ public class Squeezebox {
 	// handle to the Squeeze Server connection
 	public static SqueezeServer squeezeServer;
 
-	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&ie=UTF-8&q=";
+	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&ie=UTF-8&client=openhab&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
 
 	private static boolean isReady() {
@@ -143,6 +143,153 @@ public class Squeezebox {
    		} else {
    			return squeezeServer.playUrl(playerId, url);
    		}
+	}
+
+	@ActionDoc(text = "Play a URL on one of your Squeezebox devices using the specified volume and using specified resume status", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean squeezeboxPlayUrl(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
+			@ParamDoc(name = "url", text = "The URL to play (if empty will clear the playlist)") String url,
+			@ParamDoc(name = "volume", text = "The volume to set the device when playing this URL (between 1-100)") int volume,
+			@ParamDoc(name = "resumePlayback", text = "Continue playback after speech") Boolean resumePlayback ){
+		if (!isReady()) return false;
+		
+		// get the player - can return null if the playerId is bogus
+		SqueezePlayer player = squeezeServer.getPlayer(playerId);
+		if (player == null) return false;
+		// set the player ready to play this URL
+
+   		if (StringUtils.isEmpty(url)) {
+   			return squeezeServer.clearPlaylist(playerId);
+   		} else {
+			logger.trace("***START URL**** Player: '{}'", playerId);
+			// get the current player state
+			int playerVolume = player.getUnmuteVolume();
+			boolean playerPowered = player.isPowered();
+			boolean playerMuted = player.isMuted();
+			Mode playerMode = player.getMode();
+			int currNumTracks = player.getNumberPlaylistTracks();
+			int currPlayingTime = player.getCurrentPlayingTime();
+			int currPlaylistIndex = player.getCurrentPlaylistIndex();
+			int currPlaylistShuffle = player.getCurrentPlaylistShuffle();
+			int currPlaylistRepeat = player.getCurrentPlaylistRepeat();
+			int newNumTracks = 0;
+			logger.trace("Current Playing Mode '{}'", playerMode.toString());
+			logger.trace("Current Volume '{}'", playerVolume);
+			logger.trace("Current Num Playlist Tracks '{}'", currNumTracks);
+			logger.trace("Current Playing Playlist Index '{}'", currPlaylistIndex);
+			logger.trace("Current Playing Time '{}'", currPlayingTime);
+			logger.trace("Current Shuffle Mode '{}'", currPlaylistShuffle);
+			logger.trace("Current Repeat Mode '{}'", currPlaylistRepeat);
+			
+			// If Playing Pause player before adjusting volume!
+			if (playerMode == Mode.play) {
+				squeezeServer.pause(playerId);
+			}
+			
+			// set the player ready to play this announcement
+			if (playerMuted) {
+				logger.trace("Setting player state: unmuted");
+				squeezeServer.unMute(playerId);
+			}
+			if (volume != -1) {
+				logger.trace("Setting player state: volume {}", volume);
+				squeezeServer.setVolume(playerId, volume);
+			}
+			
+			if (currPlaylistRepeat != 0) {
+				squeezeServer.setRepeatMode(playerId, 0);
+			}
+			if (currPlaylistShuffle != 0) {
+				squeezeServer.setShuffleMode(playerId, 0);
+				currPlaylistIndex = 0;
+				logger.trace("Shuffle Changed! Set Current Playing Index to 0");
+			}
+			
+			SqueezeboxSentenceListener listener = new SqueezeboxSentenceListener(playerId);
+			squeezeServer.addPlayerEventListener(listener);
+			
+			// send the URL (this will power up the player and un-mute if necessary)
+			logger.trace("Adding URL to current playlist '{}' to play", url);
+			squeezeServer.addPlaylistItem(playerId, url);
+			logger.trace("Sleeping for 1s for updated playlist to refresh", url);
+			pause(1000);
+
+			newNumTracks = player.getNumberPlaylistTracks();
+			logger.trace("New Playlist Track Number: '{}'", newNumTracks);
+			
+			squeezeServer.playPlaylistItem(playerId, newNumTracks-1);
+			
+			squeezeServer.play(playerId);
+			
+			// wait for this message to complete (timing out after 30s)
+			int timeoutCount = 0;
+			while (!listener.isFinished() && timeoutCount < 300) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					break;
+				}
+				timeoutCount++;
+			}
+			
+			if (timeoutCount >= 200) {
+				logger.warn("Sentence timed out while speaking!");
+			}
+			squeezeServer.stop(playerId);
+			// clean up the listener
+			squeezeServer.removePlayerEventListener(listener);
+			listener = null;
+			logger.trace("Done playing url - restore state...");
+		
+			logger.trace("Deleting Playlist Index: '{}'", newNumTracks-1);
+			squeezeServer.deletePlaylistItem(playerId, newNumTracks-1);
+
+			// restore the player volume before playback
+			if (volume != -1) {
+				logger.trace("Restoring player to previous state: volume {}", playerVolume);
+				squeezeServer.setVolume(playerId, playerVolume);
+			}
+			if (playerMode != Mode.stop) {
+				logger.trace("Restoring Playlist Index Number: '{}'", currPlaylistIndex);
+				squeezeServer.playPlaylistItem(playerId, currPlaylistIndex);
+				logger.trace("Restoring Playing Time : '{}'", currPlayingTime);
+				squeezeServer.setPlayingTime(playerId, currPlayingTime);
+			}
+			// Must sleep 350ms before restoring previous playback state...
+			pause(350);
+
+			// restore play mode state
+			if (playerMode == Mode.play) {
+				if (resumePlayback) {
+					logger.trace("Restoring Playing Mode: '{}'", playerMode);
+					squeezeServer.play(playerId);
+				}
+				else {
+					logger.warn("NOT restoring Playing Mode: '{}' because resumePlayback is false", playerMode);
+					squeezeServer.pause(playerId);
+				}
+			} else if (playerMode == Mode.pause) {
+				squeezeServer.pause(playerId);
+			} else {
+				squeezeServer.stop(playerId);
+			}
+			
+			logger.trace("Restoring player to previous state: shuffle {}", currPlaylistShuffle);
+			squeezeServer.setShuffleMode(playerId, currPlaylistShuffle);
+			logger.trace("Restoring player to previous state: repeat {}", currPlaylistRepeat);
+			squeezeServer.setRepeatMode(playerId, currPlaylistRepeat);
+
+			if (playerMuted) {
+				logger.trace("Restoring player to previous state: muted");
+				squeezeServer.mute(playerId);
+			}
+			if (!playerPowered) {
+				logger.trace("Restoring player to previous state: off");
+				squeezeServer.powerOff(playerId);
+			}
+			logger.trace("*****DONE URL****** Player: '{}'", playerId);
+			return true;
+		}
 	}
 	
 	@ActionDoc(text = "Issues an arbitrary command to a player", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
@@ -300,10 +447,8 @@ public class Squeezebox {
 			squeezeServer.setPlayingTime(playerId, currPlayingTime);
 		}
 		// Must sleep 350ms before restoring previous playback state...
-		try {
-			Thread.sleep(350);
-		} catch (InterruptedException e) { }
-	
+		pause(350);
+
 		// restore play mode state
 		if (playerMode == Mode.play) {
 			if (resumePlayback) {
@@ -426,4 +571,12 @@ public class Squeezebox {
 
         return parts;
     }
+	
+	private static void pause(long waitInterval) {
+		try {
+			Thread.sleep(waitInterval);
+		}
+		catch (InterruptedException e) {
+		}
+	}
 }
