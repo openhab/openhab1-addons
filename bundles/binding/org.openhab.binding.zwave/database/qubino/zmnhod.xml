@@ -48,7 +48,7 @@
 			<Index>10</Index>
 			<Type>list</Type>
 			<Default>255</Default>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label>Activate/deactivate functions ALL ON / ALL OFF </Label>
 			<Help lang="en">Module responds to commands ALL ON / ALL OFF that may
 				be sent by the main controller or by other controller
@@ -56,8 +56,7 @@
 			</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">ALL ON is not active, ALL OFF is not active
-				</Label>
+				<Label lang="en">ALL ON is not active, ALL OFF is not active</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
@@ -150,15 +149,11 @@
 			</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Slats return to previously set position only in
-					case of Z-wave control.</Label>
+				<Label lang="en">Slats return to previously set position only in case of Z-wave control.</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Slats return to previously set position in case of
-					Z-wave control,
-					push-button operation or when the lower limit switch is reached.
-				</Label>
+				<Label lang="en">Slats return to previously set position in case of Z-wave control,	push-button operation or when the lower limit switch is reached.</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -206,7 +201,7 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Start calibration proces.</Label>
+				<Label lang="en">Start calibration process.</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
