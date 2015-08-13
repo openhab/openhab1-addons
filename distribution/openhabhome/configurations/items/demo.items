@@ -146,6 +146,7 @@ Number SappNumber2		"Sapp Number H : Value [%.1f]" (gSapp) { sapp="home:V:200:H:
 Number SappNumber3		"Sapp Number L : Value [%.1f]" (gSapp) { sapp="home:V:200:L" }
 Number SappNumber4		"Sapp Number 1 : Value [%.1f]" (gSapp) { sapp="home:V:200:1" }
 Number SappNumber5		"Sapp Number 2 : Value [%.1f]" (gSapp) { sapp="home:V:200:2" }
+Number SappNumberX		"Sapp Number Setpoint : Value [%.1f]" (gSapp) { sapp="home:V:230:*" }
 
 // switch binding
 // <pnmasid status>:<status address type, I/O/V>:<status address, 1-250/1-250/1-2500>:<status subaddress, */H/L/1-16>:<on value>/<pnmasid control>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<on value>:<off value>

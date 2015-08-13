@@ -349,6 +349,48 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
+		} else if (item instanceof NumberItem) {
+			SappBindingConfigNumberItem sappBindingConfigNumberItem = (SappBindingConfigNumberItem) provider.getBindingConfig(itemName);
+			logger.debug("found binding " + sappBindingConfigNumberItem);
+
+			SappAddressDecimal address = sappBindingConfigNumberItem.getStatus();
+
+			if (!provider.getPnmasMap().containsKey(address.getPnmasId())) {
+				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", address.getPnmasId(), sappBindingConfigNumberItem));
+				return;
+			}
+
+			try {
+				if (command instanceof DecimalType) {
+					switch (address.getAddressType()) {
+					case VIRTUAL: {
+
+						// mask bits on previous value
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), ((DecimalType) command).intValue(), previousValue);
+						
+						// update pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
+						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), address.getAddress(), newValue);
+						
+						// update immediately changed value, without waiting for polling
+						provider.setVirtualCachedValue(address.getAddress(), newValue);
+						updateState(address.getPnmasId(), SappAddressType.VIRTUAL, address.getAddress(), newValue, provider);
+
+						break;
+					}
+
+					default:
+						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + address.getAddressType() + " type");
+						break;
+					}
+				} else {
+					logger.error("command " + command.getClass().getSimpleName() + " not applicable");
+				}
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
 		} else {
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
