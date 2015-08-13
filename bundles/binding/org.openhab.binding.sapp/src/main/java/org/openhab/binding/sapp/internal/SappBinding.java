@@ -367,7 +367,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 						// mask bits on previous value
 						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
-						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), ((DecimalType) command).intValue(), previousValue);
+						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((DecimalType) command).intValue()), previousValue);
 						
 						// update pnmas
 						SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());

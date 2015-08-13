@@ -53,8 +53,12 @@ public class SappAddressDecimal extends SappAddress {
 		}
 	}
 	
-	public double scaledValue(int value) {
-		return (((double) (value - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale);
+	public int scaledValue(int value) {
+		return (int) Math.round((((double) (value - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale));
+	}
+	
+	public int backScaledValue(int value) {
+		return (int) Math.round((((double) (value - minScale)) * ((double) (originalMaxScale - originalMinScale)) / ((double) (maxScale - minScale))) + ((double) originalMinScale));
 	}
 
 	@Override
