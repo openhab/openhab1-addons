@@ -2,7 +2,7 @@ sitemap demo label="Demo House"
 {
 	Frame label="Sapp" {
 		Group item=gSapp label="Sapp test items" icon="firstfloor"
-		Setpoint item=SappNumberX1 minValue=0 maxValue=40 step=1
+		Setpoint item=SappNumberX1 minValue=0 maxValue=40 step=0.5
 		Text item=SappNumberX2
 	}
 	Frame {
