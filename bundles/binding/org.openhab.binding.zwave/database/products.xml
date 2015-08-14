@@ -2054,6 +2054,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+        <Id>011a</Id>
+        <Name>Enerwave</Name>
+        <Product>
+            <Reference>
+                <Type>101</Type>
+                <Id>0603</Id>
+            </Reference>
+            <Model>ZW20R</Model>
+            <Label lang="en">20A Tamper Resistant Duplex Receptacle</Label>
+            <ConfigFile>enerwave/zw20r.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
+	<Manufacturer>
 		<Id>0001</Id>
 		<Name>ACT</Name>
 		<Product>
