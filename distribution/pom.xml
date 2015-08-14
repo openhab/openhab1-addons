@@ -1281,6 +1281,12 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.sagercaster</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 
 		<dependency>
 			<groupId>org.openhab.io</groupId>
