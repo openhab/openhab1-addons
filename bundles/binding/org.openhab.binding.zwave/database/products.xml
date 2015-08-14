@@ -13,23 +13,14 @@
 			<ConfigFile>devolo/mt02646.xml</ConfigFile>
 		</Product>
 		<Product>
-			<Reference>
-				<Type>0002</Type>
-				<Id>000E</Id>
-			</Reference>
-			<Model>MT02648</Model>
-			<Label lang="en">Door/Window Contact</Label>
-			<ConfigFile>devolo/mt02648.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0100</Type>
-				<Id>0101</Id>
-			</Reference>
-			<Model>MT2652</Model>
-			<Label lang="en">Scene Switch</Label>
-			<ConfigFile>devolo/mt2652.xml</ConfigFile>
-		</Product>
+            <Reference>
+                <Type>0100</Type>
+                <Id>0101</Id>
+            </Reference>
+            <Model>MT2652</Model>
+            <Label lang="en">Scene Switch</Label>
+            <ConfigFile>devolo/mt2652.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -701,17 +692,17 @@
 				<Id>0060</Id>
 			</Reference>
 			<Reference>
-				<Type>0103</Type>
-				<Id>0060</Id>
-			</Reference>
-			<Reference>
-				<Type>0203</Type>
-				<Id>0060</Id>
-			</Reference>
-			<Reference>
-				<Type>1D03</Type>
-				<Id>0060</Id>
-			</Reference>
+                <Type>0103</Type>
+                <Id>0060</Id>
+            </Reference>
+            <Reference>
+                <Type>0203</Type>
+                <Id>0060</Id>
+            </Reference>
+            <Reference>
+                <Type>1D03</Type>
+                <Id>0060</Id>
+            </Reference>
 			<Model>ZW096</Model>
 			<Label lang="en">Smart Switch 6</Label>
 			<ConfigFile>aeon/zw096.xml</ConfigFile>
@@ -830,23 +821,23 @@
 			<Label lang="en">4 in One MultiSensor (G5)</Label>
 			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
 		</Product>
-		<Product>
+        <Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0064</Id>
 			</Reference>
-			<Reference>
-				<Type>0102</Type>
-				<Id>0064</Id>
-			</Reference>
+            <Reference>
+                <Type>0102</Type>
+                <Id>0064</Id>
+            </Reference>
 			<Reference>
 				<Type>0202</Type>
 				<Id>0064</Id>
 			</Reference>
-			<Model>ZW100-A</Model>
-			<Label lang="en">MultiSensor 6</Label>
-			<ConfigFile>aeon/zw100-a.xml</ConfigFile>
-		</Product>
+            <Model>ZW100-A</Model>
+            <Label lang="en">MultiSensor 6</Label>
+            <ConfigFile>aeon/zw100-a.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>0006</Type>
@@ -1004,6 +995,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>aeon/keyfobg1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0026</Id>
 			</Reference>
 			<Model>DSA38</Model>
@@ -1036,15 +1036,6 @@
 			<Model>ZW098-C55</Model>
 			<Label lang="en">LED Bulb</Label>
 			<ConfigFile>aeon/zw098.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0002</Type>
-				<Id>002d</Id>
-			</Reference>
-			<Model>DSB45-ZWUS</Model>
-			<Label lang="en">Water Sensor</Label>
-			<ConfigFile>aeon/dsb45-zwus.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1207,10 +1198,6 @@
 			<Reference>
 				<Type>2001</Type>
 				<Id>0105</Id>
-			</Reference>
-			<Reference>
-				<Type>2001</Type>
-				<Id>0106</Id>
 			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
@@ -1550,15 +1537,6 @@
 			<Label lang="en">Fibaro FGR221 Roller Shutter Controller</Label>
 			<ConfigFile>fibaro/fgr221.xml</ConfigFile>
 		</Product>
-		<Product>
-			<Reference>
-				<Type>0102</Type>
-				<Id>1000</Id>
-			</Reference>
-			<Model>FGD212</Model>
-			<Label lang="en">Fibaro Dimmer 2</Label>
-			<ConfigFile>fibaro/fgd212.xml</ConfigFile>
-		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
@@ -1608,9 +1586,9 @@
 				<Type>0001</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>TILTZWAVE2</Model>
+			<Model>TILTZWAVE1</Model>
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
-			<ConfigFile>eco/tiltzwave2.xml</ConfigFile>
+			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1691,10 +1669,6 @@
 			<Reference>
 				<Type>0100</Type>
 				<Id>0102</Id>
-			</Reference>
-			<Reference>
-				<Type>0100</Type>
-				<Id>0101</Id>
 			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
@@ -2284,7 +2258,7 @@
 			<Label lang="en">Flush PWM thermostat</Label>
 			<ConfigFile>qubino/zmnhla.xml</ConfigFile>
 		</Product>
-		<Product>
+	<Product>
 			<Reference>
 				<Type>3</Type>
 				<Id>2</Id>
@@ -2292,15 +2266,6 @@
 			<Model>ZMNHCD</Model>
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhcd.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>3</Type>
-				<Id>53</Id>
-			</Reference>
-			<Model>ZMNHOD</Model>
-			<Label lang="en">Flush Shutter</Label>
-			<ConfigFile>qubino/zmnhod.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
