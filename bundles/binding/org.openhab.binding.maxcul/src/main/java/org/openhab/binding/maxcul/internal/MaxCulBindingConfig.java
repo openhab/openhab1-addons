@@ -44,7 +44,17 @@ public class MaxCulBindingConfig implements BindingConfig {
 	private boolean temperatureConfigSet = false;
 	private HashSet<String> associatedSerialNum = new HashSet<String>();
 
-	private final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
+	private static final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
+
+
+	static private String getUserPersistenceDataFolder() {
+		String progArg = System.getProperty("smarthome.userdata");
+		if (progArg != null) {
+			return progArg + File.separator + "maxcul";
+		} else {
+			return CONFIG_PROPERTIES_BASE;
+		}
+	}
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MaxCulBindingConfig.class);
@@ -94,7 +104,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	}
 
 	private String generateConfigFilename() {
-		String base = CONFIG_PROPERTIES_BASE;
+		String base = getUserPersistenceDataFolder();
 		String filename = String.format("%s/%s.properties", base,
 				this.getSerialNumber());
 		return filename;
@@ -143,7 +153,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	private void saveStoredConfig() {
 		if (this.paired) {
 			File cfgFile = new File(generateConfigFilename());
-			File cfgDir = new File(CONFIG_PROPERTIES_BASE);
+			File cfgDir = new File(getUserPersistenceDataFolder());
 
 			if (!cfgFile.exists()) {
 				try {
