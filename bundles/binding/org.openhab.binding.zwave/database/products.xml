@@ -2597,4 +2597,16 @@
 			<ConfigFile>widom/wps104.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0196</Id>
+		<Name>HEATIT</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Thermostat</Model>
+			<Label lang="en">ZWave Thermostat</Label>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
