@@ -17,9 +17,10 @@ package org.openhab.binding.maxcul.internal;
 public enum MaxCulDevice {
 	CUBE(0), RADIATOR_THERMOSTAT(1), RADIATOR_THERMOSTAT_PLUS(2), 
 	WALL_THERMOSTAT(3), SHUTTER_CONTACT(4), PUSH_BUTTON(5),
+	LED_MODE(0xfb), // not official MAX!
 	CREDIT_MONITOR(0xfc), // not official MAX!
 	PAIR_MODE(0xfd), // not official MAX!
-	LISTEN_MODE(0xfe), // not official MAX!
+	LISTEN_MODE(0xfe), // not official MAX!	
 	UNKNOWN(0xff); // not official MAX!
 
 	private final int devType;

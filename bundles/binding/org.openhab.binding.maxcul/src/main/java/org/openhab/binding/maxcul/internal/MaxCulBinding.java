@@ -28,6 +28,8 @@ import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.PushButtonMsg;
 import org.openhab.binding.maxcul.internal.messages.PushButtonMsg.PushButtonMode;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
+import org.openhab.binding.maxcul.internal.messages.ShutterContactStateMsg;
+import org.openhab.binding.maxcul.internal.messages.ShutterContactStateMsg.ShutterContactState;
 import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
@@ -35,6 +37,7 @@ import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
@@ -188,6 +191,15 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 							+ bindingConfig.getDeviceType()
 							+ " that is not OnOffType");
 				break;
+			case LED_MODE:
+				if (command instanceof OnOffType) {
+					this.messageHandler
+							.setLedMode(((OnOffType) command == OnOffType.ON));
+				} else
+					logger.warn("Command not handled for "
+							+ bindingConfig.getDeviceType()
+							+ " that is not OnOffType");
+				break;	
 			case RADIATOR_THERMOSTAT:
 			case RADIATOR_THERMOSTAT_PLUS:
 			case WALL_THERMOSTAT:
@@ -203,12 +215,21 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 					pacingTimer.schedule(new MaxCulPacedThermostatTransmitTask(
 							command, bindingConfig, messageHandler,
 							super.providers), PACED_TRANSMIT_TIME);
+				}  else if (bindingConfig.getFeature() == MaxCulFeature.DISPLAYSETTING) {
+                    messageHandler.sendSetDisplayActualTemp(
+                            bindingConfig.getDevAddr(),
+                            ((OnOffType) command == OnOffType.ON));
 				} else if (bindingConfig.getFeature() == MaxCulFeature.RESET) {
 					messageHandler.sendReset(bindingConfig.getDevAddr());
 				} else {
 					logger.warn("Command not handled for "
 							+ bindingConfig.getDeviceType()
 							+ " that is not OnOffType or DecimalType");
+				}
+				break;				
+			case SHUTTER_CONTACT:
+				if (bindingConfig.getFeature() == MaxCulFeature.RESET) {
+					messageHandler.sendReset(bindingConfig.getDevAddr());
 				}
 				break;
 			default:
@@ -541,19 +562,53 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 					for (MaxCulBindingConfig bc : bindingConfigs) {
 						String itemName = provider.getItemNameForConfig(bc);
 						if (bc.getFeature() == MaxCulFeature.SWITCH) {
-							// ON maps to 'AUTO'
-							if (pbMsg.getMode() == PushButtonMode.AUTO)
-								eventPublisher.postUpdate(itemName,
-										OnOffType.ON);
-							// OFF maps to 'ECO'
-							else if (pbMsg.getMode() == PushButtonMode.ECO)
-								eventPublisher.postUpdate(itemName,
-										OnOffType.OFF);
+                            // 'AUTO' maps to 'ON' and 'ECO' maps to 'OFF'
+                            eventPublisher
+                                    .postUpdate(
+                                            itemName,
+                                            pbMsg.getMode() == PushButtonMode.AUTO ? OnOffType.ON
+                                                    : OnOffType.OFF);							
+						} else if (bc.getFeature() == MaxCulFeature.BATTERY) {
+								eventPublisher.postUpdate(itemName, pbMsg
+									.getBatteryLow() ? OnOffType.ON
+									: OnOffType.OFF);
 						}
+					
 					}
 				}
 				if (isBroadcast == false)
 					this.messageHandler.sendAck(pbMsg);
+				break;
+			case SHUTTER_CONTACT_STATE:
+                ShutterContactStateMsg shutterContactStateMsg = new ShutterContactStateMsg(
+                        data);
+				shutterContactStateMsg.printMessage();
+				for (MaxCulBindingProvider provider : super.providers) {
+					Collection<MaxCulBindingConfig> bindingConfigs = provider
+							.getConfigsForRadioAddr(shutterContactStateMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs) {
+						String itemName = provider.getItemNameForConfig(bc);
+						if (bc.getFeature() == MaxCulFeature.CONTACT) {
+							if (shutterContactStateMsg.getState() == ShutterContactState.CLOSED){
+								eventPublisher.postUpdate(itemName,
+										OpenClosedType.CLOSED);
+							} else if(shutterContactStateMsg.getState() == ShutterContactState.OPEN){
+								eventPublisher.postUpdate(itemName,
+										OpenClosedType.OPEN);
+							}
+						} else if (bc.getFeature() == MaxCulFeature.BATTERY) {
+							eventPublisher
+									.postUpdate(
+											itemName,
+											shutterContactStateMsg
+													.getBatteryLow() ? OnOffType.ON
+													: OnOffType.OFF);
+						}
+					}
+				}
+				/* respond to device */
+				if (isBroadcast == false)
+					this.messageHandler.sendAck(shutterContactStateMsg);
 				break;
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());

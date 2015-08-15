@@ -19,6 +19,7 @@ import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -82,10 +83,10 @@ public class MaxCulGenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		/* only switch items or number items are valid */
-		if (!(item instanceof NumberItem) && !(item instanceof SwitchItem))
+		/* only switch items or number items or contact items are valid */
+		if (!(item instanceof NumberItem) && !(item instanceof SwitchItem) && !(item instanceof ContactItem))
 			throw new BindingConfigParseException(
-					"Invalid item type. Bindings can only be Number or Switch");
+					"Invalid item type. Bindings can only be Number or Switch or Contact");
 	}
 
 	/**
