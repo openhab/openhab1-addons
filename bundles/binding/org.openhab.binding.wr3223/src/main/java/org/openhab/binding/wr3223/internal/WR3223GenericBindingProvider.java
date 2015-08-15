@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Michael Fraefel
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider implements WR3223BindingProvider {
 
@@ -45,11 +45,6 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
 	}
 	
 	/**
@@ -98,7 +93,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 	 * This is a helper class holding binding specific configuration details
 	 * 
 	 * @author Michael Fraefel
-	 * @since 1.7.0
+	 * @since 1.8.0
 	 */
 	class WR3223BindingConfig implements BindingConfig {
 		private WR3223CommandType type;
@@ -110,8 +105,7 @@ public class WR3223GenericBindingProvider extends AbstractGenericBindingProvider
 
 		public WR3223CommandType getType() {
 			return type;
-		}
-		
+		}		
 		
 	}
 	

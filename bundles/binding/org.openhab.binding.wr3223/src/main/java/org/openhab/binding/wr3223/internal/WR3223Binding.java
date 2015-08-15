@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * at least every 20 second a message.
  * 
  * @author Michael Fraefel
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> {
 
@@ -103,10 +103,11 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	 */
 	private StatusValueHolder statusHolder = new StatusValueHolder();
 	
+	/**
+	 * Indicate that values has changed and must be send to WR3223.
+	 */
 	private boolean hasUpdate = true;
 	
-	public WR3223Binding() {
-	}
 	
 	/**
 	 * Called by the SCR to activate the component with its configuration read from CAS
@@ -227,15 +228,19 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	@Override
 	protected void execute() {
 
-		//setup connector
+		//Connector if not already connected.
 		try{
 			if(connector == null){
 				if(host != null){
 					TcpWR3223Connector tcpConnector = new TcpWR3223Connector();
 					tcpConnector.connect(host, port);
 					connector = tcpConnector;
-				}else{
-					
+					logger.info("Connected to WR3223 over tcp to host {}:{}.", host, port);
+				}else if(serialPort != null){
+					SerialWR3223Connector serialConnector = new SerialWR3223Connector();
+					serialConnector.connect(serialPort, 9600);
+					connector = serialConnector;					
+					logger.info("Connected to WR3223 over serial port {}.", serialPort);
 				}
 			}
 		}catch(IOException ex){			
@@ -246,34 +251,38 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	
 		
 		try {	
-			
+			//Read relais
 			RelaisValueDecoder relais = RelaisValueDecoder.valueOf(connector.read(controllerAddr, WR3223Commands.RL));
 			
 			//Write values if no control device connected
 			if(!relais.isControlDeviceActive()){			
 				connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue());				
 				if(hasUpdate){
+					hasUpdate = false;
 					connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(statusHolder.getOperationMode()));
 					connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(statusHolder.getTargetTemperatureSupplyAir()));
 				}
 			}
 			
-			//Relay Values
-			publishValue(WR3223CommandType.COMPRESSOR,relais.isCompressor());
-			publishValue(WR3223CommandType.ADDITIONAL_HEATER,relais.isAdditionalHeater());
-			publishValue(WR3223CommandType.PREHEATING_RADIATOR_ACTIVE,relais.isPreHeaterRadiatorActive());
-			publishValue(WR3223CommandType.BYPASS,!relais.isBypass());
-			publishValue(WR3223CommandType.BYPASS_RELAY,relais.isBypassRelay());
-			publishValue(WR3223CommandType.CONTROL_DEVICE_ACTIVE,relais.isControlDeviceActive());
-			publishValue(WR3223CommandType.EARTH_HEAT_EXCHANGER,relais.isEarthHeatExchanger());
-			publishValue(WR3223CommandType.MAGNET_VALVE,relais.isMagnetValve());
-			publishValue(WR3223CommandType.OPENHAB_INTERFACE_ACTIVE,relais.isOpenhabInterfaceActive());
-			publishValue(WR3223CommandType.PREHEATING_RADIATOR,relais.isPreheatingRadiator());
-			publishValue(WR3223CommandType.VENTILATION_LEVEL_AVAILABLE,relais.isVentilationLevelAvailable());
-			publishValue(WR3223CommandType.WARM_WATER_POST_HEATER,relais.isWarmWaterPostHeater());
+			//Publish relais values
+			publishValueToBoundItems(WR3223CommandType.COMPRESSOR,relais.isCompressor());
+			publishValueToBoundItems(WR3223CommandType.ADDITIONAL_HEATER,relais.isAdditionalHeater());
+			publishValueToBoundItems(WR3223CommandType.PREHEATING_RADIATOR_ACTIVE,relais.isPreHeaterRadiatorActive());
+			publishValueToBoundItems(WR3223CommandType.BYPASS,!relais.isBypass());
+			publishValueToBoundItems(WR3223CommandType.BYPASS_RELAY,relais.isBypassRelay());
+			publishValueToBoundItems(WR3223CommandType.CONTROL_DEVICE_ACTIVE,relais.isControlDeviceActive());
+			publishValueToBoundItems(WR3223CommandType.EARTH_HEAT_EXCHANGER,relais.isEarthHeatExchanger());
+			publishValueToBoundItems(WR3223CommandType.MAGNET_VALVE,relais.isMagnetValve());
+			publishValueToBoundItems(WR3223CommandType.OPENHAB_INTERFACE_ACTIVE,relais.isOpenhabInterfaceActive());
+			publishValueToBoundItems(WR3223CommandType.PREHEATING_RADIATOR,relais.isPreheatingRadiator());
+			publishValueToBoundItems(WR3223CommandType.VENTILATION_LEVEL_AVAILABLE,relais.isVentilationLevelAvailable());
+			publishValueToBoundItems(WR3223CommandType.WARM_WATER_POST_HEATER,relais.isWarmWaterPostHeater());
 					
-			//Read values from WR3223
+			//Read and publish other values from WR3223
 			for(WR3223CommandType readCommand : READ_COMMANDS){
+				if(hasUpdate){
+					break;
+				}
 				readAndPublishValue(readCommand);
 			}
 		} catch (IOException e) {
@@ -292,18 +301,29 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		List<String> itemNames = getBoundItemsForType(wr3223CommandType);
 		if(itemNames.size()>0){
 			String value = connector.read(controllerAddr, wr3223CommandType.getWr3223Command());
-			publishValueToBoundItems(itemNames, wr3223CommandType, value);
+			publishValueToItems(itemNames, wr3223CommandType, value);
 		}
 	}
 	
-	private void publishValue(WR3223CommandType wr3223CommandType, Object value) {
+	/**
+	 * Publish the value to all bound items.
+	 * @param wr3223CommandType
+	 * @param value
+	 */
+	private void publishValueToBoundItems(WR3223CommandType wr3223CommandType, Object value) {
 		List<String> itemNames = getBoundItemsForType(wr3223CommandType);
 		if(itemNames.size()>0){
-			publishValueToBoundItems(itemNames, wr3223CommandType, value);
+			publishValueToItems(itemNames, wr3223CommandType, value);
 		}
 	}
 
-	private void publishValueToBoundItems(List<String> itemNames,
+	/**
+	 * Publish the value to the given items.
+	 * @param itemNames
+	 * @param wr3223CommandType
+	 * @param value
+	 */
+	private void publishValueToItems(List<String> itemNames,
 			WR3223CommandType wr3223CommandType, Object value) {
 		if(value != null){
 			State state = null;
@@ -403,6 +423,11 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		}
 	}
 	
+	/**
+	 * Hold the values which must be send every 20 seconds to the WR3223. The values received from the bus are stored in this class.
+	 * @author Michael Fraefel
+	 *
+	 */
 	private static final class StatusValueHolder {
 		
 		private boolean heatPumpOn = false;
@@ -513,7 +538,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 
 	/**
 	 * Coding of the RL command.
-	 * @author MFr
+	 * @author Michael Fraefel
 	 *
 	 */
 	private static final class RelaisValueDecoder{

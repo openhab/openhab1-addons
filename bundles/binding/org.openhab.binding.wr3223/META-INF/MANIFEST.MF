@@ -9,7 +9,8 @@ Bundle-Version: 1.7.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the WR3223 binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: gnu.io,
+ org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
