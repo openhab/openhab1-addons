@@ -2611,8 +2611,8 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
-		<Id>0196</Id>
-		<Name>HEATIT</Name>
+		<Id>019b</Id>
+		<Name>Thermo-Floor</Name>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -2620,6 +2620,7 @@
 			</Reference>
 			<Model>Thermostat</Model>
 			<Label lang="en">ZWave Thermostat</Label>
+			<ConfigFile>thermofloor/multireg_thermostat.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
