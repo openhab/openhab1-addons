@@ -1541,6 +1541,15 @@
 			<Label lang="en">Fibaro FGR221 Roller Shutter Controller</Label>
 			<ConfigFile>fibaro/fgr221.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>1000</Id>
+			</Reference>
+			<Model>FGD212</Model>
+			<Label lang="en">Fibaro Dimmer 2</Label>
+			<ConfigFile>fibaro/fgd212.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
@@ -2045,6 +2054,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+        <Id>011a</Id>
+        <Name>Enerwave</Name>
+        <Product>
+            <Reference>
+                <Type>101</Type>
+                <Id>0603</Id>
+            </Reference>
+            <Model>ZW20R</Model>
+            <Label lang="en">20A Tamper Resistant Duplex Receptacle</Label>
+            <ConfigFile>enerwave/zw20r.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
+	<Manufacturer>
 		<Id>0001</Id>
 		<Name>ACT</Name>
 		<Product>
@@ -2253,7 +2275,7 @@
 			<Label lang="en">Flush PWM thermostat</Label>
 			<ConfigFile>qubino/zmnhla.xml</ConfigFile>
 		</Product>
-	<Product>
+		<Product>
 			<Reference>
 				<Type>3</Type>
 				<Id>2</Id>
@@ -2261,6 +2283,15 @@
 			<Model>ZMNHCD</Model>
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhcd.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>3</Type>
+				<Id>53</Id>
+			</Reference>
+			<Model>ZMNHOD</Model>
+			<Label lang="en">Flush Shutter</Label>
+			<ConfigFile>qubino/zmnhod.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
