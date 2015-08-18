@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>NGD00Z-4</Model>
+    <Label lang="en">Garage Door Controller</Label>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en"><![CDATA[Lifeline: Group 1 must be assigned the NODE ID of the controller to which unsolicited notifications from the NGD00Z-4 will be sent.]]></Help>
+		</Group>
+	</Associations>
+	<CommandClasses>
+		<Class><id>0x5E</id></Class>
+		<Class><id>0x5A</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x98</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x66</id></Class>
+		<Class><id>0x22</id></Class>
+		<Class><id>0x71</id></Class>
+    </CommandClasses>
+</Product>
