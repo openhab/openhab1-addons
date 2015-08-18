@@ -109,6 +109,15 @@
 			<Label lang="en">Isolated Contact Fixture Module</Label>
 			<ConfigFile>linear/fs20z.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4744</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>NGD00Z-4</Model>
+			<Label lang="en">Garage Door Controller</Label>
+			<ConfigFile>linear/ngd00z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
