@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x1100</address>
+		<name>DeltaSol MX - SorTech - "eCoo" [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- DeltaSol MX SorTech [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x1100</source>
+		<command>0x0100</command>
+		<field>´
+			<name>*** Temperaturen: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>T LT OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>T LT IN:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>T MT OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>T MT IN:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>0</offset>
+			<name>T E1 OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>T E2 OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>T A1 OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>T A2 OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>T HT OUT:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>T AMB:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>T HT Ext:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>T LT Ext:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<name>*** Schaltzustände: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Anlage:</name>
+			<name lang="en">system:</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit> - (0 = AUS; 1 = EIN)</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Heizmodus:</name>
+			<name lang="en">heating mode:</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit> - (0 = AUS; 1 = EIN)</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Strömungswächter LT-Kreis:</name>
+			<name lang="en">flow switch:</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+			<unit> - (0 = AUS; 1 = EIN)</unit>
+		</field>
+		<field>
+			<name>*** Ventilstellung: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>M1_A_IN:</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>M2_A_IN:</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>M1_E_IN:</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>M2_E_IN:</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>M1_A_OUT:</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>M2_A_OUT:</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>M1_E_OUT:</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>M2_E_OUT:</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<name>*** Meldungen: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Betriebsmeldung</name>
+			<name lang="en">operation massage:</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+			<unit> - (0 = AUS; 1 = EIN)</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Sammelstörmeldung</name>
+			<name lang="en">error massage:</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+			<unit> - (0 = Fehler; 1 = Ok)</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Betriebsart (Kühlen/Heizen)</name>
+			<name lang="en">Mode:</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+			<unit> - (0 = Kühlen; 1 = Heizen)</unit>
+		</field>
+		<field>
+			<name>*** Drehzahlausgänge 0-10V: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>HT-Pumpe</name>
+			<name lang="en">HT pump:</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>MT-Pumpe</name>
+			<name lang="en">MT pump:</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>LT-Pumpe</name>
+			<name lang="en">LT pump:</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>RCS %:</name>
+			<name lang="en">rcs %:</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>SPR Relais:</name>
+			<name lang="en">spr relay:</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+			<unit> - (0 = AUS; 1 = EIN)</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Phase:</name>
+			<name lang="en">phase:</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Systemcode:</name>
+			<name lang="en">error code:</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>EXT-Volt (T-SET):</name>
+			<name lang="en">ext-volt(T-SET):</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> V</unit>
+		</field>
+		<field>
+			<name>*** Mittelwerte: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>T LTS OUT AVG</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>T LT OUT Cycle</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>T LT IN AVG</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>T LT IN Cycle</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>T MT OUT AVG</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>T MT OUT Cycle</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Kälteleistung letzter Zyklus</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> kW</unit>
+		</field>
+		<field>
+			<offset>62</offset>
+			<name>Volumenstrom Kaltwasserkreis (dV_LT)</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Aktuellen Sollwert (T-SET):</name>
+			<name lang="en">actual set point:</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Externe Solltemperatur (T-SET-EXT):</name>
+			<name lang="en">external set point:</name>
+			<bitSize>15</bitSize>
+			<factor>0,1</factor>
+			<unit> °C</unit>
+		</field> -->
+		<field>
+			<offset>44</offset>
+			<name>Anzahl Zyklen (seit Start):</name>
+			<name lang="en">number of cycles (start):</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit> - Zyklen</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Anzahl Zyklen (Summe):</name>
+			<name lang="en">number of cycles (sum):</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit> - Zyklen</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Aufsummierte Besprühungzeit:</name>
+			<name lang="en">sum spraying time:</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<name>*** System: ***</name>
+			<unit>********************</unit>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Systemzeit:</name>
+			<name lang="en">system time:</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>66</offset>
+			<name>Jahr:</name>
+			<name lang="en">year:</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>68</offset>
+			<name>Monat:</name>
+			<name lang="en">month:</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>69</offset>
+			<name>Tag:</name>
+			<name lang="en">day:</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<name>Kern:</name>
+			<name lang="en">kernel:</name>
+			<field>
+				<offset>70</offset>
+				<bitSize>7</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>71</offset>
+				<bitSize>7</bitSize>
+				<factor>0,01</factor>
+			</field>
+			<format>F2</format>
+		</field>
+	</packet>
+</vbusSpecification>

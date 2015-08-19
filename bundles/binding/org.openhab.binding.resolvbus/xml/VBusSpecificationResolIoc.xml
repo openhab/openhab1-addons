@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7F61</address>
+		<name>IOC-Modul [Messwerte]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7F64</address>
+		<name>IOC-Modul [Debug-Werte]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7F62</address>
+		<name>IOC-Modul [Tagesbilanz]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+	<address>0x7F63</address>
+		<name>IOC-Modul [Entnahmekreis]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+	<address>0x7F65</address>
+		<name>IOC-Modul [Messwerte_1s]</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- IOC-Modul -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7F61</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>SekNr</name>
+			<name lang="en">SecNo</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>T-Umgebung</name>
+			<name lang="en">T-outdoor</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>T-Vorlauf/S1</name>
+			<name lang="en">T-flow/S1</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>T-Rücklauf/S2</name>
+			<name lang="en">T-return/S2</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>TSL</name>
+			<name lang="en">TSL</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Tmax-Temp./S5</name>
+			<name lang="en">Tmax-Temp/S5</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Einstrahlung</name>
+			<name lang="en">Irradiance</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Volumenstr.1</name>
+			<name lang="en">Flow rate1</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Volumenstr.2</name>
+			<name lang="en">Flow rate2</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>S6</name>
+			<name lang="en">S6</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>S7</name>
+			<name lang="en">S7</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Stromstärke 1</name>
+			<name lang="en">Current1</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> mA</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Stromstärke 2</name>
+			<name lang="en">Current2</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> mA</unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Datum_Messdaten</name>
+			<name lang="en">Date meas. values</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Wärmemenge 1</name>
+			<name lang="en">Heat 1</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Wärmemenge 2</name>
+			<name lang="en">Heat 2</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<name>Solarwärme</name>
+			<name lang="en">Solar yield</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>68</offset>
+				<bitSize>15</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>70</offset>
+				<bitSize>15</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>72</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000</factor>
+			</field>
+			<field>
+				<offset>74</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>5-Min-Fehlercode</name>
+			<name lang="en">5-min-error code</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7F64</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Tkol-erw</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Volumenstrom-erw</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>IAM</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Diffusstrahlung</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Einfallswinkel</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> °</unit>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7F62</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Datum</name>
+			<name lang="en">Date</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>H-Day</name>
+			<name lang="en">H-Day</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Q-mess</name>
+			<name lang="en">Q-meas</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Q-erw2</name>
+			<name lang="en">Q-poss2</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Q-erw</name>
+			<name lang="en">Q-poss</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Meldung</name>
+			<name lang="en">Report</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>dt-mess</name>
+			<name lang="en">dt-meas</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>dt-erw2</name>
+			<name lang="en">dt-poss2</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>dt-erw</name>
+			<name lang="en">dt-poss2</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Qutil-m</name>
+			<name lang="en">Qutil-m</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Qutil-e2</name>
+			<name lang="en">Qutil-p2</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Qutil-e</name>
+			<name lang="en">Qutil-p</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Qtv-e2</name>
+			<name lang="en">Qtl-p2</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Qtv-e</name>
+			<name lang="en">Qtl-p</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Qkv-e2</name>
+			<name lang="en">Qcl-p2</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Qkv-e</name>
+			<name lang="en">Qcl-p</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Qskv-e2</name>
+			<name lang="en">Qpl-p2</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>68</offset>
+			<name>Qskv-e</name>
+			<name lang="en">Qpl-p</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>72</offset>
+			<name>Tsoll-Day</name>
+			<name lang="en">Tset-Day</name>
+			<bitSize>31</bitSize>
+			<factor>0.01</factor>
+			<unit> °C</unit>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7F63</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vlast-Day/Vol2</name>
+			<name lang="en">VLoad-Day/Vol2</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> l/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Qmess2</name>
+			<name lang="en">Q2meas</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> kWh/(m²*d)</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Tagesfehlercode</name>
+			<name lang="en">Error code</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7F65</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>T-Umgebung_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>T-Vorlauf/S1_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>T-Rücklauf/S2_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>TSL_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Tmax-Temp./S5_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Einstrahlung_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Volumenstrom1_1s</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Volumenstrom2_1s</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>S6_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>S7_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Stromstärke1_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> mA</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Stromstärke2_1s</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> mA</unit>
+		</field>
+		<field>
+			<name>Solarwärme_1s</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>28</offset>
+				<bitSize>15</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>30</offset>
+				<bitSize>15</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>32</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000</factor>
+			</field>
+			<field>
+				<offset>34</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Statusflag_1s</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+	</packet>
+</vbusSpecification>

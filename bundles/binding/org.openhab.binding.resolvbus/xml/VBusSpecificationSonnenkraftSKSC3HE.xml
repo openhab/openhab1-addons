@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7160</address>
+		<name>SKSC3HE</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7161</address>
+		<name>SKSC3HE [HK1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7162</address>
+		<name>SKSC3HE [HK2]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7163</address>
+		<name>SKSC3HE [HK3]</name>
+		<isMaster>false</isMaster>
+	</device>
+	
+	<!-- SKSC3HE -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7160</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Temperatur GFD1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Temperatur GFD2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Einstrahlung</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Volumenstrom 2</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Volumenstrom 3</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl A1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Drehzahl A2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Drehzahl A3</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Drehzahl A</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>24</offset>
+				<bitSize>15</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>26</offset>
+				<bitSize>15</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>28</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000</factor>
+			</field>
+			<field>
+				<offset>30</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000000</factor>
+			</field>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme 2</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>60</offset>
+				<bitSize>15</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>62</offset>
+				<bitSize>15</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>64</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000</factor>
+			</field>
+			<field>
+				<offset>66</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000000</factor>
+			</field>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme 3</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>68</offset>
+				<bitSize>15</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>70</offset>
+				<bitSize>15</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>72</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000</factor>
+			</field>
+			<field>
+				<offset>74</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000000</factor>
+			</field>
+		</field>
+		<field>
+			<name>Leistung 2</name>
+			<offset>52</offset>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit>kW</unit>
+		</field>
+		<field>
+			<name>Leistung 3</name>
+			<offset>56</offset>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit>kW</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>32</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>33</offset>
+			<name>Sensorbruchnummer</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Sensorkurzschlussnummer</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Systemzeit2</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>T</format>
+			<timeRef>1</timeRef>
+		</field>
+	</packet>
+
+	<!-- SKSC3HE [HK1] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7161</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Mischerpausenzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>HK-Status</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+	</packet>
+
+	<!-- SKSC3HE [HK2] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7162</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Mischerpausenzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>HK-Status</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+	</packet>
+
+	<!-- SKSC3HE [HK3] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7163</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Mischerpausenzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>HK-Status</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+	</packet>
+
+</vbusSpecification>

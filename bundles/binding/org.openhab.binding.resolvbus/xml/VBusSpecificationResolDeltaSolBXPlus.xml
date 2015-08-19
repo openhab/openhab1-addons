@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7112</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol BX Plus [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<device>
+		<address>0x7113</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol BX Plus [Module]</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<device>
+		<address>0x7121</address>
+		<mask>0xFFF0</mask>
+		<name>DeltaSol BX Plus [Heizkreis #]</name>
+		<isMaster>false</isMaster>
+	</device>
+
+	<device>
+		<address>0x7131</address>
+		<mask>0xFFF0</mask>
+		<name>DeltaSol BX Plus [WMZ #]</name>
+		<isMaster>false</isMaster>
+	</device>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7112</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<name lang="en">Temperature sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<name lang="en">Temperature sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<name lang="en">Temperature sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<name lang="en">Temperature sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<name lang="en">Temperature sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Einstrahlung Sensor 10</name>
+			<name lang="en">Irradiation sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Temperatur Sensor 11</name>
+			<name lang="en">Temperature sensor 19</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Temperatur Sensor 12</name>
+			<name lang="en">Temperature sensor 20</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Volumenstrom Sensor 9</name>
+			<name lang="en">Flow sensor 9</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Volumenstrom Sensor 11</name>
+			<name lang="en">Flow sensor 19</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Volumenstrom Sensor 12</name>
+			<name lang="en">Flow sensor 20</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Druck Sensor 11</name>
+			<name lang="en">Pressure sensor 19</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Druck Sensor 12</name>
+			<name lang="en">Pressure sensor 20</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Relais 1</name>
+			<name lang="en">Relay 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>41</offset>
+			<name>Relais 2</name>
+			<name lang="en">Relay 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Relais 3</name>
+			<name lang="en">Relay 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>43</offset>
+			<name>Relais 4</name>
+			<name lang="en">Relay 4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Relais 5</name>
+			<name lang="en">Relay 5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>PWM/0-10V A</name>
+			<name lang="en">PWM/0-10V A</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>65</offset>
+			<name>PWM/0-10V B</name>
+			<name lang="en">PWM/0-10V B</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Systemdatum</name>
+			<name lang="en">System date</name>
+			<bitSize>31</bitSize>
+			<format>r</format>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>31</bitSize>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7113</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Modul 1 Sensor 1</name>
+			<name lang="en">Temperature module 1 sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Modul 1 Sensor 2</name>
+			<name lang="en">Temperature module 1 sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Modul 1 Sensor 3</name>
+			<name lang="en">Temperature module 1 sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Modul 1 Sensor 4</name>
+			<name lang="en">Temperature module 1 sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Modul 1 Sensor 5</name>
+			<name lang="en">Temperature module 1 sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Modul 1 Sensor 6</name>
+			<name lang="en">Temperature module 1 sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Modul 2 Sensor 1</name>
+			<name lang="en">Temperature module 2 sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Modul 2 Sensor 2</name>
+			<name lang="en">Temperature module 2 sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Modul 2 Sensor 3</name>
+			<name lang="en">Temperature module 2 sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Modul 2 Sensor 4</name>
+			<name lang="en">Temperature module 2 sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Temperatur Modul 2 Sensor 5</name>
+			<name lang="en">Temperature module 2 sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Temperatur Modul 2 Sensor 6</name>
+			<name lang="en">Temperature module 2 sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7121</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlauf-Soll-Temperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Betriebsstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7131</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Wärmemenge</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<!--
+		<field>
+			<offset>4</offset>
+			<name>Leistung</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> W</unit>
+		</field>
+		-->
+		<field>
+			<offset>8</offset>
+			<name>Wärmemenge heute</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Wärmemenge Woche</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Gesamtvolumen</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> l</unit>
+		</field>
+	</packet>
+	
+</vbusSpecification>

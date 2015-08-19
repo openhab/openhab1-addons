@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7774</address>
+		<name>EMZ/CME</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- EMZ FR -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7774</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Datum</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Uhrzeit</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+		
+		<!-- WMZ 1 -->
+		<field>
+			<offset>8</offset>
+			<name>TSS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>TEF</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>12</offset>
+				<bitSize>16</bitSize>
+				<factor>1.0</factor>
+			</field>
+			<field>
+				<offset>14</offset>
+				<bitSize>16</bitSize>
+				<factor>1000.0</factor>
+			</field>
+			<field>
+				<offset>16</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000.0</factor>
+			</field>
+		</field>
+		<field>
+			<offset>18</offset>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<name>Volumenstrom</name>
+			<unit> l/h</unit>
+		</field>
+		<field>
+            <offset>20</offset>
+            <bitSize>32</bitSize>
+            <factor>0,01</factor>
+            <name>Volumen</name>
+            <unit> m³</unit>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>96</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- WMZ 2 -->
+        <field>
+            <offset>24</offset>
+            <name>TSS</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <offset>26</offset>
+            <name>TSA</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <name>Wärme2</name>
+            <unit> Wh</unit>
+            <field>
+                <offset>28</offset>
+                <bitSize>16</bitSize>
+                <factor>1.0</factor>
+            </field>
+            <field>
+                <offset>30</offset>
+                <bitSize>16</bitSize>
+                <factor>1000.0</factor>
+            </field>
+            <field>
+                <offset>32</offset>
+                <bitSize>16</bitSize>
+                <factor>1000000.0</factor>
+            </field>
+        </field>
+        <field>
+            <offset>34</offset>
+            <bitSize>16</bitSize>
+            <factor>1</factor>
+            <name>Volumenstrom2</name>
+            <unit> l/h</unit>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>96</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- WMZ 3 -->
+        <field>
+            <offset>36</offset>
+            <name>TAC</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <offset>38</offset>
+            <name>TAF</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <name>Wärme3</name>
+            <unit> Wh</unit>
+            <field>
+                <offset>40</offset>
+                <bitSize>16</bitSize>
+                <factor>1.0</factor>
+            </field>
+            <field>
+                <offset>42</offset>
+                <bitSize>16</bitSize>
+                <factor>1000.0</factor>
+            </field>
+            <field>
+                <offset>44</offset>
+                <bitSize>16</bitSize>
+                <factor>1000000.0</factor>
+            </field>
+
+        </field>
+        <field>
+            <offset>46</offset>
+            <bitSize>16</bitSize>
+            <factor>1</factor>
+            <name>Volumenstrom3</name>
+            <unit> l/h</unit>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>100</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- WMZ 4 -->
+        <field>
+            <offset>48</offset>
+            <name>TBC</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <offset>50</offset>
+            <name>TBF</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <name>Wärme4</name>
+            <unit> Wh</unit>
+            <field>
+                <offset>52</offset>
+                <bitSize>16</bitSize>
+                <factor>1.0</factor>
+            </field>
+            <field>
+                <offset>54</offset>
+                <bitSize>16</bitSize>
+                <factor>1000.0</factor>
+            </field>
+            <field>
+                <offset>56</offset>
+                <bitSize>16</bitSize>
+                <factor>1000000.0</factor>
+            </field>
+        </field>
+        <field>
+            <offset>58</offset>
+            <bitSize>16</bitSize>
+            <factor>1</factor>
+            <name>Volumenstrom4</name>
+            <unit> l/h</unit>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>104</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- WMZ 5 -->
+        <field>
+            <offset>60</offset>
+            <name>TSC</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <offset>62</offset>
+            <name>TSF</name>
+            <bitSize>15</bitSize>
+            <factor>0.1</factor>
+            <unit> °C</unit>
+        </field>
+        <field>
+            <name>Wärme5</name>
+            <unit> Wh</unit>
+            <field>
+                <offset>64</offset>
+                <bitSize>16</bitSize>
+                <factor>1.0</factor>
+            </field>
+            <field>
+                <offset>66</offset>
+                <bitSize>16</bitSize>
+                <factor>1000.0</factor>
+            </field>
+            <field>
+                <offset>68</offset>
+                <bitSize>16</bitSize>
+                <factor>1000000.0</factor>
+            </field>
+        </field>
+        <field>
+            <offset>70</offset>
+            <bitSize>16</bitSize>
+            <factor>1</factor>
+            <name>Volumenstrom5</name>
+            <unit> l/h</unit>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>108</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- Stromzähler 1 Phase -->
+        <field>
+            <name>Strom1</name>
+            <unit> Wh</unit>
+            <field>
+                <offset>72</offset>
+                <bitSize>32</bitSize>
+                <factor>1.0</factor>
+            </field>
+        </field>
+        
+        <field>
+            <name>Strom1</name>
+            <unit> kWh</unit>
+            <field>
+                <offset>76</offset>
+                <bitSize>32</bitSize>
+                <factor>1.0</factor>
+            </field>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>112</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- Stromzähler 3Phase -->
+        <field>
+            <name>Strom2</name>
+            <unit> kWh</unit>
+            <field>
+                <offset>80</offset>
+                <bitSize>32</bitSize>
+                <factor>1.0</factor>
+            </field>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>116</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- Gaszähler -->
+        <field>
+            <name>Gas1</name>
+            <unit> m³</unit>
+            <offset>84</offset>
+            <bitSize>32</bitSize>
+            <factor>0.01</factor>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>128</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- Thermischer Energiezähler 1 -->
+        <field>
+            <name>Therm. Energie1</name>
+            <unit> kWh</unit>
+            <field>
+                <offset>88</offset>
+                <bitSize>32</bitSize>
+                <factor>1.0</factor>
+            </field>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>120</offset>
+            <bitSize>32</bitSize>
+        </field>
+        
+        <!-- Thermischer Energiezähler 2 -->
+        <field>
+            <name>Therm. Energie2</name>
+            <unit> kWh</unit>
+            <field>
+                <offset>92</offset>
+                <bitSize>32</bitSize>
+                <factor>1.0</factor>
+            </field>
+        </field>
+        <field>
+            <name>Impulse</name>
+            <offset>124</offset>
+            <bitSize>32</bitSize>
+        </field>
+		
+		<!-- Impulszähler -->
+		<field>
+            <name>Impulszähler 1 (Volumen 1/2)</name>
+            <offset>96</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 2 (Volumen 3)</name>
+            <offset>100</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 3 (Volumen 4)</name>
+            <offset>104</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 4 (Volumen 5)</name>
+            <offset>108</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 5 (Strom 1)</name>
+            <offset>112</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 6 (Strom 2)</name>
+            <offset>116</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 7 (th. Energie 1)</name>
+            <offset>120</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 8 (th. Energie 2)</name>
+            <offset>124</offset>
+			<bitSize>32</bitSize>
+        </field>
+		<field>
+            <name>Impulszähler 9 (Gas 1)</name>
+            <offset>128</offset>
+			<bitSize>32</bitSize>
+        </field>
+
+	</packet>
+</vbusSpecification>

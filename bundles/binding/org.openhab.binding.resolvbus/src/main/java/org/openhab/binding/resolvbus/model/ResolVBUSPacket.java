@@ -70,8 +70,9 @@ public class ResolVBUSPacket {
 	}
 	public ResolVBUSField getFieldWithName(String itemName) {
 		
+		//@TODO 
 		for (ResolVBUSField field : getField()) {
-			if (field.getName().equalsIgnoreCase(itemName))
+			if (field.getName().get(0).equalsIgnoreCase(itemName)) //correct get(0) to right language
 				return field;
 		}
 		return null;

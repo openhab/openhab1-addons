@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+  <device>
+    <address>0x5251</address>
+    <mask>0xFFFF</mask>
+    <name>Frischwasserregler</name>
+    <name lang="en">Domestic hot water controller</name>
+    <isMaster>true</isMaster>
+  </device>
+
+  <packet>
+    <destination>0x0010</destination>
+    <source>0x5251</source>
+    <command>0x0100</command>
+
+    <field>
+      <offset>36</offset>
+      <name>Volumenstrom VFS / FlowSonic</name>
+      <name lang="en">Flow rate VFS / FlowSonic</name>
+      <bitSize>31</bitSize>
+      <factor>1</factor>
+      <unit> l/h</unit>
+    </field>
+    <field>
+      <offset>22</offset>
+      <name>Temperatur VFS</name>
+      <name lang="en">Temperature VFS</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+
+    <field>
+      <offset>0</offset>
+      <name>Temperatur Sensor 1</name>
+      <name lang="en">Temperature sensor 1</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>2</offset>
+      <name>Temperatur Sensor 2</name>
+      <name lang="en">Temperature sensor 2</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>4</offset>
+      <name>Temperatur Sensor 3</name>
+      <name lang="en">Temperature sensor 3</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>6</offset>
+      <name>Temperatur Sensor 4</name>
+      <name lang="en">Temperature sensor 4</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>8</offset>
+      <name>Temperatur Sensor 5</name>
+      <name lang="en">Temperature sensor 5</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>10</offset>
+      <name>Temperatur Sensor 6</name>
+      <name lang="en">Temperature sensor 6</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+
+    <field>
+      <offset>56</offset>
+      <name>Drehzahl Ausgang PWM 1</name>
+      <name lang="en">Output PWM 1</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    <field>
+      <offset>57</offset>
+      <name>Drehzahl Ausgang PWM 2</name>
+      <name lang="en">Output PWM 2</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+
+    <field>
+      <offset>49</offset>
+      <name>Drehzahl Relais 1</name>
+      <name lang="en">Relais 1</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    <field>
+      <offset>50</offset>
+      <name>Drehzahl Relais 2</name>
+      <name lang="en">Relais 2</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    <field>
+      <offset>51</offset>
+      <name>Drehzahl Relais 3</name>
+      <name lang="en">Relais 3</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    <field>
+      <offset>52</offset>
+      <name>Drehzahl Relais 4</name>
+      <name lang="en">Relais 4</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+
+    <field>
+      <offset>112</offset>
+      <name>Systemdatum</name>
+      <name lang="en">System date</name>
+      <bitSize>31</bitSize>
+      <format>r</format>
+    </field>
+
+    <!--
+    <field>
+      <offset>12</offset>
+      <name>Temperatur Sensor 7</name>
+      <name lang="en">Temperature sensor 7</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>14</offset>
+      <name>Temperatur Sensor 8</name>
+      <name lang="en">Temperature sensor 8</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>16</offset>
+      <name>Temperatur Sensor 9</name>
+      <name lang="en">Temperature sensor 9</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>18</offset>
+      <name>Temperatur Sensor 10</name>
+      <name lang="en">Temperature sensor 10</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>20</offset>
+      <name>Temperatur Sensor 11</name>
+      <name lang="en">Temperature sensor 11</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+  -->
+    <!--
+    <field>
+      <offset>24</offset>
+      <name>Temperatur Sensor 13</name>
+      <name lang="en">Temperature sensor 13</name>
+      <bitSize>15</bitSize>
+      <factor>0.1</factor>
+      <unit> °C</unit>
+    </field>
+    <field>
+      <offset>26</offset>
+      <name>Einstrahlung Sensor 11</name>
+      <name lang="en">Irradiation sensor 11</name>
+      <bitSize>15</bitSize>
+      <factor>1</factor>
+      <unit> W/m²</unit>
+    </field>
+    <field>
+      <offset>28</offset>
+      <name>Durchfluss Sensor 9</name>
+      <name lang="en">Flow sensor 9</name>
+      <bitSize>31</bitSize>
+      <factor>1</factor>
+      <unit> l/h</unit>
+    </field>
+    <field>
+      <offset>32</offset>
+      <name>Durchfluss Sensor 10</name>
+      <name lang="en">Flow sensor 10</name>
+      <bitSize>31</bitSize>
+      <factor>1</factor>
+      <unit> l/h</unit>
+    </field>
+  -->
+    <!--
+    <field>
+      <offset>40</offset>
+      <name>Durchfluss Sensor 13</name>
+      <name lang="en">Flow sensor 13</name>
+      <bitSize>31</bitSize>
+      <factor>1</factor>
+      <unit> l/h</unit>
+    </field>
+    <field>
+      <offset>44</offset>
+      <name>Druck Sensor 12</name>
+      <name lang="en">Pressure sensor 12</name>
+      <bitSize>15</bitSize>
+      <factor>0.01</factor>
+      <unit> bar</unit>
+    </field>
+    <field>
+      <offset>46</offset>
+      <name>Druck Sensor 13</name>
+      <name lang="en">Pressure sensor 13</name>
+      <bitSize>15</bitSize>
+      <factor>0.01</factor>
+      <unit> bar</unit>
+    </field>
+
+    <field>
+      <offset>48</offset>
+      <name>Drehzahl Relais 1</name>
+      <name lang="en">Relais 1</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    -->
+    <!--
+    <field>
+      <offset>58</offset>
+      <name>Drehzahl Ausgang 3</name>
+      <name lang="en">Output 3</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    <field>
+      <offset>59</offset>
+      <name>Drehzahl Ausgang 4</name>
+      <name lang="en">Output 4</name>
+      <bitSize>8</bitSize>
+      <unit> %</unit>
+    </field>
+    <field>
+      <offset>60</offset>
+      <name>Betriebssekunden Relais 1</name>
+      <name lang="en">W R1</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    --><!--
+    <field>
+      <offset>64</offset>
+      <name>Betriebssekunden Relais 1</name>
+      <name lang="en">W R1</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    <field>
+      <offset>68</offset>
+      <name>Betriebssekunden Relais 2</name>
+      <name lang="en">W R2</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    <field>
+      <offset>72</offset>
+      <name>Betriebssekunden Relais 3</name>
+      <name lang="en">W R3</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    <field>
+      <offset>76</offset>
+      <name>Betriebssekunden Relais pot._frei</name>
+      <name lang="en">W Rpot._free</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    <field>
+      <offset>80</offset>
+      <name>Betriebssekunden Ausgang PWM 1</name>
+      <name lang="en">W O1</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    <field>
+      <offset>84</offset>
+      <name>Betriebssekunden Ausgang PWM 2</name>
+      <name lang="en">W O2</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    -->
+    <!--
+    <field>
+      <offset>88</offset>
+      <name>Betriebssekunden Ausgang 3</name>
+      <name lang="en">W O3</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    <field>
+      <offset>92</offset>
+      <name>Betriebssekunden Ausgang 4</name>
+      <name lang="en">W O4</name>
+      <bitSize>32</bitSize>
+      <unit> s</unit>
+    </field>
+    --><!--
+    <field>
+      <offset>96</offset>
+      <name>Wärmemenge</name>
+      <name lang="en">Heat qty.</name>
+      <bitSize>32</bitSize>
+      <factor>1</factor>
+      <unit> Wh</unit>
+    </field>
+    <field>
+      <offset>100</offset>
+      <name>Fehler</name>
+      <name lang="en">Error</name>
+      <bitSize>32</bitSize>
+      <factor>1</factor>
+    </field>
+    -->
+    <!--
+    <field>
+      <offset>104</offset>
+      <name>Optionsmaske</name>
+      <name lang="en">Option mask</name>
+      <bitSize>32</bitSize>
+      <factor>1</factor>
+    </field>
+    --><!--
+    <field>
+      <offset>108</offset>
+      <name>Version</name>
+      <bitSize>16</bitSize>
+      <factor>0.01</factor>
+    </field>
+    -->
+  </packet>
+</vbusSpecification>

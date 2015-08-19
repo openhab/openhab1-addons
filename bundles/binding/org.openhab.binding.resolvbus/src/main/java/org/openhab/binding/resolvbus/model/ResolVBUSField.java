@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
@@ -24,17 +25,23 @@ public class ResolVBUSField {
 
 	private String format;
 	private BigInteger offset;
-	private String name;
+
 	private BigInteger bitSize;
 	private BigDecimal factor;
 	private String unit;
-	private String field;
 	private BigInteger bitPos;
 	private String timeRef;
 	private String mask;
 	
 	@XStreamImplicit
 	private List<ResolVBUSValue> value;
+	@XStreamImplicit
+	private List<String> name;
+	@XStreamImplicit
+	private List<String> field;
+	
+	@XStreamAsAttribute
+	private String lang;	
 
 	public String getFormat() {
 		return format;
@@ -50,14 +57,6 @@ public class ResolVBUSField {
 
 	public void setOffset(BigInteger offset) {
 		this.offset = offset;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public BigDecimal getFactor() {
@@ -76,13 +75,7 @@ public class ResolVBUSField {
 		this.unit = unit;
 	}
 
-	public String getField() {
-		return field;
-	}
 
-	public void setField(String field) {
-		this.field = field;
-	}
 
 	public List<ResolVBUSValue> getValue() {
 		return value;
@@ -122,6 +115,30 @@ public class ResolVBUSField {
 
 	public void setBitSize(BigInteger bitSize) {
 		this.bitSize = bitSize;
+	}
+
+	public List<String> getName() {
+		return name;
+	}
+
+	public void setName(List<String> name) {
+		this.name = name;
+	}
+
+	public List<String> getField() {
+		return field;
+	}
+
+	public void setField(List<String> field) {
+		this.field = field;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 }

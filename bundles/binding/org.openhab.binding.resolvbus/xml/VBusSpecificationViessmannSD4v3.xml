@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x1060</address>
+		<mask>0xFFFF</mask>
+		<name>Vitosolic 200 [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x1065</address>
+		<mask>0xFFFF</mask>
+		<name>Vitosolic 200 [WMZ 1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x1066</address>
+		<mask>0xFFFF</mask>
+		<name>Vitosolic 200 [WMZ 2]</name>
+		<isMaster>false</isMaster>
+	</device>
+
+	<!-- Vitosolic 200 [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x1060</source>
+		<command>0x0100</command>
+		<field >
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field >
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<name lang="en">Temperature sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<name lang="en">Temperature sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<name lang="en">Temperature sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<name lang="en">Temperature sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<name lang="en">Temperature sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Sensor 10</name>
+			<name lang="en">Temperature sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Temperatur Sensor 11</name>
+			<name lang="en">Temperature sensor 11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Temperatur Sensor 12</name>
+			<name lang="en">Temperature sensor 12</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>SZ Einstrahlung</name>
+			<name lang="en">Irradiation</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>SZ Spannung</name>
+			<bitSize>16</bitSize>
+			<factor>0.001</factor>
+            <unit> V</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Impulszähler 1</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			 <unit> l/min</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Impulszähler 2</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			 <unit> l/min</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			 <unit></unit>
+		</field> 
+	    <field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S1</name>
+			<bitPos>0</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+	    </field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S2</name>
+			<bitPos>1</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S3</name>
+			<bitPos>2</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S4</name>
+			<bitPos>3</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+	    <field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S5</name>
+			<bitPos>4</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S6</name>
+			<bitPos>5</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S7</name>
+			<bitPos>6</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S8</name>
+			<bitPos>7</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S9</name>
+			<bitPos>8</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S10</name>
+			<bitPos>9</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S11</name>
+			<bitPos>10</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensor Unterbrechung S12</name>
+			<bitPos>11</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S1</name>
+			<bitPos>0</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S2</name>
+			<bitPos>1</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S3</name>
+			<bitPos>2</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S4</name>
+			<bitPos>3</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S5</name>
+			<bitPos>4</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S6</name>
+			<bitPos>5</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S7</name>
+			<bitPos>6</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S8</name>
+			<bitPos>7</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S9</name>
+			<bitPos>8</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S10</name>
+			<bitPos>9</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S11</name>
+			<bitPos>10</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>38</offset>
+			<name>Sensor Kurzschluss S12</name>
+			<bitPos>11</bitPos>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+		</field> 
+		<field>
+			<offset>40</offset>
+			<name>Sensor benutzt</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 1 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 2 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 3 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 4 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 5 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 6 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 7 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 8 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 9 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>8</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 10 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>9</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 11 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>10</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensor 12 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>11</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Drehzahl Relais 1</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Drehzahl Relais 2</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Drehzahl Relais 3</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Drehzahl Relais 4</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Drehzahl Relais 5</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>49</offset>
+			<name>Drehzahl Relais 6</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>Drehzahl Relais 7</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Lasterkennung Relais</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+		</field> 
+		<field>
+			<offset>56</offset>
+			<name>Lasterkennung R1</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Lasterkennung R2</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Lasterkennung R3</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Lasterkennung R4</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>57</offset>
+			<name>Fehler Lasterkennung Relais</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>57</offset>
+			<name>Fehler Lasterkennung R1</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>57</offset>
+			<name>Fehler Lasterkennung R2</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>57</offset>
+			<name>Fehler Lasterkennung R3</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>57</offset>
+			<name>Fehler Lasterkennung R4</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+	
+        <field>
+			<offset>58</offset>
+			<name>Relaisbenutzungsmaske</name>
+			<factor>1</factor>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 1 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 2 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 3 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 4 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 5 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 6 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relais 7 benutzt</name>
+			<factor>1</factor>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Fehlermaske</name>
+			<factor>1</factor>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>62</offset>
+			<name>Warnmaske</name>
+			<factor>1</factor>
+			<bitSize>16</bitSize>
+		</field>
+		
+        <field>
+			<offset>64</offset>
+			<name>SW-Version</name>
+	        <factor>0.1</factor>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>65</offset>
+			<name>Minorversion</name>
+	        <factor>1</factor>
+			<bitSize>8</bitSize>
+		</field>
+        <field>
+			<offset>66</offset>
+			<name>Systemzeit</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+<!--
+		<field>
+			<offset>68</offset>
+			<name>Systemzeit</name>
+			<bitSize>31</bitSize>
+			<format>r</format>
+			<timeRef>1</timeRef>
+		</field>
+-->
+		<field>
+			<offset>72</offset>
+			<name>Fehler Solarzelle</name>
+	        <factor>1</factor>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+	
+	<!-- Vitosolic 200 [WMZ1] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x1065</source>
+		<sourceMask>0xFFFC</sourceMask>
+		<command>0x0100</command>
+
+		<field>
+			<offset>0</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Rücklauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Volumenstrom</name>
+			<bitSize>16</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Wärme Wh</name>
+			<bitSize>16</bitSize>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Wärme kWh</name>
+			<bitSize>16</bitSize>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Wärme MWh</name>
+			<bitSize>16</bitSize>
+			<unit> MWh</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>8</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>10</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+	
+</vbusSpecification>

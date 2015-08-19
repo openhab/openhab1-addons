@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x2251</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol SL [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x2252</address>
+		<name>DeltaSol SL [WMZ1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x2251</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Systemdatum</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<format>r</format>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur VFS/RPS (S6)</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Volumenstrom V40</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Volumenstrom VFS (S6)</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Volumenstrom Flowrotor (S7)</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Druck RPS (S6)</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>35</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Drehzahl Relais 3</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>37</offset>
+			<name>Drehzahl Relais 4</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>PWM A</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>39</offset>
+			<name>PWM B</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Wärmemenge</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>SW-Version</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Betriebssekunden Relais 1</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Betriebssekunden Relais 2</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Betriebssekunden Relais 3</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Betriebssekunden Relais 4</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Urlaubsfunktion</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>65</offset>
+			<name>Blockierschutz 1</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>66</offset>
+			<name>Blockierschutz 2</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>67</offset>
+			<name>Blockierschutz 3</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>68</offset>
+			<name>Initalisieren</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>72</offset>
+			<name>Füllung</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>76</offset>
+			<name>Stabilisieren</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>80</offset>
+			<name>Pumpenverzögerung</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>81</offset>
+			<name>Überwärmeabfuhr</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>82</offset>
+			<name>Nachlauf</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>83</offset>
+			<name>Thermische Desinfektion</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>84</offset>
+			<name>Speicherkühlung</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>85</offset>
+			<name>Systemkühlung</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>86</offset>
+			<name>Spreizung</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>87</offset>
+			<name>Frostschutz</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>88</offset>
+			<name>Kollektorkühlung</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>89</offset>
+			<name>Einheit Temperatur</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>90</offset>
+			<name>Einheit Durchfluss</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>91</offset>
+			<name>Einheit Druck</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>93</offset>
+			<name>Einheit Energie</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>94</offset>
+			<name>Speichermaximaltemperatur</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>95</offset>
+			<name>Neustarts</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>96</offset>
+			<name>Fehlermaske</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+	</packet>
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x2252</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Wmz1_Wert_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Wmz1_Leistung_W</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> W</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Wmz1_WertHeute_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Wmz1_WertWoche_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+	</packet>
+</vbusSpecification>
+

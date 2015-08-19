@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7210</address>
+		<name>SKSR 1/2/3</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7211</address>
+		<name>SKSC3 [HK1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7212</address>
+		<name>SKSC3 [HK2]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7213</address>
+		<name>SKSC3 [HK3]</name>
+		<isMaster>false</isMaster>
+	</device>
+	
+	<!-- SKS 1/2/3 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7210</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Einstrahlung</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl A1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Drehzahl A2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Drehzahl A3</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Drehzahl A</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>24</offset>
+				<bitSize>15</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>26</offset>
+				<bitSize>15</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>28</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000</factor>
+			</field>
+			<field>
+				<offset>30</offset>
+				<bitSize>15</bitSize>
+				<factor>1000000000</factor>
+			</field>
+		</field>
+		<field commonUsage='error'>
+			<offset>32</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>33</offset>
+			<name>Sensorbruchnummer</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Sensorkurzschlussnummer</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Systemzeit2</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>T</format>
+			<timeRef>1</timeRef>
+		</field>
+	</packet>
+
+	<!-- SKSC3 [HK1] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7211</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Mischerpausenzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>HK-Status</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+	</packet>
+
+	<!-- SKSC3 [HK2] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7212</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Mischerpausenzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>HK-Status</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+	</packet>
+
+	<!-- SKSC3 [HK3] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7213</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Mischerpausenzeit</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>HK-Status</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit></unit>
+		</field>
+	</packet>
+
+</vbusSpecification>

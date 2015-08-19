@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7761</address>
+		<name>DeltaSol Pool</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7762</address>
+		<name>DeltaSol Pool [WMZ]</name>
+		<isMaster>false</isMaster>
+	</device>
+
+	<!-- DeltaSol Pool [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7761</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Einstrahlung CS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Impulse 1 V40</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> </unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Digital Input</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> </unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Drehzahl Relais 3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Drehzahl Relais 4</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Drehzahl Relais 5</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Drehzahl Relais 6</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Drehzahl Relais 7</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>33</offset>
+			<name>Fehlermaske</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Meldungen</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Filterlaufzeit</name>
+			<bitSize>16</bitSize>
+			<unit> min</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Jahr</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>Monat</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>51</offset>
+			<name>Tag</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<name>Version</name>
+			<field>
+				<offset>44</offset>
+				<bitSize>7</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>45</offset>
+				<bitSize>7</bitSize>
+				<factor>0,01</factor>
+			</field>
+			<format>F2</format>
+		</field>
+ 		<field>
+			<offset>52</offset>
+			<name>Umwaelzzeitzähler</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Extra-Filterzeit</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Pumpenüberwachung</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Solar Min. Ein/Aus</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>68</offset>
+			<name>Sim5</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>72</offset>
+			<name>Dauer Regelungsblock</name>
+			<bitSize>32</bitSize>
+			<unit> ms</unit>
+		</field>
+ 		<field>
+			<offset>44</offset>
+			<name>Solarphase</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solar dTein</name>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solar dTaus</name>
+			<bitPos>26</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>CS ein</name>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solar Mindestein</name>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solar Mindestaus</name>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Beckenmax.</name>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Filtermin.</name>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Nachheizung</name>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solar Nachheizung</name>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>dT Solar Nachheizung</name>
+			<bitPos>8</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Umwälzung</name>
+			<bitPos>9</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Kollektorabschaltung</name>
+			<bitPos>10</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Kollektorminimal</name>
+			<bitPos>11</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>T Beckenkühlfkt</name>
+			<bitPos>18</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>dT Beckenkühlfkt ein</name>
+			<bitPos>19</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>dT Beckenkühlfkt aus</name>
+			<bitPos>12</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Vorlaufbegrenzung</name>
+			<bitPos>13</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Extra Filterlaufzeit</name>
+			<bitPos>14</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Extern Reglerfreigabe</name>
+			<bitPos>15</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Fehlerrelais</name>
+			<bitPos>16</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solarkreis ein</name>
+			<bitPos>19</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Filter eingeschaltet</name>
+			<bitPos>20</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Nachhzg normal</name>
+			<bitPos>21</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Solarkreis aktiv</name>
+			<bitPos>22</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Betriebsrelais ein</name>
+			<bitPos>23</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Pumpencheck</name>
+			<bitPos>24</bitPos>
+		</field>
+	</packet>
+
+	<!-- DeltaSol Pool [WMZ] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7762</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Vorlauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Rücklauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Durchfluss Sensor 8</name>
+			<bitSize>15</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>8</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>10</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+</vbusSpecification>

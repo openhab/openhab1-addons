@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x5231</address>
+		<mask>0xFFFF</mask>
+		<name>nemux</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- Nemux -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x5231</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Durchfluss Sensor 5</name>
+			<name lang="en">Flow sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> l/min</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Drehzahl 1</name>
+			<name lang="en">Relais 1</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl 2</name>
+			<name lang="en">Relais 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Warnungsmaske</name>
+			<name lang="en">Warning mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Statusmaske</name>
+			<name lang="en">Status mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat qty.</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Betriebssekunden Relais 1</name>
+			<name lang="en">W R1</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Betriebssekunden Relais 2</name>
+			<name lang="en">W R2</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Zapfmenge</name>
+			<name lang="en">W R2</name>
+			<bitSize>32</bitSize>
+			<factor>0.001</factor>
+			<unit> m³</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Datum</name>
+			<name lang="en">Date</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+	</packet>
+</vbusSpecification>

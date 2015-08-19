@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x427B</address>		
+		<name>DeltaSol BS 2009</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x427B</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+			<field>
+			<offset>10</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<name lang="en">Operating hours relais 1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Betriebsstunden Relais 2</name>
+			<name lang="en">Operating hours relais 2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>UnitType</name>
+			<factor>1</factor>
+			<bitSize>8</bitSize>		
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>System</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>ErrorMask</name>
+			<bitSize>16</bitSize>			
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+			<field>
+			<offset>20</offset>
+			<name>Sensor 1 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Sensor 2 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Sensor 3 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Sensor 4 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+			<unit></unit>
+		</field>	
+			<field>
+			<offset>24</offset>
+			<name>Statusmask</name>
+			<bitSize>32</bitSize>
+		</field>
+			<field>	<name>Wärmemenge</name>
+			<name lang="en">Heat amount</name>
+			<unit> Wh</unit>
+			<offset>28</offset>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+		</field>		
+		<field>
+			<offset>32</offset>
+			<name>SV Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Variante</name>
+			<bitSize>16</bitSize>			
+		</field>
+
+
+		
+	
+	</packet>
+</vbusSpecification>

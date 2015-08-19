@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x4321</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol MiniPool</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x4321</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Systemzeit</name>
+			<bitSize>16</bitSize>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Status-Info 1</name>
+			<bitSize>8</bitSize>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Status-Info 2</name>
+			<bitSize>8</bitSize>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Status-Restlaufzeit</name>
+			<bitSize>16</bitSize>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Filterlaufzeit heute</name>
+			<bitSize>24</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>Regelstatus</name>
+			<bitSize>8</bitSize>
+			<unit></unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat amount</name>
+			<unit> Wh</unit>
+			<offset>24</offset>
+			<bitSize>32</bitSize>
+		</field>
+	</packet>
+</vbusSpecification>

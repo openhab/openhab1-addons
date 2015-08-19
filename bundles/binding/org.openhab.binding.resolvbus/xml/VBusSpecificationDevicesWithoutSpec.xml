@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x1111</address>
+		<name>EC1</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x2000</address>
+		<mask>0xFF00</mask>
+		<name>Digital Sensor #</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x2111</address>
+		<name>TLR2</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x3112</address>
+		<name>Diemasol A</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x3261</address>
+		<name>DeltaSol BS (DT4)</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x4021</address>
+		<name>GF-Display</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x4225</address>
+		<name>CS1.2</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x4258</address>
+		<name>SolarNor Drainback</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x427A</address>
+		<name>DeltaSol BS/DrainBack (Fahrenheit/BTU)</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x4312</address>
+		<name>DeDietrich Drainback (Control)</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7422</address>
+		<name>IZEN DTi2</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7451</address>
+		<name>Kioto SLM</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7771</address>
+		<name>DDS-Crawler</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7772</address>
+		<name>RPT-Testsoftware</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7773</address>
+		<name>RPT-Steuerbox</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7900</address>
+		<name>R-Wandler</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7E71</address>
+		<name>EMV-Software</name>
+		<isMaster>true</isMaster>
+	</device>
+</vbusSpecification>

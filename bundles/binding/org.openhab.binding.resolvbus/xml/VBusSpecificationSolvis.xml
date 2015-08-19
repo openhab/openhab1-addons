@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x5311</address>
+		<name>X-Control</name>
+		<isMaster>true</isMaster>
+	</device>
+	
+	<!-- X-Control -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x5311</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Einstrahlung Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Relais-Maske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>14</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>16</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>18</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>System</name>
+			<bitSize>8</bitSize>
+		</field>
+<!-- 
+		<field>
+			<offset>22</offset>
+			<name>Optionen</name>
+			<bitSize>16</bitSize>
+		</field>
+-->
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Frostschutz</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Röhrenkollektor</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Rückkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Kollektorkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Externer WT</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Nachheizung</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Rücklaufanhebung</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Ventil</name>
+			<bitSize>1</bitSize>
+			<bitPos>8</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Minimal</name>
+			<bitSize>1</bitSize>
+			<bitPos>9</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: WMZ</name>
+			<bitSize>1</bitSize>
+			<bitPos>10</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Boilerladung</name>
+			<bitSize>1</bitSize>
+			<bitPos>11</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: Solarzelle</name>
+			<bitSize>1</bitSize>
+			<bitPos>12</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Optionen: 2. Kollektor-Ventil</name>
+			<bitSize>1</bitSize>
+			<bitPos>13</bitPos>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Sensorbruchmaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Sensorkurzschlussmaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+	</packet>
+
+</vbusSpecification>

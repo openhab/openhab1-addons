@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x0000</address>
+		<name>Broadcast</name>
+	</device>
+	<device>
+		<address>0x0010</address>
+		<name>DFA</name>
+	</device>
+	<device>
+		<address>0x0015</address>
+		<name>Standard-Infos</name>
+	</device>
+	<device>
+		<address>0x0020</address>
+		<name>Computer</name>
+	</device>
+	<device>
+		<address>0x0040</address>
+		<name>SD3 / GAx</name>
+	</device>
+	<device>
+		<address>0x0050</address>
+		<name>DL2</name>
+	</device>
+</vbusSpecification>

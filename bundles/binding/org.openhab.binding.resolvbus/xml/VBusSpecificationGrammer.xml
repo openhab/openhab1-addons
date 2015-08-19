@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x3011</address>
+		<name>WMZ-L10</name>
+		<isMaster>true</isMaster>
+	</device>
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x3011</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Rücklauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Strömungsgeschwindigkeit</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> m/s</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Luftstrom-Volumen</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit> m³/h</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Luftstrom-Masse</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit> kg/h</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Luftkanal-Querschnitt</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+			<unit> m²</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Luftdichte</name>
+			<bitSize>16</bitSize>
+			<factor>0.0001</factor>
+			<unit> kg/m³</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Luftdruck</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> hPa</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Leistung</name>
+			<bitSize>16</bitSize>
+			<factor>0.1</factor>
+			<unit> kW</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Wärmemenge kWh</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Wärmemenge MWh</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Betriebstage</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+	</packet>
+</vbusSpecification>

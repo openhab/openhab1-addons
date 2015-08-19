@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7421</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol BX</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7421</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<name lang="en">Temperature sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur RPS</name>
+			<name lang="en">Temperature RPS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Druck RPS</name>
+			<name lang="en">Pressure RPS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> Bar</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur VFS</name>
+			<name lang="en">Temperature VFS</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Durchfluss VFS</name>
+			<name lang="en">Flow VFS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Relais 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Relais 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl Relais 3</name>
+			<name lang="en">Relais 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Drehzahl Relais 4</name>
+			<name lang="en">Relais 4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>PWM 1</name>
+			<name lang="en">PWM 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>PWM 2</name>
+			<name lang="en">PWM 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Durchfluss VFS</name>
+			<name lang="en">Flow VFS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Durchfluss V40</name>
+			<name lang="en">Flow V40</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field><!-- commonUsage='heat'> -->
+			<offset>48</offset>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat qty.</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Datum</name>
+			<name lang="en">Date</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Betriebssekunden Relais 1</name>
+			<name lang="en">W R1</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Betriebssekunden Relais 2</name>
+			<name lang="en">W R2</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Betriebssekunden Relais 3</name>
+			<name lang="en">W R3</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Betriebssekunden Relais 4</name>
+			<name lang="en">W R4</name>
+			<bitSize>32</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Status</name>
+			<name lang="en">Status</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Blockierschutz 1</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Blockierschutz 2</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Blockierschutz 3</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Blockierschutz 4</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Initialisierung</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Füllung</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Stabilisierung</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Pumpenverzögerung</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Überwärmeabfuhr</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Nachlauf</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Thermische Desinfektion</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Systemkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Speicherkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Spreizung</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Frostschutz</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Kollektorkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Einheit</name>
+			<name lang="en">Unit</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler</name>
+			<name lang="en">Error</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S1</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S2</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S3</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S4</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S5</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S6</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S7</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Fehler S8</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Fehler S9</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Fehler V40</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Leckage</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Überdruck</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Durchflussfehler</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		
+	</packet>
+</vbusSpecification>

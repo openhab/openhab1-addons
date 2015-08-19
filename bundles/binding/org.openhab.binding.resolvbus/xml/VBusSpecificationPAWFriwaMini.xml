@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x5121</address>
+		<mask>0xFFFF</mask>
+		<name>FriwaMini</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- FriwaMini-->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x5121</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Kaltwassertemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Sollwert</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Ladetemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Ladevolumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> l/min</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Warmwassertemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Zapfvolumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> l/min</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>PWM1</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>Relais 1</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Status</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>Zapfung</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Fehlermaske</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Warnungsmaske</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat amount</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>28</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>30</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>32</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Zapfmenge</name>
+			<bitSize>32</bitSize>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Datum</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+		</field>
+		<field>
+			<name>Version</name>
+			<offset>46</offset>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+	</packet>
+</vbusSpecification>

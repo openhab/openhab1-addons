@@ -10,11 +10,15 @@ package org.openhab.binding.resolvbus.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream.GetField;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Map;
+import java.util.Properties;
 
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
 import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
@@ -62,9 +66,11 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private String serialPort;
 	private int inputMode;
 	private long updateInterval;
+	private String deviceID;
 	private static final int INPUT_MODE_LAN = 10;
 	private static final int INPUT_MODE_SERIAL = 20;
 	private boolean useThread = true;
+	private String deviceIDFile;
 
 	
 	/**
@@ -125,8 +131,9 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			}
 						
 			if (StringUtils.isNotBlank(pwString)) {
-				password = pwString;
+				password = pwString.trim();
 			}
+
 			
 			if (StringUtils.isNotBlank(updIvalString)) {
 				updateInterval = Long.parseLong(updIvalString);
@@ -136,8 +143,8 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				serialPort = serialString;
 				inputMode = INPUT_MODE_SERIAL;
 			}
-		
-			loadXMLConfig();
+						
+
 						
 			// Create LAN oder Serial Receiver the parsed information to the listener
 			switch (inputMode) {
@@ -168,8 +175,12 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				break;
 			}
 			}
-	
-			// start the listener
+			// load specific XML config
+			loadXMLConfig();
+			
+			// start the listener as a seperate thread if updateInterval < 30 seconds
+			// or if it's a serial connection
+			
 			if (useThread)
 				new Thread(packetReceiver).start();
 			setProperlyConfigured(true);
@@ -177,6 +188,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		}
 	}
 	
+
 	/**
 	 * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
 	 * @param configuration Updated configuration properties
@@ -272,13 +284,37 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	}
 	
 	public void loadXMLConfig()  {
-
 		
-		URL entry = FrameworkUtil.getBundle(ResolVBUSConfig.class).getEntry("xml/VBusSpecificationResol_NEW.xml");
+		try {
+//			deviceID="7101";
+			logger.debug("Loading XML-Config for device ID:"+deviceID);
+			
+			URL mapping = FrameworkUtil.getBundle(ResolVBUSBinding.class).getEntry("xml/mapping.cfg");
+			
+			if (mapping == null) {
+				config = null;
+				logger.error("Unable to load mapping.xml");
+				return;
+			}
+			
+			InputStream in = mapping.openStream();
+			
+			Properties prop = new Properties();
+			prop.load(in);
+			deviceIDFile = prop.getProperty(deviceID);
+			
+			logger.debug("Using file: "+deviceIDFile+" for configuration");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		URL entry = FrameworkUtil.getBundle(ResolVBUSConfig.class).getEntry("xml/"+deviceIDFile);
 
 		if (entry == null) {
 			config = null;
-			logger.error("Unable to load VBusSpecificationResol.xml");
+			logger.error("Unable to load "+deviceIDFile);
 			return;
 		}
 		
@@ -338,6 +374,16 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			}
 		}
 		
+	}
+
+
+	public String getDeviceID() {
+		return deviceID;
+	}
+
+
+	public void setDeviceID(String deviceID) {
+		this.deviceID = deviceID;
 	}
 		
 }

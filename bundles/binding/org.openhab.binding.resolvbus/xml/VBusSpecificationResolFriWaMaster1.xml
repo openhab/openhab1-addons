@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7651</address>
+		<mask>0xFFFF</mask>
+		<name>FriWa Kaskadenmaster Version 1</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- Friwa Kaskadenmaster V1-->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7651</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Volumenstrom Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> l/min</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Digitaler Eingang 9</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>Status Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Status Relais 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>Status Relais 3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Status Relais 4</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Status Relais 5</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>T-Sensor Fehler</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>V-Sensor Fehler</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>EEPROM Fehler</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>S1 Fehler</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>S2 Fehler</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<name>Version</name>
+			<offset>24</offset>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+		</field>
+	</packet>
+</vbusSpecification>

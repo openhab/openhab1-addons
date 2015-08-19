@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x6620</address>
+		<name>SunGo XL</name>
+		<isMaster>true</isMaster>
+	</device>
+	
+	<!-- Midi Pro -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x6620</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 1</name>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 2</name>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 3</name>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 4</name>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 5</name>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 6</name>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Drehzahl 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Drehzahl 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Fehlernummer</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Fehlermaske</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Fehler-Info 1</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>Fehler-Info 2</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Fehler-Info 3</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Fehler-Info 4</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Anlagenoptionen 1</name>
+			<bitSize>16</bitSize>
+		</field>
+<!--
+ 		<field>
+			<offset>32</offset>
+			<name>Anlagenoptionen 2</name>
+			<bitSize>8</bitSize>
+		</field>
+-->
+		<field>
+			<offset>24</offset>
+			<name>System</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Modulstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Systemzeit</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+		</field>
+<!--
+ 		<field>
+			<offset>33</offset>
+			<name>Einstrahlung</name>
+			<bitSize>16</bitSize>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>35</offset>
+			<name>Betriebsstunden-Flag</name>
+			<bitSize>8</bitSize>
+		</field>
+-->
+	</packet>
+	
+</vbusSpecification>

@@ -1,0 +1,780 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7341</address>
+		<name>SLR XT</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7342</address>
+		<name>SLR XT-Erweiterungsmodul 1</name>
+	</device>
+	<device>
+		<address>0x7343</address>
+		<name>SLR XT-Erweiterungsmodul 2</name>
+	</device>
+	<device>
+		<address>0x7344</address>
+		<name>SLR XT-Erweiterungsmodul 3</name>
+	</device>
+	<device>
+		<address>0x7345</address>
+		<name>SLR XT-Erweiterungsmodul 4</name>
+	</device>
+	<device>
+		<address>0x7346</address>
+		<name>SLR XT-Erweiterungsmodul 5</name>
+	</device>
+
+	<!-- SLR XT -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7341</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>S1-SF-K</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>S2-SF-1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>S3-SF-2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>S4-SF-3/WT/F-RLA1/RLU1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>S5-FN-HK/F-RLA2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>S6-FN-WW/BF/SF-WT</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>S7-FN-K2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>S8-FZ</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>S9-AF</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>S10-VL-F1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>S11-FV-1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>S12-VL-F2/WA-1/SF-4/F-RLU1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>S13-FV-2/WA-2/SF-WT</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>S14-KF-1/KF-NH</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>S15-KF-2/SF-K2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>S16-BF/BF-1/F-RLU2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>SensorVolumenstrom_Regler_GAS1_TotalWert_L</name>
+			<bitSize>31</bitSize>
+			<unit> L</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>SensorVolumenstrom_Regler_GAS2_TotalWert_L</name>
+			<bitSize>31</bitSize>
+			<unit> L</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>SensorVolumenstrom_Regler_GDS1_TotalWert_L</name>
+			<bitSize>31</bitSize>
+			<unit> L</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>SensorVolumenstrom_Regler_GDS2_TotalWert_L</name>
+			<bitSize>31</bitSize>
+			<unit> L</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Sensor_Regler_Druck_GAS1_Wert_Bar</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>Sensor_Regler_Druck_GAS2_Wert_Bar</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Sensor_Regler_Druck_GDS1_Wert_Bar</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>Sensor_Regler_Druck_GDS2_Wert_Bar</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>R1-SP-1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>57</offset>
+			<name>R2-SP-2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>R3-BLP/1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>59</offset>
+			<name>R4-SV1/V-RLU</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>R5-HKP1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>61</offset>
+			<name>R6-MV-1 auf</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>62</offset>
+			<name>R7-MV-1 zu</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>63</offset>
+			<name>R8-KLP-1/HKP-2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>R9-KLP-2/SP-3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>65</offset>
+			<name>R10-SV-2/HKP-2/V-RL</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>66</offset>
+			<name>R11-MV-2 auf/BLP-2/SV-3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>67</offset>
+			<name>R12-MV-2 zu/SV-3/V-RLU</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>68</offset>
+			<name>R13-ZP</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>69</offset>
+			<name>R14-RP</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>72</offset>
+			<name>Hk1_T_VorlSoll</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>74</offset>
+			<name>Hk2_T_VorlSoll</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>76</offset>
+			<name>Hk3_T_VorlSoll</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>78</offset>
+			<name>Hk4_T_VorlSoll</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>80</offset>
+			<name>Hk5_T_VorlSoll</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>82</offset>
+			<name>SW_VL_Soll</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>84</offset>
+			<name>Wmz1_Wert_Wh</name>
+			<bitSize>31</bitSize>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>88</offset>
+			<name>Wmz2_Wert_Wh</name>
+			<bitSize>31</bitSize>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>92</offset>
+			<name>Systemdatum</name>
+			<bitSize>31</bitSize>
+			<format>r</format>
+		</field>
+		<field>
+			<offset>96</offset>
+			<name>SensorBenutzt bit 0..31</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>100</offset>
+			<name>SensorBenutzt bit 31..63</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>104</offset>
+			<name>Error SensorBruch bit 0..31</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>108</offset>
+			<name>Error SensorBruch bit 31..63</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>112</offset>
+			<name>Error SensorKurzschluss bit 0..31</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>116</offset>
+			<name>Error SensorKurzschluss bit 31..63</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>120</offset>
+			<name>Errormask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>122</offset>
+			<name>Warningmask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>124</offset>
+			<name>Systemflow.Parameteraenderungen</name>
+			<bitSize>16</bitSize>
+		</field>
+	</packet>
+
+	
+	<!-- Erweiterungsmodul #1 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7342</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Drehzahl R4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl R5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+	</packet>
+	<!-- Erweiterungsmodul #2 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7343</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Drehzahl R4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl R5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+	</packet>
+	<!-- Erweiterungsmodul #3 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7344</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Drehzahl R4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl R5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+	</packet>
+	<!-- Erweiterungsmodul #4 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7345</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Drehzahl R4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl R5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+	</packet>
+	<!-- Erweiterungsmodul #5 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7346</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Drehzahl R4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl R5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+	</packet>
+</vbusSpecification>

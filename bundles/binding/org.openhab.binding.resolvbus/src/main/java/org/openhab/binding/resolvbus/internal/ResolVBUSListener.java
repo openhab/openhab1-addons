@@ -26,5 +26,9 @@ public interface ResolVBUSListener {
 	public void publishUpdate(String name, String value);
 	
 	public void processInputStream(ResolVBUSInputStream vbusStream);
+	
+	public void setDeviceID(String deviceID);
+	
+	public String getDeviceID();
 
 }

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x6650</address>
+		<mask>0xFFF0</mask>
+		<name>EM #</name>
+		<isMaster>false</isMaster>
+	</device>
+	
+	<!-- EM1 -->
+	<packet>
+		<destination>0x0000</destination>
+		<destinationMask>0x0000</destinationMask>
+		<source>0x6650</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Resistor 1</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Resistor 2</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Resistor 3</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Resistor 4</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Resistor 5</name>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+			<bitSize>31</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Resistor 6</name>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+			<bitSize>31</bitSize>
+		</field>
+		
+	</packet>
+	
+	
+	<!-- EM1 Recive -->
+	<packet>
+		<destination>0x6650</destination>
+		<destinationMask>0xFFF0</destinationMask>
+		<source>0x0000</source>
+		<sourceMask>0x0000</sourceMask>
+		<command>0x0200</command>
+		<field>
+			<offset>0</offset>
+			<name>Drehzahl Relais 1.1 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>1</offset>
+			<name>Timer 1.1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Drehzahl Relais 1.2 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>5</offset>
+			<name>Timer 1.2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl Relais 2.1 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Timer 2.1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl Relais 2.2 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Timer 2.2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl Relais 3.1 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>Timer 3.1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl Relais 3.2 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+			<field>
+			<offset>21</offset>
+			<name>Timer 3.2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Drehzahl Relais 4.1 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Timer 4.1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Drehzahl Relais 4.2 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Timer 4.2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Drehzahl Relais 5.1 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>33</offset>
+			<name>Timer 5.1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Drehzahl Relais 5.2 </name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>37</offset>
+			<name>Timer 5.2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>SensorOutputType1</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>41</offset>
+			<name>SensorOutputType2</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>SensorOutputType3</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>43</offset>
+			<name>SensorOutputType4</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>SensorOutputType5</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>SensorOutputType6</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+
+</vbusSpecification>

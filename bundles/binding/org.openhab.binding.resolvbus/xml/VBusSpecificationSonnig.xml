@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7711</address>
+		<name>Multitronic [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7712</address>
+		<name>Multitronic [WMZ]</name>
+		<isMaster>false</isMaster>
+	</device>
+
+	<!-- Multitronic [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7711</source>
+		<sourceMask>0xFFFF</sourceMask>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<name lang="en">Temperature sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<name lang="en">Temperature sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<name lang="en">Temperature sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<name lang="en">Temperature sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<name lang="en">Temperature sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Sensor 10</name>
+			<name lang="en">Temperature sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Einstrahlung</name>
+			<name lang="en">Irradiation</name>
+			<bitSize>15</bitSize>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Impulseingang 1</name>
+			<name lang="en">Impulse input 1</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Impulseingang 2</name>
+			<name lang="en">Impulse input 2</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Drehzahl Relais 3</name>
+			<name lang="en">Pump speed 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Drehzahl Relais 4</name>
+			<name lang="en">Pump speed 4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Drehzahl Relais 5</name>
+			<name lang="en">Pump speed 5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Drehzahl Relais 6</name>
+			<name lang="en">Pump speed 6</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Drehzahl Relais 7</name>
+			<name lang="en">Pump speed 7</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>T</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field commonUsage='error'>
+			<offset>36</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Warnungsmaske</name>
+			<name lang="en">Warning mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Reglerversion</name>
+			<name lang="en">Controller version</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>System</name>
+			<name lang="en">System</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>43</offset>
+			<name>Schema</name>
+			<name lang="en">Arrangement</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>HK1-VL-Soll</name>
+			<name lang="en">HC1 FL Set</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>HK1-Betriebsstatus</name>
+			<name lang="en">HC1 status of Work</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>HK1-Status</name>
+			<name lang="en">HC1 status</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>HK2-VL-Soll</name>
+			<name lang="en">HC2 FL Set</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>HK2-Betriebsstatus</name>
+			<name lang="en">HC2 status of Work</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>51</offset>
+			<name>HK2-Status</name>
+			<name lang="en">HC2 status</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>HK3-VL-Soll</name>
+			<name lang="en">HC3 FL Set</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>HK3-Betriebsstatus</name>
+			<name lang="en">HC3 status of Work</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>55</offset>
+			<name>HK3-Status</name>
+			<name lang="en">HC3 status</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Sensorbenutzungsmaske</name>
+			<name lang="en">Sensor usage mask</name>
+			<bitSize>32</bitSize>
+		</field>
+		<field>
+			<offset>60</offset>
+			<name>Relaisbenutzungsmaske</name>
+			<name lang="en">Relais usage mask</name>
+			<bitSize>32</bitSize>
+		</field>
+	</packet>
+	
+	
+	<!-- Multitronic [WMZ] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7712</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Rücklauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Volumenstrom</name>
+			<bitSize>16</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>8</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>10</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+
+
+</vbusSpecification>

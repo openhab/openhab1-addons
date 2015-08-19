@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x0053</address>
+		<name>DL3</name>
+		<isMaster>false</isMaster>
+	</device>
+	
+	<!-- DL3 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x0053</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Resistor Sensor 1</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Resistor Sensor 2</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Resistor Sensor 3</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> Ohm</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Current Sensor 4</name>
+			<bitSize>31</bitSize>
+			<factor>0.001</factor>
+			<unit> mA</unit>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Temperature Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Temperature Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Temperature Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Impulse Counter Sensor 1</name>
+			<bitSize>31</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Impulse Counter Sensor 2</name>
+			<bitSize>31</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Impulse Counter Sensor 3</name>
+			<bitSize>31</bitSize>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Irradiation Sensor 4</name>
+			<bitSize>15</bitSize>
+			<unit> W/m²</unit>
+		</field>
+	</packet>
+</vbusSpecification>

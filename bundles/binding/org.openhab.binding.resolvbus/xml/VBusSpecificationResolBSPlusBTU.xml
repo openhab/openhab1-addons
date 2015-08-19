@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x4223</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol BS Plus BTU</name>
+		<isMaster>true</isMaster>
+	</device>
+	
+	<!-- DeltaSol BS Plus BTU -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x4223</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °F</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °F</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °F</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °F</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl Pumpe 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Drehzahl Pumpe 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Relaismaske</name>
+			<name lang="en">Relais mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>11</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Schema</name>
+			<name lang="en">System</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Kollektor Max.</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Kollektor Min.</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Kollektor Frost</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Röhrenkollektor</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Rückkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option WMZ</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<name lang="en">Operating hours relais 1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Betriebsstunden Relais 2</name>
+			<name lang="en">Operating hours relais 2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat amount</name>
+			<unit> Btu</unit>
+			<field>
+				<offset>20</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>22</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>24</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Version</name>
+			<name lang="en">Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+	</packet>
+</vbusSpecification>

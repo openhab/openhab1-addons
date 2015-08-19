@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x3241</address>
+		<name>DT4 (B)</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x5221</address>
+		<name>DT4 (MS)</name>
+		<isMaster>true</isMaster>
+	</device>
+	
+	<!-- DT4 (B) -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x3241</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>7</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Relaismaske</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+
+	<!-- DT4 (MS) -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x5221</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>7</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Relaismaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> l/min</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>18</offset>
+				<bitSize>16</bitSize>
+				<factor>1.0</factor>
+			</field>
+			<field>
+				<offset>20</offset>
+				<bitSize>16</bitSize>
+				<factor>1000.0</factor>
+			</field>
+			<field>
+				<offset>22</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000.0</factor>
+			</field>
+		</field>
+	</packet>
+
+</vbusSpecification>

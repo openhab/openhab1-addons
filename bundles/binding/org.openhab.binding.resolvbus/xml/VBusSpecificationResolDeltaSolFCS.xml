@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7F71</address>
+		<name>DeltaSol FCS</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- DeltaSol FCS -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7F71</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Systemdruck</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Systemmeldung</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Leistung</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> W</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Wärmemenge</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Datum</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Uhrzeit</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Eff_Min-Drehzahl</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Debug1</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Debug2</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Debug3</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Debug4</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Debug5</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Einstrahlung</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>Zelltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+	</packet>
+</vbusSpecification>

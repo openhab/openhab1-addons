@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<name>DeltaSol M [Volumen]</name>
+		<address>29461</address>
+		<mask>65535</mask>
+		<isMaster>0</isMaster>
+	</device>
+
+	<packet>
+		<destination>16</destination>
+		<destinationMask>65535</destinationMask>
+		<source>29461</source>  
+		<sourceMask>65535</sourceMask>
+		<command>256</command>						
+		<field>
+			<name>Betriebssekunden R1</name>
+			<offset>0</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R2</name>
+			<offset>4</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R3</name>
+			<offset>8</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R4</name>
+			<offset>12</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R5</name>
+			<offset>16</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R6</name>
+			<offset>20</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R7</name>
+			<offset>24</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R8</name>
+			<offset>28</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Betriebssekunden R9</name>
+			<offset>32</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>1.0</factor>
+			<unit> s</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Volumen 1</name>
+			<offset>36</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>0.1</factor>
+			<unit> l</unit>
+			<timeRef>0</timeRef>
+		</field>
+		<field>
+			<name>Volumen 2</name>
+			<offset>40</offset>
+			<bitSize>32</bitSize>
+			<bitPos>0</bitPos>
+			<factor>0.1</factor>
+			<unit> l</unit>
+			<timeRef>0</timeRef>
+		</field>
+	</packet>
+</vbusSpecification>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7751</address>
+		<name>DeDietrich Diemasol C v2007</name>
+		<isMaster>true</isMaster>
+	</device>
+	
+	<!-- DeDietrich Diemasol C v2007 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7751</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Temperatur Sensor 11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> l/min</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Drehzahl R2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl R3</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaisstatus R4</name>
+			<bitPos>0</bitPos>
+			<bitSize>1</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaisstatus R5</name>
+			<bitPos>1</bitPos>
+			<bitSize>1</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaisstatus R6</name>
+			<bitPos>2</bitPos>
+			<bitSize>1</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaisstatus R7</name>
+			<bitPos>3</bitPos>
+			<bitSize>1</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaisstatus R8</name>
+			<bitPos>4</bitPos>
+			<bitSize>1</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaisstatus R9</name>
+			<bitPos>5</bitPos>
+			<bitSize>1</bitSize>
+			<factor>1</factor>
+		</field>
+		<field commonUsage='heat'>
+			<offset>28</offset>
+			<name>Wärmemenge</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Systemdatum</name>
+			<bitSize>32</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Systemzeit</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+		<field>
+			<offset>39</offset>
+			<name>Variante</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+	</packet>
+</vbusSpecification>

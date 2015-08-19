@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7511</address>
+		<name>SOLTEX-Regler [Teil 1]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7512</address>
+		<name>SOLTEX-Regler [Teil 2]</name>
+		<isMaster>true</isMaster>
+	</device>
+	
+	<!-- Projekt Dr. Schmidt -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7511</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Kollektoren</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur S,p</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur S,s</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur WP-VL</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur WP-RL</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Verdampf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Erde</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Volumenstrom Ko</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> l/min</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Leistung P,Ko</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>Leistung P,S</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Relais P,H</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Relais WP</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Ventil WP</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Ventil SW</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Ventil Ko</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Ventil So</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>Ventil SP</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field commonUsage='error'>
+			<offset>20</offset>
+			<name>Fehlermaske</name>
+			<bitSize>31</bitSize>
+		</field>
+<!--
+		<field>
+			<offset>24</offset>
+			<name>C1</name>
+			<bitSize>8</bitSize>
+		</field>
+-->
+		<field>
+			<offset>25</offset>
+			<name>P,Ko Nennleistung</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>T_Wabs</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='heat'>
+			<offset>28</offset>
+			<name>Wärmemenge S,p</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Wärmemenge S,s</name>
+			<bitSize>31</bitSize>
+			<factor>0.1</factor>
+			<unit> kWh</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Diff. TUmg/24h</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Diff. TSs/8h</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Diff. TSs/1h</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Betriebssekunden WP</name>
+			<bitSize>15</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Zeitraum WP / 24h</name>
+			<bitSize>31</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Laufzeit WP / 24h</name>
+			<bitSize>31</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Temperatur T,H</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+	</packet>
+
+	<!-- Projekt Dr. Schmidt -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7512</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>t-Sp</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>t-Ss</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Laufzeit WP</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Anzahl WP-Starts</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>t-WP-Ss</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>t-Ps</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Temperatur T-x</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Temperatur T-xx</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>C1</name>
+			<factor>0.01</factor>
+			<bitSize>15</bitSize>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Version</name>
+			<factor>0.01</factor>
+			<bitSize>15</bitSize>
+		</field>
+	</packet>
+	
+</vbusSpecification>

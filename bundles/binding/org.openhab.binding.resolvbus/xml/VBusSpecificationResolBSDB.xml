@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x4278</address>
+		<mask>0xFFFF</mask>
+		<name>DeltaSol BS/DrainBack</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x4278</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>10</offset>
+			<name>Sensor 1 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit></unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>10</offset>
+			<name>Sensor 2 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit></unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>10</offset>
+			<name>Sensor 3 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+			<unit></unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>10</offset>
+			<name>Sensor 4 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Speicher Nottemperatur</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Kollektor Nottemperatur</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>R1 - Handbetrieb</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>R2 - Handbetrieb</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<name lang="en">Operating hours relais 1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Betriebsstunden Relais 2</name>
+			<name lang="en">Operating hours relais 2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat amount</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>16</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>18</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>20</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Status</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Programm</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+	</packet>
+</vbusSpecification>

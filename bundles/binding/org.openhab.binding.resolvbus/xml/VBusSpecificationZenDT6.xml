@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7441</address>
+		<mask>0xFFFF</mask>
+		<name>ZEN DT6 [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7442</address>
+		<name>ZEN DT6 [WMZ1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7441</source>
+		<command>0x0100</command>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Regler Ausgang 1</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Wmz1_Wert_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>SW-Version</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Betriebssekunden Relais 1</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Betriebssekunden Relais 2</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Initalisieren</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Füllung</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Stabilisieren</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Frostschutz</name>
+			<bitSize>7</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Einheit Temperatur</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Einheit Durchfluss</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Einheit Druck</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Einheit Leistung</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>49</offset>
+			<name>Einheit Energie</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>VDI dT zu hoch</name>
+			<bitSize>1</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Fehlermaske</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit></unit>
+		</field>
+	</packet>
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7442</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Wmz1_Wert_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Wmz1_Leistung_W</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> W</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Wmz1_WertHeute_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Wmz1_WertWoche_Wh</name>
+			<bitSize>31</bitSize>
+			<factor>1.0</factor>
+			<unit> Wh</unit>
+		</field>
+	</packet>
+</vbusSpecification>

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x7231</address>
+		<name>SC25</name>
+		<isMaster>true</isMaster>
+	</device>
+
+	<!-- SC25 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7231</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Systemdruck</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> bar</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Ansteuerung 1</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>Ansteuerung 2</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>PWM 1</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>PWM 2</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Manualbetrieb 1</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Manualbetrieb 2</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Wärmemenge</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+			<unit> Wh</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>&#x394;T Kollektor-Speicher</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>&#x394;T Vorlauf-Rücklauf</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Pendelpause</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Kollektorkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Rückkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Frostschutz</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Röhrenkollektor</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>&#x394;T3</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Thermostat 1</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Blockierschutz 1</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Blockierschutz 2</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Stabilisierung</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Überdruck</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Nachtumwälzung</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>&#x394;T zu hoch</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>S1 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>S2 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>S3 defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>S-Vorlauf defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>S-Rücklauf defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Druck(S6) defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Volumenstrom(S7) defekt</name>
+			<bitSize>1</bitSize>
+			<bitPos>6</bitPos>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Durchfluss</name>
+			<bitSize>1</bitSize>
+			<bitPos>7</bitPos>
+		</field>
+		<field>
+			<offset>37</offset>
+			<name>Leckage</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Uhrzeit</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<format>t</format>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Datum</name>
+			<bitSize>31</bitSize>
+			<factor>1</factor>
+		</field>
+	</packet>
+</vbusSpecification>
