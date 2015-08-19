@@ -117,11 +117,13 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">State Updates</Label>
+			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Battery Warnings</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>

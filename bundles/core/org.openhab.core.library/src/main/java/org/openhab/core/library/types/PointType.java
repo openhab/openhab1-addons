@@ -126,8 +126,7 @@ public class PointType implements ComplexType, Command, State {
 
 	@Override
 	public String toString() {
-		return String.format("%1$.2f°N, %2$.2f°W, %2$.2f m", latitude,
-				longitude, altitude);
+		return String.format("%1$.2f°N, %2$.2f°W, %3$.2f m", latitude, longitude, altitude);
 	}
 
 	@Override

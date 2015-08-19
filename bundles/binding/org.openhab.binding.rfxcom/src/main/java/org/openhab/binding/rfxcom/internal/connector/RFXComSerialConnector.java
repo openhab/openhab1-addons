@@ -18,14 +18,14 @@ import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TooManyListenersException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * RFXCOM connector for serial port communication.
  * 
- * @author Pauli Anttila, Evert van Es
+ * @author Pauli Anttila, Evert van Es, Jürgen Richtsfeld
  * @since 1.2.0
  */
 public class RFXComSerialConnector implements RFXComConnectorInterface {
@@ -44,7 +44,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 	private static final Logger logger = LoggerFactory
 			.getLogger(RFXComSerialConnector.class);
 
-	private static List<RFXComEventListener> _listeners = new ArrayList<RFXComEventListener>();
+	private static final List<RFXComEventListener> _listeners = new CopyOnWriteArrayList<RFXComEventListener>();
 
 	InputStream in = null;
 	OutputStream out = null;
@@ -118,11 +118,11 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 		out.flush();
 	}
 
-	public synchronized void addEventListener(RFXComEventListener rfxComEventListener) {
+	public void addEventListener(RFXComEventListener rfxComEventListener) {
 		_listeners.add(rfxComEventListener);
 	}
 
-	public synchronized void removeEventListener(RFXComEventListener listener) {
+	public void removeEventListener(RFXComEventListener listener) {
 		_listeners.remove(listener);
 	}
 
@@ -167,7 +167,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				byte[] tmpData = new byte[20];
 				int len = -1;
 
-				while ((len = in.read(tmpData)) > 0 && interrupted != true) {
+				while ((len = in.read(tmpData)) > 0 && !interrupted) {
 					
 					byte[] logData = Arrays.copyOf(tmpData, len);
 					logger.trace("Received data (len={}): {}",
@@ -205,12 +205,10 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 										this);
 
 								try {
-									Iterator<RFXComEventListener> iterator = _listeners
-											.iterator();
+									Iterator<RFXComEventListener> iterator = _listeners.iterator();
 
 									while (iterator.hasNext()) {
-										((RFXComEventListener) iterator.next())
-												.packetReceived(event, msg);
+										iterator.next().packetReceived(event, msg);
 									}
 
 								} catch (Exception e) {
@@ -242,5 +240,9 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 			} catch (InterruptedException e) {
 			}
 		}
+	}
+
+	public boolean isConnected() {
+		return out != null;
 	}
 }

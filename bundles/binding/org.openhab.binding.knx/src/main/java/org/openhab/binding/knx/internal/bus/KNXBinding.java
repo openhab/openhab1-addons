@@ -68,7 +68,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	private boolean mKNXConnectionEstablished;
 
 	public void activate(ComponentContext componentContext) {
-		logger.info("Calimero library version {}", Settings.getLibraryVersion());
+		logger.debug("Calimero library version {}", Settings.getLibraryVersion());
 		logger.trace("KNXBinding: activating");
 		KNXConnection.addConnectionListener(this);
 		mKNXBusReaderScheduler.start();
@@ -158,10 +158,18 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	/* (non-Javadoc)
 	 * @see tuwien.auto.calimero.process.ProcessListener#groupWrite(tuwien.auto.calimero.process.ProcessEvent)
 	 */
+	/**
+	 * If <code>knx:ignorelocalevents=true</code> is set in configuration, it prevents internal events 
+	 * coming from 'openHAB event bus' a second time to be sent back to the 'openHAB event bus'.
+	 *  
+	 * @param e the {@link ProcessEvent} to handle.
+	 */
 	@Override
 	public void groupWrite(ProcessEvent e) {
 		logger.debug("Received groupWrite Event.");
-		readFromKNX(e);
+		if (!(KNXConnection.getIgnoreLocalSourceEvents() && e.getSourceAddr().toString().equalsIgnoreCase(KNXConnection.getLocalSourceAddr()))) {
+			readFromKNX(e);
+		}else logger.warn("Ignoring local Event, received from my local Source address {} for Group address {}.", e.getSourceAddr().toString(), e.getDestination().toString());
 	}
 
 	/* (non-Javadoc)
@@ -188,7 +196,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 			if (asdu.length==0) {
 				return;
 			}
-			for (String itemName : getItemNames(destination)) {
+			String [] itemList = getItemNames(destination);
+			if (itemList.length == 0) {
+				logger.debug("Received telegram for unknown group address {}", destination.toString());
+			}
+			for (String itemName : itemList) {
 				Iterable<Datapoint> datapoints = getDatapoints(itemName, destination);
 				if (datapoints != null) {
 					for (Datapoint datapoint : datapoints) {
@@ -208,7 +220,6 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 							}								
 
 							logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
-							return;
 						}
 						else {
 							final char[] hexCode = "0123456789ABCDEF".toCharArray();
@@ -221,12 +232,10 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 
 							logger.debug("Ignoring KNX bus data: couldn't transform to an openHAB type (not supported). Destination='{}', datapoint='{}', data='{}'",
 									new Object[] {destination.toString(), datapoint.toString(), sb.toString() });
-							return;
 						}
 					}
 				}
 			}
-			logger.debug("Received telegram for unknown group address {}", destination.toString());
 		} catch(RuntimeException re) {
 			logger.error("Error while receiving event from KNX bus: " + re.toString());
 		}
@@ -246,7 +255,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 					if(datapoint.getName().equals(itemName)) {
 						logger.debug("Initializing read of item {}.", itemName);
 						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-							logger.warn("Clouldn't add to KNX bus reader scheduler (bindingChanged)",datapoint);
+							logger.warn("Couldn't add to KNX bus reader scheduler (bindingChanged, datapoint='{}')",datapoint);
 						}
 						break;
 					}
@@ -272,7 +281,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 					int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
 					if (autoRefreshTimeInSecs>0) {
 						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-							logger.warn("Clouldn't add to KNX bus reader scheduler (allBindingsChanged)",datapoint);
+							logger.warn("Couldn't add to KNX bus reader scheduler (allBindingsChanged, datapoint='{}')",datapoint);
 						}
 					}
 				}
@@ -295,7 +304,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 				int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
 				if (autoRefreshTimeInSecs>0) {
 					if (!mKNXBusReaderScheduler.scheduleRead(datapoint, autoRefreshTimeInSecs)) {
-						logger.warn("Clouldn't add to KNX bus reader scheduler (connectionEstablished)",datapoint);
+						logger.warn("Couldn't add to KNX bus reader scheduler (connectionEstablished, datapoint='{}')",datapoint);
 					}
 				}
 			}

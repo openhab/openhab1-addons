@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZW4005</Model>
+	<Label lang="en">On/Off Relay Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x70</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED on when switch is OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED on when switch is ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">LED always off</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines the behavior of the blue LED. <br>
+			Default is Night Light mode where LED is on when switch is off.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Invert the ON/OFF Switch State. <br>
+			 Setting this parameter to Yes will change the top of the switch to OFF and the bottom to ON. <br> 
+			 Note: If you invert the switches and also install the product upside down, the load will now 
+			 be controlled by the right, not the left switch.]]></Help>
+		</Parameter>
+	</Configuration>
+</Product>

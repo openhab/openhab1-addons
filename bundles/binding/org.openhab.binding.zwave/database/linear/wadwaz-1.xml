@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WADWAZ-1</Model>
+	<Label lang="en">Door/Window Sensor</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x07</id>
+		</Class>
+		<Class>
+			<id>0x02</id>
+		</Class>
+		<Class>
+			<id>0x03</id>
+		</Class>
+		<Class>
+			<id>0xFE</id>
+		</Class>
+		<Class>
+			<id>0x00</id>
+		</Class>
+		<Class>
+			<id>0xFF</id>
+		</Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

@@ -44,12 +44,15 @@ import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
@@ -58,6 +61,7 @@ import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -195,13 +199,15 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    * 
    * @param host The host name or ip address of the TinkerForge brickd as String.
    * @param port The port of the TinkerForge brickd as int.
+   * @param authkey
    */
-  private void connectBrickd(String host, int port) {
+  private void connectBrickd(String host, int port, String authkey) {
     MBrickd brickd = tinkerforgeEcosystem.getBrickd(host, port);
     if (brickd == null) {
       brickd = modelFactory.createMBrickd();
       brickd.setHost(host);
       brickd.setPort(port);
+      brickd.setAuthkey(authkey);
       brickd.setEcosystem(tinkerforgeEcosystem);
       tinkerforgeEcosystem.getMbrickds().add(brickd);
       brickd.init();
@@ -275,6 +281,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
   private synchronized void addMDevice(MBaseDevice device, String uid, String subId) {
     String logId = subId == null ? uid : uid + " " + subId;
     OHTFDevice<?, ?> deviceConfig = ohConfig.getConfigByTFId(uid, subId);
+    if (deviceConfig == null) {
+      logger.debug("{} found no device configuration for uid \"{}\" subid \"{}\"",
+          LoggerConstants.TFINITSUB, uid, subId);
+    }
     if (device.getEnabledA().compareAndSet(false, true)) {
       if (subId != null) {
         MDevice<?> masterDevice = (MDevice<?>) device.eContainer();
@@ -430,7 +440,24 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
       if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE) {
         processValue((MBaseDevice) actor, notification);
       }
-
+    }
+    if (notification.getNotifier() instanceof ColorActor) {
+      ColorActor actor = (ColorActor) notification.getNotifier();
+      int featureID = notification.getFeatureID(ColorActor.class);
+      if (featureID == ModelPackage.COLOR_ACTOR__COLOR) {
+        processValue((MBaseDevice) actor, notification);
+      }
+    }
+    if (notification.getNotifier() instanceof MBrickd) {
+      MBrickd brickd = (MBrickd) notification.getNotifier();
+      int featureID = notification.getFeatureID(MBrickd.class);
+      if (featureID == ModelPackage.MBRICKD__CONNECTED_COUNTER) {
+        String subId = "connected_counter";
+        processValue(brickd, notification, subId);
+      } else if (featureID == ModelPackage.MBRICKD__IS_CONNECTED) {
+        String subId = "isconnected";
+        processValue(brickd, notification, subId);
+      }
     }
     // TODO hier muss noch was fuer die dimmer und rollershutter rein
     else {
@@ -439,6 +466,13 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     }
   }
 
+  private void processValue(MBrickd brickd, Notification notification, String subId) {
+    TinkerforgeValue newValue = (TinkerforgeValue) notification.getNewValue();
+    String uid = brickd.getHost() + ":" + ((Integer) brickd.getPort()).toString();
+    logger.trace("{} Notifier found brickd value uid {} subid {}", LoggerConstants.TFMODELUPDATE,
+        uid, subId);
+    postUpdate(uid, subId, newValue);
+  }
   /**
    * Processes changed device values to post them to the openHAB event bus.
    * 
@@ -674,6 +708,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else {
           continue;
         }
+      } else if (sensorValue instanceof HSBValue) {
+        if (itemType.isAssignableFrom(ColorItem.class)) {
+          logger.trace("found item to update for HSBValue {}", itemName);
+          value = ((HSBValue) sensorValue).getHsbValue();
+        }
       } else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
         value = UnDefType.UNDEF;
       }
@@ -729,7 +768,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
             if (command instanceof OnOffType) {
               logger.trace("{} found onoff command", LoggerConstants.COMMAND);
               OnOffType cmd = (OnOffType) command;
-              if (mDevice instanceof MInSwitchActor) {
+              if (mDevice instanceof MSwitchActor) {
                 OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF : OnOffValue.ON;
                 ((MSwitchActor) mDevice).turnSwitch(state);
               } else if (mDevice instanceof DigitalActor) {
@@ -748,29 +787,32 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               if (mDevice instanceof MTextActor) {
                 ((MTextActor) mDevice).setText(command.toString());
               }
-            } else if (command instanceof PercentType) {
-              if (mDevice instanceof SetPointActor) {
-                ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
-                    provider.getDeviceOptions(itemName));
-              } else {
-                logger.error("found no percenttype actor");
-              }
             } else if (command instanceof DecimalType) {
               logger.debug("{} found number command", LoggerConstants.COMMAND);
               if (command instanceof HSBType) {
                 logger.debug("{} found HSBType command", LoggerConstants.COMMAND);
-                if (mDevice instanceof ColorActor) {
-                  ((ColorActor) mDevice).setColor((HSBType) command,
+                if (mDevice instanceof ProgrammableColorActor) {
+                  logger.debug("{} found ProgrammableColorActor {}", itemName);
+                  ((ProgrammableColorActor) mDevice).setSelectedColor((HSBType) command,
                       provider.getDeviceOptions(itemName));
+                } else if (mDevice instanceof SimpleColorActor) {
+                  logger.debug("{} found SimpleColorActor {}", itemName);
+                  ((SimpleColorActor) mDevice).setSelectedColor((HSBType) command);
+                }
+              } else if (command instanceof PercentType) {
+                if (mDevice instanceof SetPointActor) {
+                  ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
+                      provider.getDeviceOptions(itemName));
+                } else {
+                  logger.error("found no percenttype actor");
                 }
               } else {
                 if (mDevice instanceof NumberActor) {
                   ((NumberActor) mDevice).setNumber(((DecimalType) command).toBigDecimal());
-                } else if ( mDevice instanceof SetPointActor){
+                } else if (mDevice instanceof SetPointActor) {
                   ((SetPointActor<?>) mDevice).setValue(((DecimalType) command).toBigDecimal(),
                       provider.getDeviceOptions(itemName));
-                }
-                else {
+                } else {
                   logger.error("found no number actor");
                 }
               }
@@ -781,19 +823,17 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                 ((MoveActor) mDevice).move((UpDownType) command,
                     provider.getDeviceOptions(itemName));
               }
-            }
-            else if (command instanceof StopMoveType){
+            } else if (command instanceof StopMoveType) {
               StopMoveType cmd = (StopMoveType) command;
               if (mDevice instanceof MoveActor) {
-                if ( cmd == StopMoveType.STOP){
+                if (cmd == StopMoveType.STOP) {
                   ((MoveActor) mDevice).stop();
                 } else {
                   ((MoveActor) mDevice).moveon(provider.getDeviceOptions(itemName));
                 }
               }
-               logger.debug("{} StopMoveType command {}", itemName, cmd);
-            }
-            else if (command instanceof IncreaseDecreaseType){
+              logger.debug("{} StopMoveType command {}", itemName, cmd);
+            } else if (command instanceof IncreaseDecreaseType) {
               IncreaseDecreaseType cmd = (IncreaseDecreaseType) command;
               if (mDevice instanceof DimmableActor) {
                 ((DimmableActor<?>) mDevice).dimm((IncreaseDecreaseType) command,
@@ -857,15 +897,27 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     String[] cfgHostsEntries = cfgHostsLine.split("\\s");
     for (int i = 0; i < cfgHostsEntries.length; i++) {
       String cfgHostEntry = cfgHostsEntries[i];
-      String[] cfgHostAndPort = cfgHostEntry.split(":", 2);
+      String[] cfgHostAndPort = cfgHostEntry.split(":", 3);
       String host = cfgHostAndPort[0];
       int port;
-      if (cfgHostAndPort.length == 2) {
-        port = Integer.parseInt(cfgHostAndPort[1]);
+      String authkey = null;
+      if (cfgHostAndPort.length > 1) {
+        if (!cfgHostAndPort[1].equals("")) {
+          port = Integer.parseInt(cfgHostAndPort[1]);
+        } else {
+          port = BRICKD_DEFAULT_PORT;
+        }
       } else {
         port = BRICKD_DEFAULT_PORT;
       }
-      connectBrickd(host, port);
+      if (cfgHostAndPort.length == 3) {
+        authkey = cfgHostAndPort[2];
+      }
+      logger.debug("parse brickd config: host {}, port {}, authkey is set {}", host, port,
+          authkey != null
+          ? true
+          : false);
+      connectBrickd(host, port, authkey);
     }
   }
 

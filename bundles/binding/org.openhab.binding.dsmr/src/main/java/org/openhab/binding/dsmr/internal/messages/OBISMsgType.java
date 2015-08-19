@@ -243,15 +243,19 @@ public enum OBISMsgType {
 			"Equipment identifier"),
 	GMETER_24H_DELIVERY_V2_X(new OBISIdentifier(7, 0, 23, 1, 0, null), 
 			DSMRMeterType.GAS, 
-			new CosemValueDescriptor(CosemString.class, "m3", "gValue"),
+			new CosemValueDescriptor[] {
+				new CosemValueDescriptor(CosemString.class, "m3", "gValue"),
+				new CosemValueDescriptor(CosemDate.class, "", "gValueTS")},
 			"Delivery of the past hour(v3.0 and up) or 24 hours (v2.1 / v2.2)"), 
 	GMETER_24H_DELIVERY_COMPENSATED_V2_X(new OBISIdentifier(7, 0, 23, 2, 0, null),
-			DSMRMeterType.GAS, 
-			new CosemValueDescriptor(CosemString.class, "m3", "gValueCompensated"),
+			DSMRMeterType.GAS,
+			new CosemValueDescriptor[] {
+				new CosemValueDescriptor(CosemString.class, "m3", "gValueCompensated"),
+				new CosemValueDescriptor(CosemDate.class, "", "gValueCompensatedTS")},
 			"Temperature compensated delivery of the past 24 hours"),
 	GMETER_VALUE_V3(new OBISIdentifier(0, null, 24, 3, 0, null), 
 			DSMRMeterType.GAS,
-			new CosemValueDescriptor[]{ 
+			new CosemValueDescriptor[] { 
 				new CosemValueDescriptor(CosemDate.class, "", "gValueTS"),
 				new CosemValueDescriptor(CosemString.class, "", "gProfileStatus"),
 				new CosemValueDescriptor(CosemInteger.class, "", "gRecordingPeriod"),
@@ -271,7 +275,7 @@ public enum OBISMsgType {
 			"Delivery of the past 24 hours"),
 	GMETER_VALUE_V4(new OBISIdentifier(0, null, 24, 2, 1, null), 
 			DSMRMeterType.GAS,
-			new CosemValueDescriptor[]{ 
+			new CosemValueDescriptor[] { 
 				new CosemValueDescriptor(CosemDate.class, "", "gValueTS"),
 				new CosemValueDescriptor(CosemFloat.class, "m3", "gValue")},
 			"Delivery of the past 24 hours"),
@@ -303,7 +307,9 @@ public enum OBISMsgType {
 			"Equipment identifier"),
 	HMETER_VALUE_V2_X(new OBISIdentifier(5, 0, 1, 0, 0, null), 
 			DSMRMeterType.HEATING, 
-			new CosemValueDescriptor(CosemFloat.class, "GJ", "hValue"), 
+			new CosemValueDescriptor[] {
+				new CosemValueDescriptor(CosemFloat.class, "GJ", "hValue"), 
+				new CosemValueDescriptor(CosemDate.class, "", "hValueTS")},
 			"Last hour delivery"), 
 	HMETER_VALUE_HEAT_V3(new OBISIdentifier(0, null, 24, 3, 0, null), 
 			DSMRMeterType.HEATING, 
@@ -334,8 +340,10 @@ public enum OBISMsgType {
 			new CosemValueDescriptor(CosemString.class, "", "cEquipmentId"), 
 			"Equipment identifier"), 
 	CMETER_VALUE_V2_X(new OBISIdentifier(6, 0, 1, 0, 0, null), 
-			DSMRMeterType.COOLING, 
-			new CosemValueDescriptor(CosemFloat.class, "GJ", "cValue"), 
+			DSMRMeterType.COOLING,
+			new CosemValueDescriptor[] {
+				new CosemValueDescriptor(CosemFloat.class, "GJ", "cValue"),
+				new CosemValueDescriptor(CosemDate.class, "", "cValueTS")},
 			"Value"), 
 	CMETER_VALUE_COLD_V3(new OBISIdentifier(0, null, 24, 3, 1, null),
 			DSMRMeterType.COOLING, 
@@ -343,7 +351,7 @@ public enum OBISMsgType {
 			"Last hour delivery"), 
 	CMETER_VALUE_COLD_V4(new OBISIdentifier(0, null, 24, 2, 1, null),
 			DSMRMeterType.COOLING, 
-			new CosemValueDescriptor[]{
+			new CosemValueDescriptor[] {
 				new CosemValueDescriptor(CosemDate.class, "", "cValueTS"),
 				new CosemValueDescriptor(CosemFloat.class, "GJ", "cValue")}, 
 			"Last hour delivery"), 
@@ -366,8 +374,10 @@ public enum OBISMsgType {
 			new CosemValueDescriptor(CosemString.class, "", "wEquipmentId"), 
 			"Equipment identifier"), 
 	WMETER_VALUE_V2_X(new OBISIdentifier(8, 0, 1, 0, 0, null),
-			DSMRMeterType.WATER, 
-			new CosemValueDescriptor(CosemFloat.class, "m3", "wValue"), 
+			DSMRMeterType.WATER,
+			new CosemValueDescriptor[] {
+				new CosemValueDescriptor(CosemFloat.class, "m3", "wValue"),
+				new CosemValueDescriptor(CosemDate.class, "", "cValueTS")},
 			"Last hour delivery"), 
 	WMETER_VALUE_V3(new OBISIdentifier(0, null, 24, 3, 0, null),
 			DSMRMeterType.WATER, 
@@ -375,7 +385,7 @@ public enum OBISMsgType {
 			"Last hourly meter reading"), 
 	WMETER_VALUE_V4(new OBISIdentifier(0, null, 24, 2, 1, null),
 			DSMRMeterType.WATER, 
-			new CosemValueDescriptor[]{
+			new CosemValueDescriptor[] {
 				new CosemValueDescriptor(CosemDate.class, "", "wValueTS"),
 				new CosemValueDescriptor(CosemFloat.class, "m3", "wValue")}, 
 			"Last hourly meter reading"), 
@@ -409,7 +419,7 @@ public enum OBISMsgType {
 			"Slave Electricity Equipment identifier"), 
 	SEMETER_VALUE_V4(new OBISIdentifier(0, null, 24, 2, 1, null),
 			DSMRMeterType.SLAVE_ELECTRICITY, 
-			new CosemValueDescriptor[]{
+			new CosemValueDescriptor[] {
 				new CosemValueDescriptor(CosemDate.class, "", "seValueTS"),
 				new CosemValueDescriptor(CosemFloat.class, "kWh", "seValue")},
 			"Slave Electricity last hourly meter reading"), 

@@ -39,104 +39,89 @@ public class Squeezebox {
 	// handle to the Squeeze Server connection
 	public static SqueezeServer squeezeServer;
 
-	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&q=";
+	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&ie=UTF-8&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
 
+	private static boolean isReady() {
+		if (squeezeServer == null) {
+            logger.debug("Squeezebox action is not yet configured - execution aborted!");
+			return false;
+		} 
+		return true;
+	}
+	
 	@ActionDoc(text = "Turn one of your Squeezebox devices on/off", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxPower(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to turn on/off") String playerId,
 			@ParamDoc(name = "power", text = "True to turn on, False to turn off") boolean power) {		
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-		
+		if (!isReady()) return false;
 		if (power) {
-			squeezeServer.powerOn(playerId);
+			return squeezeServer.powerOn(playerId);
 		} else {
-			squeezeServer.powerOff(playerId);
+			return squeezeServer.powerOff(playerId);
 		}
-		return true;
 	}
 	
 	@ActionDoc(text = "Mute/unmute one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxMute(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to turn on/off") String playerId,
 			@ParamDoc(name = "mute", text = "True to mute, False to un-mute") boolean mute) {		
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
+		if (!isReady()) return false;
 		if (mute) {
-			squeezeServer.mute(playerId);
+			return squeezeServer.mute(playerId);
 		} else {
-			squeezeServer.unMute(playerId);
+			return squeezeServer.unMute(playerId);
 		}
-		return true;
 	}
 	
 	@ActionDoc(text = "Set the volume on one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxVolume(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to turn on/off") String playerId,
-			@ParamDoc(name = "volume", text = "The volume between 0-100") int volume) {		
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
-		squeezeServer.setVolume(playerId, volume);
-		return true;
+			@ParamDoc(name = "volume", text = "The volume between 0-100") int volume) {
+		if (!isReady()) return false;
+		return squeezeServer.setVolume(playerId, volume);
 	}
 	
 	@ActionDoc(text = "Send the 'play' command to one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxPlay(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the command to") String playerId) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-		
-		squeezeServer.play(playerId);
-		return true;
+		if (!isReady()) return false;
+		return squeezeServer.play(playerId);
 	}
 	
 	@ActionDoc(text = "Send the 'pause' command to one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxPause(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the command to") String playerId) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
-		squeezeServer.pause(playerId);
-		return true;
+		if (!isReady()) return false;
+		return squeezeServer.pause(playerId);
 	}
 	
 	@ActionDoc(text = "Send the 'stop' command to one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxStop(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the command to") String playerId) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
-		squeezeServer.stop(playerId);
-		return true;
+		if (!isReady()) return false;
+		return squeezeServer.stop(playerId);
 	}
 	
 	@ActionDoc(text = "Send the 'next' command to one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxNext(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the command to") String playerId) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
-		squeezeServer.next(playerId);
-		return true;
+		if (!isReady()) return false;
+		return squeezeServer.next(playerId);
 	}
 	
 	@ActionDoc(text = "Send the 'prev' command to one of your Squeezebox devices", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxPrev(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the command to") String playerId) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
-		squeezeServer.prev(playerId);
-		return true;
+		if (!isReady()) return false;
+		return squeezeServer.prev(playerId);
 	}
 	
 	@ActionDoc(text = "Play a URL on one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxPlayUrl(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
 			@ParamDoc(name = "url", text = "The URL to play (if empty will clear the playlist)") String url) {
+		if (!isReady()) return false;
 		return squeezeboxPlayUrl(playerId, url, -1);
 	}	
 	
@@ -145,9 +130,7 @@ public class Squeezebox {
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
 			@ParamDoc(name = "url", text = "The URL to play (if empty will clear the playlist)") String url,
 			@ParamDoc(name = "volume", text = "The volume to set the device when playing this URL (between 1-100)") int volume) {
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
-
+		if (!isReady()) return false;
 		// set the player ready to play this URL
    		if (volume != -1) {
 			logger.trace("Setting player state: volume {}", volume);
@@ -156,17 +139,25 @@ public class Squeezebox {
 
 		// play the url
    		if (StringUtils.isEmpty(url)) {
-   			squeezeServer.clearPlaylist(playerId);
+   			return squeezeServer.clearPlaylist(playerId);
    		} else {
-   			squeezeServer.playUrl(playerId, url);
+   			return squeezeServer.playUrl(playerId, url);
    		}
-		return true;
+	}
+	
+	@ActionDoc(text = "Issues an arbitrary command to a player", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean squeezeboxPlayerCommand(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
+			@ParamDoc(name = "command", text = "A command to send to the player") String command) {
+		if (!isReady()) return false;
+		return squeezeServer.playerCommand(playerId, command);
 	}
 	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the current volume for that device", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxSpeak(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say") String message) {
+		if (!isReady()) return false;
 		return squeezeboxSpeak(playerId, message, -1, true);
 	}	
 	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume and always resume previous playback", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
@@ -174,6 +165,7 @@ public class Squeezebox {
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say") String message,
 			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
+		if (!isReady()) return false;
 		return squeezeboxSpeak(playerId, message, -1, true);
 	}	
 	
@@ -183,8 +175,12 @@ public class Squeezebox {
 			@ParamDoc(name = "message", text = "The message to say") String message,
 			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume,
 			@ParamDoc(name = "resumePlayback", text = "Continue playback after speech") Boolean resumePlayback ){
-		SqueezePlayer player = getPlayer(playerId);
-		if (player == null) return false;
+		if (!isReady()) return false;
+		// get the player - can return null if the playerId is bogus
+		SqueezePlayer player = squeezeServer.getPlayer(playerId);
+		if (player == null) 
+			return false;
+
 		logger.trace("***START SPEECH**** Player: '{}'", playerId);
 		// get the current player state
 		int playerVolume = player.getUnmuteVolume();
@@ -227,7 +223,6 @@ public class Squeezebox {
 			logger.trace("Shuffle Changed! Set Current Playing Index to 0");
 		}
 		
-		
 		// can only 'say' 100 chars at a time
 		List<String> sentences = getSentences(message, MAX_SENTENCE_LENGTH);
 
@@ -246,7 +241,7 @@ public class Squeezebox {
 			logger.trace("Encoded sentence " + encodedSentence);
 			
 			// build the URL to send to the Squeezebox to play
-			String url = String.format(GOOGLE_TRANSLATE_URL,squeezeServer.language()) + encodedSentence;
+			String url = String.format(GOOGLE_TRANSLATE_URL, squeezeServer.language()) + encodedSentence;
 			
 			// create an instance of our special listener so we can detect when the sentence is complete
 			SqueezeboxSentenceListener listener = new SqueezeboxSentenceListener(playerId);
@@ -340,43 +335,6 @@ public class Squeezebox {
 		}
 		logger.trace("*****DONE SPEECH****** Player: '{}'", playerId);
 		return true;
-	}
-	
-	@ActionDoc(text = "Issues an arbitrary command to a player", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
-	public static boolean squeezeboxPlayerCommand(
-			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
-			@ParamDoc(name = "command", text = "A command to send to the player") String command) {
-	    	SqueezePlayer player = getPlayer(playerId);
-
-	    	if (player == null) return false;
-
-		squeezeServer.playerCommand(playerId, command);
-		return true;
-	}
-	
-	private static SqueezePlayer getPlayer(String playerId) {
-		if (StringUtils.isEmpty(playerId))
-			throw new NullArgumentException("playerId");
-
-		// check the Squeeze Server has been initialised
-		if (squeezeServer == null) {
-			logger.warn("Squeeze Server yet to be initialised. Ignoring action.");
-			return null;
-		}
-		
-		// check we are connected to the Squeeze Server
-		if (!squeezeServer.isConnected()) {
-			logger.warn("Not connected to the Squeeze Server. Please check your config and consult the openHAB WIKI for instructions on how to configure. Ignoring action.");
-			return null;
-		}
-
-		SqueezePlayer player = squeezeServer.getPlayer(playerId);
-		if (player == null) {
-			logger.warn("No Squeezebox player exists with name '{}'. Ignoring action.", playerId);
-			return null;
-		}
-		
-		return player;
 	}
 
     private static List<String> getSentences(String message, int maxSentenceLength) {

@@ -11,7 +11,7 @@ Configuration
 * Retrieve a refresh token from Netatmo API, using e.g. curl:
 
 ```
-curl -d "grant_type=password&client_id=123456789012345678901234&client_secret=ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHI&username=example@example.com&password=example" "http://api.netatmo.net/oauth2/token"
+curl -d "grant_type=password&client_id=123456789012345678901234&client_secret=ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHI&username=example@example.com&password=example" "https://api.netatmo.net/oauth2/token"
 ```
 
 * Add client id, client secret and refresh token to openhab.cfg

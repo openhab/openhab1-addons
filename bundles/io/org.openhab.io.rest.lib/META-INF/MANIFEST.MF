@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB REST libraries Bundle
 Bundle-SymbolicName: org.openhab.io.rest.lib
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
@@ -18,7 +18,8 @@ Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/atmosphere-runtime-2.2.5.jar,
  lib/atmosphere-annotations-2.2.5.jar,
  lib/atmosphere-jersey-2.2.5.jar,
- lib/jersey-client-1.18.1.jar
+ lib/jersey-client-1.18.1.jar,
+ lib/jettison-1.1.jar
 Import-Package: com.sun.jersey.api.core,
  com.sun.jersey.api.json,
  com.sun.jersey.core.osgi,

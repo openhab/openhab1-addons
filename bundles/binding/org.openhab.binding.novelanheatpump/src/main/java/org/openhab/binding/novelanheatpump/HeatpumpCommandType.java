@@ -333,6 +333,41 @@ public enum HeatpumpCommandType {
 			command = "warmwater_temperature";
 			itemClass = NumberItem.class;
 		}
+	},
+	//in german Comfort Kühlung Betriebsart
+	TYPE_COOLING_OPERATION_MODE {
+		{
+			command = "cooling_operation_mode";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Comfort Kühlung AT-Freigabe
+	TYPE_COOLING_RELEASE_TEMPERATURE {
+		{
+			command = "cooling_release_temperature";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german Solltemp MK1
+	TYPE_COOLING_INLET_TEMP {
+		{
+			command = "cooling_inlet_temperature";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german AT-Überschreitung
+	TYPE_COOLING_START_AFTER_HOURS {
+		{
+			command = "cooling_start_hours";
+			itemClass = NumberItem.class;
+		}
+	},	
+	//in german AT-Unterschreitung
+	TYPE_COOLING_STOP_AFTER_HOURS {
+		{
+			command = "cooling_stop_hours";
+			itemClass = NumberItem.class;
+		}
 	};
 	
 

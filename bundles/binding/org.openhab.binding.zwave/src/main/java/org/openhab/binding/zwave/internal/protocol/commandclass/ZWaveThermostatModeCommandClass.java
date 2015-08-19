@@ -115,8 +115,6 @@ ZWaveCommandClassDynamicState {
 						continue;
 
 					int index = ((i - (offset + 1)) * 8 ) + bit;             
-					if(index >= ModeType.values().length)
-						continue;
 
 					// (n)th bit is set. n is the index for the mode type enumeration.
 					ModeType modeTypeToAdd = ModeType.getModeType(index);
@@ -304,7 +302,8 @@ ZWaveCommandClassDynamicState {
 		AUTO_CHANGEOVER(10,"Auto Changeover"),
 		HEAT_ECON(11,"Heat Econ"),
 		COOL_ECON(12,"Cool Econ"),
-		AWAY(13,"Away");
+		AWAY(13,"Away"),
+		MANUAL(31, "Manual");
 
 		/**
 		 * A mapping between the integer code and its corresponding mode type

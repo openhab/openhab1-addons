@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,11 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +45,8 @@ public class SerialIOStream extends IOStream {
 	@Override
 	public boolean open() {
 		try {
-			/* by default, RXTX searches only devices /dev/ttyS* and
-			 * /dev/ttyUSB*, and will so not find symlinks. The
-			 *  setProperty() call below helps 
-			 */
-			System.setProperty("gnu.io.rxtx.SerialPorts", m_devName);
-			CommPortIdentifier ci =
-					CommPortIdentifier.getPortIdentifier(m_devName);
+			updateSerialProperties(m_devName);
+			CommPortIdentifier ci = CommPortIdentifier.getPortIdentifier(m_devName);
 			CommPort cp = ci.open(m_appName, 1000);
 			if (cp instanceof SerialPort) {
 				m_port = (SerialPort)cp;
@@ -79,6 +78,60 @@ public class SerialIOStream extends IOStream {
 		}
 		return false;
 	}
+	
+	private void updateSerialProperties(String devName) {
+
+		/* By default, RXTX searches only devices /dev/ttyS* and
+		 * /dev/ttyUSB*, and will therefore not find devices that
+		 * have been symlinked. Adding them however is tricky, see below. */
+
+		//
+		// first go through the port identifiers to find any that are not in
+		// "gnu.io.rxtx.SerialPorts"
+		//
+		ArrayList<String> allPorts = new ArrayList<String>();
+		@SuppressWarnings("rawtypes")
+		Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+        while (portList.hasMoreElements()) {
+        	CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+        	if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+        		allPorts.add(id.getName());
+        	}
+        }
+		logger.trace("ports found from identifiers: {}", StringUtils.join(allPorts, ":")); 
+        //
+        // now add our port so it's in the list
+        //
+        if (!allPorts.contains(devName)) {
+        	allPorts.add(devName);
+        }
+        //
+		// add any that are already in "gnu.io.rxtx.SerialPorts"
+		// so we don't accidentally overwrite some of those ports
+        
+		String ports = System.getProperty("gnu.io.rxtx.SerialPorts");
+		if (ports != null) {
+			ArrayList<String> propPorts = new ArrayList<String>(Arrays.asList(ports.split(":")));
+			for (String p : propPorts) {
+				if (!allPorts.contains(p)) allPorts.add(p);
+			}
+		}
+		String finalPorts = StringUtils.join(allPorts, ":"); 
+		logger.trace("final port list: {}", finalPorts);
+		
+		//
+		// Finally overwrite the "gnu.io.rxtx.SerialPorts" System property.
+		//
+		// Note: calling setProperty() is not threadsafe. All bindings run in
+		// the same address space, System.setProperty() is globally visible
+		// to all bindings.
+		// This means if multiple bindings use the serial port there is a
+		// race condition where two bindings could be changing the properties
+		// at the same time
+		//
+		System.setProperty("gnu.io.rxtx.SerialPorts", finalPorts);
+	}
+
 
 	@Override
 	public void close() {

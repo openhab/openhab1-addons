@@ -12,7 +12,7 @@
 <feature
       id="org.openhab.dependencies.feature"
       label="openHAB Dependencies"
-      version="1.7.0.qualifier"
+      version="1.8.0.qualifier"
       provider-name="openHAB.org">
 
    <description>
@@ -21,7 +21,7 @@ runtime and the openHAB designer rely on.
    </description>
 
    <copyright>
-      Copyright (c) 2010-2014, openHAB.org &lt;admin@openhab.org&gt;
+      Copyright (c) 2010-2015, openHAB.org &lt;admin@openhab.org&gt;
    </copyright>
 
   <license url="%licenseURL">

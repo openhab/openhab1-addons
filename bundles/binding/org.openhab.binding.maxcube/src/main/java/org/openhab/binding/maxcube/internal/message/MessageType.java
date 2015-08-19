@@ -9,11 +9,12 @@
 package org.openhab.binding.maxcube.internal.message;
 
 /**
-* This enumeration represents the different message types provided by the MAX!Cube protocol. 
-* 
-* @author Andreas Heil (info@aheil.de)
-* @since 1.4.0
-*/
+ * This enumeration represents the different message types provided by the
+ * MAX!Cube protocol.
+ * 
+ * @author Andreas Heil (info@aheil.de)
+ * @since 1.4.0
+ */
 public enum MessageType {
-	H, M, C, L, S
+	H, M, C, L, S;
 }

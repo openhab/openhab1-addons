@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_05461</Model>
+	<Label lang="en">Double Switch</Label>
+	<Label lang="de">Doppeltaster</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Set LED indication mode</Label>
+			<Label lang="de">Bestimmt das Verhalten der LED am Gerät</Label>
+			<Label lang="ru">Режим работы светодиода</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="de">Deaktiviert</Label>
+				<Label lang="ru">Отключен</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+				<Label lang="de">Zeigt Schaltzustand</Label>
+				<Label lang="ru">Индикация состояния реле</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Nachtlicht (invertierter Schaltzustand)</Label>
+				<Label lang="de">Night mode (inverted switch state)</Label>
+				<Label lang="ru">Ночной режим (противоположно состоянию реле)</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatically switch off first channel after</Label>
+			<Label lang="de">Automatisches Ausschalten des ersten Kanals nach</Label>
+			<Label lang="ru">Авто отключение первого канала через</Label>
+			<Help lang="en"><![CDATA[If not zero, automatically switch off after a user defined time]]></Help>
+			<Help lang="de"><![CDATA[Wenn nicht 0, dann schaltet das Gerät nach dieser festgelegten Dauer in Sekunden automatisch wieder ab]]></Help>
+			<Help lang="ru"><![CDATA[Если не 0, автоматически отключает реле первого канала после определённого пользователем времени]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>22</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatically switch off second channel after</Label>
+			<Label lang="de">Automatisches Ausschalten des zweiten Kanals nach</Label>
+			<Label lang="ru">Авто отключение второго канала через</Label>
+			<Help lang="en"><![CDATA[If not zero, automatically switch off after a user defined time]]></Help>
+			<Help lang="de"><![CDATA[Wenn nicht 0, dann schaltet das Gerät nach dieser festgelegten Dauer in Sekunden automatisch wieder ab]]></Help>
+			<Help lang="ru"><![CDATA[Если не 0, автоматически отключает реле второго канала после определённого пользователем времени]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Function of RF off command on first channel</Label>
+			<Label lang="de">Reaktion auf Funkkommando AUS auf erstem Kanal</Label>
+			<Label lang="ru">Действие при получении радиокоманды выключения первого канала</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch OFF</Label>
+				<Label lang="de">Ausschalten</Label>
+				<Label lang="ru">Выключить нагрузку</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+				<Label lang="de">Ignorieren</Label>
+				<Label lang="ru">Игнорировать</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch ON</Label>
+				<Label lang="de">Anschalten</Label>
+				<Label lang="ru">Включить нагрузку</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off else switch off</Label>
+				<Label lang="de">Schalte ein, wenn vorher ausgeschaltet und umgekehrt.</Label>
+				<Label lang="ru">Включить, если нагрузка выключена, иначе выключить</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines how to interpret RF first channel Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).]]></Help>
+			<Help lang="de"><![CDATA[Definiert, wie das Funkkommando AUS interpretiert werden soll. Kann in Verbindung mit der Auto-AUS Funktion benutzt werden. Ignorieren - Schalte Licht per Funksignal ein und schalte automatisch nach festgelegter Zeit wieder aus. Anschalten - Schalte Licht bei Druck auf jede der beiden Schaltflächen an und schalte automatisch nach festgelegter Zeit wieder aus. Ausschalten per Schaltfläche funktioniert weiterhin, insoweit die Schalter nicht per Konfiguration deaktiviert wurden.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет поведение при получении радио команды выключения первого канал. Может использоваться совместно с функцией авто отключения: Игнорирование - для включения света по датчику движения и отключения по прошествии определённого времени: в случае использования нескольких датчиков движения каждый будет пытаться выключить свет сам, что приведёт к неправильной логике работы; Включить нагрузку - для включения света при нажатии на кнопки Вкл и Выкл на пульте управления и отключения по прошествии определённого времени. Выключение по кнопке будет продолжать работать (если не отключено).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>23</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Function of RF off command on second channel</Label>
+			<Label lang="de">Reaktion auf Funkkommando AUS auf zweitem Kanal</Label>
+			<Label lang="ru">Действие при получении радиокоманды выключения второго канала</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch OFF</Label>
+				<Label lang="de">Ausschalten</Label>
+				<Label lang="ru">Выключить нагрузку</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+				<Label lang="de">Ignorieren</Label>
+				<Label lang="ru">Игнорировать</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch ON</Label>
+				<Label lang="de">Anschalten</Label>
+				<Label lang="ru">Включить нагрузку</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off else switch off</Label>
+				<Label lang="de">Schalte ein, wenn vorher ausgeschaltet und umgekehrt.</Label>
+				<Label lang="ru">Включить, если нагрузка выключена, иначе выключить</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines how to interpret RF second channel Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).]]></Help>
+			<Help lang="de"><![CDATA[Definiert, wie das Funkkommando AUS interpretiert werden soll. Kann in Verbindung mit der Auto-AUS Funktion benutzt werden. Ignorieren - Schalte Licht per Funksignal ein und schalte automatisch nach festgelegter Zeit wieder aus. Anschalten - Schalte Licht bei Druck auf jede der beiden Schaltflächen an und schalte automatisch nach festgelegter Zeit wieder aus. Ausschalten per Schaltfläche funktioniert weiterhin, insoweit die Schalter nicht per Konfiguration deaktiviert wurden.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет поведение при получении радио команды выключения второго канал. Может использоваться совместно с функцией авто отключения: Игнорирование - для включения света по датчику движения и отключения по прошествии определённого времени: в случае использования нескольких датчиков движения каждый будет пытаться выключить свет сам, что приведёт к неправильной логике работы; Включить нагрузку - для включения света при нажатии на кнопки Вкл и Выкл на пульте управления и отключения по прошествии определённого времени. Выключение по кнопке будет продолжать работать (если не отключено).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">What to do on button Down press (for both channels)</Label>
+			<Label lang="de">Aktion beim Drücken des unteren Teils der Schaltwippe</Label>
+			<Label lang="ru">Действие при нажатии вниз (для обоих каналов)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off</Label>
+				<Label lang="de">Ausschalten</Label>
+				<Label lang="ru">Выключить нагрузку</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On if load is Off, else switch Off</Label>
+				<Label lang="de">Einschalten, wenn vorher aus und umgekehrt</Label>
+				<Label lang="ru">Инвертировать состояние</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on</Label>
+				<Label lang="de">Einschalten</Label>
+				<Label lang="ru">Включить нагрузку</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines how to interpret button Down press. Depends on parameters 12 and 32 "Switch by buttons" parameter. If not Disabled this parameter will affect the action selected by the latter parameter. Can be used in conjunction with Auto Off function.]]></Help>
+			<Help lang="de"><![CDATA[Legt fest, wie das Drücken der unteren Schaltwippe interpretiert wird. Abhängig von den Parametern 12 und 32. Falls nicht deaktiviert, beeinflusst dies die Aktion welche durch letzteren Parameter festgelegt wurde. Kann im Zusammenhang mit der Auto-AUS Funktion benutzt werden. ]]></Help>
+			<Help lang="ru"><![CDATA[Определяет поведение при нажатии клавиши вниз для управления первым  и вторым каналами. Зависит от параметра 12 и 32 "Включить/выключить нагрузку кнопками". Если не "Нет", данный параметр будет применён к выбранному упомянутым параметром действию. Может использоваться совместно с функцией авто отключения.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch on/off by holding buttons</Label>
+			<Label lang="de">Schalten bei Gedrückthalten</Label>
+			<Label lang="ru">Включить/выключить при удержании клавиш</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="de">Nein</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="de">Ja (nur für den ersten Kanal)</Label>
+				<Label lang="en">Yes (only for the first channel)</Label>
+				<Label lang="ru">Да (только для первого канала)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Yes (only for the second channel)</Label>
+				<Label lang="de">Ja (nur für den zweiten Kanal)</Label>
+				<Label lang="ru">Да (только для второго канала)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Yes (for both channels)</Label>
+				<Label lang="de">Ja (für beide Kanäle)</Label>
+				<Label lang="ru">Да (для обоих каналов)</Label>
+			</Item>
+
+			<Help lang="en"><![CDATA[Defines if the switch should change it state to on/off if buttons are being hold.]]></Help>
+			<Help lang="de"><![CDATA[Legt fest ob der Schaltzustand wechseln soll, wenn Schaltflächen länger gehalten werden.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет будет ли устройство включаться/выключаться при удержании кнопок]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state after power cycle</Label>
+			<Label lang="de">Automatische Rückkehr zu letztem Schaltzustand nach Stromausfall</Label>
+			<Label lang="ru">Восстанавливать состояние реле после отключения питания</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No, turn off</Label>
+				<Label lang="de">Nein, Ausschalten</Label>
+				<Label lang="ru">Нет, выключится</Label>
+			</Item>
+
+			<Item>
+				<Value>1</Value>
+				<Label lang="de">Ja (nur für den ersten Kanal)</Label>
+				<Label lang="en">Yes (only for the first channel)</Label>
+				<Label lang="ru">Да (только для первого канала)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Yes (only for the second channel)</Label>
+				<Label lang="de">Ja (nur für den zweiten Kanal)</Label>
+				<Label lang="ru">Да (только для второго канала)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Yes (for both channels)</Label>
+				<Label lang="de">Ja (für beide Kanäle)</Label>
+				<Label lang="ru">Да (для обоих каналов)</Label>
+			</Item>
+
+			<Help lang="en"><![CDATA[Defines if the switch should restore switch state to the last state prior to device power off (power cycle).]]></Help>
+			<Help lang="de"><![CDATA[Definiert das Verhalten des Gerätes nach Stromausfall]]></Help>
+			<Help lang="ru"><![CDATA[Определяет восстанавливать ли состояние реле на то, которое было до отключения питания устройства.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert buttons</Label>
+			<Label lang="de">Invertiere Tasten</Label>
+			<Label lang="ru">Инвертировать кнопки</Label>
+			<Help lang="en"><![CDATA[Allows for exchanging ON and OFF.]]></Help>
+			<Help lang="de"><![CDATA[Ermöglicht das Vertauschen von EIN und AUS.]]></Help>
+
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="de">Nein</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+				<Label lang="de">Ja</Label>
+				<Label lang="ru">Да</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch by buttons (first channel)</Label>
+			<Label lang="de">Schalten durch Schaltwippe (erster Kanal)</Label>
+			<Label lang="ru">Включить/выключить нагрузку кнопками (первый канал)</Label>
+
+			<Help lang="en"><![CDATA[If disabled, the local operations by buttons will not switch relay on first channel, but only send commands to On/Off association group. In this mode buttons are not linked with the switch anymore. They can be used separately: buttons to control remote device, switch will operate by RF commands only.]]></Help>
+			<Help lang="de"><![CDATA[Definiert, ob die Schaltwippe den Aktor selbst schalten oder eine andere Aktion im Funknetz steuern sollen.]]></Help>
+			<Help lang="ru"><![CDATA[Если отключено, нажатия на кнопки не включит реле первого канала, а только отправит команду группе ассоциаций Включить/Выключить. В данном режиме кнопки не связаны с реле. Они могут быть использованы отдельно: кнопки для управления удалённой нагрузкой, реле будет управляться только по радио.]]></Help>
+
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="de">Nein</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">By single press and hold</Label>
+				<Label lang="de">Einfach-Klick und Halten</Label>
+				<Label lang="ru">Одинарным нажатием и удержанием</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">By double press and press-hold</Label>
+				<Label lang="de">Doppel-Klick und Halten</Label>
+				<Label lang="ru">Двойным нажатием и нажатием-удержанием</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch by buttons (second channel)</Label>
+			<Label lang="de">Schalten durch Schaltwippe (zweiter Kanal)</Label>
+			<Label lang="ru">Включить/выключить нагрузку кнопками (второй канал)</Label>
+
+			<Help lang="en"><![CDATA[If disabled, the local operations by buttons will not switch relay on second channel, but only send commands to On/Off association group. In this mode buttons are not linked with the switch anymore. They can be used separately: buttons to control remote device, switch will operate by RF commands only.]]></Help>
+			<Help lang="de"><![CDATA[Definiert, ob die Schaltwippe den Aktor selbst schalten oder eine andere Aktion im Funknetz steuern sollen.]]></Help>
+			<Help lang="ru"><![CDATA[Если отключено, нажатия на кнопки не включит реле второго канала, а только отправит команду группе ассоциаций Включить/Выключить. В данном режиме кнопки не связаны с реле. Они могут быть использованы отдельно: кнопки для управления удалённой нагрузкой, реле будет управляться только по радио.]]></Help>
+
+
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="de">Nein</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">By single press and hold</Label>
+				<Label lang="de">Einfach-Klick und Halten</Label>
+				<Label lang="ru">Одинарным нажатием и удержанием</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">By double press and press-hold</Label>
+				<Label lang="de">Doppel-Klick und Halten</Label>
+				<Label lang="ru">Двойным нажатием и нажатием-удержанием</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button single press or hold</Label>
+			<Label lang="de">Aktion bei Einfachdruck und Halten der Schaltwippe</Label>
+			<Label lang="ru">Действия при одинарном нажатии или удержании клавиши</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="de">Deaktiviert</Label>
+				<Label lang="ru">Отключено</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+				<Label lang="de">Schaltkommandos Ein und Aus mittels 'Basic' Kommando</Label>
+				<Label lang="ru">Только Включить/Выключить (отправить Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+				<Label lang="de">Schaltkommandos Ein und Aus mittels 'Basic' und 'SwitchMultilevel' Kommando</Label>
+				<Label lang="ru">Включить/Выключить и Диммировать (отправить Basic Set и Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Scene activation</Label>
+				<Label lang="de">Szenenaktivierung</Label>
+				<Label lang="ru">Отправить Сцены</Label>
+			</Item>
+
+			<Help lang="en"><![CDATA[Defines which command should be sent on button single press or hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast.]]></Help>
+			<Help lang="de"><![CDATA[Definiert das Verhalten des Schaltaktoren bei einfachem Tastenklick mit anschließendem Gedrückthalten der Wippe.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет вид команд, которые отправляются при одинарном нажатии или удержании кнопок. Команды Basic и Активация сцен отправляются группе ассоциаций. Используйте Scene Controller Conf для задания номера сцены для Scene Activation. Команда Включить/Выключить всё отправляется на широковещательный адрес (всем).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button double press or hold</Label>
+			<Label lang="de">Aktion bei Doppelklick</Label>
+			<Label lang="ru">Действия при двойном нажатии или удержании клавиши</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="de">Deaktiviert</Label>
+				<Label lang="ru">Отключено</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+				<Label lang="de">Schaltkommandos Ein/Aus und Dimmen mittels 'Basic' Kommando</Label>
+				<Label lang="ru">Только Включить/Выключить (отправить Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+				<Label lang="de">Schaltkommandos Ein/Aus und Dimmen mittels 'Basic' und 'SwitchMultilevel' Kommando</Label>
+				<Label lang="ru">Включить/Выключить и Диммировать (отправить Basic Set и Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Scene activation</Label>
+				<Label lang="de">Szenenaktivierung</Label>
+				<Label lang="ru">Отправить Сцены</Label>
+			</Item>
+
+			<Help lang="en"><![CDATA[Defines which command should be sent on button single press or hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast.]]></Help>
+			<Help lang="de"><![CDATA[Definiert das Verhalten des Schaltaktoren bei einfachem Tastenklick mit anschließendem Gedrückthalten der Wippe.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет вид команд, которые отправляются при одинарном нажатии или удержании кнопок. Команды Basic и Активация сцен отправляются группе ассоциаций. Используйте Scene Controller Conf для задания номера сцены для Scene Activation. Команда Включить/Выключить всё отправляется на широковещательный адрес (всем).]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Energy consumption for first channel</Label>
+			<Label lang="de">Energieverbrauch von Last 1</Label>
+			<Label lang="ru">Энергопотребление первого канала</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="de">Deaktiviert</Label>
+				<Label lang="ru">Отключено</Label>
+			</Item>
+			<Minimum>0</Minimum>
+			<Maximum>1800</Maximum>
+
+			<Help lang="en"><![CDATA[Specify the consumption of the load in watts, for the calculation of power consumption. Max load 1800 W.]]></Help>
+			<Help lang="de"><![CDATA[definiert die Nennleistung der angeschlossenen Last 1. Dies wird zur Berechnung der verbrauchten elektrischen Arbeit genutzt.]]></Help>
+			<Help lang="ru"><![CDATA[Укажите потребление нагрузки в ваттах, для подсчета энергопотребления. Максимальная нагрузка 1800 Ватт.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>freelist</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Energy consumption for second channel</Label>
+			<Label lang="de">Energieverbrauch von Last 2</Label>
+			<Label lang="ru">нергопотребление второго канала</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="de">Deaktiviert</Label>
+				<Label lang="ru">Отключено</Label>
+			</Item>
+			<Minimum>0</Minimum>
+			<Maximum>1800</Maximum>
+
+			<Help lang="en"><![CDATA[Specify the consumption of the load in watts, for the calculation of power consumption. Max load 1800 W.]]></Help>
+			<Help lang="de"><![CDATA[definiert die Nennleistung der angeschlossenen Last 2. Dies wird zur Berechnung der verbrauchten elektrischen Arbeit genutzt.]]></Help>
+			<Help lang="ru"><![CDATA[Укажите потребление нагрузки в ваттах, для подсчета энергопотребления. Максимальная нагрузка 1800 Ватт.]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Label lang="de">Gruppe 1</Label>
+			<Help lang="en"><![CDATA[Send Reports on switch state change]]></Help>
+			<Help lang="de"><![CDATA[Reports über alle Änderungen des Schaltzustandes]]></Help>
+			<Help lang="ru"><![CDATA[Отправлять отчёты при изменении состояния выключателя]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 2</Label>
+			<Label lang="de">Gruppe 2</Label>
+			<Help lang="en"><![CDATA[Single press and hold of up/down buttons]]></Help>
+			<Help lang="de"><![CDATA[Reports über alle Änderungen des Schaltzustandes]]></Help>
+			<Help lang="ru"><![CDATA[Одиночное нажатие или удержание клавиш вверх/вниз]]></Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 3</Label>
+			<Label lang="de">Gruppe 3</Label>
+			<Help lang="en"><![CDATA[Double press and press-hold of up/down buttons]]></Help>
+			<Help lang="de"><![CDATA[Doppelter Tastendruck]]></Help>
+			<Help lang="ru"><![CDATA[Двойное нажатие или нажатие-удержание клавиш вверх/вниз]]></Help>
+		</Group>
+	</Associations>
+</Product>
+
