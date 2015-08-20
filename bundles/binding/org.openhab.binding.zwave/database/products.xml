@@ -109,6 +109,15 @@
 			<Label lang="en">Isolated Contact Fixture Module</Label>
 			<ConfigFile>linear/fs20z.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4744</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>NGD00Z-4</Model>
+			<Label lang="en">Garage Door Controller</Label>
+			<ConfigFile>linear/ngd00z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -2608,6 +2617,19 @@
 			<Model>WPS104</Model>
 			<Label lang="en">Energy Driven Switch</Label>
 			<ConfigFile>widom/wps104.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>019b</Id>
+		<Name>Thermo-Floor</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Thermostat</Model>
+			<Label lang="en">ZWave Thermostat</Label>
+			<ConfigFile>thermofloor/multireg_thermostat.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
