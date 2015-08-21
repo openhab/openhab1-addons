@@ -24,11 +24,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -116,9 +114,17 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements
 		super(deviceName, mode);
 
 		if(properties==null) return;
+
+		Integer tmpBaudRate = null;
+		Object baudRateObject = properties.get(KEY_BAUDRATE);
+		if (baudRateObject instanceof String) {
+			final String configuredBaudRate = (String)baudRateObject;
+			tmpBaudRate = baudrateFromConfig(configuredBaudRate);
+		}
+		else if (baudRateObject instanceof Integer) {
+			tmpBaudRate = (Integer)baudRateObject;
+		}
 		
-		final String configuredBaudRate = (String) properties.get(KEY_BAUDRATE);
-		Integer tmpBaudRate=baudrateFromConfig(configuredBaudRate);
 		if(tmpBaudRate!=null){
 			baudRate=tmpBaudRate;
 			log.info("Update config, {} = {}", KEY_BAUDRATE, baudRate);
