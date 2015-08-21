@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 /**
  * Connector for UDP communication.
- * 
+ *
  * @since 1.6.0
  * @author paphko
  */
@@ -42,7 +42,7 @@ class AnelUDPConnector {
 	/**
 	 * Create a new connector to an Anel device via the given host and UDP
 	 * ports.
-	 * 
+	 *
 	 * @param host
 	 *            The IP address / network name of the device.
 	 * @param udpReceivePort
@@ -64,7 +64,7 @@ class AnelUDPConnector {
 
 	/**
 	 * Initialize socket connection to the UDP receive port.
-	 * 
+	 *
 	 * @throws SocketException
 	 */
 	void connect() throws SocketException {
@@ -85,7 +85,7 @@ class AnelUDPConnector {
 
 	/**
 	 * This is a blocking call for receiving data from the specific UDP port.
-	 * 
+	 *
 	 * @return The received data.
 	 * @throws Exception
 	 *             If an exception occurred.
@@ -105,6 +105,9 @@ class AnelUDPConnector {
 			return Arrays.copyOfRange(packet.getData(), 0, packet.getLength() - 1);
 
 		} catch (SocketException e) {
+			if (e.getMessage() != null && e.getMessage().equals("socket closed")) {
+				return null; // happens during shutdown
+			}
 			throw new Exception(e);
 		} catch (IOException e) {
 			throw new Exception(e);
@@ -113,7 +116,7 @@ class AnelUDPConnector {
 
 	/**
 	 * Send data to the specified address via the specified UDP port.
-	 * 
+	 *
 	 * @param data
 	 *            The data to send.
 	 * @throws Exception
