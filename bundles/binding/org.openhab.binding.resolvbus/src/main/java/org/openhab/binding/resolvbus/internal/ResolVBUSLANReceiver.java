@@ -10,11 +10,10 @@
 package org.openhab.binding.resolvbus.internal;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -89,6 +88,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 
 		try {
 			vBusSocket = new Socket(host, port);
+			vBusSocket.setSoTimeout(10000);
 			inStream = vBusSocket.getInputStream();
 			logger.debug("Connected to {}:{}", host, port);
 		} catch (UnknownHostException e) {
@@ -169,8 +169,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					vBusSocket.getInputStream()));
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					vBusSocket.getOutputStream()));
+			PrintWriter writer = new PrintWriter(vBusSocket.getOutputStream());
 
 			inputString = reader.readLine();
 			logger.debug("Received input: {} ", inputString);
