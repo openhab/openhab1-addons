@@ -9,6 +9,7 @@
 package org.openhab.binding.maxcul.internal;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -87,7 +88,7 @@ public class MaxCulBindingConfigParser {
 					cfg.setFeature(MaxCulFeature.THERMOSTAT);
 					break;
 				case SHUTTER_CONTACT:
-					cfg.setFeature(MaxCulFeature.SWITCH);
+					cfg.setFeature(MaxCulFeature.CONTACT);
 					break;
 				case WALL_THERMOSTAT:
 					cfg.setFeature(MaxCulFeature.THERMOSTAT);
@@ -154,6 +155,12 @@ public class MaxCulBindingConfigParser {
 				cfg.setFeature(MaxCulFeature.TEMPERATURE);
 			} else if (configPart.equals("battery")) {
 				cfg.setFeature(MaxCulFeature.BATTERY);
+			} else if (configPart.equals("displaySetting")){
+				if (cfg.getDeviceType() != MaxCulDevice.WALL_THERMOSTAT)
+					throw new BindingConfigParseException(
+							"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "
+									+ cfg.getDeviceType());
+				cfg.setFeature(MaxCulFeature.DISPLAYSETTING);
 			} else if (configPart.equals("mode")) {
 				if (cfg.getDeviceType() != MaxCulDevice.RADIATOR_THERMOSTAT
 						&& cfg.getDeviceType() != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
@@ -163,12 +170,17 @@ public class MaxCulBindingConfigParser {
 									+ cfg.getDeviceType());
 				cfg.setFeature(MaxCulFeature.MODE);
 			} else if (configPart.equals("switch")) {
-				if (cfg.getDeviceType() != MaxCulDevice.PUSH_BUTTON
-						&& cfg.getDeviceType() != MaxCulDevice.SHUTTER_CONTACT)
+				if (cfg.getDeviceType() != MaxCulDevice.PUSH_BUTTON)				
 					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'switch' on PushButton or ShutterContact. This is a {}"
+							"Invalid device feature. Can only use 'switch' on PushButton. This is a {}"
 									+ cfg.getDeviceType());
-				cfg.setFeature(MaxCulFeature.TEMPERATURE);
+				cfg.setFeature(MaxCulFeature.SWITCH);
+			} else if (configPart.equals("contact")) {
+				if (cfg.getDeviceType() != MaxCulDevice.SHUTTER_CONTACT)
+					throw new BindingConfigParseException(
+							"Invalid device feature. Can only use 'contact' on ShutterContact. This is a {}"
+									+ cfg.getDeviceType());
+				cfg.setFeature(MaxCulFeature.CONTACT);
 			} else if (configPart.equals("valvepos")) {
 				if (cfg.getDeviceType() != MaxCulDevice.RADIATOR_THERMOSTAT
 						&& cfg.getDeviceType() != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS)
@@ -248,8 +260,8 @@ public class MaxCulBindingConfigParser {
 					&& !(item instanceof SwitchItem))
 				throw new BindingConfigParseException(
 						"Invalid item type. Feature 'battery' can only be a Switch");
-			else if (config.getFeature() == MaxCulFeature.SWITCH
-					&& !(item instanceof SwitchItem))
+			else if (config.getFeature() == MaxCulFeature.CONTACT
+					&& !(item instanceof ContactItem))
 				throw new BindingConfigParseException(
 						"Invalid item type. Feature 'switch' can only be a Switch");
 			else if (config.getFeature() == MaxCulFeature.RESET
@@ -280,6 +292,10 @@ public class MaxCulBindingConfigParser {
 					&& !(item instanceof NumberItem))
 				throw new BindingConfigParseException(
 						"Invalid item type. Feature 'mode' can only be a Number");
+			else if (config.getFeature() == MaxCulFeature.DISPLAYSETTING
+					&& !(item instanceof SwitchItem))
+				throw new BindingConfigParseException(
+						"Invalid item type. Feature 'reset' can only be a Switch");
 			else if (config.getFeature() == MaxCulFeature.RESET
 					&& !(item instanceof SwitchItem))
 				throw new BindingConfigParseException(

@@ -24,6 +24,7 @@ import org.openhab.binding.maxcul.internal.messages.AckMsg;
 import org.openhab.binding.maxcul.internal.messages.AddLinkPartnerMsg;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
+import org.openhab.binding.maxcul.internal.messages.SetDisplayActualTempMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
@@ -703,5 +704,12 @@ public class MaxCulMsgHandler implements CULListener {
 
 	public int getCreditStatus() {
 		return cul.getCredit10ms();
+	}
+
+	public void sendSetDisplayActualTemp(String devAddr, boolean displayActualTemp) {
+		SetDisplayActualTempMsg displaySettingMsg = new SetDisplayActualTempMsg(getMessageCount(), (byte) 0, (byte) 0,
+				this.srcAddr, devAddr, displayActualTemp);
+		sendMessage(displaySettingMsg);
+		
 	}
 }
