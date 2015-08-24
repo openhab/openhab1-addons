@@ -151,7 +151,7 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 			Boolean configChanged = false;
 			String baudRateString = (String) config.get(KEY_BAUD_RATE);
 			if(StringUtils.isNotBlank(baudRateString)){
-				properties.put(KEY_BAUD_RATE, Integer.parseInt(baudRateString));
+				properties.put(KEY_BAUD_RATE, baudRateString);
 				configChanged = true;
 			}
 			
