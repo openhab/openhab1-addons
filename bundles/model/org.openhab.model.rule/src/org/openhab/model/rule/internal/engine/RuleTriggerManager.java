@@ -8,21 +8,19 @@
  */
 package org.openhab.model.rule.internal.engine;
 
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CHANGE;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.COMMAND;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.SHUTDOWN;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.TIMER;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.core.items.Item;
@@ -33,6 +31,7 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.model.rule.rules.ChangedEventTrigger;
 import org.openhab.model.rule.rules.CommandEventTrigger;
 import org.openhab.model.rule.rules.EventTrigger;
+import org.openhab.model.rule.rules.ItemEventTrigger;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
 import org.openhab.model.rule.rules.SystemOnShutdownTrigger;
@@ -51,6 +50,9 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -62,6 +64,7 @@ import com.google.common.collect.Sets;
  * over the evaluation of states and trigger conditions for the rule engine.
  * 
  * @author Kai Kreuzer
+ * @author dero
  * @since 0.9.0
  *
  */
@@ -69,335 +72,168 @@ public class RuleTriggerManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(RuleTriggerManager.class);
 	
-	public enum TriggerTypes {
-		UPDATE,		// fires whenever a status update is received for an item 
-		CHANGE, 	// same as UPDATE, but only fires if the current item state is changed by the update 
-		COMMAND, 	// fires whenever a command is received for an item
-		STARTUP, 	// fires when the rule engine bundle starts and once as soon as all required items are available
-		SHUTDOWN,	// fires when the rule engine bundle is stopped
-		TIMER		// fires at a given time
-	}
+	private Map<String, RuleModel> models = Maps.newHashMap();	
 	
-	// lookup maps for different triggering conditions
-	private Map<String, Set<Rule>> updateEventTriggeredRules = Maps.newHashMap();
-	private Map<String, Set<Rule>> changedEventTriggeredRules = Maps.newHashMap();
-	private Map<String, Set<Rule>> commandEventTriggeredRules = Maps.newHashMap();
 	private List<Rule> systemStartupTriggeredRules = Lists.newArrayList();
 	private List<Rule> systemShutdownTriggeredRules = Lists.newArrayList();
-	private List<Rule> timerEventTriggeredRules = Lists.newArrayList();
-
+	private Map<Class<?>, Map<Item, List<Map.Entry<?, Rule>>>> cache = Maps.newHashMap();
+	
 	// the scheduler used for timer events
 	private Scheduler scheduler;
+	private Map<Rule, List<JobKey>> ruleJobKeys = Maps.newHashMap();	
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private <T> Map<Item, List<Map.Entry<T, Rule>>> getCache(Class<T> clazz) {
+		Map<Item, List<Map.Entry<?, Rule>>> result = cache.get(clazz);
+		if (result == null)
+			cache.put(clazz, result = Maps.newHashMap());
+		return (Map) /* sic! */ result;
+	}
 	
 	public RuleTriggerManager() {
-		 try {
+		try {
 			scheduler = StdSchedulerFactory.getDefaultScheduler();
 		} catch (SchedulerException e) {
             logger.error("initializing scheduler throws exception", e);
 		}
 	}
 	
-	/**
-	 * Returns all rules which have a trigger of a given type
-	 * 
-	 * @param type the trigger type of the rules to return
-	 * @return rules with triggers of the given type
-	 */
-	public Iterable<Rule> getRules(TriggerTypes type) {
-		Iterable<Rule> result;
-		switch(type) {
-			case STARTUP:  result = systemStartupTriggeredRules; break;
-			case SHUTDOWN: result = systemShutdownTriggeredRules; break;
-			case TIMER:    result = timerEventTriggeredRules; break;
-			case UPDATE:   result = Iterables.concat(updateEventTriggeredRules.values()); break;
-			case CHANGE:   result = Iterables.concat(changedEventTriggeredRules.values()); break;
-			case COMMAND:  result = Iterables.concat(commandEventTriggeredRules.values()); break;
-			default:       result = Sets.newHashSet();
-		}
-		return result;
-	}
-
-	/**
-	 * Returns all rules for which the trigger condition is true for the given type, item and state.
-	 * 
-	 * @param triggerType
-	 * @param item
-	 * @param state
-	 * @return all rules for which the trigger condition is true
-	 */
-	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, State state) {
-		return internalGetRules(triggerType, item, null, state);
-	}
-
-	/**
-	 * Returns all rules for which the trigger condition is true for the given type, item and states.
-	 * 
-	 * @param triggerType
-	 * @param item
-	 * @param oldState
-	 * @param newState
-	 * @return all rules for which the trigger condition is true
-	 */
-	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, State oldState, State newState) {
-		return internalGetRules(triggerType, item, oldState, newState);
-	}
-
-	/**
-	 * Returns all rules for which the trigger condition is true for the given type, item and command.
-	 * 
-	 * @param triggerType
-	 * @param item
-	 * @param command
-	 * @return all rules for which the trigger condition is true
-	 */
-	public Iterable<Rule> getRules(TriggerTypes triggerType, Item item, Command command) {
-		return internalGetRules(triggerType, item, null, command);
-	}
-
-	private Iterable<Rule> getAllRules(TriggerTypes type, String itemName) {
-		switch(type) {
-			case STARTUP:  return systemStartupTriggeredRules;
-			case SHUTDOWN: return systemShutdownTriggeredRules;
-			case UPDATE:   return updateEventTriggeredRules.get(itemName);
-			case CHANGE:   return changedEventTriggeredRules.get(itemName);
-			case COMMAND:  return commandEventTriggeredRules.get(itemName);
-			default:       return Sets.newHashSet();
-		}
-	}
-
-	private Iterable<Rule> internalGetRules(TriggerTypes triggerType, Item item, Type oldType, Type newType) {
-		List<Rule> result = Lists.newArrayList();
-		Iterable<Rule> rules = getAllRules(triggerType, item.getName());
-		if(rules==null) {
-			rules = Lists.newArrayList();
-		}
-		switch(triggerType) {
-		case STARTUP:  return systemStartupTriggeredRules;
-		case SHUTDOWN: return systemShutdownTriggeredRules;
-		case TIMER :   return timerEventTriggeredRules;
-		case UPDATE:   
-			if(newType instanceof State) {
-				State state = (State) newType;
-				for(Rule rule : rules) {
-					for(EventTrigger t : rule.getEventtrigger()) {
-						if (t instanceof UpdateEventTrigger) {
-							UpdateEventTrigger ut = (UpdateEventTrigger) t;
-							if(ut.getItem().equals(item.getName())) {
-								if(ut.getState()!=null) {
-									State triggerState = TypeParser.parseState(item.getAcceptedDataTypes(), ut.getState());
-									if(!state.equals(triggerState)) {
-										continue;
-									}
-								}
-								result.add(rule);
-							}
-						}
-					}
-				}
-			}
-			break;
-		case CHANGE:
-			if(newType instanceof State && oldType instanceof State) {
-				State newState = (State) newType;
-				State oldState = (State) oldType;
-				for(Rule rule : rules) {
-					for(EventTrigger t : rule.getEventtrigger()) {
-						if (t instanceof ChangedEventTrigger) {
-							ChangedEventTrigger ct = (ChangedEventTrigger) t;						
-							if(ct.getItem().equals(item.getName())) {
-								if(ct.getOldState()!=null) {
-									State triggerOldState = TypeParser.parseState(item.getAcceptedDataTypes(), ct.getOldState());
-									if(!oldState.equals(triggerOldState)) {
-										continue;
-									}								
-								}
-								if(ct.getNewState()!=null) {
-									State triggerNewState = TypeParser.parseState(item.getAcceptedDataTypes(), ct.getNewState());
-									if(!newState.equals(triggerNewState)) {
-										continue;
-									}								
-								}
-								result.add(rule);
-							}
-						}
-					}
-				}
-			}
-			break;
-		case COMMAND:  
-			if(newType instanceof Command) {
-				Command command = (Command) newType;
-				for(Rule rule : rules) {
-					for(EventTrigger t : rule.getEventtrigger()) {
-						if (t instanceof CommandEventTrigger) {
-							CommandEventTrigger ct = (CommandEventTrigger) t;
-							Command triggerCommand = TypeParser.parseCommand(item.getAcceptedCommandTypes(), ct.getCommand());
-							if(ct.getItem().equals(item.getName()) &&
-									(triggerCommand==null || command.equals(triggerCommand))) {
-								result.add(rule);
-							}
-						}
-					}
-				}
-			}
-			break;
-		}
-		return result;
-	}
-
-	/**
-	 * Removes all rules with a given trigger type from the mapping tables.
-	 * 
-	 * @param type the trigger type 
-	 */
-	public void clear(TriggerTypes type) {
-		switch(type) {
-			case STARTUP:  	systemStartupTriggeredRules.clear(); break;
-			case SHUTDOWN: 	systemShutdownTriggeredRules.clear(); break;
-			case UPDATE:   	updateEventTriggeredRules.clear(); break;
-			case CHANGE:   	changedEventTriggeredRules.clear(); break;
-			case COMMAND:  	commandEventTriggeredRules.clear(); break;
-			case TIMER:    	for(Rule rule : timerEventTriggeredRules) {
-								removeTimerRule(rule);
-							}
-							timerEventTriggeredRules.clear(); break;
-		}
-	}
-
-	/**
-	 * Removes all rules from all mapping tables.
-	 */
-	public void clearAll() {
-		clear(STARTUP);
-		clear(SHUTDOWN);
-		clear(UPDATE);
-		clear(CHANGE);
-		clear(COMMAND);
-		clear(TIMER);
-	}
-	
-	/**
-	 * Adds a given rule to the mapping tables
-	 * 
-	 * @param rule the rule to add
-	 */
-	public synchronized void addRule(Rule rule) {
-		for(EventTrigger t : rule.getEventtrigger()) {
-			// add the rule to the lookup map for the trigger kind
-			if(t instanceof SystemOnStartupTrigger) {
+	public void addRuleModel(String modelName, RuleModel ruleModel) {
+		for (Rule rule: ruleModel.getRules()) {
+			if (Iterables.any(rule.getEventtrigger(), Predicates.instanceOf(SystemOnStartupTrigger.class)))
 				systemStartupTriggeredRules.add(rule);
-			} else if(t instanceof SystemOnShutdownTrigger) {
+
+			if (Iterables.any(rule.getEventtrigger(), Predicates.instanceOf(SystemOnShutdownTrigger.class)))
 				systemShutdownTriggeredRules.add(rule);
-			} else if(t instanceof CommandEventTrigger) {
-				CommandEventTrigger ceTrigger = (CommandEventTrigger) t;
-				Set<Rule> rules = commandEventTriggeredRules.get(ceTrigger.getItem());
-				if(rules==null) {
-					rules = new HashSet<Rule>();
-					commandEventTriggeredRules.put(ceTrigger.getItem(), rules);
-				}
-				rules.add(rule);
-			} else if(t instanceof UpdateEventTrigger) {
-				UpdateEventTrigger ueTrigger = (UpdateEventTrigger) t;
-				Set<Rule> rules = updateEventTriggeredRules.get(ueTrigger.getItem());
-				if(rules==null) {
-					rules = new HashSet<Rule>();
-					updateEventTriggeredRules.put(ueTrigger.getItem(), rules);
-				}
-				rules.add(rule);
-			} else if(t instanceof ChangedEventTrigger) {
-				ChangedEventTrigger ceTrigger = (ChangedEventTrigger) t;
-				Set<Rule> rules = changedEventTriggeredRules.get(ceTrigger.getItem());
-				if(rules==null) {
-					rules = new HashSet<Rule>();
-					changedEventTriggeredRules.put(ceTrigger.getItem(), rules);
-				}
-				rules.add(rule);
-			} else if(t instanceof TimerTrigger) {
-				timerEventTriggeredRules.add(rule);
+			
+			for (TimerTrigger trigger: Iterables.filter(rule.getEventtrigger(), TimerTrigger.class)) {
 				try {
-					createTimer(rule, (TimerTrigger) t);
+					createTimer(rule, (TimerTrigger) trigger);
 				} catch (SchedulerException e) {
 					logger.error("Cannot create timer for rule '{}': {}", rule.getName(), e.getMessage());
 				}
 			}
 		}
-	}
-		
-	/**
-	 * Removes a given rule from the mapping tables of a certain trigger type
-	 * 
-	 * @param type the trigger type for which the rule should be removed
-	 * @param rule the rule to add
-	 */
-	public void removeRule(TriggerTypes type, Rule rule) {
-		switch(type) {
-			case STARTUP:  	systemStartupTriggeredRules.remove(rule); break;
-			case SHUTDOWN: 	systemShutdownTriggeredRules.remove(rule); break;
-			case UPDATE:   	updateEventTriggeredRules.remove(rule); break;
-			case CHANGE:   	changedEventTriggeredRules.remove(rule); break;
-			case COMMAND:  	commandEventTriggeredRules.remove(rule); break;
-			case TIMER:    	timerEventTriggeredRules.remove(rule); 
-							removeTimerRule(rule);
-							break;
-		}
+		models.put(modelName, ruleModel);
+		cache.clear();
 	}
 	
 	/**
-	 * Adds all rules of a model to the mapping tables
+	 * Get trigger mapping for given item with triggers of type T.
 	 * 
-	 * @param model the rule model
-	 */
-	public void addRuleModel(RuleModel model) {
-		for(Rule rule : model.getRules()) {
-			addRule(rule);
-		}
-	}
-
-	/**
-	 * Removes all rules of a given model (file) from the mapping tables.
+	 * If the item was not seen before, all matching triggers are bound to the item. 
 	 * 
-	 * @param ruleModel the rule model
+	 * @param item
+	 * @param clazz
+	 * @return
 	 */
-	public void removeRuleModel(RuleModel ruleModel) {
-		removeRules(UPDATE, updateEventTriggeredRules.values(), ruleModel);
-		removeRules(CHANGE, changedEventTriggeredRules.values(), ruleModel);
-		removeRules(COMMAND, commandEventTriggeredRules.values(), ruleModel);
-		removeRules(STARTUP, Collections.singletonList(systemStartupTriggeredRules), ruleModel);
-		removeRules(SHUTDOWN, Collections.singletonList(systemShutdownTriggeredRules), ruleModel);		
-		removeRules(TIMER, Collections.singletonList(timerEventTriggeredRules), ruleModel);		
-	}
-
-	private void removeRules(TriggerTypes type, Collection<? extends Collection<Rule>> ruleSets, RuleModel model) {
-		for(Collection<Rule> ruleSet : ruleSets) {
-			// first remove all rules of the model, if not null (=non-existent)
-			if(model!=null) {
-				for(Rule rule : model.getRules()) {
-					ruleSet.remove(rule);
-					if(type==TIMER) {
-						removeTimerRule(rule);
+	private <T> Iterable<Map.Entry<T, Rule>> getTriggers(Item item, Class<T> clazz) {
+		Map<Item, List<Map.Entry<T, Rule>>> cache = getCache(clazz);
+		List<Map.Entry<T, Rule>> triggers = cache.get(item);
+		if (triggers == null) {
+			// first time we see this item, need to build a trigger cache
+			cache.put(item, triggers = Lists.newArrayList());
+			for (RuleModel ruleModel: models.values()) {
+				for (final Rule rule: ruleModel.getRules()) {
+					for (final ItemEventTrigger trigger: Iterables.filter(rule.getEventtrigger(), ItemEventTrigger.class)) {
+						if (clazz.isAssignableFrom(trigger.getTrigger().getClass())) {
+							final Pattern p = Pattern.compile(trigger.getItem());
+							if (Iterables.any(!trigger.isIn() ? Collections.singleton(item.getName()) : item.getGroupNames(), 
+									new Predicate<String>() { 
+										public boolean apply(String s) {
+											boolean matched = p.matcher(s).matches();
+											logger.debug("Matching pattern '{}' of rule '{}' to name '{}' -> {}", trigger.getItem(), rule.getName(), s, matched ? "MATCHED" : "NOT MATCHED");
+											return matched; 
+										}
+									})) {
+								triggers.add(new AbstractMap.SimpleEntry<T, Rule>(clazz.cast(trigger.getTrigger()), rule));
+								logger.info("Bound item '{}' to rule '{}'", item.getName(), rule.getName());
+							}
+						}
 					}
 				}
 			}
 
-			// now also remove all proxified rules from the set
-			Set<Rule> clonedSet = new HashSet<Rule>(ruleSet);
-			for(Rule rule : clonedSet) {
-				if(rule.eIsProxy()) {
-					ruleSet.remove(rule);
-					if(type==TIMER) {
-						removeTimerRule(rule);
-					}
-				}
-			}
+		}
+		return triggers;
+	}
+
+	public Iterable<Rule> getShutdownRules() {
+		return systemShutdownTriggeredRules;
+	}
+		
+ 
+	public void clearAll() {
+		for (String model: Lists.newArrayList(models.keySet())) {
+			removeRuleModel(model);
 		}
 	}
 
-	private void removeTimerRule(Rule rule) {
-		try {
-			removeTimer(rule);
-		} catch (SchedulerException e) {
-			logger.error("Cannot remove timer for rule '{}'", rule.getName(), e);
-		}						
+	private <T> Iterable<Rule> getRules(final Item item, Class<T> clazz, final Predicate<T> predicate) {
+		return Iterables.filter(Iterables.transform(getTriggers(item, clazz),  
+			new Function<Map.Entry<T, Rule>, Rule>() {
+				public Rule apply(Map.Entry<T, Rule> t) {
+					return predicate.apply(t.getKey()) ? t.getValue() : null;
+				}
+			}), Predicates.notNull());
+	}
+	
+	public Iterable<Rule> getUpdateRules(final Item item, final State state) {
+		return getRules(item, UpdateEventTrigger.class, 
+			new Predicate<UpdateEventTrigger>() { 
+				public boolean apply(UpdateEventTrigger ut) {
+					return ut.getState() == null
+						|| state.equals(TypeParser.parseState(item.getAcceptedDataTypes(), ut.getState()));
+				}
+		});
+	}
+	
+	public Iterable<Rule> getChangeRules(final Item item, final State oldState, final State newState) {
+		return getRules(item, ChangedEventTrigger.class, 
+			new Predicate<ChangedEventTrigger>() { 
+				public boolean apply(ChangedEventTrigger ct) {
+						return (ct.getOldState() == null
+								|| oldState.equals(TypeParser.parseState(item.getAcceptedDataTypes(), ct.getOldState())))
+							&&
+								(ct.getNewState() == null
+								|| newState.equals(TypeParser.parseState(item.getAcceptedDataTypes(), ct.getNewState())));
+				}
+		});
+	}
+	
+	public Iterable<Rule> getCommandRules(final Item item, final Command command) {
+		return getRules(item, CommandEventTrigger.class, 
+			new Predicate<CommandEventTrigger>() { 
+				public boolean apply(CommandEventTrigger ct) {
+					return ct.getCommand() == null
+						|| command.equals(TypeParser.parseState(item.getAcceptedDataTypes(), ct.getCommand()));
+				}
+		});
+	}
+	
+	public void removeRuleModel(String modelName) {
+		RuleModel model = models.remove(modelName);
+		if (model == null)
+			return;
+		
+		for (Rule rule: model.getRules()) {
+			systemStartupTriggeredRules.remove(rule);
+			systemShutdownTriggeredRules.remove(rule);
+			try {
+				removeTimer(rule);
+			} catch (SchedulerException e) {
+				logger.error("Cannot remove timer for rule '{}'", rule.getName(), e);
+			}
+		}
+		cache.clear();
+	}
+
+	public Iterable<Rule> getStartupRules() {
+		return systemStartupTriggeredRules;
+	}
+
+	public void removeStartupRule(Rule rule) {
+		systemStartupTriggeredRules.remove(rule);		
 	}
 	
 	/**
@@ -434,6 +270,11 @@ public class RuleTriggerManager {
 	            .build();
 
 	        scheduler.scheduleJob(job, quartzTrigger);
+	        
+	        List<JobKey> jobKeys = ruleJobKeys.get(rule);
+	        if (jobKeys == null)
+	        	ruleJobKeys.put(rule, jobKeys = Lists.newArrayList());
+	        jobKeys.add(job.getKey());
 
 			logger.debug("Scheduled rule {} with cron expression {}", new String[] { rule.getName(), cronExpression });
 		} catch (RuntimeException e) {
@@ -448,17 +289,16 @@ public class RuleTriggerManager {
 	 * @throws SchedulerException if there is an internal Scheduler error.
 	 */
 	private void removeTimer(Rule rule) throws SchedulerException {
-		Set<JobKey> jobKeys = 
-			scheduler.getJobKeys(GroupMatcher.jobGroupEquals(Scheduler.DEFAULT_GROUP));
+		List<JobKey> jobKeys = ruleJobKeys.remove(rule);
+		if (jobKeys == null)
+			return;
+ 
 		for (JobKey jobKey : jobKeys) {
-			String jobIdentityString = getJobIdentityString(rule, null);
-			if (jobKey.getName().startsWith(jobIdentityString)) {
-				boolean success = scheduler.deleteJob(jobKey);
-				if (!success) {
-					logger.warn("Failed to delete cron job '{}'", jobKey.getName());
-				} else {
-					logger.debug("Removed scheduled cron job '{}'", jobKey.getName());
-				}
+			boolean success = scheduler.deleteJob(jobKey);
+			if (!success) {
+				logger.warn("Failed to delete cron job '{}'", jobKey.getName());
+			} else {
+				logger.debug("Removed scheduled cron job '{}'", jobKey.getName());
 			}
 		}
 	}
@@ -474,4 +314,5 @@ public class RuleTriggerManager {
 		}
 		return jobIdentity;
 	}
+	
 }

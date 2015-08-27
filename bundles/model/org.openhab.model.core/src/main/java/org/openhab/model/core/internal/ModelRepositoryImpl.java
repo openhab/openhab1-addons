@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.resource.SynchronizedXtextResourceSet;
 import org.eclipse.xtext.resource.XtextResource;
@@ -52,11 +53,17 @@ public class ModelRepositoryImpl implements ModelRepository {
 		synchronized (resourceSet) {
 	 		Resource resource = getResource(name);
 			if(resource!=null) {
+				if (!resource.getErrors().isEmpty()) {
+					logger.error("Configuration model '{}' is has following errors and was disabled:", name);
+					for (Diagnostic d: resource.getErrors()) {
+						logger.error("Errors reported for '{}': {}", name, d);
+					}
+					resourceSet.getResources().remove(resource);
+					return null;
+				}
 				if(resource.getContents().size()>0) {
 					return resource.getContents().get(0);
 				} else {
-					logger.warn("Configuration model '{}' is either empty or cannot be parsed correctly!", name);
-					logger.debug("Errors reported for '{}': {}", name, resource.getErrors());
 					resourceSet.getResources().remove(resource);
 					return null;
 				}

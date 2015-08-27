@@ -67,5 +67,7 @@ sitemap demo label="Demo House"
 				Webview url="http://heise-online.mobi/" height=8
 			}
 		}
+		Text item=LastOpenedWindow
+		Text item=LastClosedWindow
 	}
 }

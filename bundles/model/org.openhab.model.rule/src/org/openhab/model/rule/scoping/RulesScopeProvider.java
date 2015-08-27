@@ -29,16 +29,20 @@ import org.eclipse.xtext.xbase.XVariableDeclaration;
 import org.eclipse.xtext.xbase.XbaseFactory;
 import org.eclipse.xtext.xbase.scoping.LocalVariableScopeContext;
 import org.eclipse.xtext.xbase.scoping.featurecalls.LocalVarDescription;
+import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.rule.internal.engine.RuleContextHelper;
 import org.openhab.model.rule.rules.ChangedEventTrigger;
 import org.openhab.model.rule.rules.CommandEventTrigger;
 import org.openhab.model.rule.rules.EventTrigger;
+import org.openhab.model.rule.rules.ItemEventTrigger;
 import org.openhab.model.rule.rules.Rule;
 import org.openhab.model.rule.rules.RuleModel;
 import org.openhab.model.script.scoping.ScriptScopeProvider;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 
@@ -108,6 +112,16 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 			varResource.getContents().add(varDecl);
 			descriptions.add(new LocalVarDescription(QualifiedName.create(varDecl.getName()), varDecl));
 		}
+		if(containsItemTrigger(rule)) {
+			JvmTypeReference itemTypeRef = typeReferences.getTypeForName(Item.class, rule);
+			XVariableDeclaration varDecl = XbaseFactory.eINSTANCE.createXVariableDeclaration();
+			varDecl.setName(RuleContextHelper.VAR_ITEM);
+			varDecl.setType(itemTypeRef);
+			varDecl.setWriteable(false);
+			varResource.getContents().add(varDecl);
+			descriptions.add(new LocalVarDescription(QualifiedName.create(varDecl.getName()), varDecl));
+		}
+		
 		return descriptions;
 	}
 
@@ -128,4 +142,9 @@ public class RulesScopeProvider extends ScriptScopeProvider {
 		}
 		return false;
 	}
+	
+	private boolean containsItemTrigger(Rule rule) {
+		return Iterables.any(rule.getEventtrigger(), Predicates.instanceOf(ItemEventTrigger.class));
+	}
+	
 }

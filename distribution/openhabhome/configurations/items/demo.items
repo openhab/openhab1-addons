@@ -93,6 +93,9 @@ Contact Window_FF_Bed 			"Bedroom [MAP(en.map):%s]"			(FF_Bed, Windows)
 Contact Window_FF_Office_Window "Office Window [MAP(en.map):%s]"	(FF_Office, Windows)
 Contact Window_FF_Office_Door 	"Balcony Door [MAP(en.map):%s]"		(FF_Office, Windows)
 
+String LastOpenedWindow "Window last opened: [%s]"
+String LastClosedWindow "Window last closed: [%s]"
+
 Contact Garage_Door 			"Garage Door [MAP(en.map):%s]"		(Outdoor, Windows)
 
 Group Weather_Chart													(Weather)
