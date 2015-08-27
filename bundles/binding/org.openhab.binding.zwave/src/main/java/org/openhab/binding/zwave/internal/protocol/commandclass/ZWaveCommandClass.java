@@ -421,7 +421,7 @@ public abstract class ZWaveCommandClass {
 		WAKE_UP(0x84,"WAKE_UP", ZWaveWakeUpCommandClass.class),
 		ASSOCIATION(0x85,"ASSOCIATION",ZWaveAssociationCommandClass.class),
 		VERSION(0x86,"VERSION",ZWaveVersionCommandClass.class),
-		INDICATOR(0x87,"INDICATOR",null),
+		INDICATOR(0x87,"INDICATOR",ZWaveIndicatorCommandClass.class),
 		PROPRIETARY(0x88,"PROPRIETARY",null),
 		LANGUAGE(0x89,"LANGUAGE",null),
 		TIME(0x8A,"TIME",null),
