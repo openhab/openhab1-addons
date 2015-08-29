@@ -457,7 +457,6 @@ public class ZWaveController {
                 this.enqueue(switchAllCommandClass.allOnMessage());
                 continue;
             }
-            logger.debug("NODE {}: Does not Support Switch All Command Class. Ignoring All On message", (Object)nodeId);
         }
     }
 
@@ -477,7 +476,6 @@ public class ZWaveController {
                 this.enqueue(switchAllCommandClass.allOffMessage());
                 continue;
             }
-            logger.debug("NODE {}: Does not Support Switch All Command Class. Ignoring All Off message.", (Object)nodeId);
         }
     }
 
