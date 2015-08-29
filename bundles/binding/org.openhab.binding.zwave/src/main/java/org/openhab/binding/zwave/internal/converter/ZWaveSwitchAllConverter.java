@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ZWaveSwitchAllConverter extends ZWaveCommandClassConverter<ZWaveSwitchAllCommandClass> {
     private static final Logger logger = LoggerFactory.getLogger(ZWaveSwitchAllConverter.class);
-    private static final int REFRESH_INTERVAL = 0;
 
     /**
 	 * Constructor. Creates a new instance of the {@link ZWaveSwitchAllConverter} class.
@@ -57,15 +56,6 @@ public class ZWaveSwitchAllConverter extends ZWaveCommandClassConverter<ZWaveSwi
         this.addCommandConverter(new BinaryOnOffCommandConverter());
     }
 
-    /**
-	 * {@inheritDoc}
-	 */
-    @Override
-    public SerialMessage executeRefresh(ZWaveNode node, 
-    		ZWaveSwitchAllCommandClass commandClass, int endpointId, Map<String, String> arguments) {
-        logger.debug("NODE {}: Generating poll message for {}, endpoint {}", new Object[]{node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId});
-        return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-    }
 
     /**
 	 * {@inheritDoc}
@@ -106,14 +96,6 @@ public class ZWaveSwitchAllConverter extends ZWaveCommandClassConverter<ZWaveSwi
     	if (command instanceof State) {
             this.getEventPublisher().postUpdate(item.getName(), (State)command);
         }
-    }
-
-    /**
-	 * {@inheritDoc}
-	 */
-    @Override
-    int getRefreshInterval() {
-        return 0;
     }
 }
 
