@@ -21,8 +21,6 @@ import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBatteryCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSwitchAllCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
@@ -56,6 +54,14 @@ public class ZWaveSwitchAllConverter extends ZWaveCommandClassConverter<ZWaveSwi
         this.addCommandConverter(new BinaryOnOffCommandConverter());
     }
 
+    /**
+	 * {@inheritDoc}
+	 */
+    @Override
+    public SerialMessage executeRefresh(ZWaveNode node, 
+    		ZWaveSwitchAllCommandClass commandClass, int endpointId, Map<String, String> arguments) {
+    	return null;
+    }
 
     /**
 	 * {@inheritDoc}
@@ -96,6 +102,14 @@ public class ZWaveSwitchAllConverter extends ZWaveCommandClassConverter<ZWaveSwi
     	if (command instanceof State) {
             this.getEventPublisher().postUpdate(item.getName(), (State)command);
         }
+    }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+    @Override
+    int getRefreshInterval() {
+        return 0;
     }
 }
 
