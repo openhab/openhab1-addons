@@ -115,6 +115,11 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
     }
 
     public SerialMessage getValueMessage() {
+        if (!this.isGetSupported) {
+            logger.debug("NODE {}: Node doesn't support get requests", (Object)this.getNode().getNodeId());
+            return null;
+        }
+        
         logger.debug("NODE {}: Creating new message for command SWITCH_ALL_GET", (Object)this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessage.SerialMessageClass.SendData, SerialMessage.SerialMessageType.Request, SerialMessage.SerialMessageClass.ApplicationCommandHandler, SerialMessage.SerialMessagePriority.Get);
         byte[] newPayload = { 
