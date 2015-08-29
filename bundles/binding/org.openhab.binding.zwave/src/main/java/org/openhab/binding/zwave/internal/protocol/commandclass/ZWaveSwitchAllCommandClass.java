@@ -137,11 +137,6 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
      * @return SerialMessage
      */
     public SerialMessage setValueMessage(int mode) {
-        if (!this.isGetSupported) {
-            logger.debug("NODE {}: Node doesn't support get requests", (Object)this.getNode().getNodeId());
-            return null;
-        }
-        
         switch (mode) {
 	        case SWITCH_ALL_EXCLUDED:
 	            logger.debug("NODE {}: Switch All report, device is not included in either All On or All Off groups.", (Object)this.getNode().getNodeId());
