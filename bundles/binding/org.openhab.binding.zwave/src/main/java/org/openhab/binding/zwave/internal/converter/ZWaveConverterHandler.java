@@ -142,7 +142,7 @@ public class ZWaveConverterHandler {
 			return null;
 		}
 
-		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {
+		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {	
 			ZWaveCommandClass result = node.resolveCommandClass(commandClass, endpointId);
 
 			if (result != null && converters.containsKey(commandClass)) {
@@ -389,6 +389,10 @@ public class ZWaveConverterHandler {
 		if (commandClassName != null) {
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
 					bindingConfiguration.getEndpoint());
+			
+			if(node.getNodeId() == this.controller.getOwnNodeId() && commandClassName == "SWITCH_ALL") {
+			    commandClass = node.getCommandClass(CommandClass.getCommandClass(commandClassName));
+			}
 
 			if (commandClass == null) {
 				logger.warn(
