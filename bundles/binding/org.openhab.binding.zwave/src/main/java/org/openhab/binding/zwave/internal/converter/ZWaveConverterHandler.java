@@ -74,6 +74,7 @@ public class ZWaveConverterHandler {
 				eventPublisher));
 		converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
+		converters.put(CommandClass.SWITCH_ALL, new ZWaveSwitchAllConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
 		converters.put(CommandClass.SENSOR_BINARY, new ZWaveBinarySensorConverter(controller, eventPublisher));
 		converters.put(CommandClass.SENSOR_MULTILEVEL, new ZWaveMultiLevelSensorConverter(controller, eventPublisher));
