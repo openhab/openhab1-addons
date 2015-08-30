@@ -147,6 +147,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>574D</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>RFWC5</Model>
+			<Label lang="en">5-Scene Keypad</Label>
+			<ConfigFile>cooper/rfwc5.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4449</Type>
 				<Id>0101</Id>
 			</Reference>
