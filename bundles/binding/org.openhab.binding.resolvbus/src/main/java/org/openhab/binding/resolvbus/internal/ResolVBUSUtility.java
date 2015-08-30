@@ -9,14 +9,6 @@
 
 package org.openhab.binding.resolvbus.internal;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +27,6 @@ import org.slf4j.LoggerFactory;
 public class ResolVBUSUtility {
 	// Constants
 	public static final int VBUS_PROTOCOL_V1 = 0x10;
-	private static final int INPUT_MODE_LAN = 10;
-	private static final int INPUT_MODE_SERIAL = 20;
 	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	private static final Logger logger = 
 			LoggerFactory.getLogger(ResolVBUSUtility.class);
@@ -116,7 +106,6 @@ public class ResolVBUSUtility {
 			for (int i = 1; i <= freeBits; i++) {
 				fieldValue |= 1 << byteLength * 8 - i;
 			}
-//			System.out.println("Bytes to int: "+bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength));
 			fieldValue = ~fieldValue & bytesToInt(vInputStream.getPayloadByte(), field.getOffset().intValue(), byteLength);
 			if (fieldValue > (int) (Math.pow(2, bitSize) - 1) / 2) {
 				for (int i = bitSize; i < 32; i++) {
@@ -174,16 +163,6 @@ public class ResolVBUSUtility {
 		}
 		return value;
 	}
-	
-//	private static int bytesToInt(byte[] bytes, int offset, int length) {
-//		int value = 0;
-//		for (int i = 0; i < length; i++) {
-//			value |= ((byte) (bytes[offset + i] & 0xff) << (8 * i));
-//			value = (int) value;
-//			
-//		}
-//		return value;
-//	}
 	
 	public static String bytesToHex(byte[] bytes) {
 

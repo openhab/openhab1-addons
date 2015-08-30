@@ -14,8 +14,6 @@ import java.util.Map;
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -46,11 +44,7 @@ public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvi
 	 * @{inheritDoc}
 	 */
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
+
 	}
 	
 	/**
@@ -84,7 +78,7 @@ public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvi
 	 * This is a helper class holding binding specific configuration details
 	 * 
 	 * @author Michael Heckmann
-	 * @since 1.7.0
+	 * @since 1.8.0
 	 */
 	class ResolVBUSBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values

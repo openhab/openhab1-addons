@@ -71,6 +71,8 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private static final int INPUT_MODE_SERIAL = 20;
 	private boolean useThread = true;
 	private String deviceIDFile;
+	private String deviceIDFromConfig;
+	private static final String bindingversion = "1.0.0";
 
 	
 	/**
@@ -102,6 +104,8 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	 */
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
+		
+		logger.info("ResolVBUS Binding activated");
 
 		if (configuration != null) {
 			
@@ -111,6 +115,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			String portString = (String) configuration.get("port");
 			String pwString = (String) configuration.get("password");
 			String updIvalString = (String) configuration.get("updateinterval");
+			String deviceIDString = (String) configuration.get("deviceid");
 			
 			if (StringUtils.isNotBlank(hostString) && (StringUtils.isNotBlank(serialString))) {
 				logger.debug("You cannot define a LAN and a serial/USB interface");
@@ -142,6 +147,11 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			if (StringUtils.isNotBlank(serialString)) {
 				serialPort = serialString;
 				inputMode = INPUT_MODE_SERIAL;
+			}
+			
+			if(StringUtils.isNotBlank(deviceIDString)) {
+				deviceIDFromConfig = deviceIDString.trim();
+				logger.info("Using deviceID: {} ",deviceIDFromConfig);
 			}
 						
 
@@ -175,10 +185,10 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				break;
 			}
 			}
-			// load specific XML config
+			// load specific XML configuration
 			loadXMLConfig();
 			
-			// start the listener as a seperate thread if updateInterval < 30 seconds
+			// start the listener as a separate thread if updateInterval < 30 seconds
 			// or if it's a serial connection
 			
 			if (useThread)
@@ -195,6 +205,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	 */
 	public void modified(final Map<String, Object> configuration) {
 		// update the internal configuration accordingly
+		logger.info("ResolVBUS binding modified...updating configuration..");
 	}
 	
 	/**
@@ -285,9 +296,15 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	
 	public void loadXMLConfig()  {
 		
+		if (deviceID == null) {
+			logger.info("Device ID was null, reading from openhab.cfg");
+			deviceID = deviceIDFromConfig;
+		}
+		
 		try {
 //			deviceID="7101";
-			logger.debug("Loading XML-Config for device ID:"+deviceID);
+			logger.debug("Loading XML-Config for device ID: {}",deviceID);
+			logger.info("Using Config for device ID: {}",deviceID);
 			
 			URL mapping = FrameworkUtil.getBundle(ResolVBUSBinding.class).getEntry("xml/mapping.cfg");
 			
@@ -303,7 +320,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			prop.load(in);
 			deviceIDFile = prop.getProperty(deviceID);
 			
-			logger.debug("Using file: "+deviceIDFile+" for configuration");
+			logger.debug("Using file: {} for configuration",deviceIDFile);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -314,7 +331,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 
 		if (entry == null) {
 			config = null;
-			logger.error("Unable to load "+deviceIDFile);
+			logger.error("Unable to load {}",deviceIDFile);
 			return;
 		}
 		
@@ -354,7 +371,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 					if (itemConfig != null) {
 						ResolVBUSField field = packet.getFieldWithName(itemConfig);
 						if (field == null) {
-							logger.debug("No XML Field found for: {} ",itemConfig);
+							logger.debug("INFO: No XML Field found for: {} ",itemConfig);
 							continue;
 						}
 						

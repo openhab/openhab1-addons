@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -87,8 +88,9 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 	private void openConnection() {
 
 		try {
-			vBusSocket = new Socket(host, port);
+			vBusSocket = new Socket();
 			vBusSocket.setSoTimeout(10000);
+			vBusSocket.connect(new InetSocketAddress(host, port), 3000);
 			inStream = vBusSocket.getInputStream();
 			logger.debug("Connected to {}:{}", host, port);
 		} catch (UnknownHostException e) {
@@ -175,7 +177,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 			logger.debug("Received input: {} ", inputString);
 			if (inputString.startsWith("+HELLO")) {
 				logger.debug("Welcome message...sending password ");
-				writer.write("PASS " + password);
+				writer.println("PASS " + password);
 				writer.flush();
 			} else {
 				logger.debug("No welcome Message...Exiting");
@@ -188,7 +190,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 			logger.debug("Received input: {} ", inputString);
 			if (inputString.startsWith("+OK:")) {
 				logger.debug("Password accepted..");
-				writer.write("DATA");
+				writer.println("DATA");
 				writer.flush();
 			} else {
 				logger.debug("Password not accepted...Exiting");
@@ -203,14 +205,15 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 			while (syncByte != 127) {
 				syncByte = reader.read();
 			}
-			logger.debug("SYNC byte received...Data processing..");
+			logger.debug("SYNC byte received...processing data...");
+			logger.info("Connection successful...processing data...");
 			
 			if (listener.getDeviceID() == null) {
 				identifyDevice();
 			}
 
 		} catch (IOException e) {
-			logger.debug("Error while initializing LAN interface)");
+			logger.error("Error while initializing LAN interface)");
 			logger.debug(e.getMessage());
 			return false;
 		}
@@ -247,7 +250,7 @@ public class ResolVBUSLANReceiver implements ResolVBUSReceiver, Runnable {
 					continue;
 				}
 
-				logger.debug("Device identified: " + deviceID);
+				logger.info("Device identified: " + deviceID);
 				listener.setDeviceID(deviceID);
 
 				streamRAW.clear();
