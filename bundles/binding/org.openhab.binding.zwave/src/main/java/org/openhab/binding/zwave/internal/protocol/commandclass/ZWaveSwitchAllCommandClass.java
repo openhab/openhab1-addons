@@ -42,6 +42,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
     private static final int SWITCH_ALL_INCLUDE_OFF_ONLY = 0x02;
     private static final int SWITCH_ALL_INCLUDE_ON_OFF = 0xFF;
     private boolean isGetSupported = true;
+    private int mode = 0;
 
     /**
 	 * Creates a new instance of the ZWaveSwitchAllCommandClass class.
@@ -93,7 +94,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
     }
 
     protected void processSwitchAllReport(SerialMessage serialMessage, int offset, int endpoint) {
-        int mode = serialMessage.getMessagePayloadByte(offset + 1);
+        mode = serialMessage.getMessagePayloadByte(offset + 1);
         switch (mode) {
             case SWITCH_ALL_EXCLUDED:
                 logger.debug("NODE {}: Switch All report, device is not included in either All On or All Off groups.", (Object)this.getNode().getNodeId());
@@ -110,7 +111,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
             default:
                 logger.warn(String.format("Unsupported Switch All mode 0x%02X.", mode));
         }
-        ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), mode);
+        ZWaveSwitchAllModeEvent zEvent = new ZWaveSwitchAllModeEvent(this.getNode().getNodeId(), endpoint, new Integer(mode));
         this.getController().notifyEventListeners(zEvent);
     }
 
@@ -203,5 +204,33 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
         }
         return true;
     }
+    
+    /**
+	 * ZWave Switch All mode received event.
+	 * Sent from the Switch All Command Class to the binding
+	 * when the switch all mode is received.
+	 * 
+	 * @author Pedro Paixao
+	 * @since 1.8.0
+	 */
+	public class ZWaveSwitchAllModeEvent extends ZWaveCommandClassValueEvent {
+
+		/**
+		 * Constructor. Creates a new instance of the ZWaveSwitchAllModeEvent
+		 * class.
+		 * @param nodeId the nodeId of the event
+		 */
+		public ZWaveSwitchAllModeEvent(int nodeId, int endpoint, Integer mode) {
+			super(nodeId, endpoint, CommandClass.SWITCH_ALL, mode);
+		}
+
+		/**
+		 * Returns the switch all mode that was received as event. 
+		 * @return the mode.
+		 */
+		public Integer getParameter() {
+			return (Integer) this.getValue();
+		}
+	}
 }
 
