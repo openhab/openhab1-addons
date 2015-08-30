@@ -71,6 +71,7 @@
 			<Index>255</Index>
 			<Maximum>1</Maximum>
 			<Label lang="en">Group 255</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>
