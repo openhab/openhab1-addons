@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 
 @XStreamAlias("indicatorCommandClass")
-public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWaveIndicatorCommands {
+public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveSetCommands {
 
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveIndicatorCommandClass.class);
