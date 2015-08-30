@@ -363,6 +363,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.addValue("1", "Include in All On group");
 					record.addValue("2", "Include in All Off group");
 					record.addValue("255", "Include in All On and All Off groups");
+					record.value = String.valueOf(switchAllCommandClass.getMode());
 	            	records.add(record);
 	            }
 				
