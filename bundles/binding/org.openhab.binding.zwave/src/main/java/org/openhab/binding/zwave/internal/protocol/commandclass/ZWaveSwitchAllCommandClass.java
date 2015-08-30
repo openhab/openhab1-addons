@@ -206,6 +206,14 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass {
     }
     
     /**
+     * get the Switch All mode
+     * @return the mode
+     */
+    public int getMode() {
+    	return mode;
+    }
+    
+    /**
 	 * ZWave Switch All mode received event.
 	 * Sent from the Switch All Command Class to the binding
 	 * when the switch all mode is received.
