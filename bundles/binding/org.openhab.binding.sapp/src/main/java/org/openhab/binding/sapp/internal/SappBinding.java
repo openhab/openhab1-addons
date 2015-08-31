@@ -13,25 +13,36 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigDimmerItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigNumberItem;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigRollershutterItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigSwitchItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigUtils;
 import org.openhab.binding.sapp.internal.executer.SappCentralExecuter;
 import org.openhab.binding.sapp.internal.executer.SappCentralExecuter.PollingResult;
 import org.openhab.binding.sapp.internal.model.SappAddressDecimal;
+import org.openhab.binding.sapp.internal.model.SappAddressDimmer;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffControl;
 import org.openhab.binding.sapp.internal.model.SappAddressOnOffStatus;
 import org.openhab.binding.sapp.internal.model.SappAddressOpenClosedStatus;
+import org.openhab.binding.sapp.internal.model.SappAddressRollershutterControl;
+import org.openhab.binding.sapp.internal.model.SappAddressRollershutterStatus;
 import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -73,6 +84,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	private long refreshInterval = 100;
 
 	/**
+	 * polling enabler; toggled by switch P type
+	 */
+	private boolean pollingEnabled = true;
+
+	/**
 	 * Called by the SCR to activate the component with its configuration read
 	 * from CAS
 	 * 
@@ -102,6 +118,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		SappBindingProvider provider = getFirstSappBindingProvider();
 		if (provider != null) {
+			
+			provider.setFullRefreshNeeded(true);
+			
 			String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
 			if (pnmasEnabled != null) {
 				String[] pnmasIds = pnmasEnabled.split(",");
@@ -205,6 +224,10 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	 */
 	@Override
 	protected void execute() {
+		
+		if (! pollingEnabled) {
+			return;
+		}
 
 		if (isProperlyConfigured()) { // wait until provider is properly configured
 			SappBindingProvider provider = getFirstSappBindingProvider();
@@ -308,46 +331,52 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		Item item = provider.getItem(itemName);
 		logger.debug("found item " + item);
 
-		if (item instanceof SwitchItem) {
+		if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
+			
+			if (sappBindingConfigSwitchItem.isPollerSuspender()) {
+				pollingEnabled = !pollingEnabled;
+				updatePollingSwitchesState(provider);
+			} else {
+				
+				SappAddressOnOffControl controlAddress = sappBindingConfigSwitchItem.getControl();
 
-			SappAddressOnOffControl controlAddress = sappBindingConfigSwitchItem.getControl();
-
-			if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
-				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigSwitchItem));
-				return;
-			}
-
-			try {
-				if (command instanceof OnOffType) {
-					switch (controlAddress.getAddressType()) {
-					case VIRTUAL: {
-						// mask bits on previous value
-						int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
-						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), command.equals(OnOffType.ON) ? controlAddress.getOnValue() : controlAddress.getOffValue(), previousValue);
-						
-						// update pnmas
-						SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
-						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
-						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), controlAddress.getAddress(), newValue);
-						
-						// update immediately changed value, without waiting for polling
-						provider.setVirtualCachedValue(controlAddress.getAddress(), newValue);
-						updateState(controlAddress.getPnmasId(), SappAddressType.VIRTUAL, controlAddress.getAddress(), newValue, provider);
-
-						break;
-					}
-
-					default:
-						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + controlAddress.getAddressType() + " type");
-						break;
-					}
-				} else {
-					logger.error("command " + command.getClass().getSimpleName() + " not applicable");
+				if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
+					logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigSwitchItem));
+					return;
 				}
-			} catch (SappException e) {
-				logger.error("could not run sappcommand: " + e.getMessage());
+
+				try {
+					if (command instanceof OnOffType) {
+						switch (controlAddress.getAddressType()) {
+						case VIRTUAL: {
+							// mask bits on previous value
+							int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
+							int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), command.equals(OnOffType.ON) ? controlAddress.getOnValue() : controlAddress.getOffValue(), previousValue);
+							
+							// update pnmas
+							SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
+							SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+							sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), controlAddress.getAddress(), newValue);
+							
+							// update immediately changed value, without waiting for polling
+							provider.setVirtualCachedValue(controlAddress.getAddress(), newValue);
+							updateState(controlAddress.getPnmasId(), SappAddressType.VIRTUAL, controlAddress.getAddress(), newValue, provider);
+
+							break;
+						}
+
+						default:
+							logger.error("cannot run " + command.getClass().getSimpleName() + " on " + controlAddress.getAddressType() + " type");
+							break;
+						}
+					} else {
+						logger.error("command " + command.getClass().getSimpleName() + " not applicable");
+					}
+				} catch (SappException e) {
+					logger.error("could not run sappcommand: " + e.getMessage());
+				}
 			}
 		} else if (item instanceof NumberItem) {
 			SappBindingConfigNumberItem sappBindingConfigNumberItem = (SappBindingConfigNumberItem) provider.getBindingConfig(itemName);
@@ -368,6 +397,144 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 						// mask bits on previous value
 						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
 						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((DecimalType) command).doubleValue()), previousValue);
+						
+						// update pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
+						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), address.getAddress(), newValue);
+						
+						// update immediately changed value, without waiting for polling
+						provider.setVirtualCachedValue(address.getAddress(), newValue);
+						updateState(address.getPnmasId(), SappAddressType.VIRTUAL, address.getAddress(), newValue, provider);
+
+						break;
+					}
+
+					default:
+						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + address.getAddressType() + " type");
+						break;
+					}
+				} else {
+					logger.error("command " + command.getClass().getSimpleName() + " not applicable");
+				}
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+		} else if (item instanceof RollershutterItem) {
+			SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = (SappBindingConfigRollershutterItem) provider.getBindingConfig(itemName);
+			logger.debug("found binding " + sappBindingConfigRollershutterItem);
+
+			SappAddressRollershutterControl controlAddress = null;
+			if (command instanceof UpDownType && ((UpDownType) command) == UpDownType.UP) {
+				controlAddress = sappBindingConfigRollershutterItem.getUpControl();
+			} else if (command instanceof UpDownType && ((UpDownType) command) == UpDownType.DOWN) {
+				controlAddress = sappBindingConfigRollershutterItem.getDownControl();
+			} else if (command instanceof StopMoveType && ((StopMoveType) command) == StopMoveType.STOP) {
+				controlAddress = sappBindingConfigRollershutterItem.getStopControl();
+			}
+			
+			if (controlAddress != null) {
+				if (!provider.getPnmasMap().containsKey(controlAddress.getPnmasId())) {
+					logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", controlAddress.getPnmasId(), sappBindingConfigRollershutterItem));
+					return;
+				}
+				
+				try {
+					switch (controlAddress.getAddressType()) {
+					case VIRTUAL: {
+						// mask bits on previous value
+						int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
+						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), controlAddress.getActivateValue(), previousValue);
+						
+						// update pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(controlAddress.getPnmasId());
+						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), controlAddress.getAddress(), newValue);
+						
+						// update immediately changed value, without waiting for polling
+						provider.setVirtualCachedValue(controlAddress.getAddress(), newValue);
+						updateState(controlAddress.getPnmasId(), SappAddressType.VIRTUAL, controlAddress.getAddress(), newValue, provider);
+
+						break;
+					}
+
+					default:
+						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + controlAddress.getAddressType() + " type");
+						break;
+					}
+				} catch (SappException e) {
+					logger.error("could not run sappcommand: " + e.getMessage());
+				}
+			} else {
+				logger.error("command " + command.getClass().getSimpleName() + " not applicable");
+			}
+		} else if (item instanceof DimmerItem) {
+			SappBindingConfigDimmerItem sappBindingConfigDimmerItem = (SappBindingConfigDimmerItem) provider.getBindingConfig(itemName);
+			logger.debug("found binding " + sappBindingConfigDimmerItem);
+
+			SappAddressDimmer address = sappBindingConfigDimmerItem.getStatus();
+
+			if (!provider.getPnmasMap().containsKey(address.getPnmasId())) {
+				logger.error(String.format("bad pnmas id (%s) in binding (%s) ... skipping", address.getPnmasId(), sappBindingConfigDimmerItem));
+				return;
+			}
+
+			try {
+				if (command instanceof OnOffType) {
+					switch (address.getAddressType()) {
+					case VIRTUAL: {
+
+						// mask bits on previous value
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), ((OnOffType) command) == OnOffType.ON ? address.getOriginalMaxScale() : address.getOriginalMinScale(), previousValue);
+						
+						// update pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
+						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), address.getAddress(), newValue);
+						
+						// update immediately changed value, without waiting for polling
+						provider.setVirtualCachedValue(address.getAddress(), newValue);
+						updateState(address.getPnmasId(), SappAddressType.VIRTUAL, address.getAddress(), newValue, provider);
+
+						break;
+					}
+
+					default:
+						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + address.getAddressType() + " type");
+						break;
+					}
+				} else if (command instanceof IncreaseDecreaseType) {
+					switch (address.getAddressType()) {
+					case VIRTUAL: {
+
+						// mask bits on previous value
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), ((IncreaseDecreaseType) command) == IncreaseDecreaseType.INCREASE ? Math.min(previousValue + address.getIncrement(), address.getOriginalMaxScale()) : Math.max(previousValue - address.getIncrement(), address.getOriginalMinScale()), previousValue);
+						
+						// update pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
+						SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						sappCentralExecuter.executeSapp7DCommand(pnmas.getIp(), pnmas.getPort(), address.getAddress(), newValue);
+						
+						// update immediately changed value, without waiting for polling
+						provider.setVirtualCachedValue(address.getAddress(), newValue);
+						updateState(address.getPnmasId(), SappAddressType.VIRTUAL, address.getAddress(), newValue, provider);
+
+						break;
+					}
+
+					default:
+						logger.error("cannot run " + command.getClass().getSimpleName() + " on " + address.getAddressType() + " type");
+						break;
+					}
+				} else if (command instanceof PercentType) {
+					switch (address.getAddressType()) {
+					case VIRTUAL: {
+
+						// mask bits on previous value
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((PercentType) command).doubleValue()), previousValue);
 						
 						// update pnmas
 						SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
@@ -421,6 +588,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 	private void initializeAllItemsInProvider(SappBindingProvider provider) throws SappException {
 
+		updatePollingSwitchesState(provider);
+
 		logger.debug("Updating item state for items {}", provider.getItemNames());
 		for (String itemName : provider.getItemNames()) {
 			logger.debug("checking for querying and setting item " + itemName);
@@ -437,12 +606,14 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		Item item = provider.getItem(itemName);
 
-		if (item instanceof SwitchItem) {
+		if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
 			SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
 
 			SappAddressOnOffStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
 
-			updateOnOffItem(provider, statusAddress, itemName, item);
+			if (!sappBindingConfigSwitchItem.isPollerSuspender()) {
+				updateOnOffItem(provider, statusAddress, itemName, item);
+			}
 		} else if (item instanceof ContactItem) {
 			SappBindingConfigContactItem sappBindingConfigContactItem = (SappBindingConfigContactItem) provider.getBindingConfig(itemName);
 
@@ -455,6 +626,18 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			SappAddressDecimal statusAddress = sappBindingConfigNumberItem.getStatus();
 
 			updateDecimalItem(provider, statusAddress, itemName, item);
+		} else if (item instanceof RollershutterItem) {
+			SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = (SappBindingConfigRollershutterItem) provider.getBindingConfig(itemName);
+
+			SappAddressRollershutterStatus statusAddress = sappBindingConfigRollershutterItem.getStatus();
+
+			updateRollershutterItem(provider, statusAddress, itemName, item);
+		} else if (item instanceof DimmerItem) {
+			SappBindingConfigDimmerItem sappBindingConfigDimmerItem = (SappBindingConfigDimmerItem) provider.getBindingConfig(itemName);
+
+			SappAddressDimmer statusAddress = sappBindingConfigDimmerItem.getStatus();
+
+			updateDimmerItem(provider, statusAddress, itemName, item);
 		} else {
 			logger.error("unimplemented item type: " + item.getClass().getSimpleName());
 		}
@@ -472,13 +655,15 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		for (String itemName : provider.getItemNames()) {
 			Item item = provider.getItem(itemName);
 
-			if (item instanceof SwitchItem) {
+			if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
-				SappAddressOnOffStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
-				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
-					logger.debug("found binding to update " + sappBindingConfigSwitchItem);
-					int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState);
-					eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
+				if (!sappBindingConfigSwitchItem.isPollerSuspender()) {
+					SappAddressOnOffStatus statusAddress = sappBindingConfigSwitchItem.getStatus();
+					if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
+						logger.debug("found binding to update " + sappBindingConfigSwitchItem);
+						int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState);
+						eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
+					}
 				}
 			} else if (item instanceof ContactItem) {
 				SappBindingConfigContactItem sappBindingConfigContactItem = (SappBindingConfigContactItem) provider.getBindingConfig(itemName);
@@ -496,8 +681,44 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), newState);
 					eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 				}
+			} else if (item instanceof RollershutterItem) {
+				SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = (SappBindingConfigRollershutterItem) provider.getBindingConfig(itemName);
+				SappAddressRollershutterStatus statusAddress = sappBindingConfigRollershutterItem.getStatus();
+				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
+					logger.debug("found binding to update " + sappBindingConfigRollershutterItem);
+					int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState);
+					eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? PercentType.HUNDRED : (result == statusAddress.getClosedValue() ? PercentType.ZERO : PercentType.valueOf("50")));
+				}
+			} else if (item instanceof DimmerItem) {
+				SappBindingConfigDimmerItem sappBindingConfigDimmerItem = (SappBindingConfigDimmerItem) provider.getBindingConfig(itemName);
+				SappAddressDimmer statusAddress = sappBindingConfigDimmerItem.getStatus();
+				if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
+					logger.debug("found binding to update " + sappBindingConfigDimmerItem);
+					int result = (int) statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState));
+					if (result <= PercentType.ZERO.intValue()) {
+						eventPublisher.postUpdate(itemName, PercentType.ZERO);
+					} else if (result >= PercentType.HUNDRED.intValue()) {
+						eventPublisher.postUpdate(itemName, PercentType.HUNDRED);
+					} else {
+						eventPublisher.postUpdate(itemName, PercentType.valueOf(String.valueOf(result)));
+					}
+				}
 			} else {
 				logger.error("unimplemented item type: " + item.getClass().getSimpleName());
+			}
+		}
+	}
+
+	private void updatePollingSwitchesState(SappBindingProvider provider) {
+		logger.debug(String.format("Updating poller switch states"));
+		for (String itemName : provider.getItemNames()) {
+			Item item = provider.getItem(itemName);
+
+			if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
+				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = (SappBindingConfigSwitchItem) provider.getBindingConfig(itemName);
+				if (sappBindingConfigSwitchItem.isPollerSuspender()) {
+					eventPublisher.postUpdate(itemName, pollingEnabled ? OnOffType.ON : OnOffType.OFF);
+				}
 			}
 		}
 	}
@@ -606,6 +827,64 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		default:
 			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + address.getAddressType());
+			break;
+		}
+	}
+
+	private void updateRollershutterItem(SappBindingProvider provider, SappAddressRollershutterStatus statusAddress, String itemName, Item item) {
+
+		switch (statusAddress.getAddressType()) {
+		case VIRTUAL:
+			try {
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? PercentType.HUNDRED : (result == statusAddress.getClosedValue() ? PercentType.ZERO : PercentType.valueOf("50")));
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case INPUT:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+
+		case OUTPUT:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+
+		default:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+		}
+	}
+
+	private void updateDimmerItem(SappBindingProvider provider, SappAddressDimmer statusAddress, String itemName, Item item) {
+
+		switch (statusAddress.getAddressType()) {
+		case VIRTUAL:
+			try {
+				int result = (int) statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress())));
+				if (result <= PercentType.ZERO.intValue()) {
+					eventPublisher.postUpdate(itemName, PercentType.ZERO);
+				} else if (result >= PercentType.HUNDRED.intValue()) {
+					eventPublisher.postUpdate(itemName, PercentType.HUNDRED);
+				} else {
+					eventPublisher.postUpdate(itemName, PercentType.valueOf(String.valueOf(result)));
+				}
+			} catch (SappException e) {
+				logger.error("could not run sappcommand: " + e.getMessage());
+			}
+			break;
+
+		case INPUT:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+
+		case OUTPUT:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
+			break;
+
+		default:
+			logger.error("item type not yet implemented " + item.getClass().getSimpleName() + " for address type " + statusAddress.getAddressType());
 			break;
 		}
 	}

@@ -36,6 +36,14 @@ public class SappAddressDecimal extends SappAddress {
 		return maxScale;
 	}
 	
+	public int getOriginalMinScale() {
+		return originalMinScale;
+	}
+
+	public int getOriginalMaxScale() {
+		return originalMaxScale;
+	}
+
 	private void setOriginalScale(String subAddress) {
 		
 		if (subAddress.equals("*")) {

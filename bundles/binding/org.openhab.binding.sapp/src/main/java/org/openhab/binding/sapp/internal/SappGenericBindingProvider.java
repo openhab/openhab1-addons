@@ -14,13 +14,17 @@ import java.util.Map;
 import org.openhab.binding.sapp.SappBindingProvider;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfig;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigDimmerItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigNumberItem;
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigRollershutterItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigSwitchItem;
 import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -87,6 +91,10 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 			; // OK, nothing to validate
 		} else if (item instanceof NumberItem) {
 			; // OK, nothing to validate
+		} else if (item instanceof RollershutterItem) {
+			; // OK, nothing to validate
+		} else if (item instanceof DimmerItem) {
+			; // OK, nothing to validate
 		} else {
 			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 		}
@@ -101,9 +109,9 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
-			if (item instanceof SwitchItem) {
+			if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item, bindingConfig);
-				if (pnmasMap.get(sappBindingConfigSwitchItem.getStatus().getPnmasId()) != null && sappBindingConfigSwitchItem.getControl().getPnmasId() != null) {
+				if (sappBindingConfigSwitchItem.isPollerSuspender() || (pnmasMap.get(sappBindingConfigSwitchItem.getStatus().getPnmasId()) != null && sappBindingConfigSwitchItem.getControl().getPnmasId() != null)) {
 					addBindingConfig(item, sappBindingConfigSwitchItem);
 					fullRefreshNeeded = true;
 				} else {
@@ -121,6 +129,22 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 				SappBindingConfigNumberItem sappBindingConfigNumberItem = new SappBindingConfigNumberItem(item, bindingConfig);
 				if (pnmasMap.get(sappBindingConfigNumberItem.getStatus().getPnmasId()) != null) {
 					addBindingConfig(item, sappBindingConfigNumberItem);
+					fullRefreshNeeded = true;
+				} else {
+					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
+				}
+			} else if (item instanceof RollershutterItem) {
+				SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = new SappBindingConfigRollershutterItem(item, bindingConfig);
+				if (pnmasMap.get(sappBindingConfigRollershutterItem.getStatus().getPnmasId()) != null) {
+					addBindingConfig(item, sappBindingConfigRollershutterItem);
+					fullRefreshNeeded = true;
+				} else {
+					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
+				}
+			} else if (item instanceof DimmerItem) {
+				SappBindingConfigDimmerItem sappBindingConfigDimmerItem = new SappBindingConfigDimmerItem(item, bindingConfig);
+				if (pnmasMap.get(sappBindingConfigDimmerItem.getStatus().getPnmasId()) != null) {
+					addBindingConfig(item, sappBindingConfigDimmerItem);
 					fullRefreshNeeded = true;
 				} else {
 					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");

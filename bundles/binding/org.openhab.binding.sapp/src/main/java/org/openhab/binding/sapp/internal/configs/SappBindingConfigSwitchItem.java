@@ -12,23 +12,36 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 // <on value> can be omitted, default is 1
 // <on value>:<off value> can be omitted, default is 1:0
 // example: { sapp="home:V:60:1/home:V:192:1:1:0" }
-
+//
+// stopping poller switch, suspends and restarts the polling
+//<pnmasid status>:<P>
+//example: { sapp="P" }
 public class SappBindingConfigSwitchItem extends SappBindingConfig {
 
 	private SappAddressOnOffStatus status;
 	private SappAddressOnOffControl control;
+	private boolean isPollerSuspender;
 
 	public SappBindingConfigSwitchItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
+		
+		if ("P".equals(bindingConfig)) {
+			isPollerSuspender = true;
 
-		String[] bindingConfigParts = bindingConfig.split("/");
-		if (bindingConfigParts.length != 2) {
-			throw new BindingConfigParseException(errorMessage(bindingConfig));
+			this.status = null;
+			this.control = null;
+		} else {
+			isPollerSuspender = false;
+
+			String[] bindingConfigParts = bindingConfig.split("/");
+			if (bindingConfigParts.length != 2) {
+				throw new BindingConfigParseException(errorMessage(bindingConfig));
+			}
+
+			this.status = parseSappAddressStatus(bindingConfigParts[0]);
+			this.control = parseSappAddressControl(bindingConfigParts[1]);
 		}
-
-		this.status = parseSappAddressStatus(bindingConfigParts[0]);
-		this.control = parseSappAddressControl(bindingConfigParts[1]);
 	}
 
 	public SappAddressOnOffStatus getStatus() {
@@ -38,10 +51,18 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 	public SappAddressOnOffControl getControl() {
 		return control;
 	}
+	
+	public boolean isPollerSuspender() {
+		return isPollerSuspender;
+	}
 
 	@Override
 	public String toString() {
-		return String.format("[itemName:%s: status:%s - control: %s ]", getItemName(), this.status.toString(), this.control.toString());
+		if (isPollerSuspender) {
+			return String.format("[itemName:%s: pollerSuspender ]", getItemName());
+		} else {
+			return String.format("[itemName:%s: status:%s - control: %s ]", getItemName(), this.status.toString(), this.control.toString());
+		}
 	}
 
 	private String errorMessage(String bindingConfig) {
