@@ -10,14 +10,15 @@ package org.openhab.binding.diyonxbee;
 
 import java.util.List;
 
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.State;
 
 /**
  * @author Jürgen Richtsfeld
  * @since 1.8
  */
-public interface DiyOnXBeeBindingProvider extends BindingProvider {
+public interface DiyOnXBeeBindingProvider extends AutoUpdateBindingProvider {
 
 	String getId(String itemName);
 	String getRemote(String itemName);

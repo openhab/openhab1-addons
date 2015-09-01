@@ -59,24 +59,36 @@ public class DiyOnXBeeGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		DiyOnXBeeBindingConfig config = new DiyOnXBeeBindingConfig();
-		
 		
 		if (bindingConfig.startsWith("<")) {
-			config.direction = DIRECTION.IN;
-			final String id = bindingConfig.trim().replaceFirst("<", "");
-			final String[] parts = id.split(":");
-			if(parts.length > 2) {
-				throw new BindingConfigParseException("config of " + item.getName() + " is not in the form address:id");
-			}
-			config.remote = parts[0];
-			config.id = parts[1];
-			config.types = item.getAcceptedDataTypes();
-
+			final DiyOnXBeeBindingConfig config = parseBindingConfig(item, bindingConfig, DIRECTION.IN);
+			addBindingConfig(item, config);
+		} else 	if (bindingConfig.startsWith(">")) {
+			final DiyOnXBeeBindingConfig config = parseBindingConfig(item, bindingConfig, DIRECTION.OUT);
 			addBindingConfig(item, config);
 		}
 	}
+
+	private DiyOnXBeeBindingConfig parseBindingConfig(Item item, String bindingConfig,
+			DIRECTION direction) throws BindingConfigParseException {
+		final DiyOnXBeeBindingConfig config = new DiyOnXBeeBindingConfig();
+		config.direction = direction;
+		final String id = bindingConfig.trim().substring(1);
+		final String[] parts = id.split(":");
+		if(parts.length > 2) {
+			throw new BindingConfigParseException("config of " + item.getName() + " is not in the form address:id");
+		}
+		config.remote = parts[0];
+		config.id = parts[1];
+		config.types = item.getAcceptedDataTypes();
+		return config;
+	}
 	
+	@Override
+	public Boolean autoUpdate(String itemName) {
+		final DiyOnXBeeBindingConfig bindingConfig = (DiyOnXBeeBindingConfig) bindingConfigs.get(itemName);
+		return bindingConfig != null && bindingConfig.direction == DIRECTION.IN;
+	}
 	
 	/**
 	 * This is a helper class holding binding specific configuration details

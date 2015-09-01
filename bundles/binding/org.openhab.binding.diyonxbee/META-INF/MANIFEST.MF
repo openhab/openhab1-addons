@@ -8,6 +8,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.8.0.qualifier
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.commons.lang,
+ org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
