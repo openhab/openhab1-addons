@@ -6,8 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.core.script.jvmmodel;
+package org.openhab.model.script.jvmmodel;
 
+import java.util.Arrays;
 import org.eclipse.xtext.common.types.JvmIdentifiableElement;
 import org.eclipse.xtext.common.types.JvmType;
 import org.eclipse.xtext.xbase.featurecalls.IdentifiableSimpleNameProvider;
@@ -19,15 +20,17 @@ public class ScriptIdentifiableSimpleNameProvider extends IdentifiableSimpleName
   }
   
   protected String _getSimpleName(final JvmIdentifiableElement element) {
-    String _simpleName = super.getSimpleName(element);
-    return _simpleName;
+    return super.getSimpleName(element);
   }
   
   public String getSimpleName(final JvmIdentifiableElement element) {
     if (element instanceof JvmType) {
       return _getSimpleName((JvmType)element);
-    } else {
+    } else if (element != null) {
       return _getSimpleName(element);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(element).toString());
     }
   }
 }
