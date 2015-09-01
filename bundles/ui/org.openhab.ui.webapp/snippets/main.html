@@ -32,7 +32,8 @@
         if (evt.context[0].indexOf(hash) >= 0 || hash == "Home") {
           if (evt.target.responseXML) {
             if (evt.context[0].indexOf("poll=true") >= 0) {
-	       		WA.Request(evt.context[0], null, -1, true, null);	
+              OH.pollURL = evt.context[0];
+              OH.pollingRequest = WA.Request(evt.context[0], null, -1, true, null);
             }
           }
         }
@@ -49,14 +50,18 @@
         }
         search = search + "sitemap=%sitemap%&w=" + hash.substring(2) + "&poll=true";
         url = path + search;
-        WA.Request(url, null, -1, true, null); 
+        OH.pollURL = url;
+        OH.pollingRequest = WA.Request(url, null, -1, true, null); 
         OH.images.refresh = OH.images.countOnPage;
         OH.images.countOnPage = 0;
       });
 
       WA.AddEventListener("load", function () {
-        setTimeout(function() {
-        	WA.Request('../%servletname%?sitemap=%sitemap%&poll=true', null, -1, true, null);	
+    	var url = '../%servletname%?sitemap=%sitemap%&poll=true';
+    	OH.pollURL = url;
+    	
+    	setTimeout(function() {
+          OH.pollingRequest = WA.Request(url, null, -1, true, null);	
         }, 1500);
       });
 
@@ -86,6 +91,22 @@
           WA.AddEventListener("endslide", resetAllTimers);
           WA.AddEventListener("endslide", resetVideos);
           
+          WA.AddEventListener("sliderchange", function(ev) {
+            var data = ev.context;
+            var request = '../CMD?' + data.item + '=' + data.value;
+            
+            switch(data.type) {
+            case "start":
+            	WA.CancelRequest(OH.pollingRequest);
+            	break;
+            case "end":
+            	OH.pollingRequest = WA.Request(OH.pollURL, null, -1, true, null);
+            	break;
+            }
+            
+            WA.Request(request, null, null, true, null);
+          });
+                    
           // Disable dragging to prevent accidential infinite loop
           $('body')
           	.on('dragstart', 'img', stopEventDefault) 	// dragstart on an img tag

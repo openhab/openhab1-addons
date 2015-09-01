@@ -147,6 +147,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>574D</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>RFWC5</Model>
+			<Label lang="en">5-Scene Keypad</Label>
+			<ConfigFile>cooper/rfwc5.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4449</Type>
 				<Id>0101</Id>
 			</Reference>
@@ -1960,7 +1969,7 @@
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
 			</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
-			<ConfigFile>philio/pan06_1.xml</ConfigFile>
+			<ConfigFile>philio/pan06_1a.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
