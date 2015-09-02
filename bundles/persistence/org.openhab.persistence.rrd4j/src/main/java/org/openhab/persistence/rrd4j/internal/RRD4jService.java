@@ -29,10 +29,12 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
@@ -307,6 +309,10 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 					return value==0.0d ? OnOffType.OFF : OnOffType.ON;
 				} else if(item instanceof ContactItem) {
 					return value==0.0d ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+				} else if(item instanceof DimmerItem || item instanceof RollershutterItem) {
+					// make sure Items that need PercentTypes instead of DecimalTypes
+					// do receive the right information
+					return new PercentType( (int) Math.round(value * 100) );
 				}
 			} catch (ItemNotFoundException e) {
 				logger.debug("Could not find item '{}' in registry", itemName);
