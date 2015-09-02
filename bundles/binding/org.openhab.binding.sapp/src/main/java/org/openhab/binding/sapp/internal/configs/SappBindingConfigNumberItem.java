@@ -20,10 +20,20 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 // example: { sapp="home:V:200:L" }
 // example: { sapp="home:V:200:L:10:180" }
 
+/**
+ * This is a helper class holding NumberItem binding specific configuration details
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappBindingConfigNumberItem extends SappBindingConfig {
 
 	private SappAddressDecimal status;
 
+	/**
+	 * Constructor
+	 */
 	public SappBindingConfigNumberItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
@@ -31,10 +41,16 @@ public class SappBindingConfigNumberItem extends SappBindingConfig {
 		this.status = parseSappAddressStatus(bindingConfig);
 	}
 
+	/**
+	 * status getter
+	 */
 	public SappAddressDecimal getStatus() {
 		return status;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[itemName:%s: status:%s ]", getItemName(), this.status.toString());

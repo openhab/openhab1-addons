@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.sapp.internal.model;
 
+/**
+ * Decimal Address model
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappAddressDecimal extends SappAddress {
 
 	private int originalMinScale;
@@ -15,6 +22,9 @@ public class SappAddressDecimal extends SappAddress {
 	private int minScale;
 	private int maxScale;
 
+	/**
+	 * Constructor
+	 */
 	public SappAddressDecimal(String pnmasId, SappAddressType addressType, int address, String subAddress, int minScale, int maxScale) {
 		super(pnmasId, addressType, address, subAddress);
 
@@ -28,6 +38,9 @@ public class SappAddressDecimal extends SappAddress {
 		}
 	}
 
+	/**
+	 * Constructor
+	 */
 	public SappAddressDecimal(String pnmasId, SappAddressType addressType, int address, String subAddress) {
 		super(pnmasId, addressType, address, subAddress);
 		
@@ -36,18 +49,30 @@ public class SappAddressDecimal extends SappAddress {
 		this.maxScale = originalMaxScale;
 	}
 
+	/**
+	 * minScale getter
+	 */
 	public int getMinScale() {
 		return minScale;
 	}
 
+	/**
+	 * maxScale getter
+	 */
 	public int getMaxScale() {
 		return maxScale;
 	}
 	
+	/**
+	 * originalMinScale getter
+	 */
 	public int getOriginalMinScale() {
 		return originalMinScale;
 	}
 
+	/**
+	 * originalMaxScale getter
+	 */
 	public int getOriginalMaxScale() {
 		return originalMaxScale;
 	}
@@ -69,14 +94,23 @@ public class SappAddressDecimal extends SappAddress {
 		}
 	}
 	
+	/**
+	 * returns the scaled value with respect to the original scale
+	 */
 	public double scaledValue(double value) {
 		return (((double) (value - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale);
 	}
 	
+	/**
+	 * converts a scaled value back to the original scale
+	 */
 	public int backScaledValue(double value) {
 		return (int) Math.round((((double) (value - minScale)) * ((double) (originalMaxScale - originalMinScale)) / ((double) (maxScale - minScale))) + ((double) originalMinScale));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[ %s:%s:%d:%s:%d:%d ]", getPnmasId(), getAddressType(), getAddress(), getSubAddress(), minScale, maxScale);

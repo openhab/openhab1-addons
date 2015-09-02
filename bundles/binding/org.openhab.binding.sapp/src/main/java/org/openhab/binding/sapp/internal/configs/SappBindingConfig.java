@@ -16,13 +16,17 @@ import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.core.binding.BindingConfig;
 
 /**
- * This is a helper class holding binding specific configuration details
+ * This is a helper class holding binding generic configuration details
  * 
  * @author Paolo Denti
  * @since 1.8.0
  * 
  */
 public abstract class SappBindingConfig implements BindingConfig {
+	
+	/**
+	 * valid address ranges for each address type
+	 */
 	protected static final Map<SappAddressType, SappAddressRange> validAddresses = new HashMap<SappAddressType, SappAddressRange>() {
 		protected static final long serialVersionUID = 592091386684476669L;
 		{
@@ -45,11 +49,17 @@ public abstract class SappBindingConfig implements BindingConfig {
 
 	private String itemName;
 
+	/**
+	 * Constructor
+	 */
 	public SappBindingConfig(String itemName)  {
 
 		this.itemName = itemName;
 	}
 
+	/**
+	 * itemName getter
+	 */
 	public String getItemName() {
 		return itemName;
 	}

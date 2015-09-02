@@ -8,6 +8,13 @@
  */
 package org.openhab.binding.sapp.internal.configs;
 
+/**
+ * This is a helper class for generic binding helper methods
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappBindingConfigUtils {
 	
 	/**

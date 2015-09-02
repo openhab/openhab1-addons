@@ -24,23 +24,34 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 // stopping poller switch, suspends and restarts the polling
 //<pnmasid status>:<P>
 //example: { sapp="P" }
+
+/**
+ * This is a helper class holding SwitchItem binding specific configuration details
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappBindingConfigSwitchItem extends SappBindingConfig {
 
 	private SappAddressOnOffStatus status;
 	private SappAddressOnOffControl control;
-	private boolean isPollerSuspender;
+	private boolean pollerSuspender;
 
+	/**
+	 * Constructor
+	 */
 	public SappBindingConfigSwitchItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
 		
 		if ("P".equals(bindingConfig)) {
-			isPollerSuspender = true;
+			pollerSuspender = true;
 
 			this.status = null;
 			this.control = null;
 		} else {
-			isPollerSuspender = false;
+			pollerSuspender = false;
 
 			String[] bindingConfigParts = bindingConfig.split("/");
 			if (bindingConfigParts.length != 2) {
@@ -52,21 +63,33 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 		}
 	}
 
+	/**
+	 * status getter
+	 */
 	public SappAddressOnOffStatus getStatus() {
 		return status;
 	}
 
+	/**
+	 * control getter
+	 */
 	public SappAddressOnOffControl getControl() {
 		return control;
 	}
 	
+	/**
+	 * pollerSuspender getter
+	 */
 	public boolean isPollerSuspender() {
-		return isPollerSuspender;
+		return pollerSuspender;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
-		if (isPollerSuspender) {
+		if (pollerSuspender) {
 			return String.format("[itemName:%s: pollerSuspender ]", getItemName());
 		} else {
 			return String.format("[itemName:%s: status:%s - control: %s ]", getItemName(), this.status.toString(), this.control.toString());

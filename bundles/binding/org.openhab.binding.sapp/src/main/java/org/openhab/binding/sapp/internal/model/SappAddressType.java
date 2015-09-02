@@ -24,14 +24,23 @@ public enum SappAddressType {
 	
 	String address;
 	
+	/**
+	 * Constructor
+	 */
 	private SappAddressType(String address) {
 		this.address = address;
 	}
 	
+	/**
+	 * address getter
+	 */
 	public String getAddress() {
 		return address;
 	}
 	
+	/**
+	 * builds a SappAddressType from the String representation
+	 */
 	public static SappAddressType fromString(String address) {
 		if (!StringUtils.isEmpty(address)) {
 			for (SappAddressType addressType : SappAddressType.values()) {

@@ -20,10 +20,20 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 // example: { sapp="home:V:192:1" }
 // example: { sapp="home:V:192:1:0" }
 
+/**
+ * This is a helper class holding ContactItem binding specific configuration details
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappBindingConfigContactItem extends SappBindingConfig {
 
 	private SappAddressOpenClosedStatus status;
 
+	/**
+	 * Constructor
+	 */
 	public SappBindingConfigContactItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
@@ -31,10 +41,16 @@ public class SappBindingConfigContactItem extends SappBindingConfig {
 		this.status = parseSappAddressStatus(bindingConfig);
 	}
 
+	/**
+	 * status getter
+	 */
 	public SappAddressOpenClosedStatus getStatus() {
 		return status;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[itemName:%s: status:%s ]", getItemName(), this.status.toString());

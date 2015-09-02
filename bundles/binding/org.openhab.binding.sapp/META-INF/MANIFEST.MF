@@ -7,8 +7,7 @@ Bundle-SymbolicName: org.openhab.binding.sapp
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.0.0.qualifier
 Bundle-ManifestVersion: 2
-Bundle-Description: This is the Sapp binding of the open Home Aut
- omation Bus (openHAB)
+Bundle-Description: This is the Sapp binding of the open Home Automation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
  org.openhab.core.binding,
  org.openhab.core.events,

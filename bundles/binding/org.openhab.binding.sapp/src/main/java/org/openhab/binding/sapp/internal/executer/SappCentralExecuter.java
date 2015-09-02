@@ -22,6 +22,14 @@ import com.github.paolodenti.jsapp.core.command.base.SappCommand;
 import com.github.paolodenti.jsapp.core.command.base.SappConnection;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
 
+/**
+ * Centralized picnet command execution queue
+ * executions on pnmas are synchronized on a single serial queue
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappCentralExecuter {
 
 	private static SappCentralExecuter sappCentralExecuterInstance;
@@ -29,6 +37,9 @@ public class SappCentralExecuter {
 	private SappCentralExecuter() {
 	}
 
+	/**
+	 * singleton instance
+	 */
 	public static SappCentralExecuter getInstance() {
 
 		if (sappCentralExecuterInstance == null) {
@@ -38,6 +49,9 @@ public class SappCentralExecuter {
 		return sappCentralExecuterInstance;
 	}
 
+	/**
+	 * runs polling on virtuals, inputs, outputs
+	 */
 	public PollingResult executePollingSappCommands(String ip, int port) throws SappException {
 
 		synchronized (this) {
@@ -84,6 +98,9 @@ public class SappCentralExecuter {
 		}
 	}
 
+	/**
+	 * runs 7C command
+	 */
 	public int executeSapp7CCommand(String ip, int port, int address) throws SappException {
 
 		synchronized (this) {
@@ -96,6 +113,9 @@ public class SappCentralExecuter {
 		}
 	}
 
+	/**
+	 * runs 74 command
+	 */
 	public int executeSapp74Command(String ip, int port, byte address) throws SappException {
 
 		synchronized (this) {
@@ -108,6 +128,9 @@ public class SappCentralExecuter {
 		}
 	}
 
+	/**
+	 * runs 75 command
+	 */
 	public int executeSapp75Command(String ip, int port, byte address) throws SappException {
 
 		synchronized (this) {
@@ -120,6 +143,9 @@ public class SappCentralExecuter {
 		}
 	}
 
+	/**
+	 * runs 7D command
+	 */
 	public void executeSapp7DCommand(String ip, int port, int address, int value) throws SappException {
 
 		synchronized (this) {
@@ -131,6 +157,9 @@ public class SappCentralExecuter {
 		}
 	}
 
+	/**
+	 * model for polling results
+	 */
 	public class PollingResult {
 
 		public Map<Byte, Integer> changedOutputs;

@@ -586,6 +586,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		return null;
 	}
 
+	/**
+	 * initializes all items
+	 */
 	private void initializeAllItemsInProvider(SappBindingProvider provider) throws SappException {
 
 		updatePollingSwitchesState(provider);
@@ -602,6 +605,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * reads state from device and updates item repository
+	 */
 	private void queryAndSendActualState(SappBindingProvider provider, String itemName) {
 
 		Item item = provider.getItem(itemName);
@@ -643,6 +649,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * loads Sapp provider
+	 */
 	private SappBindingProvider getFirstSappBindingProvider() {
 		for (SappBindingProvider provider : providers) {
 			return provider;
@@ -650,6 +659,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		return null;
 	}
 
+	/**
+	 * updates item repository for a single item
+	 */
 	private void updateState(String pnmasId, SappAddressType sappAddressType, int addressToUpdate, int newState, SappBindingProvider provider) {
 		logger.debug(String.format("Updating %s %d with new value %d", sappAddressType, addressToUpdate, newState));
 		for (String itemName : provider.getItemNames()) {
@@ -709,6 +721,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * updates item repository for special polling switches
+	 */
 	private void updatePollingSwitchesState(SappBindingProvider provider) {
 		logger.debug(String.format("Updating poller switch states"));
 		for (String itemName : provider.getItemNames()) {
@@ -723,6 +738,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * updates item repository for OnOff items
+	 */
 	private void updateOnOffItem(SappBindingProvider provider, SappAddressOnOffStatus statusAddress, String itemName, Item item) {
 
 		switch (statusAddress.getAddressType()) {
@@ -759,6 +777,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * updates item repository for OpenClosed items
+	 */
 	private void updateOpenClosedItem(SappBindingProvider provider, SappAddressOpenClosedStatus statusAddress, String itemName, Item item) {
 
 		switch (statusAddress.getAddressType()) {
@@ -795,6 +816,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * updates item repository for Decimal items
+	 */
 	private void updateDecimalItem(SappBindingProvider provider, SappAddressDecimal address, String itemName, Item item) {
 
 		switch (address.getAddressType()) {
@@ -831,6 +855,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * updates item repository for Rollershutter items
+	 */
 	private void updateRollershutterItem(SappBindingProvider provider, SappAddressRollershutterStatus statusAddress, String itemName, Item item) {
 
 		switch (statusAddress.getAddressType()) {
@@ -857,6 +884,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * updates item repository for Dimmer items
+	 */
 	private void updateDimmerItem(SappBindingProvider provider, SappAddressDimmer statusAddress, String itemName, Item item) {
 
 		switch (statusAddress.getAddressType()) {
@@ -889,6 +919,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 	}
 
+	/**
+	 * load virtual value from pnmas, if not cached, and caches it 
+	 */
 	private int getVirtualValue(SappBindingProvider provider, String pnmasId, int address, String subAddress) throws SappException {
 
 		Integer value = provider.getVirtualCachedValue(address);
@@ -903,6 +936,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		return value.intValue();
 	}
 
+	/**
+	 * load input value from pnmas, if not cached, and caches it 
+	 */
 	private int getInputValue(SappBindingProvider provider, String pnmasId, int address, String subAddress) throws SappException {
 
 		Integer value = provider.getInputCachedValue(address);
@@ -916,6 +952,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		return value.intValue();
 	}
 
+	/**
+	 * load output value from pnmas, if not cached, and caches it 
+	 */
 	private int getOutputValue(SappBindingProvider provider, String pnmasId, int address, String subAddress) throws SappException {
 
 		Integer value = provider.getOutputCachedValue(address);

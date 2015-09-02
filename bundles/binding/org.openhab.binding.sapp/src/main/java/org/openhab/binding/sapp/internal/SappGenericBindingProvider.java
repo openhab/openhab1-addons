@@ -166,57 +166,90 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		items.put(item.getName(), item);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public SappBindingConfig getBindingConfig(String itemName) {
 		return (SappBindingConfig) bindingConfigs.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, SappPnmas> getPnmasMap() {
 		return pnmasMap;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Item getItem(String itemName) {
 		return items.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isFullRefreshNeeded() {
 		return fullRefreshNeeded;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setFullRefreshNeeded(boolean fullRefreshNeeded) {
 		this.fullRefreshNeeded = fullRefreshNeeded;
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Integer getVirtualCachedValue(int address) {
 		return virtualsCache.get(address);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setVirtualCachedValue(int address, int value) {
 		virtualsCache.put(address, value);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Integer getInputCachedValue(int address) {
 		return inputsCache.get(address);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setInputCachedValue(int address, int value) {
 		inputsCache.put(address, value);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Integer getOutputCachedValue(int address) {
 		return outputsCache.get(address);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setOutputCachedValue(int address, int value) {
 		outputsCache.put(address, value);

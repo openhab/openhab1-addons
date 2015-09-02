@@ -19,6 +19,13 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 //<pnmasid status>:<status address type, only V>:<status address, 1-2500>:<status subaddress, */H/L/1-16>:<up value>:<down value>/<pnmasid up command>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<up value>/<pnmasid down command>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<down value>/<pnmasid stop command>:<status address type, only V>:<control address, 1-2500>:<control subaddress, */H/L/1-16>:<stop value>
 // example: { sapp="home:V:154:*:100:0/home:V:155:1:1/home:V:155:2:1/home:V:155:3:1" }
 
+/**
+ * This is a helper class holding RollershutterItem binding specific configuration details
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappBindingConfigRollershutterItem extends SappBindingConfig {
 
 	private SappAddressRollershutterStatus status;
@@ -26,6 +33,9 @@ public class SappBindingConfigRollershutterItem extends SappBindingConfig {
 	private SappAddressRollershutterControl downControl;
 	private SappAddressRollershutterControl stopControl;
 
+	/**
+	 * Constructor
+	 */
 	public SappBindingConfigRollershutterItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
@@ -41,22 +51,37 @@ public class SappBindingConfigRollershutterItem extends SappBindingConfig {
 		this.stopControl = parseSappAddressControl(bindingConfigParts[3]);
 	}
 
+	/**
+	 * status getter
+	 */
 	public SappAddressRollershutterStatus getStatus() {
 		return status;
 	}
 	
+	/**
+	 * upControl getter
+	 */
 	public SappAddressRollershutterControl getUpControl() {
 		return upControl;
 	}
 
+	/**
+	 * downControl getter
+	 */
 	public SappAddressRollershutterControl getDownControl() {
 		return downControl;
 	}
 
+	/**
+	 * stopControl getter
+	 */
 	public SappAddressRollershutterControl getStopControl() {
 		return stopControl;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[itemName:%s: status:%s ]", getItemName(), this.status.toString());

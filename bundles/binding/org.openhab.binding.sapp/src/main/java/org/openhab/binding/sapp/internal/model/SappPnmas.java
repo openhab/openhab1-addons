@@ -19,19 +19,31 @@ public class SappPnmas {
 	private String ip;
 	private int port;
 
+	/**
+	 * Constructor
+	 */
 	public SappPnmas(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 	}
 
+	/**
+	 * ip getter
+	 */
 	public String getIp() {
 		return ip;
 	}
 
+	/**
+	 * port getter
+	 */
 	public int getPort() {
 		return port;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[ ip: %s - port : %d]", ip, port);

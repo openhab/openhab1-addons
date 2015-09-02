@@ -8,7 +8,13 @@
  */
 package org.openhab.binding.sapp.internal.model;
 
-
+/**
+ * Generic Address model
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public abstract class SappAddress {
 
 	private String pnmasId;
@@ -16,6 +22,9 @@ public abstract class SappAddress {
 	private int address;
 	private String subAddress;
 
+	/**
+	 * Constructor
+	 */
 	public SappAddress(String pnmasId, SappAddressType addressType, int address, String subAddress) {
 		super();
 		this.pnmasId = pnmasId;
@@ -24,22 +33,37 @@ public abstract class SappAddress {
 		this.subAddress = subAddress;
 	}
 
+	/**
+	 * pnmasId getter
+	 */
 	public String getPnmasId() {
 		return pnmasId;
 	}
 
+	/**
+	 * addressType getter
+	 */
 	public SappAddressType getAddressType() {
 		return addressType;
 	}
 
+	/**
+	 * address getter
+	 */
 	public int getAddress() {
 		return address;
 	}
 
+	/**
+	 * subAddress getter
+	 */
 	public String getSubAddress() {
 		return subAddress;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[ %s:%s:%d:%s ]", pnmasId, addressType, address, subAddress);

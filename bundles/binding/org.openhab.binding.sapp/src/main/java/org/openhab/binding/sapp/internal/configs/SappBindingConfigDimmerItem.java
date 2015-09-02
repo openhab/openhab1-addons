@@ -18,10 +18,20 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 // <pnmasid status>:<status address type, only V>:<status address, 1-2500>:<status subaddress, */H/L/1-16>:<min value>:<max value>:<increment>
 // example: { sapp="home:V:180:*:0:100:10" }
 
+/**
+ * This is a helper class holding DimmerItem binding specific configuration details
+ * 
+ * @author Paolo Denti
+ * @since 1.8.0
+ * 
+ */
 public class SappBindingConfigDimmerItem extends SappBindingConfig {
 
 	private SappAddressDimmer status;
 
+	/**
+	 * Constructor
+	 */
 	public SappBindingConfigDimmerItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
@@ -29,10 +39,16 @@ public class SappBindingConfigDimmerItem extends SappBindingConfig {
 		this.status = parseSappAddressStatus(bindingConfig);
 	}
 
+	/**
+	 * status getter
+	 */
 	public SappAddressDimmer getStatus() {
 		return status;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return String.format("[itemName:%s: status:%s ]", getItemName(), this.status.toString());
