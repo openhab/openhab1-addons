@@ -745,13 +745,19 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 						.getCommandClass(CommandClass.CONFIGURATION);
 
+				// If there are no configuration entries for this node, then continue.
+				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+				if(configList.size() == 0) {
+					break;
+				}
+
+				// If the node doesn't support configuration class, then we better let people know!
 				if (configurationCommandClass == null) {
 					logger.error("NODE {}: Node advancer: GET_CONFIGURATION - CONFIGURATION class not supported", node.getNodeId());
 					break;
 				}
 
 				// Request all parameters for this node
-				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 				for (ZWaveDbConfigurationParameter parameter : configList) {
 					// Some parameters don't return anything, so don't request them!
 					if(parameter.WriteOnly != null && parameter.WriteOnly == true) {
