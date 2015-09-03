@@ -87,7 +87,8 @@ public class DiyOnXBeeGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public Boolean autoUpdate(String itemName) {
 		final DiyOnXBeeBindingConfig bindingConfig = (DiyOnXBeeBindingConfig) bindingConfigs.get(itemName);
-		return bindingConfig != null && bindingConfig.direction == DIRECTION.IN;
+		if(bindingConfig == null) return null;
+		return bindingConfig.direction == DIRECTION.IN;
 	}
 	
 	/**
