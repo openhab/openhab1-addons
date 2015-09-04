@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,15 +8,14 @@
  */
 package org.openhab.persistence.sense.internal;
 
-import java.util.Dictionary;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.io.net.http.HttpUtil;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ import flexjson.JSONSerializer;
  * @author Kai Kreuzer
  * @since 1.0.0
  */
-public class SenseService implements PersistenceService, ManagedService {
+public class SenseService implements PersistenceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SenseService.class);
 	
@@ -41,7 +40,7 @@ public class SenseService implements PersistenceService, ManagedService {
 	private final static String DEFAULT_EVENT_URL = "http://api.sen.se/events/?sense_key=";
 
 	private boolean initialized = false;
-
+	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -75,8 +74,7 @@ public class SenseService implements PersistenceService, ManagedService {
 	/**
 	 * @{inheritDoc}
 	 */
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
 		if (config!=null) {
 
 			url = (String) config.get("url");
@@ -86,7 +84,7 @@ public class SenseService implements PersistenceService, ManagedService {
 			
 			apiKey = (String) config.get("apikey");
 			if (StringUtils.isBlank(apiKey)) {
-				throw new ConfigurationException("sense:apikey", "The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
+				logger.warn("The Open.Sen.se API-Key is missing - please configure it in openhab.cfg");
 			}
 			
 			initialized = true;
