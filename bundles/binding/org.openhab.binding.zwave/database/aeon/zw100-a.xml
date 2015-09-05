@@ -73,8 +73,8 @@
 		<Parameter>
 			<Index>3</Index>
 			<Type>short</Type>
-			<Minimum>1</Minimum>
-			<Maximum>15300</Maximum>
+			<Minimum>5</Minimum>
+			<Maximum>3600</Maximum>
 			<Default>240</Default>
 			<Size>2</Size>
 			<Label lang="en">Motion Sensor Timeout</Label>
@@ -87,17 +87,34 @@
 		<Parameter>
 			<Index>4</Index>
 			<Type>list</Type>
-			<Default>1</Default>
+			<Default>5</Default>
 			<Size>1</Size>
-			<Label lang="en">Motion sensor
-			</Label>
+			<Label lang="en">Motion sensor sensitivity</Label>
+			<Help lang="en">Sensitivity level of PIR sensor (1=minimum, 5=maximum)
+			</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable</Label>
+				<Label lang="en">Enable, sensitivity level 1 (minimum)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Enable, sensitivity level 2</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Enable, sensitivity level 3</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Enable, sensitivity level 4</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Enable, sensitivity level 5 (maximum)</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -113,33 +130,6 @@
 			<Item>
 				<Value>2</Value>
 				<Label lang="en">Send Sensor Binary Report CC</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>6</Index>
-			<Type>short</Type>
-			<Minimum>0</Minimum>
-			<Maximum>127</Maximum>
-			<Default>127</Default>
-			<Size>1</Size>
-			<Label lang="en">PIR Sensitivity</Label>
-			<Help lang="en">The range of PIR Sensitivity is 0 to 127 (127 max
-				sensitivity)
-			</Help>
-		</Parameter>
-		<Parameter>
-			<Index>7</Index>
-			<Type>list</Type>
-			<Default>1</Default>
-			<Size>1</Size>
-			<Label lang="en">Enable or Disable the function of the vibration sensor</Label>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Disable</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -160,7 +150,7 @@
 			<Default>0</Default>
 			<Label lang="en">Selective Reporting</Label>
 			<Help lang="en">Send reports only when measurements reach a certain
-				threshold or percentage. Set in parameters 41-44
+				threshold or percentage set in parameters 41-44.
 			</Help>
 			<Item>
 				<Value>0</Value>
@@ -176,14 +166,14 @@
 			<Type>short</Type>
 			<Size>2</Size>
 			<Minimum>0</Minimum>
-			<Maximum>65535</Maximum>
-			<Default>256</Default>
+			<Maximum>100</Maximum>
+			<Default>20</Default>
 			<Label lang="en">Temperature Threshold</Label>
-			<Help lang="en">Threshold change in temperature to induce an
-				automatic report. When the unit is Celsius, threshold=Value. When
-				the unit is Fahrenheit, threshold=Value*1.8. The accuracy is 0.1.
-				The high byte is the part of integer, the low byte is the fractional
-				part
+			<Help lang="en">Threshold change in temperature to induce an automatic report.
+				The unit is Fahrenheit for US version, Celsius for EU/AU version.
+				The value contains one decimal point. E.g. if the value is set to 20, the
+				threshold value is 2.0 ℃ (EU/AU version) or 2.0 ℉ (US version). If the
+				current temperature gap is larger than 2.0, a temperature report will be sent out.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -192,10 +182,10 @@
 			<Size>2</Size>
 			<Minimum>0</Minimum>
 			<Maximum>100</Maximum>
-			<Default>5</Default>
+			<Default>10</Default>
 			<Label lang="en">Humidity Threshold</Label>
-			<Help lang="en">Threshold change in humidity to induce an automatic
-				report
+			<Help lang="en">Threshold change in humidity to induce an automatic report. 
+				The unit is %. If the current humidity gap is larger than this value, sensor will send out a humidity report.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -207,7 +197,7 @@
 			<Default>100</Default>
 			<Label lang="en">Luminance Threshold</Label>
 			<Help lang="en">Threshold change in luminance to induce an automatic
-				report
+				report. The unit is lux. If the current luminance gap is larger than this value, sensor will send out a luminance report.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -216,10 +206,10 @@
 			<Size>2</Size>
 			<Minimum>0</Minimum>
 			<Maximum>100</Maximum>
-			<Default>5</Default>
+			<Default>10</Default>
 			<Label lang="en">Battery Threshold</Label>
-			<Help lang="en">Threshold change in battery level to induce an
-				automatic report
+			<Help lang="en">Threshold change in battery level to induce an automatic report.
+				The unit is %.  If the current battery gap is larger than this value, sensor will send out a battery report.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -227,11 +217,11 @@
 			<Type>short</Type>
 			<Size>1</Size>
 			<Minimum>0</Minimum>
-			<Maximum>11</Maximum>
+			<Maximum>100</Maximum>
 			<Default>2</Default>
 			<Label lang="en">Ultraviolet Threshold</Label>
-			<Help lang="en">Threshold change in ultraviolet to induce an
-				automatic report
+			<Help lang="en">Threshold change in ultraviolet to induce an automatic report.
+				The unit is UV index scale.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -239,8 +229,7 @@
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Send Alarm Report if low
-				temperature
+			<Label lang="en">Send Alarm Report if low temperature
 			</Label>
 			<Help lang="en">Send an alarm report if temperature is less than
 				-15 degrees C
@@ -255,6 +244,13 @@
 				<Label lang="en">Enable
 				</Label>
 			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>100</Index>
+			<Type>int</Type>
+			<Label lang="en">Set parameters 101-103 to default.
+			</Label>
+			<Help lang="en">not sure how exactly this is supposed to work ...</Help>
 		</Parameter>
 		<Parameter>
 			<Index>101</Index>
@@ -299,6 +295,13 @@
 			]]></Help>
 		</Parameter>
 		<Parameter>
+			<Index>110</Index>
+			<Type>int</Type>
+			<Label lang="en">Set parameters 111-113 to default.
+			</Label>
+			<Help lang="en">not sure how exactly this is supposed to work ...</Help>
+		</Parameter>
+		<Parameter>
 			<Index>111</Index>
 			<Type>int</Type>
 			<Size>4</Size>
@@ -306,6 +309,13 @@
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
 			<Label lang="en">Group 1 Report Interval</Label>
+			<Help lang="en">The unit of interval time is second if USB powered.
+				If battery powered, the minimum interval time is 60 minutes by default, for
+				example, if the value is set to be more than 5 and less than 3600, the interval
+				time is 60 minutes, if the value is set to be more than 3600 and less than 7200,
+				the interval time is 120 minutes. You can also change the minimum interval time to
+				4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>112</Index>
@@ -315,6 +325,13 @@
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
 			<Label lang="en">Group 2 Report Interval</Label>
+			<Help lang="en">The unit of interval time is second if USB powered.
+				If battery powered, the minimum interval time is 60 minutes by default, for
+				example, if the value is set to be more than 5 and less than 3600, the interval
+				time is 60 minutes, if the value is set to be more than 3600 and less than 7200,
+				the interval time is 120 minutes. You can also change the minimum interval time to
+				4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>113</Index>
@@ -324,49 +341,71 @@
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
 			<Label lang="en">Group 3 Report Interval</Label>
+			<Help lang="en">The unit of interval time is second if USB powered.
+				If battery powered, the minimum interval time is 60 minutes by default, for
+				example, if the value is set to be more than 5 and less than 3600, the interval
+				time is 60 minutes, if the value is set to be more than 3600 and less than 7200,
+				the interval time is 120 minutes. You can also change the minimum interval time to
+				4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>201</Index>
 			<Type>short</Type>
 			<Size>1</Size>
-			<Minimum>-32768</Minimum>
-			<Maximum>32767</Maximum>
+			<Minimum>-100</Minimum>
+			<Maximum>100</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Temperature Calibration</Label>
-			<Help lang="en">The range of calibration value is -32768 to 32767
+			<Help lang="en">The range of calibration value is -100 to 100 (or -10.0 to +10.0 degrees).
+				The value contains one decimal point. E.g. if the value is set to 20, the
+				calibration value is 2.0 ℃ (EU/AU version) or 2.0 ℉ (US version).
+				The calibration value = standard value - measure value.
+				Example: if measured value = 25.3℃ and the standard value = 23.2℃, then
+				calibration value= 23.2℃ - 25.3℃ = -2.1℃ (0xEB).
 			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>202</Index>
 			<Type>short</Type>
-			<Size>2</Size>
-			<Minimum>-32768</Minimum>
-			<Maximum>32767</Maximum>
+			<Size>1</Size>
+			<Minimum>-50</Minimum>
+			<Maximum>50</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Humidity Sensor Calibration</Label>
-			<Help lang="en">The range of calibration value is -32768 to 32767
+			<Help lang="en">The range of calibration value is -50 to 50 (percent).
+				The calibration value = standard value - measure value.
+				Example: if measured value = 80RH and the standard value = 75RH, then calibration
+				value = 75 – 80 = -5 (0xFB).
 			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>203</Index>
 			<Type>short</Type>
 			<Size>2</Size>
-			<Minimum>-32768</Minimum>
-			<Maximum>32767</Maximum>
+			<Minimum>-1000</Minimum>
+			<Maximum>1000</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Luminance Sensor Calibration</Label>
-			<Help lang="en">The range of calibration value is -32768 to 32767
+			<Help lang="en">The range of calibration value is -1000 to 1000 (lux).
+				The calibration value = standard value - measure value.
+				Example: if measured value = 800 Lux and the standard value = 750 Lux, then
+				calibration value= 750 – 800 = -50 (0xFFCE).
 			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>204</Index>
 			<Type>short</Type>
 			<Size>1</Size>
-			<Minimum>-11</Minimum>
-			<Maximum>11</Maximum>
+			<Minimum>-10</Minimum>
+			<Maximum>10</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Ultraviolet Sensor Calibration</Label>
-			<Help lang="en">The range of calibration value is -11 to 11</Help>
+			<Help lang="en">The range of calibration value is -11 to 10 (UV index scale).
+				The calibration value = standard value - measure value.
+				Example: if measured value = 9 and the standard value = 8, then
+				calibration value = 8 – 9 = -1 (0xFE).
+			</Help>
 		</Parameter>
 		<Parameter>
 			<Index>252</Index>
