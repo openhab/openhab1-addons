@@ -112,6 +112,10 @@
 		<Product>
 			<Reference>
 				<Type>4744</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Reference>
+				<Type>4744</Type>
 				<Id>3530</Id>
 			</Reference>
 			<Model>NGD00Z-4</Model>
