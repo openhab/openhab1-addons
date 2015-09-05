@@ -72,7 +72,6 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private boolean useThread = true;
 	private String deviceIDFile;
 	private String deviceIDFromConfig;
-	private static final String bindingversion = "1.0.0";
 
 	
 	/**
@@ -234,7 +233,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	}
 	
 	/**
-	 * @{inheritDoc}
+	 * @{inheritdoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -242,7 +241,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritdoc}
 	 */
 	@Override
 	protected String getName() {
@@ -250,7 +249,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	}
 	
 	/**
-	 * @{inheritDoc}
+	 * @{inheritdoc}
 	 */
 	protected void execute() {
 		
@@ -302,15 +301,13 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		}
 		
 		try {
-//			deviceID="7101";
 			logger.debug("Loading XML-Config for device ID: {}",deviceID);
-			logger.info("Using Config for device ID: {}",deviceID);
 			
 			URL mapping = FrameworkUtil.getBundle(ResolVBUSBinding.class).getEntry("xml/mapping.cfg");
 			
 			if (mapping == null) {
 				config = null;
-				logger.error("Unable to load mapping.xml");
+				logger.error("Unable to load mapping.cfg");
 				return;
 			}
 			
@@ -321,9 +318,8 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 			deviceIDFile = prop.getProperty(deviceID);
 			
 			logger.debug("Using file: {} for configuration",deviceIDFile);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			logger.debug(e.getMessage());
 		}
 		
 		
