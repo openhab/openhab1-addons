@@ -17,7 +17,9 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +36,7 @@ import org.openhab.binding.plex.internal.communication.Child;
 import org.openhab.binding.plex.internal.communication.MediaContainer;
 import org.openhab.binding.plex.internal.communication.Player;
 import org.openhab.binding.plex.internal.communication.Update;
+import org.openhab.binding.plex.internal.communication.User;
 import org.openhab.binding.plex.internal.communication.Video;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
@@ -50,6 +53,7 @@ import com.ning.http.client.providers.netty.NettyAsyncHttpProvider;
 import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketTextListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
+import com.ning.http.util.Base64;
 
 /**
 * Manages the web socket connection to a Plex server. Also responsible for sending HTTP GET commands. 
@@ -67,7 +71,12 @@ public class PlexConnector extends Thread {
 
 	private static final int VOLUME_STEP = 5;
 	
-	private static final int TRANSPORT_STEP = 30000; // 30 seconds
+	/**
+	 * Generated random client ID for openHAB 
+	 */
+	private static final String CLIENT_ID = "3e4e9b32-d366-47e2-a378-03044e9d1338"; 
+	
+	private static final String SIGN_IN_URL = "https://plex.tv/users/sign_in.xml";
 	
 	private final AsyncHttpClient client;
 
@@ -122,6 +131,8 @@ public class PlexConnector extends Thread {
 		
 		this.client = new AsyncHttpClient(new NettyAsyncHttpProvider(createAsyncHttpClientConfig()));
 		this.handler = createWebSocketHandler();
+		
+		requestToken();
 	}
 	
 	/**
@@ -457,12 +468,25 @@ public class PlexConnector extends Thread {
 	}
 	
 	private <T> T getDocument(String uri, Class<T> type) {
+		uri = appendParameters(uri);
+		return doHttpRequest("GET", uri, new HashMap<String, String>(), type);
+	}
+	
+	private <T> T postDocument(String uri, Map<String,String> parameters, Class<T> type) {
+		return doHttpRequest("POST", uri, parameters, type);
+	}
+	
+	private <T> T doHttpRequest(String method, String uri, Map<String,String> parameters, Class<T> type) {
 		try {
 			HttpURLConnection connection =
 				    (HttpURLConnection) new URL(uri).openConnection();
-			connection.setRequestMethod("GET");
+			connection.setRequestMethod(method);
 			connection.setConnectTimeout(REQUEST_TIMEOUT_MS);
 			connection.setReadTimeout(REQUEST_TIMEOUT_MS);
+			
+			for (Entry<String, String> entry : parameters.entrySet()) {
+				connection.addRequestProperty(entry.getKey(), entry.getValue());
+			}
 			
 			JAXBContext jc = JAXBContext.newInstance(type);
 			InputStream xml = connection.getInputStream();
@@ -473,13 +497,50 @@ public class PlexConnector extends Thread {
 			
 			return obj;
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage(), e);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage(), e);
 		}
 		
 		return null;
+	}
+	
+	private void requestToken() {
+		boolean tokenPresent = !StringUtils.isEmpty(connection.getToken());
+		boolean usernamePresent = !StringUtils.isEmpty(connection.getUsername());
+		boolean passwordPresent = !StringUtils.isEmpty(connection.getPassword());
+		
+		if (!tokenPresent && usernamePresent && passwordPresent) {
+			Map<String, String> parameters = new HashMap<String, String>();
+			String authString = Base64.encode((connection.getUsername() + ":" + connection.getPassword()).getBytes());
+			parameters.put("Authorization", "Basic "+ authString);
+			parameters.put("X-Plex-Client-Identifier", CLIENT_ID);
+			parameters.put("X-Plex-Product", "openHAB");
+			parameters.put("X-Plex-Version", PlexActivator.getVersion().toString());
+			
+			User user = postDocument(SIGN_IN_URL, parameters, User.class);
+			if (user != null) {
+				logger.debug("Plex login successful");
+				connection.setToken(user.getAuthenticationToken());
+			} else {
+				logger.warn("Invalid credentials for Plex account");
+			}
+		}
+	}
+
+	private String appendParameters(String uri) {
+		List<String> parameters = new ArrayList<String>();
+		
+		if (!StringUtils.isEmpty(connection.getToken())) {
+			parameters.add(String.format("X-Plex-Token=%s", connection.getToken()));
+		}
+		
+		if (!parameters.isEmpty()) {
+			uri += "?" + StringUtils.join(parameters, "&");
+		}
+		
+		return uri;
 	}
 }
