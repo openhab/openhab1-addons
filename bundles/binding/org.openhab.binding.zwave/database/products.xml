@@ -2641,4 +2641,17 @@
 			<ConfigFile>thermofloor/multireg_thermostat.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0085</Id>
+		<Name>Fakro</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>ARZ</Model>
+			<Label lang="en">Roller Shutter Module</Label>
+			<ConfigFile>fakro/arz.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
