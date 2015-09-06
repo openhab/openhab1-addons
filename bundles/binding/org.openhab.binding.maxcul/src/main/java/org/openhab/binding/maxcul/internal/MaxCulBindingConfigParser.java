@@ -45,6 +45,9 @@ public class MaxCulBindingConfigParser {
 		} else if (bindingConfigStr.startsWith("CreditMonitor")) {
 			logger.debug("Credit Monitor binding found");
 			cfg.setDeviceType(MaxCulDevice.CREDIT_MONITOR);
+		} else if (bindingConfigStr.startsWith("LedMode")) {
+			logger.debug("LED Mode binding found");
+			cfg.setDeviceType(MaxCulDevice.LED_MODE);
 		} else if (configParts.length < 2) {
 			throw new BindingConfigParseException(
 					"MaxCul configuration requires a configuration of at least the format <device_type>:<serial_num> for a MAX! device.");
@@ -96,6 +99,7 @@ public class MaxCulBindingConfigParser {
 				case CREDIT_MONITOR:
 				case PAIR_MODE:
 				case LISTEN_MODE:
+				case LED_MODE:
 				case CUBE:
 				case UNKNOWN:
 					break;
@@ -246,6 +250,7 @@ public class MaxCulBindingConfigParser {
 		switch (config.getDeviceType()) {
 		case PAIR_MODE:
 		case LISTEN_MODE:
+		case LED_MODE:	
 			if (!(item instanceof SwitchItem))
 				throw new BindingConfigParseException(
 						"Invalid item type. PairMode/ListenMode can only be a switch");

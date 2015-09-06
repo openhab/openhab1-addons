@@ -191,6 +191,15 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 							+ bindingConfig.getDeviceType()
 							+ " that is not OnOffType");
 				break;
+			case LED_MODE:
+				if (command instanceof OnOffType) {
+					this.messageHandler
+							.setLedMode(((OnOffType) command == OnOffType.ON));
+				} else
+					logger.warn("Command not handled for "
+							+ bindingConfig.getDeviceType()
+							+ " that is not OnOffType");
+				break;	
 			case RADIATOR_THERMOSTAT:
 			case RADIATOR_THERMOSTAT_PLUS:
 			case WALL_THERMOSTAT:

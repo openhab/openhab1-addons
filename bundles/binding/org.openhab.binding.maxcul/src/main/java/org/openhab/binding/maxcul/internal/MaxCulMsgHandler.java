@@ -696,7 +696,23 @@ public class MaxCulMsgHandler implements CULListener {
 		listenMode = listenModeOn;
 		logger.debug("Listen Mode is " + (listenMode ? "ON" : "OFF"));
 	}
-
+	
+	
+	public void setLedMode(boolean ledModeOn) {
+		String data="";
+		if(ledModeOn){
+			data="l02";			
+		}else{
+			data="l00";
+		}
+		try {
+			cul.send(data);
+		} catch (CULCommunicationException e) {
+			logger.error("Unable to send CUL message " + data + " because: "
+					+ e.getMessage());
+		}
+	}
+	
 	public void startSequence(MessageSequencer ps, BaseMsg msg) {
 		logger.debug("Starting sequence");
 		ps.runSequencer(msg);
