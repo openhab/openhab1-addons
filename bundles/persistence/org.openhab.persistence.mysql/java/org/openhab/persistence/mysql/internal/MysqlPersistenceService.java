@@ -18,10 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -50,12 +49,10 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +83,7 @@ import org.slf4j.LoggerFactory;
  * @author Helmut Lehmeyer
  * @since 1.1.0
  */
-public class MysqlPersistenceService implements QueryablePersistenceService, ManagedService {
+public class MysqlPersistenceService implements QueryablePersistenceService {
 
 	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.([0-9.a-zA-Z]+)$");
 
@@ -99,8 +96,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
-	private PersistentStateRestorer persistentStateRestorer;
-
+	
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
 	private int errReconnectThreshold = 0;
@@ -116,7 +112,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * Initialise the type array
 	 * If other Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
 	 */
-	public void activate() {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
 		sqlTypes.put("CALLITEM", 		"VARCHAR(200)");
 		sqlTypes.put("COLORITEM", 		"VARCHAR(70)");
 		sqlTypes.put("CONTACTITEM", 	"VARCHAR(6)");
@@ -127,9 +123,65 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		sqlTypes.put("ROLLERSHUTTERITEM","TINYINT");
 		sqlTypes.put("STRINGITEM", 		"VARCHAR(20000)");
 		sqlTypes.put("SWITCHITEM", 		"CHAR(3)");
+		
+		Iterator<String> keys = config.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = (String) keys.next();
+
+			Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			matcher.reset();
+			matcher.find();
+
+			if (!matcher.group(1).equals("sqltype"))
+				continue;
+
+			String itemType = matcher.group(2).toUpperCase() + "ITEM";
+			String value = (String) config.get(key);
+
+			sqlTypes.put(itemType, value);
+		}
+
+		url = (String) config.get("url");
+		if (StringUtils.isBlank(url)) {
+			logger.warn("The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
+		}
+
+		user = (String) config.get("user");
+		if (StringUtils.isBlank(user)) {
+			logger.warn("The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
+		}
+
+		password = (String) config.get("password");
+		if (StringUtils.isBlank(password)) {
+			logger.warn("The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
+		}
+
+		String tmpString = (String) config.get("reconnectCnt");
+		if (StringUtils.isNotBlank(tmpString)) {
+			errReconnectThreshold = Integer.parseInt(tmpString);
+		}
+
+		tmpString = (String) config.get("waitTimeout");
+		if (StringUtils.isNotBlank(tmpString)) {
+			waitTimeout = Integer.parseInt(tmpString);
+		}
+
+		// reconnect to the database in case the configuration has changed.
+		disconnectFromDatabase();
+		connectToDatabase();
+
+		// connection has been established ... initialization completed!
+		initialized = true;
+		
+		logger.debug("mySQL configuration complete.");
 	}
 
-	public void deactivate() {
+	public void deactivate(final int reason) {
 		logger.debug("mySQL persistence bundle stopping. Disconnecting from database.");
 		disconnectFromDatabase();
 	}
@@ -142,14 +194,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		this.itemRegistry = null;
 	}
 	
-	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
-	}
 	
-	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
-	}
-
 	/**
 	 * @{inheritDoc
 	 */
@@ -491,77 +536,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 */
 	protected String formatAlias(String alias, Object... values) {
 		return String.format(alias, values);
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("mySQL configuration starting");
-		if (config != null) {
-			Enumeration<String> keys = config.keys();
-
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
-
-				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
-
-				if (!matcher.matches()) {
-					continue;
-				}
-
-				matcher.reset();
-				matcher.find();
-
-				if (!matcher.group(1).equals("sqltype"))
-					continue;
-
-				String itemType = matcher.group(2).toUpperCase() + "ITEM";
-				String value = (String) config.get(key);
-
-				sqlTypes.put(itemType, value);
-			}
-
-			url = (String) config.get("url");
-			if (StringUtils.isBlank(url)) {
-				throw new ConfigurationException("mysql:url",
-						"The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
-			}
-
-			user = (String) config.get("user");
-			if (StringUtils.isBlank(user)) {
-				throw new ConfigurationException("sql:user",
-						"The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
-			}
-
-			password = (String) config.get("password");
-			if (StringUtils.isBlank(password)) {
-				throw new ConfigurationException(
-						"mysql:password",
-						"The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
-			}
-
-			String tmpString = (String) config.get("reconnectCnt");
-			if (StringUtils.isNotBlank(tmpString)) {
-				errReconnectThreshold = Integer.parseInt(tmpString);
-			}
-
-			tmpString = (String) config.get("waitTimeout");
-			if (StringUtils.isNotBlank(tmpString)) {
-				waitTimeout = Integer.parseInt(tmpString);
-			}
-
-			// reconnect to the database in case the configuration has changed.
-			disconnectFromDatabase();
-			connectToDatabase();
-
-			// connection has been established ... initialization completed!
-			initialized = true;
-			
-			logger.debug("mySQL configuration complete.");
-			persistentStateRestorer.initializeItems(getName());
-		}
-
 	}
 
 	@Override

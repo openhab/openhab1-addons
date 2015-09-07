@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -40,12 +40,10 @@ import org.openhab.core.persistence.FilterCriteria.Operator;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +60,7 @@ import com.mongodb.MongoClientURI;
  * @author Thorsten Hoeger
  * @since 1.5.0
  */
-public class MongoDBPersistenceService implements QueryablePersistenceService,
-		ManagedService {
+public class MongoDBPersistenceService implements QueryablePersistenceService {
 
 	private static final String FIELD_ID = "_id";
 	private static final String FIELD_ITEM = "item";
@@ -84,21 +81,31 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 	private MongoClient cl;
 	private DBCollection mongoCollection;
 
-	private PersistentStateRestorer persistentStateRestorer;
-	
-	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
-	}
-		
-	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		url = (String) config.get("url");
+		logger.debug("MongoDB URL {}", url);
+		if (StringUtils.isBlank(url)) {
+			logger.warn("The MongoDB database URL is missing - please configure the mongodb:url parameter in openhab.cfg");
+		}
+		db = (String) config.get("database");
+		logger.debug("MongoDB database {}", db);
+		if (StringUtils.isBlank(db)) {
+			logger.warn("The MongoDB database name is missing - please configure the mongodb:database parameter in openhab.cfg");
+		}
+		collection = (String) config.get("collection");
+		logger.debug("MongoDB collection {}", collection);
+		if (StringUtils.isBlank(collection)) {
+			logger.warn("The MongoDB database collection is missing - please configure the mongodb:collection parameter in openhab.cfg");
+		}
+
+		disconnectFromDatabase();
+		connectToDatabase();
+
+		// connection has been established ... initialization completed!
+		initialized = true;
 	}
 
-	public void activate() {
-		//
-	}
-
-	public void deactivate() {
+	public void deactivate(final int reason) {
 		logger.debug("MongoDB persistence bundle stopping. Disconnecting from database.");
 		disconnectFromDatabase();
 	}
@@ -220,46 +227,7 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 		}
 		cl = null;
 	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-
-		if (config != null) {
-			url = (String) config.get("url");
-			logger.debug("MongoDB URL {}", url);
-			if (StringUtils.isBlank(url)) {
-				throw new ConfigurationException(
-						"mongodb:url",
-						"The MongoDB database URL is missing - please configure the mongodb:url parameter in openhab.cfg");
-			}
-			db = (String) config.get("database");
-			logger.debug("MongoDB database {}", db);
-			if (StringUtils.isBlank(db)) {
-				throw new ConfigurationException(
-						"mongodb:database",
-						"The MongoDB database name is missing - please configure the mongodb:database parameter in openhab.cfg");
-			}
-			collection = (String) config.get("collection");
-			logger.debug("MongoDB collection {}", collection);
-			if (StringUtils.isBlank(collection)) {
-				throw new ConfigurationException(
-						"mongodb:collection",
-						"The MongoDB database collection is missing - please configure the mongodb:collection parameter in openhab.cfg");
-			}
-
-			disconnectFromDatabase();
-			connectToDatabase();
-
-			// connection has been established ... initialization completed!
-			initialized = true;
-			persistentStateRestorer.initializeItems(getName());
-		}
-
-	}
-
+	
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
 		if (!initialized)
