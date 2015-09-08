@@ -49,7 +49,7 @@
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
-	<module>org.openhab.binding.dsmr</module>
+    <module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
     <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungac.test</module>
@@ -156,7 +156,10 @@
     <module>org.openhab.binding.panasonictv</module>
     <module>org.openhab.binding.enphaseenergy</module>
     <module>org.openhab.binding.lightwaverf</module>
-	<module>org.openhab.binding.souliss</module>
+    <module>org.openhab.binding.souliss</module>
     <module>org.openhab.binding.sagercaster</module>
+    <module>org.openhab.binding.ipx800</module>
+    <module>org.openhab.binding.tacmi</module>
+    <module>org.openhab.binding.rwesmarthome</module>
   </modules>
 </project>
