@@ -703,6 +703,56 @@ public abstract class CommandHandler {
 	}
 	
 	/**
+	 * Method for setting FanLinc fan function to OFF, LOW, MED or HIGH
+	 */
+	public static class FanLincFanControlCommandHandler extends CommandHandler {
+		FanLincFanControlCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				int dc = ((DecimalType)cmd).intValue();
+				Msg m = null;
+
+				switch (dc) {
+				case 1:            //Turn fan off
+					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0x00);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent msg to fan OFF", nm());
+					break;
+				case 2:            //Set fan speed to low
+					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0x55);
+					
+					logger.info("{}: sent msg to set fan to low speed", nm());
+					break;
+				case 3:            //Set fan speed to medium
+					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0xAA);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent msg to set fan to medium speed", nm());
+					break;
+				case 4:            //Set fan speed to high
+					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0xFF);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent msg to set fan to high speed", nm());
+					break;
+				default:
+					break;
+				}
+				
+				if (m != null) {
+					m.setByte("userData1", (byte)0x02);
+					dev.enqueueMessage(m, m_feature);
+					m = null;
+				}
+
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+	
+	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
 	 * @param params 
