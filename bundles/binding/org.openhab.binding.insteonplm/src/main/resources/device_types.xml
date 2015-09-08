@@ -321,4 +321,12 @@ Example entry:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
+  <device productKey="F00.00.1C">
+     <model>2475F</model>
+     <description>FanLinc Module</description>
+     <feature name="lightdimmer">GenericDimmer</feature>
+     <feature name="fancontrol">FanLincFanControl</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
 </xml>

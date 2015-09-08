@@ -920,6 +920,49 @@ public abstract class MessageHandler {
 	}
 	
 	/**
+	 * Handles FanLinc replies to Fan requests.
+	 * Unfortunately different message payload than Thermostat Fan Replies. 
+	 */
+	public static class FanLincFanControlReplyHandler extends  MessageHandler {
+		FanLincFanControlReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			try {
+				byte cmd2 = msg.getByte("command2");
+				switch (cmd2) {
+				case (byte) 0x00:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "OFF");
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					break;
+				case (byte) 0x55:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "LOW");
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					break;	
+				case (byte) 0xAA:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "MED");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;	
+				case (byte) 0xFF:
+					logger.info("{}: set device {} to {}", nm(),
+							dev.getAddress(), "HIGH");
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					break;
+				default: // do nothing
+					break;
+				}
+			} catch (FieldException e) {
+				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
+				return;
+			}
+		}
+	}
+	
+	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
 	 * @param params 
