@@ -78,10 +78,8 @@
 			<Default>240</Default>
 			<Size>2</Size>
 			<Label lang="en">Motion Sensor Timeout</Label>
-			<Help lang="en">How long should the device associated to MultiSensor
-				keep state On before sending it Off command (if the value is bigger
-				than 255, the value would be rounded to next integer in minutes,
-				else seconds)
+			<Help lang="en">How long should the device associated to MultiSensor keep state On before sending Off command.<br>
+If the value is bigger than 255, the value would be rounded to next integer in minutes, else to seconds.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -140,8 +138,7 @@
 			<Maximum>50</Maximum>
 			<Default>20</Default>
 			<Label lang="en">Low Battery Report</Label>
-			<Help lang="en">Low Battery report if bellow this value. The range of
-				low battery value is 10% to 50%</Help>
+			<Help lang="en">Report Low Battery if below this value. The range of low battery value is 10% to 50%.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>40</Index>
@@ -149,8 +146,7 @@
 			<Size>1</Size>
 			<Default>0</Default>
 			<Label lang="en">Selective Reporting</Label>
-			<Help lang="en">Send reports only when measurements reach a certain
-				threshold or percentage set in parameters 41-44.
+			<Help lang="en">Send reports only when measurements reach a certain threshold or percentage set in parameters 41-44.
 			</Help>
 			<Item>
 				<Value>0</Value>
@@ -169,11 +165,11 @@
 			<Maximum>100</Maximum>
 			<Default>20</Default>
 			<Label lang="en">Temperature Threshold</Label>
-			<Help lang="en">Threshold change in temperature to induce an automatic report.
-				The unit is Fahrenheit for US version, Celsius for EU/AU version.
-				The value contains one decimal point. E.g. if the value is set to 20, the
-				threshold value is 2.0 ℃ (EU/AU version) or 2.0 ℉ (US version). If the
-				current temperature gap is larger than 2.0, a temperature report will be sent out.
+			<Help lang="en">Threshold change in temperature to induce an automatic report.<br>
+The unit is Fahrenheit for US version, Celsius for EU/AU version.<br>
+The value contains one decimal point. E.g. if the value is set to 20, the<br>
+threshold value is 2.0 ? (EU/AU version) or 2.0 ? (US version).<br>
+If the current temperature gap is larger than 2.0, a temperature report will be sent out.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -184,8 +180,9 @@
 			<Maximum>100</Maximum>
 			<Default>10</Default>
 			<Label lang="en">Humidity Threshold</Label>
-			<Help lang="en">Threshold change in humidity to induce an automatic report. 
-				The unit is %. If the current humidity gap is larger than this value, sensor will send out a humidity report.
+			<Help lang="en">Threshold change in humidity to induce an automatic report.<br>
+The unit is %.<br>
+If the current humidity gap is larger than this value, sensor will send out a humidity report.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -196,8 +193,9 @@
 			<Maximum>1000</Maximum>
 			<Default>100</Default>
 			<Label lang="en">Luminance Threshold</Label>
-			<Help lang="en">Threshold change in luminance to induce an automatic
-				report. The unit is lux. If the current luminance gap is larger than this value, sensor will send out a luminance report.
+			<Help lang="en">Threshold change in luminance to induce an automatic report.<br>
+The unit is lux.<br>
+If the current luminance gap is larger than this value, sensor will send out a luminance report.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -208,8 +206,9 @@
 			<Maximum>100</Maximum>
 			<Default>10</Default>
 			<Label lang="en">Battery Threshold</Label>
-			<Help lang="en">Threshold change in battery level to induce an automatic report.
-				The unit is %.  If the current battery gap is larger than this value, sensor will send out a battery report.
+			<Help lang="en">Threshold change in battery level to induce an automatic report.<br>
+The unit is %.<br>
+If the current battery gap is larger than this value, sensor will send out a battery report.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -220,8 +219,8 @@
 			<Maximum>100</Maximum>
 			<Default>2</Default>
 			<Label lang="en">Ultraviolet Threshold</Label>
-			<Help lang="en">Threshold change in ultraviolet to induce an automatic report.
-				The unit is UV index scale.
+			<Help lang="en">Threshold change in ultraviolet light to induce an automatic report.<br>
+The unit is UV index scale.
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -231,8 +230,7 @@
 			<Default>0</Default>
 			<Label lang="en">Send Alarm Report if low temperature
 			</Label>
-			<Help lang="en">Send an alarm report if temperature is less than
-				-15 degrees C
+			<Help lang="en">Send an alarm report if temperature is less than -15 °C
 			</Help>
 			<Item>
 				<Value>0</Value>
@@ -259,12 +257,11 @@
 			<Size>4</Size>
 			<Label lang="en">Group 1 Periodic Reports
 			</Label>
-			<Help lang="en"><![CDATA[The value is a combination number <br>
-				made up of the sum of the values for the individual sensors and battery. <br>
-				The sensors have the values: Battery=1, Ultraviolet=16, Temperature=32, <br>
-				Humidity=64, Light=128 Therefore if you want all sensors and the  <br>
-				battery sending regular reports, set the parameter to 241 (1 + 16 + 32 + 64 + 128). 
-			]]></Help>
+			<Help lang="en">This value is a combination number made up of the sum of the values<br>
+for the individual sensors and battery. The sensors have these values:<br>
+Battery=1, Ultraviolet=16, Temperature=32, Humidity=64, Light=128<br>
+So if you want all sensors and the battery sending regular reports,
+set the parameter to 241 (1 + 16 + 32 + 64 + 128).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>102</Index>
@@ -273,12 +270,11 @@
 			<Size>4</Size>
 			<Label lang="en">Group 2 Periodic Reports
 			</Label>
-			<Help lang="en"><![CDATA[The value is a combination number <br>
-				made up of the sum of the values for the individual sensors and battery. <br>
-				The sensors have the values: Battery=1, Ultraviolet=16, Temperature=32, <br>
-				Humidity=64, Light=128 Therefore if you want all sensors and the  <br>
-				battery sending regular reports, set the parameter to 241 (1 + 16 + 32 + 64 + 128). 
-			]]></Help>
+			<Help lang="en">This value is a combination number made up of the sum of the values<br>
+for the individual sensors and battery.	The sensors have these values:<br>
+Battery=1, Ultraviolet=16, Temperature=32, Humidity=64, Light=128.<br>
+So if you want all sensors and the battery sending regular reports,
+set the parameter to 241 (1 + 16 + 32 + 64 + 128).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>103</Index>
@@ -287,12 +283,11 @@
 			<Size>4</Size>
 			<Label lang="en">Group 3 Periodic Reports
 			</Label>
-			<Help lang="en"><![CDATA[The value is a combination number <br>
-				made up of the sum of the values for the individual sensors and battery. <br>
-				The sensors have the values: Battery=1, Ultraviolet=16, Temperature=32, <br>
-				Humidity=64, Light=128 Therefore if you want all sensors and the  <br>
-				battery sending regular reports, set the parameter to 241 (1 + 16 + 32 + 64 + 128). 
-			]]></Help>
+			<Help lang="en"><The value is a combination number made up of the sum of the values<br>
+for the individual sensors and battery. The sensors have these values:<br>
+Battery=1, Ultraviolet=16, Temperature=32, Humidity=64, Light=128.<br>
+So if you want all sensors and the battery sending regular reports,<br>
+set the parameter to 241 (1 + 16 + 32 + 64 + 128).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>110</Index>
@@ -309,13 +304,12 @@
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
 			<Label lang="en">Group 1 Report Interval</Label>
-			<Help lang="en">The unit of interval time is second if USB powered.
-				If battery powered, the minimum interval time is 60 minutes by default, for
-				example, if the value is set to be more than 5 and less than 3600, the interval
-				time is 60 minutes, if the value is set to be more than 3600 and less than 7200,
-				the interval time is 120 minutes. You can also change the minimum interval time to
-				4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC
-			</Help>
+			<Help lang="en">The unit of interval time is second if USB powered.<br>
+If battery powered, the minimum interval time is 60 minutes by default.<br>
+For example, if the value is set to be more than 5 and less than 3600, the interval<br>
+time is 60 minutes, and if the value is set to be more than 3600 and less than 7200,<br>
+the interval time is 120 minutes. You can also change the minimum interval time to<br>
+4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>112</Index>
@@ -325,13 +319,12 @@
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
 			<Label lang="en">Group 2 Report Interval</Label>
-			<Help lang="en">The unit of interval time is second if USB powered.
-				If battery powered, the minimum interval time is 60 minutes by default, for
-				example, if the value is set to be more than 5 and less than 3600, the interval
-				time is 60 minutes, if the value is set to be more than 3600 and less than 7200,
-				the interval time is 120 minutes. You can also change the minimum interval time to
-				4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC
-			</Help>
+			<Help lang="en">The unit of interval time is second if USB powered.<br>
+If battery powered, the minimum interval time is 60 minutes by default.<br>
+For example, if the value is set to be more than 5 and less than 3600, the interval<br>
+time is 60 minutes, if the value is set to be more than 3600 and less than 7200,<br>
+the interval time is 120 minutes. You can also change the minimum interval time to<br>
+4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>113</Index>
@@ -341,13 +334,12 @@
 			<Maximum>2678400</Maximum>
 			<Default>3600</Default>
 			<Label lang="en">Group 3 Report Interval</Label>
-			<Help lang="en">The unit of interval time is second if USB powered.
-				If battery powered, the minimum interval time is 60 minutes by default, for
-				example, if the value is set to be more than 5 and less than 3600, the interval
-				time is 60 minutes, if the value is set to be more than 3600 and less than 7200,
-				the interval time is 120 minutes. You can also change the minimum interval time to
-				4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC
-			</Help>
+			<Help lang="en">The unit of interval time is second if USB powered.<br>
+If battery powered, the minimum interval time is 60 minutes by default.<br>
+For example, if the value is set to be more than 5 and less than 3600, the interval<br>
+time is 60 minutes, if the value is set to be more than 3600 and less than 7200,<br>
+the interval time is 120 minutes. You can also change the minimum interval time<br>
+to 4 minutes via setting the interval value(3 bytes) to 240 in Wake Up Interval Set CC.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>201</Index>
@@ -357,13 +349,12 @@
 			<Maximum>100</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Temperature Calibration</Label>
-			<Help lang="en">The range of calibration value is -100 to 100 (or -10.0 to +10.0 degrees).
-				The value contains one decimal point. E.g. if the value is set to 20, the
-				calibration value is 2.0 ℃ (EU/AU version) or 2.0 ℉ (US version).
-				The calibration value = standard value - measure value.
-				Example: if measured value = 25.3℃ and the standard value = 23.2℃, then
-				calibration value= 23.2℃ - 25.3℃ = -2.1℃ (0xEB).
-			</Help>
+			<Help lang="en">The range of calibration value is -100 to 100 (or -10.0 to +10.0 degrees).<br>
+The value contains one decimal point. E.g. if the value is set to 20, the<br>
+calibration value is 2.0 ? (EU/AU version) or 2.0 ? (US version).<br>
+The calibration value = standard value - measure value.<br>
+Example: if measured value = 25.3? and the standard value = 23.2?, then<br>
+calibration value= 23.2? - 25.3? = -2.1? (0xEB).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>202</Index>
@@ -373,11 +364,10 @@
 			<Maximum>50</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Humidity Sensor Calibration</Label>
-			<Help lang="en">The range of calibration value is -50 to 50 (percent).
-				The calibration value = standard value - measure value.
-				Example: if measured value = 80RH and the standard value = 75RH, then calibration
-				value = 75 – 80 = -5 (0xFB).
-			</Help>
+			<Help lang="en">The range of calibration value is -50 to 50 (percent).<br>
+The calibration value = standard value - measure value.<br>
+Example: if measured value = 80RH and the standard value = 75RH, then calibration<br>
+value = 75 – 80 = -5 (0xFB).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>203</Index>
@@ -387,11 +377,10 @@
 			<Maximum>1000</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Luminance Sensor Calibration</Label>
-			<Help lang="en">The range of calibration value is -1000 to 1000 (lux).
-				The calibration value = standard value - measure value.
-				Example: if measured value = 800 Lux and the standard value = 750 Lux, then
-				calibration value= 750 – 800 = -50 (0xFFCE).
-			</Help>
+			<Help lang="en">The range of calibration value is -1000 to 1000 (lux).<br>
+The calibration value = standard value - measure value.<br>
+Example: if measured value = 800 Lux and the standard value = 750 Lux, then<br>
+calibration value= 750 – 800 = -50 (0xFFCE).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>204</Index>
@@ -401,11 +390,10 @@
 			<Maximum>10</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Ultraviolet Sensor Calibration</Label>
-			<Help lang="en">The range of calibration value is -11 to 10 (UV index scale).
-				The calibration value = standard value - measure value.
-				Example: if measured value = 9 and the standard value = 8, then
-				calibration value = 8 – 9 = -1 (0xFE).
-			</Help>
+			<Help lang="en">The range of calibration value is -11 to 10 (UV index scale).<br>
+The calibration value = standard value - measure value.<br>
+Example: if measured value = 9 and the standard value = 8, then<br>
+calibration value = 8 – 9 = -1 (0xFE).</Help>
 		</Parameter>
 		<Parameter>
 			<Index>252</Index>
@@ -435,8 +423,7 @@
 			</Item>
 			<Item>
 				<Value>1431655765</Value>
-				<Label lang="en">Reset to default factory settings and be excluded
-					from the Z-wave network</Label>
+				<Label lang="en">Reset to default factory settings and be excluded from the Z-wave network</Label>
 			</Item>
 		</Parameter>
 	</Configuration>
@@ -446,11 +433,9 @@
 			<Maximum>5</Maximum>
 			<SetToController>true</SetToController>
 			<Label lang="en">Group 1</Label>
-			<Help lang="en">Group 1 is assigned to the Lifeline association group
-				and every device has 5 nodes to associate. The Motion sensor,
-				Humidity sensor, thermometer, light sensor and Ultraviolet sensor
-				reports will be sent to the associated nodes in Group 1
-			</Help>
+			<Help lang="en">Group 1 is assigned to the Lifeline association group,<br>
+and every device has 5 nodes to associate. The motion sensor, humidity sensor, thermometer,<br>
+light sensor and ultraviolet sensor reports will be sent to the associated nodes in Group 1.</Help>
 		</Group>
 		<Group>
 			<Index>2</Index>
