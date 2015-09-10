@@ -77,10 +77,9 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 	 */
 	private final static String KEY_BAUD_RATE = "baudrate";
 	/**
-	 * Config key for the device parity. i.e. parity:NONE
+	 * Config key for the device parity. i.e. parity:0
 	 */
 	private final static String KEY_PARITY = "parity";
-	
 	
 	/**
 	 * Our housecode we need to simulate a central device.
