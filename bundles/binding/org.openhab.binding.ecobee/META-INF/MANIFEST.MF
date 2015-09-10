@@ -20,6 +20,7 @@ Import-Package: com.google.common.base,
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
+ org.codehaus.jackson.map.annotate,
  org.openhab.binding.ecobee,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -41,5 +42,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: lib/commons-beanutils-1.8.3.jar,
  .
-Require-Bundle: org.openhab.io.rest.lib
 Bundle-ActivationPolicy: lazy
