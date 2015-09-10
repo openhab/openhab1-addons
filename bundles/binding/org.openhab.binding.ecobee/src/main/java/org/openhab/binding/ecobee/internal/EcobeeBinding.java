@@ -27,6 +27,7 @@ import org.apache.commons.beanutils.Converter;
 import org.openhab.binding.ecobee.EcobeeActionProvider;
 import org.openhab.binding.ecobee.EcobeeBindingProvider;
 import org.openhab.binding.ecobee.messages.AbstractFunction;
+import org.openhab.binding.ecobee.messages.AbstractRequest;
 import org.openhab.binding.ecobee.messages.ApiResponse;
 import org.openhab.binding.ecobee.messages.AuthorizeRequest;
 import org.openhab.binding.ecobee.messages.AuthorizeResponse;
@@ -79,6 +80,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	private static final Logger logger = LoggerFactory.getLogger(EcobeeBinding.class);
 
 	protected static final String CONFIG_REFRESH = "refresh";
+	protected static final String CONFIG_TIMEOUT = "timeout";
 	protected static final String CONFIG_APP_KEY = "appkey";
 	protected static final String CONFIG_SCOPE = "scope";
 	protected static final String CONFIG_TEMP_SCALE = "tempscale";
@@ -259,8 +261,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				readEcobee(oauthCredentials, selection);
 			}
 		} catch (Exception e) {
-			logger.warn("Exception reading from Ecobee: {}", e.getMessage());
-			logger.debug("Stack trace:", e);
+			if (logger.isDebugEnabled()) {
+				logger.warn("Exception reading from Ecobee:", e);
+			} else {
+				logger.warn("Exception reading from Ecobee: {}", e.getMessage());
+			}
 		}
 	}
 
@@ -702,6 +707,12 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			if (isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
+			// to override the default HTTP timeout one has to add a
+			// parameter to openhab.cfg like ecobee:timeout=20000
+			String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+			if (isNotBlank(timeoutString)) {
+				AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
+			}
 			// to override the default usage of Fahrenheit one has to add a
 			// parameter to openhab.cfg, as in ecobee:tempscale=C
 			String tempScaleString = (String) config.get(CONFIG_TEMP_SCALE);
@@ -720,8 +731,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
-				if (CONFIG_REFRESH.equals(configKey) || CONFIG_TEMP_SCALE.equals(configKey)
-						|| "service.pid".equals(configKey)) {
+				if (CONFIG_REFRESH.equals(configKey) || CONFIG_TIMEOUT.equals(configKey)
+						|| CONFIG_TEMP_SCALE.equals(configKey) || "service.pid".equals(configKey)) {
 					continue;
 				}
 
