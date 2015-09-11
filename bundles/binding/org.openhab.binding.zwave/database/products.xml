@@ -341,6 +341,16 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>AD146</Model>
+			<Label lang="en">In-Wall Dimmer Module</Label>
+			<Label lang="de">Unterputz Dimmer Modul</Label>
+			<ConfigFile>everspring/ad146.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0103</Type>
 				<Id>0001</Id>
 			</Reference>
