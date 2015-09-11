@@ -1,57 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>AN179</Model>
-	<Label lang="en">In-Wall Switch</Label>
+	<Label lang="en">In-Wall Switch Module</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x25</id></Class>
 		<Class><id>0x27</id></Class>
 		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>		
+		<Class><id>0x5A</id></Class>		
+		<Class><id>0x5E</id></Class>		
 		<Class><id>0x70</id></Class>		
+		<Class><id>0x71</id></Class>		
 		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7A</id></Class>
 		<Class><id>0x85</id></Class>
 		<Class><id>0x86</id></Class>
 	</CommandClasses>
-	
 	<Configuration>
 		<Parameter>
 			<Index>1</Index>
 			<Type>short</Type>
 			<Minimum>0</Minimum>
-			<Maximum>254</Maximum>
-			<Default>10</Default>
-			<Size>1</Size>
-			<Label lang="en">True Period</Label>
-			<Help lang="en"><![CDATA[This is the time the switching status needs to remain unchanged after a change to cause the device to send out a status message]]></Help>
+			<Maximum>255</Maximum>
+			<Default>255</Default>
+			<Size>2</Size>
+			<Label lang="en">Basic Set Command value</Label>
+			<Help lang="en">Basic Set Command value. 0-99, 255</Help>
 		</Parameter>
 		<Parameter>
 			<Index>2</Index>
+			<Type>short</Type>
+			<Minimum>3</Minimum>
+			<Maximum>25</Maximum>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Report time delay group 1</Label>
+			<Help lang="en">Delaying time to report to group 1.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Do not remember</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Remember</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Remember last status</Label>
+			<Help lang="en">Remember last status after power loss.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disabled</Label>
+				<Label lang="en">Edge Mode</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enabled</Label>
+				<Label lang="en">Toogle Mode</Label>
 			</Item>
 			<Size>1</Size>
-			<Label lang="en">Send Out Basic Command</Label>
-			<Help lang="en">Enable or Disable the status message function when the local button press changes the switching state.</Help>
-		</Parameter>
-		<Parameter>
-			<Index>3</Index>
-			<Type>short</Type>
-			<Minimum>0</Minimum>
-			<Maximum>3240</Maximum>
-			<Default>3</Default>
-			<Size>2</Size>
-			<Label lang="en">Meter Report Period</Label>
-			<Help lang="en"><![CDATA[The device will report its meter value within the interval set. Set to 0 will disable the autoreporting function.]]></Help>
+			<Label lang="en">Switching type</Label>
+			<Help lang="en">Edge or toogle switch mode.</Help>
 		</Parameter>
 	</Configuration>
-
 	<Associations>
 		<Group>
 			<Index>1</Index>
