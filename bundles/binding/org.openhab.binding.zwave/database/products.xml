@@ -1984,6 +1984,15 @@
 			<Label lang="en">Smart Energy Plug In Switch</Label>
 			<ConfigFile>philio/pan11_1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>PAN11-1B</Model>
+			<Label lang="en">Smart Energy Plug In Switch</Label>
+			<ConfigFile>philio/pan11_1b.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0096</Id>
