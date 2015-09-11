@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>PAN11-1</Model>
+	<Model>PAN11-1B</Model>
 	<Label lang="en">Smart Energy Plug In Switch</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x25</id></Class>
-		<Class><id>0x86</id></Class>
 		<Class><id>0x27</id></Class>
-		<Class><id>0x72</id></Class>
-		<Class><id>0x70</id></Class>
 		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x7a</id></Class>
 		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x98</id></Class>
 	</CommandClasses>
 	<Configuration>
 		<Parameter>
@@ -44,7 +52,7 @@
 		<Parameter>
 			<Index>3</Index>
 			<Type>short</Type>
-			<Default>3000</Default>
+			<Default>1300</Default>
 			<Size>2</Size>
 			<Label lang="en">Threshold of Watt for Load Caution</Label>
 			<Label lang="de">Schwellwert für Watt-Last</Label>
@@ -60,6 +68,96 @@
 			<Label lang="de">Schwellwert für Gesammtverbrauch</Label>
 			<Help lang="en">If threshold of kWh is reached, a Meter Report will be generated</Help>
 			<Help lang="de">Wenn der kWH Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state mode</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last State</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Mode of switch Off function</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED indication mode</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Show night mode</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">One flash mode</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Auto Off Timer</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF Off command mode</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch Toggle</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch On</Label>
+			</Item>
 		</Parameter>
 	</Configuration>
 	<Associations>
