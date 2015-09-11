@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>AN179</Model>
-	<Label lang="en">In-Wall Switch Module</Label>
+	<Model>AD146</Model>
+	<Label lang="en">In-Wall Dimmer Module</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
-		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
 		<Class><id>0x27</id></Class>
 		<Class><id>0x32</id></Class>
 		<Class><id>0x59</id></Class>		
