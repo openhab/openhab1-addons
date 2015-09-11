@@ -369,6 +369,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0008</Id>
+			</Reference>
+			<Model>AN179</Model>
+			<Label lang="en">In-Wall Switch Module</Label>
+			<ConfigFile>everspring/an179.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0101</Type>
 				<Id>0001</Id>
 			</Reference>
