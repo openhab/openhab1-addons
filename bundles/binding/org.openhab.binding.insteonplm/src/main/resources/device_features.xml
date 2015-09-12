@@ -294,8 +294,8 @@
 </feature>
 <feature name="FanLincFanControl">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
-	<message-handler cmd="0x11" >FanLincFanControlReplyHandler</message-handler>
+	<message-handler cmd="0x19" >FanLincFanControlReplyHandler</message-handler>
 	<command-handler default="true" command="DecimalType">FanLincFanControlCommandHandler</command-handler>
-	<poll-handler>DefaultPollHandler</poll-handler>
+	<poll-handler>FanLincFanControlPollHandler</poll-handler>
 </feature>     
 </xml>

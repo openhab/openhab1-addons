@@ -718,25 +718,21 @@ public abstract class CommandHandler {
 					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0x00);
 					dev.enqueueMessage(m, m_feature);
 					logger.info("{}: sent msg to fan OFF", nm());
-					//m = null;
 					break;
 				case 2:            //Set fan speed to low
 					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0x55);
 					
 					logger.info("{}: sent msg to set fan to low speed", nm());
-					//m = null;
 					break;
 				case 3:            //Set fan speed to medium
 					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0xAA);
 					dev.enqueueMessage(m, m_feature);
 					logger.info("{}: sent msg to set fan to medium speed", nm());
-					//m = null;
 					break;
 				case 4:            //Set fan speed to high
 					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0xFF);
 					dev.enqueueMessage(m, m_feature);
 					logger.info("{}: sent msg to set fan to high speed", nm());
-					//m = null;
 					break;
 				default:
 					break;

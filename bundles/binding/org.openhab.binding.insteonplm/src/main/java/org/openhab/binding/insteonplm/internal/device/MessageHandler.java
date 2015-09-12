@@ -921,7 +921,6 @@ public abstract class MessageHandler {
 	
 	/**
 	 * Handles FanLinc replies to Fan requests.
-	 * Unfortunately different message payload than Thermostat Fan Replies. 
 	 */
 	public static class FanLincFanControlReplyHandler extends  MessageHandler {
 		FanLincFanControlReplyHandler(DeviceFeature p) { super(p); }
@@ -935,24 +934,25 @@ public abstract class MessageHandler {
 				case (byte) 0x00:
 					logger.info("{}: set device {} to {}", nm(),
 							dev.getAddress(), "OFF");
-					f.publish(new DecimalType(2), StateChangeType.CHANGED);
+					f.publish(new DecimalType(1), StateChangeType.CHANGED);
 					break;
 				case (byte) 0x55:
 					logger.info("{}: set device {} to {}", nm(),
 							dev.getAddress(), "LOW");
-					f.publish(new DecimalType(3), StateChangeType.CHANGED);
+					f.publish(new DecimalType(2), StateChangeType.CHANGED);
 					break;	
 				case (byte) 0xAA:
 					logger.info("{}: set device {} to {}", nm(),
 							dev.getAddress(), "MED");
-					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					f.publish(new DecimalType(3), StateChangeType.CHANGED);
 					break;	
 				case (byte) 0xFF:
 					logger.info("{}: set device {} to {}", nm(),
 							dev.getAddress(), "HIGH");
-					f.publish(new DecimalType(1), StateChangeType.CHANGED);
+					f.publish(new DecimalType(4), StateChangeType.CHANGED);
 					break;
-				default: // do nothing
+				default: // do nothing, but log.
+					logger.warn("{} unexpected cmd2 value received: {}. Dropping msg {}", nm(), cmd2, msg);
 					break;
 				}
 			} catch (FieldException e) {
