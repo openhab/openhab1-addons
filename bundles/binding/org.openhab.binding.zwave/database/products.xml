@@ -1991,6 +1991,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0006</Id>
+			</Reference>
+			<Model>PAN08</Model>
+			<Label lang="en">Relay Insert for Blind Control</Label>
+			<ConfigFile>philio/pan08.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Model>PAN11-1</Model>
