@@ -2484,6 +2484,15 @@
 			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>009303</Model>
+			<Label lang="en">Wall Controller</Label>
+			<ConfigFile>popp/009303.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0169</Id>
