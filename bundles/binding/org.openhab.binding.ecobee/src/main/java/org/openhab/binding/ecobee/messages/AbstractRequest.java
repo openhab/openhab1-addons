@@ -32,7 +32,7 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 
 	protected static final Properties HTTP_HEADERS;
 
-	protected static final int HTTP_REQUEST_TIMEOUT = 10000;
+	protected static int HTTP_REQUEST_TIMEOUT = 20000;
 
 	protected static final ObjectMapper JSON = new ObjectMapper();
 
@@ -46,6 +46,10 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 
 		// *most* dates in the JSON are in this format
 		JSON.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+	}
+
+	public static void setHttpRequestTimeout(int timeout) {
+		HTTP_REQUEST_TIMEOUT = timeout;
 	}
 
 	protected final RuntimeException newException(final String message, final Exception cause, final String url,
