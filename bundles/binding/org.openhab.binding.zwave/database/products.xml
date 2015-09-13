@@ -1832,6 +1832,15 @@
 			<Label lang="en">In Wall Micro Switch</Label>
 			<ConfigFile>tkb/tz78.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TZ88</Model>
+			<Label lang="en">Energy Monitoring Wall Plug</Label>
+			<ConfigFile>tkb/tz88.xml</ConfigFile>
+		</Product>
 		<Product>	
 			<Reference>
 				<Type>0002</Type>
