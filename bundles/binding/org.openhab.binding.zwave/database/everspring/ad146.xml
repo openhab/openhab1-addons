@@ -71,6 +71,22 @@
 			<Label lang="en">Switching type</Label>
 			<Help lang="en">Edge or toogle switch mode.</Help>
 		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Dimming</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On/Off</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Output mode setting</Label>
+			<Help lang="en">Dimming or On/Off Switch</Help>
+		</Parameter>
 	</Configuration>
 	<Associations>
 		<Group>
