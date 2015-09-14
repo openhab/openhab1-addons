@@ -1940,6 +1940,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>000d</Id>
+			</Reference>
+			<Model>PST-02B</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/pst02b.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
 			</Reference>
