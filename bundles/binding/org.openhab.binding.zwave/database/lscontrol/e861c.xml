@@ -43,6 +43,7 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Status Reports</Label>
+			<SetToController>true</SetToController>
 		</Group>  
 	</Associations>	
 </Product>
