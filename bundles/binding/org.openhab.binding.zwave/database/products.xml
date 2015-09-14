@@ -2235,6 +2235,15 @@
 			<Label lang="en">Scene Capable Plug-in Dimmer</Label>
 			<ConfigFile>leviton/vrpd3-1lw.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1d04</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>DZR15-1LZ</Model>
+			<Label lang="en">Scene Capable Receptacle</Label>
+			<ConfigFile>leviton/dzr15-1lz.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>007e</Id>
