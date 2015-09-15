@@ -359,43 +359,49 @@ public class RRD4jService implements QueryablePersistenceService {
 				continue;
 			}
 
-			String value = (String) config.get(key);
-			String name = subkeys[0].toLowerCase();
-			String property = subkeys[1].toLowerCase();
+            Object v = config.get(key);
+            if (v instanceof String) {
+                String value = (String) v;
+                String name = subkeys[0].toLowerCase();
+                String property = subkeys[1].toLowerCase();
 
-			if (StringUtils.isBlank(value)) {
-				logger.trace("Config is empty: {}", property);
-				continue;
-			} else {
-				logger.trace("Processing config: {} = {}", property, value);
-			}
+                if (StringUtils.isBlank(value)) {
+                    logger.trace("Config is empty: {}", property);
+                    continue;
+                } else {
+                    logger.trace("Processing config: {} = {}", property, value);
+                }
 
-			RrdDefConfig rrdDef = rrdDefs.get(name);
-			if (rrdDef == null) {
-				rrdDef = new RrdDefConfig(name);
-				rrdDefs.put(name, rrdDef);
-			}
+                RrdDefConfig rrdDef = rrdDefs.get(name);
+                if (rrdDef == null) {
+                    rrdDef = new RrdDefConfig(name);
+                    rrdDefs.put(name, rrdDef);
+                }
 
-			if (property.equals("def")) {
-				rrdDef.setDef(value);
-			} else if (property.equals("archives")) {
-				rrdDef.addArchives(value);
-			} else if (property.equals("items")) {
-				rrdDef.addItems(value);
-			} else {
-				logger.warn("Unknown property {} : {}", property, value);
-			}
+                try {
+                    if (property.equals("def")) {
+                        rrdDef.setDef(value);
+                    } else if (property.equals("archives")) {
+                        rrdDef.addArchives(value);
+                    } else if (property.equals("items")) {
+                        rrdDef.addItems(value);
+                    } else {
+                        logger.warn("Unknown property {} : {}", property, value);
+                    }
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Ignoring illegal configuration: {}", e.getMessage());
+                }
+            }
+        }
 
-		}
-
-		for (RrdDefConfig rrdDef : rrdDefs.values()) {
-			if (rrdDef.isValid()) {
-				logger.debug("Created {}", rrdDef.toString());
-			} else {
-				logger.info("Removing invalid defintion {}", rrdDef.toString());
-				rrdDefs.remove(rrdDef.name);
-			}
-		}
+        for (RrdDefConfig rrdDef : rrdDefs.values()) {
+            if (rrdDef.isValid()) {
+                logger.debug("Created {}", rrdDef.toString());
+            } else {
+                logger.info("Removing invalid defintion {}", rrdDef.toString());
+                rrdDefs.remove(rrdDef.name);
+            }
+        }
 	}
 
 	private class RrdArchiveDef {
