@@ -469,7 +469,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				File icsFile = getCacheFile(config.getKey(), filename);
 				if (icsFile != null && icsFile.exists()) {
 					FileInputStream fis = new FileInputStream(icsFile);
-					this.loadEvents(filename, lastResourceChange, fis, config, oldEventIds, false, eventContainer.getLastChanged());
+					this.loadEvents(filename, lastResourceChange, fis, config, oldEventIds, false);
 					fis.close();
 					continue;
 				}
@@ -484,8 +484,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			InputStream inputStream = sardine.get(url.toString().replaceAll(
 					" ", "%20"));
 
-			this.loadEvents(filename, lastResourceChange, inputStream, config, oldEventIds, false, 
-					eventContainer == null ? null : eventContainer.getLastChanged());
+			this.loadEvents(filename, lastResourceChange, inputStream, config, oldEventIds, false);
 		}
 	}
 	
@@ -497,8 +496,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	
 	private void loadEvents(String filename, org.joda.time.DateTime lastChanged, 
 			final InputStream inputStream, final CalDavConfig config, 
-			final List<String> oldEventIds, boolean readFromFile,
-			final org.joda.time.DateTime lastChangeOfOld) throws IOException, ParserException {
+			final List<String> oldEventIds, boolean readFromFile) throws IOException, ParserException {
 		CalendarBuilder builder = new CalendarBuilder();
 		final UnfoldingReader uin = new UnfoldingReader(new BufferedReader(new InputStreamReader(inputStream), 50), 50, true);
 		Calendar calendar = builder.build(uin);
@@ -522,20 +520,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		}
 		for (CalendarComponent comp : vEventComponents) {
 			VEvent vEvent = (VEvent) comp;
-			
-			final org.joda.time.DateTime lastModifiedInIcs = new org.joda.time.DateTime(vEvent.getLastModified().getDate());
-			if (!lastChanged.isEqual(lastModifiedInIcs)) {
-				// the date in the ics file is the correct one, the file modification is not correct
-				// update last change date in event container
-				lastChanged = lastModifiedInIcs;
-				eventContainer.setLastChanged(lastChanged);
-				if (lastChangeOfOld != null 
-						&& (lastModifiedInIcs.isBefore(lastChangeOfOld) || lastModifiedInIcs.isEqual(lastChangeOfOld))) {
-					// skip
-					return;
-				}
-			}
-			
 			LOG.trace("loading event: " + vEvent.getUid().getValue() + ":" + vEvent.getSummary().getValue());
 			
 			PeriodList periods = vEvent
@@ -638,7 +622,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					for (File icsFile : icsFiles) {
 						try {
 							FileInputStream fis = new FileInputStream(icsFile);
-							loadEvents(getFilename(icsFile.getAbsolutePath()), new org.joda.time.DateTime(icsFile.lastModified()), fis, eventRuntime.getConfig(), new ArrayList<String>(), true, null);
+							loadEvents(getFilename(icsFile.getAbsolutePath()), new org.joda.time.DateTime(icsFile.lastModified()), fis, eventRuntime.getConfig(), new ArrayList<String>(), true);
 						} catch (IOException e) {
 							LOG.error("cannot load events for file: " + icsFile, e);
 						} catch (ParserException e) {
