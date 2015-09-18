@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>PAN11-1B</Model>
+	<Label lang="en">Smart Energy Plug In Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x98</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">W meter report period</Label>
+			<Label lang="de">W Zähler Berichtsperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 720),
+							the device will report its instant power consumption every 1 hour to Z-Wave Controller.
+							Unit: 5 seconds</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 720),
+							sendet das Gerät denn aktuellen Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 5 Sekunden</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>6</Default>
+			<Size>2</Size>
+			<Label lang="en">kWh meter report period</Label>
+			<Label lang="de">kWh Messperiode</Label>
+			<Help lang="en">If the setting is configured for 1 hour (value = 6),
+							the device will report its total power consumption every 1 hour to Z-Wave Controller.
+							Unit: 10 minutes</Help>
+			<Help lang="de">Wenn diese Einstellung auf 1 Stunde steht (Wert = 6),
+							sendet das Gerät denn gesamthaften Stromverbrauch jede Stunde an den Z-Wave Controller.
+							Einheit: 10 Minuten</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Default>1300</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of Watt for Load Caution</Label>
+			<Label lang="de">Schwellwert für Watt-Last</Label>
+			<Help lang="en">If threshold of wattage is reached, a meter report will be generated</Help>
+			<Help lang="de">Wenn der Watt-Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Default>10000</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of kWh for Load Caution</Label>
+			<Label lang="de">Schwellwert für Gesammtverbrauch</Label>
+			<Help lang="en">If threshold of kWh is reached, a Meter Report will be generated</Help>
+			<Help lang="de">Wenn der kWH Schwellwert überschritten wird, wird automatisch ein Strommessbericht generiert.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state mode</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last State</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Mode of switch Off function</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED indication mode</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Show night mode</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">One flash mode</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Auto Off Timer</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF Off command mode</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch Toggle</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch On</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Reports</Label>
+			<Help lang="en">When the power consumption of load vary over 5%, the PAN11 will send a Meter Report. When "on" or "off" state has been changed, it will send Binary Switch Report.</Help>
+		</Group>
+	</Associations>
+</Product>
