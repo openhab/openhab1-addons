@@ -1,0 +1,2733 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vbusSpecification>
+	<device>
+		<address>0x3211</address>
+		<name>EL1</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x3221</address>
+		<name>DeltaSol Pro</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x3231</address>
+		<name>DeltaSol B</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x3251</address>
+		<name>DeltaSol BS</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x4010</address>
+		<mask>0xFFF0</mask>
+		<name>WMZ #</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x4221</address>
+		<name>DeltaSol BS Plus</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x4410</address>
+		<mask>0xFFF0</mask>
+		<name>MSR44 #</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x4420</address>
+		<mask>0xFFF0</mask>
+		<name>HKM1 #</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x5210</address>
+		<name>DeltaSol Plus</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x5510</address>
+		<name>EL2/3</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x6510</address>
+		<name>HKM2</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x6520</address>
+		<mask>0xFFF0</mask>
+		<name>MSR65 #</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x6610</address>
+		<name>Midi Pro</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7311</address>
+		<name>DeltaSol M [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7312</address>
+		<name>DeltaSol M [HK1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7313</address>
+		<name>DeltaSol M [HK2]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7316</address>
+		<name>DeltaSol M [WMZ1]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7317</address>
+		<name>DeltaSol M [WMZ2]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7411</address>
+		<name>DeltaSol ES</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7611</address>
+		<name>Friwa</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7621</address>
+		<name>SOLEX [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7622</address>
+		<name>SOLEX [WMZ]</name>
+		<isMaster>false</isMaster>
+	</device>
+	<device>
+		<address>0x7721</address>
+		<name>DeltaSol E [Regler]</name>
+		<isMaster>true</isMaster>
+	</device>
+	<device>
+		<address>0x7722</address>
+		<name>DeltaSol E [WMZ]</name>
+		<isMaster>false</isMaster>
+	</device>
+	
+	<!-- EL1 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x3211</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Drehzahl R1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>7</offset>
+			<name>Fehlercode</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Pumpenlaufzeit R1</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Ladestatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>Flags</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol Pro -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x3221</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>7</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Regelflags</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>10</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Betriebsstunden Relais 2</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol Plus -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x5210</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<name lang="en">Temperature sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Volumenstrom</name>
+			<name lang="en">Volume flow</name>
+			<bitSize>16</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Frostschutzgehalt</name>
+			<name lang="en">Antifreeze concentration</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Frostschutzart</name>
+			<name lang="en">Antifreeze type</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<name lang="en">Heat amount</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>16</offset>
+				<bitSize>16</bitSize>
+			</field>
+			<field>
+				<offset>18</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>20</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Hardware</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Software</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>24</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Fehler-Info 1</name>
+			<name lang="en">Error info 1</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Fehler-Info 2</name>
+			<name lang="en">Error info 2</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Relaismaske</name>
+			<name lang="en">Relais mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+		</field>
+	</packet>
+	
+	<!-- EL2/3 -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x5510</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Betriebsstunden</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>Regelstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>12</offset>
+			<name>Fehlermaske</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+	
+	<!-- Midi Pro -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x6610</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<format>F1</format>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 1</name>
+			<bitPos>0</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 2</name>
+			<bitPos>1</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 3</name>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 4</name>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 5</name>
+			<bitPos>4</bitPos>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Relaisstatus 6</name>
+			<bitPos>5</bitPos>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Drehzahl 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Drehzahl 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Drehzahl 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Fehlernummer</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>16</offset>
+			<name>Fehlermaske</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Fehler-Info 1</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>19</offset>
+			<name>Fehler-Info 2</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Fehler-Info 3</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Fehler-Info 4</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Anlagenoptionen 1</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Anlagenoptionen 2</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>System</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Version</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Modulstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Systemzeit</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+		</field>
+		<field>
+			<offset>33</offset>
+			<name>Einstrahlung</name>
+			<bitSize>16</bitSize>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>35</offset>
+			<name>Betriebsstunden-Flag</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+	
+	<!-- WMZ-M1 -->
+	<packet>
+		<destination>0x0000</destination>
+		<destinationMask>0x0000</destinationMask>
+		<source>0x4010</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>2</offset>
+				<bitSize>16</bitSize>
+				<factor>1.0</factor>
+			</field>
+			<field>
+				<offset>0</offset>
+				<bitSize>16</bitSize>
+				<factor>1000.0</factor>
+			</field>
+			<field>
+				<offset>12</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000.0</factor>
+			</field>
+		</field>
+		<field>
+			<name>Leistung</name>
+			<unit> W</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>8</bitSize>
+				<factor>10</factor>
+			</field>
+			<field>
+				<offset>14</offset>
+				<bitSize>8</bitSize>
+				<factor>2560</factor>
+			</field>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Volumenstrom</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+			<unit> qm/h</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Rücklauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Glykol</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Druck</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> bar</unit>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol BS Plus -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x4221</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl Pumpe 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Drehzahl Pumpe 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Relaismaske</name>
+			<name lang="en">Relais mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>11</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Schema</name>
+			<name lang="en">System</name>
+			<bitSize>8</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Kollektor Max.</name>
+			<bitSize>1</bitSize>
+			<bitPos>0</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Kollektor Min.</name>
+			<bitSize>1</bitSize>
+			<bitPos>1</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Kollektor Frost</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Röhrenkollektor</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Rückkühlung</name>
+			<bitSize>1</bitSize>
+			<bitPos>4</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option WMZ</name>
+			<bitSize>1</bitSize>
+			<bitPos>5</bitPos>
+			<unit></unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<name lang="en">Operating hours relais 1</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Betriebsstunden Relais 2</name>
+			<name lang="en">Operating hours relais 2</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<name lang="en">Heat amount</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>20</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>22</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>24</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Version</name>
+			<name lang="en">Version</name>
+			<bitSize>16</bitSize>
+			<factor>0.01</factor>
+		</field>
+	</packet>
+	
+	<!-- HKM1 -->
+	<packet>
+		<destination>0x4420</destination>
+		<destinationMask>0xFFF0</destinationMask>
+		<source>0x0000</source>
+		<sourceMask>0x0000</sourceMask>
+		<command>0x0200</command>
+		<field>
+			<offset>8</offset>
+			<name>Vorlaufmaximaltemperatur</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>HK-Kennlinie</name>
+			<bitSize>8</bitSize>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Nachtabsenkung</name>
+			<bitSize>7</bitSize>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>Tageskorrektur</name>
+			<bitSize>8</bitSize>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Sommerbetrieb</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Info Schaltuhr</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+	
+	<!-- HKM1 -->
+	<packet>
+		<destination>0x0000</destination>
+		<destinationMask>0x0000</destinationMask>
+		<source>0x4420</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Fehlerstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>1</offset>
+			<name>Modulstatus</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Relaisstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Fehler-Info</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Fernversteller</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Aussentemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Modulversion</name>
+			<bitSize>16</bitSize>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol M [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7311</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<name lang="en">Temperature sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<name lang="en">Temperature sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<name lang="en">Temperature sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<name lang="en">Temperature sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<name lang="en">Temperature sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<name lang="en">Temperature sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<name lang="en">Temperature sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<name lang="en">Temperature sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<name lang="en">Temperature sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Sensor 10</name>
+			<name lang="en">Temperature sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Temperatur Sensor 11</name>
+			<name lang="en">Temperature sensor 11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Temperatur Sensor 12</name>
+			<name lang="en">Temperature sensor 12</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Einstrahlung</name>
+			<name lang="en">Irradiation</name>
+			<bitSize>15</bitSize>
+			<unit> W/qm</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Impulseingang 1</name>
+			<name lang="en">Impulse input 1</name>
+			<bitSize>31</bitSize>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Impulseingang 2</name>
+			<name lang="en">Impulse input 2</name>
+			<bitSize>31</bitSize>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Sensorbruchmaske</name>
+			<name lang="en">Sensor broke mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Sensorkurzschlussmaske</name>
+			<name lang="en">Sensor short mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Sensorbenutzungsmaske</name>
+			<name lang="en">Sensor usage mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Drehzahl Relais 1</name>
+			<name lang="en">Pump speed 1</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Drehzahl Relais 2</name>
+			<name lang="en">Pump speed 2</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Drehzahl Relais 3</name>
+			<name lang="en">Pump speed 3</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Drehzahl Relais 4</name>
+			<name lang="en">Pump speed 4</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Drehzahl Relais 5</name>
+			<name lang="en">Pump speed 5</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>49</offset>
+			<name>Drehzahl Relais 6</name>
+			<name lang="en">Pump speed 6</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>Drehzahl Relais 7</name>
+			<name lang="en">Pump speed 7</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>51</offset>
+			<name>Drehzahl Relais 8</name>
+			<name lang="en">Pump speed 8</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Drehzahl Relais 9</name>
+			<name lang="en">Pump speed 9</name>
+			<bitSize>8</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Relaisbenutzungsmaske</name>
+			<name lang="en">Relais usage mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field commonUsage='error'>
+			<offset>60</offset>
+			<name>Fehlermaske</name>
+			<name lang="en">Error mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>62</offset>
+			<name>Warnungsmaske</name>
+			<name lang="en">Warning mask</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Reglerversion</name>
+			<name lang="en">Controller version</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>66</offset>
+			<name>Systemzeit</name>
+			<name lang="en">System time</name>
+			<bitSize>16</bitSize>
+			<format>T</format>
+			<timeRef>1</timeRef>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol M [HK] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7312</source>
+		<sourceMask>0xFFFE</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Fernversteller</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Aussentemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Speichertemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Relaismaske</name>
+			<bitSize>8</bitSize>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol M [WMZ] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7316</source>
+		<sourceMask>0xFFFE</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Rücklauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Volumenstrom</name>
+			<bitSize>16</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärme</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>16</bitSize>
+			</field>
+			<field>
+				<offset>8</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>10</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+	
+	<!-- DeltaSol ES -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7411</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Volumenstrom</name>
+			<bitSize>15</bitSize>
+			<factor>0.01</factor>
+			<unit> m³/h</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Einstrahlung</name>
+			<bitSize>15</bitSize>
+			<unit> W/qm</unit>
+		</field>
+<!-- 
+		<field>
+			<offset>20</offset>
+			<name>Relaisbyte</name>
+			<bitSize>8</bitSize>
+		</field>
+-->
+		<field>
+			<offset>21</offset>
+			<name>Drehzahl 1</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Drehzahl 2</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Drehzahl 3</name>
+			<bitSize>8</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<bitPos>3</bitPos>
+			<name>Relais 4</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<bitPos>4</bitPos>
+			<name>Relais 5</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<bitPos>5</bitPos>
+			<name>Relais 6</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Schema</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>0</bitPos>
+			<name>Option: Kollektorkühlung</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>1</bitPos>
+			<name>Option: Kollektorminimalbegrenzung</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>2</bitPos>
+			<name>Option: Frostschutzfunktion</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>3</bitPos>
+			<name>Option: Röhrenkollektorfunktion</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>4</bitPos>
+			<name>Option: Rückkühlung</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>27</offset>
+			<bitPos>5</bitPos>
+			<name>Option: Wärmemengenzählung</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Betriebsstunden 1</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Betriebsstunden 2</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Betriebsstunden 3</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>34</offset>
+			<name>Betriebsstunden 4</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Betriebsstunden 5</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Betriebsstunden 6</name>
+			<bitSize>16</bitSize>
+			<unit> h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>40</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>42</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>44</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+
+	<!-- HKM2 -->
+	<packet>
+		<destination>0x6510</destination>
+		<destinationMask>0xFFF0</destinationMask>
+		<source>0x0000</source>
+		<sourceMask>0x0000</sourceMask>
+		<command>0x0200</command>
+		<field>
+			<offset>0</offset>
+			<name>Steuerregister</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Vorlaufmaximaltemperatur</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>HK-Kennlinie</name>
+			<bitSize>8</bitSize>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Nachtabsenkung</name>
+			<bitSize>7</bitSize>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>11</offset>
+			<name>Tageskorrektur</name>
+			<bitSize>8</bitSize>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Mischerlaufzeit</name>
+			<bitSize>8</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Sommerbetrieb</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Info Schaltuhr</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>15</offset>
+			<name>Option Nachheizung</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Speichertemperatur 1 (Bus)</name>
+			<bitSize>15</bitSize>
+			<unit> °C</unit>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Aussentemperatur Bus</name>
+			<bitSize>15</bitSize>
+			<unit> °C</unit>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>dT-NH-ein</name>
+			<bitSize>15</bitSize>
+			<unit> K</unit>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>dT-NH-aus</name>
+			<bitSize>15</bitSize>
+			<unit> K</unit>
+			<factor>0.1</factor>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Speicherminimaltemperatur</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Speicherkühltemperatur</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Speicheranforderungstemperatur (ein)</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Speicheranforderungstemperatur (aus)</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>WW-Anforderungstemperatur (ein)</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>WW-Anforderungstemperatur (aus)</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Speichertemperatur 2 (Bus)</name>
+			<bitSize>15</bitSize>
+			<unit> °C</unit>
+			<factor>0.1</factor>
+		</field>
+	</packet>
+	
+	<!-- HKM2 -->
+	<packet>
+		<destination>0x0000</destination>
+		<destinationMask>0x0000</destinationMask>
+		<source>0x6510</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Fehlerstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>1</offset>
+			<name>Modulstatus</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<name>Relaisstatus</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<bitPos>0</bitPos>
+			<name>Relais 1</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<bitPos>1</bitPos>
+			<name>Relais 2</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<bitPos>2</bitPos>
+			<name>Relais 3</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<bitPos>3</bitPos>
+			<name>Relais 4</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<bitPos>4</bitPos>
+			<name>Relais 5</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>3</offset>
+			<bitPos>5</bitPos>
+			<name>Relais 6</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Fehler-Info</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Vorlauftemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Fernversteller</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Aussentemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Speichertemperatur 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Vorlaufsolltemperatur</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Modulversion</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Speichertemperatur 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+	</packet>
+	
+	<!--  DeltaSol B -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x3231</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>7</offset>
+			<name>Fehlermaske</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<bitSize>15</bitSize>
+			<unit> h</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Relaismaske</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>10</offset>
+			<bitPos>0</bitPos>
+			<name>Relaisstatus Relais 1</name>
+			<bitSize>1</bitSize>
+		</field>
+		<field>
+			<offset>10</offset>
+			<bitPos>1</bitPos>
+			<name>Relaisstatus Relais 2</name>
+			<bitSize>1</bitSize>
+		</field>
+	</packet>
+
+	<!--  DeltaSol BS -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x3251</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>7</offset>
+			<name>Fehlermaske</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Betriebsstunden Relais 1</name>
+			<bitSize>15</bitSize>
+			<unit> h</unit>
+		</field>
+	</packet>
+	
+	<!-- Friwa -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7611</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Status Relais 3</name>
+			<bitSize>1</bitSize>
+			<bitPos>2</bitPos>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Status Relais 4</name>
+			<bitSize>1</bitSize>
+			<bitPos>3</bitPos>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Sensordefektmaske</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Warmwassersolltemperatur</name>
+			<bitSize>8</bitSize>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Optionen</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Status</name>
+			<bitSize>8</bitSize>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>28</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>30</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>32</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+		<field>
+			<name>Version</name>
+			<field>
+				<offset>34</offset>
+				<bitSize>7</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>35</offset>
+				<bitSize>7</bitSize>
+				<factor>0,01</factor>
+			</field>
+		</field>
+	</packet>
+
+	<!-- SOLEX [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7621</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Durchfluss Sensor 8</name>
+			<bitSize>15</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Einstrahlung Sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Drehzahl Relais 3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>23</offset>
+			<name>Drehzahl Relais 4</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Drehzahl Relais 5</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>25</offset>
+			<name>Fehlermaske</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Meldungen</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<name>Version</name>
+			<field>
+				<offset>30</offset>
+				<bitSize>7</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>31</offset>
+				<bitSize>7</bitSize>
+				<factor>0,01</factor>
+			</field>
+			<format>F2</format>
+		</field>
+	</packet>
+
+	<!-- SOLEX [WMZ] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7622</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Vorlauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Rücklauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Durchfluss Sensor 8</name>
+			<bitSize>15</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>8</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>10</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+
+	<!-- DeltaSol E [Regler] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7721</source>
+		<command>0x0100</command>
+		<field commonUsage='collector1'>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field commonUsage='store1'>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Temperatur Sensor 7</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>14</offset>
+			<name>Temperatur Sensor 8</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Temperatur Sensor 9</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>18</offset>
+			<name>Temperatur Sensor 10</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Einstrahlung CS</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+			<unit> W/m²</unit>
+		</field>
+		<field>
+			<offset>22</offset>
+			<name>Impulse 1 V40</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> </unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Digital Input</name>
+			<bitSize>16</bitSize>
+			<factor>1</factor>
+			<unit> </unit>
+		</field>
+		<field>
+			<offset>26</offset>
+			<name>Drehzahl Relais 1</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>27</offset>
+			<name>Drehzahl Relais 2</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Drehzahl Relais 3</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Drehzahl Relais 4</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>30</offset>
+			<name>Drehzahl Relais 5</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>31</offset>
+			<name>Drehzahl Relais 6</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Drehzahl Relais 7</name>
+			<bitSize>7</bitSize>
+			<unit> %</unit>
+		</field>
+		<field commonUsage='error'>
+			<offset>36</offset>
+			<name>Fehlermaske</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>38</offset>
+			<name>Meldungen</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>System</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Schema</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Vorlauf Soll HK1 Modul Sensor 18</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Status HK1 Modul</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>48</offset>
+			<name>Vorlauf Soll HK2 Modul Sensor 25</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>50</offset>
+			<name>Status HK2 Modul</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>52</offset>
+			<name>Vorlauf Soll HK3 Modul Sensor 32</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>54</offset>
+			<name>Status HK3 Modul</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>56</offset>
+			<name>Vorlauf Soll Heizkreis Sensor 11</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>58</offset>
+			<name>Status Heizkreis</name>
+			<bitSize>16</bitSize>
+		</field>
+		<field>
+			<offset>62</offset>
+			<name>Systemzeit</name>
+			<bitSize>15</bitSize>
+			<format>t</format>
+			<timeRef>1</timeRef>
+		</field>
+		<field>
+			<offset>64</offset>
+			<name>Jahr</name>
+			<bitSize>15</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>66</offset>
+			<name>Monat</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<offset>67</offset>
+			<name>Tag</name>
+			<bitSize>7</bitSize>
+			<factor>1</factor>
+		</field>
+		<field>
+			<name>Version</name>
+			<field>
+				<offset>60</offset>
+				<bitSize>7</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>61</offset>
+				<bitSize>7</bitSize>
+				<factor>0,01</factor>
+			</field>
+			<format>F2</format>
+		</field>
+	</packet>
+
+
+	<!-- DeltaSol E [WMZ] -->
+	<packet>
+		<destination>0x0010</destination>
+		<source>0x7722</source>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Vorlauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Rücklauf</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Durchfluss Sensor 8</name>
+			<bitSize>15</bitSize>
+			<unit> l/h</unit>
+		</field>
+		<field commonUsage='heat'>
+			<name>Wärmemenge</name>
+			<unit> Wh</unit>
+			<field>
+				<offset>6</offset>
+				<bitSize>16</bitSize>
+				<factor>1</factor>
+			</field>
+			<field>
+				<offset>8</offset>
+				<bitSize>16</bitSize>
+				<factor>1000</factor>
+			</field>
+			<field>
+				<offset>10</offset>
+				<bitSize>16</bitSize>
+				<factor>1000000</factor>
+			</field>
+		</field>
+	</packet>
+
+	
+
+	<!-- MSR-65 -->
+	<packet>
+		<destination>0x6520</destination>
+		<destinationMask>0xFFF0</destinationMask>
+		<source>0x0000</source>
+		<sourceMask>0x0000</sourceMask>
+		<command>0x0200</command>
+		<field>
+			<offset>0</offset>
+			<name>Drehzahl 1 R1</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>1</offset>
+			<name>Laufzeit 1 R1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Drehzahl 2 R1</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>5</offset>
+			<name>Laufzeit 2 R1</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Drehzahl 1 R2</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>9</offset>
+			<name>Laufzeit 1 R2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>12</offset>
+			<name>Drehzahl 2 R2</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>13</offset>
+			<name>Laufzeit 2 R2</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>16</offset>
+			<name>Drehzahl 1 R3</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>17</offset>
+			<name>Laufzeit 1 R3</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>20</offset>
+			<name>Drehzahl 2 R3</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>21</offset>
+			<name>Laufzeit 2 R3</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>24</offset>
+			<name>Drehzahl 1 R4</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>25</offset>
+			<name>Laufzeit 1 R4</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>28</offset>
+			<name>Drehzahl 2 R4</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>29</offset>
+			<name>Laufzeit 2 R4</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>32</offset>
+			<name>Drehzahl 1 R5</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>33</offset>
+			<name>Laufzeit 1 R5</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>36</offset>
+			<name>Drehzahl 2 R5</name>
+			<bitSize>7</bitSize>
+			<unit>%</unit>
+		</field>
+		<field>
+			<offset>37</offset>
+			<name>Laufzeit 2 R5</name>
+			<bitSize>23</bitSize>
+			<unit> s</unit>
+		</field>
+		<field>
+			<offset>40</offset>
+			<name>Offset Sensor 1</name>
+			<bitSize>7</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>41</offset>
+			<name>Offset Sensor 2</name>
+			<bitSize>7</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>42</offset>
+			<name>Offset Sensor 3</name>
+			<bitSize>7</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>43</offset>
+			<name>Offset Sensor 4</name>
+			<bitSize>7</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>44</offset>
+			<name>Offset Sensor 5</name>
+			<bitSize>7</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>45</offset>
+			<name>Offset Sensor 6</name>
+			<bitSize>7</bitSize>
+			<factor>0.1</factor>
+			<unit> K</unit>
+		</field>
+		<field>
+			<offset>46</offset>
+			<name>Sensormaske</name>
+			<bitSize>7</bitSize>
+		</field>
+		<field>
+			<offset>47</offset>
+			<name>Relaismaske</name>
+			<bitSize>7</bitSize>
+		</field>
+	</packet>
+
+	<!-- MSR-65 -->
+	<packet>
+		<destination>0x0000</destination>
+		<destinationMask>0x0000</destinationMask>
+		<source>0x6520</source>
+		<sourceMask>0xFFF0</sourceMask>
+		<command>0x0100</command>
+		<field>
+			<offset>0</offset>
+			<name>Temperatur Sensor 1</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>2</offset>
+			<name>Temperatur Sensor 2</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>4</offset>
+			<name>Temperatur Sensor 3</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>6</offset>
+			<name>Temperatur Sensor 4</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>8</offset>
+			<name>Temperatur Sensor 5</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+		<field>
+			<offset>10</offset>
+			<name>Temperatur Sensor 6</name>
+			<bitSize>15</bitSize>
+			<factor>0.1</factor>
+			<unit> °C</unit>
+		</field>
+	</packet>
+</vbusSpecification>
