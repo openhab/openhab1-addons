@@ -8,10 +8,11 @@
  */
 package org.openhab.persistence.jpa.internal;
 
-import java.util.Map;
+import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
-import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author mbergmann
  *
  */
-public class JpaConfiguration {
+public class JpaConfiguration implements ManagedService {
 	private static final Logger logger = LoggerFactory.getLogger(JpaConfiguration.class);
 
 	private static final String CFG_CONNECTION_URL = "url";
@@ -35,7 +36,8 @@ public class JpaConfiguration {
 	public static String dbUserName = "";
 	public static String dbPassword = "";
 
-	public void activate(final BundleContext bundleContext, final Map<String, Object> properties) {
+	@Override
+	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 		logger.debug("Update config...");
 		
 		if(properties == null) {
@@ -46,20 +48,22 @@ public class JpaConfiguration {
 		String param = (String)properties.get(CFG_CONNECTION_URL);
 		logger.debug("url: " + param);
 		if(param == null) {
-			logger.warn("Connection url is required in openhab.cfg!");
+			logger.error("Connection url is required in openhab.cfg!");
+			throw new ConfigurationException(CFG_CONNECTION_URL, "Connection url is required in openhab.cfg!");
 		}
 		if(StringUtils.isBlank(param)) {
-			logger.warn("Empty connection url in openhab.cfg!");
+			logger.error("Empty connection url in openhab.cfg!");
+			throw new ConfigurationException(CFG_CONNECTION_URL, "Empty connection url in openhab.cfg!");
 		}
 		dbConnectionUrl = (String)param;
 
 		param = (String)properties.get(CFG_DRIVER_CLASS);
 		logger.debug("driver: " + param);
 		if(param == null) {
-			logger.warn("Driver class is required in openhab.cfg!");
+			throw new ConfigurationException(CFG_DRIVER_CLASS, "Driver class is required in openhab.cfg!");
 		}
 		if(StringUtils.isBlank(param)) {
-			logger.warn("Empty driver class in openhab.cfg!");
+			throw new ConfigurationException(CFG_DRIVER_CLASS, "Empty driver class in openhab.cfg!");
 		}
 		dbDriverClass = (String)param;
 		

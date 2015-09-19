@@ -10,7 +10,10 @@ package org.openhab.binding.weather.internal.bus;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.openhab.binding.weather.WeatherBindingProvider;
@@ -39,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public class WeatherPublisher {
 	private static final Logger logger = LoggerFactory.getLogger(WeatherPublisher.class);
 	private WeatherContext context = WeatherContext.getInstance();
+	private Map<String, Object> itemCache = new HashMap<String, Object>();
 
 	private static WeatherPublisher instance = null;
 
@@ -56,6 +60,13 @@ public class WeatherPublisher {
 	}
 
 	/**
+	 * Clears the item cache.
+	 */
+	public void clear() {
+		itemCache.clear();
+	}
+
+	/**
 	 * Republish the state of the item.
 	 */
 	public void republishItem(String itemName) {
@@ -68,6 +79,7 @@ public class WeatherPublisher {
 		if (bindingConfig == null) {
 			logger.warn("Weather binding for item {} not found", itemName);
 		} else {
+			itemCache.remove(itemName);
 			publish(bindingConfig.getLocationId());
 		}
 	}
@@ -103,7 +115,10 @@ public class WeatherPublisher {
 									}
 								}
 
-								publishValue(itemName, value, bindingConfig);
+								if (!equalsCachedValue(value, itemName)) {
+									publishValue(itemName, value, bindingConfig);
+									itemCache.put(itemName, value);
+								}
 							}
 						} catch (Exception ex) {
 							logger.warn(ex.getMessage(), ex);
@@ -145,6 +160,19 @@ public class WeatherPublisher {
 			}
 		}
 		return instance;
+	}
+
+	/**
+	 * Returns true, if the cached value is equal to the new value.
+	 */
+	private boolean equalsCachedValue(Object value, String itemName) {
+		Object cachedValue = itemCache.get(itemName);
+		if (cachedValue == null && value != null) {
+			return false;
+		}
+		int cachedValueHashCode = ObjectUtils.hashCode(cachedValue);
+		int valueHashCode = ObjectUtils.hashCode(value);
+		return cachedValueHashCode == valueHashCode;
 	}
 
 	/**

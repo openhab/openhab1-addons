@@ -16,6 +16,7 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.util.TimerTask;
 
 import org.openhab.binding.weather.WeatherBindingProvider;
+import org.openhab.binding.weather.internal.bus.WeatherPublisher;
 import org.openhab.binding.weather.internal.common.LocationConfig;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
@@ -126,6 +127,7 @@ public class WeatherJobScheduler {
 		} catch (SchedulerException ex) {
 			logger.error(ex.getMessage(), ex);
 		}
+		WeatherPublisher.getInstance().clear();
 	}
 
 	/**

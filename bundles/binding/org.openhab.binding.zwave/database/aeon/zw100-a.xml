@@ -328,7 +328,7 @@
 		<Parameter>
 			<Index>201</Index>
 			<Type>short</Type>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Minimum>-32768</Minimum>
 			<Maximum>32767</Maximum>
 			<Default>0</Default>

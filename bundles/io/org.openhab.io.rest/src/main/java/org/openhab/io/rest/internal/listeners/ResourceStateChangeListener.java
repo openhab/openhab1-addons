@@ -54,7 +54,6 @@ abstract public class ResourceStateChangeListener {
 	
 	static ScheduledFuture<?> executorFuture;
 	
-	protected Item lastChange;
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
 	protected GeneralBroadcaster broadcaster;
@@ -150,7 +149,6 @@ abstract public class ResourceStateChangeListener {
 			}
 			
 			public void stateChanged(final Item item, State oldState, State newState) {
-				lastChange = item;
 				broadcaster.broadcast(item);
 //				Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
 //				if(!resources.isEmpty()) {

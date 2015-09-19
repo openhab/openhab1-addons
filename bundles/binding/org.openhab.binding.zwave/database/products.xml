@@ -112,10 +112,6 @@
 		<Product>
 			<Reference>
 				<Type>4744</Type>
-				<Id>3030</Id>
-			</Reference>
-			<Reference>
-				<Type>4744</Type>
 				<Id>3530</Id>
 			</Reference>
 			<Model>NGD00Z-4</Model>
@@ -2643,19 +2639,6 @@
 			<Model>Thermostat</Model>
 			<Label lang="en">ZWave Thermostat</Label>
 			<ConfigFile>thermofloor/multireg_thermostat.xml</ConfigFile>
-		</Product>
-	</Manufacturer>
-	<Manufacturer>
-		<Id>0085</Id>
-		<Name>Fakro</Name>
-		<Product>
-			<Reference>
-				<Type>0002</Type>
-				<Id>0002</Id>
-			</Reference>
-			<Model>ARZ</Model>
-			<Label lang="en">Roller Shutter Module</Label>
-			<ConfigFile>fakro/arz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

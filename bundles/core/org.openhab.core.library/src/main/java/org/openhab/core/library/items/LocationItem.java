@@ -32,7 +32,6 @@ public class LocationItem extends GenericItem {
 	static {
 		acceptedDataTypes.add(PointType.class);
 		acceptedDataTypes.add(UnDefType.class);
-		acceptedCommandTypes.add(PointType.class);
 	}
 	
 	public LocationItem(String name) {

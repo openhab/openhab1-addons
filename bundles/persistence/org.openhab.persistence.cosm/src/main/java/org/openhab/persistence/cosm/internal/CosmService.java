@@ -11,12 +11,13 @@ package org.openhab.persistence.cosm.internal;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
+import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
-import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ import flexjson.JSONSerializer;
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
-public class CosmService implements PersistenceService {
+public class CosmService implements PersistenceService, ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CosmService.class);
 	
@@ -89,7 +90,8 @@ public class CosmService implements PersistenceService {
 	/**
 	 * @{inheritDoc}
 	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+	@SuppressWarnings("rawtypes")
+	public void updated(Dictionary config) throws ConfigurationException {
 		if (config!=null) {
 
 			url = (String) config.get("url");
@@ -99,12 +101,11 @@ public class CosmService implements PersistenceService {
 			
 			apiKey = (String) config.get("apikey");
 			if (StringUtils.isBlank(apiKey)) {
-				logger.warn("The Cosm API-Key is missing - please configure it in openhab.cfg");
+				throw new ConfigurationException("cosm:apikey", "The Cosm API-Key is missing - please configure it in openhab.cfg");
 			}
 			
 			initialized = true;
 		}
 	}
-	
 	
 }
