@@ -27,15 +27,21 @@ public class ResponseTypeHelper {
 	}
 
 	protected List<MediaType> getAcceptedMediaTypes(HttpServletRequest request) {
-		String[] acceptableMediaTypes = request.getHeader(HttpHeaders.ACCEPT).split(",");
-		List<MediaType> mediaTypes = new ArrayList<MediaType>(acceptableMediaTypes.length);
-		for(String type : acceptableMediaTypes) {
-			MediaType mediaType = MediaType.valueOf(type.trim());
-			if(mediaType!=null) {
-				mediaTypes.add(mediaType);
+		// TODO: these are not the headers, there are query params inside
+		final String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
+		if (acceptHeader != null) {
+			String[] acceptableMediaTypes = acceptHeader.split(",");
+			List<MediaType> mediaTypes = new ArrayList<MediaType>(acceptableMediaTypes.length);
+			for(String type : acceptableMediaTypes) {
+				MediaType mediaType = MediaType.valueOf(type.trim());
+				if(mediaType!=null) {
+					mediaTypes.add(mediaType);
+				}
 			}
+			return mediaTypes;
+		} else {
+			return new ArrayList<MediaType>();
 		}
-		return mediaTypes;
 	}
 
 	public String getQueryParam(HttpServletRequest request, String paramName) {
