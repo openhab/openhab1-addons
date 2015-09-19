@@ -9,6 +9,6 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" name="org.openhab.persistence.jpa.configuration" immediate="true" configuration-pid="org.openhab.jpa" configuration-policy="require">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" name="org.openhab.persistence.jpa.configuration" immediate="true" configuration-pid="org.openhab.jpa" configuration-policy="optional">
    <implementation class="org.openhab.persistence.jpa.internal.JpaConfiguration"/>
 </scr:component>
