@@ -384,7 +384,7 @@ calibration value= 750 – 800 = -50 (0xFFCE).]]></Help>
 			<Maximum>10</Maximum>
 			<Default>0</Default>
 			<Label lang="en">Ultraviolet Sensor Calibration</Label>
-			<Help lang="en"><![CDATA[ The range of calibration value is -11 to 10 (UV index scale).<br>
+			<Help lang="en"><![CDATA[ The range of calibration value is -10 to 10 (UV index scale).<br>
 The calibration value = standard value - measure value.<br>
 Example: if measured value = 9 and the standard value = 8, then<br>
 calibration value = 8 – 9 = -1 (0xFE).]]></Help>
