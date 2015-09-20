@@ -2146,6 +2146,15 @@
             <Label lang="en">20A Tamper Resistant Duplex Receptacle</Label>
             <ConfigFile>enerwave/zw20r.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0601</Type>
+                <Id>0901</Id>
+            </Reference>
+            <Model>ZWN-BPC</Model>
+            <Label lang="en">PIR Sensor</Label>
+            <ConfigFile>enerwave/zwn-bpc.xml</ConfigFile>
+        </Product>
     </Manufacturer>
 	<Manufacturer>
 		<Id>0001</Id>
