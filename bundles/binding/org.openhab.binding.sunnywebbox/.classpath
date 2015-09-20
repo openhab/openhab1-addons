@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-path-0.8.0-dependencies/commons-io-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-path-0.8.0-dependencies/commons-lang-2.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-path-0.8.0-dependencies/json-smart-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/com.google.gson_2.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-path-0.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/us.monoid.web.resty_0.3.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
