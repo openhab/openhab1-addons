@@ -12,10 +12,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.StringType;
@@ -44,20 +46,20 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
 	/** stores information about the which items are associated to which port. The map has this content structure: itemname -> port */ 
 	private Map<String, String> itemMap = new HashMap<String, String>();
-	
+
 	/** stores information about the context of items. The map has this content structure: context -> Set of itemNames */ 
 	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
 
 	private EventPublisher eventPublisher = null;
-	
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
-		
+
 		for(SerialDevice serialDevice : serialDevices.values()) {
 			serialDevice.setEventPublisher(eventPublisher);
 		}
 	}
-	
+
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
 
@@ -65,7 +67,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 			serialDevice.setEventPublisher(null);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -96,32 +98,47 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	 * {@inheritDoc}
 	 */
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof StringItem)) {
+		if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch- and StringItems are allowed - please check your *.items configuration");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		String portConfig[] = bindingConfig.split("@");
-        
-        String port = portConfig[0];
-        int baudRate = 0;
-        
-        if(portConfig.length > 1)
-                baudRate = Integer.parseInt(portConfig[1]);
-        
-        SerialDevice serialDevice = serialDevices.get(port);
+
+		int indexOf = bindingConfig.indexOf(',');
+		String serialPart = bindingConfig;
+		Pattern pattern = null;
+
+		if(indexOf != -1) {
+			String substring = bindingConfig.substring(indexOf+1);
+			serialPart = bindingConfig.substring(0, indexOf);
+
+			if(substring.startsWith("REGEX(")) {
+				substring = substring.substring(6, substring.length()-1);
+				pattern = Pattern.compile(substring);
+			}
+		}
+
+		String portConfig[] = serialPart.split("@");
+
+		String port = portConfig[0];
+		int baudRate = 0;
+
+		if(portConfig.length > 1)
+			baudRate = Integer.parseInt(portConfig[1]);
+
+		SerialDevice serialDevice = serialDevices.get(port);
 		if (serialDevice == null) {
 			if(baudRate > 0)
-                serialDevice = new SerialDevice(port, baudRate);
+				serialDevice = new SerialDevice(port, baudRate);
 			else
-                serialDevice = new SerialDevice(port);
-       
+				serialDevice = new SerialDevice(port);
+
 			serialDevice.setEventPublisher(eventPublisher);
 			try {
 				serialDevice.initialize();
@@ -137,23 +154,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 			itemMap.put(item.getName(), port);
 			serialDevices.put(port, serialDevice);
 		}
-		if (item instanceof StringItem) {
-			if (serialDevice.getStringItemName() == null) {
-				serialDevice.setStringItemName(item.getName());
-			} else {
-				throw new BindingConfigParseException(
-						"There is already another StringItem assigned to serial port "
-								+ port);
-			}
-		} else { // it is a SwitchItem
-			if (serialDevice.getSwitchItemName() == null) {
-				serialDevice.setSwitchItemName(item.getName());
-			} else {
-				throw new BindingConfigParseException(
-						"There is already another SwitchItem assigned to serial port "
-								+ port);
-			}
-		}
+
+		serialDevice.addRegEx(item.getName(), item.getClass(), pattern);
+		
 		Set<String> itemNames = contextMap.get(context);
 		if (itemNames == null) {
 			itemNames = new HashSet<String>();
@@ -175,14 +178,11 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 				if(serialDevice==null) {
 					continue;
 				}
-				if(itemName.equals(serialDevice.getStringItemName())) {
-					serialDevice.setStringItemName(null);
-				}
-				if(itemName.equals(serialDevice.getSwitchItemName())) {
-					serialDevice.setSwitchItemName(null);
-				}
+
+				serialDevice.removeRegEx(itemName);
+				
 				// if there is no binding left, dispose this device
-				if(serialDevice.getStringItemName()==null && serialDevice.getSwitchItemName()==null) {
+				if(serialDevice.isEmpty()) {
 					serialDevice.close();
 					serialDevices.remove(serialDevice.getPort());
 				}
