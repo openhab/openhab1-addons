@@ -1387,8 +1387,7 @@
 			<Model>FGD211</Model>
 			<Label lang="en">Universal Dimmer 500W</Label>
 			<ConfigFile VersionMax="1.8">fibaro/fgd211-14.xml</ConfigFile> <!-- VersionMin="1.4" -->
-			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgd211-19.xml
-			</ConfigFile>
+			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgd211-19.xml</ConfigFile>
 			<ConfigFile VersionMin="2.1">fibaro/fgd211-21.xml</ConfigFile> <!-- VersionMax="2.3" -->
 		</Product>
 		<Product>
