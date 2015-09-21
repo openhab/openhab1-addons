@@ -87,8 +87,7 @@ If the value is bigger than 255, the value would be rounded to next integer in m
 			<Default>5</Default>
 			<Size>1</Size>
 			<Label lang="en">Motion sensor sensitivity</Label>
-			<Help lang="en"><![CDATA[ Sensitivity level of PIR sensor (1=minimum, 5=maximum)
-			</Help>
+			<Help lang="en"><![CDATA[ Sensitivity level of PIR sensor (1=minimum, 5=maximum)]]></Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disable</Label>
