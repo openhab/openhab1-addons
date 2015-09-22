@@ -45,16 +45,6 @@ public interface SappBindingProvider extends BindingProvider {
     Item getItem(String itemName);
     
     /**
-     * @return returns true is some bindings have been added; should be reset by the actual provider
-     */
-    boolean isFullRefreshNeeded();
-
-    /**
-     * @param fullRefreshNeeded should be used by the actual provider after a full refresh
-     */
-    void setFullRefreshNeeded(boolean fullRefreshNeeded);
-    
-    /**
      * @param address virtual address
      * @return returns cached virtual address or null if not found
      */

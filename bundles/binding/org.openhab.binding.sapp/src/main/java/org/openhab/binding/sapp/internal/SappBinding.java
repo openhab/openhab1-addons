@@ -30,6 +30,7 @@ import org.openhab.binding.sapp.internal.model.SappAddressRollershutterStatus;
 import org.openhab.binding.sapp.internal.model.SappAddressType;
 import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -86,8 +87,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * polling enabler; toggled by switch P type
 	 */
-	private boolean pollingEnabled = true;
-
+	private boolean pollingEnabled = false;
+	
 	/**
 	 * Called by the SCR to activate the component with its configuration read
 	 * from CAS
@@ -118,8 +119,6 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		SappBindingProvider provider = getFirstSappBindingProvider();
 		if (provider != null) {
-			
-			provider.setFullRefreshNeeded(true);
 			
 			String pnmasEnabled = (String) configuration.get(CONFIG_KEY_PNMAS_ENABLED);
 			if (pnmasEnabled != null) {
@@ -161,6 +160,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		}
 
 		setProperlyConfigured(true);
+		initializeAllItemsInProvider(provider, null);
+		pollingEnabled = true;
+		updatePollingSwitchesState((SappBindingProvider) provider);
 	}
 
 	/**
@@ -218,7 +220,17 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		return "Sapp Refresh Service";
 	}
-
+	
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		
+		boolean previousPollingEnabled = pollingEnabled;
+		pollingEnabled = false;
+		initializeAllItemsInProvider((SappBindingProvider) provider, itemName);
+		pollingEnabled = previousPollingEnabled;
+		updatePollingSwitchesState((SappBindingProvider) provider);
+	}
+	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -232,60 +244,50 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		if (isProperlyConfigured()) { // wait until provider is properly configured
 			SappBindingProvider provider = getFirstSappBindingProvider();
 			if (provider != null) {
-				if (provider.isFullRefreshNeeded()) { // if items are in uninitialized state
-					logger.debug("executing a full refresh");
+				SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+
+				for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
+					SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 					try {
-						initializeAllItemsInProvider(provider);
-						provider.setFullRefreshNeeded(false);
-					} catch (SappException e) {
-						logger.error("error while initializing items:" + e.getMessage());
-					}
-				} else { // poll
-					SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+						PollingResult pollingResult = sappCentralExecuter.executePollingSappCommands(pnmas.getIp(), pnmas.getPort());
 
-					for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
-						SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
-						try {
-							PollingResult pollingResult = sappCentralExecuter.executePollingSappCommands(pnmas.getIp(), pnmas.getPort());
-
-							if (pollingResult.changedOutputs.size() != 0) {
-								for (Byte outputAddress : pollingResult.changedOutputs.keySet()) {
-									logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
-									if (! pollingResult.changedOutputs.get(outputAddress).equals(provider.getOutputCachedValue(SappUtils.byteToUnsigned(outputAddress)))) {
-										// different value, save & update state
-										logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
-										provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
-										updateState(pnmasId, SappAddressType.OUTPUT, SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue(), provider);
-									}
+						if (pollingResult.changedOutputs.size() != 0) {
+							for (Byte outputAddress : pollingResult.changedOutputs.keySet()) {
+								logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
+								if (! pollingResult.changedOutputs.get(outputAddress).equals(provider.getOutputCachedValue(SappUtils.byteToUnsigned(outputAddress)))) {
+									// different value, save & update state
+									logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
+									provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
+									updateState(pnmasId, SappAddressType.OUTPUT, SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue(), provider);
 								}
 							}
-
-							if (pollingResult.changedInputs.size() != 0) {
-								for (Byte inputAddress : pollingResult.changedInputs.keySet()) {
-									logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
-									if (! pollingResult.changedInputs.get(inputAddress).equals(provider.getInputCachedValue(SappUtils.byteToUnsigned(inputAddress)))) {
-										// different value, save & update state
-										logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
-										provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
-										updateState(pnmasId, SappAddressType.INPUT, SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue(), provider);
-									}
-								}
-							}
-
-							if (pollingResult.changedVirtuals.size() != 0) {
-								for (Integer virtualAddress : pollingResult.changedVirtuals.keySet()) {
-									logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
-									if (! pollingResult.changedVirtuals.get(virtualAddress).equals(provider.getVirtualCachedValue(virtualAddress))) {
-										// different value, save & update state
-										logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
-										provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
-										updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue(), provider);
-									}
-								}
-							}
-						} catch (SappException e) {
-							logger.error("polling failed on pnmas " + pnmas);
 						}
+
+						if (pollingResult.changedInputs.size() != 0) {
+							for (Byte inputAddress : pollingResult.changedInputs.keySet()) {
+								logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
+								if (! pollingResult.changedInputs.get(inputAddress).equals(provider.getInputCachedValue(SappUtils.byteToUnsigned(inputAddress)))) {
+									// different value, save & update state
+									logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
+									provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
+									updateState(pnmasId, SappAddressType.INPUT, SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue(), provider);
+								}
+							}
+						}
+
+						if (pollingResult.changedVirtuals.size() != 0) {
+							for (Integer virtualAddress : pollingResult.changedVirtuals.keySet()) {
+								logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
+								if (! pollingResult.changedVirtuals.get(virtualAddress).equals(provider.getVirtualCachedValue(virtualAddress))) {
+									// different value, save & update state
+									logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
+									provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
+									updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue(), provider);
+								}
+							}
+						}
+					} catch (SappException e) {
+						logger.error("polling failed on pnmas " + pnmas);
 					}
 				}
 			}
@@ -336,6 +338,9 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
 			
 			if (sappBindingConfigSwitchItem.isPollerSuspender()) {
+				if (!pollingEnabled) {
+					initializeAllItemsInProvider((SappBindingProvider) provider, null);
+				}
 				pollingEnabled = !pollingEnabled;
 				updatePollingSwitchesState(provider);
 			} else {
@@ -589,18 +594,22 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * initializes all items
 	 */
-	private void initializeAllItemsInProvider(SappBindingProvider provider) throws SappException {
+	private synchronized void initializeAllItemsInProvider(SappBindingProvider provider, String itemNameToRefresh) {
 
-		updatePollingSwitchesState(provider);
-
-		logger.debug("Updating item state for items {}", provider.getItemNames());
-		for (String itemName : provider.getItemNames()) {
-			logger.debug("checking for querying and setting item " + itemName);
-			State actualState = provider.getItem(itemName).getState();
-			logger.debug("current state for " + itemName + " is " + provider.getItem(itemName).getState().getClass().getName());
-			if (actualState instanceof UnDefType) { // item just added, refresh
-				logger.debug("refresh needed: querying and setting item " + itemName);
-				queryAndSendActualState(provider, itemName);
+		if (isProperlyConfigured()) {
+			logger.debug("Updating item state for items {}", provider.getItemNames());
+			for (String itemName : provider.getItemNames()) {
+				if (itemNameToRefresh == null || itemNameToRefresh.equals(itemName)) {
+					logger.debug("checking for querying and setting item " + itemName);
+					State actualState = provider.getItem(itemName).getState();
+					logger.debug("current state for " + itemName + " is " + provider.getItem(itemName).getState().getClass().getName());
+					if (actualState instanceof UnDefType) { // item just added, refresh
+						logger.debug("refresh needed: querying and setting item " + itemName);
+						queryAndSendActualState(provider, itemName);
+					} else {
+						eventPublisher.postUpdate(itemName, actualState);
+					}
+				}
 			}
 		}
 	}

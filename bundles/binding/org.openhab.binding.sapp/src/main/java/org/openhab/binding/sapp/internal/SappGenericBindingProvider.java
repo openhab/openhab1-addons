@@ -52,11 +52,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	private Map<String, Item> items = new HashMap<String, Item>();
 
 	/**
-	 * some new items have been loaded  
-	 */
-	private boolean fullRefreshNeeded = false;
-
-	/**
 	 * virtuals cache.
 	 */
 	private Map<Integer, Integer> virtualsCache = new HashMap<Integer, Integer>();
@@ -111,44 +106,19 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 		if (bindingConfig != null) {
 			if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
 				SappBindingConfigSwitchItem sappBindingConfigSwitchItem = new SappBindingConfigSwitchItem(item, bindingConfig);
-				if (sappBindingConfigSwitchItem.isPollerSuspender() || (pnmasMap.get(sappBindingConfigSwitchItem.getStatus().getPnmasId()) != null && sappBindingConfigSwitchItem.getControl().getPnmasId() != null)) {
-					addBindingConfig(item, sappBindingConfigSwitchItem);
-					fullRefreshNeeded = true;
-				} else {
-					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
-				}
+				addBindingConfig(item, sappBindingConfigSwitchItem);
 			} else if (item instanceof ContactItem) {
 				SappBindingConfigContactItem sappBindingConfigContactItem = new SappBindingConfigContactItem(item, bindingConfig);
-				if (pnmasMap.get(sappBindingConfigContactItem.getStatus().getPnmasId()) != null) {
-					addBindingConfig(item, sappBindingConfigContactItem);
-					fullRefreshNeeded = true;
-				} else {
-					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
-				}
+				addBindingConfig(item, sappBindingConfigContactItem);
 			} else if (item instanceof NumberItem) {
 				SappBindingConfigNumberItem sappBindingConfigNumberItem = new SappBindingConfigNumberItem(item, bindingConfig);
-				if (pnmasMap.get(sappBindingConfigNumberItem.getStatus().getPnmasId()) != null) {
-					addBindingConfig(item, sappBindingConfigNumberItem);
-					fullRefreshNeeded = true;
-				} else {
-					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
-				}
+				addBindingConfig(item, sappBindingConfigNumberItem);
 			} else if (item instanceof RollershutterItem) {
 				SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = new SappBindingConfigRollershutterItem(item, bindingConfig);
-				if (pnmasMap.get(sappBindingConfigRollershutterItem.getStatus().getPnmasId()) != null) {
-					addBindingConfig(item, sappBindingConfigRollershutterItem);
-					fullRefreshNeeded = true;
-				} else {
-					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
-				}
+				addBindingConfig(item, sappBindingConfigRollershutterItem);
 			} else if (item instanceof DimmerItem) {
 				SappBindingConfigDimmerItem sappBindingConfigDimmerItem = new SappBindingConfigDimmerItem(item, bindingConfig);
-				if (pnmasMap.get(sappBindingConfigDimmerItem.getStatus().getPnmasId()) != null) {
-					addBindingConfig(item, sappBindingConfigDimmerItem);
-					fullRefreshNeeded = true;
-				} else {
-					logger.warn("bad pnmasid in bindingConfig: " + bindingConfig + " -> processing bindingConfig aborted!");
-				}
+				addBindingConfig(item, sappBindingConfigDimmerItem);
 			} else {
 				throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 			}
@@ -162,8 +132,8 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	protected void addBindingConfig(Item item, BindingConfig config) {
-		super.addBindingConfig(item, config);
 		items.put(item.getName(), item);
+		super.addBindingConfig(item, config);
 	}
 
 	/**
@@ -188,23 +158,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public Item getItem(String itemName) {
 		return items.get(itemName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isFullRefreshNeeded() {
-		return fullRefreshNeeded;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFullRefreshNeeded(boolean fullRefreshNeeded) {
-		this.fullRefreshNeeded = fullRefreshNeeded;
-
 	}
 
 	/**
