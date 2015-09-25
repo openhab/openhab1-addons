@@ -40,7 +40,7 @@ public abstract class SappBindingConfig implements BindingConfig {
 	static {
 		validSubAddresses = new String[19];
 		for (int i = 0; i < 16; i++) {
-			validSubAddresses[i] = String.valueOf(i);
+			validSubAddresses[i] = String.valueOf(i + 1);
 		}
 		validSubAddresses[16] = "L";
 		validSubAddresses[17] = "H";
