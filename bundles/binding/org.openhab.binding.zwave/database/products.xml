@@ -2398,13 +2398,22 @@
 		<Name>BeNext</Name>
 		<Product>
 			<Reference>
+				<Type>0008</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>powerSwitch</Model>
+			<Label lang="en">BeNext Power Switch EU</Label>
+			<ConfigFile>benext/switch.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>000d</Type>
 				<Id>0100</Id>
 			</Reference>
 			<Model>builtInDimmer</Model>
 			<Label lang="en">BeNext Built-in Dimmer</Label>
 			<ConfigFile>benext/builtindimmer.xml</ConfigFile>
-		</Product>
+		</Product>		
 		<Product>
 			<Reference>
 				<Type>0018</Type>
