@@ -151,9 +151,13 @@ public class HueSettings {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 0;
 		}
-		return (Integer) settingsData.node("lights")
-				.node(deviceId).node("state")
-				.value("bri");
+		Object bri = settingsData.node("lights").node(deviceId).node("state").value("bri");
+		if(bri instanceof Integer) {
+			return (Integer) bri;
+		} else {
+			//probably not dimmable, return on state
+			return isBulbOn(deviceId)?254:0;
+		}
 	}
 
 	/**
