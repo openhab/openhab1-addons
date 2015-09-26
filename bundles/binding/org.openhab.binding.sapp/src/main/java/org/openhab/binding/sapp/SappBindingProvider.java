@@ -79,4 +79,9 @@ public interface SappBindingProvider extends BindingProvider {
      * @param value output value
      */
     void setOutputCachedValue(int address, int value);
+    
+    /**
+     * @return Set of items to be refreshed
+     */
+    SappUpdatePendingRequests getSappUpdatePendingRequests();
 }

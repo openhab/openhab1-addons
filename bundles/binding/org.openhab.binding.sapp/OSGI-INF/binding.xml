@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" modified="modified" deactivate="deactivate" name="org.openhab.binding.sapp.binding" immediate="true" configuration-pid="org.openhab.sapp" configuration-policy="require">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.sapp.binding" immediate="true" configuration-pid="org.openhab.sapp" configuration-policy="require">
 	<implementation class="org.openhab.binding.sapp.internal.SappBinding" />
 
 	<service>
@@ -24,5 +24,8 @@
 	<reference bind="addBindingProvider" cardinality="1..n"
 		interface="org.openhab.binding.sapp.SappBindingProvider" name="SappBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
+	<reference bind="setItemRegistry" cardinality="1..1"  
+		interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry"
+		policy="dynamic" unbind="unsetItemRegistry" />
 	
 </scr:component>

@@ -8,7 +8,9 @@
  */
 package org.openhab.binding.sapp.internal;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sapp.SappBindingProvider;
@@ -32,6 +34,8 @@ import org.openhab.binding.sapp.internal.model.SappPnmas;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -46,7 +50,6 @@ import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +64,7 @@ import com.github.paolodenti.jsapp.core.util.SappUtils;
  * @author Paolo Denti
  * @since 1.8.0
  */
-public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
+public class SappBinding extends AbstractActiveBinding<SappBindingProvider> implements ItemRegistryChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SappBinding.class);
 
@@ -69,6 +72,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	private static final String CONFIG_KEY_PNMAS_ENABLED = "pnmas.ids";
 	private static final String CONFIG_KEY_PNMAS_ID = "pnmas.%s.ip";
 	private static final String CONFIG_KEY_PNMAS_PORT = "pnmas.%s.port";
+	private static final String ALL_UPDATE_REQUEST_KEY = "*";
 
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
@@ -85,9 +89,14 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	private long refreshInterval = 100;
 
 	/**
+	 * the item registry
+	 */
+	protected ItemRegistry itemRegistry;
+
+	/**
 	 * polling enabler; toggled by switch P type
 	 */
-	private boolean pollingEnabled = false;
+	private boolean pollingEnabled = true;
 	
 	/**
 	 * Called by the SCR to activate the component with its configuration read
@@ -159,23 +168,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			}
 		}
 
+		provider.getSappUpdatePendingRequests().replaceAllPendingUpdateRequests(ALL_UPDATE_REQUEST_KEY);
 		setProperlyConfigured(true);
-		initializeAllItemsInProvider(provider, null);
-		pollingEnabled = true;
-		updatePollingSwitchesState((SappBindingProvider) provider);
-	}
-
-	/**
-	 * Called by the SCR when the configuration of a binding has been changed
-	 * through the ConfigAdmin service.
-	 * 
-	 * @param configuration
-	 *            Updated configuration properties
-	 */
-	public void modified(final Map<String, Object> configuration) {
-
-		// update the internal configuration accordingly
-		logger.debug("modified called");
 	}
 
 	/**
@@ -222,72 +216,97 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	}
 	
 	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		
-		boolean previousPollingEnabled = pollingEnabled;
-		pollingEnabled = false;
-		initializeAllItemsInProvider((SappBindingProvider) provider, itemName);
-		pollingEnabled = previousPollingEnabled;
-		updatePollingSwitchesState((SappBindingProvider) provider);
+	public void allBindingsChanged(BindingProvider provider) {
+		((SappBindingProvider) provider).getSappUpdatePendingRequests().replaceAllPendingUpdateRequests(ALL_UPDATE_REQUEST_KEY);
 	}
 	
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		((SappBindingProvider) provider).getSappUpdatePendingRequests().addPendingUpdateRequest(itemName);
+	}
+	
+	/**
+	 * Sets locally the item registry
+	 * @param itemRegistry the item registry
+	 */
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		logger.debug("setting item registry");
+		this.itemRegistry = itemRegistry;
+		this.itemRegistry.addItemRegistryChangeListener(this);
+	}
+
+	/**
+	 * Unsets locally the item registry
+	 * @param itemRegistry the item registry
+	 */
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		logger.debug("unsetting item registry");
+		this.itemRegistry.removeItemRegistryChangeListener(this);
+		this.itemRegistry = null;
+	}
+
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
 		
-		if (! pollingEnabled) {
-			return;
-		}
-
-		if (isProperlyConfigured()) { // wait until provider is properly configured
+		if (isProperlyConfigured()) { // wait until provider is properly configured and all items are loaded
 			SappBindingProvider provider = getFirstSappBindingProvider();
 			if (provider != null) {
-				SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
+				if (((SappBindingProvider) provider).getSappUpdatePendingRequests().areUpdatePendingRequestsPresent()) { // reinit items
+					Set<String> toBeProcessed = ((SappBindingProvider) provider).getSappUpdatePendingRequests().getAndClearPendingUpdateRequests();
+					initializeAllItemsInProvider(provider, toBeProcessed);
+				} else {
+					if (! pollingEnabled) {
+						return;
+					}
 
-				for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
-					SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
-					try {
-						PollingResult pollingResult = sappCentralExecuter.executePollingSappCommands(pnmas.getIp(), pnmas.getPort());
+					SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
 
-						if (pollingResult.changedOutputs.size() != 0) {
-							for (Byte outputAddress : pollingResult.changedOutputs.keySet()) {
-								logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
-								if (! pollingResult.changedOutputs.get(outputAddress).equals(provider.getOutputCachedValue(SappUtils.byteToUnsigned(outputAddress)))) {
-									// different value, save & update state
-									logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
-									provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
-									updateState(pnmasId, SappAddressType.OUTPUT, SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue(), provider);
+					for (String pnmasId : provider.getPnmasMap().keySet()) { // each pnmas
+						SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
+						try {
+							PollingResult pollingResult = sappCentralExecuter.executePollingSappCommands(pnmas.getIp(), pnmas.getPort());
+
+							if (pollingResult.changedOutputs.size() != 0) {
+								for (Byte outputAddress : pollingResult.changedOutputs.keySet()) {
+									logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
+									if (! pollingResult.changedOutputs.get(outputAddress).equals(provider.getOutputCachedValue(SappUtils.byteToUnsigned(outputAddress)))) {
+										// different value, save & update state
+										logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
+										provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
+										updateState(pnmasId, SappAddressType.OUTPUT, SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue(), provider);
+									}
 								}
 							}
-						}
 
-						if (pollingResult.changedInputs.size() != 0) {
-							for (Byte inputAddress : pollingResult.changedInputs.keySet()) {
-								logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
-								if (! pollingResult.changedInputs.get(inputAddress).equals(provider.getInputCachedValue(SappUtils.byteToUnsigned(inputAddress)))) {
-									// different value, save & update state
-									logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
-									provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
-									updateState(pnmasId, SappAddressType.INPUT, SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue(), provider);
+							if (pollingResult.changedInputs.size() != 0) {
+								for (Byte inputAddress : pollingResult.changedInputs.keySet()) {
+									logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
+									if (! pollingResult.changedInputs.get(inputAddress).equals(provider.getInputCachedValue(SappUtils.byteToUnsigned(inputAddress)))) {
+										// different value, save & update state
+										logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
+										provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
+										updateState(pnmasId, SappAddressType.INPUT, SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue(), provider);
+									}
 								}
 							}
-						}
 
-						if (pollingResult.changedVirtuals.size() != 0) {
-							for (Integer virtualAddress : pollingResult.changedVirtuals.keySet()) {
-								logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
-								if (! pollingResult.changedVirtuals.get(virtualAddress).equals(provider.getVirtualCachedValue(virtualAddress))) {
-									// different value, save & update state
-									logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
-									provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
-									updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue(), provider);
+							if (pollingResult.changedVirtuals.size() != 0) {
+								for (Integer virtualAddress : pollingResult.changedVirtuals.keySet()) {
+									logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
+									if (! pollingResult.changedVirtuals.get(virtualAddress).equals(provider.getVirtualCachedValue(virtualAddress))) {
+										// different value, save & update state
+										logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
+										provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
+										updateState(pnmasId, SappAddressType.VIRTUAL, virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue(), provider);
+									}
 								}
 							}
+						} catch (SappException e) {
+							logger.error("polling failed on pnmas " + pnmas);
 						}
-					} catch (SappException e) {
-						logger.error("polling failed on pnmas " + pnmas);
 					}
 				}
 			}
@@ -338,11 +357,13 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			logger.debug("found binding " + sappBindingConfigSwitchItem);
 			
 			if (sappBindingConfigSwitchItem.isPollerSuspender()) {
-				if (!pollingEnabled) {
-					initializeAllItemsInProvider((SappBindingProvider) provider, null);
+				if (pollingEnabled) { // turning off polling
+					pollingEnabled = false;
+					updatePollingSwitchesState(provider); // force updates of polling switches because polling is off
+				} else { // turning on polling
+					provider.getSappUpdatePendingRequests().replaceAllPendingUpdateRequests(ALL_UPDATE_REQUEST_KEY);
+					pollingEnabled = true;
 				}
-				pollingEnabled = !pollingEnabled;
-				updatePollingSwitchesState(provider);
 			} else {
 				
 				SappAddressOnOffControl controlAddress = sappBindingConfigSwitchItem.getControl();
@@ -357,7 +378,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 						switch (controlAddress.getAddressType()) {
 						case VIRTUAL: {
 							// mask bits on previous value
-							int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
+							int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress(), false);
 							int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), command.equals(OnOffType.ON) ? controlAddress.getOnValue() : controlAddress.getOffValue(), previousValue);
 							
 							// update pnmas
@@ -400,7 +421,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					case VIRTUAL: {
 
 						// mask bits on previous value
-						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), false);
 						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((DecimalType) command).doubleValue()), previousValue);
 						
 						// update pnmas
@@ -448,7 +469,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					switch (controlAddress.getAddressType()) {
 					case VIRTUAL: {
 						// mask bits on previous value
-						int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress());
+						int previousValue = getVirtualValue(provider, controlAddress.getPnmasId(), controlAddress.getAddress(), controlAddress.getSubAddress(), false);
 						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(controlAddress.getSubAddress(), controlAddress.getActivateValue(), previousValue);
 						
 						// update pnmas
@@ -490,7 +511,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					case VIRTUAL: {
 
 						// mask bits on previous value
-						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), false);
 						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), ((OnOffType) command) == OnOffType.ON ? address.getOriginalMaxScale() : address.getOriginalMinScale(), previousValue);
 						
 						// update pnmas
@@ -514,7 +535,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					case VIRTUAL: {
 
 						// mask bits on previous value
-						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), false);
 						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), ((IncreaseDecreaseType) command) == IncreaseDecreaseType.INCREASE ? Math.min(previousValue + address.getIncrement(), address.getOriginalMaxScale()) : Math.max(previousValue - address.getIncrement(), address.getOriginalMinScale()), previousValue);
 						
 						// update pnmas
@@ -538,7 +559,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 					case VIRTUAL: {
 
 						// mask bits on previous value
-						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress());
+						int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), false);
 						int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((PercentType) command).doubleValue()), previousValue);
 						
 						// update pnmas
@@ -594,30 +615,24 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * initializes all items
 	 */
-	private synchronized void initializeAllItemsInProvider(SappBindingProvider provider, String itemNameToRefresh) {
+	private void initializeAllItemsInProvider(SappBindingProvider provider, Set<String> toBeProcessed) {
 
-		if (isProperlyConfigured()) {
-			logger.debug("Updating item state for items {}", provider.getItemNames());
-			for (String itemName : provider.getItemNames()) {
-				if (itemNameToRefresh == null || itemNameToRefresh.equals(itemName)) {
-					logger.debug("checking for querying and setting item " + itemName);
-					State actualState = provider.getItem(itemName).getState();
-					logger.debug("current state for " + itemName + " is " + provider.getItem(itemName).getState().getClass().getName());
-					if (actualState instanceof UnDefType) { // item just added, refresh
-						logger.debug("refresh needed: querying and setting item " + itemName);
-						queryAndSendActualState(provider, itemName);
-					} else {
-						eventPublisher.postUpdate(itemName, actualState);
-					}
-				}
+		logger.debug("Updating item state for items {}", provider.getItemNames());
+		for (String itemName : provider.getItemNames()) {
+			if (toBeProcessed.contains(ALL_UPDATE_REQUEST_KEY) || toBeProcessed.contains(itemName)) {
+				queryAndSendActualState(provider, itemName);
 			}
 		}
+		
+		updatePollingSwitchesState(provider);
 	}
 
 	/**
 	 * reads state from device and updates item repository
 	 */
 	private void queryAndSendActualState(SappBindingProvider provider, String itemName) {
+		
+		logger.debug("querying and sending item " + itemName);
 
 		Item item = provider.getItem(itemName);
 
@@ -755,7 +770,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		switch (statusAddress.getAddressType()) {
 		case VIRTUAL:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -764,7 +779,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		case INPUT:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getInputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getInputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -773,7 +788,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		case OUTPUT:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getOutputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getOutputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOnValue() ? OnOffType.ON : OnOffType.OFF);
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -794,7 +809,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		switch (statusAddress.getAddressType()) {
 		case VIRTUAL:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -803,7 +818,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		case INPUT:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getInputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getInputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -812,7 +827,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		case OUTPUT:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getOutputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getOutputValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? OpenClosedType.OPEN : OpenClosedType.CLOSED);
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -833,7 +848,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		switch (address.getAddressType()) {
 		case VIRTUAL:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -842,7 +857,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		case INPUT:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getInputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getInputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -851,7 +866,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 
 		case OUTPUT:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getOutputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getOutputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -872,7 +887,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		switch (statusAddress.getAddressType()) {
 		case VIRTUAL:
 			try {
-				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress()));
+				int result = SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true));
 				eventPublisher.postUpdate(itemName, result == statusAddress.getOpenValue() ? PercentType.HUNDRED : (result == statusAddress.getClosedValue() ? PercentType.ZERO : PercentType.valueOf("50")));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
@@ -901,7 +916,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 		switch (statusAddress.getAddressType()) {
 		case VIRTUAL:
 			try {
-				int result = (int) statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress())));
+				int result = (int) statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true)));
 				if (result <= PercentType.ZERO.intValue()) {
 					eventPublisher.postUpdate(itemName, PercentType.ZERO);
 				} else if (result >= PercentType.HUNDRED.intValue()) {
@@ -931,10 +946,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * load virtual value from pnmas, if not cached, and caches it 
 	 */
-	private int getVirtualValue(SappBindingProvider provider, String pnmasId, int address, String subAddress) throws SappException {
+	private int getVirtualValue(SappBindingProvider provider, String pnmasId, int address, String subAddress, boolean forceReload) throws SappException {
 
 		Integer value = provider.getVirtualCachedValue(address);
-		if (value == null) {
+		if (forceReload || value == null) {
+			logger.debug(String.format("cached value missing, reloading for [%s %d %s]", pnmasId, address, subAddress));
 			SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 			
 			SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
@@ -948,10 +964,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * load input value from pnmas, if not cached, and caches it 
 	 */
-	private int getInputValue(SappBindingProvider provider, String pnmasId, int address, String subAddress) throws SappException {
+	private int getInputValue(SappBindingProvider provider, String pnmasId, int address, String subAddress, boolean forceReload) throws SappException {
 
 		Integer value = provider.getInputCachedValue(address);
-		if (value == null) {
+		if (forceReload || value == null) {
+			logger.debug(String.format("cached value missing, reloading for [%s %d %s]", pnmasId, address, subAddress));
 			SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 
 			SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
@@ -964,10 +981,11 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 	/**
 	 * load output value from pnmas, if not cached, and caches it 
 	 */
-	private int getOutputValue(SappBindingProvider provider, String pnmasId, int address, String subAddress) throws SappException {
+	private int getOutputValue(SappBindingProvider provider, String pnmasId, int address, String subAddress, boolean forceReload) throws SappException {
 
 		Integer value = provider.getOutputCachedValue(address);
-		if (value == null) {
+		if (forceReload || value == null) {
+			logger.debug(String.format("cached value missing, reloading for [%s %d %s]", pnmasId, address, subAddress));
 			SappPnmas pnmas = provider.getPnmasMap().get(pnmasId);
 
 			SappCentralExecuter sappCentralExecuter = SappCentralExecuter.getInstance();
@@ -975,5 +993,19 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> {
 			provider.setOutputCachedValue(address, value);
 		}
 		return value.intValue();
+	}
+
+	@Override
+	public void allItemsChanged(Collection<String> oldItemNames) {
+		SappBindingProvider provider = getFirstSappBindingProvider();
+		provider.getSappUpdatePendingRequests().replaceAllPendingUpdateRequests(ALL_UPDATE_REQUEST_KEY);
+	}
+
+	@Override
+	public void itemAdded(Item item) {
+	}
+
+	@Override
+	public void itemRemoved(Item item) {
 	}
 }

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.sapp.SappBindingProvider;
+import org.openhab.binding.sapp.SappUpdatePendingRequests;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfig;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigDimmerItem;
@@ -65,6 +66,11 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * outputs cache.
 	 */
 	private Map<Integer, Integer> outputsCache = new HashMap<Integer, Integer>();
+	
+	/**
+	 * pending update requests
+	 */
+	private SappUpdatePendingRequests sappUpdatePendingRequests = new SappUpdatePendingRequests();
 
 	/**
 	 * {@inheritDoc}
@@ -134,6 +140,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	protected void addBindingConfig(Item item, BindingConfig config) {
 		items.put(item.getName(), item);
 		super.addBindingConfig(item, config);
+		sappUpdatePendingRequests.addPendingUpdateRequest(item.getName());
 	}
 
 	/**
@@ -206,5 +213,10 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public void setOutputCachedValue(int address, int value) {
 		outputsCache.put(address, value);
+	}
+
+	@Override
+	public SappUpdatePendingRequests getSappUpdatePendingRequests() {
+		return sappUpdatePendingRequests;
 	}
 }
