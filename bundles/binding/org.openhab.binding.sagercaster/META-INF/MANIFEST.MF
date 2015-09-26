@@ -11,6 +11,8 @@ Bundle-Description: This is the SagerCaster binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder;version="2.6.0",
+ org.joda.time,
+ org.joda.time.base,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -32,4 +34,3 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.binding.sagercaster.internal.SagerCasterActivator
-Require-Bundle: org.openhab.core.persistence
