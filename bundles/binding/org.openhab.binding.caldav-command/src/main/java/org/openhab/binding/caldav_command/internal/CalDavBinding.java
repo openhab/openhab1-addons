@@ -341,6 +341,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			State c = new DateTimeType(FORMATTER.print(time));
 			logger.debug("setting value for '{}' to: {}", itemNamePreview, c);
 			eventPublisher.postUpdate(itemNamePreview, c);
+		} else if (type == CalDavType.DISABLE) {
+			// ok
 		} else {
 			logger.warn("unhandled type: " + type);
 		}
