@@ -32,6 +32,8 @@
     <module>org.openhab.action.astro</module>
     <module>org.openhab.action.tinkerforge</module>
     <module>org.openhab.action.harmonyhub</module>
+    <module>org.openhab.action.ecobee</module>
+    <module>org.openhab.action.mqtt</module>
   </modules>
 
 </project>

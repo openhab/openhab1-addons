@@ -9,11 +9,9 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.persistence.sense">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" name="org.openhab.persistence.sense" immediate="true" configuration-pid="org.openhab.sense" configuration-policy="require">
    <implementation class="org.openhab.persistence.sense.internal.SenseService"/>
    <service>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
-   <property name="service.pid" type="String" value="org.openhab.sense"/>
 </scr:component>

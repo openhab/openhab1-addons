@@ -149,23 +149,30 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 		if (config != null) {
 
 			Boolean configChanged = false;
+			/**
+			 * Valid values of the baudRateString
+			 * "75", "110", "300", "1200", "2400", "4800", 
+			 * "9600", "19200", "38400", "57600", "115200"
+			 * @see org.openhab.io.transport.cul.internal.CULSerialHandlerImpl
+			 */
 			String baudRateString = (String) config.get(KEY_BAUD_RATE);
 			if(StringUtils.isNotBlank(baudRateString)){
-				properties.put(KEY_BAUD_RATE, Integer.parseInt(baudRateString));
+				properties.put(KEY_BAUD_RATE, baudRateString);
 				configChanged = true;
 			}
 			
-			/*
-			 * PARITY_EVEN 2
-			 * PARITY_MARK 3
-			 * PARITY_NONE 0
-			 * PARITY_ODD  1
-			 * PARITY_SPACE 4
+			/**
+			 * Valid values of the parityString
+			 * "NONE"
+			 * "ODD"
+			 * "EVEN"
+			 * "MARK"
+			 * "SPACE"
+			 * @see org.openhab.io.transport.cul.internal.CULSerialHandlerImpl
 			 */
-			
 			String parityString = (String) config.get(KEY_PARITY);
 			if(StringUtils.isNotBlank(parityString)){
-				properties.put(KEY_PARITY, Integer.parseInt(parityString));
+				properties.put(KEY_PARITY, parityString);
 				configChanged = true;
 			}
 			

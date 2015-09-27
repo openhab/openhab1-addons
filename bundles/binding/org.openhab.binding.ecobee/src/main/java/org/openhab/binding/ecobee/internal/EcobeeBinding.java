@@ -24,28 +24,30 @@ import java.util.prefs.Preferences;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
+import org.openhab.binding.ecobee.EcobeeActionProvider;
 import org.openhab.binding.ecobee.EcobeeBindingProvider;
-import org.openhab.binding.ecobee.internal.messages.AbstractFunction;
-import org.openhab.binding.ecobee.internal.messages.ApiResponse;
-import org.openhab.binding.ecobee.internal.messages.AuthorizeRequest;
-import org.openhab.binding.ecobee.internal.messages.AuthorizeResponse;
-import org.openhab.binding.ecobee.internal.messages.Request;
-import org.openhab.binding.ecobee.internal.messages.Selection;
-import org.openhab.binding.ecobee.internal.messages.Selection.SelectionType;
-import org.openhab.binding.ecobee.internal.messages.Status;
-import org.openhab.binding.ecobee.internal.messages.Temperature;
-import org.openhab.binding.ecobee.internal.messages.Thermostat;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.HvacMode;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.VentilatorMode;
-import org.openhab.binding.ecobee.internal.messages.ThermostatRequest;
-import org.openhab.binding.ecobee.internal.messages.ThermostatResponse;
-import org.openhab.binding.ecobee.internal.messages.ThermostatSummaryRequest;
-import org.openhab.binding.ecobee.internal.messages.ThermostatSummaryResponse;
-import org.openhab.binding.ecobee.internal.messages.ThermostatSummaryResponse.Revision;
-import org.openhab.binding.ecobee.internal.messages.RefreshTokenRequest;
-import org.openhab.binding.ecobee.internal.messages.TokenRequest;
-import org.openhab.binding.ecobee.internal.messages.TokenResponse;
-import org.openhab.binding.ecobee.internal.messages.UpdateThermostatRequest;
+import org.openhab.binding.ecobee.messages.AbstractFunction;
+import org.openhab.binding.ecobee.messages.AbstractRequest;
+import org.openhab.binding.ecobee.messages.ApiResponse;
+import org.openhab.binding.ecobee.messages.AuthorizeRequest;
+import org.openhab.binding.ecobee.messages.AuthorizeResponse;
+import org.openhab.binding.ecobee.messages.RefreshTokenRequest;
+import org.openhab.binding.ecobee.messages.Request;
+import org.openhab.binding.ecobee.messages.Selection;
+import org.openhab.binding.ecobee.messages.Status;
+import org.openhab.binding.ecobee.messages.Temperature;
+import org.openhab.binding.ecobee.messages.Thermostat;
+import org.openhab.binding.ecobee.messages.ThermostatRequest;
+import org.openhab.binding.ecobee.messages.ThermostatResponse;
+import org.openhab.binding.ecobee.messages.ThermostatSummaryRequest;
+import org.openhab.binding.ecobee.messages.ThermostatSummaryResponse;
+import org.openhab.binding.ecobee.messages.TokenRequest;
+import org.openhab.binding.ecobee.messages.TokenResponse;
+import org.openhab.binding.ecobee.messages.UpdateThermostatRequest;
+import org.openhab.binding.ecobee.messages.Selection.SelectionType;
+import org.openhab.binding.ecobee.messages.Thermostat.HvacMode;
+import org.openhab.binding.ecobee.messages.Thermostat.VentilatorMode;
+import org.openhab.binding.ecobee.messages.ThermostatSummaryResponse.Revision;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
@@ -70,13 +72,15 @@ import org.slf4j.LoggerFactory;
  * @author John Cocula
  * @since 1.7.0
  */
-public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> implements ManagedService {
+public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> implements ManagedService,
+		EcobeeActionProvider {
 
 	private static final String DEFAULT_USER_ID = "DEFAULT_USER";
 
 	private static final Logger logger = LoggerFactory.getLogger(EcobeeBinding.class);
 
 	protected static final String CONFIG_REFRESH = "refresh";
+	protected static final String CONFIG_TIMEOUT = "timeout";
 	protected static final String CONFIG_APP_KEY = "appkey";
 	protected static final String CONFIG_SCOPE = "scope";
 	protected static final String CONFIG_TEMP_SCALE = "tempscale";
@@ -257,7 +261,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				readEcobee(oauthCredentials, selection);
 			}
 		} catch (Exception e) {
-			logger.error("Error reading from Ecobee:", e);
+			if (logger.isDebugEnabled()) {
+				logger.warn("Exception reading from Ecobee:", e);
+			} else {
+				logger.warn("Exception reading from Ecobee: {}", e.getMessage());
+			}
 		}
 	}
 
@@ -579,6 +587,72 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public boolean callEcobee(final String itemName, final AbstractFunction function) {
+		// Find the first binding provider for this itemName.
+		EcobeeBindingProvider provider = null;
+		String selectionMatch = null;
+		for (EcobeeBindingProvider p : this.providers) {
+			selectionMatch = p.getThermostatIdentifier(itemName);
+			if (selectionMatch != null) {
+				provider = p;
+				break;
+			}
+		}
+
+		if (provider == null) {
+			logger.warn("no matching binding provider found [itemName={}, function={}]", itemName, function);
+			return false;
+		}
+
+		final Selection selection = new Selection(selectionMatch);
+		logger.trace("Selection for function: {}", selection);
+
+		try {
+			logger.trace("Function to call: {}", function);
+
+			OAuthCredentials oauthCredentials = getOAuthCredentials(provider.getUserid(itemName));
+
+			if (oauthCredentials == null) {
+				logger.warn("Unable to locate credentials for item {}; aborting function call.", itemName);
+				return false;
+			}
+
+			if (oauthCredentials.noAccessToken()) {
+				if (!oauthCredentials.refreshTokens()) {
+					logger.warn("Calling function skipped.");
+					return false;
+				}
+			}
+
+			List<AbstractFunction> functions = new ArrayList<AbstractFunction>(1);
+			functions.add(function);
+
+			UpdateThermostatRequest request = new UpdateThermostatRequest(oauthCredentials.accessToken, selection,
+					functions, null);
+
+			ApiResponse response = request.execute();
+			if (response.isError()) {
+				final Status status = response.getStatus();
+				if (status.isAccessTokenExpired()) {
+					if (oauthCredentials.refreshTokens()) {
+						return callEcobee(itemName, function);
+					}
+				} else {
+					logger.error("Error calling function: {}", response);
+				}
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			logger.error("Unable to call function", e);
+			return false;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
 
 		// Forget prior revisions because we may be concerned with
@@ -633,6 +707,12 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			if (isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
+			// to override the default HTTP timeout one has to add a
+			// parameter to openhab.cfg like ecobee:timeout=20000
+			String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+			if (isNotBlank(timeoutString)) {
+				AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
+			}
 			// to override the default usage of Fahrenheit one has to add a
 			// parameter to openhab.cfg, as in ecobee:tempscale=C
 			String tempScaleString = (String) config.get(CONFIG_TEMP_SCALE);
@@ -651,8 +731,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
-				if (CONFIG_REFRESH.equals(configKey) || CONFIG_TEMP_SCALE.equals(configKey)
-						|| "service.pid".equals(configKey)) {
+				if (CONFIG_REFRESH.equals(configKey) || CONFIG_TIMEOUT.equals(configKey)
+						|| CONFIG_TEMP_SCALE.equals(configKey) || "service.pid".equals(configKey)) {
 					continue;
 				}
 

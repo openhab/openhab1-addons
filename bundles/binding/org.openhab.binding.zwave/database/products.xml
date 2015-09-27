@@ -109,6 +109,19 @@
 			<Label lang="en">Isolated Contact Fixture Module</Label>
 			<ConfigFile>linear/fs20z.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4744</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Reference>
+				<Type>4744</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>NGD00Z-4</Model>
+			<Label lang="en">Garage Door Controller</Label>
+			<ConfigFile>linear/ngd00z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -135,6 +148,15 @@
 			<Model>RF9500</Model>
 			<Label lang="en">Battery Switch</Label>
 			<ConfigFile>cooper/9500.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>574D</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>RFWC5</Model>
+			<Label lang="en">5-Scene Keypad</Label>
+			<ConfigFile>cooper/rfwc5.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -319,6 +341,16 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>AD146</Model>
+			<Label lang="en">In-Wall Dimmer Module</Label>
+			<Label lang="de">Unterputz Dimmer Modul</Label>
+			<ConfigFile>everspring/ad146.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0103</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -344,6 +376,15 @@
 			<Model>AN158</Model>
 			<Label lang="en">Switch Meter Plugin</Label>
 			<ConfigFile>everspring/an158.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0008</Id>
+			</Reference>
+			<Model>AN179</Model>
+			<Label lang="en">In-Wall Switch Module</Label>
+			<ConfigFile>everspring/an179.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1123,6 +1164,10 @@
 				<Type>0003</Type>
 				<Id>0004</Id>
 			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0003</Id>
+			</Reference>
 			<Model>NP210</Model>
 			<Label lang="en">Smart PowerNode</Label>
 			<ConfigFile>greenwave/np210.xml</ConfigFile>
@@ -1342,8 +1387,7 @@
 			<Model>FGD211</Model>
 			<Label lang="en">Universal Dimmer 500W</Label>
 			<ConfigFile VersionMax="1.8">fibaro/fgd211-14.xml</ConfigFile> <!-- VersionMin="1.4" -->
-			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgd211-19.xml
-			</ConfigFile>
+			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgd211-19.xml</ConfigFile>
 			<ConfigFile VersionMin="2.1">fibaro/fgd211-21.xml</ConfigFile> <!-- VersionMax="2.3" -->
 		</Product>
 		<Product>
@@ -1806,6 +1850,15 @@
 			<Label lang="en">In Wall Micro Switch</Label>
 			<ConfigFile>tkb/tz78.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TZ88</Model>
+			<Label lang="en">Energy Monitoring Wall Plug</Label>
+			<ConfigFile>tkb/tz88.xml</ConfigFile>
+		</Product>
 		<Product>	
 			<Reference>
 				<Type>0002</Type>
@@ -1905,6 +1958,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>000d</Id>
+			</Reference>
+			<Model>PST-02B</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/pst02b.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
 			</Reference>
@@ -1951,7 +2013,16 @@
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW
 			</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
-			<ConfigFile>philio/pan06_1.xml</ConfigFile>
+			<ConfigFile>philio/pan06_1a.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0006</Id>
+			</Reference>
+			<Model>PAN08</Model>
+			<Label lang="en">Relay Insert for Blind Control</Label>
+			<ConfigFile>philio/pan08.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1961,6 +2032,15 @@
 			<Model>PAN11-1</Model>
 			<Label lang="en">Smart Energy Plug In Switch</Label>
 			<ConfigFile>philio/pan11_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>PAN11-1B</Model>
+			<Label lang="en">Smart Energy Plug In Switch</Label>
+			<ConfigFile>philio/pan11_1b.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2053,6 +2133,28 @@
 			<ConfigFile>amc/zds-ud10.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+        <Id>011a</Id>
+        <Name>Enerwave</Name>
+        <Product>
+            <Reference>
+                <Type>101</Type>
+                <Id>0603</Id>
+            </Reference>
+            <Model>ZW20R</Model>
+            <Label lang="en">20A Tamper Resistant Duplex Receptacle</Label>
+            <ConfigFile>enerwave/zw20r.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>0601</Type>
+                <Id>0901</Id>
+            </Reference>
+            <Model>ZWN-BPC</Model>
+            <Label lang="en">PIR Sensor</Label>
+            <ConfigFile>enerwave/zwn-bpc.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 	<Manufacturer>
 		<Id>0001</Id>
 		<Name>ACT</Name>
@@ -2177,6 +2279,15 @@
 			<Model>VRPD3-1LW</Model>
 			<Label lang="en">Scene Capable Plug-in Dimmer</Label>
 			<ConfigFile>leviton/vrpd3-1lw.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1d04</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>DZR15-1LZ</Model>
+			<Label lang="en">Scene Capable Receptacle</Label>
+			<ConfigFile>leviton/dzr15-1lz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2427,6 +2538,15 @@
 			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>009303</Model>
+			<Label lang="en">Wall Controller</Label>
+			<ConfigFile>popp/009303.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0169</Id>
@@ -2595,6 +2715,32 @@
 			<Model>WPS104</Model>
 			<Label lang="en">Energy Driven Switch</Label>
 			<ConfigFile>widom/wps104.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>019b</Id>
+		<Name>Thermo-Floor</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Thermostat</Model>
+			<Label lang="en">ZWave Thermostat</Label>
+			<ConfigFile>thermofloor/multireg_thermostat.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0085</Id>
+		<Name>Fakro</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>ARZ</Model>
+			<Label lang="en">Roller Shutter Module</Label>
+			<ConfigFile>fakro/arz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

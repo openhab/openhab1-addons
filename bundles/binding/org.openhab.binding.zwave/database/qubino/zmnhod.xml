@@ -56,8 +56,7 @@
 			</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">ALL ON is not active, ALL OFF is not active
-				</Label>
+				<Label lang="en">ALL ON is not active, ALL OFF is not active</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
@@ -150,15 +149,11 @@
 			</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Slats return to previously set position only in
-					case of Z-wave control.</Label>
+				<Label lang="en">Slats return to previously set position only in case of Z-wave control.</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Slats return to previously set position in case of
-					Z-wave control,
-					push-button operation or when the lower limit switch is reached.
-				</Label>
+				<Label lang="en">Slats return to previously set position in case of Z-wave control,	push-button operation or when the lower limit switch is reached.</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
@@ -196,17 +191,17 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label>Forced Shutter DC calibration</Label>
-			<Help lang="en">Setting value 0 or 1 a Shutter DC module enters the
-				calibration mode.</Help>
+			<Help lang="en"><![CDATA[Setting value 0 or 1 a Shutter DC module enters the
+				calibration mode.<br> 
+				When calibration process is finished, completing full cycle - up, down
+				and up, set parameter 78 back to default of 0.]]></Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Default</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en"><![CDATA[Start calibration process. <br> 
-				When calibration process is finished, completing full cycle - up, down
-				and up, set parameter 78 back to default of 0.]]></Label>
+				<Label lang="en">Start calibration process.</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
