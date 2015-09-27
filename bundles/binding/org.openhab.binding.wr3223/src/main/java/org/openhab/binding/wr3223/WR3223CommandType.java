@@ -48,6 +48,15 @@ public enum WR3223CommandType {
 		}
 	},
 	
+	/** T4 (de: Ablufttemperatur (Raumtemperatur)) */
+	TEMPERATURE_OUTGOING_AIR {
+		{
+			command = "temperature_outgoing_air";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.T4;			
+		}
+	},	
+	
 	/** T5 (de: Temperatur nach Wärmetauscher (Fortluft)) */
 	TEMPERATURE_AFTER_HEAT_EXCHANGER {
 		{

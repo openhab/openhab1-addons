@@ -52,6 +52,9 @@ public enum WR3223Commands {
 	/** Aussentemperatur auslesen */
 	T3,
 	
+	/** Ablufttemperatur (Raumtemperatur) */
+	T4,
+	
 	/** Temperatur nach Wärmetauscher (Fortluft) lesen */
 	T5,
 	
