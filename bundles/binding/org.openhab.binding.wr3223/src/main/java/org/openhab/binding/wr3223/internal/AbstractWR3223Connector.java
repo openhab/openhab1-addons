@@ -171,7 +171,10 @@ public abstract class AbstractWR3223Connector {
 		}
 		
 		//Read controller answer	
-		int answer = inputStream.read();
+		int answer = inputStream.readByte();
+		if(logger.isDebugEnabled()){
+			logger.debug("Answer from WR3223 {}.",Integer.toHexString(answer));
+		}		
 		if(answer == ACK){
 			return true;
 		}

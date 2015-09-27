@@ -18,6 +18,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import org.openhab.core.library.types.DecimalType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Connector implementation for a serial port connection to WR3223.
  * 
@@ -26,6 +30,9 @@ import java.util.Enumeration;
  */
 public class SerialWR3223Connector extends AbstractWR3223Connector {
 		
+	private static final Logger logger = 
+			LoggerFactory.getLogger(SerialWR3223Connector.class);
+	
 	private SerialPort serialPort;	
 
 	/**
@@ -60,6 +67,16 @@ public class SerialWR3223Connector extends AbstractWR3223Connector {
 						SerialPort.PARITY_EVEN);
 			} catch (UnsupportedCommOperationException e) {
 				throw new IOException("Serial port '" + port + "' don't support the configuration 7 data bit, 1 stop bit and parity even.",e);
+			}
+			if(!serialPort.isReceiveTimeoutEnabled()){
+				try {
+					if(logger.isDebugEnabled()){
+						logger.debug("Add a receive timeout of 1000ms.");
+					}
+					serialPort.enableReceiveTimeout(1000);
+				} catch (UnsupportedCommOperationException e) {
+					logger.warn("Error by adding receive timeout.", e);
+				}
 			}
 			DataInputStream inputStream = new DataInputStream(serialPort.getInputStream());
 			DataOutputStream outputStream = new DataOutputStream(serialPort.getOutputStream());

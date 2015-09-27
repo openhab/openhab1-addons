@@ -257,11 +257,12 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			
 			//Write values if no control device connected
 			if(!relais.isControlDeviceActive()){			
-				connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue());				
-				if(hasUpdate){
-					hasUpdate = false;
-					connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(statusHolder.getOperationMode()));
-					connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(statusHolder.getTargetTemperatureSupplyAir()));
+				if(connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue())){				
+					if(hasUpdate){
+						hasUpdate = false;
+						connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(statusHolder.getOperationMode()));
+						connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(statusHolder.getTargetTemperatureSupplyAir()));
+					}
 				}
 			}
 			
