@@ -259,13 +259,17 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			if(!relais.isControlDeviceActive()){			
 				if(connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue())){				
 					if(hasUpdate){
-						hasUpdate = false;
 						connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(statusHolder.getOperationMode()));
 						connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(statusHolder.getTargetTemperatureSupplyAir()));
 					}
+				}else{
+					logger.error("Coudn't send keep alive message to WR3223.");
 				}
+			}else{
+				logger.warn("The control device is activ! Openhab can only control the WR3223, when the control device is removed. (Bedienteil)");
 			}
-			
+			hasUpdate = false;
+
 			//Publish relais values
 			publishValueToBoundItems(WR3223CommandType.COMPRESSOR,relais.isCompressor());
 			publishValueToBoundItems(WR3223CommandType.ADDITIONAL_HEATER,relais.isAdditionalHeater());
@@ -283,6 +287,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			//Read and publish other values from WR3223
 			for(WR3223CommandType readCommand : READ_COMMANDS){
 				if(hasUpdate){
+					logger.info("Skip reading values from WR3223, because an updated values must fist be send to WR3223.");
 					break;
 				}
 				readAndPublishValue(readCommand);
@@ -290,6 +295,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		} catch (IOException e) {
 			logger.error("Communication error to WR3223.", e);
 			connector = null;
+			hasUpdate = false;
 		}		
 
 	}
