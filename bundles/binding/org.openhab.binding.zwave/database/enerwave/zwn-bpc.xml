@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZWN-BPC</Model>
+    <Label lang="en">PIR Sensor</Label>
+    <Configuration>
+        <Parameter>
+            <Index>0</Index>
+            <Type>byte</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Label lang="en">Off time</Label>
+            <Help lang="en">Sets the time after triggering the sensor to send the OFF command.</Help>
+        </Parameter>
+    </Configuration>
+    <Associations>
+        <Group>
+            <Index>1</Index>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+            <Label lang="en">Reports</Label>
+        </Group>
+    </Associations>
+</Product>

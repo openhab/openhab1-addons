@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>AD146</Model>
+	<Label lang="en">In-Wall Dimmer Module</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x59</id></Class>		
+		<Class><id>0x5A</id></Class>		
+		<Class><id>0x5E</id></Class>		
+		<Class><id>0x70</id></Class>		
+		<Class><id>0x71</id></Class>		
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7A</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>255</Default>
+			<Size>2</Size>
+			<Label lang="en">Basic Set Command value</Label>
+			<Help lang="en">Basic Set Command value. 0-99, 255</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Minimum>3</Minimum>
+			<Maximum>25</Maximum>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Report time delay group 1</Label>
+			<Help lang="en">Delaying time to report to group 1.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Do not remember</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Remember</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Remember last status</Label>
+			<Help lang="en">Remember last status after power loss.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Edge Mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toogle Mode</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Switching type</Label>
+			<Help lang="en">Edge or toogle switch mode.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Dimming</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On/Off</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Output mode setting</Label>
+			<Help lang="en">Dimming or On/Off Switch</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Control</Label>
+		</Group>
+	</Associations>
+</Product>

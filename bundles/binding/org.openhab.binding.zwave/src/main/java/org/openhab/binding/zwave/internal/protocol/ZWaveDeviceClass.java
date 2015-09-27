@@ -422,6 +422,7 @@ public class ZWaveDeviceClass {
 		DOOR_LOCK(1, Generic.ENTRY_CONTROL, "Door Lock"),
 		ADVANCED_DOOR_LOCK(2, Generic.ENTRY_CONTROL, "Advanced Door Lock"),
 		SECURE_KEYPAD_DOOR_LOCK(3, Generic.ENTRY_CONTROL, "Secure Keypad Door Lock"),
+		SECURE_BARRIER(7, Generic.ENTRY_CONTROL, "Secure Barrier Add-on"),
 
 		ENERGY_PRODUCTION(1, Generic.SEMI_INTEROPERABLE, "Energy Production"),
 

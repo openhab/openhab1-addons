@@ -77,7 +77,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 
 		// parse object type, mandatory
 		try {
-			objectType = ObjectType.valueOf(iterator.nextUpperCase());
+			objectType = iterator.nextOfType(ObjectType.class, "object type");
 		} catch (Exception e) {
 			// wrong config type, skip parsing
 			return null;
@@ -119,7 +119,7 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 			}
 		}
 
-		return new IntegraStateBindingConfig(stateType, objectNumbers, parseOptions(iterator));
+		return new IntegraStateBindingConfig(stateType, objectNumbers, iterator.parseOptions());
 	}
 
 	/**
