@@ -2398,6 +2398,15 @@
 		<Name>BeNext</Name>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>doorSensor</Model>
+			<Label lang="en">BeNext Door Sensor</Label>
+			<ConfigFile>benext/doorsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0008</Type>
 				<Id>0101</Id>
 			</Reference>
