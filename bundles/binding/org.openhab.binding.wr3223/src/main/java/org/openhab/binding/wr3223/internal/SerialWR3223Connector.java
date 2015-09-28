@@ -18,7 +18,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.openhab.core.library.types.DecimalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +70,9 @@ public class SerialWR3223Connector extends AbstractWR3223Connector {
 			if(!serialPort.isReceiveTimeoutEnabled()){
 				try {
 					if(logger.isDebugEnabled()){
-						logger.debug("Add a receive timeout of 1000ms.");
+						logger.debug("Add a receive timeout of 2000ms.");
 					}
-					serialPort.enableReceiveTimeout(1000);
+					serialPort.enableReceiveTimeout(2000);
 				} catch (UnsupportedCommOperationException e) {
 					logger.warn("Error by adding receive timeout.", e);
 				}

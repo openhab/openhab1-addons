@@ -294,6 +294,13 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			}
 		} catch (IOException e) {
 			logger.error("Communication error to WR3223.", e);
+			if(connector != null){
+				try {
+					connector.close();
+				} catch (IOException e1) {
+					logger.error("Couldn't close communication to WR3223.", e1);
+				}
+			}
 			connector = null;
 			hasUpdate = false;
 		}		

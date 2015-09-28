@@ -170,17 +170,45 @@ public abstract class AbstractWR3223Connector {
 			logger.debug("Write data: {}", bytesToHexString(message));
 		}
 		
-		//Read controller answer	
-		int answer = inputStream.readByte();
-		if(logger.isDebugEnabled()){
-			logger.debug("Answer from WR3223 {}.",Integer.toHexString(answer));
-		}		
-		if(answer == ACK){
-			return true;
+		//Read controller answer
+		if(waitUntilDataAvailable(1, 5000l)){
+			int answer = inputStream.readByte();
+			if(logger.isDebugEnabled()){
+				logger.debug("Answer from WR3223 {}.",Integer.toHexString(answer));
+			}		
+			if(answer == ACK){
+				return true;
+			}
+			logger.error("Command {} with data {} not accepted.", command.name(), data);
+		}else{
+			logger.error("Timout. No answer for command {} with data {}.", command.name(), data);			
 		}
-		logger.error("Command {} with data {} not accepted.", command.name(), data);
 		return false;
 		
+	}
+
+	/**
+	 * Wait until the specified amout of data are available or the timout is reached.
+	 * @param dataCount
+	 * @param timeout
+	 * @throws IOException
+	 */
+	private boolean waitUntilDataAvailable(int dataCount, long timeout) throws IOException {
+		try {
+			long startTime = System.currentTimeMillis();
+			long duration = 0l;
+			Thread.sleep(100l);	
+			while(inputStream.available()<dataCount && duration < timeout){
+				if(logger.isDebugEnabled()){
+					logger.debug("Wait for answer from WR3223. Timeout in {}ms.", timeout - duration);
+				}		
+				Thread.sleep(500l);			
+				duration = (System.currentTimeMillis() - startTime);
+			}
+		} catch (InterruptedException e) {
+			logger.error("Waiting for WR3223 was interrupted.",e);
+		}
+		return inputStream.available() >= dataCount;
 	}	
 	
 	/**
