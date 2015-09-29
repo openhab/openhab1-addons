@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>powerSwitch</Model>
+	<Label lang="en">BeNext PowerSwitch EU</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x32</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+		</Group>		
+	</Associations>
+</Product>
