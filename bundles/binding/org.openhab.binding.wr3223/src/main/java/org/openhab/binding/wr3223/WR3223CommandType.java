@@ -237,9 +237,7 @@ public enum WR3223CommandType {
 			wr3223Command = WR3223Commands.MD;			
 		}
 	},	
-	
-	
-	
+		
 	/** (de: Zuluftsoll Temperatur) */
 	TEMPERATURE_SUPPLY_AIR_TARGET {
 		{
@@ -247,13 +245,186 @@ public enum WR3223CommandType {
 			itemClass = NumberItem.class;
 			wr3223Command = WR3223Commands.SP;			
 		}
-	}
+	},
+	
+	/** (de: RWZ aktl., Aktuelle Rückwärmzahl in %) */
+	HEAT_FEEDBACK_RATE {
+		{
+			command = "heat_feedback_rate";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.RA;			
+		}
+	},	
+	
+	/** (de: Max. Drehzahlabweichung Zu-/Abluft in Stufe 1 */
+	SPEED_DEVIATION_MAX_LEVEL_1 {
+		{
+			command = "speed_deviation_max_level_1";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.D1;			
+		}
+	},
+	
+	/** (de: Max. Drehzahlabweichung Zu-/Abluft in Stufe 2 */
+	SPEED_DEVIATION_MAX_LEVEL_2 {
+		{
+			command = "speed_deviation_max_level_2";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.D2;			
+		}
+	},		
+
+	/** (de: Max. Drehzahlabweichung Zu-/Abluft in Stufe 3 */
+	SPEED_DEVIATION_MAX_LEVEL_3 {
+		{
+			command = "speed_deviation_max_level_3";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.D3;			
+		}
+	},	
+	
+	/** (de: Drehzahlerhöhung Zuluftventilator Stufe 1, wenn Erdwärmetauscher ein (0% bis 40%) */
+	SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_1 {
+		{
+			command = "speed_increase_earth_heat_exchanger_level_1";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.E1;			
+		}
+	},	
+	
+	/** (de: Drehzahlerhöhung Zuluftventilator Stufe 2, wenn Erdwärmetauscher ein (0% bis 40%) */
+	SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_2 {
+		{
+			command = "speed_increase_earth_heat_exchanger_level_2";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.E2;			
+		}
+	},
+	
+	/** (de: Drehzahlerhöhung Zuluftventilator Stufe 3, wenn Erdwärmetauscher ein (0% bis 40%) */
+	SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_3 {
+		{
+			command = "speed_increase_earth_heat_exchanger_level_3";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.E3;			
+		}
+	},	
+	
+	/** (de: LuflREDUK, Luftwechsel um 3% reduziert ab Außentemp. ...°C (-20°C bis +10°C) */
+	AIR_EXCHANGE_DECREASE_OUTSIDE_TEMPERATURE {
+		{
+			command = "air_exchange_decrease_outside_temperature";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.LR;			
+		}
+	},	
+	
+	/** (de: Luftstufe 1, % des max. Ventilatorstellwerts (40 bis100%) */
+	VENTILATION_SPEED_LEVEL_1 {
+		{
+			command = "ventilation_speed_level_1";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.L1;			
+		}
+	},
+	
+	/** (de: Luftstufe 2, % des max. Ventilatorstellwerts (40 bis100%) */
+	VENTILATION_SPEED_LEVEL_2 {
+		{
+			command = "ventilation_speed_level_2";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.L2;			
+		}
+	},	
+
+	/** (de: Luftstufe 3, % des max. Ventilatorstellwerts (40 bis100%) */
+	VENTILATION_SPEED_LEVEL_3 {
+		{
+			command = "ventilation_speed_level_3";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.L3;			
+		}
+	},
+	
+	/** (de: ET sommer >, Einschalt-Außentemperatur Erdwämietauscher im Sommer (20°C bis 40°C) */
+	SUMMER_EARTH_HEAT_EXCHANGER_ACTIVATION_TEMPERATURE {
+		{
+			command = "summer_earth_heat_exchanger_activation_temperature";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.ES;			
+		}
+	},	
+	
+	/** (de: ET winter<, Einschalt-Außentemperatur Erdwärmetauscher im Winter (-20°C bis 10°C) */
+	WINTER_EARTH_HEAT_EXCHANGER_ACTIVATION_TEMPERATURE {
+		{
+			command = "winter_earth_heat_exchanger_activation_temperature";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.EW;			
+		}
+	},		
+	
+	/** (de: Abtau EIN, Beginn Abtauung ab Verdampfertemperatur ...°C */
+	DEFROSTING_START_TEMPERATURE {
+		{
+			command = "defrosting_start_temperature";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.AE;			
+		}
+	},	
+	
+	/** (de: Abtau AUS, Ende Abtauung ab Verdampfertemperatur ...°C */
+	DEFROSTING_END_TEMPERATURE {
+		{
+			command = "defrosting_end_temperature";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.AE;			
+		}
+	},	
+	
+	/** (de: Abtau Luft, Lüfterstufe im Abtaubetrieb */
+	DEFROSTING_VENTILATION_LEVEL {
+		{
+			command = "defrosting_ventilation_level";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.Az;			
+		}
+	},	
+	
+	/** (de: Abtaupause, Sperrzeit für den nächsten Abtauvorgang */
+	DEFROSTING_HOLD_OFF_TIME {
+		{
+			command = "defrosting_hold_off_time";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.AP;			
+		}
+	},	
+	
+	/** (de: Abtau NFL, Abtaunachlauzeit */
+	DEFROSTING_OVERTRAVEL_TIME {
+		{
+			command = "defrosting_overtravel_time";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.AN;			
+		}
+	},	
+	
+	/** (de: Abtau RWZ, Abtaurückwärmezahl Schaltpunkt (20% bis 80 %) */
+	DEFROSTING_HEAT_FEEDBACK_RATE {
+		{
+			command = "defrosting_heat_feedback_rate";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.AR;			
+		}
+	},		
 	;	
 	
 	/** Represents the WR3223 command as it will be used in *.items configuration */
 	String command;
 	Class<? extends Item> itemClass;
 	WR3223Commands wr3223Command;
+	Integer minValue;
+	Integer maxValue;
 
 	public String getCommand() {
 		return command;
@@ -265,6 +436,14 @@ public enum WR3223CommandType {
 	
 	public WR3223Commands getWr3223Command() {
 		return wr3223Command;
+	}
+	
+	public Integer getMinValue() {
+		return minValue;
+	}
+	
+	public Integer getMaxValue() {
+		return maxValue;
 	}
 
 	/**

@@ -10,9 +10,11 @@ package org.openhab.binding.wr3223.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.wr3223.WR3223BindingProvider;
@@ -53,8 +55,50 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		WR3223CommandType.ROTATION_SPEED_SUPPLY_AIR_MOTOR,
 		WR3223CommandType.ROTATION_SPEED_EXHAUST_AIR_MOTOR,
 		WR3223CommandType.OPERATION_MODE,
-		WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET
+		WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET,
+		WR3223CommandType.HEAT_FEEDBACK_RATE,
+		WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_1,
+		WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_2,
+		WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_3,
+		WR3223CommandType.SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_1,
+		WR3223CommandType.SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_2,
+		WR3223CommandType.SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_3,
+		WR3223CommandType.AIR_EXCHANGE_DECREASE_OUTSIDE_TEMPERATURE,
+		WR3223CommandType.VENTILATION_SPEED_LEVEL_1,
+		WR3223CommandType.VENTILATION_SPEED_LEVEL_2,
+		WR3223CommandType.VENTILATION_SPEED_LEVEL_3,
+		WR3223CommandType.SUMMER_EARTH_HEAT_EXCHANGER_ACTIVATION_TEMPERATURE,
+		WR3223CommandType.WINTER_EARTH_HEAT_EXCHANGER_ACTIVATION_TEMPERATURE,
+		WR3223CommandType.DEFROSTING_START_TEMPERATURE,
+		WR3223CommandType.DEFROSTING_END_TEMPERATURE,
+		WR3223CommandType.DEFROSTING_VENTILATION_LEVEL,
+		WR3223CommandType.DEFROSTING_HOLD_OFF_TIME,
+		WR3223CommandType.DEFROSTING_OVERTRAVEL_TIME,
+		WR3223CommandType.DEFROSTING_HEAT_FEEDBACK_RATE
 	};
+	
+	private static final WR3223CommandType[] WRITE_COMMANDS = {
+		WR3223CommandType.OPERATION_MODE,
+		WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET,
+		WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_1,
+		WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_2,
+		WR3223CommandType.SPEED_DEVIATION_MAX_LEVEL_3,
+		WR3223CommandType.SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_1,
+		WR3223CommandType.SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_2,
+		WR3223CommandType.SPEED_INCREASE_EARTH_HEAT_EXCHANGER_LEVEL_3,
+		WR3223CommandType.AIR_EXCHANGE_DECREASE_OUTSIDE_TEMPERATURE,
+		WR3223CommandType.VENTILATION_SPEED_LEVEL_1,
+		WR3223CommandType.VENTILATION_SPEED_LEVEL_2,
+		WR3223CommandType.VENTILATION_SPEED_LEVEL_3,
+		WR3223CommandType.SUMMER_EARTH_HEAT_EXCHANGER_ACTIVATION_TEMPERATURE,
+		WR3223CommandType.WINTER_EARTH_HEAT_EXCHANGER_ACTIVATION_TEMPERATURE,
+		WR3223CommandType.DEFROSTING_START_TEMPERATURE,
+		WR3223CommandType.DEFROSTING_END_TEMPERATURE,
+		WR3223CommandType.DEFROSTING_VENTILATION_LEVEL,
+		WR3223CommandType.DEFROSTING_HOLD_OFF_TIME,
+		WR3223CommandType.DEFROSTING_OVERTRAVEL_TIME,
+		WR3223CommandType.DEFROSTING_HEAT_FEEDBACK_RATE
+	};	
 	
 	
 	private static final Logger logger = 
@@ -105,9 +149,9 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	private StatusValueHolder statusHolder = new StatusValueHolder();
 	
 	/**
-	 * Indicate that values has changed and must be send to WR3223.
+	 * Store the value to update
 	 */
-	private boolean hasUpdate = true;
+	private Map<WR3223CommandType,Integer> updateMap = new HashMap<>();
 	
 	
 	/**
@@ -119,6 +163,10 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;		
 		configure(configuration);
+		
+		//Default start values
+		updateMap.put(WR3223CommandType.OPERATION_MODE, 3);
+		updateMap.put(WR3223CommandType.TEMPERATURE_SUPPLY_AIR_TARGET, 20);
 	}
 	
 	/**
@@ -257,10 +305,15 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			
 			//Write values if no control device connected
 			if(!relais.isControlDeviceActive()){			
-				if(connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue())){				
-					if(hasUpdate){
-						connector.write(controllerAddr, WR3223Commands.MD, String.valueOf(statusHolder.getOperationMode()));
-						connector.write(controllerAddr, WR3223Commands.SP, String.valueOf(statusHolder.getTargetTemperatureSupplyAir()));
+				if(connector.write(controllerAddr, WR3223Commands.SW, statusHolder.getStatusValue())){		
+					
+					//Commit value updates to WR3223 
+					Iterator<Entry<WR3223CommandType, Integer>> it = updateMap.entrySet().iterator();
+					while(it.hasNext()){
+						Entry<WR3223CommandType, Integer> update = it.next();
+						if(connector.write(controllerAddr, update.getKey().getWr3223Command(), String.valueOf(update.getValue()))){
+							it.remove();
+						}
 					}
 				}else{
 					logger.error("Coudn't send keep alive message to WR3223.");
@@ -268,7 +321,6 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			}else{
 				logger.warn("The control device is activ! Openhab can only control the WR3223, when the control device is removed. (Bedienteil)");
 			}
-			hasUpdate = false;
 
 			//Publish relais values
 			publishValueToBoundItems(WR3223CommandType.COMPRESSOR,relais.isCompressor());
@@ -286,11 +338,11 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 					
 			//Read and publish other values from WR3223
 			for(WR3223CommandType readCommand : READ_COMMANDS){
-				if(hasUpdate){
-					logger.info("Skip reading values from WR3223, because an updated values must fist be send to WR3223.");
-					break;
+				if(!updateMap.containsKey(readCommand)){
+					readAndPublishValue(readCommand);
+				}else{
+					logger.info("Skip reading values for command {} from WR3223, because an updated values must fist be send to WR3223.", readCommand.getCommand());					
 				}
-				readAndPublishValue(readCommand);
 			}
 		} catch (IOException e) {
 			logger.error("Communication error to WR3223.", e);
@@ -302,7 +354,6 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 				}
 			}
 			connector = null;
-			hasUpdate = false;
 		}		
 
 	}
@@ -398,16 +449,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		if(type == null){
 			logger.error("Item {} is not bound to WR3223 binding.", itemName);
 		}else{
-			switch(type){
-			case TEMPERATURE_SUPPLY_AIR_TARGET:
-				if(command instanceof DecimalType){
-					statusHolder.setTargetTemperatureSupplyAir(((DecimalType)command).intValue());
-					hasUpdate = true;
-				}else{
-					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
-				}
-				break;
-			case VENTILATION_LEVEL:
+			if(type == WR3223CommandType.VENTILATION_LEVEL){
 				if(command instanceof DecimalType){
 					int value = ((DecimalType)command).intValue();
 					if(value >= 0 && value <= 3){
@@ -417,23 +459,25 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 					}
 				}else{
 					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
-				}
-				break;
-			case OPERATION_MODE:
-				if(command instanceof DecimalType){
-					int value = ((DecimalType)command).intValue();
-					if(value >= 0 && value <= 3){
-						statusHolder.setOperationMode(value);
-						hasUpdate = true;
-					}else{
-						
+				}				
+			}else{
+				for(WR3223CommandType t : WRITE_COMMANDS){
+					if(type == t){
+						if(type.getItemClass() == NumberItem.class && command instanceof DecimalType){
+							int value = ((DecimalType)command).intValue();
+							if(type.getMinValue() != null && type.getMinValue()> value){
+								logger.warn("Value of WR3223 command {} must be bigger or equals {}.",type.getCommand(), type.getMinValue());
+							}else if(type.getMaxValue() != null && type.getMaxValue() < value){
+								logger.warn("Value of WR3223 command {} must be lower or equals {}.",type.getCommand(), type.getMaxValue());								
+							}else{
+								updateMap.put(type, value);
+							}
+						}else{
+							logger.warn("WR3223 command {} should be of type {}.",type.getCommand(), type.getItemClass());
+						}
+						break;
 					}
-				}else{
-					logger.warn("WR3223 item {} must be from type:{}." , itemName, DecimalType.class.getSimpleName());						
 				}
-				break;
-			default:
-				logger.warn("Can't receive commands of type {}.", type.getCommand());
 			}
 		}
 	}
@@ -449,46 +493,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		private int ventilationLevel = 2;
 		private boolean additionalHeatingOn = false;
 		private boolean coolingOn = false;
-		private int operationMode = 3;
-		private int targetTemperatureSupplyAir = 20;		
 		
-		
-		/**
-		 * "Soll Temperatur"
-		 * @return
-		 */
-		public int getTargetTemperatureSupplyAir() {
-			return targetTemperatureSupplyAir;
-		}
-
-
-		/**
-		 * "Soll Temperatur"
-		 * @param targetTemperatureSupplyAir
-		 */
-		public void setTargetTemperatureSupplyAir(int targetTemperatureSupplyAir) {
-			this.targetTemperatureSupplyAir = targetTemperatureSupplyAir;
-		}
-
-
-		/**
-		 * "Betriebsart"
-		 * @return
-		 */
-		public int getOperationMode() {
-			return operationMode;
-		}
-
-
-		/**
-		 * "Betriebsart"
-		 * @param operationMode
-		 */
-		public void setOperationMode(int operationMode) {
-			this.operationMode = operationMode;
-		}
-
-
 
 		/**
 		 * @param "Wärmepumpe  ein (bei Anlagen mit Wärmepumpe)"

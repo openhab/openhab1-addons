@@ -158,6 +158,30 @@ public enum WR3223Commands {
 	PA, 
 	
 	/** Identifikation lesen */
-	II	
+	II,
+	
+	/** Messwert, RWZ aktl., Aktuelle Rückwärmzahl in % */
+	RA, 
+
+	/** Parameter, Delta n 1 max, Max. Drehzahlabweichung Zu-/Abluft in Stufe 1 */
+	D1, 
+	
+	/** Parameter, Delta n 2 max, Max. Drehzahlabweichung Zu-/Abluft in Stufe 2 */
+	D2, 
+	
+	/** Parameter, Delta n 3 max, Max. Drehzahlabweichung Zu-/Abluft in Stufe 3 */
+	D3, 
+	
+	/** Parameter, ERDluft +S1, Drehzahlerhöhung Zuluftventilator Stufe 1, wenn Erdwärmetauscher ein (0% bis 40%) */
+	E1, 
+	
+	/** Parameter, ERDluft +S2, Drehzahlerhöhung Zuluftventilator Stufe 2, wenn Erdwärmetauscher ein (0% bis 40%) */
+	E2, 
+	
+	/** Parameter, ERDluft +S3, Drehzahlerhöhung Zuluftventilator Stufe 3, wenn Erdwärmetauscher ein (0% bis 40%) */
+	E3, 
+	
+	/** Parameter, LuflREDUK, Luftwechsel um 3% reduziert ab Außentemp. ...°C (-20°C bis +10°C) */
+	LR 
 
 }
