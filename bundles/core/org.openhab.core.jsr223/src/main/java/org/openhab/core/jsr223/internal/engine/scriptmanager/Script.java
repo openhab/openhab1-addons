@@ -47,6 +47,7 @@ import org.openhab.core.library.types.PointType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.persistence.*;
 import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -158,6 +159,7 @@ public class Script{
 				+"TriggerType 			= Java.type('org.openhab.core.jsr223.internal.shared.TriggerType'),\n"
 				+"PersistenceExtensions	= Java.type('org.openhab.core.persistence.extensions.PersistenceExtensions'),\n"
 				+"pe					= Java.type('org.openhab.core.persistence.extensions.PersistenceExtensions'),\n"
+				+"HistoricItem			= Java.type('org.openhab.core.persistence.HistoricItem'),\n"
 				+"oh 					= Java.type('org.openhab.core.jsr223.internal.shared.Openhab'),\n"
 				+"State 				= Java.type('org.openhab.core.types.State'),\n"
 				+"Command 				= Java.type('org.openhab.core.types.Command'),\n"
@@ -223,6 +225,7 @@ public class Script{
 		engine.put("be", 					BusEvent.class);
 		engine.put("PersistenceExtensions", PersistenceExtensions.class);
 		engine.put("pe", 					PersistenceExtensions.class);
+		engine.put("HistoricItem", 			HistoricItem.class);
 		engine.put("oh", 					Openhab.class);
 		engine.put("State", 				State.class);
 		engine.put("Command", 				Command.class);

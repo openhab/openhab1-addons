@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class Openhab extends BusEvent {
 	private static final Logger logger = LoggerFactory.getLogger(Openhab.class);
 
-	private static String LOGGER_NAME_PREFIX = "org.openhab.model.jsr232.";
+	private static String LOGGER_NAME_PREFIX = "org.openhab.model.jsr223.";
 
 	/**
 	 * Returns all available action providers
