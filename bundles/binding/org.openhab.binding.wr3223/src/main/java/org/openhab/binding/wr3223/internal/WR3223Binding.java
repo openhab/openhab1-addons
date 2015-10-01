@@ -151,7 +151,7 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 	/**
 	 * Store the value to update
 	 */
-	private Map<WR3223CommandType,Integer> updateMap = new HashMap<>();
+	private Map<WR3223CommandType,Integer> updateMap = new HashMap<WR3223CommandType,Integer>();
 	
 	
 	/**
