@@ -271,8 +271,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 
 							if (pollingResult.changedOutputs.size() != 0) {
 								for (Byte outputAddress : pollingResult.changedOutputs.keySet()) {
-									logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
 									if (! pollingResult.changedOutputs.get(outputAddress).equals(provider.getOutputCachedValue(SappUtils.byteToUnsigned(outputAddress)))) {
+										logger.debug(String.format("Output variation %d received, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
 										// different value, save & update state
 										logger.debug(String.format("Output %d changed, new value is %d", SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress)));
 										provider.setOutputCachedValue(SappUtils.byteToUnsigned(outputAddress), pollingResult.changedOutputs.get(outputAddress).intValue());
@@ -283,8 +283,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 
 							if (pollingResult.changedInputs.size() != 0) {
 								for (Byte inputAddress : pollingResult.changedInputs.keySet()) {
-									logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
 									if (! pollingResult.changedInputs.get(inputAddress).equals(provider.getInputCachedValue(SappUtils.byteToUnsigned(inputAddress)))) {
+										logger.debug(String.format("Input variation %d received, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
 										// different value, save & update state
 										logger.debug(String.format("Input %d changed, new value is %d", SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress)));
 										provider.setInputCachedValue(SappUtils.byteToUnsigned(inputAddress), pollingResult.changedInputs.get(inputAddress).intValue());
@@ -295,8 +295,8 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 
 							if (pollingResult.changedVirtuals.size() != 0) {
 								for (Integer virtualAddress : pollingResult.changedVirtuals.keySet()) {
-									logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
 									if (! pollingResult.changedVirtuals.get(virtualAddress).equals(provider.getVirtualCachedValue(virtualAddress))) {
+										logger.debug(String.format("Virtual variation %d received, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
 										// different value, save & update state
 										logger.debug(String.format("Virtual %d changed, new value is %d", virtualAddress, pollingResult.changedVirtuals.get(virtualAddress)));
 										provider.setVirtualCachedValue(virtualAddress, pollingResult.changedVirtuals.get(virtualAddress).intValue());
