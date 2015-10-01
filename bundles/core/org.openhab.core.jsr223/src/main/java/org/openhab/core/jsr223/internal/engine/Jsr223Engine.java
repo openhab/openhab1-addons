@@ -71,11 +71,11 @@ public class Jsr223Engine implements EventHandler, ItemRegistryChangeListener, S
 		scriptManager = new ScriptManager(triggerManager, itemRegistry);
 
 		if (!isEnabled()) {
-			logger.info("Jsr232 engine is disabled.");
+			logger.info("jsr223 engine is disabled.");
 			return;
 		}
 
-		logger.debug("Started Jsr232 engine");
+		logger.debug("Started jsr223 engine");
 
 		// register us on all items which are already available in the registry
 		for (Item item : itemRegistry.getItems()) {
