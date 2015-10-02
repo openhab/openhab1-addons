@@ -84,7 +84,8 @@ public class ZWaveConverterHandler {
 		converters.put(CommandClass.FIBARO_FGRM_222, new FibaroFGRM222Converter(controller, eventPublisher));
 		converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
 		converters.put(CommandClass.CONFIGURATION, new ZWaveConfigurationConverter(controller, eventPublisher));
-
+		converters.put(CommandClass.INDICATOR, new ZWaveIndicatorConverter(controller, eventPublisher));
+		
 		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 
 		// add preferred command classes per Item class here

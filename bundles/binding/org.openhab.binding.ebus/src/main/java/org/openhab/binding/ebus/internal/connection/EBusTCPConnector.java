@@ -54,9 +54,9 @@ public class EBusTCPConnector extends AbstractEBusConnector {
 	public boolean connect() throws IOException  {
 		try {
 			socket = new Socket(hostname, port);
-			socket.setSoTimeout(10000);
+			socket.setSoTimeout(20000);
 			socket.setKeepAlive(true);
-			
+			socket.setTcpNoDelay(true);
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
 

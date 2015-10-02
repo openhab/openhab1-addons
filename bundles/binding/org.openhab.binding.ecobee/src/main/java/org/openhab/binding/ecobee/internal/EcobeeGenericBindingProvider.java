@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.ecobee.EcobeeBindingProvider;
-import org.openhab.binding.ecobee.internal.messages.Selection;
+import org.openhab.binding.ecobee.messages.Selection;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;

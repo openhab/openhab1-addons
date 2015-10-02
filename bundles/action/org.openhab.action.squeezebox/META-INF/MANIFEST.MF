@@ -17,6 +17,7 @@ Import-Package: org.apache.commons.io;version="2.0.1",
  org.openhab.core.library.types,
  org.openhab.core.scriptengine.action,
  org.openhab.core.types,
+ org.openhab.io.squeezeserver,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
@@ -25,5 +26,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .
-Require-Bundle: org.openhab.io.squeezeserver;bundle-version="1.4.0"
 Bundle-ActivationPolicy: lazy

@@ -448,9 +448,10 @@ public class APIMessage {
 						
 					case UserClosing: /*700*/
 						apiName = "User Closing";
-						apiDescription = apiCodeReceived + ": A partition has been armed by a user.";
 						partition = Integer.parseInt(apiMessage.substring(3, 4));
 						user = apiMessage.substring(4);
+						apiName = apiName.concat(": " + user);
+						apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition) + " has been armed by user " + user + ".";
 						apiMessageType = APIMessageType.PARTITION_EVENT;
 						break;
 					case SpecialClosing: /*701*/
@@ -467,9 +468,10 @@ public class APIMessage {
 						break;
 					case UserOpening: /*750*/
 						apiName = "User Opening";
-						apiDescription = apiCodeReceived + ": A partition has been disarmed by a user.";
 						partition = Integer.parseInt(apiMessage.substring(3, 4));
 						user = apiMessage.substring(4);
+						apiName = apiName.concat(": " + user);
+						apiDescription = apiCodeReceived + ": Partition " + String.valueOf(partition) + " has been disarmed by user " + user + ".";
 						apiMessageType = APIMessageType.PARTITION_EVENT;
 						break;
 					case SpecialOpening: /*751*/
@@ -485,7 +487,7 @@ public class APIMessage {
 						break;
 					case PanelBatteryTroubleRestore: /*801*/
 						apiName = "Panel Battery Trouble Restore";
-						apiDescription = apiCodeReceived + ": The panel�s low battery has been restored.";
+						apiDescription = apiCodeReceived + ": The panels low battery has been restored.";
 						break;
 					case PanelACTrouble: /*802*/
 						apiName = "Panel AC Trouble";
@@ -567,11 +569,11 @@ public class APIMessage {
 						break;
 					case HomeAutomationTrouble: /*831*/
 						apiName = "Home Automation Trouble";
-						apiDescription = apiCodeReceived + ": A Escort 5580 module trouble.";
+						apiDescription = apiCodeReceived + ": Escort 5580 module trouble.";
 						break;
 					case HomeAutomationTroubleRestore: /*832*/
 						apiName = "Home Automation Trouble Restore";
-						apiDescription = apiCodeReceived + ": A Escort 5580 module trouble has been restored.";
+						apiDescription = apiCodeReceived + ": Escort 5580 module trouble has been restored.";
 						break;
 					case TroubleLEDOn: /*840*/
 						apiName = "Trouble LED ON";

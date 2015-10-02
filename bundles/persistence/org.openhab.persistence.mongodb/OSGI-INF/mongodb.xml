@@ -9,13 +9,10 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.mongodb">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.mongodb" immediate="true" configuration-pid="org.openhab.mongodb" configuration-policy="require">
    <implementation class="org.openhab.persistence.mongodb.internal.MongoDBPersistenceService"/>
    <service>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
    <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
-   <property name="service.pid" type="String" value="org.openhab.mongodb"/>
-   <reference bind="setPersistentStateRestorer" cardinality="0..1" interface="org.openhab.core.persistence.PersistentStateRestorer" name="PersistentStateRestorer" policy="dynamic" unbind="unsetPersistentStateRestorer"/>
 </scr:component>

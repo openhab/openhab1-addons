@@ -70,6 +70,7 @@ public class TCPConnector implements DSCAlarmConnector {
         try {
         	tcpOutput.write(writeString);
             tcpOutput.flush();
+    		logger.debug("write(): Message Sent: {}",writeString);
         }catch (IOException ioException) {
         	logger.error("write(): {}",ioException);
 			connected = false;
@@ -87,6 +88,7 @@ public class TCPConnector implements DSCAlarmConnector {
 
         try {
         	message = tcpInput.readLine();
+    		logger.debug("read(): Message Received: {}",message);
         }
         catch (IOException ioException) {
 			logger.error("read(): IO Exception: ", ioException);

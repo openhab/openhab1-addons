@@ -20,6 +20,7 @@ import org.openhab.binding.netatmo.internal.NetatmoException;
  * modules.
  * 
  * @author Andreas Brenk
+ * @author Rob Nielsen
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/devicelist">devicelist</a>
  */

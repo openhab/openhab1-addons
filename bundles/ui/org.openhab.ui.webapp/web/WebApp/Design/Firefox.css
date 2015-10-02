@@ -51,6 +51,11 @@
 	-moz-border-radius:4px;
 }
 
+#waBackButton, #waHomeButton {
+	border-style: solid;
+	border-color: transparent;
+}
+
 #waBackButton {
 	-moz-border-radius-topleft:22px;
 	-moz-border-radius-bottomleft:22px;

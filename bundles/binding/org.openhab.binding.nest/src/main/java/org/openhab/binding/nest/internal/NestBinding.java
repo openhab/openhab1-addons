@@ -77,7 +77,32 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private List<String> ignoreEventList = Collections.synchronizedList(new ArrayList<String>());
+	private static class Update {
+		private String itemName;
+		private State state;
+
+		Update(final String itemName, final State state) {
+			this.itemName = itemName;
+			this.state = state;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || !(o instanceof Update)) {
+				return false;
+			}
+			return (this.itemName == null ? ((Update) o).itemName == null : this.itemName.equals(((Update) o).itemName))
+					&& (this.state == null ? ((Update) o).state == null : this.state.equals(((Update) o).state));
+		}
+
+		@Override
+		public int hashCode() {
+			return (this.itemName == null ? 0 : this.itemName.hashCode())
+					^ (this.state == null ? 0 : this.state.hashCode());
+		}
+	}
+
+	private List<Update> ignoreEventList = Collections.synchronizedList(new ArrayList<Update>());
 
 	/**
 	 * The most recently received data model, or <code>null</code> if none have been retrieved yet.
@@ -141,7 +166,11 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 				readNest(oauthCredentials);
 			}
 		} catch (Exception e) {
-			logger.error("Error reading from Nest:", e);
+			if (logger.isDebugEnabled()) {
+				logger.warn("Exception reading from Nest.", e);
+			} else {
+				logger.warn("Exception reading from Nest: {}", e.getMessage());
+			}
 		}
 	}
 
@@ -178,8 +207,9 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 					 * we need to make sure that we won't send out this event to Nest again, when receiving it on the
 					 * openHAB bus
 					 */
-					ignoreEventList.add(itemName + newState.toString());
-					logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName, newState);
+					ignoreEventList.add(new Update(itemName, newState));
+					logger.trace("Added event (item='{}', newState='{}') to the ignore event list (size={})",
+							itemName, newState, ignoreEventList.size());
 					this.eventPublisher.postUpdate(itemName, newState);
 				}
 			}
@@ -283,8 +313,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	}
 
 	private boolean isEcho(String itemName, State state) {
-		String ignoreEventListKey = itemName + state.toString();
-		if (ignoreEventList.remove(ignoreEventListKey)) {
+		if (ignoreEventList.remove(new Update(itemName, state))) {
 			logger.debug(
 					"We received this event (item='{}', state='{}') from Nest, so we don't send it back again -> ignore!",
 					itemName, state);
@@ -316,44 +345,47 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		if (provider == null) {
 			logger.warn("no matching binding provider found [itemName={}, newState={}]", itemName, newState);
 			return;
-		} else {
+		}
 
-			try {
-				logger.debug("About to set property '{}' to '{}'", property, newState);
+		if (!provider.isOutBound(itemName)) {
+			logger.warn("attempt to update non-outbound item skipped [itemName={}, newState={}]", itemName, newState);
+			return;
+		}
 
-				// Ask the old DataModel to generate a new DataModel that only contains the update we want to send
-				DataModel updateDataModel = oldDataModel.updateDataModel(property, newState);
+		try {
+			logger.debug("About to set property '{}' to '{}'", property, newState);
 
-				logger.trace("Data model for update: {}", updateDataModel);
+			// Ask the old DataModel to generate a new DataModel that only contains the update we want to send
+			DataModel updateDataModel = oldDataModel.updateDataModel(property, newState);
 
-				if (updateDataModel == null) {
-					return;
-				}
+			logger.trace("Data model for update: {}", updateDataModel);
 
-				OAuthCredentials oauthCredentials = getOAuthCredentials(DEFAULT_USER_ID);
-
-				if (oauthCredentials == null) {
-					logger.warn("Unable to locate credentials for item {}; aborting update.", itemName);
-					return;
-				}
-
-				// If we don't have an access token yet, retrieve one.
-				if (oauthCredentials.noAccessToken()) {
-					if (!oauthCredentials.retrieveAccessToken()) {
-						logger.warn("Sending update skipped.");
-						return;
-					}
-				}
-
-				UpdateDataModelRequest request = new UpdateDataModelRequest(oauthCredentials.accessToken,
-						updateDataModel);
-				DataModelResponse response = request.execute();
-				if (response.isError()) {
-					logger.error("Error updating data model: {}", response);
-				}
-			} catch (Exception e) {
-				logger.error("Unable to update data model", e);
+			if (updateDataModel == null) {
+				return;
 			}
+
+			OAuthCredentials oauthCredentials = getOAuthCredentials(DEFAULT_USER_ID);
+
+			if (oauthCredentials == null) {
+				logger.warn("Unable to locate credentials for item {}; aborting update.", itemName);
+				return;
+			}
+
+			// If we don't have an access token yet, retrieve one.
+			if (oauthCredentials.noAccessToken()) {
+				if (!oauthCredentials.retrieveAccessToken()) {
+					logger.warn("Sending update skipped.");
+					return;
+				}
+			}
+
+			UpdateDataModelRequest request = new UpdateDataModelRequest(oauthCredentials.accessToken, updateDataModel);
+			DataModelResponse response = request.execute();
+			if (response.isError()) {
+				logger.error("Error updating data model: {}", response);
+			}
+		} catch (Exception e) {
+			logger.error("Unable to update data model", e);
 		}
 	}
 

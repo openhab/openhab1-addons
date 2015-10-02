@@ -32,7 +32,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * Supported options:
  * <ul>
- * <li>commands_only - binding does not update state of the item, but accepts commands</li>
+ * <li>commands_only - binding does not update state of the item, but accepts
+ * commands</li>
  * </ul>
  * 
  * @author Krzysztof Goworek
@@ -69,7 +70,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 			return null;
 
 		return new IntegraStatusBindingConfig(iterator.nextOfType(StatusType.class, "status type"),
-				parseOptions(iterator));
+				iterator.parseOptions());
 	}
 
 	/**
@@ -157,6 +158,7 @@ public class IntegraStatusBindingConfig extends SatelBindingConfig {
 	 */
 	@Override
 	public String toString() {
-		return String.format("IntegraStatusBindingConfig: status = %s, options = %s", this.statusType, this.optionsAsString());
+		return String.format("IntegraStatusBindingConfig: status = %s, options = %s", this.statusType,
+				this.optionsAsString());
 	}
 }

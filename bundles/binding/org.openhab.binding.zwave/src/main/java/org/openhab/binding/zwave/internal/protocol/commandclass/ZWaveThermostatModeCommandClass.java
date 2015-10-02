@@ -115,8 +115,6 @@ ZWaveCommandClassDynamicState {
 						continue;
 
 					int index = ((i - (offset + 1)) * 8 ) + bit;             
-					if(index >= ModeType.values().length)
-						continue;
 
 					// (n)th bit is set. n is the index for the mode type enumeration.
 					ModeType modeTypeToAdd = ModeType.getModeType(index);
