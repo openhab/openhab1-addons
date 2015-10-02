@@ -43,6 +43,8 @@ public class TypicalFactory {
 					sOHType);
 			break;
 		case Constants.Souliss_T14:
+			T = new SoulissT14(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T1n_RGB:
 			break;
@@ -51,6 +53,8 @@ public class TypicalFactory {
 					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T18:
+			T = new SoulissT18(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T19:
 			T = new SoulissT19(_datagramsocket, sSoulissNodeIPAddressOnLAN,
