@@ -55,7 +55,11 @@ public class CosmService implements PersistenceService {
 	public void store(Item item, String alias) {
 		if (initialized) {
 			try { 
-				String serviceUrl = url + alias;
+				String serviceUrl = url;
+				if(alias==null){
+					alias=item.getName();
+				}
+				serviceUrl+="/" + alias;
 	            URL url = new URL(serviceUrl); 
 	            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection(); 
 	            httpCon.setDoOutput(true); 
