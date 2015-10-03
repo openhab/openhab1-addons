@@ -2747,4 +2747,16 @@
 			<ConfigFile>fakro/arz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0157</Id>
+		<Name>EcoNet Controls</Name>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>EV-100</Model>
+			<Label lang="en">Vent</Label>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
