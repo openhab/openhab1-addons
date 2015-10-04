@@ -19,6 +19,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -92,7 +94,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		logger.debug("Storing item: " + item.getName());
 		
 		if (item.getState() instanceof UnDefType) {
-			logger.debug("This item is of undefined type. Cannot perist it!");
+			logger.debug("This item is of undefined type. Cannot persist it!");
 			return;
 		}
 		
@@ -106,7 +108,9 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		
 		JpaPersistentItem pItem = new JpaPersistentItem();
 		try {
-			pItem.setValue(StateHelper.toString(item.getState()));
+			String newValue = StateHelper.toString(item.getState());
+			pItem.setValue(newValue);
+			logger.debug("stroring new value: " + newValue);
 		} catch (Exception e1) {
 			logger.error("Error on converting state value to string: {}", e1.getMessage());
 			return;
@@ -123,10 +127,12 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 			em.persist(pItem);
 			em.getTransaction().commit();
 			logger.debug("Persisting item...done");
+			
 		} catch (Exception e) {
 			logger.error("Error on persisting item! Rolling back!");
 			logger.error(e.getMessage(), e);
 			em.getTransaction().rollback();
+			
 		} finally {
 			em.close();
 		}
@@ -194,6 +200,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 			logger.error("Error on querying database!");
 			logger.error(e.getMessage(), e);
 			em.getTransaction().rollback();
+			
 		} finally {
 			em.close();
 		}
@@ -218,8 +225,13 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		    properties.put("javax.persistence.jdbc.password", JpaConfiguration.dbPassword);
 		}
 		if(JpaConfiguration.dbUserName != null && JpaConfiguration.dbPassword == null) {
-			logger.warn("JPA persistence - it is recommended to use a password to protect data store");
+			logger.warn("It is recommended to use a password to protect data store");
 		}
+		if(JpaConfiguration.dbSyncMapping != null && !StringUtils.isBlank(JpaConfiguration.dbSyncMapping)) {
+			logger.warn("You are settings openjpa.jdbc.SynchronizeMappings, I hope you know what you're doing!");
+		    properties.put("openjpa.jdbc.SynchronizeMappings", JpaConfiguration.dbSyncMapping);
+		}
+		
 		
 		EntityManagerFactory fac = Persistence.createEntityManagerFactory(getPersistenceUnitName(), properties);
 		logger.debug("Creating EntityManagerFactory...done");
