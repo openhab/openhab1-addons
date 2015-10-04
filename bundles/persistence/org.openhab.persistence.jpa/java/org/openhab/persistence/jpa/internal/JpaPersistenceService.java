@@ -110,7 +110,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		try {
 			String newValue = StateHelper.toString(item.getState());
 			pItem.setValue(newValue);
-			logger.debug("stroring new value: " + newValue);
+			logger.debug("Storing new value: " + newValue);
 		} catch (Exception e1) {
 			logger.error("Error on converting state value to string: {}", e1.getMessage());
 			return;
