@@ -2778,4 +2778,16 @@
 			<Label lang="en">Vent</Label>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>00A5</Id>
+		<Name>Nodon</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>CRC-3100</Model>
+			<Label lang="en">Remote Control</Label>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
