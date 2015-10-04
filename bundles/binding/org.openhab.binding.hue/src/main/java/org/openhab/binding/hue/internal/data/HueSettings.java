@@ -52,7 +52,7 @@ public class HueSettings {
 			settingsData = new SettingsTree(mapper.readValue(settings,
 					Map.class));
 		} catch (Exception e) {
-			logger.error("Could not read Settings-Json from Hue Bridge.");
+			logger.error("Could not read Settings-Json from Hue Bridge.", e);
 		}
 	}
 

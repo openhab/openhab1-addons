@@ -143,6 +143,7 @@ public class HueBridge {
 						+ response.getStatus());
 				return null;
 			}
+			logger.trace("Received Hue Bridge Settings: {}", settingsString);
 			return settingsString;
 		} catch(ClientHandlerException e) {
 			logger.warn("Failed to connect to Hue bridge: HTTP request timed out.");
