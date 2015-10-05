@@ -10,6 +10,7 @@ package org.openhab.binding.plex.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,14 @@ public final class PlexActivator implements BundleActivator {
 	 */
 	public static BundleContext getContext() {
 		return context;
+	}
+	
+	/**
+	 * Returns the current version of the bundle.
+	 * @return the current version of the bundle.
+	 */
+	public static Version getVersion() {
+		return context.getBundle().getVersion();
 	}
 	
 }
