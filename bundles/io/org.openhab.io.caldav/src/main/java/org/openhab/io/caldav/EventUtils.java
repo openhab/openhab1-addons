@@ -34,7 +34,7 @@ public final class EventUtils {
 	}
 	
 	private static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, 
-			Item item, String expectedScope) {
+			Item itemIn, String expectedScope) {
 		final List<EventContent> outMap = new ArrayList<EventUtils.EventContent>();
 		
 		try {
@@ -42,6 +42,7 @@ public final class EventUtils {
 		
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				Item item = itemIn;
 				line = line.trim();
 				
 				String scope = null;
@@ -105,6 +106,7 @@ public final class EventUtils {
 						item = itemRegistry.getItem(itemName);
 					} catch (ItemNotFoundException e) {
 						LOG.error("cannot find item: {}", itemName);
+						continue;
 					}
 				}
 				

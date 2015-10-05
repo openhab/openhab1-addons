@@ -68,6 +68,7 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLContextBuilder;
@@ -415,9 +416,17 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			} catch (KeyStoreException e) {
 				LOG.error("error verifying certificate", e);
 			}
-			return new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
+			if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
+				return new SardineImpl(httpClientBuilder);
+			} else {
+				return new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
+			}
 		} else {
-			return new SardineImpl(config.getUsername(), config.getPassword());
+			if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
+				return new SardineImpl();
+			} else {
+				return new SardineImpl(config.getUsername(), config.getPassword());
+			}
 		}
 	}
 
