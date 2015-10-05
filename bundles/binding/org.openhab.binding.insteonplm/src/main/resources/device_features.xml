@@ -291,5 +291,11 @@
 	<message-handler default="true">NoOpMsgHandler</message-handler>
 	<command-handler default="true" command="DecimalType">ThermostatMasterControlCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="FanLincFanControl">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x19" >FanLincFanControlReplyHandler</message-handler>
+	<command-handler default="true" command="DecimalType">FanLincFanControlCommandHandler</command-handler>
+	<poll-handler>FanLincFanControlPollHandler</poll-handler>
 </feature>     
 </xml>
