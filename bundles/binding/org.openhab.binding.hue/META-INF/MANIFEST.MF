@@ -12,6 +12,7 @@ Bundle-Description: This is the Hue binding of the open Home Aut
 Import-Package: com.sun.jersey.api.client,
  org.apache.commons.io,
  org.apache.commons.lang,
+ org.codehaus.jackson,
  org.codehaus.jackson.map,
  org.openhab.core.binding,
  org.openhab.core.events,
