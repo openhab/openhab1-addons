@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" modified="modified" deactivate="deactivate" name="org.openhab.binding.lightwaverf.binding" immediate="true" configuration-pid="org.openhab.lightwaverf" configuration-policy="require">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" modified="modified" deactivate="deactivate" name="org.openhab.binding.lightwaverf.binding" immediate="true" configuration-pid="org.openhab.lightwaverf" configuration-policy="optional">
 	<implementation class="org.openhab.binding.lightwaverf.internal.LightwaveRfBinding" />
 
 	<service>
