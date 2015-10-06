@@ -268,7 +268,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			// RGBW Bulbs:
 			} else if (bulb > 5) {
 				if (command.intValue() > 0 && command.intValue() < 100 ) {
-					int newCommand = (command.intValue() * rgbwSteps / 100);
+					int newCommand = (command.intValue() * (rgbwSteps -2) / 100 + 2);
 					Thread.sleep(100);
 					String messageBytes = "4E:" + Integer.toHexString(newCommand) + ":55";
 			        	logger.debug("milight: send dimming packet '{}' to RGBW bulb channel '{}'", messageBytes, bulb);
@@ -331,7 +331,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 		}
 		PercentType newValue = new PercentType(newPercent);
 		if (bulb > 5) {
-			int increasePercent = newPercent * rgbwSteps / 100;
+			int increasePercent = newPercent * (rgbwSteps -2) / 100 + 2;
 			messageBytes = "4E:" + Integer.toHexString(increasePercent) + ":55";
 			logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
 		} else if (bulb < 5) {
@@ -370,7 +370,7 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			sendOff(bulb, bridgeId);
 		} else {
 			if (bulb > 5) {
-				int decreasePercent = newPercent * rgbwSteps / 100;
+				int decreasePercent = newPercent * (rgbwSteps -2) / 100 +2;
 				messageBytes = "4E:" + Integer.toHexString(decreasePercent) + ":55";
 				logger.debug("Bulb '{}' set to '{}' dimming Steps", bulb, rgbwSteps);
 			} else if (bulb < 5) {
