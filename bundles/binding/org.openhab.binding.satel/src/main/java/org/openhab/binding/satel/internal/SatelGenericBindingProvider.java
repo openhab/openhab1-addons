@@ -53,11 +53,11 @@ public class SatelGenericBindingProvider extends AbstractGenericBindingProvider 
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		logger.trace("Processing binding configuration for item {}", item.getName());
-		super.processBindingConfiguration(context, item, bindingConfig);
 
 		SatelBindingConfig bc = bindingConfigFactory.createBindingConfig(bindingConfig);
 		logger.trace("Adding binding configuration for item {}: {}", item.getName(), bc);
 		addBindingConfig(item, bc);
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 
 	/**
