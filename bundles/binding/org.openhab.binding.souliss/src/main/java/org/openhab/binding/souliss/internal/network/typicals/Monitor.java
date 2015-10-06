@@ -47,8 +47,8 @@ public class Monitor {
 	 */
 	public void tick() {
 		// Check all souliss'typicals (items) and get only the ones that
-			// has been updated
-			check(soulissTypicalsRecipients);
+		// has been updated
+		check(soulissTypicalsRecipients);
 	}
 
 	/**
@@ -72,49 +72,107 @@ public class Monitor {
 					if (typ.getType() == Constants.Souliss_TService_NODE_TIMESTAMP) {
 						// All values are float out of TIMESTAMP that is a
 						// string
-						logger.debug("Put on Bus Events - {} = {}", typ.getName(), ((SoulissTServiceNODE_TIMESTAMP) typ).getTIMESTAMP());
-						
+						logger.debug("Put on Bus Events - {} = {}", typ
+								.getName(),
+								((SoulissTServiceNODE_TIMESTAMP) typ)
+										.getTIMESTAMP());
+
 					} else if (typ.getType() == Constants.Souliss_T16) {
 						// RGB Only
-						logger.debug("Put on Bus Events - {} = {}, R={}, G={}, B={}", typ.getName(),((SoulissT16) typ).getState(), ((SoulissT16) typ).stateRED,((SoulissT16) typ).stateGREEN,((SoulissT16) typ).stateBLU);
-						
+						logger.debug(
+								"Put on Bus Events - {} = {}, R={}, G={}, B={}",
+								typ.getName(), ((SoulissT16) typ).getState(),
+								((SoulissT16) typ).stateRED,
+								((SoulissT16) typ).stateGREEN,
+								((SoulissT16) typ).stateBLU);
+
 					} else if (typ.getType() == Constants.Souliss_T1A) {
-						logger.debug("Put on Bus Events - {} - Bit {} - RawState: {} - Bit State: {}",typ.getName(),((SoulissT1A) typ).getBit(),Integer.toBinaryString(((SoulissT1A) typ).getRawState()),((SoulissT1A) typ).getBitState()); 
+						logger.debug(
+								"Put on Bus Events - {} - Bit {} - RawState: {} - Bit State: {}",
+								typ.getName(), ((SoulissT1A) typ).getBit(),
+								Integer.toBinaryString(((SoulissT1A) typ)
+										.getRawState()), ((SoulissT1A) typ)
+										.getBitState());
 					} else if (typ.getType() == Constants.Souliss_T31) {
-						//T31
-						logger.debug("Put on Bus Events - Command State: {} - Temperature Measured Value {} - Set Point {}",((SoulissT31) typ).getRawCommandState(), ((SoulissT31) typ).getTemperatureMeasuredValue(), ((SoulissT31) typ).getSetpointValue());
-					}
-					else {
-						logger.debug("Put on Bus Events - {} = {}", typ.getName(), Float.toString(typ.getState()));
+						// T31
+						logger.debug(
+								"Put on Bus Events - Command State: {} - Temperature Measured Value {} - Set Point {}",
+								((SoulissT31) typ).getRawCommandState(),
+								((SoulissT31) typ)
+										.getTemperatureMeasuredValue(),
+								((SoulissT31) typ).getSetpointValue());
+					} else {
+						logger.debug("Put on Bus Events - {} = {}",
+								typ.getName(), Float.toString(typ.getState()));
 					}
 
 					if (typ.getType() == Constants.Souliss_T16) {
 						eventPublisher.postUpdate(typ.getName(),
 								((SoulissT16) typ).getOHStateRGB());
-					} else {
-						if (typ.getType() == Constants.Souliss_T31){
-							//qui inserimento dati per tipico 31
+					} else if (typ.getType() == Constants.Souliss_T31) {
+							// qui inserimento dati per tipico 31
 							SoulissT31 typ31 = (SoulissT31) typ;
-							if(typ31.getsItemNameMeasuredValue()!=null) eventPublisher.postUpdate(typ31.getsItemNameMeasuredValue(),typ31.getOHStateMeasuredValue());
-							if(typ31.getsItemNameSetpointValue()!=null) eventPublisher.postUpdate(typ31.getsItemNameSetpointValue(),typ31.getOHStateSetpointValue());
-							if(typ31.power.getName()!=null) eventPublisher.postUpdate(typ31.power.getName(),typ31.power.getOHState());
-							if(typ31.heating.getName()!=null) eventPublisher.postUpdate(typ31.heating.getName(),typ31.heating.getOHState());
-							if(typ31.cooling.getName()!=null) eventPublisher.postUpdate(typ31.cooling.getName(),typ31.cooling.getOHState());
-							if(typ31.heatingCoolingModeValue.getName()!=null) eventPublisher.postUpdate(typ31.heatingCoolingModeValue.getName(),typ31.heatingCoolingModeValue.getOHState());
-							if(typ31.fanHigh.getName()!=null) eventPublisher.postUpdate(typ31.fanHigh.getName(),typ31.fanHigh.getOHState());
-							if(typ31.fanMed.getName()!=null) eventPublisher.postUpdate(typ31.fanMed.getName(),typ31.fanMed.getOHState());
-							if(typ31.fanLow.getName()!=null) eventPublisher.postUpdate(typ31.fanLow.getName(),typ31.fanLow.getOHState());
-							if(typ31.fanAutoMode.getName()!=null) eventPublisher.postUpdate(typ31.fanAutoMode.getName(),typ31.fanAutoMode.getOHState());							
+							if (typ31.getsItemNameMeasuredValue() != null)
+								eventPublisher.postUpdate(
+										typ31.getsItemNameMeasuredValue(),
+										typ31.getOHStateMeasuredValue());
+							if (typ31.getsItemNameSetpointValue() != null)
+								eventPublisher.postUpdate(
+										typ31.getsItemNameSetpointValue(),
+										typ31.getOHStateSetpointValue());
+							if (typ31.power.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.power.getName(),
+										typ31.power.getOHState());
+							if (typ31.heating.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.heating.getName(),
+										typ31.heating.getOHState());
+							if (typ31.cooling.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.cooling.getName(),
+										typ31.cooling.getOHState());
+							if (typ31.heatingCoolingModeValue.getName() != null)
+								eventPublisher
+										.postUpdate(
+												typ31.heatingCoolingModeValue
+														.getName(),
+												typ31.heatingCoolingModeValue
+														.getOHState());
+							if (typ31.fanHigh.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.fanHigh.getName(),
+										typ31.fanHigh.getOHState());
+							if (typ31.fanMed.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.fanMed.getName(),
+										typ31.fanMed.getOHState());
+							if (typ31.fanLow.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.fanLow.getName(),
+										typ31.fanLow.getOHState());
+							if (typ31.fanAutoMode.getName() != null)
+								eventPublisher.postUpdate(
+										typ31.fanAutoMode.getName(),
+										typ31.fanAutoMode.getOHState());
+						} else if (typ.getType() == Constants.Souliss_T12) { 
+								// qui inserimento dati per tipico 12
+								SoulissT12 typ12 = (SoulissT12) typ;
+								if (typ12.getOHStateAutoMode() != null)
+									eventPublisher.postUpdate(typ12.getsItemNameAutoModeValue(),
+											typ12.getOHStateAutoMode());
+								if (typ12.getOHStateSwitch() != null)
+									eventPublisher.postUpdate(
+											typ12.getsItemNameSwitchValue(),
+											typ12.getOHStateSwitch());
+							} else {
+								eventPublisher.postUpdate(typ.getName(),
+										typ.getOHState());
+							}
+							typ.resetUpdate();
 						}
-						
-						else {
-						eventPublisher.postUpdate(typ.getName(),
-								typ.getOHState());
 					}
-					typ.resetUpdate();
 				}
 			}
 		}
-	}
-}
-}
+

@@ -35,8 +35,8 @@ public class SoulissT31 extends SoulissGenericTypical {
 	public SoulissT11 heatingCoolingModeValue;
 	public SoulissT11 setAsMeasured;
 	public SoulissT11 power;
-	public SoulissT11 heating;
-	public SoulissT11 cooling;
+	public SoulissT13 heating;
+	public SoulissT13 cooling;
 	public SoulissT11 fanHigh;
 	public SoulissT11 fanMed;
 	public SoulissT11 fanLow;
@@ -66,8 +66,8 @@ public class SoulissT31 extends SoulissGenericTypical {
 		
 		power= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
 		heatingCoolingModeValue= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
-		heating= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
-		cooling= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+		heating= new SoulissT13(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+		cooling= new SoulissT13(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
 		fanHigh= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
 		fanMed= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
 		fanLow= new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
@@ -78,17 +78,24 @@ public class SoulissT31 extends SoulissGenericTypical {
 	}
 
 	/**
-	 * Send a command as hexadecimal, e.g.: Souliss_T3n_InSetPoint 0x01
-	 * Souliss_T3n_OutSetPoint 0x02 Souliss_T3n_AsMeasured 0x03
-	 * Souliss_T3n_Cooling ----- 0x04 Souliss_T3n_Heating ----- 0x05
-	 * Souliss_T3n_FanOff ----- 0x06 Souliss_T3n_FanLow ----- 0x07
-	 * Souliss_T3n_FanMed ----- 0x08 Souliss_T3n_FanHigh ----- 0x09
-	 * Souliss_T3n_FanAuto ----- 0x0A Souliss_T3n_FanManual 0x0B
-	 * Souliss_T3n_SetTemp ----- 0x0C Souliss_T3n_ShutDown 0x0D
+	 * Send a command as hexadecimal, e.g.: 
+	 * Souliss_T3n_InSetPoint ----- 0x01
+	 * Souliss_T3n_OutSetPoint ----- 0x02 
+	 * Souliss_T3n_AsMeasured ----- 0x03
+	 * Souliss_T3n_Cooling ----- 0x04
+	 * Souliss_T3n_Heating ----- 0x05
+	 * Souliss_T3n_FanOff ----- 0x06
+	 * Souliss_T3n_FanLow ----- 0x07
+	 * Souliss_T3n_FanMed ----- 0x08
+	 * Souliss_T3n_FanHigh ----- 0x09
+	 * Souliss_T3n_FanAuto ----- 0x0A
+	 * Souliss_T3n_FanManual ----- 0x0B
+	 * Souliss_T3n_SetTemp ----- 0x0C
+	 * Souliss_T3n_ShutDown ----- 0x0D
 	 * 
 	 * @param command
 	 */
-	public void CommandSEND(short command) {
+	public void commandSEND(short command) {
 		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
 				SoulissNetworkParameter.IPAddressOnLAN,
 				this.getSoulissNodeID(), this.getSlot(), command);
