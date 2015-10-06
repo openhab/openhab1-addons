@@ -180,6 +180,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider> im
 				if (newState != null) {
 					logger.debug("Updating item state: item = {}, state = {}, event = {}", itemName, newState, event);
 					eventPublisher.postUpdate(itemName, newState);
+					itemConfig.setItemInitialized();
 				}
 			}
 		}
@@ -213,10 +214,10 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider> im
 					continue;
 				}
 
-				// either state has changed or this is status command, so likely
-				// RTC has changed or state is Undefined, so get the latest
-				// value from the module
-				if (forceRefresh || (nse != null && nse.isNew(message.getCommand()))
+				// either state has changed or this is status command (so likely RTC has changed)
+				// also if item hasn't received any update yet or refresh is forced
+				// get the latest value from the module
+				if (forceRefresh || !itemConfig.isItemInitialized() || (nse != null && nse.isNew(message.getCommand()))
 						|| message.getCommand() == IntegraStatusCommand.COMMAND_CODE) {
 					commands.add(message);
 				}
