@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.openhab.core.jsr223.internal.engine.RuleExecutionRunnable;
 import org.openhab.core.jsr223.internal.shared.ChangedEventTrigger;
+import org.openhab.core.jsr223.internal.shared.UpdatedEventTrigger;
 import org.openhab.core.jsr223.internal.shared.CommandEventTrigger;
 import org.openhab.core.jsr223.internal.shared.Event;
 import org.openhab.core.jsr223.internal.shared.EventTrigger;
@@ -214,6 +215,7 @@ public class Script{
 		engine.put("RuleSet", 				RuleSet.class);
 		engine.put("Rule", 					Rule.class);
 		engine.put("ChangedEventTrigger", 	ChangedEventTrigger.class);
+		engine.put("UpdatedEventTrigger", 	UpdatedEventTrigger.class);
 		engine.put("CommandEventTrigger", 	CommandEventTrigger.class);
 		engine.put("Event", 				Event.class);
 		engine.put("EventTrigger", 			EventTrigger.class);
