@@ -13,33 +13,21 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
 /**
- * ChangedEventTrigger is used by a Script to listen for item changes
+ * UpdatedEventTrigger is used by a Script to listen for item updates
  * 
- * @author Simon Merschjohann
- * @since 1.7.0
+ * @author Steve Bate
+ * @since 1.8.0
  */
-public class ChangedEventTrigger implements EventTrigger {
+public class UpdatedEventTrigger implements EventTrigger {
 	private String itemName;
-	private State fromState;
-	private State toState;
 
-	public ChangedEventTrigger(String itemName, State fromState, State toState) {
+	public UpdatedEventTrigger(String itemName) {
 		this.itemName = itemName;
-		this.fromState = fromState;
-		this.toState = toState;
-	}
-
-	public ChangedEventTrigger(String itemName) {
-		this.itemName = itemName;
-		this.fromState = null;
-		this.toState = null;
 	}
 
 	@Override
 	public boolean evaluate(Item item, State oldState, State newState, Command command, TriggerType type) {
-		return type == TriggerType.CHANGE && item.getName().equals(itemName) 
-				&& (this.fromState == null || this.fromState.equals(oldState)) 
-				&& (this.toState == null || this.toState.equals(newState));
+		return type == TriggerType.UPDATE && item.getName().equals(itemName);
 	}
 
 	@Override
