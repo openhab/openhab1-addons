@@ -4,6 +4,6 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jsapp-core-1.0.3.jar" sourcepath="/Users/pd/.m2/repository/com/github/paolodenti/jsapp/jsapp-core/1.0.3/jsapp-core-1.0.3-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jsapp-core-1.0.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
