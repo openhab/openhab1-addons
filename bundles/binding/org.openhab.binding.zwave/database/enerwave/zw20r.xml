@@ -2,6 +2,17 @@
 <Product>
     <Model>ZW20R</Model>
     <Label lang="en">20A Duplex Receptacle</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
     <Configuration>
         <Parameter>
             <Index>1</Index>
