@@ -1,0 +1,25 @@
+/**
+ * @class Ext.form.Panel
+ */
+
+// .x-form {
+//     .x-scroll-container {
+//         background-color: #d5dbe0;
+//     }
+// }
+
+// Label
+@mixin label {
+    color: $base-color;
+	font-size: 13px;
+	text-transform: uppercase;
+}
+
+.x-form-label {
+    @include label();
+    padding: $form-spacing;
+}
+
+.x-label-align-top .x-form-label {
+	border-bottom: 1px solid $base-color;
+}

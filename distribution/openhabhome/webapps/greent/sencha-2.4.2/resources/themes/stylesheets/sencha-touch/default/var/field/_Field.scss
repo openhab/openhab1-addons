@@ -1,0 +1,63 @@
+/**
+ * @class Ext.field.Field
+ */
+
+/**
+ * @var {color} $form-field-bg-color
+ * Default background-color for form fields.
+ */
+$form-field-bg-color: #fff !default;
+
+/**
+ * @var {color} $form-field-color
+ * Default font color for form fields.
+ */
+$form-field-color: invert($form-field-bg-color) !default;
+
+/**
+ * @var {color} $form-field-border-bottom-color
+ * Default border bottom color for the fields in the fieldset.
+ */
+$form-field-border-bottom-color: $form-light !default;
+
+/**
+ * @var {measurement} $form-field-border-bottom-width
+ * Default border bottom width for the fields in the fieldset.
+ */
+$form-field-border-bottom-width: 1px !default;
+
+/**
+ * @var {color} $form-field-label-bg-color
+ * Default background color for form field labels.
+ */
+$form-field-label-bg-color: $form-label-background-color !default;
+
+/**
+ * @var {color} $form-field-label-color
+ * Default font color for form field labels.
+ */
+$form-field-label-color: invert($form-field-label-bg-color) !default;
+
+/**
+ * @var {measurement} $form-field-label-border-top-width
+ * Default border width for the top border of field label.
+ */
+$form-field-label-border-top-width: 1px !default;
+
+/**
+ * @var {color} $form-field-label-border-top-color
+ * Default border color for the top border of field label.
+ */
+$form-field-label-border-top-color: lighten($form-light, 20%) !default;
+
+/**
+ * @var {boolean} $form-field-label-text-shadow
+ * Default text shadow setting for the field label.
+ */
+$form-field-label-text-shadow: true !default;
+
+/**
+ * @var {measurement} $form-field-height
+ * Default height for form fields.
+ */
+$form-field-height: 2.5em !default;

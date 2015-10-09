@@ -1,0 +1,51 @@
+.x-tabbar {
+	min-height: 2.6em;
+
+	@include box-shadow(0 1px 0 rgba(255,255,255,.1));
+	@include background-image(linear-gradient(top, #2f2f2f 0, #151515 50%, #000 51%, #000 100%));
+}
+
+.x-tab {
+	height: 2.1em;
+	margin: 0 .2em;
+	border: 0;
+	@include border-radius(4px);
+	background: transparent;
+	@include st-box-orient(vertical);
+}
+
+.x-tab-active {
+	background: rgba(255,255,255,.15);
+}
+
+.x-tab {
+	.x-button-label {
+		font-size: 10px;
+		line-height: 8px;
+	}
+
+	.x-button-icon {
+		display: block !important;
+	    width: 1.5em;
+	    height: 1.5em;
+	    margin: 0 auto;
+
+	    .x-button-icon.x-hidden {
+	        display: block !important;
+	    }
+
+	    &:before {
+	    	color: #949494;
+	    	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+	        font-size: 1.4em;
+	        line-height: 1.15em;
+	    }
+	}
+
+	.x-badge {
+		top: -2px;
+		left: 55%;
+		right: auto;
+		max-width: 55%;
+	}
+}

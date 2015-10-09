@@ -1,0 +1,207 @@
+/**
+ * @class Ext.tab.Panel
+ */
+
+// Private variables
+$tabs-top-height: $global-row-height - .8em;
+$tabs-top-icon-size: $tabs-top-height - .6em;
+
+// Rules for all tabs
+.x-tab.x-item-disabled span.x-button-label,
+.x-tab.x-item-disabled .x-button-icon {
+    @include opacity(.5);
+}
+
+.x-tab.x-draggable {
+    @include opacity(.7);
+}
+
+//Custom fonts in older android do not work with text-rendering set to optimizeLegibility
+.x-android-4.x-android-stock .x-tabbar .x-tab .x-button-label {
+	text-rendering: inherit !important;
+}
+
+@mixin sencha-top-tabs {
+    .x-tabbar.x-docked-top {
+        height: $global-row-height;
+        padding: 0 .8em;
+
+        .x-tab {
+            background: transparent none;
+            border: 0;
+
+            padding: (($tabs-top-height - 1em) / 2) .8em;
+            height: $tabs-top-height;
+            @if $include-border-radius {
+                @include border-radius($tabs-top-height / 2);
+            }
+
+            .x-button-label {
+                font-size              : .8em;
+                line-height            : 1.2em;
+                text-rendering         : optimizeLegibility;
+                -webkit-font-smoothing : antialiased;
+            }
+
+            .x-badge {
+                font-size : .6em !important;
+                top       : -0.5em;
+            }
+
+            .x-button-icon {
+                width: $tabs-top-icon-size;
+                height: $tabs-top-icon-size;
+                margin: 0 auto;
+
+                &:before {
+                    font-size: 1.6em;
+                }
+            }
+
+            &.x-tab-icon {
+                padding : (($tabs-top-height - 1em) / 2) - .1em .8em;
+
+                .x-button-label {
+                    margin: 0;
+                    margin-left: .8em;
+                    padding: .1em 0 .2em 0;
+                    display: inline-block;
+                    position: relative;
+                    top: -.2em;
+                }
+            }
+        }
+    }
+}
+
+@mixin sencha-bottom-tabs {
+    .x-tabbar.x-docked-bottom {
+        height: 3em;
+        padding: 0;
+
+        .x-tab {
+            background: transparent none;
+            border: 0;
+
+            padding-top: .2em;
+            @if $include-border-radius {
+                @include border-radius($tabs-bottom-radius);
+            }
+            @include st-box-orient(vertical);
+
+            .x-button-icon {
+                width: $tabs-bottom-icon-size;
+                height: $tabs-bottom-icon-size;
+                margin: 0 auto;
+
+                &:before {
+                    font-size: 1.6em;
+                    line-height: 1.1em;
+                }
+            }
+
+            .x-button-label {
+                margin: 0;
+                padding: .1em 0 .2em 0;
+                font-size: 9px;
+                line-height: 12px;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+    }
+}
+
+/**
+ * Creates a theme UI for tabbar/tab components.
+ *
+ *     // SCSS
+ *     @include sencha-button-ui('pink', #333, 'matte', #AE537A);
+ *
+ *     // JS
+ *     var tabs = new Ext.tab.Panel({
+ *        tabBar: {
+ *          ui: 'pink',
+ *          dock: 'bottom',
+ *          layout: { pack: 'center' }
+ *        },
+ *        ...
+ *     });
+ *
+ * @param {string} $ui-label The name of the UI being created.
+ *   Can not included spaces or special punctuation (used in class names)
+ * @param {color} $bar-color Base color for the tab bar.
+ * @param {string} $bar-gradient Background gradient style for the tab bar.
+ * @param {color} $tab-active-color Background-color for active tab icons.
+ *
+ * @member Ext.tab.Bar
+ */
+@mixin sencha-tabbar-ui($ui-label, $bar-color, $bar-gradient, $tab-active-color) {
+    .x-tabbar-#{$ui-label} {
+        border-top-color: darken($bar-color, 5%);
+        border-bottom-color: darken($bar-color, 15%);
+        @include background-gradient($bar-color, $bar-gradient);
+
+        .x-tab {
+            @include color-by-background($bar-color, 40%);
+            border-bottom: 1px solid transparent;
+        }
+
+        .x-tab-active {
+            @include color-by-background($bar-color, 90%);
+            border-bottom-color: lighten($bar-color, 3%);
+
+            .x-button-icon:before {
+                color: $tab-active-color;
+            }
+        }
+
+        .x-tab-pressed {
+            @include color-by-background($bar-color, 100%);
+        }
+    }
+
+    @if $include-bottom-tabs {
+        .x-tabbar-#{$ui-label}.x-docked-bottom {
+            .x-tab {
+                @include bevel-by-background($bar-color);
+            }
+
+            .x-tab-active {
+                @include background-gradient(darken($bar-color, 5%), recessed);
+                @include bevel-by-background(lighten($bar-color, 10%));
+
+                @if ($include-tab-highlights) {
+                    @include box-shadow(darken($bar-color, 10%) 0 0 .25em inset);
+                }
+
+                .x-button-icon:before {
+                    color: $tab-active-color;
+                }
+            }
+        }
+    }
+
+    @if $include-top-tabs {
+        .x-tabbar-#{$ui-label}.x-docked-top {
+            .x-tab-active {
+                @include background-gradient(darken($bar-color, 5%), 'recessed');
+                @include color-by-background(darken($bar-color, 5%));
+            }
+        }
+    }
+}
+
+@if $include-top-tabs {
+    @include sencha-top-tabs;
+}
+
+@if $include-bottom-tabs {
+    @include sencha-bottom-tabs;
+}
+
+@if $include-tabbar-uis {
+    @include sencha-tabbar-ui('light', $tabs-light, $tabs-bar-gradient, $tabs-light-active);
+    @include sencha-tabbar-ui('dark', $tabs-dark, $tabs-bar-gradient, $tabs-dark-active-color);
+    @include sencha-tabbar-ui('neutral', $neutral-color, $tabs-bar-gradient, darken($neutral-color, 40));
+}

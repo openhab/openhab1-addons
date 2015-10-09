@@ -1,0 +1,227 @@
+/**
+ * @class Ext.Button
+ */
+
+// Private variables
+$disabled-color: #999;
+
+.x-button {
+    @include background-clip(padding-box);
+    @include toolbar-button($background-color);
+    min-height: 1.8em;
+    padding: .3em .6em .5em .6em;
+
+    // Default icon style
+    .x-button-icon {
+        width: 20px;
+        height: 24px;
+
+        &:before {
+            font-size: 24px;
+            line-height: 22px;
+        }
+    }
+
+    .x-button-label {
+        color: $foreground-color;
+    }
+
+    &.x-item-disabled {
+        border-color: $disabled-color;
+
+        .x-button-label, .x-button-icon {
+            color: $disabled-color;
+        }
+    }
+
+    &.x-button-pressing,
+    &.x-button-pressed,
+    &.x-button-active {
+        &,
+        .x-button-label,
+        .x-button-icon:before {
+            color: $background-color;
+        }
+    }
+}
+
+.x-button-round {
+    @include border-radius(1.8em);
+}
+
+// Button icon alignment
+.x-iconalign-left .x-button-label {
+    margin-left: .6em;
+}
+.x-iconalign-right .x-button-label {
+    margin-right: .6em;
+}
+
+.x-iconalign-top .x-button-label {
+    margin-top: .6em;
+}
+
+.x-iconalign-bottom .x-button-label {
+    margin-bottom: .6em;
+}
+
+// Button labels
+.x-button-label {
+    line-height: 1.2em;
+    text-transform: lowercase;
+}
+
+// Toolbar button styling
+.x-toolbar .x-button {
+    margin: 0 .2em;
+    padding: .3em .5em;
+    min-width: 2.6em;
+    min-height: 2.6em;
+
+    .x-hasbadge .x-badge {
+        line-height: 1.6em;
+    }
+
+    .x-button-label {
+        padding-left: 6px;
+        padding-right: 6px;
+        line-height: 1.6em;
+    }
+
+    .x-webkit & .x-button-icon:before {
+        line-height: 26px;
+    }
+}
+
+.x-button-small,
+.x-toolbar .x-button-small {
+    padding: .2em .4em;
+    min-height: 0;
+
+    .x-button-label {
+        font-size: $font-size-small;
+    }
+}
+
+.x-button-forward,
+.x-button-back {
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+    border-radius: 40px;
+    min-width: 40px !important;
+    min-height: 40px !important;
+
+    .x-button-label {
+        display: none;
+    }
+
+    &:before {
+        @include absolute-position;
+        content: '[';
+        font-family: 'Pictos';
+        text-align: center;
+        font-size: 29px;
+        line-height: 40px;
+        color: $foreground-color;
+    }
+
+    .x-ie &:before {
+        line-height: 35px;
+    }
+
+    &.x-button-pressing {
+        &:before {
+            color: $background-color;
+        }
+    }
+}
+
+.x-button-forward {
+    &:before {
+        content: ']';
+    }
+}
+
+// Badges
+.x-hasbadge {
+    overflow: visible;
+}
+
+.x-badge {
+    border: 0;
+    background-color: $base-color;
+    color: #fff;
+    font-size: 9pt;
+    min-width: 30px;
+    right: -3px;
+    top: -2px;
+    @include ellipsis;
+    padding: 0 2px;
+}
+
+@if $include-default-icons {
+    @include icon('calendar');
+    @include icon('action');
+    @include icon('add');
+    @include icon('arrow_down');
+    @include icon('arrow_left');
+    @include icon('arrow_right');
+    @include icon('arrow_up');
+    @include icon('compose');
+    @include icon('delete');
+    @include icon('organize');
+    @include icon('refresh');
+    @include icon('reply');
+    @include icon('search');
+    @include icon('settings');
+    @include icon('star');
+    @include icon('trash');
+    @include icon('maps');
+    @include icon('locate');
+    @include icon('home');
+    @include icon('bookmarks');
+    @include icon('download');
+    @include icon('favorites');
+    @include icon('info');
+    @include icon('more');
+    @include icon('time');
+    @include icon('user');
+    @include icon('team');
+}
+
+/**
+ * Creates a theme UI for buttons.
+ * Also automatically generates UIs for {ui-label}-round and {ui-label}-small.
+ *
+ *     // SCSS
+ *     @include sencha-button-ui('secondary', #99A4AE, 'glossy');
+ *
+ *     // JS
+ *     var cancelBtn = new Ext.Button({text: 'Cancel', ui: 'secondary'});
+ *
+ * @param {string} $ui-label The name of the UI being created.
+ *   Can not included spaces or special punctuation (used in class names)
+ * @param {color} $color Base color for the UI.
+ */
+@mixin sencha-button-ui($ui-label, $color) {
+    .x-button.x-button-#{$ui-label},
+    .x-button.x-button-#{$ui-label}-round,
+    .x-button.x-button-#{$ui-label}-small {
+        @include toolbar-button($color);
+    }
+
+    .x-button.x-button-#{$ui-label}-small {
+        @extend .x-button-small;
+    }
+
+    .x-button-#{$ui-label}-round {
+        @extend .x-button-round;
+    }
+}
+
+@if $include-button-uis {
+    @include sencha-button-ui('action', $background-color);
+    @include sencha-button-ui('confirm', desaturate(darken($confirm-color, 10%), 5%));
+    @include sencha-button-ui('decline', desaturate(darken($alert-color, 10%), 5%));
+}

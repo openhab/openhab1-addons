@@ -1,0 +1,55 @@
+/**
+ * @class Ext.field.Checkbox
+ */
+
+.x-field-checkbox .x-field-mask,
+.x-field-radio .x-field-mask {
+    @include absolute-position;
+
+    &::before {
+        content: '';
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        border-color: #CECACE;
+        @include border-radius($button-border-radius);
+        @include background(linear-gradient(color-stops(#C6C3C6, #E7E7E7)));
+        top: 7px;
+        right: 3px;
+    }
+
+    &::after {
+        content: '';
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        top: 9px;
+        right: 5px;
+        border: 1px solid #B9B7B9;
+        @include border-radius(4px);
+        @include background(linear-gradient(color-stops(#FFFFFF, #DEDFDE)));
+        font-family: 'Pictos';
+        font-size: 1.3em;
+        text-align: center;
+        line-height: 1.25em;
+        color: #fff;
+    }
+}
+
+.x-input-checkbox,
+.x-input-radio {
+    visibility: hidden;
+}
+
+.x-input-checkbox:checked ~ .x-field-mask:after {
+    @include background(linear-gradient(color-stops(#3498CB, #0974A8)));
+    @include box-shadow(inset 0 1px 0 0 #55AAD5);
+    content: '3';
+}
+
+.x-item-disabled.x-field-checkbox {
+    .x-input-checkbox:checked ~ .x-field-mask:after {
+        @include background(linear-gradient(color-stops(#bfd7e3, #85b3c9)));
+        @include box-shadow(inset 0 1px 0 0 #aac5d3);
+    }
+}

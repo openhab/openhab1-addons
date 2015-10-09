@@ -1,0 +1,30 @@
+/**
+ * @class Ext.Toast
+ */
+
+.x-toast {
+    margin: .5em;
+    border: .15em solid $base-color;
+
+    @include box-shadow(rgba(#000, .4) 0 .1em .5em);
+    @if $include-border-radius {
+        @include border-radius($panel-border-radius);
+    }
+
+    .x-toast-text {
+        padding: 6px 0;
+        line-height: 1.4em;
+    }
+}
+
+
+@mixin toast-ui($ui-label, $bg-color: $sheet-bg-color) {
+    .x-toast-#{$ui-label} {
+        .x-toast-text {
+            @include color-by-background($bg-color, 80%);
+            @include bevel-by-background($bg-color);
+        }
+    }
+}
+
+@include msgbox-ui('dark', $sheet-bg-color);

@@ -1,0 +1,111 @@
+/**
+ * @class Ext.layout.Box
+ */
+
+.x-layout-box {
+    @include st-box();
+
+    &.x-horizontal {
+        @include st-box-orient(horizontal, important);
+
+        > .x-layout-box-item.x-flexed {
+            min-width: 0 !important;
+        }
+    }
+
+    &.x-vertical {
+        @include st-box-orient(vertical, important);
+
+        > .x-layout-box-item.x-flexed {
+            min-height: 0 !important;
+        }
+    }
+
+    > .x-layout-box-item {
+        @include st-box(important);
+    }
+
+    &.x-align-start {
+        @include st-box-align(start);
+    }
+
+    &.x-align-center {
+        @include st-box-align(center);
+    }
+
+    &.x-align-end {
+        @include st-box-align(end);
+    }
+
+    &.x-align-stretch {
+        @include st-box-align(stretch);
+    }
+
+    &.x-pack-start {
+        @include st-box-pack(start);
+    }
+
+    &.x-pack-center {
+        @include st-box-pack(center);
+    }
+
+    &.x-pack-end {
+        @include st-box-pack(end);
+    }
+
+    &.x-pack-justify {
+        @include st-box-pack(justify);
+    }
+}
+
+.x-layout-box-item.x-sized {
+    > .x-inner, > .x-body, > .x-dock-outer {
+        @include absolute-fit();
+    }
+}
+
+// Platform specific code
+
+.x-webkit {
+    .x-layout-box {
+        &.x-horizontal > .x-layout-box-item.x-flexed {
+            width: 0 !important;
+        }
+
+        &.x-vertical > .x-layout-box-item.x-flexed {
+            height: 0 !important;
+        }
+    }
+}
+
+.x-firefox {
+    .x-stretched {
+        &.x-dock-horizontal {
+            > .x-dock-body {
+                width: 0;
+            }
+        }
+
+        &.x-dock-vertical {
+            > .x-dock-body {
+                height: 0;
+            }
+        }
+    }
+
+    .x-container {
+        .x-dock-horizontal.x-unsized {
+            .x-dock-body {
+                @include st-box-flex(1, 0px);
+                min-height: 0;
+                min-width: 0;
+            }
+        }
+    }
+
+    .x-has-height > .x-dock.x-unsized.x-dock-vertical {
+        > .x-dock-body {
+            height: 0;
+        }
+    }
+}

@@ -1,0 +1,69 @@
+/**
+ * @class Ext.Panel
+ */
+
+.x-panel.x-floating,
+.x-form.x-floating {
+    padding: 0;
+    @include border-radius(6px);
+}
+
+.x-panel.x-floating > .x-dock.x-sized,
+.x-form.x-floating > .x-dock.x-sized {
+    margin: 0;
+}
+
+.x-toolbar.x-docked-top {
+    @include border-top-radius(6px);
+}
+
+.x-container.x-floating > .x-dock > .x-toolbar.x-docked-bottom,
+.x-panel.x-floating > .x-dock > .x-toolbar.x-docked-bottom {
+    @include border-bottom-radius(6px);
+}
+
+
+$anchor-height: .7em;
+$anchor-width: $anchor-height*2.33;
+.x-webkit .x-anchor {
+	position: absolute;
+	overflow: hidden;
+
+	&.x-anchor-top {
+		margin-top: -$anchor-height + 0.02em;
+		margin-left: -$anchor-width / 2;
+		width: $anchor-width;
+		height: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_top.png") no-repeat;
+		-webkit-mask-size: $anchor-width $anchor-height;
+		background-color: white;
+	}
+
+	&.x-anchor-bottom {
+		margin-left: -$anchor-width / 2;
+		width: $anchor-width;
+		height: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_bottom.png") no-repeat;
+		-webkit-mask-size: $anchor-width $anchor-height;
+		background-color: white;
+	}
+
+	&.x-anchor-left {
+		margin-left: -$anchor-width / 2 + 0.15em;
+		margin-top: -$anchor-height / 2;
+		height: $anchor-width;
+		width: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_left.png") no-repeat;
+		-webkit-mask-size: $anchor-height $anchor-width;
+		background-color: white;
+	}
+
+	&.x-anchor-right {
+		margin-top: -$anchor-height / 2;
+		height: $anchor-width;
+		width: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_right.png") no-repeat;
+		-webkit-mask-size: $anchor-height $anchor-width;
+		background-color: white;
+	}
+}

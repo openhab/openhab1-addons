@@ -1,0 +1,16 @@
+.x-toolbar .x-segmentedbutton, .x-segmentedbutton {
+	.x-button {
+		border: 1px solid $light-segmented-button-border-color;
+
+		&.x-button-pressed {
+			background-color: $light-segmented-button-pressed-background-color;
+			.x-button-label {
+				color: $light-primary-text-color;
+			}
+		}
+	}
+
+	.x-last {
+		border-right: 1px solid $light-segmented-button-border-color;
+	}
+}

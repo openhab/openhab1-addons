@@ -1,0 +1,27 @@
+html, body {
+    font-family: $font-family;
+}
+
+.x-ios.x-tablet .x-landscape * {
+	-webkit-text-stroke: 1px transparent;
+}
+
+body {
+	font-size: 104%;
+}
+
+body.x-android.x-phone {
+	font-size: 116%;
+}
+
+body.x-ios.x-phone {
+	font-size: 114%;
+}
+
+body.x-desktop {
+	font-size: 114%;
+}
+
+.x-layout-card-item {
+	background: $page-bg-color;
+}

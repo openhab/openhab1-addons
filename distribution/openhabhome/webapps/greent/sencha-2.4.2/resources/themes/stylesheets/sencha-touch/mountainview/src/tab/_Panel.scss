@@ -1,0 +1,49 @@
+.x-tabbar {
+	min-height: 3.2em;
+	background: $background-color;
+	border: 0 !important;
+	border-width: 0 !important;
+}
+
+.x-tab {
+	height: 3.2em;
+	padding: 0 1em;
+	border: 0;
+	background: $secondary-color;
+	@include st-box-orient(vertical);
+
+	.x-button-label {
+		font-size: 10pt;
+		text-transform: uppercase;
+		font-weight: bold;
+		line-height: 3.5em;
+	}
+
+	.x-button-icon {
+		display: block;
+	    width: 1.5em;
+	    height: 1.5em;
+	    margin: 2px auto 0;
+
+	    &:before {
+	    	color: $primary-text-color;
+	    }
+	}
+
+// 	.x-badge {
+// 		top: -2px;
+// 		left: 55%;
+// 		right: auto;
+// 		max-width: 55%;
+// 	}
+}
+
+.x-tab-icon {
+	.x-button-label {
+		line-height: 1.2em;
+	}
+}
+
+.x-tab-active {
+	@include box-shadow(inset 0 -5px 0 0 $base-color);
+}

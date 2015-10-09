@@ -1,5 +1,8 @@
+@import "compass/css3/shared";
+@import "compass/css3/box";
+$experimental-support-for-pie: false;
+@import 'sencha-touch/default';
 @import 'sencha-touch/default/all';
-
 
 //          THEME SETTINGS
 // --------------------------------

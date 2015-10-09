@@ -1,0 +1,142 @@
+.x-toolbar {
+	.x-title {
+		color: #fff;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+	}
+
+	.x-button {
+		margin: 0 5px;
+		height: 1.8em;
+	}
+
+	.x-button-label {
+		font-size: 13px;
+	}
+}
+
+.x-toolbar-light {
+	border-color: #8a99a6 !important;
+	@include background-image(linear-gradient(top, #dfe3e6, #b8c1c8));
+
+	.x-title {
+		color: rgb(40, 59, 90);
+		text-shadow: 0 1px 0 rgba(#fff,.5);
+	}
+
+	.x-button {
+		border-color: #8e98a3;
+		@include box-shadow(0 1px 0 rgba(255,255,255,.5), inset 0 1px 0 rgba(#a4aeb6,.6));
+		@include background-image(linear-gradient(top, #d3dade, #b5bec6));
+
+		.x-button-label {
+			color: #4e658b;
+			text-shadow: 0 1px 0 rgba(#fff,.5);
+		}
+	}
+	
+	.x-button.x-button-action {
+		border-color: #515a68;
+		@include background-image(linear-gradient(top, #9faabb, #72819b));
+
+		.x-button-pressing {
+			@include background-image(linear-gradient(top, #7789a0, #556881));			
+		}
+	}
+
+	.x-button.x-button-pressing,
+	.x-button.x-button-pressed {
+		@include box-shadow(0 1px 0 rgba(255,255,255,.2), inset 0 1px 0 rgba(0,0,0,.3));
+		@include background-image(linear-gradient(top, #8995aa, #667590));
+	}
+
+	.x-button.x-button-action,
+	.x-button-pressing,
+	.x-button-pressed {
+		.x-button-label {
+			color: #fff;
+			text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+		}
+	}
+}
+
+.x-toolbar-dark {
+	border-color: #3f5c80 !important;
+	@include background-image(linear-gradient(top, #becbdd, #587397));
+
+	.x-button {
+		border-color: #3b4f75;
+		@include box-shadow(0 1px 0 rgba(255,255,255,.5), inset 0 1px 0 rgba(0,0,0,.2));
+		@include background-image(linear-gradient(bottom, #41618d, #89a0be));
+
+		.x-button-label {
+			color: #fff;
+			text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+		}
+	}
+
+	.x-button.x-button-pressing {
+		@include box-shadow(0 1px 0 rgba(255,255,255,.5), inset 0 1px 0 rgba(0,0,0,.2));
+		@include background-image(linear-gradient(top, #8693ac, #273e6b));
+	}
+
+	.x-button.x-button-pressed {
+		@include box-shadow(0 1px 0 rgba(255,255,255,.5), inset 0 1px 0 rgba(0,0,0,.2));
+		@include background-image(linear-gradient(top, #8693ac, #213754));
+    }
+}
+
+.x-toolbar-black {
+	@include box-shadow(0 1px 0 rgba(255,255,255,.1));
+	@include background-image(linear-gradient(top, #2f2f2f 0, #151515 50%, #000 51%, #000 100%));
+
+	.x-button {
+		border-color: #000;
+		@include box-shadow(0 1px 0 rgba(255,255,255,.3), inset 0 1px 0 rgba(0,0,0,.2));
+		@include background-image(linear-gradient(top, #767676 0, #282828 50%, #000 51%, #000 100%));
+
+		.x-button-label {
+			color: #fff;
+			text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+		}
+
+		.x-button-icon:before {
+			color: #fff;
+			text-shadow: 0 0 0;
+		}
+	}
+
+	.x-button.x-button-pressing,
+	.x-button.x-button-pressed {
+		@include background-image(linear-gradient(top, #838383 0, #545353 50%, #3b3b3b 51%, #3b3b3b 100%));
+	}
+}
+
+.x-toolbar-neutral {
+	@include background-image(linear-gradient(top, #fcfcfd, #a7aab7));
+	border-color: #7b8091 !important;
+
+	.x-title {
+		color: #686a71;
+		text-shadow: 0 1px 0 rgba(#fff,.5);
+	}
+
+	.x-button {
+		border-color: #9a9b9d;
+		@include box-shadow(0 1px 0 rgba(255,255,255,.3), inset 0 1px 0 rgba(0,0,0,.1));
+		@include background-image(linear-gradient(top, #f7f7f9, #bbbec8));
+	}
+
+	.x-button.x-button-pressing {
+		@include background-image(linear-gradient(top, #cfd0d6, #a5a8b4));
+    }
+
+    .x-button.x-button-pressed {
+		@include background-image(linear-gradient(top, #b2b6bb, #6a727d));
+		@include box-shadow(inset 0 0 1px rgba(0,0,0,.6));
+
+		.x-button-label {
+			color: #fff;
+			text-shadow: 0 -1px 0 rgba(0,0,0,.4);
+		}
+    }
+}

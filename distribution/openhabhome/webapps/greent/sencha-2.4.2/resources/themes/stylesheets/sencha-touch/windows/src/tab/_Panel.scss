@@ -1,0 +1,247 @@
+/**
+ * @class Ext.tab.Bar
+ */
+
+//Custom fonts in older android do not work with text-rendering set to optimizeLegibility
+.x-android-4.x-android-stock .x-tab .x-button-label {
+	text-rendering: inherit !important;
+}
+
+// Tabs
+.x-tab {
+    background-color: transparent;
+    border: 0;
+    color: $foreground-color;
+
+    &.x-tab-active {
+        color: $foreground-color !important;
+    }
+
+    &.x-item-disabled {
+        span.x-button-label,
+        .x-button-icon {
+            @include opacity(.5);
+        }
+    }
+
+    &.x-draggable {
+        @include opacity(.7);
+    }
+
+    .x-button-label {
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+// Tabbar
+.x-tabbar {
+    background-color: transparent;
+
+    &.x-docked-top {
+        border-bottom-width: 0;
+    }
+
+    &.x-docked-bottom {
+        border-top-width: 0;
+    }
+}
+
+// Docked Top
+.x-tabbar.x-docked-top {
+    height: 70px;
+
+    .x-tab {
+        color: $inactive-color;
+        padding: .4em .4em;
+
+        .x-button-label {
+            font-size: $font-size-large;
+            font-weight: normal;
+            line-height: 1.2em;
+        }
+
+        .x-badge {
+            font-size: .6em;
+            top: -0.5em;
+        }
+
+        &.x-tab-icon {
+            display: none;
+        }
+    }
+}
+
+// Docked bottom
+.x-tabbar.x-docked-bottom {
+    height: 90px;
+
+    .x-button-icon:before {
+        font-size: 29px;
+        line-height: 35px;
+    }
+
+    .x-tab {
+        @include st-box();
+        @include st-box-orient(vertical);
+        padding: 0;
+        min-width: auto;
+        margin: 13px 20px 18px;
+
+        .x-button-label {
+            font-size: 12px;
+            padding-top: 7px;
+        }
+
+        .x-badge {
+          padding-top: 3px;
+          padding-bottom: 3px;
+        }
+
+        .x-button-icon {
+            width: 42px;
+            height: 42px;
+            margin: 0 auto;
+            border: 2px solid;
+            border-radius: 42px;
+        }
+    }
+}
+
+// UIs
+.x-tabbar-accent.x-docked-top {
+    background-color: $base-color;
+
+    .x-tab {
+        .x-button-label {
+            color: lighten($base-color, 15);
+        }
+
+        &.x-tab-pressed,
+        &.x-tab-active {
+            .x-button-label {
+                color: #fff;
+            }
+        }
+    }
+}
+
+.x-tabbar-light.x-docked-top {
+    background-color: #fff;
+
+    .x-tab {
+        &.x-tab-pressed,
+        &.x-tab-active {
+            .x-button-label {
+                color: #000;
+            }
+        }
+    }
+}
+
+.x-tabbar-dark.x-docked-top {
+    background-color: #111;
+
+    .x-tab {
+        .x-button-label {
+            color: #666;
+        }
+
+        &.x-tab-pressed,
+        &.x-tab-active {
+            .x-button-label {
+                color: #fff;
+            }
+        }
+    }
+}
+
+.x-tabbar-accent.x-docked-bottom {
+    background-color: $base-color;
+
+    .x-button-label {
+        color: #fff;
+    }
+
+    .x-badge {
+        background-color: lighten($base-color, 20);
+    }
+
+    .x-tab {
+        .x-button-icon {
+            color: #fff;
+            border-color: #fff;
+        }
+
+        &.x-tab-pressed,
+        &.x-tab-active {
+            .x-button-icon {
+                background-color: #fff;
+
+                &:before {
+                    color: #000;
+                }
+            }
+        }
+    }
+}
+
+.x-tabbar-dark.x-docked-bottom {
+    background-color: #111;
+
+    .x-button-label {
+        color: #fff;
+    }
+
+    .x-tab {
+        .x-button-icon {
+            color: #fff;
+            border-color: #fff;
+        }
+
+        &.x-tab-pressed,
+        &.x-tab-active {
+            .x-button-icon {
+                background-color: #fff;
+
+                &:before {
+                    color: #000;
+                }
+            }
+        }
+    }
+}
+
+.x-tabbar-light.x-docked-bottom {
+    background-color: #eee;
+
+    .x-tab {
+        .x-button-label {
+            color: #000;
+        }
+
+        .x-badge {
+          color: #fff;
+        }
+
+        .x-button-icon {
+            border-color: #000;
+
+            &:before {
+                color: #000;
+            }
+        }
+
+        &.x-tab-pressed,
+        &.x-tab-active {
+            .x-button-icon {
+                background-color: #000;
+                border-color: #000;
+
+                &:before {
+                    color: #fff;
+                }
+            }
+        }
+    }
+}

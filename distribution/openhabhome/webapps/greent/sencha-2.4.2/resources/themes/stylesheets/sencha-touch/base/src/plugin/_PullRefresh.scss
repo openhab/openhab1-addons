@@ -1,0 +1,58 @@
+/**
+ * @class Ext.plugin.PullRefresh
+ */
+
+.x-list-pullrefresh {
+    @include st-box;
+    @include st-box-orient(horizontal);
+    @include st-box-align(center);
+    @include st-box-pack(center);
+    @include st-box-direction(normal, row);
+
+    position: absolute;
+    top: -5em;
+    left: 0;
+    width: 100%;
+    height: 4.5em;
+
+    .x-loading-spinner {
+        display: none;
+    }
+}
+
+.x-list-pullrefresh-arrow {
+    width: 2.5em;
+    height: 4.5em;
+    background-color: #bbb;
+}
+
+.x-list-pullrefresh-wrap {
+    width: 20em;
+    font-size: 0.7em;
+}
+
+.x-list-pullrefresh-message {
+    font-weight: bold;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.x-list-pullrefresh-updated {
+    text-align: center;
+}
+
+.x-list-pullrefresh-loading {
+    *.x-loading-spinner {
+        display: block;
+    }
+
+    .x-list-pullrefresh-arrow {
+        display: none;
+    }
+}
+
+.x-android-2 .x-list-pullrefresh-loading {
+    *.x-loading-spinner {
+        display: none;
+    }
+}

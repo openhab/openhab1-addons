@@ -1,0 +1,55 @@
+/**
+ * @class Ext.field.Checkbox
+ */
+
+.x-field-checkbox .x-field-mask,
+.x-field-radio .x-field-mask {
+    @include absolute-position;
+
+    &:before {
+        position: absolute;
+        content: '';
+        top: 0;
+        right: 0;
+        width: 32px;
+        height: 32px;
+        background-color: $field-background-color;
+        border: 2px solid $field-border-color;
+    }
+}
+
+.x-input-checkbox,
+.x-input-radio {
+    visibility: hidden;
+}
+
+.x-input-checkbox:checked ~ .x-field-mask:after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    text-align: center;
+    font-family: 'Pictos';
+    font-size: 26px;
+    line-height: 36px;
+    content: '3';
+    color: #000;
+}
+
+.x-item-disabled {
+    &.x-field-checkbox .x-field-mask,
+    &.x-field-radio .x-field-mask {
+        &:before {
+            background-color: $field-disabled-background-color;
+            border-color: $field-disabled-border-color;
+        }
+    }
+
+    .x-input-checkbox:checked ~ .x-field-mask:after {
+        color: $field-disabled-color;
+    }
+
+    .x-input-radio:checked ~ .x-field-mask:after {
+        background-color: $field-disabled-color;
+    }
+}

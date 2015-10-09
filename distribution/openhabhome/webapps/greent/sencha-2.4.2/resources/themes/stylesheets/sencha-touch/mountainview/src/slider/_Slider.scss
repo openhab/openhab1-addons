@@ -1,0 +1,54 @@
+/**
+ * @class Ext.slider.Slider
+ */
+
+// Private variables
+$form-thumb-space: ($form-thumb-size - $form-toggle-size) / 2;
+
+.x-slider,
+.x-toggle {
+    height: 34px;
+    overflow: hidden;
+}
+
+.x-slider.x-item-disabled {
+    opacity: .6;
+}
+
+.x-thumb {
+    height: 34px;
+    width: 30px;
+    background: transparent none;
+    border: 0;
+
+    // The actual thumb
+    &:after {
+        @include insertion(8px, 8px, 14px, 8px);
+        @include border-radius(8px);
+        @include box-shadow(0 0 0 8px rgba($base-color, .5));
+        background: $base-color;
+    }
+
+    &:before {
+        @include insertion(5000px, 3px, 17px, -4985px);
+        background: $base-color;
+    }
+
+    &.x-dragging {
+        opacity: 1;
+    }
+}
+
+.x-slider-multiple {
+    .x-thumb {
+        &:before {
+            background: transparent;
+        }
+    }
+}
+
+// Create the slider track
+.x-slider:before {
+    @include insertion(auto, 3px, 17px, 0);
+    background: $foreground-color;
+}

@@ -1,0 +1,39 @@
+body {
+	background-color: $light-background-color;
+	color: $light-primary-text-color;
+}
+
+.x-html,
+.x-html h1,
+.x-html h2,
+.x-html h3,
+.x-html h4,
+.x-html h5,
+.x-html h6 {
+	color: $light-primary-text-color;
+}
+
+.x-layout-card-item {
+	background: $light-background-color;
+}
+
+.x-html {
+	a {
+		color: $light-anchor-color;
+	}
+	a:visited {
+		color: $light-anchor-visited-color;
+	}
+
+	a:focus {
+		color: $light-anchor-focus-color;
+	}
+
+	a:hover {
+		color: $light-anchor-hover-color;
+	}
+
+	a:active {
+		color: $light-anchor-active-color;
+	}
+}

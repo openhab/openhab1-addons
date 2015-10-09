@@ -1,0 +1,24 @@
+// List Background
+$light-list-background-color: $light-secondary-background-color !default;
+$light-list-floating-background-color: $light-secondary-background-color !default;
+
+// List Border
+$light-list-border-color: $light-color-sandstone !default;
+
+// List Item
+$light-list-item-color: $light-primary-text-color !default;
+$light-list-item-selected-background-color: $light-secondary-text-color !default;
+$light-list-item-pressed-background-color: $light-secondary-pressing-background-color !default;
+
+//Disclosure
+$light-list-item-disclosure-color: $light-secondary-text-color !default;
+$light-list-item-disclosure-inner-color: $light-primary-text-color !default;
+
+//List Header
+$light-list-header-color: $light-secondary-text-color !default;
+$light-list-header-border-color: $light-list-header-color !default;
+$light-list-header-background-color: $light-list-background-color !default;
+
+//List Indexbar
+$light-list-indexbar-color: $light-list-item-color !default;
+$light-list-indexbar-pressed-background-color: $light-list-item-selected-background-color !default;

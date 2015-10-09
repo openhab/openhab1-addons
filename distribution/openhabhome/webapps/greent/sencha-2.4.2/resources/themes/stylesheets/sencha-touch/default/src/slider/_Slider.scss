@@ -1,0 +1,77 @@
+/**
+ * @class Ext.slider.Slider
+ */
+
+// Private variables
+$form-thumb-space: ($form-thumb-size - $form-toggle-size) / 2;
+
+.x-slider,
+.x-toggle {
+    height: $form-thumb-size;
+}
+
+.x-slider.x-item-disabled {
+    opacity: .6;
+}
+
+@if $basic-slider {
+    .x-thumb {
+        height: $form-thumb-size;
+        width: $form-thumb-size;
+        border: 1px solid #000;
+        background-color: #777;
+
+        &.x-dragging {
+            background-color: #AAA;
+        }
+    }
+
+    // Create the slider track
+    .x-slider:before {
+        margin: 0 $form-toggle-size/2;
+        border: .1em solid rgba(#000, .1);
+        border-bottom: 0;
+        background-color: $form-light;
+        @include insertion(auto, $form-slider-size, $form-toggle-size / 2 - $form-slider-size/2 + $form-spacing/2 - $form-thumb-space / 2, 0);
+    }
+} @else {
+    .x-thumb {
+        height: $form-thumb-size;
+        width: $form-thumb-size;
+        background: transparent none;
+        border: 0;
+
+        // The actual thumb
+        &:after {
+            border: 1px solid darken($form-light, 30%);
+            @include insertion($form-toggle-size, $form-toggle-size, $form-thumb-space, $form-thumb-space);
+            @include background-gradient($form-light);
+            @include background-clip(padding-box);
+            @if $include-border-radius {
+                @include border-radius($form-toggle-size/2);
+            }
+        }
+
+        &.x-dragging {
+            opacity: 1;
+            &:after {
+                @include background-gradient(darken($form-light, 5%));
+            }
+        }
+    }
+
+    // Create the slider track
+    .x-slider:before {
+        margin: 0 $form-toggle-size/2;
+        border: .1em solid rgba(#000, .1);
+        border-bottom: 0;
+
+        @include insertion(auto, $form-slider-size, $form-toggle-size / 2 - $form-slider-size/2 + $form-spacing/2 - $form-thumb-space / 2, 0);
+        @include background-gradient($form-light, 'recessed');
+        @include box-shadow(rgba(#fff,.7) 0 .1em 0);
+        @if $include-border-radius {
+            @include border-radius($form-slider-size/2);
+        }
+    }
+}
+

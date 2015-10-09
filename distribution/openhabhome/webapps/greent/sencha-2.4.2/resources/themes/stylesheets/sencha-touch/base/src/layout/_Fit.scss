@@ -1,0 +1,49 @@
+/**
+ * @class Ext.layout.Fit
+ */
+
+.x-stretched.x-container {
+    @include st-box();
+    @include st-box-orient(vertical);
+
+    > .x-inner, > .x-body,
+    > .x-body > .x-inner {
+        @include st-box();
+        @include st-box-flex(1);
+        @include st-box-orient(vertical);
+        min-height: 0px;
+    }
+}
+
+.x-layout-fit.x-stretched > .x-layout-fit-item {
+    @include st-box();
+    @include st-box-flex(1);
+    min-height: 0;
+    min-width: 0;
+}
+
+.x-layout-fit {
+    position: relative;
+}
+
+.x-layout-fit-item {
+    &.x-sized {
+        @include absolute-position();
+    }
+
+    &.x-unsized {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+// Platform specific code
+
+.x-ie {
+    .x-stretched {
+        > .x-inner,
+        > .x-body {
+            min-height: inherit;
+        }
+    }
+}

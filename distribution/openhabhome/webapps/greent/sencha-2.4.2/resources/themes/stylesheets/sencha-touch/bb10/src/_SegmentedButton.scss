@@ -1,0 +1,149 @@
+// Segmented Button
+
+.x-segmentedbutton {
+    padding: 0 2px;
+    height: 35px;
+    border: 1px solid;
+    border-color: #e3e3e3;
+    @include border-radius($button-border-radius);
+    @include background(linear-gradient(color-stops(#f4f4f4, #fcfcfc)));
+    @include box-shadow(inset 0 2px 2px rgba(#000, .05));
+
+    .x-button {
+        border: 1px solid transparent;
+        height: 28px;
+        margin: 3px 1px 0 0;
+        @include box-shadow(none);
+        @include border-radius(3px);
+        background: none;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        &:before {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border: 0;
+            background: none;
+        }
+
+        .x-button-label {
+            color: #262626;
+        }
+
+        .x-button-icon:before {
+            color: #000;
+        }
+    }
+
+    .x-button-pressing,
+    .x-button-pressed {
+        border-color: #c8c8c8;
+
+        .x-button-label {
+            color: #555555;
+        }
+
+        .x-button-icon:before {
+            color: #555555;
+        }
+    }
+
+    .x-first:before {
+        @include border-top-left-radius(4px);
+        @include border-bottom-left-radius(4px);
+    }
+
+    .x-last:before {
+        @include border-top-right-radius(4px);
+        @include border-bottom-right-radius(4px);
+    }
+}
+
+.x-toolbar-dark {
+    .x-segmentedbutton {
+        border-color: #060606;
+        @include background(linear-gradient(color-stops(#010101, #060606)));
+        @include box-shadow(0 0 0 1px #393939);
+
+        .x-button-label {
+            color: #fff;
+        }
+
+        .x-button-icon:before {
+            color: #fff;
+        }
+
+        .x-button {
+            &:before {
+                @include box-shadow(none);
+            }
+        }
+
+        .x-button-pressing,
+        .x-button-pressed {
+            border-color: #000;
+            @include box-shadow(inset 0 0 0 1px rgba(#fff, .1));
+            @include background(linear-gradient(top, rgba(#fff, .2), rgba(#fff, .1)));
+        }
+    }
+}
+
+.x-toolbar-plain,
+.x-toolbar-neutral,
+.x-toolbar-light {
+    .x-segmentedbutton {
+        .x-button-pressing,
+        .x-button-pressed {
+            background-image: none;
+
+            &:before {
+                @include box-shadow(none);
+            }
+        }
+    }
+}
+
+.x-toolbar-light {
+    .x-segmentedbutton {
+        background: transparent;
+        border-color: #07648d;
+        @include box-shadow(inset 0 1px 2px rgba(#000, .4));
+    
+        .x-button {
+            &:before {
+                @include box-shadow(none);
+            }
+        }
+
+        .x-button-pressing,
+        .x-button-pressed {
+            border-color: #0c6893;
+            @include box-shadow(inset 0 0 0 1px rgba(#fff, .1));
+            @include background(linear-gradient(top, rgba(#fff, .2), rgba(#fff, .1)));
+        }
+
+        .x-button-label {
+            color: #fff;
+        }
+
+        .x-button-icon:before {
+            color: #fff;
+        }
+    }
+}
+
+.x-toolbar-neutral {
+    .x-segmentedbutton {
+        border-color: #c7c7c7;
+        @include background(linear-gradient(color-stops(#efefef, #dfdfdf)));
+        @include box-shadow(inset 0 1px 3px rgba(#000, .2));
+
+        .x-button {
+            background-image: none;
+        }
+    }
+}

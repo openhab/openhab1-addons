@@ -1,0 +1,26 @@
+.x-field-checkbox .x-field-mask {
+	@include absolute-position;
+
+	width: 100%;
+	&:before {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 32px;
+		text-align: center;
+		font-family: 'Pictos';
+		font-size: 26px;
+		line-height: 36px;
+		content: '3';
+	}
+}
+
+.x-input-checkbox {
+	visibility: hidden;
+}
+
+.x-item-disabled {
+	&.x-field-checkbox .x-field-mask {
+		opacity: $disabled-opacity;
+	}
+}

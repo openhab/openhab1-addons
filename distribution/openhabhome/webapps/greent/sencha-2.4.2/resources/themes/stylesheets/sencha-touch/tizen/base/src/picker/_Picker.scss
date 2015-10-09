@@ -1,0 +1,44 @@
+.x-picker {
+	.x-toolbar {
+		@include border-radius(0);
+
+		.x-pack-start .x-container:first-child .x-button {
+			border-left: 0;
+			padding-left: .6em;
+			padding-right: 1em;
+		}
+	}
+}
+
+.x-picker .x-picker-inner {
+	overflow: hidden;
+	margin: 0px;
+}
+
+.x-picker-bar {
+	height: $picker-row-height;
+}
+
+.x-use-titles {
+	.x-picker-bar {
+		margin-top: 1.5em;
+	}
+}
+
+.x-picker-slot-title {
+	height: 1.5em;
+	padding: 0.2em 1.02em;
+
+	> div {
+		font-size: 0.8em;
+	}
+}
+
+.x-picker-slot {
+	.x-dataview-item {
+		height: $picker-row-height;
+		line-height: $picker-row-height;
+		font-weight: bold;
+		padding: 0 10px;
+	}
+}

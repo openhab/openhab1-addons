@@ -1,0 +1,252 @@
+/**
+ * @class Ext.dataview.List
+ */
+
+.x-list {
+    background-color: #fff;
+
+    .x-list-disclosure {
+        position: relative;
+        overflow: visible;
+        border: 2px solid #fff;
+        @include border-radius($list-disclosure-size);
+        @include background-image(linear-gradient(top, #749de5, #376bd9));
+        @include box-shadow(0 1px 4px rgba(0,0,0,.3));
+        width: $list-disclosure-size;
+        height: $list-disclosure-size;
+        margin: 7px 7px 0 0;
+
+        &:before {
+            @include absolute-position(0, 0, 0, 0);
+            content: '4';
+            font-family: 'Pictos';
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            line-height: 26px;
+            padding-left: 2px;
+        }
+    }
+
+    &.x-list-indexed .x-list-disclosure {
+        margin-right: 1.8em;
+    }
+
+    .x-item-selected .x-list-disclosure {
+        background: #fff none;
+
+        &:before {
+            color: #228afa;
+        }
+    }
+
+    .x-list-item {
+        color: #000;
+        font-weight: bold;
+
+        &.x-item-pressed {
+        	color: #fff;
+
+            &.x-list-item-tpl,
+            .x-dock-horizontal {
+                @include background-image(linear-gradient(top, #228afa, #105aeb));
+            }
+        }
+
+        &.x-item-pressed,
+        &.x-item-selected {
+        	border-top-color: #228afa !important;
+        }
+
+        &.x-item-selected .x-dock-horizontal,
+        &.x-item-selected.x-list-item-tpl {
+        	color: #fff;
+
+        	@include background-image(linear-gradient(top, #228afa, #105aeb));
+        }
+
+        .x-list-item-body,
+        &.x-list-item-tpl .x-innerhtml {
+            padding: 12px 15px;
+        }
+    }
+}
+
+.x-list-normal {
+    .x-list-header {
+        @include background-image(linear-gradient(top, #99a5af, #b7bdc3));
+        border-top: 1px solid #89949b;
+        border-bottom: 1px solid #b0b7be;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 0 10px 1px;
+        color: #fff;
+        text-shadow: 0 1px 0 rgba(0,0,0,.4);
+    }
+
+    .x-list-item {
+        &.x-list-item-tpl,
+        .x-dock-horizontal {
+            border-top: 1px solid #e8e8e8;
+        }
+
+
+        &.x-list-item-tpl.x-list-footer-wrap,
+        &.x-list-footer-wrap .x-dock-horizontal {
+            border-bottom: 1px solid #e8e8e8;
+        }
+    }
+
+    .x-list-item {
+        &.x-item-pressed.x-list-item-tpl,
+        &.x-item-pressed .x-dock-horizontal {
+            // border-top-color: $list-pressed-color;
+            // background-color: $list-pressed-color;
+        }
+
+
+        &.x-item-selected.x-list-item-tpl,
+        &.x-item-selected .x-dock-horizontal {
+            // border-top-color: $list-active-color;
+        }
+    }
+}
+
+.x-list-round {
+    .x-scroll-view {
+        background-color: #d1d7dd;
+    }
+
+    .x-list-header-swap {
+        padding-right: $list-round-padding;
+    }
+
+    .x-list-inner .x-scroll-container {
+        top: $list-round-padding;
+        left: $list-round-padding;
+        bottom: $list-round-padding;
+        right: $list-round-padding;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    .x-list-header {
+        color: #5e6b7f;
+        font-size: 1em;
+        font-weight: bold;
+        padding-left: 10px;
+        line-height: 1.7em;
+    }
+
+    .x-list-container {
+        padding: $list-round-padding $list-round-padding 0 $list-round-padding;
+
+        .x-list-header {
+            padding-left: $list-round-padding;
+            background-image: none;
+        }
+    }
+
+    &.x-list-ungrouped,
+    &.x-list-grouped {
+        .x-list-item-tpl,
+        .x-list-item .x-dock-horizontal {
+            border: 1px solid #bababa;
+            border-width: 1px 1px 0 1px;
+            background: #fff;
+        }
+    }
+
+    &.x-list-ungrouped {
+        .x-list-item-first  {
+            @include border-top-radius($list-rounded-radius);
+        }
+
+        .x-list-item-last  {
+            @include border-bottom-radius($list-rounded-radius);
+            border-width: 1px;
+            margin-bottom: $list-round-padding;
+        }
+    }
+
+    &.x-list-grouped {
+        .x-list-header {
+            background: transparent;
+            border: 0;
+        }
+    
+        .x-list-header-wrap,
+        .x-list-item-first  {
+            @include border-top-radius($list-rounded-radius);
+
+            &.x-list-item-tpl,
+            .x-dock-horizontal {
+                > .x-innerhtml,
+                > .x-dock-body {
+                    @include border-top-radius($list-rounded-radius);
+                }
+            }
+        }
+
+        .x-list-header-wrap {
+            .x-dock-horizontal {
+                // @include border-top-radius($list-rounded-radius);
+            }
+        }
+
+        .x-list-header-wrap.x-list-header {
+            // border: 1px solid #bababa;
+            // border-width: 1px 1px 0 1px;
+            // @include border-top-radius($list-rounded-radius);
+        }
+
+        .x-list-footer-wrap {
+            background: transparent;
+
+            &.x-list-item-tpl,
+            .x-dock-horizontal {
+                border: none;
+                background: transparent;
+                padding-bottom: $list-round-padding;
+                margin-bottom: $list-round-padding;
+
+                > .x-innerhtml,
+                > .x-dock-body {
+                    border: 1px solid #bababa;
+                    background: #fff;
+                    @include border-bottom-radius($list-rounded-radius);
+                }
+            }
+
+            &.x-item-selected {
+                > .x-innerhtml,
+                > .x-dock-body {
+                    @include background-image(linear-gradient(top, #228afa, #105aeb));
+                }
+            }
+        }
+    }
+
+    .x-indexbar-vertical {
+        margin-right: 20px;
+    }
+}
+
+
+.x-list-round .x-list-footer-wrap.x-list-item-last.x-list-item-odd.x-list-item.x-list-item-tpl {
+    background-color: transparent !important;
+}
+
+.x-list-round.x-list-grouped .x-list-item-odd.x-list-footer-wrap {
+    > .x-innerhtml,
+    > .x-dock-body {
+        background-color: #fff !important;
+    }
+}
+
+.x-list .x-list-item-odd {
+    &.x-list-item-tpl,
+    .x-dock-horizontal {
+        background-color: darken(#fff, 3);
+    }
+}

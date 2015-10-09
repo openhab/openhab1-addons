@@ -1,0 +1,24 @@
+/**
+ * @class Ext.Panel
+ */
+
+.x-panel.x-floating,
+.x-msgbox,
+.x-form.x-floating {
+	padding: 0;
+    background: $background-color;
+}
+
+.x-panel.x-floating .x-panel-inner,
+.x-panel.x-floating > .x-body,
+.x-msgbox .x-panel-inner,
+.x-msgbox > .x-body,
+.x-form.x-floating .x-panel-inner,
+.x-form.x-floating > .x-body {
+    background: $background-color;
+}
+
+.x-panel.x-floating > .x-dock.x-sized,
+.x-form.x-floating > .x-dock.x-sized {
+    margin: 0;
+}

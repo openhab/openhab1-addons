@@ -1,0 +1,80 @@
+/**
+ * @class Ext.dataview.List
+ */
+
+.x-list {
+    .x-list-item {
+        line-height: 42px;
+        color: color-by-background($background-color);
+        font-size: $font-size-medium;
+
+        .x-dock-horizontal {
+            border-top: 0;
+        }
+			
+        &.x-item-selected {
+            .x-dock-horizontal,
+            &.x-list-item-tpl .x-innerhtml {
+                background-color: $base-color;
+                color: color-by-background($base-color);
+            }
+        }
+
+				&.x-item-pressed {
+					.x-dock-horizontal,
+					&.x-list-item-tpl .x-innerhtml {
+						background-color: #ccc;
+						color: color-by-background($background-color);
+					}
+				}
+    }
+
+    .x-list-item-odd {
+        &.x-list-item-tpl,
+        .x-dock-horizontal {
+            background-color: darken($base-color, 5%);
+            border-bottom: 1px solid darken($base-color, 5%);
+        }
+    }
+
+    .x-list-header {
+        background-color: $background-color;
+        border: 0;
+        padding: 0.1em 1.02em 0.2em 0.65em;
+        padding-left: 5px !important;
+        font-weight: normal;
+        font-size: 17pt;
+
+        .x-innerhtml {
+          padding: .5em 0 0 .2em;
+          min-width: 44px;
+          min-height: 44px;
+          background-color: $base-color;
+          color: $foreground-color;
+          display: inline-block;
+          width: auto;
+        }
+    }
+
+    // Disclosure
+    .x-list-disclosure {
+        border: 0;
+        background: $base-color;
+        width: 29px;
+        height: 29px;
+        line-height: 26px;
+        text-align: center;
+        margin: 7px 6px 0 0;
+
+        &:before {
+            content: '>';
+            color: color-by-background($base-color);
+        }
+    }
+
+    .x-item-selected .x-list-disclosure {
+        &:before {
+            color: $base-color;
+        }
+    }
+}

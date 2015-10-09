@@ -1,0 +1,27 @@
+/**
+ * @class Ext.slider.Toggle
+ */
+
+.x-toggle {
+    width: $form-thumb-size * 2;
+    border: 1px solid darken($form-light, 15%);
+
+    @include background-gradient($form-light, 'recessed');
+    @if $include-border-radius {
+        @include border-radius($form-thumb-size/2);
+    }
+
+    .x-thumb {
+        &.x-dragging {
+            opacity: 1;
+        }
+
+        &:before {
+            top: ($form-thumb-size - $form-toggle-size) / 2;
+        }
+    }
+}
+
+.x-toggle-on {
+    @include background-gradient($confirm-color, 'recessed');
+}

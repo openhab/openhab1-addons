@@ -1,0 +1,64 @@
+.x-field-text,
+.x-field-textarea,
+.x-field-number,
+.x-field-search,
+.x-spinner,
+.x-field-select {
+    .x-clear-icon, .x-input-el {
+        background-color: $dark-field-background-color;
+				color: $dark-field-color;
+    }
+
+    &.x-field-focused {
+        .x-clear-icon,
+        .x-component-outer .x-input-el {
+						border-color: $dark-field-border-color;
+        }
+    }
+}
+
+.x-input-el {
+    background: transparent;
+}
+
+.x-container.x-floating {
+	.x-field {
+		.x-input-el, .x-clear-icon {
+			background-color: $dark-field-floating-input-background-color;
+		}
+
+		.x-pressing.x-clear-icon:before {
+			color: $dark-field-floating-clear-icon-pressing-color;
+		}
+
+		.x-clear-icon:before {
+			color: $dark-field-floating-text-color;
+			border-color: $dark-field-floating-text-color;
+		}
+	}
+
+	.x-toolbar.x-docked-bottom {
+		background-color: $dark-field-floating-buttons-background-color;
+		.x-toolbar-inner {
+			.x-button {
+				background-color: $dark-field-floating-button-background-color;
+
+				&.x-button-pressing {
+					background-color: $dark-field-floating-button-pressing-background-color;
+					.x-button-label {
+						color: $dark-field-floating-button-pressing-label-color;
+					}
+				}
+
+				.x-button-label {
+					color: $dark-field-floating-button-label-color;
+					@include text-shadow(none);
+				}
+			}
+		}
+	}
+
+}
+
+.x-input-el:-ms-input-placeholder { color: $dark-field-placeholder-color; }
+.x-input-el::-webkit-input-placeholder { color: $dark-field-placeholder-color; }

@@ -1,0 +1,71 @@
+/**
+ * @class Ext.field.Field
+ */
+
+.x-field {
+    padding: 1em .5em;
+
+    .x-field-input {
+        position: relative;
+        min-width: 3.7em;
+    }
+
+    .x-field-input,
+    .x-input-el {
+        width: 100%;
+    }
+}
+
+.x-field-text,
+.x-field-textarea,
+.x-field-number,
+.x-field-search,
+.x-spinner,
+.x-field-select {
+    .x-clear-icon,
+    .x-component-outer .x-input-el {
+        background-color: $field-background-color;
+        border: 2px solid $field-border-color;
+    }
+
+    &.x-field-focused {
+        .x-clear-icon,
+        .x-component-outer .x-input-el {
+            background-color: $field-focus-background-color;
+            border: 2px solid $field-focus-border-color;
+        }
+    }
+
+    &.x-item-disabled {
+        .x-clear-icon,
+        .x-component-outer .x-input-el {
+            background-color: $field-disabled-background-color;
+            border-color: $field-disabled-border-color;
+        }
+    }
+}
+
+.x-clear-icon {
+    border-left: 0 !important;
+}
+
+.x-input-el {
+    padding: .2em;
+    min-height: 30px;
+    border-width: 0;
+    background: transparent;
+    -webkit-appearance: none !important;
+    -ms-appearance: none !important;
+    appearance: none !important;
+}
+
+.x-item-disabled {
+    .x-input-el {
+        color: $field-disabled-color;
+    }
+}
+
+.x-input-el:-ms-input-placeholder { color: $field-placeholder-color; }
+.x-input-el::-webkit-input-placeholder { color: $field-placeholder-color; }
+.x-item-disabled .x-input-el::-webkit-input-placeholder { color: $field-disabled-placeholder-color; }
+.x-item-disabled .x-input-el:-ms-input-placeholder { color: $field-disabled-placeholder-color; }

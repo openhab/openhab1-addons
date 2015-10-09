@@ -1,0 +1,53 @@
+.x-list-item {
+    font-size: 1.25em;
+    padding: 0 .45em;
+    line-height: 2.15em;
+    font-weight: lighter;
+	.x-list-disclosure {
+		position: relative;
+		overflow: visible;
+		background: none;
+		border: 0;
+		margin: 9px 9px 0 0;
+
+		&:before {
+			@include absolute-position(7px, 3px, 0, 6px);
+			content: '';
+		}
+
+		&:after {
+			@include absolute-position(0, 0, 0, 0);
+			content: 'c';
+			font-size: 20px;
+			font-family: 'Tizen Icon';
+			text-align: center;
+			line-height: 30px;
+			padding-left: 2px;
+		}
+	}
+
+	&.x-list-indexed .x-list-disclosure {
+		margin-right: 1.8em;
+	}
+}
+
+.x-list .x-list-header {
+    font-weight: bold;
+    font-size: 14px;
+    padding: 2px 10px;
+    border-width: 0 0 1px;
+}
+
+.x-list-item.x-list-footer-wrap {
+    border-bottom: 0;
+}
+
+.x-indexbar {
+    padding: 3px;
+    @include border-radius(10px);
+    font-size: 16px;
+}
+
+.x-indexbar-vertical {
+    margin-right: 4px;
+}

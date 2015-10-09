@@ -1,0 +1,102 @@
+/**
+ * @class Ext.field.Field
+ */
+
+// Private variables
+$form-clear-size: 2.2em;
+
+.x-field {
+	min-height: $form-field-height;
+	background: #fff;
+
+	&:last-child {
+		border-bottom: 0;
+	}
+}
+
+.x-field-input {
+	.x-clear-icon {
+		background: theme_image('cupertino', "clear_icon.png") no-repeat;
+		background-position: center center;
+		background-size: 55% 55%;
+		width: $form-clear-size;
+		height: $form-clear-size;
+		margin: .5em;
+		margin-top: -($form-clear-size/2);
+		right: -.5em;
+	}
+
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+	background-color: #fff;
+}
+
+.x-field-clearable {
+	.x-field-input {
+		padding-right: $form-clear-size;
+	}
+}
+
+.x-input-el {
+	background: transparent;
+	padding: .7em .4em .4em .4em;
+	min-height: $form-field-height;
+	border-width: 0;
+	-webkit-appearance: none;
+}
+
+.x-ie .x-input-el {
+	background: transparent;
+}
+
+.x-item-disabled {
+	.x-form-label,
+	input,
+	.x-input-el,
+	.x-spinner-body,
+	select,
+	textarea,
+	.x-field-clear-container {
+		color: #b3b3b3;
+		pointer-events: none;
+	}
+}
+
+.x-item-disabled .x-form-label {
+	color: #aaa;
+}
+
+.x-item-disabled .x-form-label:after {
+	color: #666 !important;
+}
+
+.x-toolbar {
+	.x-field {
+		background: transparent;
+
+		.x-component-outer {
+			padding: .4em .6em 0;
+		}
+
+		.x-input-el {
+			padding: .3em .6em;
+			min-height: 1.4em;
+			background: transparent;
+		}
+	}
+
+	.x-field-input {
+		position: relative;
+		background: #fff;
+	}
+
+	.x-field-clearable .x-field-input {
+		padding-right: 0;
+	}
+
+	.x-clear-icon {
+		position: absolute;
+		top: .9em;
+		right: -.7em;
+	}
+}

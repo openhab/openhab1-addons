@@ -1,0 +1,334 @@
+/**
+ * @class Ext.Button
+ */
+
+.x-button {
+    @include background-clip(padding-box);
+    @include toolbar-button(#ccc, $button-gradient);
+
+    @if $include-border-radius {
+        @include border-radius($button-radius);
+    }
+
+    min-height: $button-height;
+    padding: .3em .6em;
+
+    // Default icon style
+    .x-button-icon {
+        width: 1.5em;
+        height: 1.5em;
+
+        &:before {
+            font-size: 1.6em;
+            line-height: 1em;
+        }
+    }
+
+    &.x-item-disabled .x-button-label,
+    &.x-item-disabled .x-button-icon {
+        opacity: .5;
+    }
+}
+
+@if $include-border-radius {
+    .x-button-round {
+        @include border-radius($button-height/2);
+    }
+}
+
+.x-ie .x-button {
+    height: 0px;
+
+    .x-button-label {
+        overflow: visible;
+    }
+}
+
+.x-iconalign-left .x-button-label {
+    margin-left: .6em;
+}
+.x-iconalign-right .x-button-label {
+    margin-right: .6em;
+}
+.x-iconalign-top,
+.x-iconalign-bottom {
+    padding-top: .2em !important;
+    padding-bottom: .2em !important;
+}
+
+// Button labels
+.x-button-label {
+    font-weight: bold;
+    line-height: $button-line-height;
+    font-family: $button-font-family;
+    font-size: $button-font-size;
+}
+
+// Toolbar button styling
+.x-toolbar .x-button {
+    margin: 6px .2em;
+    padding: 0 .6em;
+
+    .x-button-label {
+        font-size: .7em;
+    }
+
+    .x-button-label, .x-hasbadge .x-badge {
+        line-height: 1.6em;
+    }
+
+    .x-button-icon {
+        &:before {
+            font-size: 1.3em;
+            line-height: 1.3em;
+        }
+    }
+}
+
+// For whatever reason, IE10 multiples before values with existing values!? We need to add lower values
+// here so it is the correct size.
+.x-ie .x-toolbar .x-button .x-button-icon::before {
+    font-size: .6em;
+    line-height: 1em;
+}
+
+.x-button-small,
+.x-toolbar .x-button-small {
+    @if $include-border-radius {
+        @include border-radius(.3em);
+    }
+
+    padding: .2em .4em;
+    min-height: 0;
+
+    .x-button-label {
+        font-size: .6em;
+    }
+
+    .x-button-icon {
+        width: .75em;
+        height: .75em;
+    }
+}
+
+// Back/Forward buttons
+$shadow-width: .045em; // Space between tip and its shadow
+$overlap-width: .2em; // how far the mask is clipped
+
+// $mask-height: $button-height + $button-stroke-weight * 2; // Ugh, this is non-specific... borders?
+$mask-height: $button-height;
+$mask-width: $mask-height/2.23;
+
+$mask-offset: $button-radius - $overlap-width + $shadow-width - .02;
+
+$tip-width: $mask-width - $mask-offset + $shadow-width;
+
+.x-button-forward,
+.x-button-back {
+    position: relative;
+    overflow: visible;
+    height: $button-height - 0.1;
+    z-index: 1;
+}
+
+.x-webkit {
+    .x-button-forward,
+    .x-button-back {
+        &:before, &:after {
+            @include insertion(15px, auto, -2px, auto);
+            bottom: -2px;
+            z-index: 2;
+            -webkit-mask: 4px 0 theme_image('default', "tip2_left.png") no-repeat;
+            -webkit-mask-size: 15px 100%;
+            overflow: hidden;
+        }
+    }
+}
+
+.x-webkit {
+    .x-button-back,
+    .x-toolbar .x-button-back {
+        margin-left: $tip-width - $shadow-width + $toolbar-spacing  - 0.01;
+        padding-left: .4em;
+
+        &:before {
+            left: -15px;
+        }
+
+        &:after {
+            left: -14px;
+        }
+    }
+
+    .x-button-forward,
+    .x-toolbar .x-button-forward {
+        margin-right: $tip-width - $shadow-width + $toolbar-spacing;
+        padding-right: .4em;
+
+        &:before,
+        &:after {
+            -webkit-mask: -4px 0 theme_image('default', "tip2_right.png") no-repeat;
+            -webkit-mask-size: 15px 100%;
+        }
+
+        &:before {
+            right: -15px;
+        }
+
+        &:after {
+            right: -14px;
+        }
+    }
+}
+
+// Plain buttons automatically use a margin trick to have a
+// wide gradial glow for pressed state.
+.x-button.x-button-plain,
+.x-toolbar .x-button.x-button-plain {
+    background: none;
+    border: 0 none;
+    min-height: 0;
+    text-shadow: none;
+    line-height: auto;
+    height: 1.9em;
+    padding: 0 0.5em;
+
+    @if $include-border-radius {
+        @include border-radius(none);
+    }
+
+    & > * {
+        overflow: visible;
+    }
+
+    &.x-button-pressing, &.x-button-pressed {
+        background: none;
+
+        $mask-radial-glow: lighten($active-color, 50%);
+        @include background-image(radial-gradient(fade-out($mask-radial-glow, .3), fade-out($mask-radial-glow, 1) 24px));
+    }
+}
+
+
+// SegmentedButtons
+.x-segmentedbutton .x-button {
+    margin: 0;
+
+    @if $include-border-radius {
+        @include border-radius(0);
+
+        &.x-first {
+            @include border-left-radius($button-radius);
+        }
+
+        &.x-last {
+            @include border-right-radius($button-radius);
+        }
+    }
+
+    &:not(.x-first) {
+        border-left: 0;
+    }
+}
+
+// Badges
+$badge-size: 2em !default;
+$badge-radius: .2em !default;
+$badge-bg-color: darken($alert-color, 10%) !default;
+$badge-bg-gradient: $base-gradient !default;
+
+.x-hasbadge {
+    overflow: visible;
+
+    .x-badge {
+        @extend .x-button-label;
+
+        border-color: darken($badge-bg-color, 10%);
+        min-width: $badge-size;
+        line-height: 1.2em;
+        top: -.2em;
+        padding: .1em .3em;
+
+        @include background-clip(padding-box);
+        @include color-by-background($badge-bg-color, $contrast: 50%);
+        @include background-gradient($badge-bg-color, $badge-bg-gradient);
+
+        @if $include-border-radius {
+            @include border-radius($badge-radius);
+        }
+
+        @if $include-button-highlights {
+            @include bevel-by-background($badge-bg-color);
+            @include box-shadow(rgba(#000, .5) 0 .1em .1em);
+        }
+    }
+}
+
+@if $include-default-icons {
+    @include icon('calendar');
+    @include icon('action');
+    @include icon('add');
+    @include icon('arrow_down');
+    @include icon('arrow_left');
+    @include icon('arrow_right');
+    @include icon('arrow_up');
+    @include icon('compose');
+    @include icon('delete');
+    @include icon('organize');
+    @include icon('refresh');
+    @include icon('reply');
+    @include icon('search');
+    @include icon('settings');
+    @include icon('star');
+    @include icon('trash');
+    @include icon('maps');
+    @include icon('locate');
+    @include icon('home');
+    @include icon('bookmarks');
+    @include icon('download');
+    @include icon('favorites');
+    @include icon('info');
+    @include icon('more');
+    @include icon('time');
+    @include icon('user');
+    @include icon('team');
+}
+
+/**
+ * Creates a theme UI for buttons.
+ * Also automatically generates UIs for {ui-label}-round and {ui-label}-small.
+ *
+ *     // SCSS
+ *     @include sencha-button-ui('secondary', #99A4AE, 'glossy');
+ *
+ *     // JS
+ *     var cancelBtn = new Ext.Button({text: 'Cancel', ui: 'secondary'});
+ *
+ * @param {string} $ui-label The name of the UI being created.
+ *   Can not included spaces or special punctuation (used in class names)
+ * @param {color} $color Base color for the UI.
+ * @param {string} $gradient Default gradient for the UI.
+ */
+@mixin sencha-button-ui($ui-label, $color, $gradient: $button-gradient) {
+    .x-button.x-button-#{$ui-label},
+    .x-button.x-button-#{$ui-label}-round,
+    .x-button.x-button-#{$ui-label}-small {
+        @include toolbar-button($color, $gradient);
+    }
+
+    @if $include-border-radius {
+        .x-button.x-button-#{$ui-label}-round {
+            @extend .x-button-round;
+        }
+    }
+
+    .x-button.x-button-#{$ui-label}-small {
+        @extend .x-button-small;
+    }
+}
+
+@if $include-button-uis {
+    @include sencha-button-ui('action', $active-color);
+    @include sencha-button-ui('confirm', desaturate(darken($confirm-color, 10%), 5%));
+    @include sencha-button-ui('decline', desaturate(darken($alert-color, 10%), 5%));
+}

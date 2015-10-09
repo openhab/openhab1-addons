@@ -1,0 +1,16 @@
+//Button Label
+$light-button-label-color: $light-primary-text-color !default;
+$light-button-label-disabled-color: $light-primary-text-color !default;
+$light-button-confirm-label-color: $light-color-off-white !default;
+$light-button-decline-label-color: $light-color-off-white !default;
+
+//Button Background
+$light-button-background: $light-secondary-background-color !default;
+$light-button-pressing-background: $light-secondary-pressing-background-color !default;
+$light-button-confirm-background: $light-gradient-down-green !default;
+$light-button-decline-background: $light-gradient-down-red !default;
+$light-button-confirm-pressing-background: $light-gradient-up-green !default;
+$light-button-decline-pressing-background: $light-gradient-up-red !default;
+
+//Badges
+$light-badge-background-color: $light-color-orange;

@@ -1,0 +1,32 @@
+.x-input-radio {
+	visibility: hidden;
+}
+
+.x-field-radio .x-item-disabled {
+	opacity: $disabled-opacity;
+}
+
+.x-field-radio .x-field-mask {
+	@include absolute-position;
+
+	width: 100%;
+	&:after {
+		content: '';
+		position: absolute;
+		top: $inner-radio-offset;
+		right: $inner-radio-offset;
+		width: $inner-radio-size;
+		height: $inner-radio-size;
+		@include border-radius($inner-radio-size);
+	}
+
+	&:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: $radio-size;
+		height: $radio-size;
+		@include border-radius($radio-size);
+	}
+}

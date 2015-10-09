@@ -1,0 +1,69 @@
+.x-progressindicator {
+	width: 50%;
+	height: 1.3em;
+}
+
+.x-progressindicator .x-progressindicator-inner {
+	background: #222222;
+	padding: 10px;
+	height: 100%;
+	border-radius: 20px;
+	box-shadow: 0px 5px 17px rgba(40, 40, 40, 0.5);
+	box-sizing: content-box;
+	position: relative;
+}
+
+.x-progressindicator .x-progressindicator-text {
+	@include st-box;
+	@include st-box-align(center);
+	@include st-box-pack(center);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	color: white;
+	text-shadow: 1px 1px 2px black;
+}
+
+.x-progressindicator .x-progressindicator-bar {
+	height: 100%;
+	width: 0%;
+	border-radius: 10px;
+}
+
+.x-progressindicator:not(.x-item-hidden) .x-progressindicator-bar .x-progressindicator-bar-fill {
+	height: 100%;
+	width: 100%;
+	background-color: gray;
+	border-radius: 10px;
+
+	$animation-support: webkit, moz, o, ms, not khtml;
+	@include experimental('animation-name', progressIndicator, $animation-support);
+	@include experimental('animation-duration', 1s, $animation-support);
+	@include experimental('animation-timing-function', linear, $animation-support);
+	@include experimental('animation-iteration-count', infinite, $animation-support);
+
+	background-repeat: repeat-x;
+	background-size: 30px 30px;
+	@include background-image(linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent))
+}
+
+@-webkit-keyframes progressIndicator
+{
+	to {
+		background-position: 30px;
+	}
+}
+@-moz-keyframes progressIndicator
+{
+	to {
+		background-position: 30px;
+	}
+}
+@keyframes progressIndicator
+{
+	to {
+		background-position: 30px;
+	}
+}

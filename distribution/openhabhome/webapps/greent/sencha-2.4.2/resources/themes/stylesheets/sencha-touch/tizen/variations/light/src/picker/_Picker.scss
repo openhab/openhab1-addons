@@ -1,0 +1,30 @@
+.x-picker {
+	background-color: $light-picker-background-color;
+
+	.x-toolbar {
+		border-top: 1px solid $light-picker-border-color;
+
+		.x-pack-start .x-container:first-child .x-button {
+			border-right: 1px solid $light-toolbar-button-separator-color;
+		}
+	}
+}
+
+.x-picker .x-picker-inner {
+	background-color: $light-picker-background-color;
+}
+
+.x-picker-bar {
+	border-top: .12em solid $light-picker-border-color;
+	border-bottom: .12em solid $light-picker-border-color;
+}
+
+.x-picker-slot {
+	.x-dataview-item {
+		color: $light-picker-color;
+
+		&.x-item-selected {
+			color: $light-picker-selected-color;
+		}
+	}
+}

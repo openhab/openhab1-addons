@@ -1,0 +1,55 @@
+/**
+ * @class Ext.tab.Panel
+ */
+
+.x-tab {
+    z-index: 1;
+    overflow: visible !important;
+    background-color: #eee;
+    border: 1px solid #ccc;
+}
+
+.x-tabbar {
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 0;
+    background-color: #eee;
+}
+
+.x-tabbar.x-docked-top {
+    border-bottom-width: 1px;
+
+    .x-tab .x-button-icon {
+        position: relative;
+
+        &.x-shown {
+            display: inline-block;
+        }
+
+        &.x-hidden {
+            display: none;
+        }
+    }
+}
+
+.x-tabbar.x-docked-bottom {
+    border-top-width: 1px;
+
+    .x-tab .x-button-icon {
+        display: block;
+        position: relative;
+
+        &.x-shown {
+            visibility: visible;
+        }
+
+        &.x-hidden {
+            visibility: hidden;
+        }
+    }
+}
+
+.x-tab {
+    position: relative;
+    min-width : 3.3em;
+}

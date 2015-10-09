@@ -1,0 +1,21 @@
+/**
+ * @class Ext.Toolbar
+ */
+
+/**
+ * @var {color} $toolbar-base-color
+ * The primary color variable from which toolbars derive their light and dark UIs.
+ */
+$toolbar-base-color: $base-color !default;
+
+/**
+ * @var {string} $toolbar-gradient
+ * Background gradient style for toolbars.
+ */
+$toolbar-gradient: $base-gradient !default;
+
+/**
+ * @var {boolean} $include-toolbar-uis
+ * Optionally disable separate toolbar UIs (light and dark).
+ */
+$include-toolbar-uis: $include-default-uis !default;

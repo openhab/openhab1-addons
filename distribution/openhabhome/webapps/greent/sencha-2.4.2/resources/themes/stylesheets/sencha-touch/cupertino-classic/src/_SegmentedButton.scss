@@ -1,0 +1,16 @@
+.x-segmentedbutton {
+	.x-button {
+		margin: 0 !important;
+		border-right-width: 0;
+		@include border-radius(0);
+	}
+
+	.x-first {
+		@include border-left-radius(6px);	
+	}
+
+	.x-last {
+		@include border-right-radius(6px);	
+		border-right-width: 1px;
+	}
+}

@@ -1,0 +1,11 @@
+.x-form-fieldset {
+	border-color: $light-fieldset-border-color;
+
+	.x-form-fieldset-title {
+		color: $light-fieldset-title-color;
+	}
+
+	.x-form-fieldset-instructions {
+		color: $light-fieldset-instructions-color;
+	}
+}

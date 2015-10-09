@@ -1,0 +1,87 @@
+/**
+ * @class Ext.field.Select
+ */
+
+.x-form .x-field-select {
+	padding-bottom: 18px;
+}
+
+.x-field-select {
+	padding-left: 5px;
+	padding-right: 5px;
+
+	.x-component-outer {
+		@include st-box;
+		@include st-box-align(center);
+		@include st-box-direction(horizontal);
+		@include border-radius($button-border-radius);
+		@include background(linear-gradient(color-stops(#C6C3C6, #E7E7E7)));
+		position: relative;
+		width: 100%;
+		height: 43px;
+		padding: 0 3px;
+		position: relative;
+		border: 1px solid #CECACE;
+
+		overflow: hidden;
+		z-index: 1;
+
+		&:before {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			top: 1px;
+			right: 1px;
+			bottom: 1px;
+			left: 1px;
+			border: 1px solid #B9B7B9;
+			@include border-radius(4px);
+			@include background(linear-gradient(color-stops(#FFFFFF, #DEDFDE)));
+		}
+
+		.x-form-label {
+			font-size: 15px;
+			line-height: inherit;
+		}
+
+		.x-field-input {
+			@include st-box-flex(1);
+		}
+
+		.x-input-el {
+			background: transparent;
+			border: 0px;
+			text-align: right;
+			padding: 0px;
+			font-size: 15px;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+.x-panel.x-select-overlay {
+	> .x-panel-inner {
+		overflow: hidden;
+		border: 1px solid #cfcdcf;
+	}
+
+	.x-list {
+		background: #e3e0e3;
+
+		.x-list-item {
+			border-color: #cfcdcf;
+			color: #5e5d5e;
+		}
+
+		.x-item-selected {
+			@include box-shadow(none);
+			background-color: #efebef;
+			color: #343334;
+		}
+
+		.x-item-pressed {
+			background-color: $base-color;
+			color: #fff;
+		}
+	}
+}

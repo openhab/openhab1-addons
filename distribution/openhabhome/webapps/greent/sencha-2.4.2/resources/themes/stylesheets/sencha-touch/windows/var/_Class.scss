@@ -1,0 +1,223 @@
+/**
+ * @class Global_CSS
+ *
+ * Global CSS variables and mixins of Sencha Touch.
+ */
+
+/**
+ * @var {boolean} $include-html-style
+ * Optionally remove included HTML styles/typography (for components with styleHtmlContent: true).
+ * Styles are scoped to .x-html. Set t o false to reduce CSS weight.
+ */
+$include-html-style: true !default;
+
+/**
+ * @var {boolean} $include-default-icons
+ * Optionally remove the default icon set which includes the following toolbar and tab bar icons: action,
+ * add, arrow_down, arrow_left, arrow_right, arrow_up, bookmarks, compose, delete, download, favorites,
+ * home, info, locate, maps, more, organize, refresh, reply, search, settings, star, team, time, trash,
+ * and user. Set to false to reduce CSS weight.
+ */
+$include-default-icons: true !default;
+
+/**
+ * @var {boolean} $include-form-sliders
+ * Decides if default HTML styles are included (for components with styleHtmlContent: true). Class is applied to .x-html.
+ */
+$include-form-sliders: true !default;
+
+/**
+ * @var {boolean} $include-default-uis
+ * Decides whether or not to include the default UIs for all components.
+ */
+$include-default-uis: true !default;
+
+/**
+ * @var {color} $active-color
+ * Color used for elements like selected rows, "action" UIs (eg. on buttons) and certain overlays like the picker mask.
+ */
+//$active-color: darken(saturate($base-color, 55%), 10%) !default;
+
+/**
+ * @var {color} $page-bg-color
+ * Background color for fullscreen components.
+ */
+//$page-bg-color: #eee !default;
+
+/**
+ * @var {measurement} $global-row-height
+ * The minimum row height for items like toolbars.
+ */
+$global-row-height: 2.6em !default;
+
+/**
+ * @var {measurement} $global-row-height
+ * The minimum row height for items like toolbars.
+ */
+$global-list-height: 46px !default;
+
+/**
+ * @var {color} $loading-spinner-color
+ * Background-color for the bars in the loading spinner.
+ */
+$loading-spinner-color: #aaa !default;
+
+/**
+ * color styles
+ */
+
+$dark-theme: true !default;
+$dialog-color: #1F1F1F;
+
+/**
+ * @var {color} $base-color
+ * The primary color variable from which most elements derive their color scheme.
+ */
+$base-color: rgba(145,0,145,1) !default; // Triton Blue
+
+/**
+ * Light theme
+ */
+$light-background-color: #fff !default;
+$light-foreground-color: #111 !default;
+$light-inactive-color: #ddd !default;
+
+// Form fields
+$light-field-background-color: #fff !default;
+$light-field-border-color: #BABABA !default;
+$light-field-color: #000 !default;
+$light-field-placeholder-color: #7A7A7A !default;
+$light-field-focus-background-color: #fff !default;
+$light-field-focus-border-color: #5C5C5C !default;
+$light-field-disabled-background-color: #EAEAEA !default;
+$light-field-disabled-border-color: #D9D9D9 !default;
+$light-field-disabled-color: #9F9F9F !default;
+$light-field-disabled-placeholder-color: #BDBDBD !default;
+
+$light-form-slider-background-color: #C6C6C6 !default;
+$light-form-slider-value-background-color: $base-color !default;
+$light-form-slider-thumb-background-color: #000 !default;
+$light-form-slider-disabled-background-color: #DBDBDB !default;
+$light-form-slider-disabled-value-background-color: #BABABA !default;
+$light-form-slider-disabled-thumb-background-color: #A0A0A0 !default;
+
+$light-form-toggle-background-color: #A6A6A6 !default;
+$light-form-toggle-border-color: #A6A6A6 !default;
+$light-form-toggle-thumb-background-color: $light-form-slider-thumb-background-color !default;
+$light-form-toggle-disabled-background-color: #E0E0E0 !default;
+$light-form-toggle-disabled-border-color: #CCCCCC !default;
+$light-form-toggle-disabled-thumb-background-color: #A6A6A6 !default;
+
+/**
+ * Dark theme
+ */
+$dark-background-color: #111 !default;
+$dark-foreground-color: #fff !default;
+$dark-inactive-color: #666 !default;
+
+// Form fields
+$dark-field-background-color: #D2D2D2 !default;
+$dark-field-border-color: #D2D2D2 !default;
+$dark-field-color: rgba(0,0,0,.8) !default;
+$dark-field-placeholder-color: rgba(0,0,0,.6) !default;
+$dark-field-focus-background-color: #FFFFFF !default;
+$dark-field-focus-border-color: #FFFFFF !default;
+$dark-field-disabled-background-color: #1D1D1D !default;
+$dark-field-disabled-border-color: #777777 !default;
+$dark-field-disabled-color: rgba(255,255,255,.4) !default;
+$dark-field-disabled-placeholder-color: rgba(255,255,255,.2) !default;
+
+$dark-form-slider-background-color: #6C6C6C !default;
+$dark-form-slider-value-background-color: $base-color !default;
+$dark-form-slider-thumb-background-color: #fff !default;
+$dark-form-slider-disabled-background-color: #383838 !default;
+$dark-form-slider-disabled-value-background-color: #535353 !default;
+$dark-form-slider-disabled-thumb-background-color: #7E7E7E !default;
+
+$dark-form-toggle-background-color: #6B6B6B !default;
+$dark-form-toggle-border-color: #6C6C6C !default;
+$dark-form-toggle-thumb-background-color: $dark-form-slider-thumb-background-color !default;
+$dark-form-toggle-disabled-background-color: #383838 !default;
+$dark-form-toggle-disabled-border-color: #4A4A4A !default;
+$dark-form-toggle-disabled-thumb-background-color: #6C6C6C !default;
+
+/**
+ * Default values (light theme)
+ */
+
+$background-color: $light-background-color !default;
+$foreground-color: $light-foreground-color !default;
+$inactive-color: $light-inactive-color !default;
+
+// Form fields
+$field-background-color: $light-field-background-color !default;
+$field-border-color: $light-field-border-color !default;
+$field-color: $light-field-color !default;
+$field-placeholder-color: $light-field-placeholder-color !default;
+$field-focus-background-color: $light-field-focus-background-color !default;
+$field-focus-border-color: $light-field-focus-border-color !default;
+$field-disabled-background-color: $light-field-disabled-background-color !default;
+$field-disabled-border-color: $light-field-disabled-border-color !default;
+$field-disabled-color: $light-field-disabled-color !default;
+$field-disabled-placeholder-color: $light-field-disabled-placeholder-color !default;
+
+$form-slider-background-color: $light-form-slider-background-color !default;
+$form-slider-value-background-color: $light-form-slider-value-background-color !default;
+$form-slider-thumb-background-color: $light-form-slider-thumb-background-color !default;
+$form-slider-disabled-background-color: $light-form-slider-disabled-background-color !default;
+$form-slider-disabled-value-background-color: $light-form-slider-disabled-value-background-color !default;
+$form-slider-disabled-thumb-background-color: $light-form-slider-disabled-thumb-background-color !default;
+
+$form-toggle-background-color: $light-form-toggle-background-color !default;
+$form-toggle-border-color: $light-form-toggle-border-color !default;
+$form-toggle-thumb-background-color: $form-slider-thumb-background-color !default;
+$form-toggle-disabled-background-color: $light-form-toggle-disabled-background-color !default;
+$form-toggle-disabled-border-color: $light-form-toggle-disabled-border-color !default;
+$form-toggle-disabled-thumb-background-color: $light-form-toggle-disabled-thumb-background-color !default;
+
+@if ($dark-theme) {
+    $background-color: $dark-background-color;
+    $foreground-color: $dark-foreground-color;
+    $inactive-color: $dark-inactive-color;
+
+    // Form fields
+    $field-background-color: $dark-field-background-color;
+    $field-border-color: $dark-field-border-color;
+    $field-color: $dark-field-color;
+    $field-placeholder-color: $dark-field-placeholder-color;
+    $field-focus-background-color: $dark-field-focus-background-color;
+    $field-focus-border-color: $dark-field-focus-border-color;
+    $field-disabled-background-color: $dark-field-disabled-background-color;
+    $field-disabled-border-color: $dark-field-disabled-border-color;
+    $field-disabled-color: $dark-field-disabled-color;
+    $field-disabled-placeholder-color: $dark-field-disabled-placeholder-color;
+
+    $form-slider-background-color: $dark-form-slider-background-color;
+    $form-slider-value-background-color: $dark-form-slider-value-background-color;
+    $form-slider-thumb-background-color: $dark-form-slider-thumb-background-color;
+    $form-slider-disabled-background-color: $dark-form-slider-disabled-background-color;
+    $form-slider-disabled-value-background-color: $dark-form-slider-disabled-value-background-color;
+    $form-slider-disabled-thumb-background-color: $dark-form-slider-disabled-thumb-background-color;
+
+    $form-toggle-background-color: $dark-form-toggle-background-color;
+    $form-toggle-border-color: $dark-form-toggle-border-color;
+    $form-toggle-thumb-background-color: $form-slider-thumb-background-color;
+    $form-toggle-disabled-background-color: $dark-form-toggle-disabled-background-color;
+    $form-toggle-disabled-border-color: $dark-form-toggle-disabled-border-color;
+    $form-toggle-disabled-thumb-background-color: $dark-form-toggle-disabled-thumb-background-color;
+}
+
+$form-slider-height: 11px !default;
+
+$alert-color: red !default;
+$confirm-color: #92cf00 !default; // Green
+
+/**
+* font sizes
+*/
+$font-size-small: 10pt !default;
+$font-size-normal: 11pt !default;
+$font-size-medium: 15pt !default;
+$font-size-medium-large: 17pt !default;
+$font-size-large: 19pt !default;
+$font-size-extra-large: 24pt !default;

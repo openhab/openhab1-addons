@@ -1,0 +1,26 @@
+/**
+ * @var {boolean} $include-default-icons
+ * Optionally remove the default icon set which includes the following toolbar and tab bar icons: action,
+ * add, arrow_down, arrow_left, arrow_right, arrow_up, bookmarks, compose, delete, download, favorites,
+ * home, info, locate, maps, more, organize, refresh, reply, search, settings, star, team, time, trash,
+ * and user. Set to false to reduce CSS weight.
+ */
+$include-default-icons: true !default;
+
+$dark-theme: true !default;
+
+$base-color: #4abce7;
+
+$background-color: #f9f9f9;
+$foreground-color: #d2d2d2;
+$secondary-color: #e6e6e6;
+$primary-text-color: #231f20;
+$secondary-text-color: #818285;
+
+@if $dark-theme == true {
+	$background-color: #323232;
+	$foreground-color: #5b5b5b;
+	$secondary-color: #3a3a3a;
+	$primary-text-color: #fff;
+	$secondary-text-color: #808183;
+}

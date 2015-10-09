@@ -1,0 +1,210 @@
+html, body {
+    font-family: "Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif;
+    font-weight: normal;
+    -webkit-text-size-adjust: none;
+    margin: 0;
+    cursor: default;
+}
+
+// Reset
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3,
+h4, h5, h6, pre, code, form, fieldset, legend,
+input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+fieldset, img {
+    border: 0;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+    font-style: normal;
+    font-weight: normal;
+}
+
+li {
+    list-style: none;
+}
+
+caption, th {
+    text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+    font-weight: normal;
+}
+
+q:before,
+q:after {
+    content: '';
+}
+
+abbr, acronym {
+    border: 0;
+    font-variant: normal;
+}
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+*:focus {
+    outline: none;
+}
+
+body.x-desktop {
+    overflow: hidden;
+}
+
+@-ms-viewport {
+    width: device-width;
+}
+
+*, *:after, *:before {
+    @include box-sizing(border-box);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -ms-touch-action: none;
+    -moz-user-select: -moz-none;
+}
+
+input, textarea {
+    -webkit-user-select: text;
+    -ms-user-select: auto;
+    -moz-user-select: text;
+}
+
+.x-hidden-visibility {
+    visibility: hidden !important;
+}
+
+.x-hidden-display {
+    display: none !important;
+}
+
+.x-hidden-offsets {
+    position: absolute !important;
+    left: -10000em;
+    top: -10000em;
+    visibility: hidden;
+}
+
+.x-html {
+    -webkit-user-select: auto;
+    -webkit-touch-callout: inherit;
+    -ms-user-select: auto;
+
+    @include blueprint-typography;
+
+    line-height: 1.5;
+    color: #333;
+    font-size: .8em;
+    padding: 1.2em;
+
+    ul li {
+        list-style-type: circle;
+    }
+    ol li {
+        list-style-type: decimal;
+    }
+}
+
+@-webkit-keyframes x-loading-spinner-rotate {
+    0%{     -webkit-transform: rotate(0deg);   }
+    8.32%{  -webkit-transform: rotate(0deg);   }
+
+    8.33%{  -webkit-transform: rotate(30deg);  }
+    16.65%{ -webkit-transform: rotate(30deg);  }
+
+    16.66%{ -webkit-transform: rotate(60deg);  }
+    24.99%{ -webkit-transform: rotate(60deg);  }
+
+    25%{    -webkit-transform: rotate(90deg);  }
+    33.32%{ -webkit-transform: rotate(90deg);  }
+
+    33.33%{ -webkit-transform: rotate(120deg); }
+    41.65%{ -webkit-transform: rotate(120deg); }
+
+    41.66%{ -webkit-transform: rotate(150deg); }
+    49.99%{ -webkit-transform: rotate(150deg); }
+
+    50%{    -webkit-transform: rotate(180deg); }
+    58.32%{ -webkit-transform: rotate(180deg); }
+
+    58.33%{ -webkit-transform: rotate(210deg); }
+    66.65%{ -webkit-transform: rotate(210deg); }
+
+    66.66%{ -webkit-transform: rotate(240deg); }
+    74.99%{ -webkit-transform: rotate(240deg); }
+
+    75%{    -webkit-transform: rotate(270deg); }
+    83.32%{ -webkit-transform: rotate(270deg); }
+
+    83.33%{ -webkit-transform: rotate(300deg); }
+    91.65%{ -webkit-transform: rotate(300deg); }
+
+    91.66%{ -webkit-transform: rotate(330deg); }
+    100%{   -webkit-transform: rotate(330deg); }
+}
+
+@keyframes x-loading-spinner-rotate {
+    0%{     -ms-transform: rotate(0deg);   }
+    8.32%{  -ms-transform: rotate(0deg);   }
+
+    8.33%{  -ms-transform: rotate(30deg);  }
+    16.65%{ -ms-transform: rotate(30deg);  }
+
+    16.66%{ -ms-transform: rotate(60deg);  }
+    24.99%{ -ms-transform: rotate(60deg);  }
+
+    25%{    -ms-transform: rotate(90deg);  }
+    33.32%{ -ms-transform: rotate(90deg);  }
+
+    33.33%{ -ms-transform: rotate(120deg); }
+    41.65%{ -ms-transform: rotate(120deg); }
+
+    41.66%{ -ms-transform: rotate(150deg); }
+    49.99%{ -ms-transform: rotate(150deg); }
+
+    50%{    -ms-transform: rotate(180deg); }
+    58.32%{ -ms-transform: rotate(180deg); }
+
+    58.33%{ -ms-transform: rotate(210deg); }
+    66.65%{ -ms-transform: rotate(210deg); }
+
+    66.66%{ -ms-transform: rotate(240deg); }
+    74.99%{ -ms-transform: rotate(240deg); }
+
+    75%{    -ms-transform: rotate(270deg); }
+    83.32%{ -ms-transform: rotate(270deg); }
+
+    83.33%{ -ms-transform: rotate(300deg); }
+    91.65%{ -ms-transform: rotate(300deg); }
+
+    91.66%{ -ms-transform: rotate(330deg); }
+    100%{   -ms-transform: rotate(330deg); }
+}
+
+@if $include-pictos-font {
+    @include icon-font('Pictos', inline-font-files('pictos/pictos-web.woff', woff, 'pictos/pictos-web.ttf', truetype,'pictos/pictos-web.svg', svg));
+}

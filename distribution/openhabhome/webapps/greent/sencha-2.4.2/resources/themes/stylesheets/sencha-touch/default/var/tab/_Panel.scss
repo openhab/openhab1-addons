@@ -1,0 +1,79 @@
+/**
+ * @class Ext.tab.Bar
+ */
+
+/**
+ * @var {boolean} $include-tabbar-uis Optionally disable separate tabbar UIs (light and dark).
+ */
+$include-tabbar-uis: $include-default-uis !default;
+
+/**
+ * @var {boolean} $include-top-tabs
+ * Optionally exclude top tab styles by setting to false.
+ */
+$include-top-tabs: true !default;
+
+/**
+ * @var {boolean} $include-bottom-tabs
+ * Optionally exclude bottom tab styles by setting to false.
+ */
+$include-bottom-tabs: true !default;
+
+/**
+ * @var {color} $tabs-light
+ * Base color for "light" UI tabs.
+ */
+$tabs-light: desaturate($base-color, 10%) !default;
+
+/**
+ * @var {color} $tabs-light-active
+ * Active color for "light" UI tabs.
+ */
+$tabs-light-active: lighten(saturate($active-color, 20%), 20%) !default;
+
+/**
+ * @var {color} $tabs-dark
+ * Base color for "dark" UI tabs.
+ */
+$tabs-dark: darken($base-color, 20%) !default;
+
+/**
+ * @var {color} $tabs-dark-active
+ * Active color for "dark" UI tabs.
+ */
+$tabs-dark-active-color: saturate(lighten($active-color, 30%), 70%) !default;
+
+/**
+ * @var {string} $tabs-bar-gradient
+ * Background gradient style for tab bars.
+ */
+$tabs-bar-gradient: $base-gradient !default;
+
+/**
+ * @class Ext.tab.Tab
+ */
+
+/**
+ * @var {string} $tabs-bottom-radius
+ * Border-radius for bottom tabs.
+ */
+$tabs-bottom-radius: .25em !default;
+
+/**
+ * @var {string} $tabs-bottom-icon-size
+ * Icon size for bottom tabs
+ */
+$tabs-bottom-icon-size: 1.65em !default;
+
+/**
+ * @var {string} $tabs-bottom-active-gradient
+ * Background gradient style for active bottom tabs.
+ */
+$tabs-bottom-active-gradient: $base-gradient !default;
+
+/**
+ * @var {boolean} $include-tab-highlights
+ * Optionally disable all gradients, text-shadows, and box-shadows. Useful for CSS debugging,
+ * non-performant browsers, or minimalist designs.
+ */
+$include-tab-highlights: $include-highlights !default;

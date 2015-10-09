@@ -1,0 +1,23 @@
+/**
+ * @class Ext.Sheet
+ */
+
+.x-sheet,
+.x-picker,
+.x-sheet-action {
+    padding: .7em;
+    border-top: 1px solid darken($base-color, 30%);
+    background-color: white;
+    @include border-radius(0);
+}
+
+.x-sheet-inner,
+.x-sheet-action-inner {
+    > .x-button {
+        margin-bottom: .5em;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

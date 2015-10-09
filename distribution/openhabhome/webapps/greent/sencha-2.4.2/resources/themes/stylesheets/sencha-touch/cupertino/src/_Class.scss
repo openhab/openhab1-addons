@@ -1,0 +1,5 @@
+@include icon-font('iOS7', inline-font-files('ios7/ios7.woff', woff, 'ios7/ios7.ttf', truetype,'ios7/ios7.svg', svg));
+
+.x-layout-card-item {
+	background: $background-color;
+}

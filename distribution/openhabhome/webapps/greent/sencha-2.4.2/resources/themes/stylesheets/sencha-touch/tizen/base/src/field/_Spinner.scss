@@ -1,0 +1,15 @@
+.x-spinner {
+	.x-spinner-button {
+		position: relative;
+		border: 0px !important;
+		width: 30px;
+		height: 30px;
+		margin-left: 5px;
+		@include border-radius(1em);
+		font-size: 1.4em;
+		line-height: 1.3em;
+	}
+	&.x-item-disabled .x-spinner-button {
+		opacity: $disabled-opacity;
+	}
+}

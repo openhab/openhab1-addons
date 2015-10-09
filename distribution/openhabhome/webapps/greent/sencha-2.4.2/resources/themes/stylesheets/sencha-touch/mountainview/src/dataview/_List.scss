@@ -1,0 +1,108 @@
+/**
+ * @class Ext.dataview.List
+ */
+
+.x-list {
+    .x-list-disclosure {
+        position: relative;
+        overflow: visible;
+        background: $base-color;
+        border: 0;
+        @include border-radius($list-disclosure-size);
+        width: $list-disclosure-size;
+        height: $list-disclosure-size;
+        margin: 9px 9px 0 0;
+
+        &:before {
+            @include absolute-position(0, 0, 0, 0);
+            content: '4';
+            font-family: 'Pictos';
+            color: $background-color;
+            font-size: 20px;
+            text-align: center;
+            line-height: 30px;
+            padding-left: 2px;
+        }
+    }
+
+    &.x-list-indexed .x-list-disclosure {
+        margin-right: 1.8em;
+    }
+
+    .x-item-selected .x-list-disclosure {
+        background: $background-color none;
+
+        &:before {
+            color: $base-color;
+        }
+    }
+
+    .x-list-item {
+        color: $primary-text-color;
+        font-size: 12pt;
+
+        &.x-item-pressed {
+            &.x-list-item-tpl,
+            .x-dock-horizontal {
+                background-color: $base-color;
+            }
+        }
+
+        &.x-item-selected .x-dock-horizontal,
+        &.x-item-selected.x-list-item-tpl {
+            background-color: $base-color;
+        }
+
+				&.x-item-pressed,
+				&.x-item-selected {
+					border-color: $base-color !important;
+				}
+
+        .x-list-item-body,
+        &.x-list-item-tpl .x-innerhtml {
+            padding: 12px 5px;
+        }
+    }
+    
+    .x-list-header {
+        color: $secondary-text-color;
+        font-size: 12pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        background: transparent;
+        border: 0;
+        padding: 15px 5px 5px;
+        @include box-shadow(0 1px 0 darken($background-color, 6));
+
+        &.x-list-item-first {
+            padding-top: 5px;
+        }
+    }
+
+    .x-list-item {
+        &.x-list-item-tpl,
+        .x-dock-horizontal {
+            border-top: 1px solid darken($background-color, 3);
+        }
+
+
+        &.x-list-item-tpl.x-list-footer-wrap,
+        &.x-list-footer-wrap .x-dock-horizontal {
+            border-bottom: 1px solid darken($background-color, 3);
+        }
+    }
+}
+
+.x-list .x-list-item-odd {
+    &.x-list-item-tpl,
+    .x-dock-horizontal {
+        background-color: darken($background-color, 3);
+    }
+}
+
+// IndexBar
+.x-indexbar {
+    padding: 4px 0;
+    color: $secondary-text-color;
+    background: rgba($foreground-color, .2);
+}

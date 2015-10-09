@@ -1,0 +1,146 @@
+.x-button {
+	height: 2.7em;
+	padding: 0 .5em;
+    border-width: 0;
+    @include border-radius(1px);
+}
+
+.x-button-icon {
+    width: 1.5em;
+    height: 1.5em;
+
+    &:before {
+    	color: $primary-text-color;
+        font-size: 1.4em;
+        line-height: 1.15em;
+    }
+}
+
+.x-button-label {
+    font-size: 12pt;
+    color: $primary-text-color;
+}
+
+// UIs
+
+.x-button-round,
+.x-button-decline-round,
+.x-button-confirm-round {
+	@include border-radius(1.8em);
+}
+
+.x-button-small,
+.x-button-decline-small,
+.x-button-confirm-small {
+	.x-button-label {
+		font-size: 10pt;
+	}
+}
+
+.x-button,
+.x-button-normal,
+.x-button-round,
+.x-button-small,
+.x-button-back,
+.x-button-forward {
+	background: $foreground-color;
+    @include box-shadow(0 1px 0 rgba(0,0,0,.3), inset 0 1px 0 rgba(#fff,.2));
+
+    .x-button-label {
+        color: $primary-text-color;
+    }
+
+    &.x-button-pressing,
+    &.x-button-pressed {
+        background: $base-color;
+        @include box-shadow(0 1px 0 rgba(0,0,0,.3), inset 0 1px 0 rgba(#fff,.2), 0 0 0 5px rgba($base-color, .5));
+    }
+}
+
+.x-button-decline,
+.x-button-decline-round,
+.x-button-decline-small {
+    background: #fd4246;
+    @include box-shadow(0 1px 0 darken(#fd4246, 15), inset 0 1px 0 rgba(#fff,.2));
+
+    &.x-button-pressing,
+    &.x-button-pressed {
+        background: #fd4246;
+        @include box-shadow(0 1px 0 darken(#fd4246, 15), inset 0 1px 0 rgba(#fff,.2), 0 0 0 5px rgba(#fd4246, .5));
+    }
+}
+
+.x-button-confirm,
+.x-button-confirm-round,
+.x-button-confirm-small {
+    background: #94b435;
+    @include box-shadow(0 1px 0 darken(#94b435, 10), inset 0 1px 0 rgba(#fff,.2));
+
+    &.x-button-pressing,
+    &.x-button-pressed {
+        background: #94b435;
+        @include box-shadow(0 1px 0 darken(#94b435, 10), inset 0 1px 0 rgba(#fff,.2), 0 0 0 5px rgba(#94b435, .5));
+    }
+}
+
+// Icons
+
+@if $include-default-icons {
+    @include icon('calendar');
+    @include icon('action');
+    @include icon('add');
+    @include icon('arrow_down');
+    @include icon('arrow_left');
+    @include icon('arrow_right');
+    @include icon('arrow_up');
+    @include icon('compose');
+    @include icon('delete');
+    @include icon('organize');
+    @include icon('refresh');
+    @include icon('reply');
+    @include icon('search');
+    @include icon('settings');
+    @include icon('star');
+    @include icon('trash');
+    @include icon('maps');
+    @include icon('locate');
+    @include icon('home');
+    @include icon('bookmarks');
+    @include icon('download');
+    @include icon('favorites');
+    @include icon('info');
+    @include icon('more');
+    @include icon('time');
+    @include icon('user');
+    @include icon('team');
+}
+
+// // Badges
+
+// .x-hasbadge {
+//     overflow: visible;
+
+//     .x-badge {
+//         top: -5px;
+//         right: -6px;
+//         max-width: 55%;
+
+//         white-space: nowrap;
+//         text-overflow: ellipsis;
+//         text-align: center;
+//         display: block;
+//         overflow: hidden;
+        
+//         color: #fff !important;
+//         min-width: 18px;
+//         font-weight: bold;
+//         text-shadow: 0 0 0 !important;
+//         font-family: "Helvetica Neue", Helvetica, Arial;
+//         font-size: 10px;
+//         padding: 1px 2px 2px;
+//         border: 2px solid #fff;
+//         @include border-radius($list-disclosure-size);
+//         @include background-image(linear-gradient(top, #f1a0a6, #c61019));
+//         @include box-shadow(0 1px 4px rgba(0,0,0,.3));
+//     }
+// }

@@ -1,0 +1,28 @@
+.x-spinner {
+    .x-spinner-button {
+        margin-top: .25em;
+        margin-bottom: .25em;
+        width: 2em;
+        border: 0 !important;
+        background: $foreground-color;
+        @include border-radius($list-disclosure-size);
+        width: $list-disclosure-size;
+        height: $list-disclosure-size;
+        margin: 7px 7px 0 0;
+        color: #fff;
+        font-weight: bold;
+        font-size: 26px;
+        line-height: 24px;
+
+        &.x-button-pressed {
+            background: $base-color;
+        }
+    }
+
+    &.x-item-disabled {
+        .x-spinner-button {
+            background: $secondary-color;
+            color: #b3b3b3 !important;
+        }
+    }
+}

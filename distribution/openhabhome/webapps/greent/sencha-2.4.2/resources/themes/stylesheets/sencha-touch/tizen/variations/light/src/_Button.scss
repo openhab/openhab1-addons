@@ -1,0 +1,49 @@
+.x-button {
+	@include background($light-button-background);
+
+	.x-button-label {
+		@include text-shadow(none);
+		color: $light-button-label-color;
+	}
+
+	&.x-button-pressing {
+		@include background($light-button-pressing-background);
+		.x-button-label {
+			@include text-shadow(none);
+		}
+	}
+
+	&.x-button-confirm {
+		.x-button-label {
+			color: $light-button-confirm-label-color;
+		}
+		@include background($light-button-confirm-background);
+		&.x-button-pressing {
+			@include background($light-button-confirm-pressing-background);
+		}
+	}
+
+	&.x-button-decline {
+		.x-button-label {
+			color: $light-button-decline-label-color;
+		}
+		@include background($light-button-decline-background);
+		&.x-button-pressing {
+			@include background($light-button-decline-pressing-background);
+		}
+	}
+
+	.x-button-icon {
+		&:before {
+			color: $light-primary-text-color;
+		}
+	}
+}
+
+.x-hasbadge {
+	.x-badge {
+		color: $light-color-off-white;
+		background-color: $light-badge-background-color;
+		@include box-shadow(1px 1px black);
+	}
+}

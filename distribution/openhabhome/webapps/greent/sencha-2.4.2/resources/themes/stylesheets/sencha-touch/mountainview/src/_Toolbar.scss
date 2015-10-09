@@ -1,0 +1,25 @@
+.x-toolbar {
+	background-color: $background-color;
+	height: 3.5em;
+	border: 0 !important;
+	border-width: 0 !important;
+
+	.x-title {
+		color: $primary-text-color;
+	}
+
+	.x-button {
+		margin: 0 .2em;
+		height: 2.4em;
+		@include box-shadow(none);
+
+		&.x-button-pressing,
+		&.x-button-pressed {
+			@include box-shadow(none);			
+		}
+	}
+
+	.x-button-label {
+		font-size: 10pt;
+	}
+}

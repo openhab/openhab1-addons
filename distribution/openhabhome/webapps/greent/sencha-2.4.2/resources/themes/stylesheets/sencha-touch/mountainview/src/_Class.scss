@@ -1,0 +1,24 @@
+html,
+body {
+	background-color: $background-color;
+	font: 14px/19px Roboto, sans-serif;
+	color: $primary-text-color;
+}
+
+.x-html,
+.x-html h1,
+.x-html h2,
+.x-html h3,
+.x-html h4,
+.x-html h5,
+.x-html h6 {
+	color: $primary-text-color;
+}
+
+.x-html a {
+	color: $base-color;
+}
+
+.x-layout-card-item {
+	background: $background-color;
+}

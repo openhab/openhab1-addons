@@ -1,0 +1,69 @@
+/**
+ * @class Ext.Toolbar
+ */
+
+.x-toolbar {
+    position: relative;
+    background-color: #eee;
+    min-height: 2.6em;
+    overflow: hidden;
+
+    &.x-docked-top {
+        border-bottom: 1px solid;
+    }
+
+    &.x-docked-bottom {
+        border-top: 1px solid;
+    }
+
+    &.x-docked-left {
+        width: 50px;
+        height: auto;
+        border-right: 1px solid;
+    }
+
+    &.x-docked-right {
+        width: 50px;
+        height: auto;
+        border-left: 1px solid;
+    }
+}
+
+.x-title {
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: bold;
+
+    max-width: 100%;
+
+    &.x-title-align-left {
+      padding-left: 10px;
+    }
+
+
+    &.x-title-align-right {
+      padding-right: 10px;
+    }
+
+    .x-innerhtml {
+        @include ellipsis;
+    }
+}
+
+.x-navigation-bar {
+    .x-container {
+        overflow: visible;
+    }
+}
+
+.x-toolbar-inner {
+    .x-field {
+        .x-component-outer {
+            @include st-box-flex(1);
+        }
+    }
+}
+
+.x-ie .x-toolbar-inner {
+    height: 100% !important;
+}

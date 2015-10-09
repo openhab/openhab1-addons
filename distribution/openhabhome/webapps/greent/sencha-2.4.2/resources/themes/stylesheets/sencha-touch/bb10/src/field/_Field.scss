@@ -1,0 +1,104 @@
+/**
+ * @member Ext.field.Field
+ */
+
+.x-field {
+
+}
+
+.x-form {
+	.x-field-input {
+		padding: 8px 3px;
+	}
+}
+
+.x-label-align-top {
+		.x-form-label {
+				line-height: 32px;
+		}
+}
+
+.x-form-label {
+		color: #292429;
+		font-size: 20px;
+		padding: 0 3px;
+		line-height: 50px;
+
+		span {
+				font-weight: normal;
+		}
+}
+
+.x-field-input {
+    padding: 5px 3px 6px 3px;
+}
+
+.x-field-clearable .x-field-input {
+    padding-right: 3px;
+}
+
+.x-field-input .x-reveal-icon {
+	top: 13px;
+	right: 8px;
+	background: theme_image('bb10', "reveal_icon.png") no-repeat;
+	width: 24px;
+	height: 24px;
+
+	&.x-pressing {
+		background-position: top right;
+	}
+}
+
+.x-field.x-revealed .x-reveal-icon {
+	background-position: top right;
+}
+
+.x-field-clearable.x-field-revealable {
+	.x-reveal-icon {
+		right: 36px;
+	}
+}
+
+.x-field-input .x-clear-icon {
+		top: 13px;
+		right: 8px;
+    background: theme_image('bb10', "clear_icon.png") no-repeat;
+    width: 24px;
+    height: 24px;
+
+    &.x-pressing {
+        background-position: top right;
+    }
+}
+
+.x-input-text,
+.x-input-url,
+.x-input-email,
+.x-input-search,
+.x-input-number,
+.x-input-password,
+.x-spinner-button {
+    padding: 9px 5px;
+    border: 1px solid #C7C7C7;
+    background-color: #ffffff;
+    @include border-radius(1px);
+
+    .x-field-focused & {
+        border-color: $base-color;
+        @include box-shadow(0 0 0 1px $base-color);
+    }
+
+    &::-webkit-input-placeholder {
+        font-style:italic;
+    }
+}
+
+.x-item-disabled {
+    input {
+        color: #888;
+    }
+
+    .x-form-label {
+        color: #bbb;
+    }
+}

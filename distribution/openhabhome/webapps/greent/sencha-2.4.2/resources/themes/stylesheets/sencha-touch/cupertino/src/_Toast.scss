@@ -1,0 +1,20 @@
+/**
+ * @class Ext.Toast
+ */
+
+.x-toast {
+    @include border-radius(7px);
+	padding: 0px;
+	margin: 0px;
+	max-width: 19em;
+	border: 1px;
+    background-color: #fff;
+    border-color: #dbdbe0;
+
+    .x-toast-text {
+        padding: 2em;
+        color: $ios7-blue;
+        font-size: .9em;
+        font-weight: 400;
+    }
+}

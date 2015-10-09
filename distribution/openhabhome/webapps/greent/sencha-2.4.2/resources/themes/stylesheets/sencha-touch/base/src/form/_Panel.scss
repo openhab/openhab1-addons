@@ -1,0 +1,230 @@
+// Label
+.x-form-label {
+    display: none !important;
+
+    span {
+        font-weight: bold;
+    }
+
+    .x-form-label-nowrap & {
+        @include ellipsis();
+    }
+}
+
+//  Ext.field.Field
+.x-field {
+    @include st-box();
+
+    .x-field-input {
+        position: relative;
+        min-width: 3.7em;
+    }
+
+    .x-field-input,
+    .x-input-el {
+        width: 100%;
+    }
+
+    &.x-field-labeled {
+        .x-form-label {
+            display: block !important;
+        }
+    }
+
+    .x-component-outer {
+        position: relative;
+    }
+}
+
+.x-label-align-left,
+.x-label-align-right {
+    @include st-box-orient(horizontal, important);
+
+    .x-component-outer {
+        @include st-box-flex(1, 0px);
+    }
+}
+
+.x-label-align-right {
+    @include st-box-direction(reverse, row);
+}
+
+.x-label-align-top,
+.x-label-align-bottom {
+    @include st-box-orient(vertical);
+}
+
+.x-label-align-bottom {
+    @include st-box-direction(reverse, column);
+}
+
+.x-input-el {
+    display: block;
+}
+
+.x-field-mask {
+    @include absolute-fit();
+}
+
+.x-ie .x-field {
+    &.x-field-text,
+    &.x-field-textarea,
+    &.x-field-search {
+        .x-field-mask {
+            z-index: -1;
+        }
+    }
+}
+
+// Required fields
+.x-field-required .x-form-label:after {
+    content: "*";
+    display: inline;
+}
+
+// Ext.field.Hidden
+.x-field-hidden {
+    @extend .x-hidden-display;
+}
+
+// Ext.field.Spinner
+.x-spinner {
+    .x-component-outer {
+        @include st-box();
+
+        > * {
+            width: auto;
+        }
+    }
+
+    .x-field-input {
+        @include st-box-flex(1, 0px);
+
+        .x-input-el {
+            width: 100%;
+            text-align: center;
+        }
+
+        //http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-inputs-spin-box
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+
+    .x-spinner-button {
+        text-align: center;
+        border: 1px solid #ccc !important;
+        background-color: #eee;
+    }
+
+    &.x-field-grouped-buttons {
+        .x-input-el {
+            text-align: left;
+        }
+    }
+}
+
+
+// Ext.field.Select
+.x-select-overlay {
+    .x-list-label {
+        @include ellipsis();
+        display: block;
+    }
+}
+
+
+//remove browser styling
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+.x-field-number {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+.x-field-input .x-clear-icon, .x-field-input .x-reveal-icon {
+    display: none;
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+    position: absolute;
+    top: 50%;
+    right: 0;
+}
+
+.x-field-clearable {
+    .x-clear-icon {
+        display: block;
+    }
+
+    .x-field-input {
+        padding-right: 10px;
+    }
+}
+
+.x-field-revealable {
+	.x-reveal-icon {
+		display: block;
+	}
+
+	.x-field-input {
+		padding-right: 10px;
+	}
+}
+
+.x-field-clearable.x-field-revealable {
+	.x-reveal-icon {
+		right: 20px;
+	}
+}
+
+.x-android .x-input-el {
+  -webkit-text-fill-color: #000;
+}
+
+.x-android .x-empty .x-input-el {
+  -webkit-text-fill-color: #A9A9A9;
+}
+
+.x-android .x-item-disabled .x-input-el {
+  -webkit-text-fill-color: #b3b3b3;
+}
+
+// Ext.form.FieldSet
+.x-form-fieldset {
+    .x-form-fieldset-inner {
+        border: 1px solid #ccc;
+        overflow: hidden;
+    }
+
+    .x-dock {
+        .x-dock-body {
+            @include st-box-flex(1);
+        }
+    }
+}
+
+.x-form-fieldset-title {
+    font-weight: bold;
+
+    .x-innerhtml {
+        @include ellipsis();
+    }
+}
+
+.x-form-fieldset-instructions {
+    text-align: center;
+}
+
+.x-ie {
+  .x-field-select .x-field-mask {
+    z-index: 3;
+  }
+}

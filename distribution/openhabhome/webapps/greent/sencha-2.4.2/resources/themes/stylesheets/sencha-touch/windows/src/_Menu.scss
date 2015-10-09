@@ -1,0 +1,13 @@
+.x-menu {
+    width: 190px;
+    padding: 10px;
+    background: $background-color;
+
+    .x-button {
+        margin-bottom: 10px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

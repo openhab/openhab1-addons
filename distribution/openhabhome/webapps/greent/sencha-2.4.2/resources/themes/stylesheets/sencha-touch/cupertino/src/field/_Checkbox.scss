@@ -1,0 +1,42 @@
+/**
+ * @class Ext.field.Checkbox
+ */
+
+@mixin checkmark($color: $ios7-blue) {
+	@extend .x-checkmark-base;
+	color: $color;
+}
+
+.x-checkmark-base {
+	position: absolute;
+	top: 0;
+	right: 12px;
+	bottom: 0;
+	content: '3';
+	font-family: 'Pictos';
+	font-size: 1.3em;
+	text-align: right;
+	line-height: 2.1em;
+}
+
+.x-field-checkbox .x-field-mask,
+.x-field-radio .x-field-mask {
+	&::after {
+		@include checkmark(#ccc);
+	}
+}
+
+.x-input-checkbox,
+.x-input-radio {
+	visibility: hidden;
+}
+
+.x-input-checkbox:checked + .x-field-mask::after {
+	color: $ios7-blue;
+}
+
+.x-item-disabled {
+	.x-input-checkbox:checked + .x-field-mask::after {
+		color: lighten($ios7-blue, 20%);
+	}
+}

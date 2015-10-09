@@ -1,0 +1,26 @@
+/**
+ * @class Ext.Toast
+ */
+
+.x-toast {
+    min-width: 15em;
+    max-width: 20em;
+    max-height: 90%;
+
+    margin: 6px;
+
+    .x-toast-text {
+        text-align: center;
+    }
+}
+
+// This will need to be generalized at some point
+.x-ie {
+    .x-toast {
+        .x-dock.x-dock-horizontal.x-unsized {
+            > .x-dock-body {
+               @include st-box-flex(1, 0px);
+            }
+        }
+    }
+}

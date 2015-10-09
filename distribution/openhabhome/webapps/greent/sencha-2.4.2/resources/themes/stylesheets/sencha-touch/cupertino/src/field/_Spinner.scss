@@ -1,0 +1,58 @@
+.x-desktop.x-windows.x-chrome .x-spinner {
+	.x-spinner-button-down {
+		line-height: .7em;
+	}
+
+	.x-spinner-button-up {
+		line-height: .85em;
+	}
+}
+
+.x-spinner {
+	.x-spinner-button {
+		margin-top: .25em;
+		margin-bottom: .25em;
+		width: 2em;
+
+		border: 2px solid #fff !important;
+
+		&.x-spinner-button-down {
+			background-color: $ios7-red;
+		}
+
+		&.x-spinner-button-up {
+			background-color: $ios7-green;
+		}
+
+		@include border-radius(1em);
+		width: 1em;
+		height: 1em;
+		margin: 7px 7px 0 0;
+		color: #fff;
+		font-weight: 200;
+		font-size: 1.8em;
+		line-height: .56em;
+	}
+
+	.x-input-el {
+		color: black;
+		-webkit-text-fill-color: black;
+	}
+
+	&.x-item-disabled {
+		.x-input-el {
+			color: #B3B3B3;
+			-webkit-text-fill-color: #B3B3B3;
+		}
+
+		.x-spinner-button {
+			&.x-spinner-button-down {
+				background-color: lighten($ios7-red, 20%);
+			}
+
+			&.x-spinner-button-up {
+				background-color: lighten($ios7-green, 20%);
+			}
+		}
+	}
+}

@@ -1,0 +1,40 @@
+$light-color-sandstone: #dddbd4 !default;
+$light-color-light-sandstone: #efede9 !default;
+$light-color-dark-sandstone: darken(#dedcd5, 20%) !default;
+$light-color-dark-gray: #555555 !default;
+$light-color-gray: #a6a5a0 !default;
+$light-color-slate-black: #3a3a3a !default;
+$light-color-off-white: #f8f6ef !default;
+$light-color-bright-blue: #2b3aaf !default;
+$light-color-tan: #e0ded8 !default;
+$light-color-blue: #0e68ad !default;
+
+
+$light-darkenAmount: 10%;
+$light-gradient-down-green: linear-gradient(color-stops($winset-green, darken($winset-green, $light-darkenAmount))) !default;
+$light-gradient-up-green: linear-gradient(color-stops(darken($winset-green, $light-darkenAmount), $winset-green)) !default;
+$light-gradient-down-red: linear-gradient(color-stops($winset-red, darken($winset-red, $light-darkenAmount))) !default;
+$light-gradient-up-red: linear-gradient(color-stops(darken($winset-red, $light-darkenAmount), $winset-red)) !default;
+
+$light-primary-text-color: $light-color-dark-gray !default;
+$light-secondary-text-color: $light-color-sandstone !default;
+$light-primary-background-color: $light-color-off-white !default;
+
+$light-secondary-background-color: $light-color-light-sandstone !default;
+$light-secondary-pressing-background-color: $light-color-dark-sandstone !default;
+
+// Theme Colors
+$light-color-gray: #555555 !default;
+$light-color-light-gray: #969a9c !default;
+$light-color-orange: #fb7b2c !default;
+
+// Theme Gradients
+$light-gradient-down-gray: linear-gradient(color-stops($winset-gray-blue, darken($winset-gray-blue, $light-darkenAmount))) !default;
+$light-gradient-down-blue: linear-gradient(color-stops($winset-bright-blue, darken($winset-bright-blue, $light-darkenAmount))) !default;
+$light-gradient-up-gray: linear-gradient(color-stops(darken($winset-gray-blue, $light-darkenAmount), $winset-gray-blue)) !default;
+$light-gradient-up-blue: linear-gradient(color-stops(darken($winset-bright-blue, $light-darkenAmount), $winset-bright-blue)) !default;
+
+$light-primary-gradient: $light-gradient-down-gray !default;
+
+// Custom Palette
+$light-secondary-text-color: $winset-light-blue !default;

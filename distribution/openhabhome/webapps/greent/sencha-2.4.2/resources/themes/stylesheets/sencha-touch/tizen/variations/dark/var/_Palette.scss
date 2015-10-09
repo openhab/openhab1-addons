@@ -1,0 +1,21 @@
+// Theme Colors
+$dark-color-gray: #555555 !default;
+$dark-color-light-gray: #969a9c !default;
+$dark-color-off-white: #eeeeee !default;
+$dark-color-orange: #fb7b2c !default;
+
+// Theme Gradients
+$dark-darkenAmount: 10%;
+$dark-gradient-down-gray: linear-gradient(color-stops($winset-gray-blue, darken($winset-gray-blue, $dark-darkenAmount))) !default;
+$dark-gradient-down-blue: linear-gradient(color-stops($winset-bright-blue, darken($winset-bright-blue, $dark-darkenAmount))) !default;
+$dark-gradient-down-green: linear-gradient(color-stops($winset-green, darken($winset-green, $dark-darkenAmount))) !default;
+$dark-gradient-down-red: linear-gradient(color-stops($winset-red, darken($winset-red, $dark-darkenAmount))) !default;
+$dark-gradient-up-gray: linear-gradient(color-stops(darken($winset-gray-blue, $dark-darkenAmount), $winset-gray-blue)) !default;
+$dark-gradient-up-blue: linear-gradient(color-stops(darken($winset-bright-blue, $dark-darkenAmount), $winset-bright-blue)) !default;
+$dark-gradient-up-green: linear-gradient(color-stops(darken($winset-green, $dark-darkenAmount), $winset-green)) !default;
+$dark-gradient-up-red: linear-gradient(color-stops(darken($winset-red, $dark-darkenAmount), $winset-red)) !default;
+$dark-primary-gradient: $dark-gradient-down-gray !default;
+
+// Custom Palette
+$dark-primary-text-color: $winset-white !default;
+$dark-secondary-text-color: $winset-light-blue !default;

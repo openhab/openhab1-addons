@@ -1,0 +1,57 @@
+/**
+ * @class Ext.field.Spinner
+ */
+
+.x-spinner {
+    .x-field-input {
+        .x-input-el {
+            -webkit-text-fill-color: $form-field-color;
+        }
+    }
+
+    &.x-item-disabled {
+        .x-input-el {
+            -webkit-text-fill-color: #B3B3B3;
+        }
+
+        .x-spinner-button {
+            @include toolbar-button(lighten($form-light, 10), matte);
+            color: #aaa !important;
+        }
+    }
+
+    .x-spinner-button {
+        margin-top: .25em;
+        margin-bottom: .25em;
+        width: 2em;
+        padding: .23em 0 .27em;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid $form-light !important;
+        @include border-radius(1em);
+        @include toolbar-button(lighten($form-light, 5), matte);
+    }
+
+    .x-spinner-button-down {
+        margin-left: .25em;
+    }
+    .x-spinner-button-up {
+        margin-right: .25em;
+    }
+
+    &.x-field-grouped-buttons {
+        .x-spinner-button-down {
+            margin-right: .5em;
+        }
+    }
+}
+
+.x-android {
+    .x-spinner-button {
+        padding: .40em 0 .11em !important;
+    }
+}
+
+.x-ie .x-spinner .x-field-input .x-input-el:disabled {
+  color: #000;
+}

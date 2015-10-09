@@ -1,0 +1,41 @@
+.x-toolbar {
+	background-color: #f8f9f9;
+	min-height: 2.85em;
+
+	&.x-docked-bottom {
+		border-top: 1px solid #ccc;
+	}
+
+	&.x-docked-top {
+		border-bottom: 1px solid #ccc;
+		.x-button {
+			padding-top: .15em;
+		}
+	}
+
+	&.x-docked-left {
+		border-right: 1px solid #ccc;
+	}
+
+	&.x-docked-right {
+		border-left: 1px solid #ccc;
+	}
+
+	.x-title {
+		color: $primary-text-color;
+		font-weight: 500;
+		font-size: 1em;
+		padding-top: .3em;
+	}
+
+	.x-button {
+		border: 0;
+		background-color: transparent;
+		margin: 0 5px;
+		height: 2.0em;
+	}
+
+	.x-button-label {
+		font-size: 1.1em;
+	}
+}

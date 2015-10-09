@@ -1,0 +1,25 @@
+/**
+ * @class Ext.plugin.ListPaging
+ */
+
+.x-list-paging {
+    .x-loading-spinner {
+        display: none;
+        margin: auto;
+    }
+
+    .x-list-paging-msg {
+        text-align: center;
+        clear: both;
+    }
+
+    &.x-loading {
+        .x-loading-spinner {
+            display: block;
+        }
+
+        .x-list-paging-msg {
+            display: none;
+        }
+    }
+}

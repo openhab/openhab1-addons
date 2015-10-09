@@ -1,0 +1,57 @@
+/**
+ * @class Ext.slider.Toggle
+ */
+
+.x-toggle {
+	$form-toggle-thumb-size: 22px;
+	$form-toggle-border-size: 2px;
+
+	width: 50px;
+	height: $form-toggle-thumb-size + ($form-toggle-border-size*3);
+	border: $form-toggle-border-size solid #e5e5e5;
+	background-color: transparent;
+
+	@include border-radius($form-toggle-thumb-size);
+
+	&:before {
+		@include border-radius($form-toggle-thumb-size);
+		content: '';
+		background-color: white;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+	}
+
+	.x-thumb {
+		width: $form-toggle-thumb-size;
+		height: $form-toggle-thumb-size;
+
+		&.x-dragging {
+			opacity: 1;
+		}
+
+		&:after {
+			top: 0px;
+			left: 0px;
+			width: $form-toggle-thumb-size;
+			height: $form-toggle-thumb-size;
+			@include border-radius($form-toggle-thumb-size);
+		}
+	}
+}
+
+.x-toggle-on {
+	background-color: $ios7-green;
+	border-color: $ios7-green;
+
+	&:before {
+		background-color: $ios7-green;
+	}
+}
+
+.x-toggle-off {
+	&:before {
+	}
+}

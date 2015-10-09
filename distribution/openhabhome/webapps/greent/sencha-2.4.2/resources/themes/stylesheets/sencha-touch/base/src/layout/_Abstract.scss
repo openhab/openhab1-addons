@@ -1,0 +1,29 @@
+html,
+body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.x-fullscreen {
+    position: absolute !important;
+}
+
+.x-body {
+    position: relative;
+    z-index: 0;
+}
+
+.x-inner,
+.x-body {
+    width: 100%;
+    height: 100%;
+}
+
+.x-sized {
+    position: relative;
+}
+
+.x-innerhtml {
+    width: 100%;
+}

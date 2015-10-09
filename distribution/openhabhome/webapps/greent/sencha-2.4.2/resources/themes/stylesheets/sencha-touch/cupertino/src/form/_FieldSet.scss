@@ -1,0 +1,51 @@
+/**
+ * @class Ext.form.FieldSet
+ */
+
+.x-form-fieldset {
+	margin: 0px;
+
+	.x-form-fieldset-inner {
+		background: #fff;
+		padding: 0;
+		border-color: #dbdbe0;
+		@include border-radius(0);
+	}
+
+	//Ext.field.Field
+	.x-field {
+		background: transparent;
+		position: relative;
+
+		&:before {
+			content: '';
+			display: block;
+			position: absolute;
+			bottom: 0px;
+			left: 1em;
+			right: 0px;
+			border-bottom: solid 1px #dbdbe0;
+		}
+
+		&:last-child {
+			&:before {
+				border-bottom: solid 1px transparent;
+			}
+		}
+	}
+
+
+}
+
+.x-form-fieldset-title {
+	margin: 2em .5em .5em 1em;
+	color: #555555;
+	font-weight: 400;
+	font-size: .9em;
+}
+
+.x-form-fieldset-instructions {
+	color: #555555;
+	margin: 1em;
+	font-size: .8em;
+}

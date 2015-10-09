@@ -1,0 +1,15 @@
+.x-menu {
+	padding: 0;
+
+	.x-button {
+		min-height: 3em;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	&.x-left,
+	&.x-right {
+		width: 220px;
+	}
+}

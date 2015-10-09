@@ -1,0 +1,48 @@
+.x-panel.x-floating .x-list {
+	background-color: $dark-list-floating-background-color;
+}
+
+.x-list {
+	background-color: $dark-list-background-color;
+}
+
+.x-list-item {
+	border-bottom: 1px solid $dark-list-border-color;
+	color: $dark-list-item-color;
+	.x-list-disclosure {
+		&:before {
+			background-color: $dark-list-item-disclosure-inner-color;
+		}
+		&:after {
+			color: $dark-list-item-disclosure-color;
+		}
+	}
+
+	&.x-item-selected .x-list-disclosure {
+		background: none;
+		background-color: transparent;
+	}
+}
+
+.x-list .x-list-item.x-item-selected .x-dock-horizontal,
+.x-list .x-list-item.x-item-selected.x-list-item-tpl {
+	background-color: $dark-list-item-selected-background-color;
+}
+
+.x-list .x-list-item.x-item-pressed.x-list-item-tpl,
+.x-list .x-list-item.x-item-pressed .x-dock-horizontal {
+	background-color: $dark-list-item-pressed-background-color;
+}
+
+.x-list .x-list-header {
+	color: $dark-list-header-color;
+	border-bottom: 1px solid $dark-list-header-border-color;
+	background-color: $dark-list-header-background-color;
+}
+
+.x-indexbar {
+	color: $dark-list-indexbar-color;
+	&.x-indexbar-pressed {
+		background-color: $dark-list-indexbar-pressed-background-color;
+	}
+}

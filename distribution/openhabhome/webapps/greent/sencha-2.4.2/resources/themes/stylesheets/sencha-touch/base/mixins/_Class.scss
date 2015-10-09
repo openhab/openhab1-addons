@@ -1,0 +1,516 @@
+/**
+ * @class Global_CSS
+ */
+
+// Background property support for vendor prefixing within values.
+@mixin background($background-1,
+$background-2: false,
+$background-3: false,
+$background-4: false,
+$background-5: false,
+$background-6: false,
+$background-7: false,
+$background-8: false,
+$background-9: false,
+$background-10: false) {
+	$backgrounds: compact($background-1, $background-2, $background-3, $background-4, $background-5, $background-6, $background-7, $background-8, $background-9, $background-10);
+	$mult-bgs: -compass-list-size($backgrounds) > 1;
+	$add-pie-bg: prefixed(-pie,   $backgrounds) or $mult-bgs;
+	@if $experimental-support-for-svg          and prefixed(-svg,    $backgrounds) {
+		background: -svg($backgrounds);
+	}
+	@if $support-for-original-webkit-gradients and prefixed(-owg,    $backgrounds) {
+		background: -owg($backgrounds);
+	}
+	@if $experimental-support-for-webkit       and prefixed(-webkit, $backgrounds) {
+		background: -webkit($backgrounds);
+	}
+	@if $experimental-support-for-mozilla      and prefixed(-moz,    $backgrounds) {
+		background: -moz($backgrounds);
+	}
+	@if $experimental-support-for-opera        and prefixed(-o,      $backgrounds) {
+		background: -o($backgrounds);
+	}
+	// BEGIN PATCH
+	// IE10 Supports linear-gradient but with a new syntax, Compass has deprecated -ms prefix support too soon
+	// this patch brings -ms prefix support back to gradients. This should be removed when compass is updated with
+	// proper support
+	background: -ms-#{$backgrounds};
+	// END PATCH
+	@if $experimental-support-for-pie          and $add-pie-bg                     {
+		-pie-background: -pie($backgrounds);
+	}
+	background: $backgrounds;
+}
+
+@mixin background-image($image-1,
+$image-2: false,
+$image-3: false,
+$image-4: false,
+$image-5: false,
+$image-6: false,
+$image-7: false,
+$image-8: false,
+$image-9: false,
+$image-10: false) {
+	$images: compact($image-1, $image-2, $image-3, $image-4, $image-5, $image-6, $image-7, $image-8, $image-9, $image-10);
+	$add-pie-bg: prefixed(-pie,   $images) or -compass-list-size($images) > 1;
+
+	@if $experimental-support-for-svg          and prefixed(-svg,    $images) {
+		background-image: -svg($images);
+		background-size: 100%;
+	}
+	@if $support-for-original-webkit-gradients and prefixed(-owg,    $images) {
+		background-image: -owg($images);
+	}
+	@if $experimental-support-for-webkit       and prefixed(-webkit, $images) {
+		background-image: -webkit($images);
+	}
+	@if $experimental-support-for-mozilla      and prefixed(-moz,    $images) {
+		background-image: -moz($images);
+	}
+	@if $experimental-support-for-opera        and prefixed(-o,      $images) {
+		background-image: -o($images);
+	}
+
+	// BEGIN PATCH
+	// IE10 Supports linear-gradient but with a new syntax, Compass has deprecated -ms prefix support too soon
+	// this patch brings -ms prefix support back to gradients. This should be removed when compass is updated with
+	// proper support
+	background-image: -ms-#{$images};
+	// END PATCH
+
+	@if $experimental-support-for-pie          and $add-pie-bg                {
+		@warn "PIE does not support background-image. Use @include background(#{$images}) instead."
+	}
+}
+
+/**
+ * Adds basic styles to :before or :after pseudo-elements.
+ *
+ *     .my-element:after {
+ *       @include insertion(50px, 50px);
+ *     }
+ *
+ * @param {measurement} $width Height of pseudo-element.
+ * @param {measurement} $height Height of pseudo-element.
+ * @param {measurement} $top Top positioning of pseudo-element.
+ * @param {measurement} $left Left positioning of pseudo-element.
+ *
+ */
+@mixin insertion($width: 30px, $height: 30px, $top: 0, $left: 0) {
+    content: '';
+    position: absolute;
+    width: $width;
+    height: $height;
+    top: $top;
+    left: $left;
+}
+
+/**
+ * Makes the element text overflow to use ellipsis.
+ */
+@mixin ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@mixin absolute-position($top: 0, $right: 0, $bottom: 0, $left: 0) {
+    position: absolute;
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
+
+@mixin absolute-fit {
+    width: auto;
+    height: auto;
+    @include absolute-position;
+}
+
+@mixin st-box($important: no) {
+    @if $important == important {
+        display: flex !important;
+        display: -webkit-box !important;
+        display: -ms-flexbox !important;
+    } @else {
+        display: flex;
+        display: -webkit-box;
+        display: -ms-flexbox;
+    }
+}
+
+@mixin st-box-align($align: stretch) {
+    -webkit-box-align: $align;
+    -ms-flex-align: $align;
+    @if $align == start {
+        align-items: flex-start;
+    }
+    @else if $align == end {
+        align-items: flex-end;
+    }
+    @else {
+        align-items: $align;
+    }
+}
+
+@mixin st-box-orient($orient: horizontal, $important: no) {
+    @if $important == important {
+        -webkit-box-orient: $orient !important;
+        @if $orient == horizontal {
+            -ms-flex-direction: row !important;
+            flex-direction: row !important;
+        } @else {
+            -ms-flex-direction: column !important;
+            flex-direction: column !important;
+        }
+    } @else {
+        -webkit-box-orient: $orient;
+        @if $orient == horizontal {
+            -ms-flex-direction: row;
+            flex-direction: row;
+        } @else {
+            -ms-flex-direction: column;
+            flex-direction: column;
+        }
+    }
+}
+
+@mixin st-box-pack($pack: start, $important: no) {
+    @if $important == important {
+        -webkit-box-pack: $pack !important;
+        -ms-flex-pack: $pack !important;
+        @if $pack == start {
+            justify-content: flex-start !important;
+        }
+        @else if $pack == end {
+            justify-content: flex-end !important;
+        }
+        @else if $pack == justify {
+            justify-content: space-between !important;
+        }
+        @else {
+            justify-content: $pack !important;
+        }
+    } @else {
+        -webkit-box-pack: $pack;
+        -ms-flex-pack: $pack;
+        @if $pack == start {
+            justify-content: flex-start;
+        }
+        @else if $pack == end {
+            justify-content: flex-end;
+        }
+        @else if $pack == justify {
+            justify-content: space-between;
+        }
+        @else if $pack == center {
+            justify-content: center;
+        }
+        @else {
+            justify-content: $pack;
+        }
+    }
+}
+
+@mixin st-box-flex($flex: 1, $preferredSize: auto, $important: no) {
+    @if $important == important {
+        -webkit-box-flex: $flex !important;
+        -ms-flex: $flex 0 $preferredSize !important;
+        flex: $flex 0 $preferredSize !important;
+    } @else {
+        -webkit-box-flex: $flex;
+        -ms-flex: $flex 0 $preferredSize;
+        flex: $flex 0 $preferredSize;
+    }
+}
+
+@mixin st-box-shadow($shadow: none) {
+    -webkit-box-shadow: $shadow;
+    box-shadow: $shadow;
+}
+
+@mixin st-box-direction($direction: normal, $orientation: row) {
+    -webkit-box-direction: $direction;
+    @if $direction == reverse {
+        @if $orientation == row {
+            -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+        } @else {
+            -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+        }
+    } @else {
+        @if $orientation == row {
+            -ms-flex-direction: row;
+            flex-direction: row;
+        } @else {
+            -ms-flex-direction: column;
+            flex-direction: column;
+        }
+    }
+}
+
+@mixin st-loading-spinner($spinner-size: 50px, $color: #ccc, $bar-width: 5px, $bar-height: 15px) {
+    .x-loading-spinner {
+        font-size: 250%;
+        height: $spinner-size;
+        width: $spinner-size;
+        position: relative;
+
+        -webkit-transform-origin: $spinner-size/2 $spinner-size/2;
+        transform-origin: $spinner-size/2 $spinner-size/2;
+
+        /* Shared Properties for all the bars */
+        & > span,
+        & > span:before,
+        & > span:after {
+            display: block;
+            position: absolute;
+            width: $bar-width;
+            height: $bar-height;
+            top: 0;
+            -webkit-transform-origin: $bar-width/2 $spinner-size/2;
+            transform-origin: $bar-width/2 $spinner-size/2;
+            content: " ";
+        }
+
+        & > span {
+            left:         50%;
+            margin-left:  -0.05em;
+
+            &.x-loading-top           { background-color: rgba($color, 0.99); }
+            &.x-loading-top::after    { background-color: rgba($color, 0.90); }
+            &.x-loading-left::before  { background-color: rgba($color, 0.80); }
+            &.x-loading-left          { background-color: rgba($color, 0.70); }
+            &.x-loading-left::after   { background-color: rgba($color, 0.60); }
+            &.x-loading-bottom::before{ background-color: rgba($color, 0.50); }
+            &.x-loading-bottom        { background-color: rgba($color, 0.40); }
+            &.x-loading-bottom::after { background-color: rgba($color, 0.35); }
+            &.x-loading-right::before { background-color: rgba($color, 0.30); }
+            &.x-loading-right         { background-color: rgba($color, 0.25); }
+            &.x-loading-right::after  { background-color: rgba($color, 0.20); }
+            &.x-loading-top::before   { background-color: rgba($color, 0.15); }
+        }
+    }
+
+    /* Rotate each of the 4 Spans */
+    .x-loading-spinner > span.x-loading-top {    -webkit-transform: rotate(0deg);    -moz-transform: rotate(0deg);   -ms-transform: rotate(0deg); }
+    .x-loading-spinner > span.x-loading-right {  -webkit-transform: rotate(90deg);   -moz-transform: rotate(90deg);  -ms-transform: rotate(90deg); }
+    .x-loading-spinner > span.x-loading-bottom { -webkit-transform: rotate(180deg);  -moz-transform: rotate(180deg); -ms-transform: rotate(180deg); }
+    .x-loading-spinner > span.x-loading-left {   -webkit-transform: rotate(270deg);  -moz-transform: rotate(270deg); -ms-transform: rotate(270deg); }
+
+    /* These are the two lines that surround each of the 4 Span lines */
+    .x-loading-spinner > span::before {-webkit-transform: rotate(30deg);   -moz-transform: rotate(30deg);  -ms-transform: rotate(30deg); }
+    .x-loading-spinner > span::after { -webkit-transform: rotate(-30deg);  -moz-transform: rotate(-30deg); -ms-transform: rotate(-30deg); }
+
+    /* Set Animation */
+    .x-loading-spinner {
+        -webkit-animation-name: x-loading-spinner-rotate;
+        -webkit-animation-duration: .5s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+
+        animation-name: x-loading-spinner-rotate;
+        animation-duration: .5s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+}
+
+/**
+ * Includes an icon to be used on Button or Tab components. The $name is the name of the icon, or the character
+ * of the font being used.
+ *
+ *     @include icon('attachment');
+ *
+ * @param {string} $name The name of the icon to be included. This is then usable as the iconCls in your app.
+ * @param {string} $character The character
+ * @param {string} $font-family The `font-family` used for this icon. Defaults to the `Pictos` font.
+ */
+@mixin icon($name, $character: null, $font-family: 'Pictos') {
+    $raw_character: icon-character-for-name($name);
+
+    @if $character == null and $raw_character == null {
+        @debug "#icon: icon with name '#{$name}' not found.";
+    }
+
+    @if $character != null or $raw_character != null {
+        .x-tab .x-button-icon.#{$name},
+        .x-button .x-button-icon.#{$name} {
+            &:before {
+                @include absolute-position;
+                text-align: center;
+
+                @if $font-family != null {
+                    font-family: $font-family;
+                }
+
+                @if $character != null {
+                    content: "#{$character}";
+                } @elseif $raw_character != null {
+                    content: "#{$raw_character}";
+                }
+            }
+        }
+    }
+}
+
+@mixin inline-icon($name, $font-family: 'Pictos') {
+  $character: icon-character-for-name($name);
+
+  &:before {
+      @include absolute-position;
+      text-align: center;
+      font-family: $font-family;
+
+      @if $character {
+          content: "#{$character}";
+      } @else {
+          content: "#{$name}";
+      }
+  }
+}
+
+@mixin pictos-iconmask($name) {
+    @warn "pictos-iconmask is deprecated in 2.2. Please use '@include icon($name);' instead.";
+    @include icon($name);
+}
+
+@mixin icon-font($name, $font-files, $eot: false) {
+    @include font-face($name, $font-files, $eot);
+
+    .x-tab .x-button-icon,
+    .x-button .x-button-icon {
+        &:before {
+            font-family: $name;
+        }
+    }
+}
+
+@function icon-character-for-name($name) {
+    // http://pictos.cc/font/
+
+    // Row 1
+    @if ($name == "anchor") { @return "a"; }
+    @else if ($name == "box") { @return "b"; }
+    @else if ($name == "upload") { @return "c"; }
+    @else if ($name == "forbidden") { @return "d"; }
+    @else if ($name == "lightning") { @return "e"; }
+    @else if ($name == "rss") { @return "f"; }
+    @else if ($name == "team") { @return "g"; }
+    @else if ($name == "help") { @return "h"; }
+    @else if ($name == "info") { @return "i"; }
+    @else if ($name == "attachment") { @return "j"; }
+    @else if ($name == "heart") { @return "k"; }
+    @else if ($name == "list") { @return "l"; }
+    @else if ($name == "music") { @return "m"; }
+    @else if ($name == "table") { @return "n"; }
+    @else if ($name == "folder") { @return "o"; }
+    @else if ($name == "pencil") { @return "p"; }
+    @else if ($name == "chat2") { @return "q"; }
+    @else if ($name == "retweet") { @return "r"; }
+    @else if ($name == "search") { @return "s"; }
+    @else if ($name == "time") { @return "t"; }
+    @else if ($name == "switch") { @return "u"; }
+    @else if ($name == "camera") { @return "v"; }
+    @else if ($name == "chat") { @return "w"; }
+    @else if ($name == "settings2") { @return "x"; }
+    @else if ($name == "settings") { @return "y"; }
+    @else if ($name == "tags") { @return "z"; }
+
+    // Row 2
+    @else if ($name == "attachment2") { @return "A"; }
+    @else if ($name == "bird") { @return "B"; }
+    @else if ($name == "cloud") { @return "C"; }
+    @else if ($name == "delete_black1") { @return "D"; }
+    @else if ($name == "eye") { @return "E"; }
+    @else if ($name == "file") { @return "F"; }
+    @else if ($name == "browser") { @return "G"; }
+    @else if ($name == "home") { @return "H"; }
+    @else if ($name == "inbox") { @return "I"; }
+    @else if ($name == "network") { @return "J"; }
+    @else if ($name == "key") { @return "K"; }
+    @else if ($name == "radio") { @return "L"; }
+    @else if ($name == "mail") { @return "M"; }
+    @else if ($name == "news") { @return "N"; }
+    @else if ($name == "case") { @return "O"; }
+    @else if ($name == "photos") { @return "P"; }
+    @else if ($name == "power") { @return "Q"; }
+    @else if ($name == "action") { @return "R"; }
+    @else if ($name == "favorites") { @return "S"; }
+    @else if ($name == "plane") { @return "T"; }
+    @else if ($name == "user") { @return "U"; }
+    @else if ($name == "video") { @return "V"; }
+    @else if ($name == "compose") { @return "W"; }
+    @else if ($name == "truck") { @return "X"; }
+    @else if ($name == "chart2") { @return "Y"; }
+    @else if ($name == "chart") { @return "Z"; }
+
+    // Row 3
+    @else if ($name == "expand") { @return "`"; }
+    @else if ($name == "refresh") { @return "1"; }
+    @else if ($name == "check") { @return "2"; }
+    @else if ($name == "check2") { @return "3"; }
+    @else if ($name == "play") { @return "4"; }
+    @else if ($name == "pause") { @return "5"; }
+    @else if ($name == "stop") { @return "6"; }
+    @else if ($name == "forward") { @return "7"; }
+    @else if ($name == "rewind") { @return "8"; }
+    @else if ($name == "play2") { @return "9"; }
+    @else if ($name == "refresh2") { @return "0"; }
+    @else if ($name == "minus") { @return "-"; }
+    @else if ($name == "battery") { @return "="; }
+    @else if ($name == "left") { @return "["; }
+    @else if ($name == "right") { @return "]"; }
+    @else if ($name == "calendar") { @return "\005C"; }
+    @else if ($name == "shuffle") { @return ";"; }
+    @else if ($name == "wireless") { @return "'"; }
+    @else if ($name == "speedometer") { @return ","; }
+    @else if ($name == "more") { @return "."; }
+    @else if ($name == "print") { @return "/"; }
+
+
+    // Row 4
+    @else if ($name == "download") { @return "~"; }
+    @else if ($name == "warning_black") { @return "!"; }
+    @else if ($name == "locate") { @return "@"; }
+    @else if ($name == "trash") { @return "#"; }
+    @else if ($name == "cart") { @return "$"; }
+    @else if ($name == "bank") { @return "%"; }
+    @else if ($name == "flag") { @return "^"; }
+    @else if ($name == "add") { @return "&"; }
+    @else if ($name == "delete") { @return "*"; }
+    @else if ($name == "lock") { @return "("; }
+    @else if ($name == "unlock") { @return ")"; }
+    @else if ($name == "minus2") { @return "_"; }
+    @else if ($name == "add2") { @return "+"; }
+    @else if ($name == "up") { @return "{"; }
+    @else if ($name == "down") { @return "}"; }
+    @else if ($name == "screens") { @return "|"; }
+    @else if ($name == "bell") { @return ":"; }
+    @else if ($name == "quote") { @return "\""; }
+    @else if ($name == "volume_mute") { @return "<"; }
+    @else if ($name == "volume") { @return ">"; }
+    @else if ($name == "question") { @return "?"; }
+
+    // Backwards compat; icons that are not in the font
+    @else if ($name == "arrow_left") { @return "["; }
+    @else if ($name == "arrow_right") { @return "]"; }
+    @else if ($name == "arrow_up") { @return "{"; }
+    @else if ($name == "arrow_down") { @return "}"; }
+    @else if ($name == "organize") { @return "I"; }
+    @else if ($name == "bookmarks") { @return "I"; }
+    @else if ($name == "loop2") { @return "r"; }
+    @else if ($name == "star") { @return "S"; }
+    @else if ($name == "maps") { @return "@"; }
+    @else if ($name == "reply") { @return "R"; }
+
+    @else {
+        @return null;
+    }
+}
+
+$include-pictos-font: true !default;

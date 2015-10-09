@@ -1,0 +1,17 @@
+.x-dataview-inlineblock {
+    .x-dataview-item, .x-data-item {
+        display: inline-block !important;
+    }
+}
+
+.x-dataview-nowrap {
+    .x-dataview-container {
+        white-space: nowrap !important;
+    }
+}
+
+.x-dataview-nowrap {
+    .x-container.x-dataview {
+        white-space: nowrap !important;
+    }
+}

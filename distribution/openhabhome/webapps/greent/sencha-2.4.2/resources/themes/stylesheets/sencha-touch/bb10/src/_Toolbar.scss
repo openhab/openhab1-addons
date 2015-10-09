@@ -1,0 +1,92 @@
+/**
+ * @class Ext.Toolbar
+ */
+
+.x-toolbar {
+    min-height: 44px;
+}
+
+.x-toolbar,
+.x-tabbar {
+    border-width: 0 !important;
+    height: 50px;
+}
+
+.x-toolbar-plain,
+.x-tabbar-plain {
+    background-color: #FFFFFF;
+}
+
+.x-toolbar-light,
+.x-tabbar-light {
+    @include background(radial-gradient(left top, circle farthest-side, color-stops(#0074BB, #0CA2D3)));
+}
+
+.x-toolbar-neutral,
+.x-tabbar-neutral {
+    @include background(linear-gradient(color-stops(#FAFAFA, #D5D5D5)));
+    .x-title {
+        color: #333333;
+    }
+}
+
+.x-toolbar-dark,
+.x-tabbar-dark {
+    @include background(linear-gradient(color-stops(#323232, #272727)));
+
+    .x-landscape &.x-docked-bottom, .x-bb-keyboard &.x-docked-bottom {
+        height: 50px;
+    }
+}
+
+.x-toolbar-neutral,
+.x-tabbar-neutral,
+.x-toolbar-plain,
+.x-tabbar-plain {
+    .x-button-icon:before {
+        color: #000;
+    }
+
+    .x-button-pressing,
+    .x-button-pressed {
+        .x-button-icon:before {
+            color: #fff;
+        }
+    }
+}
+
+.x-tabbar.x-docked-bottom,
+.x-toolbar.x-docked-bottom {
+    height: 66px;
+
+    .x-button-normal,
+    .x-button-normal:before {
+        border: 0 !important;
+        background: transparent none !important;
+        @include box-shadow(none);
+    }
+
+    .x-button-normal:before {
+        height: 2px !important;
+    }
+
+    .x-button.menu {
+        margin: 0;
+        border-right-style: solid;
+        border-right-width: 1px;
+    }
+}
+
+.x-title {
+    color: #fafafa;
+    font-size: 20px;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+.x-toolbar {
+    .x-field-focused .x-input-el {
+        @include border-radius(2px);
+        border: 2px solid $base-color;
+    }
+}

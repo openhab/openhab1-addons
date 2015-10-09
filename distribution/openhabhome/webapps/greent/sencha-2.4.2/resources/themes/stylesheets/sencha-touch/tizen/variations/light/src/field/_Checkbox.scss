@@ -1,0 +1,10 @@
+.x-field-checkbox .x-field-mask {
+	&:before {
+		@include background($light-checkbox-background);
+		color: $light-checkbox-color;
+	}
+}
+
+.x-input-checkbox:checked ~ .x-field-mask:before {
+	color: $light-checkbox-checked-color;
+}

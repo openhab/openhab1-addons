@@ -1,0 +1,72 @@
+/**
+ * @class Ext.field.Field
+ */
+
+// Private variables
+$form-clear-size: 2.2em;
+
+.x-field {
+    min-height: $form-field-height;
+    background: $form-field-bg-color;
+
+    &:last-child {
+        border-bottom: 0;
+    }
+}
+
+.x-field-label {
+    background-color: $form-field-label-bg-color;
+    color: $form-field-label-color;
+}
+
+.x-field-input {
+    .x-clear-icon {
+        background: theme_image('default', "clear_icon.png") no-repeat;
+        background-position: center center;
+        background-size: 55% 55%;
+        width: $form-clear-size;
+        height: $form-clear-size;
+        margin: .5em;
+        margin-top: -($form-clear-size/2);
+        right: -.5em;
+    }
+}
+
+.x-field-clearable {
+    .x-field-input {
+        padding-right: $form-clear-size;
+    }
+}
+
+.x-input-el {
+    padding: .4em;
+    min-height: $form-field-height;
+    border-width: 0;
+    -webkit-appearance: none;
+//    -webkit-text-fill-color: $form-field-color;
+}
+
+.x-ie .x-input-el {
+  background: transparent;
+}
+
+.x-item-disabled {
+  .x-form-label,
+  input,
+  .x-input-el,
+  .x-spinner-body,
+  select,
+  textarea,
+  .x-field-clear-container {
+    color: #b3b3b3;
+    pointer-events: none;
+  }
+}
+
+.x-item-disabled .x-form-label {
+    color: #aaa;
+}
+
+.x-item-disabled .x-form-label:after {
+    color: #666 !important;
+}

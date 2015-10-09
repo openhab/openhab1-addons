@@ -1,0 +1,20 @@
+/**
+ * @class Ext.Img
+ */
+
+.x-img {
+    &.x-img-image {
+        text-align: center;
+
+        img {
+            width: auto;
+            height: 100%;
+        }
+    }
+
+    &.x-img-background {
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: auto 100%;
+    }
+}

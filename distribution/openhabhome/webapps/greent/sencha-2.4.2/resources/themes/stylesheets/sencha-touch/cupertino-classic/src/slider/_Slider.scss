@@ -1,0 +1,51 @@
+/**
+ * @class Ext.slider.Slider
+ */
+
+// Private variables
+$form-thumb-space: ($form-thumb-size - $form-toggle-size) / 2;
+
+.x-slider,
+.x-toggle {
+    height: $form-thumb-size;
+}
+
+.x-slider.x-item-disabled {
+    opacity: .6;
+}
+
+.x-thumb {
+    height: $form-thumb-size;
+    width: $form-thumb-size;
+    background: transparent none;
+    border: 0;
+
+    // The actual thumb
+    &:after {
+        border: 1px solid #999;
+        @include insertion($form-toggle-size, $form-toggle-size, $form-thumb-space, $form-thumb-space);
+        @include background-image(linear-gradient(top, #afafaf, #f1f1f1));
+        @include background-clip(padding-box);
+        @include box-shadow(inset 0 1px 0 rgba(255,255,255,.6), 0 1px 4px rgba(0,0,0,.2));
+        @include border-radius($form-toggle-size/2);
+    }
+
+    &.x-dragging {
+        opacity: 1;
+        &:after {
+            // @include background-gradient(darken($form-light, 5%));
+        }
+    }
+}
+
+// Create the slider track
+.x-slider:before {
+    margin: 0 $form-toggle-size/2;
+    border: .1em solid #999999;
+    border-bottom: 0;
+
+    @include insertion(auto, $form-slider-size, $form-toggle-size / 2 - $form-slider-size/2 + $form-spacing/2 - $form-thumb-space / 2, 0);
+    @include background-image(linear-gradient(top, #c3c3c3, #fdfdfd));
+    @include box-shadow(#d1d1d1 0 .1em 0);
+    @include border-radius($form-slider-size/2);
+}

@@ -1,0 +1,19 @@
+/**
+ * @class Ext.field.Select
+ */
+
+.x-panel.x-select-overlay {
+    padding: 8px;
+    @include border-radius(12px);
+    @include box-shadow(0 20px 40px rgba(0,0,0,.1));
+		background-color: #000;
+
+    > .x-panel-inner {
+        overflow: hidden;
+        border: 1px solid #11141d;
+    }
+
+    .x-list {
+        background: transparent !important;
+    }
+}

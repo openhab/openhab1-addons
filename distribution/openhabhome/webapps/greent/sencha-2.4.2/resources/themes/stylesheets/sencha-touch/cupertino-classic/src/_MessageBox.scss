@@ -1,0 +1,118 @@
+/**
+ * @class Ext.MessageBox
+ */
+
+.x-msgbox {
+    margin: .5em;
+    max-width: 15em;
+    border: 2px solid rgba(#b7bece, .85);
+
+    @include box-shadow(rgba(#000, .4) 0 .1em .5em);
+    @include border-radius(10px);
+    background: rgba(#0e1f4b, .85);
+
+    .x-icon {
+        margin: 0 0.8em 0 0.5em;
+        background: #fff;
+        -webkit-mask-size: 100%;
+    }
+
+    .x-msgbox-info {
+        -webkit-mask-image: theme_image('default', "pictos/info.png");
+    }
+
+    .x-msgbox-warning {
+        -webkit-mask-image: theme_image('default', "pictos/warning_black.png");
+    }
+
+    .x-msgbox-question {
+        -webkit-mask-image: theme_image('default', "pictos/help.png");
+    }
+
+    .x-msgbox-error {
+        -webkit-mask-image: theme_image('default', "pictos/minus_black2.png");
+    }
+
+    .x-title {
+        font-size: 1.2em;
+        // line-height: 1.7em;
+    }
+
+    .x-body {
+        background: transparent !important;
+    }
+
+    .x-toolbar {
+        background: transparent none;
+        @include box-shadow(none);
+
+        &.x-docked-top {
+            // height: 2.1em;
+        }
+    }
+
+    .x-field {
+        min-height: .8em;
+        margin: 0 0 .6em 0;
+        background: #fff;
+        @include border-radius(0);
+        @include box-shadow(0 1px 0 rgba(255,255,255,0.3));
+    }
+
+    .x-field-input {
+        @include box-shadow(inset 0 1px 3px rgba(0,0,0,0.5));
+        border: 1px solid #000000;
+    }
+
+    .x-form-field {
+        min-height: .8em;
+        padding: .3em;
+        padding-right: 0 !important;
+        -webkit-appearance: none;
+        background: transparent;
+    }
+
+    .x-field-input {
+        padding-right: 2.2em;
+    }
+}
+
+.x-msgbox-text {
+    padding: .6em 0;
+    // line-height: 1.4em;
+    color: #fff;
+    font-size: .9em;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.75);
+}
+
+.x-msgbox .x-msgbox-buttons {
+    padding: 0;
+    height: auto;
+    min-height: auto;
+
+    .x-button {
+        height: 2em;
+        margin: 0 6px 0 0;
+        border: 1px solid #1d2545;
+        background: rgba(#040b20, .22);
+        @include box-shadow(0 0 1px rgba(0,0,0,0.5), 0 1px rgba(255,255,255,0.3));
+        @include background-image(linear-gradient(top, rgba(#b8c1da, .48) 0%, rgba(#343f5e, .48) 50%, rgba(#10214e, .48) 51%, rgba(#243a56, .48) 100%));
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    .x-button-label {
+        font-size: .9em;
+    }
+
+    .x-button-action {
+        @include background-image(linear-gradient(top, rgba(#fbfcff, .48) 0%, rgba(#717e9d, .48) 50%, rgba(#4a4d68, .48) 51%, rgba(#6a6c8e, .48) 100%));
+    }
+
+    .x-button-pressing {
+        @include background-image(linear-gradient(top, rgba(#727681, .8) 0%, rgba(#393e4e, .8) 50%, rgba(#141a29, .8) 51%, rgba(#202738, .8) 100%));
+    }
+}
+

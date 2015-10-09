@@ -1,0 +1,23 @@
+/**
+ * @class Ext.layout.Card
+ */
+
+.x-layout-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.x-layout-card-perspective {
+    -webkit-perspective: 1000px;
+    -ms-perspective: 1000px;
+    perspective: 1000px;
+}
+
+.x-layout-card-item-container {
+    @include absolute-fit;
+}
+
+.x-layout-card-item {
+    @include absolute-position;
+    position: absolute !important;
+}

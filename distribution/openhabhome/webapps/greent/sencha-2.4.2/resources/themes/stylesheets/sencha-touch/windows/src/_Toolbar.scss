@@ -1,0 +1,35 @@
+/**
+ * @class Ext.Toolbar
+ */
+
+.x-toolbar {
+    padding: 0 $toolbar-spacing;
+    background-color: transparent;
+    border-width: 0 !important;
+    min-height: 4em;
+
+    &.x-docked-left {
+        width: 7em;
+        padding: $toolbar-spacing;
+    }
+
+    &.x-docked-right {
+        width: 7em;
+        padding: $toolbar-spacing;
+    }
+
+    &.x-docked-bottom {
+        background-color: $background-color;
+    }
+}
+
+.x-toolbar-inner {
+    height: 100% !important;
+}
+
+.x-title {
+    line-height: 44px;
+    font-size: $font-size-extra-large;
+    color: $foreground-color;
+    font-weight: normal;
+}

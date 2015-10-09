@@ -1,0 +1,73 @@
+/**
+ * @class Ext.MessageBox
+ */
+
+.x-msgbox {
+    padding: 0;
+    border: 0;
+    max-width: 19em;
+    background: $background-color;
+
+    .x-icon {
+        margin: 0 0.8em 0 0.5em;
+        background: #fff;
+        -webkit-mask-size: 100%;
+    }
+
+    .x-msgbox-info {
+        -webkit-mask-image: theme_image('default', "pictos/info.png");
+    }
+
+    .x-msgbox-warning {
+        -webkit-mask-image: theme_image('default', "pictos/warning_black.png");
+    }
+
+    .x-msgbox-question {
+        -webkit-mask-image: theme_image('default', "pictos/help.png");
+    }
+
+    .x-msgbox-error {
+        -webkit-mask-image: theme_image('default', "pictos/minus_black2.png");
+    }
+
+    .x-msgbox-title {
+        border-bottom: 2px solid $base-color !important;
+    }
+
+    .x-title {
+        font-size: 20px;
+        font-weight: normal;
+        color: $base-color;
+    }
+
+    .x-body {
+        background: transparent !important;
+    }
+
+    .x-toolbar {
+        background: transparent none;
+        @include box-shadow(none);
+    }
+
+    .x-field {
+        padding-top: 0;
+    }
+
+    .x-field-input {
+        padding-right: 2.2em;
+    }
+}
+
+.x-msgbox-text {
+    padding: 15px;
+    color: $primary-text-color;
+    font-size: .9em;
+}
+
+.x-msgbox .x-msgbox-buttons {
+    padding: 0 0 0 2px;
+
+    .x-button {
+        margin: 2px 2px 0 0;
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * @class Ext.Panel
+ */
+
+/**
+ * @var {measurement} $panel-border-radius
+ * The default border radius of floating panels.
+ */
+$panel-border-radius: .3em !default;
+
+/**
+ * @var {boolean} $include-floating-panels
+ * Decides whether or not to include floating panels (useful to disable for iPhone applications which do not typically have floating menus).
+ */
+$include-floating-panels: true !default;

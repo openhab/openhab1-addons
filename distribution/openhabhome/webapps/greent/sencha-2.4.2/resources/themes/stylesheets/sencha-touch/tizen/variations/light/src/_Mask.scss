@@ -1,0 +1,14 @@
+.x-mask .x-mask-inner {
+	.x-loading-spinner {
+		.x-loading-top {
+			border: $loading-spinner-circle-thickness solid $light-loading-circle-color;
+			&:before {
+				background-color: $light-loading-arm-color;
+			}
+		}
+	}
+
+	.x-mask-message {
+		color: $light-loading-message-color;
+	}
+}
