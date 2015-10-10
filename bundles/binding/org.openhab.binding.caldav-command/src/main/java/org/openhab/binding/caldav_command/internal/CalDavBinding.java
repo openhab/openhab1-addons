@@ -11,7 +11,9 @@ package org.openhab.binding.caldav_command.internal;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -260,7 +262,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	
 	private void doActionInitial() {
 		List<CalDavEvent> events = calDavLoader.getEvents(new CalDavQuery(this.readCalendars, DateTime.now(), DateTime.now()));
-		EventUtils.EventContent currentEventContent = null;
+		Map<String, EventUtils.EventContent> map = new HashMap<String, EventUtils.EventContent>();
 		for (CalDavEvent calDavEvent : events) {
 			final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, this.itemRegistry, null);
 			for (EventUtils.EventContent eventContent : parseContent) {
@@ -268,15 +270,17 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 					continue;
 				}
 				
+				EventUtils.EventContent currentEventContent = map.get(eventContent.getItem().getName());
 				if (eventContent.getTime().isBefore(DateTime.now())
 						&& (currentEventContent == null || eventContent.getTime().isAfter(currentEventContent.getTime()))) {
-					currentEventContent = eventContent;
+					map.put(eventContent.getItem().getName(), eventContent);
 				}
 			}
 		}
 		
-		if (currentEventContent != null) {
+		for (EventUtils.EventContent currentEventContent : map.values()) {
 			eventPublisher.postUpdate(currentEventContent.getItem().getName(), currentEventContent.getType());
+			logger.debug("setting initial value for {} to {}", currentEventContent.getItem().getName(), currentEventContent.getType());
 		}
 	}
 	

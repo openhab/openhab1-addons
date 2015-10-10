@@ -111,10 +111,12 @@ public final class EventUtils {
 				}
 				
 				if (!item.getName().equals(itemName)) {
+					LOG.debug("name of item {} does not match itemName {}", item.getName(), itemName);
 					continue;
 				}
 				
 				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
+				LOG.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
 				outMap.add(new EventContent(scope, item, state, time));
 			}
 		} catch (IOException e) {
