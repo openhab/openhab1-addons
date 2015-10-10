@@ -12,6 +12,7 @@ import org.openhab.binding.wr3223.internal.WR3223Commands;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -415,6 +416,133 @@ public enum WR3223CommandType {
 			command = "defrosting_heat_feedback_rate";
 			itemClass = NumberItem.class;
 			wr3223Command = WR3223Commands.AR;			
+		}
+	},
+	
+	
+	/** (de: Solar max */
+	SOLAR_MAX {
+		{
+			command = "solar_max";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.SM;			
+		}
+	},		
+	
+	/** (de: Solar Nutzen (Stunden) */
+	SOLAR_USAGE {
+		{
+			command = "solar_usage";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.SN;			
+		}
+	},	
+	
+	/** (de: Delta T Aus Temperaturdifferenz zwischen Speicher u. Kollektor */
+	DELTA_T_OFF{
+		{
+			command = "delta_t_off";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.DA;			
+		}
+	},	
+	
+	/** (de: Delta T Ein Temperaturdifferenz zwischen Speicher u. Kollektor */
+	DELTA_T_ON{
+		{
+			command = "delta_t_on";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.DE;			
+		}
+	},		
+		
+	/** (de: Maximale Kondensatortemperatur */
+	TEMPERATURE_CONDENSER_MAX{
+		{
+			command = "temperature_condenser_max";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.KM;			
+		}
+	},
+	
+	/** (de: Pausezeit für Druckabbau bei automatischer Umschaltung */
+	IDLE_TIME_PRESSURE_REDUCTION{
+		{
+			command = "idle_time_pressure_reduction";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.PA;			
+		}
+	},
+	
+	/** (de: Unterstuetzungsgeblaese bei Luftstufe 1 bei EWT */
+	SUPPORT_FAN_LEVEL_1_EARTH_HEAT_EXCHANGER{
+		{
+			command = "support_fan_level_1_earth_heat_exchanger";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.S1;			
+		}
+	},
+	
+	/** (de: Unterstuetzungsgeblaese bei Luftstufe 2 bei EWT */
+	SUPPORT_FAN_LEVEL_2_EARTH_HEAT_EXCHANGER{
+		{
+			command = "support_fan_level_2_earth_heat_exchanger";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.S2;			
+		}
+	},	
+	
+	/** (de: Unterstuetzungsgeblaese bei Luftstufe 3 bei EWT */
+	SUPPORT_FAN_LEVEL_3_EARTH_HEAT_EXCHANGER{
+		{
+			command = "support_fan_level_3_earth_heat_exchanger";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.S3;			
+		}
+	},
+	
+	/** (de: Steuerspannung Abluft */
+	CONTROL_VOLTAGE_OUTGOING_AIR{
+		{
+			command = "control_voltage_outgoing_air";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.UA;			
+		}
+	},
+
+	/** (de: Steuerspannung Zuluft */
+	CONTROL_VOLTAGE_SUPPLY_AIR{
+		{
+			command = "control_voltage_supply_air";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.UZ;			
+		}
+	},	
+	
+	/** (de: Warmwasser Sollwert */
+	WARM_WATER_TARGET_TEMPERATURE{
+		{
+			command = "warm_water_target_temperature";
+			itemClass = NumberItem.class;
+			wr3223Command = WR3223Commands.WS;			
+		}
+	},
+	
+	/** (de: Waermepumpe freigegeben (1) oder aus (0) */
+	HEAT_PUMP_OPEN{
+		{
+			command = "heat_pump_open";
+			itemClass = SwitchItem.class;
+			wr3223Command = WR3223Commands.WP;			
+		}
+	},
+	
+	/** (de: Zusatzheizung ausgeschaltet (0) oder freigegeben (1) */
+	ADDITIONAL_HEATER_OPEN{
+		{
+			command = "additional_heater_open";
+			itemClass = SwitchItem.class;
+			wr3223Command = WR3223Commands.WP;			
 		}
 	},		
 	;	
