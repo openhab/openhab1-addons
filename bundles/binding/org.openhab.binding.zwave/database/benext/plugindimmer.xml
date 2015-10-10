@@ -34,6 +34,102 @@
 			<id>0x86</id>
 		</Class>
 	</CommandClasses>
+	
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>256</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset to factory settings</Label>
+			<Help lang="en">Set all configuration values to default values (factory settings).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable dimming</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+			<Help lang="en">This parameter is used to enable the dimming option of the product. When disabled the dimming and fading routine are disabled.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Minimum>25</Minimum>
+			<Maximum>150</Maximum>
+			<Default>125</Default>
+			<Size>2</Size>
+			<Label lang="en">Maximum powerload</Label>			
+			<Help lang="en">The maximum powerload in watts when light is turned on, when measured higher then this value the Plugin Dimmer is automatically stops with dimming or is turned off.</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming speed</Label>			
+			<Help lang="en">The speed of dimming when activated (manual and RF). Dim speed is 1% per value (* 10 ms)</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Fading up speed</Label>			
+			<Help lang="en">The speed of fading up when activated (manual and RF). Fade speed is 1% per value (* 10 ms)</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto meter report: percentage</Label>			
+			<Help lang="en">A percentage that an energy value must be different compared to a previous sent value before an unsolicited meter report is sent. Minimum value = 1%  Maximum value = 100%</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto meter report: watt</Label>			
+			<Help lang="en">A watt value that an energy value must be different compared to a previous sent value before an unsolicited meter report is sent. Minimum value = 5 watt  Maximum value = 255 watt</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto meter report: time</Label>			
+			<Help lang="en">A time value that has to be passed compared to a previous sent value before a unsolicited meter report is sent. Minimum value = 10 seconds  Maximum value = 255 seconds</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Last known status</Label>			
+			<Help lang="en">What to do with lamp status when power applied. If 0x00: Always switch light off when power applied. If > 0x00: Switch lamp on/off depending on last known lampstatus before power was disconnected.</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Fading down speed</Label>			
+			<Help lang="en">The speed of fading down when activated (manual and RF). Fade speed is 1% per value (* 10 ms)</Help>
+   		</Parameter>
+	</Configuration>
+	
 	<Associations>
 		<Group>
 			<Index>1</Index>
