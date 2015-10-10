@@ -1026,6 +1026,10 @@
 				<Id>0058</Id>
 			</Reference>
 			<Reference>
+				<Type>0101</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Reference>
 				<Type>0201</Type>
 				<Id>0058</Id>
 			</Reference>
@@ -1292,7 +1296,8 @@
 			</Reference>
 			<Model>ZM1602</Model>
 			<Label lang="en">AC/DC Siren</Label>
-			<ConfigFile>vision/zm1602.xml</ConfigFile>
+			<ConfigFile VersionMin="1" VersionMax="15.2">vision/zm1602.xml</ConfigFile>
+			<ConfigFile VersionMax="15.3">vision/zm1602v4.xml</ConfigFile> 
 		</Product>
 		<Product>
 			<Reference>
@@ -2378,6 +2383,10 @@
 				<Type>3</Type>
 				<Id>2</Id>
 			</Reference>
+			<Reference>
+				<Type>3</Type>
+				<Id>52</Id>
+			</Reference>
 			<Model>ZMNHCD</Model>
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhcd.xml</ConfigFile>
@@ -2433,6 +2442,10 @@
 			</Reference>
 			<Reference>
 				<Type>453</Type>
+				<Id>10F</Id>
+			</Reference>
+			<Reference>
+				<Type>453</Type>
 				<Id>110</Id>
 			</Reference>
 			<Model>MIMOlite</Model>
@@ -2478,13 +2491,31 @@
 		<Name>BeNext</Name>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>doorSensor</Model>
+			<Label lang="en">BeNext Door Sensor</Label>
+			<ConfigFile>benext/doorsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0008</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>powerSwitch</Model>
+			<Label lang="en">BeNext Power Switch EU</Label>
+			<ConfigFile>benext/switch.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>000d</Type>
 				<Id>0100</Id>
 			</Reference>
 			<Model>builtInDimmer</Model>
 			<Label lang="en">BeNext Built-in Dimmer</Label>
 			<ConfigFile>benext/builtindimmer.xml</ConfigFile>
-		</Product>
+		</Product>		
 		<Product>
 			<Reference>
 				<Type>0018</Type>
@@ -2741,6 +2772,30 @@
 			<Model>ARZ</Model>
 			<Label lang="en">Roller Shutter Module</Label>
 			<ConfigFile>fakro/arz.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0157</Id>
+		<Name>EcoNet Controls</Name>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>EV-100</Model>
+			<Label lang="en">Vent</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>00A5</Id>
+		<Name>Nodon</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>CRC-3100</Model>
+			<Label lang="en">Remote Control</Label>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

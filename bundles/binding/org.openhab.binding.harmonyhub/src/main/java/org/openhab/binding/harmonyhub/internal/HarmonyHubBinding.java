@@ -76,7 +76,7 @@ public class HarmonyHubBinding extends AbstractBinding<HarmonyHubBindingProvider
 		if(provider instanceof HarmonyHubBindingProvider) {
 			HarmonyHubBindingProvider harmonyProvider = (HarmonyHubBindingProvider)provider;
 			final HarmonyHubBindingConfig config = harmonyProvider.getHarmonyHubBindingConfig(itemName);
-			if(harmonyHubGateway != null && config.getBindingType() == HarmonyHubBindingType.CurrentActivity) {
+			if(harmonyHubGateway != null && config != null && config.getBindingType() == HarmonyHubBindingType.CurrentActivity) {
 				if(!harmonyListeners.containsKey(config.getQualifier())) {
 					logger.debug("adding new listener for {}", config.getQualifier());
 					HarmonyHubListener listener = new HarmonyHubListener() {

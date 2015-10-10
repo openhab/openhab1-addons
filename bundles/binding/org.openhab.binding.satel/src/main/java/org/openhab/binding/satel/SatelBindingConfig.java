@@ -40,11 +40,13 @@ public abstract class SatelBindingConfig implements BindingConfig {
 	private static final DecimalType DECIMAL_ONE = new DecimalType(1);
 
 	private Map<String, String> options;
+	private boolean itemInitialized;
 
 	/**
 	 * Checks whether given option is set to <code>true</code>.
 	 * 
-	 * @param option option to check
+	 * @param option
+	 *            option to check
 	 * @return <code>true</code> if option is enabled
 	 */
 	public boolean hasOptionEnabled(Options option) {
@@ -54,7 +56,8 @@ public abstract class SatelBindingConfig implements BindingConfig {
 	/**
 	 * Returns value of given option.
 	 * 
-	 * @param option option to get value for
+	 * @param option
+	 *            option to get value for
 	 * @return string value or <code>null</code> if option is not present
 	 */
 	public String getOption(Options option) {
@@ -68,6 +71,23 @@ public abstract class SatelBindingConfig implements BindingConfig {
 	 */
 	public String optionsAsString() {
 		return this.options.toString();
+	}
+
+	/**
+	 * Returns initialization state of bound item.
+	 * 
+	 * @return <code>true</code> if bound item has received state update,
+	 *         <code>false</code> if it is uninitialized
+	 */
+	public boolean isItemInitialized() {
+		return itemInitialized;
+	}
+
+	/**
+	 * Notifies that bound item has its state updated.
+	 */
+	public void setItemInitialized() {
+		this.itemInitialized = true;
 	}
 
 	/**
@@ -106,6 +126,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
 	protected SatelBindingConfig(Map<String, String> options) {
 		this.options = options;
+		this.itemInitialized = false;
 	}
 
 	protected State booleanToState(Item item, boolean value) {
@@ -119,4 +140,5 @@ public abstract class SatelBindingConfig implements BindingConfig {
 
 		return null;
 	}
+
 }

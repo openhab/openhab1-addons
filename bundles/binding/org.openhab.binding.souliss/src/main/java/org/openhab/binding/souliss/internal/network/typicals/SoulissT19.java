@@ -11,6 +11,7 @@ package org.openhab.binding.souliss.internal.network.typicals;
 import java.net.DatagramSocket;
 
 import org.openhab.binding.souliss.internal.network.udp.SoulissCommGate;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
@@ -75,8 +76,8 @@ public class SoulissT19 extends SoulissGenericTypical {
 		if (sOHState != null) {
 			return OnOffType.valueOf(sOHState);
 		} else {
-			return new PercentType(
-					String.valueOf((this.getState() / 250) * 100));
+			//return new DecimalType(Math.round((this.getState() / 254) * 100));
+			return new PercentType(Math.round((this.getState() / 254) * 100));
 		}
 	}
 }

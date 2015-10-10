@@ -33,6 +33,8 @@ public class DateTimeItem extends GenericItem {
 	static {
 		acceptedDataTypes.add((DateTimeType.class));
 		acceptedDataTypes.add(UnDefType.class);
+
+		acceptedCommandTypes.add(DateTimeType.class);
 	}
 	
 	public DateTimeItem(String name) {

@@ -61,12 +61,11 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void processBindingConfiguration(String pvContext, Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(pvContext, pvItem, pvBindingConfig);
-
 		OneWireBindingConfig pvDevicePropertyBindingConfig = OneWireBindingConfigFactory.createOneWireDeviceProperty(pvItem, pvBindingConfig);
 
 		addBindingConfig(pvItem, pvDevicePropertyBindingConfig);
 
+		super.processBindingConfiguration(pvContext, pvItem, pvBindingConfig);
 	}
 
 	/* (non-Javadoc)

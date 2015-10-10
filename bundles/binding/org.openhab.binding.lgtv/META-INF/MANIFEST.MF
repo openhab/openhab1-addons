@@ -23,9 +23,8 @@ Import-Package: javax.xml.bind,
  org.openhab.core.types,
  org.openhab.model.item.binding,
  org.openhab.ui.items,
- org.openhab.model.core,
  org.osgi.framework,
- org.osgi.service.cm;version="1.4.0",
+ org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j,
@@ -33,8 +32,7 @@ Import-Package: javax.xml.bind,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.openhab.core.persistence,
- org.openhab.core.transform,
- org.openhab.model.sitemap
+ org.openhab.core.transform
 Export-Package: org.openhab.binding.lgtv, org.openhab.binding.lgtv.lgi
  nteraction, org.openhab.binding.lgtv.internal;x-internal:=true
 Bundle-DocURL: http://www.openhab.org

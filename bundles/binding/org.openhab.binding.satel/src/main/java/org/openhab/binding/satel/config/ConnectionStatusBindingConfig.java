@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.openhab.binding.satel.SatelBindingConfig;
 import org.openhab.binding.satel.internal.event.ConnectionStatusEvent;
+import org.openhab.binding.satel.internal.event.NewStatesEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
 import org.openhab.binding.satel.internal.protocol.SatelMessage;
 import org.openhab.binding.satel.internal.types.IntegraType;
@@ -81,7 +82,13 @@ public class ConnectionStatusBindingConfig extends SatelBindingConfig {
 	@Override
 	public State convertEventToState(Item item, SatelEvent event) {
 		if (!(event instanceof ConnectionStatusEvent)) {
-			return null;
+			// since we get event about changes, we assume connection has been established.
+			// if current items state is uninitialized, "generate" fake event to update its state
+			if (event instanceof NewStatesEvent && this.connectedSince == null) {
+				event = new ConnectionStatusEvent(true);
+			} else {
+				return null;
+			}
 		}
 
 		ConnectionStatusEvent statusEvent = (ConnectionStatusEvent) event;

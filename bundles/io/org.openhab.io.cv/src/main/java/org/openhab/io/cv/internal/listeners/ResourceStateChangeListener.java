@@ -21,6 +21,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.cv.internal.ReturnType;
@@ -176,6 +177,23 @@ abstract public class ResourceStateChangeListener {
 		if (item instanceof GenericItem) {
 			GenericItem genericItem = (GenericItem) item;
 			genericItem.removeStateChangeListener(stateChangeListener);
+		}
+	}
+	
+	/**
+	 * After a model change the item objects in the ReturnType of all relevant items
+	 * need to be refreshed to the new item objects
+	 * 
+	 */
+	public void refreshRelevantItems() {
+		for (List<ReturnType> rts : getRelevantItemNames().values()) {
+			for (ReturnType rt : rts) {
+				try {
+					rt.refreshItem();
+				} catch (ItemNotFoundException e) {
+					// item does not exist, do nothing
+				}
+			}
 		}
 	}
 

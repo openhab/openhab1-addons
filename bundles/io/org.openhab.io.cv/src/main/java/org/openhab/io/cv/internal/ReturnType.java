@@ -65,11 +65,20 @@ public class ReturnType {
 	public ReturnType(String cvItemName) throws ItemNotFoundException {
 		this.clientItemName = cvItemName;
 		this.stateClass = null;
-		String[] parts = cvItemName.split(":");
-		String ohItemName = cvItemName;
+		this.refreshItem();
+	}
+	
+	/**
+	 * Retrieve the item from the ItemUIRegistry again
+	 * 
+	 * @throws ItemNotFoundException
+	 */
+	public void refreshItem() throws ItemNotFoundException {
+		String[] parts = this.clientItemName.split(":");
+		String ohItemName = this.clientItemName;
 		if (parts.length==2) {
 			String classPrefix=parts[0].toLowerCase();
-			if (itemTypeMapper.containsKey(classPrefix)) {
+			if (itemTypeMapper.containsKey(classPrefix)) { 
 				stateClass = itemTypeMapper.get(classPrefix);
 			} else {
 				logger.debug("no type found for '{}'",classPrefix);
