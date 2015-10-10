@@ -378,7 +378,7 @@ public enum WR3223CommandType {
 		{
 			command = "defrosting_end_temperature";
 			itemClass = NumberItem.class;
-			wr3223Command = WR3223Commands.AE;			
+			wr3223Command = WR3223Commands.AA;			
 		}
 	},	
 	
