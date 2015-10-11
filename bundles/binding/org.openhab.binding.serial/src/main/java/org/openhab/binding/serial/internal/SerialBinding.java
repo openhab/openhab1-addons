@@ -21,6 +21,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -52,6 +53,8 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
 	private EventPublisher eventPublisher = null;
 
+	private TransformationService transformationService;
+
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 
@@ -65,6 +68,20 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
 		for(SerialDevice serialDevice : serialDevices.values()) {
 			serialDevice.setEventPublisher(null);
+		}
+	}
+	
+	public void setTransformationService(TransformationService transformationService) {
+		this.transformationService = transformationService;
+		for(SerialDevice serialDevice : serialDevices.values()) {
+			serialDevice.setTransformationService(transformationService);
+		}
+	}
+
+	public void unsetTransformationService(TransformationService transformationService) {
+		this.transformationService = null;
+		for(SerialDevice serialDevice : serialDevices.values()) {
+			serialDevice.setTransformationService(null);
 		}
 	}
 
@@ -101,7 +118,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 		if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch- and StringItems are allowed - please check your *.items configuration");
+					+ "', only Switch-, Number- and StringItems are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -112,15 +129,14 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
 		int indexOf = bindingConfig.indexOf(',');
 		String serialPart = bindingConfig;
-		Pattern pattern = null;
+		String pattern = null;
 
 		if(indexOf != -1) {
 			String substring = bindingConfig.substring(indexOf+1);
 			serialPart = bindingConfig.substring(0, indexOf);
 
 			if(substring.startsWith("REGEX(")) {
-				substring = substring.substring(6, substring.length()-1);
-				pattern = Pattern.compile(substring);
+				pattern = substring.substring(6, substring.length()-1);
 			}
 		}
 
@@ -139,6 +155,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 			else
 				serialDevice = new SerialDevice(port);
 
+			serialDevice.setTransformationService(transformationService);
 			serialDevice.setEventPublisher(eventPublisher);
 			try {
 				serialDevice.initialize();

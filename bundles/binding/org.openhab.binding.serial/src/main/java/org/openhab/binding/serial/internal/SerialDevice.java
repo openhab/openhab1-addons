@@ -34,6 +34,10 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationHelper;
+import org.openhab.core.transform.TransformationService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +55,8 @@ public class SerialDevice implements SerialPortEventListener {
 	private int baud = 9600;
 
 	private EventPublisher eventPublisher;
-
+	private TransformationService transformationService;
+	
 	private CommPortIdentifier portId;
 	private SerialPort serialPort;
 
@@ -62,7 +67,7 @@ public class SerialDevice implements SerialPortEventListener {
 	private Map<String, ItemType> patternMap;
 
 	class ItemType {
-		Pattern pattern;
+		String pattern;
 		Class<?> type;
 	}
 	
@@ -70,7 +75,7 @@ public class SerialDevice implements SerialPortEventListener {
 		return patternMap.isEmpty();
 	}
 	
-	public void addRegEx(String itemName, Class<?> type, Pattern pattern) {
+	public void addRegEx(String itemName, Class<?> type, String pattern) {
 		if(patternMap == null)
 			patternMap = new HashMap<String, ItemType>();
 		
@@ -102,6 +107,10 @@ public class SerialDevice implements SerialPortEventListener {
 
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
+	}
+	
+	public void setTransformationService(TransformationService transformationService) {
+		this.transformationService = transformationService;
 	}
 
 	public String getPort() {
@@ -218,21 +227,25 @@ public class SerialDevice implements SerialPortEventListener {
 
 							// use pattern
 							if(entry.getValue().pattern != null) {
-								
-								Matcher matcher = entry.getValue().pattern.matcher(result);
 
-								while (matcher.find()) {
-									if(matcher.groupCount() > 0) {
-										String group = matcher.group(1);
+								if(transformationService == null) {
+									logger.error("No transformation service available!");
+									
+								} else {
+									try {
+										String value = transformationService.transform(entry.getValue().pattern, result);
 										if(entry.getValue().type.equals(NumberItem.class)) {
 											try {
-												eventPublisher.postUpdate(entry.getKey(), new DecimalType(group));
+												eventPublisher.postUpdate(entry.getKey(), new DecimalType(value));
 											} catch (NumberFormatException e) {
-												logger.warn("Unable to convert regex expression '{}' for item {} to number", new String[] { result, entry.getKey()});
+												logger.warn("Unable to convert regex result '{}' for item {} to number", new String[] { result, entry.getKey()});
 											}
 										} else {
-											eventPublisher.postUpdate(entry.getKey(), new StringType(group));
+											eventPublisher.postUpdate(entry.getKey(), new StringType(value));
 										}
+										
+									} catch (TransformationException e) {
+										logger.error("Unable to transform!", e);
 									}
 								}
 								
