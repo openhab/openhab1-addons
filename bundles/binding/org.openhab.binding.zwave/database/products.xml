@@ -1671,6 +1671,20 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>0100</Id>
+		<Name>Duewi</Name>
+		<Product>
+			<Reference>
+				<Type>2001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>ZW BJ ES 1000</Model>
+			<Label lang="en">Wall switch</Label>
+			<Label lang="de">Wandeinbautaster einfach</Label>
+			<ConfigFile>zwaveme/zme_05457.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0115</Id>
 		<Name>ZWave.me</Name>
 		<Product>
