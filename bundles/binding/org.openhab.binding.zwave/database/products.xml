@@ -650,10 +650,10 @@
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
-			<Model>054313</Model>
-			<Label lang="en">Single button wall switch</Label>
-			<Label lang="de">Wandschalter</Label>
-			<ConfigFile>reitz/054313.xml</ConfigFile>
+			<Model>Duewi ZW BJ ES 1000 / ZWave.me 05457 </Model>
+			<Label lang="en">Duewi ZW BJ ES 1000 / ZWave.ME 05457 Single button wall switch</Label>
+			<Label lang="de">Duewi ZW BJ ES 1000 / ZWave.ME 05457 Wandeinbautaster einfach</Label>
+			<ConfigFile>zwaveme/05457.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1668,20 +1668,6 @@
 			<Model>EZMotion Express</Model>
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
-		</Product>
-	</Manufacturer>
-	<Manufacturer>
-		<Id>0100</Id>
-		<Name>Duewi</Name>
-		<Product>
-			<Reference>
-				<Type>2001</Type>
-				<Id>0000</Id>
-			</Reference>
-			<Model>ZW BJ ES 1000</Model>
-			<Label lang="en">Wall switch</Label>
-			<Label lang="de">Wandeinbautaster einfach</Label>
-			<ConfigFile>zwaveme/zme_05457.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
