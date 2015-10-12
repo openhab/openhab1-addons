@@ -1519,6 +1519,10 @@
 			</Reference>
 			<Reference>
 				<Type>0B00</Type>
+				<Id>2001</Id>
+			</Reference>
+			<Reference>
+				<Type>0B00</Type>
 				<Id>3001</Id>
 			</Reference>
 			<Model>FGFS101</Model>
