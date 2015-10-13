@@ -650,10 +650,10 @@
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
-			<Model>ZME_05457</Model>
-			<Label lang="en">Duewi ZW BJ ES 1000 / ZWave.me 05457 Single button wall switch</Label>
-			<Label lang="de">Duewi ZW BJ ES 1000 / ZWave.me 05457 Wandeinbautaster einfach</Label>
-			<ConfigFile>zwaveme/05457.xml</ConfigFile>
+			<Model>ZME_054313Z</Model>
+			<Label lang="en">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Single button wall switch</Label>
+			<Label lang="de">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Wandeinbautaster einfach</Label>
+			<ConfigFile>zwaveme/054313z.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
