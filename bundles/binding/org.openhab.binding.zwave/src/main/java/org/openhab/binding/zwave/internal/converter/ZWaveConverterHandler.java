@@ -390,11 +390,12 @@ public class ZWaveConverterHandler {
 		ZWaveCommandClass commandClass;
 		String commandClassName = bindingConfiguration.getArguments().get("command");
 		
-		if(node.getNodeId() == this.controller.getOwnNodeId() && commandClassName.equalsIgnoreCase("switch_all")) {
-		    commandClass = ZWaveCommandClass.getInstance(0x27, node, this.controller);
-		}
-		else {
-			if (commandClassName != null) {
+		if (commandClassName != null) {
+			
+			if(node.getNodeId() == this.controller.getOwnNodeId() && commandClassName.equalsIgnoreCase("switch_all")) {
+			    commandClass = ZWaveCommandClass.getInstance(0x27, node, this.controller);
+			}
+			else {
 				commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
 						bindingConfiguration.getEndpoint());
 	
@@ -404,11 +405,13 @@ public class ZWaveConverterHandler {
 							node.getNodeId(), itemName, commandClassName, CommandClass.getCommandClass(commandClassName)
 									.toString(), bindingConfiguration.getEndpoint());
 					return;
-				}
-			} else {
-				commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
+				} 
 			}
 		}
+		else {
+			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
+		}
+		
 		if (commandClass == null) {
 			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
 			return;
