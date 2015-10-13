@@ -653,7 +653,7 @@
 			<Model>Duewi ZW BJ ES 1000 / ZWave.me 05457 </Model>
 			<Label lang="en">Duewi ZW BJ ES 1000 / ZWave.me 05457 Single button wall switch</Label>
 			<Label lang="de">Duewi ZW BJ ES 1000 / ZWave.me 05457 Wandeinbautaster einfach</Label>
-			<ConfigFile>zwaveme/05457.xml</ConfigFile>
+			<ConfigFile>reitz/054313.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
