@@ -357,7 +357,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
 	            if (switchAllCommandClass != null) {
-	            	record = new OpenHABConfigurationRecord(domain, "Switch All", "Switch All", false);
+	            	record = new OpenHABConfigurationRecord(domain, "SwitchAll", "Switch All", false);
 	            	record.type = OpenHABConfigurationRecord.TYPE.LIST;
 					record.addValue("0", "Exclude from All On and All Off groups");
 					record.addValue("1", "Include in All On group");
@@ -1112,7 +1112,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				return;
 			}
 
-			// TODO: Should we check that the node is finished initializing
+			// TODO: Should we check that the node is finished initialising
 
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
@@ -1128,7 +1128,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					node.setLocation(value);
 				}
 				
-				if (splitDomain[2].equals("Switch All")) {
+				if (splitDomain[2].equals("SwitchAll")) {
 					ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass) node
 							.getCommandClass(CommandClass.SWITCH_ALL);
 
