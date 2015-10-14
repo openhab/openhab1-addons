@@ -653,7 +653,7 @@
 			<Model>ZME_054313Z</Model>
 			<Label lang="en">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Single button wall switch</Label>
 			<Label lang="de">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Wandeinbautaster einfach</Label>
-			<ConfigFile>zwaveme/054313z.xml</ConfigFile>
+			<ConfigFile>reitz/054313.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
