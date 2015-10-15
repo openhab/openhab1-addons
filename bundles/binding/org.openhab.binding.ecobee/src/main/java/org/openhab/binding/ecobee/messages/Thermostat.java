@@ -459,6 +459,21 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return the running event or null if there is none
+	 */
+	@JsonIgnore
+	public Event getRunningEvent() {
+		if (this.events != null) {
+			for (Event event : this.events) {
+				if (event.isRunning()) {
+					return event;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Create a named-based map of RemoteSensors from the list of RemoteSensors, for ease of access from beanutils.
 	 */
 	protected void sync() {
@@ -5014,6 +5029,7 @@ public class Thermostat extends AbstractMessagePart {
 	public static class Event extends AbstractMessagePart {
 		private String type;
 		private String name;
+		@JsonProperty("running")
 		private Boolean running;
 		// TODO Jackson 1.9 dates (@watou)
 		private String startDate;
