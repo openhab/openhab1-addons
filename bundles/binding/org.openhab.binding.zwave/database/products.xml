@@ -658,9 +658,9 @@
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
-			<Model>054313</Model>
-			<Label lang="en">Single button wall switch</Label>
-			<Label lang="de">Wandschalter</Label>
+			<Model>ZME_054313Z</Model>
+			<Label lang="en">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Single button wall switch</Label>
+			<Label lang="de">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Wandeinbautaster einfach</Label>
 			<ConfigFile>reitz/054313.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
