@@ -15,10 +15,12 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -27,9 +29,13 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.bff.javampd.MPD;
 import org.bff.javampd.MPDAdmin;
+import org.bff.javampd.MPDDatabase;
+import org.bff.javampd.MPDDatabase.ScopeType;
+import org.bff.javampd.MPDFile;
 import org.bff.javampd.MPDOutput;
 import org.bff.javampd.MPDPlayer;
 import org.bff.javampd.MPDPlayer.PlayerStatus;
+import org.bff.javampd.MPDPlaylist;
 import org.bff.javampd.events.OutputChangeEvent;
 import org.bff.javampd.events.OutputChangeListener;
 import org.bff.javampd.events.PlayerBasicChangeEvent;
@@ -200,6 +206,8 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 			try {
 				pCommand = PlayerCommandTypeMapping.fromString(playerCommand);
 				MPDPlayer player = daemon.getMPDPlayer();
+				MPDPlaylist playlist = daemon.getMPDPlaylist();
+				MPDDatabase db = daemon.getMPDDatabase();
 				
 				switch (pCommand) {
 					case PAUSE: player.pause(); break;
@@ -209,6 +217,27 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE); break;
 					case NEXT: player.playNext(); break;
 					case PREV: player.playPrev(); break;
+					case PLAYSONG: 
+						logger.debug("Searching for Song {}", (String) commandParams);
+						Collection<MPDSong> songs = db.find(ScopeType.TITLE, (String) commandParams);
+						
+						Iterator<MPDSong> it = songs.iterator();
+						if (it.hasNext()==true) {
+							MPDSong song = (MPDSong) it.next();
+							
+							logger.debug("Song found: {}", song.getFile());
+							
+							MPDFile file = new MPDFile();
+							file.setPath(song.getFile());
+							
+							playlist.clearPlaylist();
+							playlist.addFileOrDirectory(file);
+							
+						} else {
+							logger.debug("Song not found: {}", (String) commandParams);
+						}
+						
+						break;
 					case ENABLE:
 					case DISABLE:
 						Integer outputId = Integer.valueOf((String) commandParams);
