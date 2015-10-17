@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public abstract class PollHandler {
 	 */
 	PollHandler(DeviceFeature feature) {
 		m_feature = feature;
-	}		
+	}	
 	/**
 	 * Creates Insteon message that can be used to poll a feature
 	 * via the Insteon network.
@@ -43,38 +44,49 @@ public abstract class PollHandler {
 
 	public void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
 	
-	public static class DefaultPollHandler extends PollHandler {
-		DefaultPollHandler(DeviceFeature f) { super(f); }
-		@Override
-		public Msg makeMsg(InsteonDevice d) {
-			Msg m = null;
-			try {
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x19, (byte)0x00);
-				m.setQuietTime(500L);
-			} catch (FieldException e) {
-				logger.warn("error setting field in msg: ", e);
-			} catch (IOException e) {
-				logger.error("poll failed with exception ", e);
-			}
-			return m;
+	/**
+	 * Returns parameter as integer
+	 * @param key key of parameter
+	 * @param def default
+	 * @return value of parameter
+	 */
+	protected int getIntParameter(String key, int def) {
+		String val = m_parameters.get(key);
+		if (val == null) return (def); // param not found
+		int ret = def;
+		try {
+			ret = Utils.strToInt(val);
+		} catch (NumberFormatException e) {
+			logger.error("malformed int parameter in command handler: {}", key);
 		}
+		return ret;
 	}
 	/**
-	 * Handler for e.g. the KeypadLinc devices which have multiple
-	 * LED buttons. By sending cmd1 = 0x19, cmd2 = 0x01, the status
-	 * of the individual LED buttons will be returned in the response 
-	 * @author Bernd Pfrommer
-	 *
+	 * A flexible, parameterized poll handler that can generate
+	 * most query messages. Provide the suitable parameters in
+	 * the device features file.
 	 */
-	public static class LEDBitPollHandler extends PollHandler {
-		LEDBitPollHandler(DeviceFeature f) { super(f); }
+
+	public static class FlexPollHandler extends PollHandler {
+		FlexPollHandler(DeviceFeature f) { super(f); }
 		@Override
 		public Msg makeMsg(InsteonDevice d) {
 			Msg m = null;
+			int cmd1 = getIntParameter("cmd1", 0);
+			int cmd2 = getIntParameter("cmd2", 0);
+			int ext  = getIntParameter("ext", -1);
 			try {
-				// setting cmd2 = 0x01 will return the LED bit flags
-				// rather than the relay status!
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x19, (byte)0x01);
+				if (ext == 1 || ext == 2) {
+					int d1   = getIntParameter("d1", 0);
+					int d2   = getIntParameter("d2", 0);
+					int d3   = getIntParameter("d3", 0);
+					m = d.makeExtendedMessage((byte) 0x0f, (byte)cmd1, (byte)cmd2,
+							new byte [] {(byte)d1, (byte)d2, (byte)d3});
+					if (ext == 1) m.setCRC();
+					else if (ext == 2) m.setCRC2();
+				} else {
+					m = d.makeStandardMessage((byte) 0x0f, (byte)cmd1, (byte)cmd2);
+				}
 				m.setQuietTime(500L);
 			} catch (FieldException e) {
 				logger.warn("error setting field in msg: ", e);
@@ -84,24 +96,7 @@ public abstract class PollHandler {
 			return m;
 		}
 	}
-
-	public static class PowerMeterPollHandler extends PollHandler {
-		PowerMeterPollHandler(DeviceFeature f) { super(f); }
-		@Override
-		public Msg makeMsg(InsteonDevice d) {
-			Msg m = null;
-			try {
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x82, (byte)0x00);
-				m.setQuietTime(500L);
-			} catch (FieldException e) {
-				logger.warn("error setting field in msg: ", e);
-			} catch (IOException e) {
-				logger.error("poll failed with exception ", e);
-			}
-			return m;
-		}
-	}
-
+	
 	public static class NoPollHandler extends PollHandler {
 		NoPollHandler(DeviceFeature f) { super(f); }
 		@Override
@@ -109,82 +104,10 @@ public abstract class PollHandler {
 			return null;
 		}
 	}
-	
-	public static class ThermostatTemperaturePollHandler extends PollHandler {
-		ThermostatTemperaturePollHandler(DeviceFeature f) { super(f); }
-		@Override
-		public Msg makeMsg(InsteonDevice d) {
-			Msg m = null;
-			try {
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x6a, (byte)0x00);
-				m.setQuietTime(500L);
-			} catch (FieldException e) {
-				logger.warn("error setting field in msg: ", e);
-			} catch (IOException e) {
-				logger.error("poll failed with exception ", e);
-			}
-			return m;
-		}
-	}
-	
-	public static class ThermostatHeatCoolSetPointPollHandler extends PollHandler {
-		ThermostatHeatCoolSetPointPollHandler(DeviceFeature f) { super(f); }
-		@Override
-		public Msg makeMsg(InsteonDevice d) {
-			Msg m = null;
-			try {
-				m = d.makeExtendedMessage((byte) 0x1f, (byte) 0x2e, (byte) 0x00);
-				m.setByte("userData1", (byte) 0x01);
-				m.setByte("userData3", (byte) 0x01);
-				m.setByte("userData14", (byte)0x00);
-				m.setQuietTime(500L);
-			} catch (FieldException e) {
-				logger.warn("error setting field in msg: ", e);
-			} catch (IOException e) {
-				logger.error("poll failed with exception ", e);
-			}
-			return m;
-		}
-	}
-	
-	public static class ThermostatHumidityPollHandler extends PollHandler {
-		ThermostatHumidityPollHandler(DeviceFeature f) { super(f); }
-		@Override
-		public Msg makeMsg(InsteonDevice d) {
-			Msg m = null;
-			try {
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x6a, (byte)0x60);
-				m.setQuietTime(500L);
-			} catch (FieldException e) {
-				logger.warn("error setting field in msg: ", e);
-			} catch (IOException e) {
-				logger.error("poll failed with exception ", e);
-			}
-			return m;
-		}
-	}
-	
-	public static class FanLincFanControlPollHandler extends PollHandler {
-		FanLincFanControlPollHandler(DeviceFeature f) { super(f); }
-		@Override
-		public Msg makeMsg(InsteonDevice d) {
-			Msg m = null;
-			try {
-				m = d.makeStandardMessage((byte)0x0f, (byte)0x19, (byte)0x03);
-				m.setQuietTime(500L);
-				logger.debug("FanLincFanControl Polled");
-			} catch (FieldException e) {
-				logger.warn("error setting field in msg: ", e);
-			} catch (IOException e) {
-				logger.error("poll failed with exception ", e);
-			}
-			return m;
-		}
-	}
-	
+
 	/**
 	 * Factory method for creating handlers of a given name using java reflection
-	 * @param m_pollHandler the name of the handler to create
+	 * @param ph the name of the handler to create
 	 * @param f the feature for which to create the handler
 	 * @return the handler which was created
 	 */
