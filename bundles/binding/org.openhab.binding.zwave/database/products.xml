@@ -2800,7 +2800,7 @@
 			</Reference>
 			<Model>CRC-3100</Model>
 			<Label lang="en">Remote Control</Label>
+			<ConfigFile>nodon/crc3100.xml</ConfigFile>
 		</Product>
-		<ConfigFile>nodon/crc3100.xml</ConfigFile>
 	</Manufacturer>
 </Manufacturers>
