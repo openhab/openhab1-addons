@@ -2412,6 +2412,15 @@
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhod.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>51</Id>
+			</Reference>
+			<Model>ZMNHBD</Model>
+			<Label lang="en">Flush 2 relays</Label>
+			<ConfigFile>qubino/zmnhbd.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>97</Id>
