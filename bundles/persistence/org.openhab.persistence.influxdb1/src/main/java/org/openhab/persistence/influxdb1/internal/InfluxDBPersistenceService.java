@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,12 +46,10 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,9 +67,9 @@ import retrofit.RetrofitError;
  * 
  * @author Theo Weiss - Initial Contribution, rewrite of org.openhab.persistence.influxdb > 0.9
  *         support
- * @since 1.7.1
+ * @since 1.8.0
  */
-public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
+public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
   private static final String DEFAULT_URL = "http://127.0.0.1:8086";
   private static final String DEFAULT_DB = "openhab";
@@ -90,16 +88,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private boolean isProperlyConfigured;
   private boolean connected;
 
-  private PersistentStateRestorer persistentStateRestorer;
-
-  public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-    this.persistentStateRestorer = persistentStateRestorer;
-  }
-
-  public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-    this.persistentStateRestorer = null;
-  }
-
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
   }
@@ -108,8 +96,45 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     this.itemRegistry = null;
   }
 
-  public void activate() {
+  public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
     logger.debug("influxdb1 persistence service activated");
+    disconnect();
+    password = (String) config.get("password");
+    if (StringUtils.isBlank(password)) {
+      isProperlyConfigured = false;
+      logger
+          .error("influxdb1:password",
+              "The password is missing. To specify a password configure the password parameter in openhab.cfg.");
+      return;
+    }
+
+    url = (String) config.get("url");
+    if (StringUtils.isBlank(url)) {
+      url = DEFAULT_URL;
+      logger.debug("using default url {}", DEFAULT_URL);
+    }
+
+    user = (String) config.get("user");
+    if (StringUtils.isBlank(user)) {
+      user = DEFAULT_USER;
+      logger.debug("using default user {}", DEFAULT_USER);
+    }
+
+    dbName = (String) config.get("db");
+    if (StringUtils.isBlank(dbName)) {
+      dbName = DEFAULT_DB;
+      logger.debug("using default db name {}", DEFAULT_DB);
+    }
+
+    isProperlyConfigured = true;
+
+    connect();
+
+    // check connection; errors will only be logged, hoping the connection will work at a later
+    // time.
+    if (!checkConnection()) {
+      logger.error("database connection does not work for now, will retry to use the database.");
+    }
   }
 
   public void deactivate() {
@@ -119,7 +144,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
   private void connect() {
     if (influxDB == null) {
-      // reuse an existing InfluxDB object because it has no state concerning the database
+      // reuse an existing InfluxDB object because concerning the database it has no state
       // connection
       influxDB = InfluxDBFactory.connect(url, user, password);
       influxDB.enableBatch(200, 100, TimeUnit.MILLISECONDS);
@@ -188,7 +213,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isConnected()) {
-      logger.warn("InfluxDB1 is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return;
     }
 
@@ -234,51 +259,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       // e.g. raised by authentication errors
       logger.error("database error: {}", e.getMessage());
     }
-  }
-
-  @Override
-  public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-    disconnect();
-
-    if (config == null) {
-      throw new ConfigurationException("influxdb1",
-          "The configuration for influxdb1 is missing fix openhab.cfg");
-    }
-
-    url = (String) config.get("url");
-    if (StringUtils.isBlank(url)) {
-      url = DEFAULT_URL;
-      logger.debug("using default url {}", DEFAULT_URL);
-    }
-
-    user = (String) config.get("user");
-    if (StringUtils.isBlank(user)) {
-      user = DEFAULT_USER;
-      logger.debug("using default user {}", DEFAULT_USER);
-    }
-
-    password = (String) config.get("password");
-    if (StringUtils.isBlank(password)) {
-      throw new ConfigurationException("influxdb1:password",
-          "The password is missing. To specify a password configure the password parameter in openhab.cfg.");
-    }
-
-    dbName = (String) config.get("db");
-    if (StringUtils.isBlank(dbName)) {
-      dbName = DEFAULT_DB;
-      logger.debug("using default db name {}", DEFAULT_DB);
-    }
-
-    isProperlyConfigured = true;
-
-    connect();
-
-    // check connection; errors will only be logged, hoping the connection will work at a later
-    // time.
-    if (!checkConnection()) {
-      logger.error("database connection does not work for now, will retry to use the database.");
-    }
-    persistentStateRestorer.initializeItems(getName());
   }
 
   @Override
@@ -412,7 +392,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
               for (int j = 0; j < timestamps.size() - 1; j++) {
                 logger.debug("=====Timestamp: " + timestamps.get(j));
                 // Date time = new Date(((Double) timestamps.get(j)).longValue());
-                Calendar.this
+                // TODO Calendar.this
                 // State value = objectToState(values.get(j), historicItemName);
                 // logger.trace("adding historic item {}: time {} value {}", historicItemName, time,
                 // value);
