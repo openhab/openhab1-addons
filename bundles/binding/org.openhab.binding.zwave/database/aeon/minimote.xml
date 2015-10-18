@@ -269,6 +269,22 @@
 				<Label lang="en">Learn Mode</Label>
 			</Item>
 		</Parameter>
+		<Parameter>
+			<Index>250</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Secondary Controller Mode</Label>
+			<Help lang="en">When in Group Mode, the minimote is paired directly to devices.  When in Scene Mode, minimote button presses will send SCENE_ACTIVATION commands.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Group Mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
+		</Parameter>
 	</Configuration>
 	<Associations>
 		<Group>
