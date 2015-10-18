@@ -81,6 +81,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   private InfluxDB influxDB;
   private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceService.class);
   private static final String TIME_COLUMN_NAME = "time";
+  private static final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
   private String dbName;
   private String url;
   private String user;
@@ -147,7 +148,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       // reuse an existing InfluxDB object because concerning the database it has no state
       // connection
       influxDB = InfluxDBFactory.connect(url, user, password);
-      influxDB.enableBatch(200, 100, TimeUnit.MILLISECONDS);
+      influxDB.enableBatch(200, 100, timeUnit);
     }
     connected = true;
   }
@@ -234,14 +235,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
     // TODO check this: better use influxDB.enableBatch() tag?
     // BatchPoints batchPoints =
-    // BatchPoints.database(dbName).time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+    // BatchPoints.database(dbName).time(System.currentTimeMillis(), timeUnit)
     // .retentionPolicy("default").consistency(ConsistencyLevel.ALL)
     // .build();
     // Point point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).build();
     // batchPoints.point(point);
     Point point =
         Point.measurement(name).field(VALUE_COLUMN_NAME, value)
-            .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).build();
+            .time(System.currentTimeMillis(), timeUnit).build();
     try {
       influxDB.write(dbName, "default", point);
       // influxDB.write(batchPoints);
@@ -363,7 +364,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     Query influxdbQuery = new Query(query.toString(), dbName);
 
     List<Result> results = Collections.emptyList();
-    results = influxDB.query(influxdbQuery).getResults();
+    results = influxDB.query(influxdbQuery, timeUnit).getResults();
     for (Result result : results) {
       List<Series> seriess = result.getSeries();
       if (result.getError() != null) {
@@ -374,67 +375,40 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         logger.debug("query returned no series");
       } else {
         for (Series series : seriess) {
+          logger.trace("series {}", series.toString());
           String historicItemName = series.getName();
           List<List<Object>> valuess = series.getValues();
           if (valuess == null) {
             logger.debug("query returned no values");
           } else {
             List<String> columns = series.getColumns();
-            for (int i = 0; i < columns.size() - 1; i++) {
+            logger.trace("columns {}", columns);
+            Integer timeStampColumn = null;
+            Integer valueColumn = null;
+            for (int i = 0; i < columns.size(); i++) {
               String columnName = columns.get(i);
-              List<Object> values = Collections.emptyList();
-              List<Object> timestamps = Collections.emptyList();
               if (columnName.equals(TIME_COLUMN_NAME)) {
-                timestamps = valuess.get(i);
+                timeStampColumn = i;
               } else if (columnName.equals(VALUE_COLUMN_NAME)) {
-                values = valuess.get(i);
+                valueColumn = i;
               }
-              for (int j = 0; j < timestamps.size() - 1; j++) {
-                logger.debug("=====Timestamp: " + timestamps.get(j));
-                // Date time = new Date(((Double) timestamps.get(j)).longValue());
-                // TODO Calendar.this
-                // State value = objectToState(values.get(j), historicItemName);
-                // logger.trace("adding historic item {}: time {} value {}", historicItemName, time,
-                // value);
-                // historicItems.add(new InfluxdbItem(historicItemName, value, time));
-              }
+            }
+            if (valueColumn == null || timeStampColumn == null) {
+              // TODO: handle error
+              throw new RuntimeException("missing column");
+            }
+            for (int i = 0; i < valuess.size(); i++) {
+              Double rawTime = (Double) valuess.get(i).get(timeStampColumn);
+              Date time = new Date(rawTime.longValue());
+              State value = objectToState(valuess.get(i).get(valueColumn), historicItemName);
+              logger.trace("adding historic item {}: time {} value {}", historicItemName, time,
+                  value);
+              historicItems.add(new InfluxdbItem(historicItemName, value, time));
             }
           }
         }
       }
     }
-    // TODO add error handling
-
-
-    // QueryResult results;
-    // // List<Serie> results = Collections.emptyList();
-    // try {
-    // List<Result> results2 = influxDB.query(influxdbQuery).getResults();
-    // results = influxDB.query(influxdbQuery).getResults();
-    // } catch (RuntimeException e) {
-    // logger.error("query failed with database error");
-    // handleDatabaseException(e);
-    // }
-    // for (Serie result : results) {
-    // String historicItemName = result.getName();
-    // logger.trace("item name {}", historicItemName);
-    // int entryCount = 0;
-    // for (Map<String, Object> row : result.getRows()) {
-    // entryCount++;
-    // if (entryCount >= startEntryNum) {
-    // Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
-    // Object rawValue = row.get(VALUE_COLUMN_NAME);
-    // logger.trace("adding historic item {}: time {} value {}", historicItemName, rawTime,
-    // rawValue);
-    // Date time = new Date(rawTime.longValue());
-    // State value = objectToState(rawValue, historicItemName);
-    // historicItems.add(new InfluxdbItem(historicItemName, value, time));
-    // } else {
-    // logger.trace("omitting item value for {}", historicItemName);
-    // }
-    // }
-    // }
-
     return historicItems;
   }
 
