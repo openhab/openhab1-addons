@@ -144,20 +144,27 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 
 				Map<String, BindingConfig> lvBindigConfigs = lvBindingProvider.getBindingConfigs();
 				for (String lvItemName : lvBindigConfigs.keySet()) {
-					logger.debug("Initializing read of item {}.", lvItemName);
-					AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = (AbstractOneWireDevicePropertyBindingConfig) lvBindigConfigs.get(lvItemName);
-					
-					if (lvBindingConfig != null) {
-						int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
-						if (lvAutoRefreshTimeInSecs > -1) {
-							ivOneWireReaderScheduler.updateOnce(lvItemName);
-						}
-	
-						if (lvAutoRefreshTimeInSecs > 0) {
-							if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
-								logger.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+					logger.debug("scheduleAllBindings, now item {}.", lvItemName);
+					OneWireBindingConfig lvOneWireBindingConfig = (OneWireBindingConfig) lvBindigConfigs.get(lvItemName);
+					if (lvOneWireBindingConfig instanceof AbstractOneWireDevicePropertyBindingConfig) {
+						logger.debug("Initializing read of item {}.", lvItemName);
+						
+						AbstractOneWireDevicePropertyBindingConfig lvDevicePropertyBindingConfig = (AbstractOneWireDevicePropertyBindingConfig) lvOneWireBindingConfig;
+						
+						if (lvDevicePropertyBindingConfig != null) {
+							int lvAutoRefreshTimeInSecs = lvDevicePropertyBindingConfig.getAutoRefreshInSecs();
+							if (lvAutoRefreshTimeInSecs > -1) {
+								ivOneWireReaderScheduler.updateOnce(lvItemName);
+							}
+		
+							if (lvAutoRefreshTimeInSecs > 0) {
+								if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
+									logger.warn("Clouldn't add to OneWireUpdate scheduler", lvDevicePropertyBindingConfig);
+								}
 							}
 						}
+					} else {
+						logger.debug("Didn't schedule item {} because it is not an DevicePropertyBinding.", lvItemName);
 					}
 				}
 			}
