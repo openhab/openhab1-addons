@@ -395,7 +395,7 @@
 	<command-handler command="OnOffType">PowerMeterCommandHandler</command-handler>
 	<poll-handler ext="0" cmd1="0x82" cmd2="0x00" >FlexPollHandler</poll-handler>
 </feature>
-<feature name="X10Dimmer">
+<feature name="X10Dimmer" timeout="0">
 	<message-dispatcher>X10Dispatcher</message-dispatcher>
 	<message-handler cmd="0x02">X10OnHandler</message-handler>
 	<message-handler cmd="0x03">X10OffHandler</message-handler>
@@ -407,7 +407,7 @@
 	<command-handler command="IncreaseDecreaseType">X10IncreaseDecreaseCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
-<feature name="X10Switch">
+<feature name="X10Switch" timeout="0">
 	<message-dispatcher>X10Dispatcher</message-dispatcher>
 	<message-handler cmd="0x02">X10OnHandler</message-handler>
 	<message-handler cmd="0x03">X10OffHandler</message-handler>

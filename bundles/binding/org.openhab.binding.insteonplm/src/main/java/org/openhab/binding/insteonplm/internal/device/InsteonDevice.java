@@ -371,7 +371,7 @@ public class InsteonDevice {
 							m_address, -dt);
 					return (timeNow + 2000L); // retry soon
 				} else {
-					logger.warn("gave up waiting for query reply from device {}", m_address);
+					logger.debug("gave up waiting for query reply from device {}", m_address);
 				}
 			}
 			QEntry qe = m_requestQueue.poll(); // take it off the queue!
