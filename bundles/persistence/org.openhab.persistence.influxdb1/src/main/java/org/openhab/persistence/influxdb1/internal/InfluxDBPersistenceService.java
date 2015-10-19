@@ -162,7 +162,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       try {
         Pong pong = influxDB.ping();
         String version = pong.getVersion();
-        // TODO check for version >= 0.9
+        // may be check for version >= 0.9
         if (version != null && !version.contains("unknown")) {
           dbStatus = true;
           logger.debug("database status is OK");
@@ -232,14 +232,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     }
     Object value = stateToObject(state);
     logger.trace("storing {} in influxdb1 {}", name, value);
-
-    // TODO check this: better use influxDB.enableBatch() tag?
-    // BatchPoints batchPoints =
-    // BatchPoints.database(dbName).time(System.currentTimeMillis(), timeUnit)
-    // .retentionPolicy("default").consistency(ConsistencyLevel.ALL)
-    // .build();
-    // Point point = Point.measurement(name).field(VALUE_COLUMN_NAME, value).build();
-    // batchPoints.point(point);
     Point point =
         Point.measurement(name).field(VALUE_COLUMN_NAME, value)
             .time(System.currentTimeMillis(), timeUnit).build();
@@ -344,15 +336,16 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     }
 
     int limit = (filter.getPageNumber() + 1) * filter.getPageSize();
-    query.append(" limit " + limit);
-    logger.trace("appending limit {}", limit);
 
-    // InfluxDB returns results in ASCENDING order. TODO For now I don't know how to change the
-    // ordering.
+    // InfluxDB returns results in ASCENDING order.
     // It seems that Ordering.DESCENDING is often combined with limit 1
     if (filter.getOrdering() == Ordering.DESCENDING && limit > 1) {
-      logger.error("descending ordering not (yet) supported!");
+      query.append(String.format("ORDER BY %s DESC", TIME_COLUMN_NAME));
+      logger.debug("descending ordering ");
     }
+
+    query.append(" limit " + limit);
+    logger.trace("appending limit {}", limit);
 
     int totalEntriesAffected = ((filter.getPageNumber() + 1) * filter.getPageSize());
     int startEntryNum =
@@ -383,22 +376,21 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
           } else {
             List<String> columns = series.getColumns();
             logger.trace("columns {}", columns);
-            Integer timeStampColumn = null;
+            Integer timestampColumn = null;
             Integer valueColumn = null;
             for (int i = 0; i < columns.size(); i++) {
               String columnName = columns.get(i);
               if (columnName.equals(TIME_COLUMN_NAME)) {
-                timeStampColumn = i;
+                timestampColumn = i;
               } else if (columnName.equals(VALUE_COLUMN_NAME)) {
                 valueColumn = i;
               }
             }
-            if (valueColumn == null || timeStampColumn == null) {
-              // TODO: handle error
+            if (valueColumn == null || timestampColumn == null) {
               throw new RuntimeException("missing column");
             }
             for (int i = 0; i < valuess.size(); i++) {
-              Double rawTime = (Double) valuess.get(i).get(timeStampColumn);
+              Double rawTime = (Double) valuess.get(i).get(timestampColumn);
               Date time = new Date(rawTime.longValue());
               State value = objectToState(valuess.get(i).get(valueColumn), historicItemName);
               logger.trace("adding historic item {}: time {} value {}", historicItemName, time,
