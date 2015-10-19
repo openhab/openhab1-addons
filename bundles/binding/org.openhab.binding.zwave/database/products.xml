@@ -483,7 +483,7 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>5456</Type>
+				<Type>5256</Type>
 				<Id>3133</Id>
 			</Reference>
 			<Model>LFM-20</Model>
@@ -1863,7 +1863,7 @@
 				<Type>0121</Type>
 				<Id>0133</Id>
 			</Reference>
-			<Model>TZ68</Model>
+			<Model>TZ78</Model>
 			<Label lang="en">In Wall Micro Switch</Label>
 			<ConfigFile>tkb/tz78.xml</ConfigFile>
 		</Product>
