@@ -107,6 +107,7 @@ public class HueBridge {
 			}
 
 			String output = response.getEntity(String.class);
+			logger.debug("Received pairing response: {}", output);
 
 			if (output.contains("success")) {
 				logger.info("Hue bridge successfully paired!");
