@@ -36,6 +36,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNodeNamingCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
@@ -1030,6 +1031,50 @@ public class ZWaveController {
 	 */
 	public ZWaveNode getNode(int nodeId) {
 		return this.zwaveNodes.get(nodeId);
+	}
+	
+	/** 
+	 * Get node name. If Node Naming Command Class is not supported returns null
+	 * @param nodeId
+	 * @return
+	 */
+	public String getNodeName(int nodeId) {
+		ZWaveNode node = getNode(nodeId);
+		
+		if(node == null) {
+			logger.error("Bad Node ID {}", nodeId);
+			return null;
+		}
+		
+		ZWaveNodeNamingCommandClass commandClass = (ZWaveNodeNamingCommandClass) node.getCommandClass(CommandClass.NODE_NAMING);
+				
+		if( commandClass == null ) {
+			return null;
+		}
+		
+		return commandClass.getName();
+	}
+	
+	/** 
+	 * Get node location. If Node Naming Command Class is not supported returns null
+	 * @param nodeId
+	 * @return
+	 */
+	public String getNodeLocation(int nodeId) {
+		ZWaveNode node = getNode(nodeId);
+		
+		if(node == null) {
+			logger.error("Bad Node ID {}", nodeId);
+			return null;
+		}
+		
+		ZWaveNodeNamingCommandClass commandClass = (ZWaveNodeNamingCommandClass) node.getCommandClass(CommandClass.NODE_NAMING);
+				
+		if( commandClass == null ) {
+			return null;
+		}
+		
+		return commandClass.getName();
 	}
 	
 	/**
