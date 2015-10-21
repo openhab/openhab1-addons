@@ -335,15 +335,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
     }
 
-    int limit = (filter.getPageNumber() + 1) * filter.getPageSize();
-
-    // InfluxDB returns results in ASCENDING order.
-    // It seems that Ordering.DESCENDING is often combined with limit 1
-    if (filter.getOrdering() == Ordering.DESCENDING && limit > 1) {
-      query.append(String.format("ORDER BY %s DESC", TIME_COLUMN_NAME));
+    if (filter.getOrdering() == Ordering.DESCENDING) {
+      query.append(String.format(" ORDER BY %s DESC", TIME_COLUMN_NAME));
       logger.debug("descending ordering ");
     }
 
+    int limit = (filter.getPageNumber() + 1) * filter.getPageSize();
     query.append(" limit " + limit);
     logger.trace("appending limit {}", limit);
 
