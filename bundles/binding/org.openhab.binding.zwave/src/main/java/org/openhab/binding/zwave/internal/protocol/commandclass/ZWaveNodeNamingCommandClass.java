@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+
 import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -24,18 +27,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
- * Handles the Indicator command class.
+ * Handles the NodeNaming command class.
  * The indicator command class operates the indicator on the physical device if available. 
  * This can be used to identify a device or use the indicator for special purposes.
- * Example is the Evolve LCD panel that uses the Indicator class to toggle the labels 
- * displayed on the LCD. The Indicator class is also used to sync multiple panels' labels
+ * Example is the Evolve LCD panel that uses the NodeNaming class to toggle the labels 
+ * displayed on the LCD. The NodeNaming class is also used to sync multiple panels' labels
  * 
  * @author Pedro Paixao
  * @since 1.8.0
  */
 
 @XStreamAlias("nameLocationCommandClass")
-public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveSetCommands {
+public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass {
 
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNodeNamingCommandClass.class);
@@ -47,7 +50,12 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	private static final int LOCATION_SET = 0x04;
 	private static final int LOCATION_GET = 0x05;
 	private static final int LOCATION_REPORT = 0x06;
+	
+	private static final int ENCODING_ASCII = 0x00;
+	private static final int ENCODING_EXTENDED_ASCII = 0x01;
+	private static final int ENCODING_UTF16 = 0x02;
 
+	private static final int MAX_STRING_LENGTH = 16;
 	
 	private boolean isGetSupported = true;
 
@@ -68,7 +76,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	 */
 	@Override
 	public CommandClass getCommandClass() {
-		return CommandClass.INDICATOR;
+		return CommandClass.NODE_NAMING;
 	}
 
 	/**
@@ -77,27 +85,102 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.debug("NODE {}: Received Indicator Request", this.getNode().getNodeId());
+		logger.debug("NODE {}: Received NodeNaming Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
+			
 			case NAME_SET:
-				logger.debug("NODE {}: Indicator Set sent to the controller will be processed as Indicator Report", this.getNode().getNodeId());
+				logger.debug("NODE {}: Name Set sent to the controller will be processed as Name Report", this.getNode().getNodeId());
 				// Process this as if it was a value report.
-				processIndicatorReport(serialMessage, offset, endpoint);
+				processNameReport(serialMessage, offset, endpoint);
 				break;
+				
+			case LOCATION_SET:
+				logger.debug("NODE {}: Location Set sent to the controller will be processed as Location Report", this.getNode().getNodeId());
+				// Process this as if it was a value report.
+				processLocationReport(serialMessage, offset, endpoint);
+				break;
+				
+			case LOCATION_GET:
 			case NAME_GET:
 				logger.warn(String.format("Command 0x%02X not implemented.", command));
 				return;
+				
 			case NAME_REPORT:
-				logger.trace("NODE {}: Process Indicator Report", this.getNode().getNodeId());
-				processIndicatorReport(serialMessage, offset, endpoint);
+				logger.trace("NODE {}: Process Name Report", this.getNode().getNodeId());
+				processNameReport(serialMessage, offset, endpoint);
 				break;
+				
+			case LOCATION_REPORT:
+				logger.trace("NODE {}: Process Location Report", this.getNode().getNodeId());
+				processLocationReport(serialMessage, offset, endpoint);
+				break;
+				
 			default:
 				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
 		}
+	}
+	
+	/**
+	 * Get a string from the serial message
+	 * @param serialMessage
+	 * @param offset
+	 * @return String
+	 */
+	protected String getString(SerialMessage serialMessage, int offset) { 
+		int charPresentation = serialMessage.getMessagePayloadByte(offset + 1);
+		
+		// First 5 bits are reserved so 0 them
+		charPresentation = 0x07 & charPresentation;
+		
+		switch (charPresentation) {
+			case ENCODING_ASCII:
+				logger.info("NODE {} : Node Name is encoded with standard ASCII codes", this.getNode().getNodeId());
+				break;
+			case ENCODING_EXTENDED_ASCII:
+				logger.info("NODE {} : Node Name is encoded with Using standard and OEM Extended ASCII codes", this.getNode().getNodeId());
+				break;
+			case ENCODING_UTF16:
+				logger.info("NODE {} : Node Name is encoded with Unicode UTF-16", this.getNode().getNodeId());
+				break;
+			default:
+				logger.error("NODE {} : Node Name encodeding is unsupported. Encoding code {}", this.getNode().getNodeId(), charPresentation);
+				return null;
+		}
+				
+		int numBytes = serialMessage.getMessagePayload().length - 3;
+		
+		if(numBytes <= 0) {
+			logger.error("NODE {} : Node Name report error in message length", this.getNode().getNodeId());
+			return null;
+		}
+		
+		// Maximum length is 16 bytes
+		if( numBytes > MAX_STRING_LENGTH) {
+			logger.warn("NODE {} : Node Name is too big maximum is {} characters {}", this.getNode().getNodeId(), MAX_STRING_LENGTH, numBytes);
+			numBytes = MAX_STRING_LENGTH;
+		}
+		
+		byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessageBuffer(), 3, serialMessage.getMessagePayload().length);
+		
+		try {
+			switch(charPresentation) {
+				case ENCODING_ASCII:
+				case ENCODING_EXTENDED_ASCII:
+					return new String(strBuffer, "ASCII");
+					
+				case ENCODING_UTF16:
+					String sTemp = new String(strBuffer, "UTF-16");
+					return new String(sTemp.getBytes("UTF-8"),"UTF-8");
+			}
+		}
+		catch (UnsupportedEncodingException  uee ) {
+			System.out.println( "Exception: "  + uee);
+		}
+		return null;
 	}
 
 	/**
@@ -106,19 +189,33 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	 * @param offset the offset position from which to start message processing.
 	 * @param endpoint the endpoint or instance number this message is meant for.
 	 */
-	protected void processIndicatorReport(SerialMessage serialMessage, int offset,
-			int endpoint) {
-		int value = serialMessage.getMessagePayloadByte(offset + 1); 
-		logger.debug(String.format("NODE %d: Indicator report, value = 0x%02X", this.getNode().getNodeId(), value));
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
+	protected void processNameReport(SerialMessage serialMessage, int offset, int endpoint) {
+		String name = getString(serialMessage, offset);
+		
+		logger.info("NODE {}: Node name: {}", this.getNode().getNodeId(), name);
+		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), name);
+		this.getController().notifyEventListeners(zEvent);
+	}
+	
+	/**
+	 * Processes a LOCATION_REPORT / LOCATION_SET message.
+	 * @param serialMessage the incoming message to process.
+	 * @param offset the offset position from which to start message processing.
+	 * @param endpoint the endpoint or instance number this message is meant for.
+	 */
+	protected void processLocationReport(SerialMessage serialMessage, int offset, int endpoint) {
+		String location = getString(serialMessage, offset);
+		
+		logger.info("NODE {}: Node location: {}", this.getNode().getNodeId(), location);
+		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), location);
 		this.getController().notifyEventListeners(zEvent);
 	}
 
 	/**
-	 * Gets a SerialMessage with the INDICATOR GET command 
+	 * Gets a SerialMessage with the NAME GET command 
 	 * @return the serial message
 	 */
-	public SerialMessage getValueMessage() {
+	public SerialMessage getNameMessage() {
 		if(isGetSupported == false) {
 			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
 			return null;
@@ -134,6 +231,27 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
     	return result;		
 	}
 
+	/**
+	 * Gets a SerialMessage with the NAME GET command 
+	 * @return the serial message
+	 */
+	public SerialMessage getLocationMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+
+		logger.debug("NODE {}: Creating new message for application command LOCATION_GET", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+    	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
+    							2, 
+								(byte) getCommandClass().getKey(), 
+								(byte) LOCATION_GET };
+    	result.setMessagePayload(newPayload);
+    	return result;		
+	}
+
+	
 	@Override
 	public boolean setOptions (ZWaveDbCommandClass options) {
 		if(options.isGetSupported != null) {
@@ -144,21 +262,49 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	}
 	
 	/**
-	 * Gets a SerialMessage with the INDICATOR SET command 
+	 * Gets a SerialMessage with the Name or Location SET command 
 	 * @param the level to set.
 	 * @return the serial message
 	 */
-	public SerialMessage setValueMessage(int value) {
-		logger.debug("NODE {}: Creating new message for application command NAME_SET", this.getNode().getNodeId());
+	private SerialMessage setValueMessage(String str, int command) {
+		logger.debug("NODE {}: Creating new message for application command NAME_SET to {}", this.getNode().getNodeId(), str);
+		
+		byte[] nameBuffer = null;
+		try {
+			nameBuffer = str.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+    	int len = nameBuffer.length;
+    	if( len > 16 ) {
+    		len = 16;
+    	}
+    	
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
-    							3, 
+    							(byte) ((byte) len + 3), 
 								(byte) getCommandClass().getKey(), 
-								(byte) NAME_SET,
-								(byte) value
+								(byte) command,
+								(byte) ENCODING_UTF16
 								};
-    	result.setMessagePayload(newPayload);
+    	
+    	byte[] msg = new byte[ newPayload.length + len];
+    	System.arraycopy(newPayload, 0, msg, 0, newPayload.length);
+    	System.arraycopy(nameBuffer, 0, msg, newPayload.length, len);
+    	
+    	result.setMessagePayload(msg);
     	return result;		
+	}
+	
+	public SerialMessage setNameMessage(String name) {
+		return setValueMessage(name, NAME_SET);
+	}
+	
+	public SerialMessage setLocationMessage(String location) {
+		return setValueMessage(location, NAME_SET);
 	}
 
 }
