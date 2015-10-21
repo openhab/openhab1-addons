@@ -71,7 +71,10 @@ public class Timer {
 
 	public boolean reschedule(AbstractInstant newTime) {
 		try {
-			Trigger trigger = newTrigger().startAt(newTime.toDate()).build();
+			Trigger trigger = newTrigger()
+				.forJob(jobKey) // default group
+				.startAt(newTime.toDate())
+				.build();
 			scheduler.rescheduleJob(triggerKey, trigger);
 			this.triggerKey = trigger.getKey();
 			this.cancelled = false;
