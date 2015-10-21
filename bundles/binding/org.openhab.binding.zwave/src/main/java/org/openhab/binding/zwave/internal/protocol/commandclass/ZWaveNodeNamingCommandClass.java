@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -43,7 +42,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 
 @XStreamAlias("nameLocationCommandClass")
-public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZWaveCommandClassInitialization {
+public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass 
+	implements ZWaveCommandClassInitialization, ZWaveCommandClassDynamicState {
 
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNodeNamingCommandClass.class);
@@ -61,11 +61,17 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	private static final int ENCODING_UTF16 = 0x02;
 
 	private static final int MAX_STRING_LENGTH = 16;
-	
-	private boolean isGetSupported = true;
-	
+		
 	@XStreamOmitField
 	private boolean initialiseDone = false;
+	private boolean initialiseName = false;
+	private boolean initialiseLocation = false;
+	
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+	
+	String name = new String();
+	String location = new String();
 
 	/**
 	 * Creates a new instance of the ZWaveNameLocationCommandClass class.
@@ -79,6 +85,20 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	}
 
 
+	public String getName() {
+		if( initialiseDone ) {
+			return name;
+		}
+		return null;
+	}
+	
+	public String getLocation() {
+		if( initialiseDone ) {
+			return location;
+		}
+		return null;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,14 +121,14 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 				logger.debug("NODE {}: Name Set sent to the controller will be processed as Name Report", this.getNode().getNodeId());
 				// Process this as if it was a value report.
 				processNameReport(serialMessage, offset, endpoint);
-				initialiseDone = true;
+				initialiseName = true;
 				break;
 				
 			case LOCATION_SET:
 				logger.debug("NODE {}: Location Set sent to the controller will be processed as Location Report", this.getNode().getNodeId());
 				// Process this as if it was a value report.
 				processLocationReport(serialMessage, offset, endpoint);
-				initialiseDone = true;
+				initialiseLocation = true;
 				break;
 				
 			case LOCATION_GET:
@@ -119,13 +139,13 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 			case NAME_REPORT:
 				logger.trace("NODE {}: Process Name Report", this.getNode().getNodeId());
 				processNameReport(serialMessage, offset, endpoint);
-				initialiseDone = true;
+				initialiseName = true;
 				break;
 				
 			case LOCATION_REPORT:
 				logger.trace("NODE {}: Process Location Report", this.getNode().getNodeId());
 				processLocationReport(serialMessage, offset, endpoint);
-				initialiseDone = true;
+				initialiseLocation = true;
 				break;
 				
 			default:
@@ -134,6 +154,9 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
 		}
+		
+		// If both name and location have been initialized the initialization is done.
+		initialiseDone = initialiseName && initialiseLocation;
 	}
 	
 	/**
@@ -176,7 +199,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 			numBytes = MAX_STRING_LENGTH;
 		}
 		
-		byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessageBuffer(), 3, serialMessage.getMessagePayload().length);
+		byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, serialMessage.getMessagePayload().length);
 		
 		try {
 			switch(charPresentation) {
@@ -202,7 +225,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	 * @param endpoint the endpoint or instance number this message is meant for.
 	 */
 	protected void processNameReport(SerialMessage serialMessage, int offset, int endpoint) {
-		String name = getString(serialMessage, offset);
+		name = getString(serialMessage, offset);
 		
 		logger.info("NODE {}: Node name: {}", this.getNode().getNodeId(), name);
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), name);
@@ -216,7 +239,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	 * @param endpoint the endpoint or instance number this message is meant for.
 	 */
 	protected void processLocationReport(SerialMessage serialMessage, int offset, int endpoint) {
-		String location = getString(serialMessage, offset);
+		location = getString(serialMessage, offset);
 		
 		logger.info("NODE {}: Node location: {}", this.getNode().getNodeId(), location);
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), location);
@@ -228,11 +251,6 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	 * @return the serial message
 	 */
 	public SerialMessage getNameMessage() {
-		if(isGetSupported == false) {
-			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
-			return null;
-		}
-
 		logger.debug("NODE {}: Creating new message for application command NAME_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -248,11 +266,6 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 	 * @return the serial message
 	 */
 	public SerialMessage getLocationMessage() {
-		if(isGetSupported == false) {
-			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
-			return null;
-		}
-
 		logger.debug("NODE {}: Creating new message for application command LOCATION_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -263,15 +276,6 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
     	return result;		
 	}
 
-	
-	@Override
-	public boolean setOptions (ZWaveDbCommandClass options) {
-		if(options.isGetSupported != null) {
-			isGetSupported = options.isGetSupported;
-		}
-		
-		return true;
-	}
 	
 	/**
 	 * Gets a SerialMessage with the Name or Location SET command 
@@ -331,6 +335,26 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass implements ZW
 			result.add(this.getNameMessage());
 			result.add(this.getLocationMessage());
 		}
+		return result;
+	}
+
+
+	@Override
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
+		
+		if (refresh == true) {
+			dynamicDone = false;
+		}
+		
+		if (dynamicDone == true) {
+			return null;
+		}
+			 
+		
+		result.add(this.getNameMessage());
+		result.add(this.getLocationMessage());
+		
 		return result;
 	}
 }
