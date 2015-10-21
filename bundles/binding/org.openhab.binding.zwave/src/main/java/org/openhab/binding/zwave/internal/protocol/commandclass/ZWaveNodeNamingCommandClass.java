@@ -86,14 +86,14 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
 
 	public String getName() {
-		if( initialiseDone ) {
+		if( initialiseName ) {
 			return name;
 		}
 		return null;
 	}
 	
 	public String getLocation() {
-		if( initialiseDone ) {
+		if( initialiseLocation ) {
 			return location;
 		}
 		return null;
