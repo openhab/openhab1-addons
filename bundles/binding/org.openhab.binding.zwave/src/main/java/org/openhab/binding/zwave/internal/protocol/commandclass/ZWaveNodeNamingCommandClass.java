@@ -27,11 +27,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
- * Handles the NodeNaming command class.
- * The indicator command class operates the indicator on the physical device if available. 
- * This can be used to identify a device or use the indicator for special purposes.
- * Example is the Evolve LCD panel that uses the NodeNaming class to toggle the labels 
- * displayed on the LCD. The NodeNaming class is also used to sync multiple panels' labels
+ * Handles the Node Naming command class.
+ * The Node Naming command class are used to assign names and locations to devices. 
+ * Setting name and location of devices is mainly an installer task, so this command class
+ * is only used to configure the Z-Wave network and help troubleshoot it later by giving the installer
+ * the means to specify where in the home a device is located and what friendly name it has instead
+ * of working with just node numbers.
+ * 
+ * An openHab administration tool like HABmin can set and read the nodes' names and locations.
  * 
  * @author Pedro Paixao
  * @since 1.8.0
