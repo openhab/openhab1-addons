@@ -22,6 +22,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNodeNamingCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
@@ -261,34 +262,70 @@ public class ZWaveNode {
 
 	/**
 	 * Gets the node name.
+	 * If Node Naming Command Class is supported get name from device,
+	 * else return the name stored in binding
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		ZWaveNodeNamingCommandClass commandClass = (ZWaveNodeNamingCommandClass) getCommandClass(CommandClass.NODE_NAMING);
+				
+		if( commandClass == null ) {
+			return this.name;
+		}
+		
+		return commandClass.getName();
 	}
 
 	/**
 	 * Sets the node name.
+	 * If Node Naming Command Class is supported set name in the device,
+	 * else set it in locally in the binding
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
+		ZWaveNodeNamingCommandClass commandClass = (ZWaveNodeNamingCommandClass) getCommandClass(CommandClass.NODE_NAMING);
+		
+		if( commandClass == null ) {
+			this.name = name;
+			return;
+		}
+
+		SerialMessage m = commandClass.setNameMessage(name);
+		this.controller.sendData(m);
 	}
 
 	/**
 	 * Gets the node location.
+	 * If Node Naming Command Class is supported get location from device, 
+	 * else return the location stored in binding
 	 * @return the location
 	 */
 	public String getLocation() {
-		return location;
+		ZWaveNodeNamingCommandClass commandClass = (ZWaveNodeNamingCommandClass) getCommandClass(CommandClass.NODE_NAMING);
+		
+		if( commandClass == null ) {
+			return this.location;
+		}
+		
+		return commandClass.getLocation();
 	}
 
 	/**
 	 * Sets the node location.
+	 * If Node Naming Command Class is supported set location in the device,
+	 * else set it in locally in the binding 
 	 * @param location the location to set
 	 */
 	public void setLocation(String location) {
-		this.location = location;
+		ZWaveNodeNamingCommandClass commandClass = (ZWaveNodeNamingCommandClass) getCommandClass(CommandClass.NODE_NAMING);
+		
+		if( commandClass == null ) {
+			this.location = location;
+			return;
+		}
+
+		SerialMessage m = commandClass.setLocationMessage(location);
+		this.controller.sendData(m);
 	}
 
 	/**
