@@ -54,7 +54,7 @@
 			<Index>10</Index>
 			<Type>list</Type>
 			<Default>255</Default>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
 			<Item>
 				<Value>255</Value>
