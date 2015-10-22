@@ -2171,6 +2171,15 @@
             <Label lang="en">PIR Sensor</Label>
             <ConfigFile>enerwave/zwn-bpc.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0801</Type>
+                <Id>0b03</Id>
+            </Reference>
+            <Model>ZWN-SC7</Model>
+            <Label lang="en">Scene Controller</Label>
+            <ConfigFile>enerwave/zwn-sc7.xml</ConfigFile>
+        </Product>
     </Manufacturer>
 	<Manufacturer>
 		<Id>0001</Id>
