@@ -28,14 +28,15 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#isSlowI2C <em>Slow I2C</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletTemperature()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletTemperature> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletTemperature> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickletTemperature extends MDevice<BrickletTemperature>, MSensor<DecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
+public interface MBrickletTemperature extends MDevice<BrickletTemperature>, MSensor<DecimalValue>, MTFConfigConsumer<TFTemperatureConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -79,6 +80,33 @@ public interface MBrickletTemperature extends MDevice<BrickletTemperature>, MSen
    * @generated
    */
   void setThreshold(BigDecimal value);
+
+  /**
+   * Returns the value of the '<em><b>Slow I2C</b></em>' attribute.
+   * The default value is <code>"false"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Slow I2C</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Slow I2C</em>' attribute.
+   * @see #setSlowI2C(boolean)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletTemperature_SlowI2C()
+   * @model default="false" unique="false"
+   * @generated
+   */
+  boolean isSlowI2C();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#isSlowI2C <em>Slow I2C</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Slow I2C</em>' attribute.
+   * @see #isSlowI2C()
+   * @generated
+   */
+  void setSlowI2C(boolean value);
 
   /**
    * <!-- begin-user-doc -->
