@@ -544,7 +544,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						new net.fortuna.ical4j.model.Date(), 
 						new net.fortuna.ical4j.model.Date(org.joda.time.DateTime.now().plusYears(10).getMillis())).size() == 0
 						) {
-					LOG.debug("event will never be occur (historic): {}", eventName);
+					LOG.trace("event will never be occur (historic): {}", eventName);
 					eventContainer.setHistoricEvent(true);
 				}
 			}

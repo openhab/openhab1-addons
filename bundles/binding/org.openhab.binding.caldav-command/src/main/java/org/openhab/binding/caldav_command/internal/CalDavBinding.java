@@ -81,6 +81,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	private List<String> readCalendars = new ArrayList<String>();
 	
 	private List<String> disabledItems = new ArrayList<String>();
+
+	private boolean calendarReloaded;
 	
 	public CalDavBinding() {
 	}
@@ -256,8 +258,12 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			return;
 		}
 		
-		this.doActionInitial();
+		if (!this.calendarReloaded) {
+			this.doActionInitial();
+		}
 		this.handleForEventPreview();
+		
+		this.calendarReloaded = true;
 	}
 	
 	private void doActionInitial() {

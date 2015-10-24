@@ -76,6 +76,9 @@ public final class EventUtils {
 					String timeString = line.substring(SCOPE_BETWEEN.length() + 1, SCOPE_BETWEEN.length() + 1 + 19);
 					time = DateTimeFormat.forPattern(EventUtils.DATE_FORMAT).parseDateTime(timeString);
 					indexItemName = scope.length() + 19 + 1;
+				} else {
+					LOG.trace("line skipped: unknown content: " + line);
+					continue;
 				}
 				
 				if (line.substring(indexItemName + 1, indexItemName + 2).equals(":")) {
