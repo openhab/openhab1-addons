@@ -90,7 +90,10 @@ import org.slf4j.LoggerFactory;
 					  EmailAttachment attachment = new EmailAttachment();
 					  attachment.setURL(new URL(attachmentUrl));
 					  attachment.setDisposition(EmailAttachment.ATTACHMENT);
-					  attachment.setName("Attachment");
+					  if( attachmentUrl.lastIndexOf("/") < 0 )
+					    attachment.setName("Attachment");
+					  else
+					    attachment.setName(attachmentUrl.substring(attachmentUrl.lastIndexOf("/")+1));
 					  ((MultiPartEmail) email).attach(attachment);
 				} catch (MalformedURLException e) {
 					logger.error("Invalid attachment url.", e);
