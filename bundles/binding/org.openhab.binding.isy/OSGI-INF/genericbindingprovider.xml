@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.isy.genericbindingprovider">
-   <implementation class="org.openhab.binding.isy.internal.ISYGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.isy.ISYGenericBindingProvider"/>
    
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>

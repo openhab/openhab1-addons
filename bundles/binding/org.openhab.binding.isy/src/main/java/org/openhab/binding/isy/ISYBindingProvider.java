@@ -13,10 +13,12 @@ import java.util.Collection;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * 
  * @author Tim Diekmann
  * @since 1.7.0
  */
 public interface ISYBindingProvider extends BindingProvider {
+	
 	/**
 	 * Returns a Device/Node Address from a Item name in the *.items file
 	 * 
@@ -35,6 +37,5 @@ public interface ISYBindingProvider extends BindingProvider {
 	 *            Control name of ISY control
 	 * @return Collection of matching ISY bindings of the *.items file
 	 */
-	public Collection<ISYBindingConfig> getBindingConfigFromAddress(
-			String address, String cmd);
+	public Collection<ISYBindingConfig> getBindingConfigFromAddress(String address, String cmd);
 }

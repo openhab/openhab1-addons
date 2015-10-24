@@ -6,17 +6,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.isy;
+package org.openhab.binding.isy.internal;
 
-import com.universaldevices.device.model.UDControl;
-import com.universaldevices.device.model.UDNode;
 
 /**
- * @author Tim Diekmann
+ * This is the node types in ISY that are supported / translated.
  * 
+ * @author Jon Bullen
+ * @since 1.7.0
  */
-public interface ISYModelChangeListener {
-	public void onModelChanged(final UDControl control, final Object action,
-			final UDNode node);
-
+public enum ISYNodeType {
+	SWITCH, GROUP, CONTACT, THERMOSTAT, NUMBER, STRING
 }

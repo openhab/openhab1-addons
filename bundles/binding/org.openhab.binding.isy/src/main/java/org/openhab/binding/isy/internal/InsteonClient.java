@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.isy.internal;
 
-import org.openhab.binding.isy.ISYModelChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +29,17 @@ import com.universaldevices.upnp.UDProxyDevice;
  * @author Tim Diekmann
  * 
  */
-class InsteonClient extends ISYInsteonClient {
+public class InsteonClient extends ISYInsteonClient {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final String user;
 	private final String password;
 	private final ISYModelChangeListener listener;
 
-	InsteonClient(final String user, final String password,
+	/** 
+	 * Constructor 
+	 * 
+	 */ 
+	public InsteonClient(final String user, final String password,
 			final ISYModelChangeListener listener) {
 		super();
 
@@ -114,7 +117,7 @@ class InsteonClient extends ISYInsteonClient {
 		// TODO Auto-generated method stub
 
 	}
-
+	
 	/**
 	 * @see com.universaldevices.device.model.IModelChangeListener#onNodeRevised(com.universaldevices.upnp.UDProxyDevice,
 	 *      com.universaldevices.device.model.UDNode)

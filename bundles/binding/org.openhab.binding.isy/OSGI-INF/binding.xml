@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" configuration-policy="require" modified="modified" deactivate="deactivate" immediate="true" name="org.openhab.binding.isy" configuration-pid="org.openhab.isy">
-	<implementation class="org.openhab.binding.isy.internal.ISYBinding" />
+	<implementation class="org.openhab.binding.isy.ISYActiveBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />

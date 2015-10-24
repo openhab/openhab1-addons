@@ -6,20 +6,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.isy.internal;
+package org.openhab.binding.isy;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.openhab.binding.isy.ISYBindingConfig;
-import org.openhab.binding.isy.ISYBindingConfig.Type;
-import org.openhab.binding.isy.ISYBindingProvider;
-import org.openhab.binding.isy.ISYControl;
+import org.openhab.binding.isy.internal.ISYControl;
+import org.openhab.binding.isy.internal.ISYNodeType;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -30,7 +29,9 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  *
  * @author Tim Diekmann
+ * @author Jon Bullen
  * @since 1.7.0
+ * 
  */
 public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 		implements ISYBindingProvider {
@@ -45,18 +46,19 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	public void validateItemType(final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof ContactItem || item instanceof SwitchItem || item instanceof NumberItem)) {
+		if (!(item instanceof ContactItem || item instanceof SwitchItem 
+				|| item instanceof NumberItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', only Switch-, Contact-, and NumberItems are supported yet - please check your *.items configuration");
+							+ "', only Switch, Contact, String and Number Items are supported yet - please check your *.items configuration");
 		}
 	}
 
@@ -64,8 +66,7 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(final String context,
-			final Item item, final String bindingConfig)
+	public void processBindingConfiguration(final String context, final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
@@ -74,7 +75,7 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 		addBindingConfig(item, config);
 
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("added item {} [{}]", item, config.address);
+			this.logger.debug("added item {} [{}]", item, config);
 		}
 	}
 
@@ -86,7 +87,7 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig config : this.bindingConfigs.values()) {
 			ISYBindingConfig isyconfig = (ISYBindingConfig) config;
 
-			if (itemName.equals(isyconfig.item.getName())) {
+			if (itemName.equals(isyconfig.getItemName())) {
 				return isyconfig;
 			}
 		}
@@ -106,8 +107,8 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig config : this.bindingConfigs.values()) {
 			ISYBindingConfig isyconfig = (ISYBindingConfig) config;
 
-			if (cmd.equals(isyconfig.cmd.name())
-					&& address.equals(isyconfig.address)) {
+			if (cmd.equals(isyconfig.getControlCommand().name())
+					&& address.equals(isyconfig.getAddress())) {
 				result.add(isyconfig);
 			}
 		}
@@ -115,22 +116,37 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param item				The item being processed for this config. 
+	 * @param bindingConfig		The string configuration against this item in the config file. 
+	 * @return					A {@link ISYBindingConfig} with the ISY reference information. 
+	 */
 	private ISYBindingConfig parseConfig(final Item item,
 			final String bindingConfig) {
 
-		ISYBindingConfig config = new ISYBindingConfig();
-		config.item = item;
-
+		ISYNodeType type;
+		String controller = null;
+		String address = null;
+		ISYControl command = null;
+		
+		// item has already been validated. Use validateItemType to catch unsupported types. 
 		if (item instanceof GroupItem) {
-			config.type = Type.GROUP;
+			type = ISYNodeType.GROUP;
 		} else if (item instanceof ContactItem) {
-			config.type = Type.CONTACT;
+			type = ISYNodeType.CONTACT;
 		} else if (item instanceof NumberItem) {
-			config.type = Type.NUMBER;
+			type = ISYNodeType.NUMBER;
+		} else if (item instanceof StringItem) {
+			type = ISYNodeType.STRING;
 		} else {
-			config.type = Type.SWITCH;
+			type = ISYNodeType.SWITCH;
 		}
 
+		
+		
+		// Valid Keys:
+		// ctrl, type, cmd, addr
 		String[] arr = bindingConfig.split(",");
 		for (String str : arr) {
 			String[] pair = str.split("=");
@@ -138,33 +154,34 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			String value = pair[1];
 
 			switch (key) {
-			case "ctrl":
-				config.controller = value.replace('.', ' ');
-				break;
-			case "addr":
-				config.address = value.replace('.', ' ');
-				break;
-			case "type":
-				if ("thermostat".equalsIgnoreCase(value)) {
-					config.type = Type.THERMOSTAT;
-				}
-				break;
-			case "cmd":
-				try {
-					config.cmd = ISYControl.valueOf(value.toUpperCase());
-				} catch (IllegalArgumentException ie) {
-					this.logger.warn("Unsupported cmd {}", value);
-					config.cmd = ISYControl.UNDEFINED;
-				}
-				break;
+				case "ctrl":
+					controller = value.replace('.', ' ');
+					break;
+				case "addr":
+					address = value.replace('.', ' ');
+					break;
+				case "type":
+					if ("thermostat".equalsIgnoreCase(value)) {
+						type = ISYNodeType.THERMOSTAT;
+					}
+					break;
+				case "cmd":
+					try {
+						command = ISYControl.valueOf(value.toUpperCase());
+					} catch (IllegalArgumentException ie) {
+						this.logger.warn("Unsupported cmd {}", value);
+						command = ISYControl.UNDEFINED;
+					}
+					break;
 			}
 		}
 
-		if (config.address == null) {
-			config.address = config.controller;
+		// Set the address to be the same as the controller as it is just a single device. 
+		if (address == null) {
+			address = controller;
 		}
 
-		return config;
+		return new ISYBindingConfig(item, type, address, address, command);
 	}
 
 }
