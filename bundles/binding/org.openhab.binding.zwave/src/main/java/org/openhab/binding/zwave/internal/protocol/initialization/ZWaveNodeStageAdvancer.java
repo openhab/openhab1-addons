@@ -39,6 +39,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstan
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
@@ -1054,6 +1055,17 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 			}
 			logger.trace("NODE {}: Node Status event during initialisation processed", statusEvent.getNodeId());
+		} else if (event instanceof ZWaveCommandClassValueEvent) {
+			// This code is used to detect an event during the IDLE stage.
+			// This is used to kick start the initialisation for battery nodes that do not support
+			// the WAKE_UP class and don't send the ApplicationUpdateMessage when they are initialised.
+			logger.debug("NODE {}: CC event during initialisation stage {}", event.getNodeId(), currentStage);
+			// A command class event is received. Make sure it's for this node.
+			if (node.getNodeId() != event.getNodeId() || currentStage != ZWaveNodeInitStage.PING) {
+				return;
+			}
+			logger.debug("NODE {}: CC event during initialisation stage IDLE", event.getNodeId());
+			setCurrentStage(currentStage.getNextStage());
 		}
 	}
 	
