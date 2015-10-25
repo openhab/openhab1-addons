@@ -1326,6 +1326,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2017</Type>
+				<Id>01717</Id>
+			</Reference>
+			<Model>ZL7432</Model>
+			<Label lang="en">In Wall Dual Relay Switch</Label>
+			<ConfigFile>vision/zl7432.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2005</Type>
 				<Id>0508</Id>
 			</Reference>
