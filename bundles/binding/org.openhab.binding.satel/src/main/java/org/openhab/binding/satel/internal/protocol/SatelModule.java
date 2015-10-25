@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.openhab.binding.satel.internal.event.ConnectionStatusEvent;
 import org.openhab.binding.satel.internal.event.EventDispatcher;
 import org.openhab.binding.satel.internal.event.SatelEventListener;
 import org.openhab.binding.satel.internal.event.IntegraVersionEvent;
@@ -323,6 +324,8 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 		if (this.channel != null) {
 			this.channel.disconnect();
 			this.channel = null;
+			// notify about connection status change 
+			this.dispatchEvent(new ConnectionStatusEvent(false));
 		}
 	}
 
@@ -331,23 +334,27 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 
 		try {
 			while (!Thread.interrupted()) {
+				// connect, if not connected yet
+				if (this.channel == null) {
+					long connectStartTime = System.currentTimeMillis();
+					synchronized (this) {
+						this.channel = connect();
+					}
+					// notify about current connection status 
+					this.dispatchEvent(new ConnectionStatusEvent(this.channel != null));
+					// try to reconnect after a while, if connection hasn't been established
+					if (this.channel == null) {
+						Thread.sleep(reconnectionTime - System.currentTimeMillis() + connectStartTime);
+						continue;
+					}
+				}
+
 				SatelMessage message = this.sendQueue.take(), response = null;
 				SatelCommand command = this.supportedCommands.get(message.getCommand());
 
 				if (command == null) {
 					logger.error("Unsupported command: {}", message);
 					continue;
-				}
-
-				if (this.channel == null) {
-					long connectStartTime = System.currentTimeMillis();
-					synchronized (this) {
-						this.channel = connect();
-					}
-					if (!this.isConnected()) {
-						Thread.sleep(reconnectionTime - System.currentTimeMillis() + connectStartTime);
-						continue;
-					}
 				}
 
 				logger.debug("Sending message: {}", message);

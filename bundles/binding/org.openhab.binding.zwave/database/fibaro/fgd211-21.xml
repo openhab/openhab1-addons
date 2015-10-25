@@ -297,6 +297,15 @@
 		</Parameter>
 
 		<Parameter>
+			<Index>40</Index>
+			<Type>short</Type>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Updating the dimming level without switch.</Label>			
+			<Help lang="en">Available settings: from 1 to 99. Parameter’s value changes depending on the dimming level.</Help>
+		</Parameter>
+
+		<Parameter>
 	        <Index>41</Index>
 	        <Type>list</Type>
 	        <Default>0</Default>

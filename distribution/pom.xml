@@ -175,7 +175,7 @@
 										<mapper>
 											<type>perm</type>
 											<prefix>/usr/lib/systemd/system</prefix>
-											<filemode>755</filemode>
+											<filemode>644</filemode>
 											<user>root</user>
 											<group>root</group>
 										</mapper>
