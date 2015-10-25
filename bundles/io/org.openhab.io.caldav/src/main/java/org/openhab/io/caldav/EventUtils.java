@@ -119,9 +119,10 @@ public final class EventUtils {
 					continue;
 				}
 				
-				Command state = TypeParser.parseCommand(item.getAcceptedCommandTypes(), stateString);
+				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
+				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), stateString);
 				LOG.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
-				outMap.add(new EventContent(scope, item, state, time));
+				outMap.add(new EventContent(scope, item, state, command, time));
 			}
 		} catch (IOException e) {
 			LOG.error("cannot parse event content", e);
@@ -136,7 +137,8 @@ public final class EventUtils {
 	
 	public final static class EventContent {
 		private Item item;
-		private Command type;
+		private State state;
+		private Command command;
 		private DateTime time;
 		private String scope;
 		
@@ -144,11 +146,12 @@ public final class EventUtils {
 			super();
 		}
 
-		public EventContent(String scope, Item item, Command type, DateTime time) {
+		public EventContent(String scope, Item item, State state, Command command, DateTime time) {
 			super();
 			this.scope = scope;
 			this.item = item;
-			this.type = type;
+			this.state = state;
+			this.command = command;
 			this.time = time;
 		}
 
@@ -156,8 +159,12 @@ public final class EventUtils {
 			return item;
 		}
 
-		public Command getType() {
-			return type;
+		public State getState() {
+			return state;
+		}
+
+		public Command getCommand() {
+			return command;
 		}
 
 		public DateTime getTime() {

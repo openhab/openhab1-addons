@@ -33,6 +33,7 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.openhab.io.caldav.CalDavEvent;
@@ -202,7 +203,7 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
 					continue;
 				}
 				
-				final State eventState = eventContent.getType();
+				final State eventState = eventContent.getState();
 				
 				if (filter.getState() != null && filter.getOperator() != null) {
 					switch (filter.getOperator()) {

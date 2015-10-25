@@ -284,8 +284,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		
 		for (EventUtils.EventContent currentEventContent : map.values()) {
-			eventPublisher.sendCommand(currentEventContent.getItem().getName(), currentEventContent.getType());
-			logger.debug("setting initial value for {} to {}", currentEventContent.getItem().getName(), currentEventContent.getType());
+			eventPublisher.sendCommand(currentEventContent.getItem().getName(), currentEventContent.getCommand());
+			logger.debug("setting initial value for {} to {}", currentEventContent.getItem().getName(), currentEventContent.getCommand());
 		}
 	}
 	
@@ -296,7 +296,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				continue;
 			}
 			
-			eventPublisher.sendCommand(eventContent.getItem().getName(), eventContent.getType());
+			eventPublisher.sendCommand(eventContent.getItem().getName(), eventContent.getCommand());
 		}
 	}
 	
@@ -330,7 +330,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				
 				if (time == null || time.isAfter(eventContent.getTime())) {
 					time = eventContent.getTime();
-					state = eventContent.getType();
+					state = eventContent.getCommand();
 				}
 			}
 		}
