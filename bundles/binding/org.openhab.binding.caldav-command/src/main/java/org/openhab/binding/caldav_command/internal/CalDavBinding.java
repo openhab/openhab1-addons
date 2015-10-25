@@ -28,7 +28,6 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
 import org.openhab.io.caldav.CalDavQuery;
@@ -285,7 +284,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		
 		for (EventUtils.EventContent currentEventContent : map.values()) {
-			eventPublisher.postUpdate(currentEventContent.getItem().getName(), currentEventContent.getType());
+			eventPublisher.sendCommand(currentEventContent.getItem().getName(), currentEventContent.getType());
 			logger.debug("setting initial value for {} to {}", currentEventContent.getItem().getName(), currentEventContent.getType());
 		}
 	}
@@ -297,7 +296,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				continue;
 			}
 			
-			eventPublisher.postUpdate(eventContent.getItem().getName(), eventContent.getType());
+			eventPublisher.sendCommand(eventContent.getItem().getName(), eventContent.getType());
 		}
 	}
 	
@@ -306,7 +305,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		String itemNamePreview = config.getItemName();
 		logger.trace("update item state for item: {}", itemName);
 		
-		State state = null;
+		Command state = null;
 		DateTime time = null;
 		
 		if (calDavLoader == null) {
@@ -346,11 +345,11 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		logger.trace("handling event of type: {}", type);
 		if (type == CalDavType.VALUE) {
 			logger.debug("setting value for '{}' to: {}", itemNamePreview, state);
-			eventPublisher.postUpdate(itemNamePreview, state);
+			eventPublisher.sendCommand(itemNamePreview, state);
 		} else if (type == CalDavType.DATE) {
-			State c = new DateTimeType(FORMATTER.print(time));
+			Command c = new DateTimeType(FORMATTER.print(time));
 			logger.debug("setting value for '{}' to: {}", itemNamePreview, c);
-			eventPublisher.postUpdate(itemNamePreview, c);
+			eventPublisher.sendCommand(itemNamePreview, c);
 		} else if (type == CalDavType.DISABLE) {
 			// ok
 		} else {

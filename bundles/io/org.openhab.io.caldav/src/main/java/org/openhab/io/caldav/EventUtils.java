@@ -11,6 +11,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.slf4j.Logger;
@@ -118,7 +119,7 @@ public final class EventUtils {
 					continue;
 				}
 				
-				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
+				Command state = TypeParser.parseCommand(item.getAcceptedCommandTypes(), stateString);
 				LOG.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
 				outMap.add(new EventContent(scope, item, state, time));
 			}
@@ -135,7 +136,7 @@ public final class EventUtils {
 	
 	public final static class EventContent {
 		private Item item;
-		private State type;
+		private Command type;
 		private DateTime time;
 		private String scope;
 		
@@ -143,7 +144,7 @@ public final class EventUtils {
 			super();
 		}
 
-		public EventContent(String scope, Item item, State type, DateTime time) {
+		public EventContent(String scope, Item item, Command type, DateTime time) {
 			super();
 			this.scope = scope;
 			this.item = item;
@@ -155,7 +156,7 @@ public final class EventUtils {
 			return item;
 		}
 
-		public State getType() {
+		public Command getType() {
 			return type;
 		}
 
