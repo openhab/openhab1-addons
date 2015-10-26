@@ -220,6 +220,7 @@ import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
+import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
@@ -1554,6 +1555,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletSolidStateRelayEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletPiezoSpeakerEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -6638,6 +6646,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletPiezoSpeaker()
+  {
+    return tinkerBrickletPiezoSpeakerEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7408,6 +7426,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletPTCEDataType = createEDataType(TINKER_BRICKLET_PTC);
     tinkerBrickletIndustrialDual020mAEDataType = createEDataType(TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A);
     tinkerBrickletSolidStateRelayEDataType = createEDataType(TINKER_BRICKLET_SOLID_STATE_RELAY);
+    tinkerBrickletPiezoSpeakerEDataType = createEDataType(TINKER_BRICKLET_PIEZO_SPEAKER);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -9113,6 +9132,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletPTCEDataType, BrickletPTC.class, "TinkerBrickletPTC", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletIndustrialDual020mAEDataType, BrickletIndustrialDual020mA.class, "TinkerBrickletIndustrialDual020mA", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletSolidStateRelayEDataType, BrickletSolidStateRelay.class, "TinkerBrickletSolidStateRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletPiezoSpeakerEDataType, BrickletPiezoSpeaker.class, "TinkerBrickletPiezoSpeaker", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

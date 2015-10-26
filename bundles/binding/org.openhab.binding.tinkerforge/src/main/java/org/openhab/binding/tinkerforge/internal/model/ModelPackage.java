@@ -17087,6 +17087,16 @@ public interface ModelPackage extends EPackage
   int TINKER_BRICKLET_SOLID_STATE_RELAY = 195;
 
   /**
+   * The meta object id for the '<em>Tinker Bricklet Piezo Speaker</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see com.tinkerforge.BrickletPiezoSpeaker
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletPiezoSpeaker()
+   * @generated
+   */
+  int TINKER_BRICKLET_PIEZO_SPEAKER = 196;
+
+  /**
    * The meta object id for the '<em>HSB Type</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -17094,7 +17104,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBType()
    * @generated
    */
-  int HSB_TYPE = 196;
+  int HSB_TYPE = 197;
 
   /**
    * The meta object id for the '<em>Up Down Type</em>' data type.
@@ -17104,7 +17114,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getUpDownType()
    * @generated
    */
-  int UP_DOWN_TYPE = 197;
+  int UP_DOWN_TYPE = 198;
 
   /**
    * The meta object id for the '<em>Percent Value</em>' data type.
@@ -17114,7 +17124,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentValue()
    * @generated
    */
-  int PERCENT_VALUE = 198;
+  int PERCENT_VALUE = 199;
 
   /**
    * The meta object id for the '<em>Device Options</em>' data type.
@@ -17124,7 +17134,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
    * @generated
    */
-  int DEVICE_OPTIONS = 199;
+  int DEVICE_OPTIONS = 200;
 
   /**
    * The meta object id for the '<em>Percent Type</em>' data type.
@@ -17134,7 +17144,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentType()
    * @generated
    */
-  int PERCENT_TYPE = 200;
+  int PERCENT_TYPE = 201;
 
   /**
    * The meta object id for the '<em>Increase Decrease Type</em>' data type.
@@ -17144,7 +17154,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIncreaseDecreaseType()
    * @generated
    */
-  int INCREASE_DECREASE_TYPE = 201;
+  int INCREASE_DECREASE_TYPE = 202;
 
   /**
    * The meta object id for the '<em>Direction Value</em>' data type.
@@ -17154,7 +17164,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDirectionValue()
    * @generated
    */
-  int DIRECTION_VALUE = 202;
+  int DIRECTION_VALUE = 203;
 
   /**
    * The meta object id for the '<em>Enum</em>' data type.
@@ -17164,7 +17174,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 203;
+  int ENUM = 204;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -22387,6 +22397,17 @@ public interface ModelPackage extends EPackage
   EDataType getTinkerBrickletSolidStateRelay();
 
   /**
+   * Returns the meta object for data type '{@link com.tinkerforge.BrickletPiezoSpeaker <em>Tinker Bricklet Piezo Speaker</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Tinker Bricklet Piezo Speaker</em>'.
+   * @see com.tinkerforge.BrickletPiezoSpeaker
+   * @model instanceClass="com.tinkerforge.BrickletPiezoSpeaker"
+   * @generated
+   */
+  EDataType getTinkerBrickletPiezoSpeaker();
+
+  /**
    * Returns the meta object for data type '{@link org.openhab.core.library.types.HSBType <em>HSB Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -26845,6 +26866,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType TINKER_BRICKLET_SOLID_STATE_RELAY = eINSTANCE.getTinkerBrickletSolidStateRelay();
+
+    /**
+     * The meta object literal for the '<em>Tinker Bricklet Piezo Speaker</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.tinkerforge.BrickletPiezoSpeaker
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletPiezoSpeaker()
+     * @generated
+     */
+    EDataType TINKER_BRICKLET_PIEZO_SPEAKER = eINSTANCE.getTinkerBrickletPiezoSpeaker();
 
     /**
      * The meta object literal for the '<em>HSB Type</em>' data type.

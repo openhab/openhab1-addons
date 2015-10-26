@@ -52,6 +52,7 @@ import com.tinkerforge.BrickletDualButton
 import com.tinkerforge.BrickletPTC
 import com.tinkerforge.BrickletIndustrialDual020mA
 import com.tinkerforge.BrickletSolidStateRelay
+import com.tinkerforge.BrickletPiezoSpeaker
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -106,6 +107,7 @@ type TinkerBrickletDualButton wraps BrickletDualButton
 type TinkerBrickletPTC wraps BrickletPTC
 type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
 type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
+type TinkerBrickletPiezoSpeaker wraps BrickletPiezoSpeaker
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue

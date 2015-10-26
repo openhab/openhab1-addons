@@ -57,6 +57,7 @@ import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
+import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
@@ -365,6 +366,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletIndustrialDual020mAFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_SOLID_STATE_RELAY:
         return createTinkerBrickletSolidStateRelayFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_PIEZO_SPEAKER:
+        return createTinkerBrickletPiezoSpeakerFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -532,6 +535,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletIndustrialDual020mAToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_SOLID_STATE_RELAY:
         return convertTinkerBrickletSolidStateRelayToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_PIEZO_SPEAKER:
+        return convertTinkerBrickletPiezoSpeakerToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -2916,6 +2921,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletSolidStateRelayToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletPiezoSpeaker createTinkerBrickletPiezoSpeakerFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletPiezoSpeaker)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletPiezoSpeakerToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
