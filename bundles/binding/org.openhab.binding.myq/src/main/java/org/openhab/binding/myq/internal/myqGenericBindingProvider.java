@@ -9,10 +9,13 @@
 package org.openhab.binding.myq.internal;
 
 import org.openhab.binding.myq.myqBindingProvider;
+import org.openhab.binding.myq.internal.myqGenericBindingProvider.myqBindingConfig.ITEMTYPE;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
+//import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -39,11 +42,12 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException 
 	{
-		//if (!(item instanceof SwitchItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only SwitchItems are allowed - please check your *.items configuration");
-		//}
+		if (!(item instanceof SwitchItem || item instanceof ContactItem|| item instanceof StringItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+				+ "', only SwitchItems, ContactItem or StringItem are allowed "
+				+ "- please check your *.items configuration");
+		}
 	}
 	
 	/**
@@ -53,11 +57,25 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException 
 	{
 		super.processBindingConfiguration(context, item, bindingConfig);
-		myqBindingConfig config = new myqBindingConfig();
+		myqBindingConfig config = parseBindingConfig(item, bindingConfig);
 		
 		//parse bindingconfig here ...
 		
 		addBindingConfig(item, config);		
+	}
+	
+	private myqBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
+		final myqBindingConfig config = new myqBindingConfig();
+
+		if(item instanceof SwitchItem)
+			config.type = ITEMTYPE.Switch;
+		else if(item instanceof ContactItem)
+			config.type = ITEMTYPE.ContactStatus;
+		else if(item instanceof StringItem)
+			config.type = ITEMTYPE.StringStatus;
+		config.MyQName = bindingConfig;
+
+		return config;
 	}
 	
 	
@@ -67,10 +85,16 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * @author scooter_seh
 	 * @since 1.8.0
 	 */
-	class myqBindingConfig implements BindingConfig 
+	static class myqBindingConfig implements BindingConfig 
 	{
 		// put member fields here which holds the parsed values
+		enum ITEMTYPE {	Switch, StringStatus, ContactStatus
+		};
+		
+		ITEMTYPE type;
+		//String id;
+		String MyQName;		
+		
 	}
-	
 	
 }
