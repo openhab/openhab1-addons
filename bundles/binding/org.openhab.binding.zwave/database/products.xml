@@ -2392,6 +2392,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>1</Type>
+				<Id>51</Id>
+			</Reference>
+			<Model>ZMNHDD</Model>
+			<Label lang="en">Flush Dimmer Plus</Label>
+			<ConfigFile>qubino/zmnhdd.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>5</Type>
 				<Id>1</Id>
 			</Reference>
