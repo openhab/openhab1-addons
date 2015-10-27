@@ -18,6 +18,10 @@ import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 	
 
 /**
@@ -160,6 +164,8 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	{
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
+		
+
 	}
 
 	/**

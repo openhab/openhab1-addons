@@ -92,7 +92,7 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 		};
 		
 		ITEMTYPE type;
-		//String id;
+		String id;
 		String MyQName;		
 		
 	}
