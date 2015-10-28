@@ -193,7 +193,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			for (CalDavConfig calDavConfig : configMap.values()) {
 				final CalendarRuntime eventRuntime = new CalendarRuntime();
 				eventRuntime.setConfig(calDavConfig);
-				getCachePath(calDavConfig.getKey()).mkdirs();
+				if (getCachePath(calDavConfig.getKey()).mkdirs()) {
+					throw new javax.naming.ConfigurationException("cannot create directory (" + CACHE_PATH + ") for calendar caching (missing rights?)");
+				}
 				this.eventCache.put(calDavConfig.getKey(), eventRuntime);
 			}
 
@@ -640,7 +642,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					}
 					break;
 				}
-			} catch (Error e) {
+			} catch (Throwable e) {
 				LOG.error("cannot load events", e);
 			}
 			
@@ -671,7 +673,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
 					} catch (ParserException e) {
 						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
-					} catch (Error e) {
+					} catch (Throwable e) {
 						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
 					}
 				}

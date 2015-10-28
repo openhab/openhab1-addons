@@ -31,7 +31,7 @@ public final class CalDavActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("CalDav binding has been started.");
+		logger.debug("CalDav-Command binding has been started.");
 	}
 
 	/**
@@ -39,7 +39,7 @@ public final class CalDavActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("CalDav binding has been stopped.");
+		logger.debug("CalDav-Command binding has been stopped.");
 	}
 	
 	/**
