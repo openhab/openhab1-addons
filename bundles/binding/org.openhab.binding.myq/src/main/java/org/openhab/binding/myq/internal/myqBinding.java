@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -43,6 +43,10 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	 * was called.
 	 */
 	private BundleContext bundleContext;
+	
+	private myqData myqOnlineData = null;
+	
+	private GarageDoorData garageStatus = null;
 
 	
 	/** 
@@ -53,10 +57,6 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	
 	private String username = null;
 	private String password = null;
-
-	private String appId = "Vj8pQggXLhLy0WHahglCD4N1nAkkXQtGYpq2HrHD7H1nvmbT55KqtN6RSF4ILB%2fi";
-	
-	private String sercurityTokin = null;
 	
 	private long pollTime = 0;
 	
@@ -91,8 +91,8 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		
 		if (StringUtils.isNotBlank(usernameString)&&StringUtils.isNotBlank(passwordString))
 		{
-			username = usernameString;
-			password = passwordString;
+			this.username = usernameString;
+			this.password = passwordString;
 		}		
 		// read further config parameters here ...
 
@@ -111,8 +111,8 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		
 		if (StringUtils.isNotBlank(usernameString)&&StringUtils.isNotBlank(passwordString))
 		{
-			username = usernameString;
-			password = passwordString;
+			this.username = usernameString;
+			this.password = passwordString;
 		}
 	}
 	
@@ -164,8 +164,8 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	{
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
-		
-
+		myqOnlineData = new myqData(this.username,this.password);
+		this.garageStatus = myqOnlineData.getMyqData();
 	}
 
 	/**
