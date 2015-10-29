@@ -1,0 +1,217 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.openhab.binding.rwesmarthome.internal;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.lang.StringUtils;
+
+import org.openhab.binding.rwesmarthome.RWESmarthomeBindingProvider;
+import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
+import org.openhab.model.item.binding.AbstractGenericBindingProvider;
+import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * This class is responsible for parsing the binding configuration.
+ * 
+ * @author ollie-dev
+ * @since 1.8.0
+ */
+public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingProvider implements RWESmarthomeBindingProvider, BindingChangeListener {
+
+	private static final Logger logger = LoggerFactory.getLogger(RWESmarthomeGenericBindingProvider.class);
+	private Map<String, Item> items = new HashMap<String, Item>();
+	private RWESmarthomeContext context = RWESmarthomeContext.getInstance();
+	private Map<String, Item> itemMapById = new HashMap<String, Item>();
+	private MultiKeyMap itemMapByIdAndParam = new MultiKeyMap();
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getBindingType() {
+		return context.getBindingType();
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+		//	throw new BindingConfigParseException("item '" + item.getName()
+		//			+ "' is of type '" + item.getClass().getSimpleName()
+		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+		//}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		super.processBindingConfiguration(context, item, bindingConfig);		
+		RWESmarthomeBindingConfig config = new RWESmarthomeBindingConfig();
+				
+		// parse config
+		bindingConfig = StringUtils.trimToEmpty(bindingConfig);
+		String[] configstrings = bindingConfig.split("[,]");
+		
+		for (String configstring : configstrings) {
+			//String[] configParts = configstring.split("=");
+			String[] configParts = StringUtils.trimToEmpty(configstring).split("[=]");
+			if (configParts.length != 2) {
+				throw new BindingConfigParseException("Each entry must have a key and a value");
+			}
+			
+			String key = StringUtils.trim(configParts[0]);
+			String value = StringUtils.trim(configParts[1]);
+			
+			// id
+			if("id".equalsIgnoreCase(key)) {
+				if(!value.matches("^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$")) {
+					throw new BindingConfigParseException("id '" + value + "' is not a valid logicalDeviceId. Valid example: 12345a67-890b-1c23-de45-f67890123456");
+				}
+				config.setDeviceId(value);
+				
+			// param
+			} else if("param".equalsIgnoreCase(key)){
+				if(!value.matches("^(temperature|humidity|settemperature|variable|contact|switch|operationmodeauto|luminance|smokedetector|dimmer|dimmerinverted|rollershutter|rollershutterinverted|alarm)$")) {
+					throw new BindingConfigParseException("Invalid configuration: 'param' must be one of the following: temperature|humidity|settemperature|variable|contact|switch|operationmodeauto|luminance|smokedetector|dimmer|dimmerinverted|rollershutter|rollershutterinverted|alarm");
+				}
+				config.setDeviceParam(value);
+		
+			// unknown configuration key
+			} else {
+				logger.warn("Invalid configuration key '%s' - only 'id' and 'param' are allowed!", key, value);
+				throw new BindingConfigParseException("Invalid configuration key '" + key + "'");
+			}
+		}
+		
+		if(config.getDeviceId() == null)
+			throw new BindingConfigParseException("Invalid configuration: id is missing!");
+		if(config.getDeviceParam() == null)
+			throw new BindingConfigParseException("Invalid configuration: param is missing!");
+		
+		logger.info("Adding item {} with {}", item.getName(), config.toString());
+		items.put(item.getName(), item);
+		
+		itemMapById.put(config.getDeviceId(), item);
+		itemMapByIdAndParam.put(config.getDeviceId(), config.getDeviceParam(), item);
+		
+		addBindingConfig(item, config);
+		this.context.setBindingChanged(true);
+	}
+	
+	
+	/**
+	 * This is a helper class holding binding specific configuration details
+	 * 
+	 * @author ollie-dev
+	 * @since 1.8.0
+	 */
+	public class RWESmarthomeBindingConfig implements BindingConfig {
+		private String deviceId = null;
+		private String deviceParam = null;
+		
+		/**
+		 * @return the device id
+		 */
+		public String getDeviceId() {
+			return deviceId;
+		}
+
+		/**
+		 * Sets the deviceId
+		 * 
+		 * @param deviceId
+		 */
+		public void setDeviceId(String deviceId) {
+			this.deviceId = deviceId;
+		}		
+		
+		/**
+		 * @return device parameter
+		 */
+		public String getDeviceParam() {
+			return deviceParam;
+		}
+
+		/**
+		 * @param deviceParam
+		 */
+		public void setDeviceParam(String deviceParam) {
+			this.deviceParam = deviceParam;
+		}
+
+		@Override
+		public String toString() {
+			String configString = "RWESmarthomeBindingConfig [deviceId=" + deviceId + ", param=" + deviceParam + "]";
+			return configString;
+		}
+
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.rwesmarthome.RWESmarthomeBindingProvider#getItem(java.lang.String)
+	 */
+	@Override
+	public Item getItem(String itemName) {
+		return items.get(itemName);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.rwesmarthome.RWESmarthomeBindingProvider#getItemById(java.lang.String)
+	 */
+	@Override
+	public Item getItemById(String id) {
+		return (Item) itemMapById.get(id);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.rwesmarthome.RWESmarthomeBindingProvider#getItemByIdAndParam(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Item getItemByIdAndParam(String id, String param) {
+		return (Item) itemMapByIdAndParam.get(id, param);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.BindingChangeListener#bindingChanged(org.openhab.core.binding.BindingProvider, java.lang.String)
+	 */
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.debug("BINDING CHANGED! item='{}', provider='{}'", itemName, provider);
+		context.setBindingChanged(true);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.BindingChangeListener#allBindingsChanged(org.openhab.core.binding.BindingProvider)
+	 */
+	@Override
+	public void allBindingsChanged(BindingProvider provider) {
+		logger.debug("ALL BINDINGS CHANGED! provider='{}'", provider);
+		context.setBindingChanged(true);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.rwesmarthome.RWESmarthomeBindingProvider#getBindingFor(java.lang.String)
+	 */
+	public RWESmarthomeBindingConfig getBindingFor(String itemName) {
+		return (RWESmarthomeBindingConfig) bindingConfigs.get(itemName);
+	}
+}
