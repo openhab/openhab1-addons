@@ -10,7 +10,6 @@ package org.openhab.binding.myq.internal;
 
 import java.util.Map;
 
-
 import org.openhab.binding.myq.myqBindingProvider;
 import org.openhab.binding.myq.internal.myqBindingConfig;
 import org.apache.commons.lang.StringUtils;
@@ -27,18 +26,16 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * this class polls the chamberlian myQ API and sents updates to the event bus of 
+ * configured items in openHAB
  * 
- * @author scooter_seh
+ * @author Scott Hanson
  * @since 1.8.0
  */
 public class myqBinding extends AbstractActiveBinding<myqBindingProvider> 
 {
-
 	private static final Logger logger = 
 		LoggerFactory.getLogger(myqBinding.class);
 
@@ -48,9 +45,15 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	 * was called.
 	 */
 	private BundleContext bundleContext;
-	
+
+	/**
+	 * The myqData. This object stores the connection data and makes API reguests
+	 */
 	private myqData myqOnlineData = null;
-	
+
+	/**
+	 * The GarageDoorData. This object stores the garage soor opener status
+	 */
 	private GarageDoorData garageStatus = null;
 
 	
@@ -59,14 +62,11 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-	
-	private long pollTime = 0;
-	
+
 	public myqBinding() 
 	{
 	}
-		
-	
+
 	/**
 	 * Called by the SCR to activate the component with its configuration read from CAS
 	 * 
@@ -79,7 +79,7 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 
 		// the configuration is guaranteed not to be null, because the component definition has the
 		// configuration-policy set to require. If set to 'optional' then the configuration may be null
-			
+
 		// to override the default refresh interval one has to add a 
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 		String refreshIntervalString = (String) configuration.get("refresh");
@@ -87,19 +87,19 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		{
 			refreshInterval = Long.parseLong(refreshIntervalString);
 		}
-		
+
 		String usernameString = (String) configuration.get("username");
 		String passwordString = (String) configuration.get("password");
-		
+
+		//initialize connection object if username and password is set
 		if (StringUtils.isNotBlank(usernameString) && StringUtils.isNotBlank(passwordString))
 		{
 			myqOnlineData = new myqData(usernameString,passwordString);
-		}		
-		// read further config parameters here ...
+		}
 
 		setProperlyConfigured(true);
 	}
-	
+
 	/**
 	 * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
 	 * @param configuration Updated configuration properties
@@ -109,7 +109,8 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		// update the internal configuration accordingly
 		String usernameString = (String) configuration.get("username");
 		String passwordString = (String) configuration.get("password");
-		
+
+		//reinitialize connection object if username and password is changed
 		if (StringUtils.isNotBlank(usernameString) && StringUtils.isNotBlank(passwordString))
 		{
 			myqOnlineData = new myqData(usernameString,passwordString);
@@ -161,7 +162,9 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	@Override
 	protected void execute() 
 	{
-		// the frequently executed code (polling) goes here ...
+		if(this.myqOnlineData==null)
+			return;
+		//Get myQ Data
 		this.garageStatus = myqOnlineData.getMyqData();
 		
 		for (myqBindingProvider provider : this.providers) 
@@ -187,7 +190,7 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 								eventPublisher.postUpdate(mygItemName, OpenClosedType.OPEN);
 						}
 					}
-				}					
+				}
 			}
 		}
 	}
@@ -216,7 +219,9 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
-	
+	/**
+	 * get item config based on item name(copied from HUE binding)
+	 */
 	private myqBindingConfig getConfigForItemName(String itemName) {
 		for (myqBindingProvider provider : this.providers) {
 			if (provider.getItemConfig(itemName) != null) {

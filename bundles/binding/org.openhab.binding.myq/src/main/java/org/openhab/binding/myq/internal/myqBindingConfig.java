@@ -9,18 +9,38 @@
 package org.openhab.binding.myq.internal;
 import org.openhab.core.binding.BindingConfig;
 /**
- * This is a helper class holding binding specific configuration details
+ * This represents the configuration of a openHAB item that is binded to garage
+ * door opener. It contains the following information:
+ *
+ * <ul>
+ * <li>The MyQ Name is the Device Name set in the Chamberlain myQ mobile App</li>
+ * <li>The binding type of the myq item</li>
+ * <ul>
+ * <li>Switch</li>
+ * <li>StringStatus</li>
+ * <li>ContactStatus</li>
+ * </ul>
+ * <li>id is unused at this time</li>
+ * </ul>
  * 
- * @author scooter_seh
+ * @author Scott Hanson
  * @since 1.8.0
  */
 public class myqBindingConfig implements BindingConfig 
 {
-	// put member fields here which holds the parsed values
-	public enum ITEMTYPE {	Switch, StringStatus, ContactStatus
+		/**
+	 * The binding type of the myq item.
+	 * <ul>
+	 * <li>Switch</li>
+	 * <li>StringStatus</li>
+	 * <li>ContactStatus</li>
+	 * </ul>
+	 */
+	public enum ITEMTYPE {
+		Switch, StringStatus, ContactStatus
 	};
 
+	String MyQName;
 	ITEMTYPE type;
-	String id;
-	String MyQName;		
+	//String id;
 }

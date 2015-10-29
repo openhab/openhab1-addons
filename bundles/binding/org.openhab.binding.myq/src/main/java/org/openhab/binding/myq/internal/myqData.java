@@ -22,6 +22,24 @@ import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+/**
+ * This Class handles the Chamberlain myQ http conection.
+ * @method Login() 
+ * 
+ * <ul>
+ * <li>userName: myQ Login Username</li>
+ * <li>password: myQ Login Password</li>
+ * <li>sercurityTokin: sercurityTokin for API requests</li>
+ * <li>webSite: url of myQ API</li>
+ * <li>appId: appId for API requests</li>
+ * <li>client: http client for API requests</li>
+ * <li>MaxRetrys: max login attemps in a row</li>
+ * </ul>
+ * 
+ * @author Scott Hanson
+ * @since 1.8.0
+ */
+
 public class myqData {
 	
 	static final Logger logger = LoggerFactory.getLogger(myqData.class);
@@ -43,7 +61,10 @@ public class myqData {
 		client = Client.create();
 		client.setConnectTimeout(5000);
 	}
-	
+
+	/**
+	 * Gets Garage Door Opener Data in GarageDoorData object format
+	 */
 	public GarageDoorData getMyqData() 
 	{
 		if(sercurityTokin == null)
@@ -51,7 +72,11 @@ public class myqData {
 		String json = getGarageStatus(0);
 		return json != null ? new GarageDoorData(json) : null;
 	}
-	
+
+	/**
+	 * retreives JSON string of device data from myq website
+	 * returns null if conection fails or user login fails
+	 */
 	private String getGarageStatus(int attemps) 
 	{
 		if(sercurityTokin == null)
@@ -72,10 +97,10 @@ public class myqData {
 						+ response.getStatus());
 				if(attemps < MaxRetrys)
 				{
-					Login();				
+					Login();
 					return getGarageStatus(++attemps);
 				}
-				return null;					
+				return null;
 			}
 			logger.trace("Received MyQ Device Data: {}", dataString);
 			return dataString;
@@ -85,7 +110,12 @@ public class myqData {
 			return null;
 		}
 	}
-	
+
+
+	/**
+	 * Validates Username and Password then saved sercurityTokin to a varible
+	 * Returns false if return code from API is not correct or conection fails
+	 */
 	private boolean Login() 
 	{
 		String url =  String.format("%s/Membership/ValidateUserWithCulture?appId=%s&securityToken=null&username=%s&password=%s&culture=en",
@@ -108,7 +138,7 @@ public class myqData {
 			if(login.getSuccess())
 			{
 				this.sercurityTokin = login.getSecurityToken();
-				return true;				
+				return true;
 			}
 			return false;
 		} 
@@ -118,5 +148,4 @@ public class myqData {
 			return false;
 		}
 	}
-
 }

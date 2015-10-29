@@ -9,21 +9,28 @@
 package org.openhab.binding.myq.internal;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class LoginData {
-
+/**
+ * This Class parses the JSON data and stores if the login request was sucsessful.
+ * <ul>
+ * <li>success: json request was successful</li>
+ * <li>securityToken: securityToken from login request</li>
+ * </ul>
+ * 
+ * @author Scott Hanson
+ * @since 1.8.0
+ */
+public class LoginData
+{
 	static final Logger logger = LoggerFactory.getLogger(LoginData.class);
-	
-	String securityToken;
+
 	boolean success = false;
+	String securityToken;
 
 	/**
 	 * Constructor of the LoginData.
@@ -31,9 +38,11 @@ public class LoginData {
 	 * @param loginData
 	 *            The Json string as it has been returned myq website.
 	 */
-	public LoginData(String loginData) {
+	public LoginData(String loginData)
+	{
 		ObjectMapper mapper = new ObjectMapper();
-		try {
+		try
+		{
 			JsonNode rootNode = mapper.readTree(loginData);
 			
 			Map<String, Object> treeData = mapper.readValue(rootNode, Map.class);
@@ -47,8 +56,9 @@ public class LoginData {
 				this.securityToken = treeData.get("SecurityToken").toString();
 				logger.debug("myq securityToken: " + this.securityToken);
 			}
-			
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			logger.error("Could not read Settings-Json from myq site.", e);
 		}
 	}
@@ -56,14 +66,16 @@ public class LoginData {
 	/**
 	 * @return if it works return true
 	 */
-	public boolean getSuccess() {
+	public boolean getSuccess()
+	{
 		return this.success;
 	}
 
 	/**
 	 * @return Login SecurityToken
 	 */
-	public String getSecurityToken(){
+	public String getSecurityToken()
+	{
 		return this.securityToken;
 	}	
 }

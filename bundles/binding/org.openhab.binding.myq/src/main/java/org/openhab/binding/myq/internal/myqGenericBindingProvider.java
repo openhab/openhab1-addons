@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author scooter_seh
+ * @author Scott Hanson
  * @since 1.8.0
  */
 public class myqGenericBindingProvider extends AbstractGenericBindingProvider implements myqBindingProvider 
@@ -66,9 +66,12 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 		
 		//parse bindingconfig here ...
 		
-		addBindingConfig(item, config);		
+		addBindingConfig(item, config);
 	}
-	
+
+	/**
+	 * Parse item type to see what the action is used for
+	 */
 	private myqBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 		final myqBindingConfig config = new myqBindingConfig();
 
@@ -82,11 +85,15 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 
 		return config;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public myqBindingConfig getItemConfig(String itemName) {
 		return (myqBindingConfig) bindingConfigs.get(itemName);
 	}
+
 	
 	public List<String> getInBindingItemNames() {
 		List<String> inBindings = new ArrayList<String>();
@@ -94,5 +101,5 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 			inBindings.add(itemName);
 		}
 		return inBindings;
-	}		
+	}
 }
