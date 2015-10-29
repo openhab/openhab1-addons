@@ -222,16 +222,19 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     String name = (alias != null) ? alias : realName;
 
     State state = null;
-    if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-      state = item.getStateAs(PercentType.class);
-    } else if (item instanceof ColorItem) {
+    if (item.getAcceptedCommandTypes().contains(HSBType.class)) {
       state = item.getStateAs(HSBType.class);
+      logger.trace("got hsbtype", state.toString());
+    } else if (item.getAcceptedDataTypes().contains(PercentType.class)) {
+      state = item.getStateAs(PercentType.class);
+      logger.trace("percentype item found {}", name);
     } else {
+      logger.trace("other item found");
       // All other items should return the best format by default
       state = item.getState();
     }
     Object value = stateToObject(state);
-    logger.trace("storing {} in influxdb1 {}", name, value);
+    logger.trace("storing {} in influxdb1 value {}, {}", name, value, item);
     Point point =
         Point.measurement(name).field(VALUE_COLUMN_NAME, value)
             .time(System.currentTimeMillis(), timeUnit).build();
@@ -437,18 +440,24 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
    */
   private Object stateToObject(State state) {
     Object value;
-    if (state instanceof DecimalType) {
+    if (state instanceof HSBType) {
+      value = ((HSBType) state).toString();
+      logger.debug("got HSBType value {}", value);
+    } else if (state instanceof DecimalType) {
       value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
+      logger.debug("got DecimalType value {}", value);
     } else if (state instanceof OnOffType) {
       value = (OnOffType) state == OnOffType.ON ? 1 : 0;
+      logger.debug("got OnOffType value {}", value);
     } else if (state instanceof OpenClosedType) {
       value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
-    } else if (state instanceof HSBType) {
-      value = ((HSBType) state).toString();
+      logger.debug("got OpenClosedType value {}", value);
     } else if (state instanceof DateTimeType) {
       value = ((DateTimeType) state).getCalendar().getTime().getTime();
+      logger.debug("got DateTimeType value {}", value);
     } else {
       value = state.toString();
+      logger.debug("got String value {}", value);
     }
     return value;
   }
@@ -492,27 +501,35 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
-        if (item instanceof NumberItem) {
-          return new DecimalType(valueStr);
-        } else if (item instanceof ColorItem) {
+        if (item instanceof ColorItem) {
+          logger.debug("objectToState found a ColorItem {}", valueStr);
           return new HSBType(valueStr);
+        } else if (item instanceof NumberItem) {
+          logger.debug("objectToState found a NumberItem");
+          return new DecimalType(valueStr);
         } else if (item instanceof DimmerItem) {
+          logger.debug("objectToState found a DimmerItem");
           return new PercentType(valueStr);
         } else if (item instanceof SwitchItem) {
+          logger.debug("objectToState found a SwitchItem");
           return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
               ? OnOffType.OFF
               : OnOffType.ON;
         } else if (item instanceof ContactItem) {
+          logger.debug("objectToState found a ContactItem");
           return (string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF))
               ? OpenClosedType.CLOSED
               : OpenClosedType.OPEN;
         } else if (item instanceof RollershutterItem) {
+          logger.debug("objectToState found a RollershutterItem");
           return new PercentType(valueStr);
         } else if (item instanceof DateTimeItem) {
+          logger.debug("objectToState found a DateItem");
           Calendar calendar = Calendar.getInstance();
           calendar.setTimeInMillis(new BigDecimal(valueStr).longValue());
           return new DateTimeType(calendar);
         } else {
+          logger.debug("objectToState found a other Item");
           return new StringType(valueStr);
         }
       } catch (ItemNotFoundException e) {
