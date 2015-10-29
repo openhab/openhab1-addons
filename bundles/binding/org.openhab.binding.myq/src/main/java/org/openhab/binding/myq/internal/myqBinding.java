@@ -10,9 +10,14 @@ package org.openhab.binding.myq.internal;
 
 import java.util.Map;
 
+
 import org.openhab.binding.myq.myqBindingProvider;
+import org.openhab.binding.myq.internal.myqBindingConfig;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -55,9 +60,6 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	 */
 	private long refreshInterval = 60000;
 	
-	private String username = null;
-	private String password = null;
-	
 	private long pollTime = 0;
 	
 	public myqBinding() 
@@ -89,10 +91,9 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		String usernameString = (String) configuration.get("username");
 		String passwordString = (String) configuration.get("password");
 		
-		if (StringUtils.isNotBlank(usernameString)&&StringUtils.isNotBlank(passwordString))
+		if (StringUtils.isNotBlank(usernameString) && StringUtils.isNotBlank(passwordString))
 		{
-			this.username = usernameString;
-			this.password = passwordString;
+			myqOnlineData = new myqData(usernameString,passwordString);
 		}		
 		// read further config parameters here ...
 
@@ -109,10 +110,9 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		String usernameString = (String) configuration.get("username");
 		String passwordString = (String) configuration.get("password");
 		
-		if (StringUtils.isNotBlank(usernameString)&&StringUtils.isNotBlank(passwordString))
+		if (StringUtils.isNotBlank(usernameString) && StringUtils.isNotBlank(passwordString))
 		{
-			this.username = usernameString;
-			this.password = passwordString;
+			myqOnlineData = new myqData(usernameString,passwordString);
 		}
 	}
 	
@@ -136,7 +136,6 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
-
 	
 	/**
 	 * @{inheritDoc}
@@ -163,9 +162,34 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 	protected void execute() 
 	{
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
-		myqOnlineData = new myqData(this.username,this.password);
 		this.garageStatus = myqOnlineData.getMyqData();
+		
+		for (myqBindingProvider provider : this.providers) 
+		{
+			for (String mygItemName : provider.getInBindingItemNames()) 
+			{
+				myqBindingConfig deviceConfig = getConfigForItemName(mygItemName);
+				
+				if (deviceConfig != null) 
+				{
+					if(this.garageStatus.getDevices().containsKey(deviceConfig.MyQName))
+					{
+						Device garageopener = this.garageStatus.getDevices().get(deviceConfig.MyQName);
+						if(deviceConfig.type == myqBindingConfig.ITEMTYPE.StringStatus)
+						{
+							eventPublisher.postUpdate(mygItemName, new StringType(garageopener.GetStrStatus()));
+						}
+						if(deviceConfig.type == myqBindingConfig.ITEMTYPE.ContactStatus)
+						{
+							if(garageopener.getIsDoorClosed())
+								eventPublisher.postUpdate(mygItemName, OpenClosedType.CLOSED);
+							else
+								eventPublisher.postUpdate(mygItemName, OpenClosedType.OPEN);
+						}
+					}
+				}					
+			}
+		}
 	}
 
 	/**
@@ -192,4 +216,13 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider>
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
+	
+	private myqBindingConfig getConfigForItemName(String itemName) {
+		for (myqBindingProvider provider : this.providers) {
+			if (provider.getItemConfig(itemName) != null) {
+				return provider.getItemConfig(itemName);
+			}
+		}
+		return null;
+	}
 }

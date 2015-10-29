@@ -8,8 +8,11 @@
  */
 package org.openhab.binding.myq.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openhab.binding.myq.myqBindingProvider;
-import org.openhab.binding.myq.internal.myqGenericBindingProvider.myqBindingConfig.ITEMTYPE;
+import org.openhab.binding.myq.internal.myqBindingConfig.ITEMTYPE;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 //import org.openhab.core.library.items.DimmerItem;
@@ -18,7 +21,8 @@ import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
@@ -28,7 +32,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class myqGenericBindingProvider extends AbstractGenericBindingProvider implements myqBindingProvider 
 {
-
+	static final Logger logger = LoggerFactory
+			.getLogger(myqGenericBindingProvider.class);
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,23 +83,16 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 		return config;
 	}
 	
-	
-	/**
-	 * This is a helper class holding binding specific configuration details
-	 * 
-	 * @author scooter_seh
-	 * @since 1.8.0
-	 */
-	static class myqBindingConfig implements BindingConfig 
-	{
-		// put member fields here which holds the parsed values
-		enum ITEMTYPE {	Switch, StringStatus, ContactStatus
-		};
-		
-		ITEMTYPE type;
-		String id;
-		String MyQName;		
-		
+	@Override
+	public myqBindingConfig getItemConfig(String itemName) {
+		return (myqBindingConfig) bindingConfigs.get(itemName);
 	}
 	
+	public List<String> getInBindingItemNames() {
+		List<String> inBindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			inBindings.add(itemName);
+		}
+		return inBindings;
+	}		
 }

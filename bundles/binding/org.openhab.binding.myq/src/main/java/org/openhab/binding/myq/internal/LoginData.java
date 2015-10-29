@@ -20,9 +20,8 @@ public class LoginData {
 	/**
 	 * Constructor of the LoginData.
 	 * 
-	 * @param treeData
-	 *            The Json data as it has been returned by the Json object
-	 *            mapper.
+	 * @param loginData
+	 *            The Json string as it has been returned myq website.
 	 */
 	public LoginData(String loginData) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -32,17 +31,17 @@ public class LoginData {
 			Map<String, Object> treeData = mapper.readValue(rootNode, Map.class);
 			
 			String test = treeData.get("ReturnCode").toString();
-			logger.warn("myq treeData: "+test);
+			logger.debug("myq ReturnCode: " + test);
 			
 			if(Integer.parseInt(treeData.get("ReturnCode").toString())==0)
 			{
 				this.success = true;
 				this.securityToken = treeData.get("SecurityToken").toString();
-				
+				logger.debug("myq securityToken: " + this.securityToken);
 			}
 			
 		} catch (IOException e) {
-			logger.error("Could not read Settings-Json from Hue Bridge.", e);
+			logger.error("Could not read Settings-Json from myq site.", e);
 		}
 	}
 	
@@ -58,6 +57,5 @@ public class LoginData {
 	 */
 	public String getSecurityToken(){
 		return this.securityToken;
-	}
-	
+	}	
 }

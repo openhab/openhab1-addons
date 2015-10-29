@@ -44,27 +44,6 @@ public class myqData {
 		return json != null ? new GarageDoorData(json) : null;
 	}
 	
-	private String getMyqJson(String url) 
-	{
-		WebResource webResource = client.resource(url);
-
-		try {
-			ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-			String settingsString = response.getEntity(String.class);
-
-			if (response.getStatus() != 200) {
-				logger.warn("Failed to connect to Hue bridge: HTTP error code: "
-						+ response.getStatus());
-				return null;
-			}
-			logger.trace("Received Hue Bridge Settings: {}", settingsString);
-			return settingsString;
-		} catch(ClientHandlerException e) {
-			logger.warn("Failed to connect to Hue bridge: HTTP request timed out.");
-			return null;
-		}
-	}
-	
 	private String getGarageStatus(int attemps) 
 	{
 		if(sercurityTokin == null)
@@ -73,15 +52,15 @@ public class myqData {
 		String url =  String.format("%s/api/UserDeviceDetails?appId=%s&securityToken=%s",this.webSite,this.appId,sercurityTokin);
 		WebResource webResource = client.resource(url);
 
-		try {
-			ClientResponse response = webResource.get(ClientResponse.class);
-			
+		try 
+		{
+			ClientResponse response = webResource.get(ClientResponse.class);			
 			
 			String dataString = response.getEntity(String.class);
 
 			if (response.getStatus() != 200) 
 			{
-				logger.warn("Failed to connect to MyQ site: HTTP error code: "
+				logger.error("Failed to connect to MyQ site: HTTP error code: "
 						+ response.getStatus());
 				if(attemps < MaxRetrys)
 				{
@@ -92,8 +71,9 @@ public class myqData {
 			}
 			logger.trace("Received MyQ Device Data: {}", dataString);
 			return dataString;
-		} catch(ClientHandlerException e) {
-			logger.warn("Failed to connect to MyQ site: HTTP request timed out.");
+		} catch(ClientHandlerException e) 
+		{			
+			logger.error("Failed to connect to MyQ site: HTTP request timed out.");
 			return null;
 		}
 	}
@@ -104,12 +84,14 @@ public class myqData {
 				this.webSite,this.appId,this.userName,this.password);
 		WebResource webResource = client.resource(url);
 
-		try {
+		try 
+		{
 			ClientResponse response = webResource.get(ClientResponse.class);
 			String loginString = response.getEntity(String.class);
 
-			if (response.getStatus() != 200) {
-				logger.warn("Failed to connect to MyQ site: HTTP error code: "
+			if (response.getStatus() != 200) 
+			{
+				logger.error("Failed to connect to MyQ site: HTTP error code: "
 						+ response.getStatus());
 				return false;
 			}
@@ -121,8 +103,10 @@ public class myqData {
 				return true;				
 			}
 			return false;
-		} catch(ClientHandlerException e) {
-			logger.warn("Failed to connect to MyQ site: HTTP request timed out.");
+		} 
+		catch(ClientHandlerException e) 
+		{
+			logger.error("Failed to connect to MyQ site: HTTP request timed out.");
 			return false;
 		}
 	}

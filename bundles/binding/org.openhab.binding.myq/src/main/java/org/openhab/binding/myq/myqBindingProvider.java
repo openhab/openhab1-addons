@@ -8,12 +8,18 @@
  */
 package org.openhab.binding.myq;
 
+import java.util.List;
+
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.binding.myq.internal.myqBindingConfig;
 
 /**
  * @author scooter_seh
  * @since 1.8.0
  */
-public interface myqBindingProvider extends BindingProvider {
+public interface myqBindingProvider extends BindingProvider 
+{
+	public myqBindingConfig getItemConfig(String itemName);
 
+	public List<String> getInBindingItemNames();
 }
