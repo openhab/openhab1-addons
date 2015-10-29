@@ -32,6 +32,7 @@ import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.LocationItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -41,6 +42,7 @@ import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
@@ -443,6 +445,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     if (state instanceof HSBType) {
       value = ((HSBType) state).toString();
       logger.debug("got HSBType value {}", value);
+    } else if (state instanceof PointType) {
+      value = point2String((PointType) state);
+      logger.debug("got PointType value {}", value);
     } else if (state instanceof DecimalType) {
       value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
       logger.debug("got DecimalType value {}", value);
@@ -472,6 +477,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     String value;
     if (state instanceof DecimalType) {
       value = ((DecimalType) state).toBigDecimal().toString();
+    } else if (state instanceof PointType) {
+      value = point2String((PointType) state);
     } else if (state instanceof OnOffType) {
       value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
     } else if (state instanceof OpenClosedType) {
@@ -504,6 +511,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         if (item instanceof ColorItem) {
           logger.debug("objectToState found a ColorItem {}", valueStr);
           return new HSBType(valueStr);
+        } else if (item instanceof LocationItem){
+          logger.debug("objectToState found a LocationItem");
+          return new PointType(valueStr);
         } else if (item instanceof NumberItem) {
           logger.debug("objectToState found a NumberItem");
           return new DecimalType(valueStr);
@@ -556,5 +566,17 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       logger.trace("digitalvalue {}", DIGITAL_VALUE_ON);
       return DIGITAL_VALUE_ON;
     }
+  }
+
+  private String point2String(PointType point) {
+    StringBuffer buf = new StringBuffer();
+    buf.append(point.getLatitude().toString());
+    buf.append(",");
+    buf.append(point.getLongitude().toString());
+    if (point.getAltitude().equals(0)) {
+      buf.append(",");
+      buf.append(point.getAltitude().toString());
+    }
+    return buf.toString(); // latitude, longitude, altitude
   }
 }
