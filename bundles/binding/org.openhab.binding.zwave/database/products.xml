@@ -263,6 +263,14 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>4341</Type>
+				<Id>3750</Id>
+			</Reference>
+			<Model>CA-3750</Model>
+			<Label lang="en">Heavy duty contactor</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4841</Type>
 				<Id>0020</Id>
 			</Reference>
