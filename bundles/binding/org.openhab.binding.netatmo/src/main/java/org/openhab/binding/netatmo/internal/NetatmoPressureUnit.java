@@ -23,9 +23,10 @@ public enum NetatmoPressureUnit {
 	MBAR("mbar"), INHG("inHg"), MMHG("mmHg");
 
 	public static final NetatmoPressureUnit DEFAULT_PRESSURE_UNIT = NetatmoPressureUnit.MBAR;
-	private static final BigDecimal MBAR_TO_INHG = new BigDecimal(0.02952998751);
 
-	private static final BigDecimal MBAR_TO_MMHG = new BigDecimal(0.750061683);
+	private static final BigDecimal MBAR_TO_INHG = new BigDecimal("0.0295");
+
+	private static final BigDecimal MBAR_TO_MMHG = new BigDecimal("0.7500");
 
 	String pressureUnit;
 
@@ -50,6 +51,16 @@ public enum NetatmoPressureUnit {
 				+ pressureUnit);
 	}
 	
+	/**
+	 * Convert to appropriate measurement.
+	 *
+	 * The Barometer is accurate to +-1 mbar or +- 0.03 inHg
+	 *
+	 * @param value
+	 *            pressure in mbars
+	 *
+	 * @return value in proper measurement
+	 */
 	public BigDecimal convertPressure(BigDecimal value) {
 		if (this == DEFAULT_PRESSURE_UNIT) {
 			return value;
