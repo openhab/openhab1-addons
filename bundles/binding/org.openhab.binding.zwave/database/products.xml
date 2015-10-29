@@ -2238,6 +2238,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0602</Type>
+				<Id>0334</Id>
+			</Reference>
+			<Model>VRMX1-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+			<ConfigFile>leviton/vrmx1-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1902</Type>
 				<Id>0334</Id>
 			</Reference>
