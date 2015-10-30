@@ -15,11 +15,12 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * This Class parses the JSON data and creates a HashMap of Garage Door Opener Devices
  * with the TypeName as the Key. 
  * <ul>
- * <li>success: json request was successful</li>
+ * <li>success: JSON request was successful</li>
  * <li>devices: HashMap of Devices</li>
  * </ul>
  * 
@@ -33,8 +34,7 @@ public class GarageDoorData
 	//JSON returnCode was 0 
 	private boolean success = false;
 
-	//List<Device> devices;
-	HashMap<String, Device> devices = new HashMap<String, Device>();
+	HashMap<Integer, Device> devices = new HashMap<Integer, Device>();
 
 	/**
 	 * Constructor of the GarageDoorData.
@@ -57,19 +57,18 @@ public class GarageDoorData
 				if(rootNode.has("Devices"))
 				{
 					JsonNode node = rootNode.get("Devices");
-					//List<JsonNode> devices = node.findValues("MyQDeviceId");
 					if(node.isArray())
 					{
+						logger.info("Chamberlain MyQ Devices:");
+
 						int arraysize  = node.size();
 						for(int i = 0;i<arraysize;i++)
 						{
-							int DeviceId = node.get(i).get("MyQDeviceId").asInt();
-							String devicetype = RemoveQuotes(node.get(i).get("MyQDeviceTypeName").toString());
-							String Devicename = RemoveQuotes(node.get(i).get("DeviceName").toString());
-							String typename = RemoveQuotes(node.get(i).get("TypeName").toString());
+							int deviceId = node.get(i).get("DeviceId").asInt();
+							String deviceName = RemoveQuotes(node.get(i).get("DeviceName").toString());
+							String deviceType = RemoveQuotes(node.get(i).get("MyQDeviceTypeName").toString());
 
-							logger.debug("DeviceID: " + Integer.toString(DeviceId) + " DeviceName: " + Devicename +" Typename: " + typename);
-							if(devicetype.contains("GarageDoorOpener"))
+							if(deviceType.contains("GarageDoorOpener"))
 							{
 								JsonNode Attributes = node.get(i).get("Attributes");
 								if(Attributes.isArray())
@@ -81,8 +80,9 @@ public class GarageDoorData
 										if(AttributeName.contains("doorstate"))
 										{
 											int doorstate = Attributes.get(j).get("Value").asInt();
-											logger.debug("Doorstate : " + Integer.toString(doorstate));
-											this.devices.put(typename,new Device(DeviceId,devicetype,Devicename,typename,doorstate));
+											logger.info("DeviceID: " + Integer.toString(deviceId) + " DeviceName: " + deviceName +" DeviceType: " + deviceType + " Doorstate : " + Integer.toString(doorstate));
+
+											this.devices.put(deviceId,new Device(deviceId, deviceType, deviceName, doorstate));
 											break;
 										}
 									}
@@ -95,15 +95,17 @@ public class GarageDoorData
 		}
 		catch (IOException e)
 		{
-			logger.error("Could not read GarageDoor JSON from MYQ Site.", e);
+			logger.error("Could not read GarageDoor JSON from MyQ Site.", e);
 		}
 	}
 
-	public boolean getSuccess() {
+	public boolean getSuccess()
+	{
 		return this.success;
 	}
 
-	public HashMap<String, Device> getDevices() {
+	public HashMap<Integer, Device> getDevices()
+	{
 		return this.devices;
 	}
 
@@ -120,7 +122,7 @@ public class GarageDoorData
  * <li>MyQDeviceId: MyQDeviceId from API, need for http Posts</li>
  * <li>MyQDeviceType: Device Type. GarageDoorOpener or Gateway I've seen</li>
  * <li>DeviceName: Serial number of device I think</li>
- * <li>TypeName: Name That appers in myQ App</li>
+ * <li>TypeName: Name That appears in myQ App</li>
  * <li>Status: Garage Door Opener "doorstate" Attribute</li>
  * </ul>
  * 
@@ -129,38 +131,32 @@ public class GarageDoorData
  */
 class Device
 {
-	private int MyQDeviceId;
-	private String MyQDeviceType;
+	private int DeviceId;
+	private String DeviceType;
 	private String DeviceName;
-	private String TypeName;
 	private int Status;
 
-	public Device(int deviceId,String deviceType,String deviceName,String typeName, int status )
+	public Device(int deviceId, String deviceType, String deviceName, int status )
 	{
-		this.MyQDeviceId = deviceId;
-		this.MyQDeviceType = deviceType;
+		this.DeviceId = deviceId;
+		this.DeviceType = deviceType;
 		this.DeviceName = deviceName;
 		this.Status = status;
 	}
 
-	public int getMyQDeviceId() 
+	public int getDeviceId() 
 	{
-		return this.MyQDeviceId;
+		return this.DeviceId;
 	}
 
-	public String getMyQDeviceType()
+	public String getDeviceType()
 	{
-		return this.MyQDeviceType;
+		return this.DeviceType;
 	}
 
 	public String getDeviceName()
 	{
 		return this.DeviceName;
-	}
-	
-	public String getTypeName()
-	{
-		return this.TypeName;
 	}
 
 	public int getStatus()
@@ -168,7 +164,7 @@ class Device
 		return this.Status;
 	}
 
-	public boolean getIsDoorClosed()
+	public boolean IsDoorClosed()
 	{
 		if(this.Status == 2)
 			return true;
@@ -198,5 +194,3 @@ class Device
 		return this.DeviceName;
 	}
 }
-
-

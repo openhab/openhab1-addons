@@ -15,7 +15,7 @@ import org.openhab.binding.myq.internal.myqBindingConfig;
 
 /**
  * This interface is implemented by classes that can provide mapping information
- * between openHAB items and Chamberlian Garage Door Openers.
+ * between openHAB items and Chamberlain Garage Door Openers.
  * 
  * I used the Hue binding as my example so most of the code is the same
  * 
@@ -36,7 +36,7 @@ public interface myqBindingProvider extends BindingProvider
 	/**
 	 * Returns a list of item names
 	 * 
-	 * @return List of item names mapped to a Chamberlian myQ Binding
+	 * @return List of item names mapped to a Chamberlain myQ Binding
 	 */
 	public List<String> getInBindingItemNames();
 }

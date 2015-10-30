@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This Class parses the JSON data and stores if the login request was sucsessful.
+ * This Class parses the JSON data and stores if the login request was successful.
  * <ul>
  * <li>success: json request was successful</li>
  * <li>securityToken: securityToken from login request</li>
@@ -39,18 +39,17 @@ public class LoginData
 	 * @param loginData
 	 *            The Json string as it has been returned myq website.
 	 */
+	@SuppressWarnings("unchecked")
 	public LoginData(String loginData)
 	{
 		ObjectMapper mapper = new ObjectMapper();
 		try
 		{
 			JsonNode rootNode = mapper.readTree(loginData);
-			
 			Map<String, Object> treeData = mapper.readValue(rootNode, Map.class);
-			
 			String test = treeData.get("ReturnCode").toString();
 			logger.debug("myq ReturnCode: " + test);
-			
+
 			if(Integer.parseInt(treeData.get("ReturnCode").toString())==0)
 			{
 				this.success = true;
@@ -63,7 +62,7 @@ public class LoginData
 			logger.error("Could not read Settings-Json from myq site.", e);
 		}
 	}
-	
+
 	/**
 	 * @return if it works return true
 	 */
@@ -78,5 +77,5 @@ public class LoginData
 	public String getSecurityToken()
 	{
 		return this.securityToken;
-	}	
+	}
 }

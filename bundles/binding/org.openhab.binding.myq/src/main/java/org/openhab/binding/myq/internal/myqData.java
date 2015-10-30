@@ -8,12 +8,6 @@
  */
 package org.openhab.binding.myq.internal;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +17,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- * This Class handles the Chamberlain myQ http conection.
+ * This Class handles the Chamberlain myQ http connection.
  * @method Login() 
  * 
  * <ul>
@@ -33,29 +27,29 @@ import com.sun.jersey.api.client.WebResource;
  * <li>webSite: url of myQ API</li>
  * <li>appId: appId for API requests</li>
  * <li>client: http client for API requests</li>
- * <li>MaxRetrys: max login attemps in a row</li>
+ * <li>MaxRetrys: max login attempts in a row</li>
  * </ul>
  * 
  * @author Scott Hanson
  * @since 1.8.0
  */
-
-public class myqData {
-	
+public class myqData
+{
 	static final Logger logger = LoggerFactory.getLogger(myqData.class);
-	
+
 	private String userName;
 	private String password;
 	private String sercurityTokin;
-	
+
 	private String webSite = "https://myqexternal.myqdevice.com";
 	private String appId = "Vj8pQggXLhLy0WHahglCD4N1nAkkXQtGYpq2HrHD7H1nvmbT55KqtN6RSF4ILB%2fi";
-	
+
 	private Client client;
-	
+
 	private final int MaxRetrys = 3;
-	
-	public myqData(String username, String password) {
+
+	public myqData(String username, String password)
+	{
 		this.userName = username;
 		this.password = password;
 		client = Client.create();
@@ -67,19 +61,22 @@ public class myqData {
 	 */
 	public GarageDoorData getMyqData() 
 	{
-		if(sercurityTokin == null)
+		if(this.sercurityTokin == null)
 			Login();
 		String json = getGarageStatus(0);
 		return json != null ? new GarageDoorData(json) : null;
 	}
 
 	/**
-	 * retreives JSON string of device data from myq website
-	 * returns null if conection fails or user login fails
+	 * Retrieves JSON string of device data from myq website
+	 * returns null if connection fails or user login fails
+	 * 
+	 * @param attemps
+	 *            Attempt number when it recursively calls itself
 	 */
 	private String getGarageStatus(int attemps) 
 	{
-		if(sercurityTokin == null)
+		if(this.sercurityTokin == null)
 			if(Login())
 				return null;
 		String url =  String.format("%s/api/UserDeviceDetails?appId=%s&securityToken=%s",this.webSite,this.appId,sercurityTokin);
@@ -88,7 +85,7 @@ public class myqData {
 		try 
 		{
 			ClientResponse response = webResource.get(ClientResponse.class);			
-			
+
 			String dataString = response.getEntity(String.class);
 
 			if (response.getStatus() != 200) 
@@ -104,17 +101,17 @@ public class myqData {
 			}
 			logger.trace("Received MyQ Device Data: {}", dataString);
 			return dataString;
-		} catch(ClientHandlerException e) 
+		}
+		catch(ClientHandlerException e) 
 		{			
 			logger.error("Failed to connect to MyQ site: HTTP request timed out.");
 			return null;
 		}
 	}
 
-
 	/**
-	 * Validates Username and Password then saved sercurityTokin to a varible
-	 * Returns false if return code from API is not correct or conection fails
+	 * Validates Username and Password then saved sercurityTokin to a variable
+	 * Returns false if return code from API is not correct or connection fails
 	 */
 	private boolean Login() 
 	{
@@ -147,5 +144,46 @@ public class myqData {
 			logger.error("Failed to connect to MyQ site: HTTP request timed out.");
 			return false;
 		}
+	}
+		
+	/**
+	 * Send Command to open/close garage door opener with MyQ API
+	 * Returns false if return code from API is not correct or connection fails
+	 * 
+	 * @param deviceID
+	 *            MyQ deviceID of Garage Door Opener.
+	 * @param state
+	 *            Desired state to put the door in, 1 = open, 0 = closed
+	 * @param attemps
+	 *            Attempt number when it recursively calls itself
+	 */
+	public boolean executeCommand(int deviceID, int state,int attemps) 
+	{
+		if(this.sercurityTokin == null)
+			if(Login())
+				return false;
+		String message =  String.format("{\"AttributeName\":\"desireddoorstate\",\"DeviceId\":\"%d\",\"ApplicationId\":\"%s\",\"AttributeValue\":\"%d\",\"SecurityToken\":\"%s\"}",
+				deviceID,this.appId,state,this.sercurityTokin);
+		String url =  String.format("%s/Device/setDeviceAttribute",this.webSite);
+		WebResource webResource = client.resource(url);
+
+		ClientResponse response = webResource.type("application/json").put(
+				ClientResponse.class, message);
+
+		logger.debug("Sent message: '" + message + "' to " + url);
+
+		if (response.getStatus() != 200) 
+		{
+			logger.error("Failed to connect to MyQ site: HTTP error code: "
+					+ response.getStatus());
+
+			if(attemps < MaxRetrys)
+			{
+				Login();
+				return executeCommand(deviceID, state, ++attemps);
+			}
+			return false;
+		}
+		return true;
 	}
 }

@@ -8,13 +8,14 @@
  */
 package org.openhab.binding.myq.internal;
 import org.openhab.core.binding.BindingConfig;
+
 /**
  * This represents the configuration of a openHAB item that is binded to garage
  * door opener. It contains the following information:
  *
  * <ul>
- * <li>The MyQ Name is the Device Name set in the Chamberlain myQ mobile App</li>
- * <li>The binding type of the myq item</li>
+ * <li>The DeviceID is the Device ID from the MyQ API</li>
+ * <li>The type is how the binding uses the item</li>
  * <ul>
  * <li>Switch</li>
  * <li>StringStatus</li>
@@ -28,7 +29,7 @@ import org.openhab.core.binding.BindingConfig;
  */
 public class myqBindingConfig implements BindingConfig 
 {
-		/**
+	/**
 	 * The binding type of the myq item.
 	 * <ul>
 	 * <li>Switch</li>
@@ -40,7 +41,6 @@ public class myqBindingConfig implements BindingConfig
 		Switch, StringStatus, ContactStatus
 	};
 
-	String MyQName;
-	ITEMTYPE type;
-	//String id;
+	int DeviceID;
+	ITEMTYPE Type;	
 }
