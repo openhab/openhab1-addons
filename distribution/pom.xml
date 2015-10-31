@@ -1251,7 +1251,13 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency> 
+		<dependency>
+		    	<groupId>org.openhab.binding</groupId>
+		    	<artifactId>org.openhab.binding.ipx800</artifactId>
+		    	<version>${project.version}</version>
+		    	<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.frontiersiliconradio</artifactId>
 			<version>${project.version}</version>
