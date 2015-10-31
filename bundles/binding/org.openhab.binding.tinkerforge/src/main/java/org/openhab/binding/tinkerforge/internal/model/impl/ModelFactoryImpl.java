@@ -124,6 +124,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
       case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER: return createMBrickletPiezoSpeaker();
       case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
       case ModelPackage.DUAL_BUTTON_LED: return createDualButtonLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
@@ -623,6 +624,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletDualButtonImpl mBrickletDualButton = new MBrickletDualButtonImpl();
     return mBrickletDualButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletPiezoSpeaker createMBrickletPiezoSpeaker()
+  {
+    MBrickletPiezoSpeakerImpl mBrickletPiezoSpeaker = new MBrickletPiezoSpeakerImpl();
+    return mBrickletPiezoSpeaker;
   }
 
   /**

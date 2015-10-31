@@ -102,6 +102,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
@@ -146,6 +147,7 @@ import org.openhab.binding.tinkerforge.internal.model.PTCNoiseRejectionFilter;
 import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
 import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
 import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
 import org.openhab.binding.tinkerforge.internal.model.PTCWireMode;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
@@ -456,6 +458,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dualButtonDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletPiezoSpeakerEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -876,6 +885,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mSensorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass programmableActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3006,6 +3022,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletPiezoSpeaker()
+  {
+    return mBrickletPiezoSpeakerEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletPiezoSpeaker_DeviceType()
+  {
+    return (EAttribute)mBrickletPiezoSpeakerEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getDualButtonButton()
   {
     return dualButtonButtonEClass;
@@ -4859,6 +4895,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMSensor__FetchSensorValue()
   {
     return mSensorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProgrammableActor()
+  {
+    return programmableActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getProgrammableActor__Action__DeviceOptions()
+  {
+    return programmableActorEClass.getEOperations().get(0);
   }
 
   /**
@@ -6888,6 +6944,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mSensorEClass, MSENSOR__SENSOR_VALUE);
     createEOperation(mSensorEClass, MSENSOR___FETCH_SENSOR_VALUE);
 
+    programmableActorEClass = createEClass(PROGRAMMABLE_ACTOR);
+    createEOperation(programmableActorEClass, PROGRAMMABLE_ACTOR___ACTION__DEVICEOPTIONS);
+
     mTextActorEClass = createEClass(MTEXT_ACTOR);
     createEAttribute(mTextActorEClass, MTEXT_ACTOR__TEXT);
 
@@ -6930,6 +6989,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletDualButtonEClass, MBRICKLET_DUAL_BUTTON__DEVICE_TYPE);
 
     dualButtonDeviceEClass = createEClass(DUAL_BUTTON_DEVICE);
+
+    mBrickletPiezoSpeakerEClass = createEClass(MBRICKLET_PIEZO_SPEAKER);
+    createEAttribute(mBrickletPiezoSpeakerEClass, MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE);
 
     dualButtonButtonEClass = createEClass(DUAL_BUTTON_BUTTON);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__DEVICE_TYPE);
@@ -7541,6 +7603,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletDualButton());
     g1.getETypeArguments().add(g2);
     dualButtonDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletPiezoSpeaker());
+    g1.getETypeArguments().add(g2);
+    mBrickletPiezoSpeakerEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getProgrammableActor());
+    mBrickletPiezoSpeakerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDualButtonDevice());
     dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSensor());
@@ -8363,6 +8431,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(programmableActorEClass, ProgrammableActor.class, "ProgrammableActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getProgrammableActor__Action__DeviceOptions(), null, "action", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mTextActorEClass, MTextActor.class, "MTextActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMTextActor_Text(), theEcorePackage.getEString(), "text", null, 0, 1, MTextActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -8430,6 +8503,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickletDualButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_dualbutton", 0, 1, MBrickletDualButton.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dualButtonDeviceEClass, DualButtonDevice.class, "DualButtonDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(mBrickletPiezoSpeakerEClass, MBrickletPiezoSpeaker.class, "MBrickletPiezoSpeaker", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletPiezoSpeaker_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_piezo_speaker", 0, 1, MBrickletPiezoSpeaker.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dualButtonButtonEClass, DualButtonButton.class, "DualButtonButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDualButtonButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_button", 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

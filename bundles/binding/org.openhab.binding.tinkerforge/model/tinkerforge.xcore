@@ -225,6 +225,10 @@ interface MSensor<DeviceValue extends MTinkerforgeValue> {
 	op void fetchSensorValue()
 }
 
+interface ProgrammableActor {
+	op void action(DeviceOptions opts)
+}
+
 interface MTextActor{
 	String text   
 }
@@ -279,6 +283,10 @@ class MBrickletDualButton extends MDevice<TinkerBrickletDualButton>,
 
 interface DualButtonDevice extends MSubDevice<MBrickletDualButton>{
 
+}
+
+class MBrickletPiezoSpeaker extends MDevice<TinkerBrickletPiezoSpeaker>, ProgrammableActor{
+	readonly String deviceType = "bricklet_piezo_speaker"
 }
 
 class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,

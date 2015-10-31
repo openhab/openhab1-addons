@@ -89,6 +89,15 @@ public interface ModelFactory extends EFactory
   MBrickletDualButton createMBrickletDualButton();
 
   /**
+   * Returns a new object of class '<em>MBricklet Piezo Speaker</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Piezo Speaker</em>'.
+   * @generated
+   */
+  MBrickletPiezoSpeaker createMBrickletPiezoSpeaker();
+
+  /**
    * Returns a new object of class '<em>Dual Button Button</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
