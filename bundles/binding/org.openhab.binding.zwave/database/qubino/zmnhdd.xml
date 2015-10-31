@@ -147,10 +147,9 @@
 			<Maximum>32536</Maximum>
 			<Size>2</Size>
 			<Label lang="en">Automatic turning off output after set time</Label>
-			<Help lang="en">
-				0 - Auto OFF disabled
-				1 – 32536 = 1 second – 32536 seconds Auto OFF enabled with defined time,
-				step is 1 second.
+			<Help lang="en"><![CDATA[
+				<ul><li>0 - Auto OFF disabled</li>
+				<li>1 – 32536 = 1 second – 32536 seconds Auto OFF enabled with defined time, step is 1 second.</li></ul>]]>
 			</Help>
 		</Parameter>
 
@@ -162,10 +161,9 @@
 			<Maximum>32536</Maximum>
 			<Size>2</Size>
 			<Label lang="en">Automatic turning on output after set time</Label>
-			<Help lang="en">
-				0 - Auto ON disabled
-				1 – 32535 = 1 second – 32535 seconds Auto ON enabled with defined time,
-				step is 1 second.
+			<Help lang="en"><![CDATA[
+				<ul><li>0 - Auto ON disabled</li>
+				<li>1 – 32536 = 1 second – 32536 seconds Auto ON enabled with defined time, step is 1 second.</li></ul>]]>
 			</Help>
 		</Parameter>
 
@@ -240,15 +238,15 @@
 			<Maximum>100</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Power reporting in watts on power change</Label>
-			<Help lang="en">
+			<Help lang="en"><![CDATA[
 				Set value means percentage, set value from 0 - 100 = 0% - 100%.
 				Default value is 5.
-				0 – Reporting Disabled
-				1 – 100 = 1% - 100% Reporting enabled. Power report is sent (push) only when
+				<ul><li>0 – Reporting Disabled</li>
+				<li>1 – 100 = 1% - 100% Reporting enabled. Power report is sent (push) only when
 				actual power in Watts in real time changes for more than set percentage
-				compared to previous actual power in Watts, step is 1%.
+				compared to previous actual power in Watts, step is 1%.</li></ul>
 				NOTE: if power changed is less than 1W, the report is not sent (pushed),
-				independent of percentage set.
+				independent of percentage set.]]>
 			</Help>
 		</Parameter>
 
@@ -260,12 +258,12 @@
 			<Maximum>32767</Maximum>
 			<Size>2</Size>
 			<Label lang="en">Power reporting in Watts by time interval</Label>
-			<Help lang="en">
+			<Help lang="en"><![CDATA[
 				Set value means time interval (0 – 32767) in seconds, when power report is
 				sent.
-				0 – reporting disabled
-				1 – 32767 = 1 second – 32767 seconds. Reporting enabled. Power report is sent
-				with time interval set by entered value.
+				<ul><li>0 – reporting disabled</li>
+				<li>1 – 32767 = 1 second – 32767 seconds. Reporting enabled. Power report is sent
+				with time interval set by entered value.</li></ul>]]>
 			</Help>
 		</Parameter>
 
@@ -277,10 +275,10 @@
 			<Maximum>98</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Minimum dimming value</Label>
-			<Help lang="en">
-				1- 98 = 1% – 98%, step is 1%. Minimum dimming value is set by entered value.
+			<Help lang="en"><![CDATA[
+				<ul><li>1-98 = 1% – 98%, step is 1%. Minimum dimming value is set by entered value.</li></ul>
 				NOTE: The minimum level may not be higher than the maximum level!
-				1% min. dimming value is defined by Z- Wave multilevel device class.
+				1% min. dimming value is defined by Z- Wave multilevel device class.]]>
 			</Help>
 		</Parameter>
 
@@ -292,10 +290,10 @@
 			<Maximum>99</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Maximum dimming value</Label>
-			<Help lang="en">
-				2- 99 = 2% – 99%, step is 1%. Maximum dimming value is set by entered value.
+			<Help lang="en"><![CDATA[
+				<ul><li>2-99 = 2% – 99%, step is 1%. Maximum dimming value is set by entered value.</li></ul>
 				NOTE: The maximum level may not be lower than the minimum level!
-				99% max. dimming value is defined by Z- Wave multilevel device class.
+				99% max. dimming value is defined by Z- Wave multilevel device class.]]>
 			</Help>
 		</Parameter>
 
@@ -307,11 +305,11 @@
 			<Maximum>255</Maximum>
 			<Size>2</Size>
 			<Label lang="en">Dimming time (soft on/off)</Label>
-			<Help lang="en">
+			<Help lang="en"><![CDATA[
 				Set value means time of moving the Dimmer between min. and max. dimming
 				values by short press of push button I1 or controlled through UI (BasicSet).
-				default value 100 = 1s
-				1 - 255 = 100 mseconds – 25500 mseconds (25.5s), step is 100 mseconds
+				<ul><li>default value 100 = 1s</li>
+				<li>1 - 255 = 100 mseconds – 25500 mseconds (25.5s), step is 100 mseconds</li></ul>]]>
 			</Help>
 		</Parameter>
 
@@ -323,69 +321,141 @@
 			<Maximum>255</Maximum>
 			<Size>2</Size>
 			<Label lang="en">Dimming time when key pressed</Label>
-			<Help lang="en">
+			<Help lang="en"><![CDATA[
 				Time of moving the Dimmer between min. and max dimming values by continuous
 				hold of push button I1 or associated device.
-				default value 3 = 3s
-				1- 255 = 1 second – 255 seconds.
+				<ul><li>default value 3 = 3s</li>
+				<li>1- 255 = 1 second – 255 seconds.</li></ul>]]>
 			</Help>
 		</Parameter>
 
 		<Parameter>
-			<Index>80</Index>
+			<Index>67</Index>
 			<Type>list</Type>
-			<Default>1</Default>
+			<Default>0</Default>
 			<Size>1</Size>
-			<Label lang="en">Reporting to Controller</Label>
+			<Label lang="en">Ignore start level</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">0 - Reporting to Controller Disabled</Label>
+				<Label lang="en">0 - respect start level</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">1 - Reporting to Controller Enabled</Label>
+				<Label lang="en">1 - ignore start level</Label>
 			</Item>
-			<Help lang="en">This parameter defines if reporting regarding power
-				level,
-				multilevel, etc,… is reported to controller or not. Available
-				configuration parameters:
-				default value 1
-				0 reporting to controller is disabled
-				1 reporting to controller is enabled
-				NOTE: Disabling reporting is recommended in case
-				Z-wave modules communicate in association groups
-				without using controller.
+			<Help lang="en">
+				This parameter is used with association group 3.
+				A receiving device SHOULD respect the start level if the Ignore Start Level bit is 0. 
+				A receiving device MUST ignore the start level if the Ignore Start Level bit is 1.
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>68</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Label lang="en">Dimming duration</Label>
+			<Help lang="en"><![CDATA[
+				This parameter is used with association group 3.
+				The Duration field MUST specify the time that the transition should take from the current value 
+				to the new target value. A supporting device SHOULD respect the specified Duration value.
+				<ul><li>default value 0 - dimming duration according to parameter 66</li>
+				<li>1 – 127 = 1 second – 127 seconds</li></ul>]]>
 			</Help>
 		</Parameter>
 
 		<Parameter>
 			<Index>100</Index>
-			<Type>byte</Type>
-			<Default>3</Default>
+			<Type>list</Type>
+			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">Enable / Disable Endpoints I2 and I3</Label>
+			<Label lang="en">Enable / Disable Endpoints I2 or select Notification Type and Event</Label>
 			<Item>
-				<Value>3</Value>
-				<Label lang="en">3 - Endpoints I2 and I3 enabled</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">2 - Endpoints I2 enabled, I3 disabled</Label>
+				<Value>0</Value>
+				<Label lang="en">0 – Endpoint, I2 disabled</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">1 - Endpoints I2 disabled, I3 enabled</Label>
+				<Label lang="en">1 – Home Security; Motion Detection, unknown loc.</Label>
 			</Item>
 			<Item>
-				<Value>0</Value>
-				<Label lang="en">0 - Endpoints I2 and I3 disabled</Label>
+				<Value>2</Value>
+				<Label lang="en">2 – Carbon Monoxide; Carbon Monoxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">3 – Carbon Dioxide; Carbon Dioxide detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">4 – Water Alarm; Water Leak detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">5 – Heat Alarm; Overheat detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">6 - Smoke Alarm; Smoke detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">9 – Sensor binary</Label>
 			</Item>
 			<Help lang="en">
-				Enabling I2 and I3 or both of them, means that Endpoint (I2) and
-				Endpoint (I3) or both will be present on UI. Disabling them will result in
-				hiding endpoints according to parameter set value. Note that hiding endpoint
-				has no impact on it functionality.
-				NOTE: After parameter change module has to be reconfigured!
+				Enabling I2 means that Endpoint (I2) will be present on UI. 
+				Disabling it will result in hiding the endpoint according to the parameter set value. 
+				Additionally, a Notification Type and Event can be selected for the endpoint.
+				NOTE: After parameter change, module has to be re included into the network in order setting to take effect!
+			</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>101</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable Endpoints I3 or select Notification Type and Event</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 – Endpoint, I3 disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1 – Home Security; Motion Detection, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">2 – Carbon Monoxide; Carbon Monoxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">3 – Carbon Dioxide; Carbon Dioxide detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">4 – Water Alarm; Water Leak detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">5 – Heat Alarm; Overheat detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">6 - Smoke Alarm; Smoke detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">9 – Sensor binary</Label>
+			</Item>
+			<Help lang="en">
+				Enabling I3 means that Endpoint (I3) will be present on UI. 
+				Disabling it will result in hiding the endpoint according to the parameter set value. 
+				Additionally, a Notification Type and Event can be selected for the endpoint.
+				NOTE: After parameter change, module has to be re included into the network in order setting to take effect!
 			</Help>
 		</Parameter>
 
@@ -397,14 +467,14 @@
 			<Maximum>32536</Maximum>
 			<Size>2</Size>
 			<Label lang="en">Temperature sensor offset settings</Label>
-			<Help lang="en">Set value is added or subtracted to actual measured
+			<Help lang="en"><![CDATA[Set value is added or subtracted to actual measured
 				value by sensor. Available configuration parameters:
-				default value 32536
-				32536 – offset is 0.0C
-				From 1 to 100 – value from 0.1 °C to 10.0 °C is
-				added to actual measured temperature.
-				From 1001 to 1100 – value from -0.1 °C to -10.0 °C
-				is subtracted to actual measured temperature
+				<ul><li>default value 32536</li>
+				<li>32536 – offset is 0.0C</li>
+				<li>From 1 to 100 – value from 0.1 °C to 10.0 °C is
+				added to actual measured temperature.</li>
+				<li>From 1001 to 1100 – value from -0.1 °C to -10.0 °C
+				is subtracted to actual measured temperature</li></ul>]]>
 			</Help>
 		</Parameter>
 
@@ -416,13 +486,12 @@
 			<Maximum>127</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Digital temperature sensor reporting</Label>
-			<Help lang="en">If digital temperature sensor is connected, module
-				reports
-				measured temperature on temperature change defined
+			<Help lang="en"><![CDATA[If digital temperature sensor is connected, module
+				reports measured temperature on temperature change defined
 				by this parameter. Available configuration parameters:
-				default value 5 = 0.5°C
-				0 – Reporting disabled
-				1-127 = 0.1°C – 12.7°C, step is 0.1°C
+				<ul><li>default value 5 = 0.5°C</li>
+				<li>0 – Reporting disabled</li>
+				<li>1-127 = 0.1°C – 12.7°C, step is 0.1°C</li></ul>]]>
 			</Help>
 		</Parameter>
 	</Configuration>
@@ -439,26 +508,25 @@
 		<Group>
 			<Index>2</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Multilevel</Label>
+			<Label lang="en">On/Off Triggered by I1</Label>
 			<Help lang="en">
-				multilevel (triggered at changes of state/value of the Flush dimmer) up to
-				16 nodes
+				basic on/off (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
 			</Help>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">On/Off Triggered by I2</Label>
-			<Help lang="en"> basic on/off (triggered at change of the input I2
-				state and reflecting its state) up to 16 nodes.
+			<Label lang="en">start level change/stop</Label>
+			<Help lang="en">
+				start level change/stop level change (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
 			</Help>
 		</Group>
 		<Group>
 			<Index>4</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">On/Off Triggered by I3</Label>
-			<Help lang="en"> basic on/off (triggered at change of the input I3
-				state and reflecting its state) up to 16 nodes.
+			<Label lang="en">Multilevel</Label>
+			<Help lang="en">
+				multilevel set (triggered at changes of state/value of the Flush dimmer) up to 16 nodes
 			</Help>
 		</Group>
 	</Associations>
