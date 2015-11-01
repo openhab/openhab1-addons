@@ -119,7 +119,7 @@ public class GarageDoorData
 /**
  * This Class holds the Garage Door Opener Device data.
  * <ul>
- * <li>MyQDeviceId: MyQDeviceId from API, need for http Posts</li>
+ * <li>DeviceId: DeviceId from API, need for http Posts</li>
  * <li>MyQDeviceType: Device Type. GarageDoorOpener or Gateway I've seen</li>
  * <li>DeviceName: Serial number of device I think</li>
  * <li>TypeName: Name That appears in myQ App</li>
