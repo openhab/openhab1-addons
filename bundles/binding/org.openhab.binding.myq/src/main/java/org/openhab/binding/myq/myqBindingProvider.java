@@ -19,7 +19,7 @@ import org.openhab.binding.myq.internal.myqBindingConfig;
  * 
  * I used the Hue binding as my example so most of the code is the same
  * 
- * @author scooter_seh
+ * @author Scott Hanson
  * @since 1.8.0
  */
 public interface myqBindingProvider extends BindingProvider 
