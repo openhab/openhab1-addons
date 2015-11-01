@@ -501,24 +501,24 @@
 			<Maximum>1</Maximum>
 			<Label lang="en">Controller Updates</Label>
 			<Help lang="en">
-				default reporting group (reserved for the main controller)
+				Default reporting group (reserved for the main controller)
 			</Help>
 			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">On/Off Triggered by I1</Label>
+			<Label lang="en">I1 basic on/off</Label>
 			<Help lang="en">
-				basic on/off (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
+				Basic on/off (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
 			</Help>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">start level change/stop</Label>
+			<Label lang="en">I1 start/stop level change</Label>
 			<Help lang="en">
-				start level change/stop level change (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
+				Start level change/stop level change (triggered at change of the input I1 state and reflecting its state) up to 16 nodes
 			</Help>
 		</Group>
 		<Group>
@@ -526,7 +526,63 @@
 			<Maximum>16</Maximum>
 			<Label lang="en">Multilevel</Label>
 			<Help lang="en">
-				multilevel set (triggered at changes of state/value of the Flush dimmer) up to 16 nodes
+				Multilevel set (triggered at changes of state/value of the Flush dimmer) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I2 basic on/off</Label>
+			<Help lang="en">
+				Basic on/off (triggered at change of the input I2 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I2 notification report</Label>
+			<Help lang="en">
+				Notification report (triggered at change of the input I2 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I2 binary sensor</Label>
+			<Help lang="en">
+				Binary sensor (triggered at change of the input I2 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>8</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I3 basic on/off</Label>
+			<Help lang="en">
+				Basic on/off (triggered at change of the input I3 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>9</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I3 notification report</Label>
+			<Help lang="en">
+				Notification report (triggered at change of the input I3 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>10</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">I3 binary sensor</Label>
+			<Help lang="en">
+				Binary sensor (triggered at change of the input I3 state and reflecting its state) up to 16 nodes
+			</Help>
+		</Group>
+		<Group>
+			<Index>11</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multilevel sensor</Label>
+			<Help lang="en">
+				Multilevel sensor report (triggered at change of temperature sensor) up to 16 nodes.
 			</Help>
 		</Group>
 	</Associations>
