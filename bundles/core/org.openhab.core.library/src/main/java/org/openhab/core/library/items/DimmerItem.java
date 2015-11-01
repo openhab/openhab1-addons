@@ -31,6 +31,10 @@ import org.openhab.core.types.UnDefType;
  */
 public class DimmerItem extends SwitchItem {
 
+	/**
+	 * All combinations of accepted data types need to be considered in
+	 * {@link #getStateAs(Class)}!
+	 */
 	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
 	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 
@@ -77,17 +81,44 @@ public class DimmerItem extends SwitchItem {
 	
 	/**
 	 * {@inheritDoc}
+	 * <p>
+	 * This item can return its state as one of the following types:
+	 * <ul>
+	 * <li>{@link OnOffType}
+	 * <li>{@link PercentType}
+	 * <li>{@link DecimalType}
+	 * </ul>
 	 */
 	@Override
 	public State getStateAs(Class<? extends State> typeClass) {
-		if(typeClass==OnOffType.class) {
+		if (typeClass != null && typeClass.isInstance(state)) {
+			return state;
+		}
+		if (typeClass == OnOffType.class) {
 			// if it is not completely off, we consider the dimmer to be on
-			return state.equals(PercentType.ZERO) ? OnOffType.OFF : OnOffType.ON;
-		} else if(typeClass==DecimalType.class) {
-			if(state instanceof PercentType) {
-				return new DecimalType(((PercentType) state).toBigDecimal().divide(new BigDecimal(100), 8, RoundingMode.UP));
+			return state.equals(PercentType.ZERO) ? OnOffType.OFF
+					: OnOffType.ON;
+		}
+		if (typeClass == PercentType.class) {
+			if (state instanceof OnOffType) {
+				return state == OnOffType.ON ? PercentType.HUNDRED
+						: PercentType.ZERO;
+			}
+			if (state instanceof DecimalType) {
+				return new PercentType(((DecimalType) state).toBigDecimal());
 			}
 		}
-		return super.getStateAs(typeClass);
+		if (typeClass == DecimalType.class) {
+			if (state instanceof PercentType) {
+				return new DecimalType(((PercentType) state).toBigDecimal()
+						.divide(new BigDecimal(100), 8, RoundingMode.UP));
+			}
+			if (state instanceof OnOffType) {
+				return state == OnOffType.ON ? new DecimalType(100)
+						: DecimalType.ZERO;
+			}
+		}
+
+		return null;
 	}
 }
