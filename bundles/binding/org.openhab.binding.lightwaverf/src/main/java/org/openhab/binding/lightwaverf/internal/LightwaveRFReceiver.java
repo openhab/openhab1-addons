@@ -8,28 +8,14 @@
  */
 package org.openhab.binding.lightwaverf.internal;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomMessage;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSerialMessage;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
-import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,66 +28,44 @@ import org.slf4j.LoggerFactory;
  * @author Neil Renaud
  * @since 1.7.0
  */
-public class LightwaveRFReceiver implements Runnable {
-	private static final Logger logger = LoggerFactory
-			.getLogger(LightwaveRFReceiver.class);
+public class LightwaveRFReceiver {
+	private static final Logger logger = LoggerFactory.getLogger(LightwaveRFReceiver.class);
 	private static final int DELAY_BETWEEN_RECEIVES_MS = 10;
 
-	private final CopyOnWriteArrayList<LightwaveRFMessageListener> listeners = new CopyOnWriteArrayList<LightwaveRFMessageListener>();
-	private final ScheduledExecutorService executor = Executors
-			.newScheduledThreadPool(1);
+	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-	private final LightwaverfConvertor messageConvertor;
 	private final DatagramSocket receiveSocket;
-	private final Set<InetAddress> localIps;
 
-	private boolean running = false;
-
+	private final LightwaveRFReceiverThread receiverThread;
+	
 	public LightwaveRFReceiver(LightwaverfConvertor messageConvertor, int port)
-			throws SocketException {
-		this.messageConvertor = messageConvertor;
-		this.receiveSocket = new DatagramSocket(port);
-		localIps = getIpAddresses();
+			throws SocketException, UnknownHostException {
+		
+//		System.setProperty("java.net.preferIPv4Stack" , "true");
+//		this.receiveSocket = new DatagramSocket(port);
+		this.receiveSocket = new DatagramSocket(new InetSocketAddress("0.0.0.0", port));
+//		this.receiveSocket = new DatagramSocket(null);
+//		this.receiveSocket.bind(new InetSocketAddress(port));
+		
+		receiverThread = new LightwaveRFReceiverThread(messageConvertor, receiveSocket);
+		
+//		System.out.println(receiveSocket.getBroadcast());
+//		System.out.println(receiveSocket.getInetAddress());
+//		System.out.println(receiveSocket.getLocalAddress());
+//		System.out.println(receiveSocket.getLocalPort());
+//		System.out.println(receiveSocket.isBound());
+//		System.out.println(receiveSocket.isConnected());
+		
 	}
-
-	/**
-	 * Gets a list of INetAddresses for this server. Allowing us to filter out
-	 * broadcast packets we receive that we originally sent
-	 * 
-	 * @return
-	 */
-	private Set<InetAddress> getIpAddresses() {
-		Set<InetAddress> ips = new LinkedHashSet<InetAddress>();
-		try {
-			Enumeration<NetworkInterface> interfaces = NetworkInterface
-					.getNetworkInterfaces();
-			while (interfaces.hasMoreElements()) {
-				NetworkInterface iface = interfaces.nextElement();
-				// filters out 127.0.0.1 and inactive interfaces
-				if (iface.isLoopback() || !iface.isUp())
-					continue;
-
-				Enumeration<InetAddress> addresses = iface.getInetAddresses();
-				while (addresses.hasMoreElements()) {
-					InetAddress addr = addresses.nextElement();
-					ips.add(addr);
-				}
-			}
-		} catch (SocketException e) {
-			throw new RuntimeException(e);
-		}
-		return ips;
-	}
-
+	
 	/**
 	 * Start the LightwaveRFReceiver Will set running true, initialise the
 	 * socket and start the thread.
 	 */
 	public synchronized void start() {
 		logger.info("Starting LightwaveRFReceiver");
-		running = true;
-		executor.scheduleWithFixedDelay(this, 0, DELAY_BETWEEN_RECEIVES_MS,
-				TimeUnit.MILLISECONDS);
+		receiverThread.start();
+		executor.scheduleWithFixedDelay(receiverThread, 0, DELAY_BETWEEN_RECEIVES_MS, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -110,77 +74,10 @@ public class LightwaveRFReceiver implements Runnable {
 	 */
 	public synchronized void stop() {
 		logger.info("Stopping LightwaveRFReceiver");
-		running = false;
+		receiverThread.stop();
 		executor.shutdownNow();
 		receiveSocket.close();
 		logger.info("LightwaveRFReceiver Stopped");
-	}
-
-	/**
-	 * Run method, this will listen to the socket and receive messages. The
-	 * blocking is stopped when the socket is closed.
-	 */
-	@Override
-	public void run() {
-		String message = null;
-		try {
-			message = receiveUDP();
-			LightwaveRFCommand command = messageConvertor
-					.convertFromLightwaveRfMessage(message);
-			switch (command.getMessageType()) {
-			case OK:
-				notifyOkListners((LightwaveRfCommandOk) command);
-				break;
-			case ROOM_DEVICE:
-				notifyRoomDeviceListners((LightwaveRfRoomDeviceMessage) command);
-				break;
-			case ROOM:
-				notifyRoomListners((LightwaveRfRoomMessage) command);
-				break;
-			case HEAT_REQUEST:
-				notifyHeatRequest((LightwaveRfHeatInfoRequest) command);
-				break;
-			case SERIAL:
-				notifySerialListners((LightwaveRfSerialMessage) command);
-				break;
-			case VERSION:
-				notifyVersionListners((LightwaveRfVersionMessage) command);
-				break;
-			default:
-				break;
-			}
-		} catch (IOException e) {
-			if (!(running == false && receiveSocket.isClosed())) {
-				// If running isn't false and the socket isn't closed log the
-				// error
-				logger.error("Error receiving message", e);
-			}
-		} catch (LightwaveRfMessageException e) {
-			logger.error("Error converting message: " + message);
-		}
-	}
-
-	/**
-	 * Receive the next UDP packet on the socket
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	private String receiveUDP() throws IOException {
-		String receivedMessage = "";
-		byte[] receiveData = new byte[1024];
-		DatagramPacket receivePacket = new DatagramPacket(receiveData,
-				receiveData.length);
-		receiveSocket.receive(receivePacket);
-		receivedMessage = new String(receivePacket.getData(), 0,
-				receivePacket.getLength());
-		if (localIps.contains(receivePacket.getAddress())) {
-			logger.debug("Own Message received and will be discarded: {}",
-					receivedMessage);
-			return null;
-		}
-		logger.debug("Message received: " + receivedMessage);
-		return receivedMessage;
 	}
 
 	/**
@@ -189,7 +86,7 @@ public class LightwaveRFReceiver implements Runnable {
 	 * @param listener
 	 */
 	public void addListener(LightwaveRFMessageListener listener) {
-		listeners.add(listener);
+		receiverThread.addListener(listener);
 	}
 
 	/**
@@ -199,48 +96,6 @@ public class LightwaveRFReceiver implements Runnable {
 	 * @param listener
 	 */
 	public void removeListener(LightwaveRFMessageListener listener) {
-		listeners.remove(listener);
-	}
-
-	/**
-	 * Notify all listeners of a message
-	 * 
-	 * @param message
-	 */
-
-	private void notifyRoomDeviceListners(LightwaveRfRoomDeviceMessage message) {
-		for (LightwaveRFMessageListener listener : listeners) {
-			listener.roomDeviceMessageReceived(message);
-		}
-	}
-
-	private void notifyRoomListners(LightwaveRfRoomMessage message) {
-		for (LightwaveRFMessageListener listener : listeners) {
-			listener.roomMessageReceived(message);
-		}
-	}
-
-	private void notifySerialListners(LightwaveRfSerialMessage message) {
-		for (LightwaveRFMessageListener listener : listeners) {
-			listener.serialMessageReceived(message);
-		}
-	}
-
-	private void notifyOkListners(LightwaveRfCommandOk message) {
-		for (LightwaveRFMessageListener listener : listeners) {
-			listener.okMessageReceived(message);
-		}
-	}
-
-	private void notifyVersionListners(LightwaveRfVersionMessage message) {
-		for (LightwaveRFMessageListener listener : listeners) {
-			listener.versionMessageReceived(message);
-		}
-	}
-
-	private void notifyHeatRequest(LightwaveRfHeatInfoRequest command) {
-		for (LightwaveRFMessageListener listener : listeners) {
-			listener.heatInfoMessageReceived(command);
-		}
+		receiverThread.removeListener(listener);
 	}
 }

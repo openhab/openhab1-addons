@@ -10,7 +10,6 @@ package org.openhab.binding.lightwaverf.internal;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;

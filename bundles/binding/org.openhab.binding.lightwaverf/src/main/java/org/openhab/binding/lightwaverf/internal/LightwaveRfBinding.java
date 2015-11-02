@@ -49,14 +49,13 @@ public class LightwaveRfBinding extends
 	private static int TIMEOUT_FOR_OK_MESSAGES_MS = 500;
 	// LightwaveRF WIFI hub port.
 	private static int LIGHTWAVE_PORT_TO_SEND_TO = 9760;
-	private static int LIGHTWAVE_PORT_TO_RECEIVE_ON = 9761;
+	private static int LIGHTWAVE_PORTS_TO_RECEIVE_ON = 9761;
 	// LightwaveRF WIFI hub IP Address or broadcast address
 	private static String LIGHTWAVE_IP = "255.255.255.255";
 	private static boolean SEND_REGISTER_ON_STARTUP = true;
 
 	private LightwaverfConvertor messageConvertor = new LightwaverfConvertor();
-	private LightwaveRFReceiver receiverOnSendPort = null;
-	private LightwaveRFReceiver receiverOnReceiverPort = null;
+	private LightwaveRFReceiver receiver = null;
 	private LightwaveRFSender sender = null;
 	private LightwaveRfHeatPoller heatPoller = null;
 
@@ -82,9 +81,9 @@ public class LightwaveRfBinding extends
 				LIGHTWAVE_IP = ipString;
 			}
 
-			String portOneString = (String) configuration.get("receiveport");
-			if (StringUtils.isNotBlank(portOneString)) {
-				LIGHTWAVE_PORT_TO_RECEIVE_ON = Integer.parseInt(portOneString);
+			String recieverPortsString = (String) configuration.get("receiveport");
+			if (StringUtils.isNotBlank(recieverPortsString)) {
+				LIGHTWAVE_PORTS_TO_RECEIVE_ON = Integer.parseInt(recieverPortsString);
 			}
 
 			String portTwoString = (String) configuration.get("sendport");
@@ -112,7 +111,7 @@ public class LightwaveRfBinding extends
 
 			logger.info("LightwaveBinding: IP[{}]", LIGHTWAVE_IP);
 			logger.info("LightwaveBinding: ReceivePort[{}]",
-					LIGHTWAVE_PORT_TO_RECEIVE_ON);
+					LIGHTWAVE_PORTS_TO_RECEIVE_ON);
 			logger.info("LightwaveBinding: Send Port[{}]",
 					LIGHTWAVE_PORT_TO_SEND_TO);
 			logger.info("LightwaveBinding: Register On Startup[{}]",
@@ -124,23 +123,20 @@ public class LightwaveRfBinding extends
 
 			messageConvertor = new LightwaverfConvertor();
 
-			// Create the Sender and Receiver
-			receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor,
-					LIGHTWAVE_PORT_TO_RECEIVE_ON);
-			receiverOnSendPort = new LightwaveRFReceiver(messageConvertor,
-					LIGHTWAVE_PORT_TO_SEND_TO);
+			receiver = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_SEND_TO);
+			receiver.addListener(this);
+			receiver.start();
+			
+			// Create the Sender
 			sender = new LightwaveRFSender(LIGHTWAVE_IP,
-					LIGHTWAVE_PORT_TO_SEND_TO, TIME_BETWEEN_SENT_MESSAGES_MS,
+					LIGHTWAVE_PORT_TO_SEND_TO, 
+					LIGHTWAVE_PORTS_TO_RECEIVE_ON, 
+					messageConvertor, 
+					TIME_BETWEEN_SENT_MESSAGES_MS,
 					TIMEOUT_FOR_OK_MESSAGES_MS);
-
-			// Add Listeners
-			receiverOnReceiverPort.addListener(this);
-			receiverOnSendPort.addListener(this);
-			receiverOnReceiverPort.addListener(sender);
-
-			// Start all the senders and receivers
-			receiverOnReceiverPort.start();
-			receiverOnSendPort.start();
+			sender.addListener(this);
+			
+			// Start the senders
 			sender.start();
 
 			if (SEND_REGISTER_ON_STARTUP) {
@@ -228,14 +224,13 @@ public class LightwaveRfBinding extends
 	public void deactivate(final int reason) {
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
+//TODO unregister listeners
+		
 		heatPoller.stop();
-
-		receiverOnReceiverPort.stop();
-		receiverOnSendPort.stop();
+		receiver.stop();
 		sender.stop();
 
-		receiverOnReceiverPort = null;
-		receiverOnSendPort = null;
+		receiver = null;
 		sender = null;
 		heatPoller = null;
 		messageConvertor = null;
@@ -319,7 +314,7 @@ public class LightwaveRfBinding extends
 					eventPublisher.postUpdate(itemName, state);
 				} else {
 					logger.info("State was null for {} type {}, message {}",
-							itemName, deviceType, message);
+							new Object[] {itemName, deviceType, message});
 				}
 			}
 		}

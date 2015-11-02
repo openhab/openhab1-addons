@@ -65,7 +65,7 @@ public class LightwaveRfHeatPoller {
 		} else {
 			logger.info(
 					"Request to set poll interval is larger than the current poll interval so ignored RoomId{{}], RequestedPoll[{}], CurrentPoll[{}]",
-					roomId, requestedPoll, currentPoll);
+					new Object[] {roomId, requestedPoll, currentPoll});
 		}
 
 		ScheduledFuture<?> currentFuture = tasksMap.remove(roomId);
