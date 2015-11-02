@@ -17,39 +17,40 @@ import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
 /**
- * Represents LightwaveRf On/Off commands. On the LAN commands look like:
- * 100,!R2D3F0 (Off) 101,!R2D3F1 (On)
- * 
+ * Represents LightwaveRf Relay commands. On the LAN commands look like:
+ * 103,!R1D4F^|Stop|Switch 1
+ * 104,!R1D4F)|Close|Switch 1
+ * 106,!R1D4F(|Open|Switch 1 * 
  * @author Neil Renaud
- * @since 1.7.0
+ * @since 1.8.0
  */
-public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
+public class LightwaveRfRelayCommand extends AbstractLightwaveRfCommand
 		implements LightwaveRfRoomDeviceMessage {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile(".*?(\\d{1,3}),!R(\\d)D(\\d)F([0,1]).*\\s*");
-	private static final String ON_FUNCTION = "1";
-	private static final String OFF_FUNCTION = "0";
+			.compile(".*?(\\d{1,3}),!R(\\d)D(\\d)F([\\^\\)\\(]).*\\s*");
+	private static final String STOP_FUNCTION = "^";
+	private static final String OPEN_FUNCTION = ")";
+	private static final String CLOSE_FUNCTION = "(";
 
 	private final LightwaveRfMessageId messageId;
 	private final String roomId;
 	private final String deviceId;
-	private final boolean on;
+	private final int state;
 
-	public LightwaveRfOnOffCommand(int messageId, String roomId,
-			String deviceId, boolean on) {
+	public LightwaveRfRelayCommand(int messageId, String roomId,
+			String deviceId, int state) {
 		this.messageId = new LightwaveRfGeneralMessageId(messageId);
 		this.roomId = roomId;
 		this.deviceId = deviceId;
-		this.on = on;
+		this.state = state;
 	}
 
-	public LightwaveRfOnOffCommand(String message)
+	public LightwaveRfRelayCommand(String message)
 			throws LightwaveRfMessageException {
 		try {
 			Matcher matcher = REG_EXP.matcher(message);
@@ -59,10 +60,12 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
 			this.roomId = matcher.group(2);
 			this.deviceId = matcher.group(3);
 			String function = matcher.group(4);
-			if (ON_FUNCTION.equals(function)) {
-				on = true;
-			} else if (OFF_FUNCTION.equals(function)) {
-				on = false;
+			if (STOP_FUNCTION.equals(function)) {
+				state = 0;
+			} else if (OPEN_FUNCTION.equals(function)) {
+				state = 1;
+			} else if (CLOSE_FUNCTION.equals(function)) {
+				state = -1;
 			} else {
 				throw new LightwaveRfMessageException(
 						"Received Message has invalid function[" + function
@@ -76,7 +79,20 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
 
 	@Override
 	public String getLightwaveRfCommandString() {
-		String function = on ? "1" : "0";
+		String function = null;
+		switch (state) {
+		case -1:
+			function = CLOSE_FUNCTION;
+			break;
+		case 0:
+			function = STOP_FUNCTION;
+			break;
+		case 1:
+			function = OPEN_FUNCTION;
+			break;
+		default:
+			break;
+		}
 		return getMessageString(messageId, roomId, deviceId, function);
 	}
 
@@ -93,10 +109,8 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
 	@Override
 	public State getState(LightwaveRfType type) {
 		switch (type) {
-		case DIMMER:
-			return on ? PercentType.HUNDRED : OnOffType.OFF;
-		case SWITCH:
-			return on ? OnOffType.ON : OnOffType.OFF;
+		case RELAY:
+			return new DecimalType(state);
 		default:
 			return null;
 		}
@@ -109,22 +123,22 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
 
 	@Override
 	public boolean equals(Object that) {
-		if (that instanceof LightwaveRfOnOffCommand) {
+		if (that instanceof LightwaveRfRelayCommand) {
 			return Objects.equals(this.messageId,
-					((LightwaveRfOnOffCommand) that).messageId)
+					((LightwaveRfRelayCommand) that).messageId)
 					&& Objects.equals(this.roomId,
-							((LightwaveRfOnOffCommand) that).roomId)
+							((LightwaveRfRelayCommand) that).roomId)
 					&& Objects.equals(this.deviceId,
-							((LightwaveRfOnOffCommand) that).deviceId)
-					&& Objects.equals(this.on,
-							((LightwaveRfOnOffCommand) that).on);
+							((LightwaveRfRelayCommand) that).deviceId)
+					&& Objects.equals(this.state,
+							((LightwaveRfRelayCommand) that).state);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(messageId, roomId, deviceId, on);
+		return Objects.hash(messageId, roomId, deviceId, state);
 	}
 
 	@Override
@@ -133,7 +147,7 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
 	}
 
 	public static boolean matches(String message) {
-		return message.contains("F0") || message.contains("F1");
+		return message.contains("F^") || message.contains("F(") || message.contains("F)");
 	}
 
 }

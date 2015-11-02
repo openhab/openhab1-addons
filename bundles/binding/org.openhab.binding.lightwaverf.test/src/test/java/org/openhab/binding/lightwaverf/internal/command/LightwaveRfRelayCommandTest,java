@@ -1,0 +1,71 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.openhab.binding.lightwaverf.internal.command;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
+import org.openhab.core.library.types.DecimalType;
+
+/**
+ * Test the LightwaveRf Relay Command
+ * 
+ * @author Neil Renaud
+ * @since 1.8.0
+ */
+public class LightwaveRfRelayCommandTest {
+	
+	private final String RELAY_OPEN   = "103,!R1D4F)|Open|Switch 1\n";
+	private final String RELAY_STOP   = "104,!R1D4F^|Stop|Switch 1\n";
+	private final String RELAY_CLOSED = "105,!R1D4F(|Close|Switch 1\n";
+	
+	
+	@Test
+	public void testRelayOpenCommandAsMessageOn() throws Exception {
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfRelayCommand(RELAY_OPEN);
+		assertEquals("103,!R1D4F)\n", command.getLightwaveRfCommandString());
+		assertEquals("1", command.getRoomId());
+		assertEquals("4", command.getDeviceId());
+		assertEquals("103", command.getMessageId().getMessageIdString());
+		assertEquals(new DecimalType(1), command.getState(LightwaveRfType.RELAY));
+	}
+
+	@Test
+	public void testRelayClosedCommandAsMessageOn() throws Exception {
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfRelayCommand(RELAY_CLOSED);
+		assertEquals("105,!R1D4F(\n", command.getLightwaveRfCommandString());
+		assertEquals("1", command.getRoomId());
+		assertEquals("4", command.getDeviceId());
+		assertEquals("105", command.getMessageId().getMessageIdString());
+		assertEquals(new DecimalType(-1), command.getState(LightwaveRfType.RELAY));
+	}
+	
+	@Test
+	public void testRelayStopCommandAsMessageOn() throws Exception {
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfRelayCommand(RELAY_STOP);
+		assertEquals("104,!R1D4F^\n", command.getLightwaveRfCommandString());
+		assertEquals("1", command.getRoomId());
+		assertEquals("4", command.getDeviceId());
+		assertEquals("104", command.getMessageId().getMessageIdString());
+		assertEquals(new DecimalType(0), command.getState(LightwaveRfType.RELAY));
+	}
+	
+	@Test
+	public void testMatches() {
+		boolean matchesOpen = LightwaveRfRelayCommand.matches(RELAY_OPEN);
+		assertTrue(matchesOpen);
+		boolean matchesStop = LightwaveRfRelayCommand.matches(RELAY_STOP);
+		assertTrue(matchesStop);
+		boolean matchesClosed = LightwaveRfRelayCommand.matches(RELAY_CLOSED);
+		assertTrue(matchesClosed);
+	}
+
+}

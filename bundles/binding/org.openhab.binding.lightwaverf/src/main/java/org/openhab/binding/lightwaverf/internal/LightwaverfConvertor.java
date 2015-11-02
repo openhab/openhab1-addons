@@ -12,14 +12,19 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfAllOffCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfEnergyMonitorMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoResponse;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfMoodCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRelayCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSetHeatingTemperatureCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfWifiLinkStatusMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -45,7 +50,7 @@ public class LightwaverfConvertor {
 
 		switch (deviceType) {
 		case HEATING_BATTERY:
-		case HEATING_SIGNAL:
+		case SIGNAL:
 		case HEATING_CURRENT_TEMP:
 		case HEATING_MODE:
 		case VERSION:
@@ -64,6 +69,26 @@ public class LightwaverfConvertor {
 				int dimmingLevel = ((PercentType) command).intValue();
 				return new LightwaveRfDimCommand(messageId, roomId, deviceId,
 						dimmingLevel);
+			} else {
+				throw new RuntimeException("Unsupported Command: " + command);
+			}
+		case RELAY:
+			if(command instanceof DecimalType){
+				int state = ((DecimalType) command).intValue();
+				return new LightwaveRfRelayCommand(messageId, roomId, deviceId, state);
+			} else {
+				throw new RuntimeException("Unsupported Command: " + command);
+			}
+		case MOOD:
+			if(command instanceof DecimalType){
+				int state = ((DecimalType) command).intValue();
+				return new LightwaveRfMoodCommand(messageId, roomId, state);
+			} else {
+				throw new RuntimeException("Unsupported Command: " + command);
+			}
+		case ALL_OFF:
+			if(command instanceof OnOffType){
+				return new LightwaveRfAllOffCommand(messageId, roomId);
 			} else {
 				throw new RuntimeException("Unsupported Command: " + command);
 			}
@@ -107,10 +132,17 @@ public class LightwaverfConvertor {
 			return new LightwaveRfDimCommand(message);
 		} else if (LightwaveRfOnOffCommand.matches(message)) {
 			return new LightwaveRfOnOffCommand(message);
+		} else if (LightwaveRfEnergyMonitorMessage.matches(message)){
+			return new LightwaveRfEnergyMonitorMessage(message);
+		} else if (LightwaveRfWifiLinkStatusMessage.matches(message)){
+			return new LightwaveRfWifiLinkStatusMessage(message);
+		} else if (LightwaveRfMoodCommand.matches(message)){
+			return new LightwaveRfMoodCommand(message);
+		} else if (LightwaveRfAllOffCommand.matches(message)){
+			return new LightwaveRfAllOffCommand(message);
 		}
 		throw new LightwaveRfMessageException("Message not recorgnised: "
 				+ message);
-
 	}
 
 	public LightwaveRFCommand getRegistrationCommand() {

@@ -9,6 +9,8 @@
 package org.openhab.binding.lightwaverf.internal.exception;
 
 /**
+ * This represents an exception parsing a LightwaveRf Message.
+ * 
  * @author Neil Renaud
  * @since 1.7.0
  */

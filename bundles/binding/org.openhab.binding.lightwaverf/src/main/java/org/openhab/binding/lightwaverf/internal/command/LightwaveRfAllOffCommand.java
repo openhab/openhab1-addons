@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.lightwaverf.internal.command;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,45 +17,51 @@ import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 
 /**
  * @author Neil Renaud
- * @since 1.7.0
+ * @since 1.8.0
  */
-public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand
-		implements LightwaveRfRoomMessage {
+public class LightwaveRfAllOffCommand extends AbstractLightwaveRfCommand implements
+		LightwaveRfRoomMessage {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile(".*?([0-9]{1,3}),!R([0-9])F\\*r\\s*");
-	private static final String FUNCTION = "*r";
-
+			.compile(".*?([0-9]{1,3}),!R([0-9])Fa.*\\s*");
+	private static final String FUNCTION = "a";
+	
 	private final LightwaveRfMessageId messageId;
 	private final String roomId;
 
-	public LightwaveRfHeatInfoRequest(int messageId, String roomId) {
-		this.messageId = new LightwaveRfGeneralMessageId(messageId);
+	/**
+	 * Commands are like: 100,!R2Fa 
+	 */
+
+	public LightwaveRfAllOffCommand(int messageId, String roomId) {
 		this.roomId = roomId;
+		this.messageId = new LightwaveRfGeneralMessageId(messageId);
 	}
 
-	public LightwaveRfHeatInfoRequest(String message)
+	public LightwaveRfAllOffCommand(String message)
 			throws LightwaveRfMessageException {
 		try {
-			Matcher m = REG_EXP.matcher(message);
-			m.matches();
-			messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m
-					.group(1)));
-			roomId = m.group(2);
+			Matcher matcher = REG_EXP.matcher(message);
+			matcher.matches();
+			this.messageId = new LightwaveRfGeneralMessageId(
+					Integer.valueOf(matcher.group(1)));
+			this.roomId = matcher.group(2);
 		} catch (Exception e) {
-			throw new LightwaveRfMessageException("Error converting message: "
-					+ message);
+			throw new LightwaveRfMessageException(
+					"Error converting Dimming message: " + message, e);
 		}
 	}
 
 	@Override
 	public String getLightwaveRfCommandString() {
-		return getFunctionMessageString(messageId, roomId, FUNCTION);
+		return getMessageString(messageId, roomId, FUNCTION);
 	}
+
 
 	@Override
 	public String getRoomId() {
@@ -63,7 +70,12 @@ public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand
 
 	@Override
 	public State getState(LightwaveRfType type) {
-		return null;
+		switch (type) {
+		case ALL_OFF:
+			return OnOffType.OFF;
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -71,13 +83,28 @@ public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand
 		return messageId;
 	}
 
-	public static boolean matches(String message) {
-		return message.contains(FUNCTION);
+	@Override
+	public boolean equals(Object that) {
+		if (that instanceof LightwaveRfAllOffCommand) {
+			return Objects.equals(this.messageId,
+					((LightwaveRfAllOffCommand) that).messageId)
+					&& Objects.equals(this.roomId,
+							((LightwaveRfAllOffCommand) that).roomId);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(messageId, roomId);
 	}
 
 	@Override
 	public LightwaveRfMessageType getMessageType() {
-		return LightwaveRfMessageType.HEAT_REQUEST;
+		return LightwaveRfMessageType.ROOM;
 	}
 
+	public static boolean matches(String message) {
+		return message.contains("Fa");
+	}
 }

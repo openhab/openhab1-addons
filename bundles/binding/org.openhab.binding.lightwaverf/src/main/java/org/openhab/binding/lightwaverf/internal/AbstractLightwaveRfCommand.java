@@ -28,19 +28,31 @@ public abstract class AbstractLightwaveRfCommand implements LightwaveRFCommand {
 	}
 
 	public String getMessageString(LightwaveRfMessageId messageId,
-			String function, String parameter) {
-		return messageId.getMessageIdString() + ",!F" + function + "p"
-				+ parameter + "\n";
-	}
-
-	public String getMessageString(LightwaveRfMessageId messageId,
 			String roomId, String deviceId, String function) {
 		return messageId.getMessageIdString() + ",!R" + roomId + "D" + deviceId
 				+ "F" + function + "\n";
 	}
 
 	public String getMessageString(LightwaveRfMessageId messageId,
-			String roomId, String deviceId, String function, String parameter) {
+			String roomId, String function) {
+		return messageId.getMessageIdString() + ",!R" + roomId + "F"
+				+ function + "\n";
+	}
+
+	public String getMessageString(LightwaveRfMessageId messageId,
+			String roomId, String function, int parameter) {
+		return messageId.getMessageIdString() + ",!R" + roomId 
+				+ "F" + function + "P" + parameter + "\n";
+	}
+	
+	public String getMessageString(LightwaveRfMessageId messageId,
+			String roomId, String deviceId, String function, int parameter) {
+		return messageId.getMessageIdString() + ",!R" + roomId + "D" + deviceId
+				+ "F" + function + "P" + parameter + "\n";
+	}
+	
+	public String getMessageString(LightwaveRfMessageId messageId,
+			String roomId, String deviceId, String function, double parameter) {
 		return messageId.getMessageIdString() + ",!R" + roomId + "D" + deviceId
 				+ "F" + function + "P" + parameter + "\n";
 	}
@@ -53,5 +65,12 @@ public abstract class AbstractLightwaveRfCommand implements LightwaveRFCommand {
 	public String getOkString(LightwaveRfMessageId messageId) {
 		return messageId.getMessageIdString() + ",OK\n";
 	}
+	
+	public String getDeviceRegistrationMessageString(LightwaveRfMessageId messageId,
+			String function, String parameter) {
+		return messageId.getMessageIdString() + ",!F" + function + "p"
+				+ parameter + "\n";
+	}
+	
 
 }

@@ -10,6 +10,7 @@ package org.openhab.binding.lightwaverf;
 
 import java.util.List;
 
+import org.openhab.binding.lightwaverf.internal.LightwaveRfItemDirection;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.core.binding.BindingProvider;
 
@@ -84,4 +85,11 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 	 * @return
 	 */
 	int getPollInterval(String itemName);
+	
+	/**
+	 * Get the direction for the given itemName.
+	 * @param itemName
+	 * @return
+	 */
+	LightwaveRfItemDirection getDirection(String itemName);
 }

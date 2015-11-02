@@ -17,6 +17,7 @@ import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfRegistrationMessageId;
 import org.openhab.core.types.State;
 
 /**
@@ -27,7 +28,7 @@ public class LightwaveRfDeviceRegistrationCommand extends
 		AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile("([0-9]{1,3}),!F\\*p\\s*");
+			.compile(".*?([0-9]{1,3}),!F\\*p\\s*");
 	private final LightwaveRfMessageId messageId;
 	private static final String FUNCTION = "*";
 	private static final String PARAMETER = "";
@@ -37,8 +38,7 @@ public class LightwaveRfDeviceRegistrationCommand extends
 		try {
 			Matcher m = REG_EXP.matcher(message);
 			m.matches();
-			messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m
-					.group(1)));
+			messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m.group(1)));
 		} catch (Exception e) {
 			throw new LightwaveRfMessageException("Error converting message: "
 					+ message, e);
@@ -46,14 +46,12 @@ public class LightwaveRfDeviceRegistrationCommand extends
 	}
 
 	public LightwaveRfDeviceRegistrationCommand() {
-		// MessageId for registration Message always has to be 100
-		this.messageId = new LightwaveRfGeneralMessageId(100);
+		this.messageId = new LightwaveRfRegistrationMessageId();
 	}
 
 	@Override
 	public String getLightwaveRfCommandString() {
-
-		return getMessageString(messageId, FUNCTION, PARAMETER);
+		return getDeviceRegistrationMessageString(messageId, FUNCTION, PARAMETER);
 	}
 
 	@Override
