@@ -72,7 +72,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 public abstract class MiosBindingConfig implements BindingConfig {
-	private static Pattern TRANSFORM_PATTERN = Pattern.compile("(?<transform>.+)[(]{1}?(?<param>.*)[)]{1}");
+	private static Pattern TRANSFORM_PATTERN = Pattern.compile("(?<transform>[a-zA-Z]+)[(]{1}?(?<param>.*)[)]{1}");
 
 	protected static final Logger logger = LoggerFactory.getLogger(MiosBindingConfig.class);
 
