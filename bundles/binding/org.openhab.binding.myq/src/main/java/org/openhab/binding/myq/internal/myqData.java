@@ -11,10 +11,9 @@ package org.openhab.binding.myq.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import org.apache.commons.io.IOUtils;
+import static org.openhab.io.net.http.HttpUtil.executeUrl;
+import java.util.Properties;
 
 /**
  * This Class handles the Chamberlain myQ http connection.
@@ -26,7 +25,6 @@ import com.sun.jersey.api.client.WebResource;
  * <li>sercurityTokin: sercurityTokin for API requests</li>
  * <li>webSite: url of myQ API</li>
  * <li>appId: appId for API requests</li>
- * <li>client: http client for API requests</li>
  * <li>MaxRetrys: max login attempts in a row</li>
  * </ul>
  * 
@@ -41,10 +39,8 @@ public class myqData
 	private String password;
 	private String sercurityTokin;
 
-	private String webSite = "https://myqexternal.myqdevice.com";
-	private String appId = "Vj8pQggXLhLy0WHahglCD4N1nAkkXQtGYpq2HrHD7H1nvmbT55KqtN6RSF4ILB%2fi";
-
-	private Client client;
+	private final String webSite = "https://myqexternal.myqdevice.com";
+	private final String appId = "Vj8pQggXLhLy0WHahglCD4N1nAkkXQtGYpq2HrHD7H1nvmbT55KqtN6RSF4ILB%2fi";
 
 	private final int MaxRetrys = 3;
 
@@ -52,8 +48,6 @@ public class myqData
 	{
 		this.userName = username;
 		this.password = password;
-		client = Client.create();
-		client.setConnectTimeout(5000);
 	}
 
 	/**
@@ -79,19 +73,18 @@ public class myqData
 		if(this.sercurityTokin == null)
 			if(Login())
 				return null;
-		String url =  String.format("%s/api/UserDeviceDetails?appId=%s&securityToken=%s",this.webSite,this.appId,sercurityTokin);
-		WebResource webResource = client.resource(url);
+		String url =  String.format("%s/api/UserDeviceDetails?appId=%s&securityToken=%s", this.webSite, this.appId, this.sercurityTokin);
 
 		try 
 		{
-			ClientResponse response = webResource.get(ClientResponse.class);			
+			Properties header = new Properties();
+			header.put("Accept", "application/json");
 
-			String dataString = response.getEntity(String.class);
-
-			if (response.getStatus() != 200) 
+			String dataString = executeUrl("GET", url, header, null, null, 10000);
+			
+			if (dataString == null) 
 			{
-				logger.error("Failed to connect to MyQ site: HTTP error code: "
-						+ response.getStatus());
+				logger.error("Failed to connect to MyQ site");
 				if(attemps < MaxRetrys)
 				{
 					Login();
@@ -99,12 +92,12 @@ public class myqData
 				}
 				return null;
 			}
-			logger.trace("Received MyQ Device Data: {}", dataString);
+			logger.debug("Received MyQ Device Data: {}", dataString);
 			return dataString;
 		}
-		catch(ClientHandlerException e) 
+		catch(Exception e) 
 		{			
-			logger.error("Failed to connect to MyQ site: HTTP request timed out.");
+			logger.error("Failed to connect to MyQ site");
 			return null;
 		}
 	}
@@ -116,21 +109,19 @@ public class myqData
 	private boolean Login() 
 	{
 		String url =  String.format("%s/Membership/ValidateUserWithCulture?appId=%s&securityToken=null&username=%s&password=%s&culture=en",
-				this.webSite,this.appId,this.userName,this.password);
-		WebResource webResource = client.resource(url);
-
+				this.webSite, this.appId ,this.userName, this.password);
 		try 
 		{
-			ClientResponse response = webResource.get(ClientResponse.class);
-			String loginString = response.getEntity(String.class);
-
-			if (response.getStatus() != 200) 
+			Properties header = new Properties();
+			header.put("Accept", "application/json");
+			String loginString = executeUrl("GET", url, header, null, null, 10000);
+			
+			if (loginString == null) 
 			{
-				logger.error("Failed to connect to MyQ site: HTTP error code: "
-						+ response.getStatus());
+				logger.error("Failed to connect to MyQ site");
 				return false;
 			}
-			logger.trace("Received MyQ Login JSON: {}", loginString);
+			logger.debug("Received MyQ Login JSON: {}", loginString);
 			LoginData login = new LoginData(loginString);
 			if(login.getSuccess())
 			{
@@ -139,9 +130,9 @@ public class myqData
 			}
 			return false;
 		} 
-		catch(ClientHandlerException e) 
+		catch(Exception e) 
 		{
-			logger.error("Failed to connect to MyQ site: HTTP request timed out.");
+			logger.error("Failed to connect to MyQ site");
 			return false;
 		}
 	}
@@ -157,33 +148,39 @@ public class myqData
 	 * @param attemps
 	 *            Attempt number when it recursively calls itself
 	 */
-	public boolean executeCommand(int deviceID, int state,int attemps) 
+	public boolean executeCommand(int deviceID, int state, int attemps) 
 	{
 		if(this.sercurityTokin == null)
 			if(Login())
 				return false;
 		String message =  String.format("{\"AttributeName\":\"desireddoorstate\",\"DeviceId\":\"%d\",\"ApplicationId\":\"%s\",\"AttributeValue\":\"%d\",\"SecurityToken\":\"%s\"}",
-				deviceID,this.appId,state,this.sercurityTokin);
-		String url =  String.format("%s/Device/setDeviceAttribute",this.webSite);
-		WebResource webResource = client.resource(url);
-
-		ClientResponse response = webResource.type("application/json").put(
-				ClientResponse.class, message);
-
-		logger.debug("Sent message: '" + message + "' to " + url);
-
-		if (response.getStatus() != 200) 
+				deviceID, this.appId, state, this.sercurityTokin);
+		String url =  String.format("%s/Device/setDeviceAttribute", this.webSite);
+		try 
 		{
-			logger.error("Failed to connect to MyQ site: HTTP error code: "
-					+ response.getStatus());
-
-			if(attemps < MaxRetrys)
+			Properties header = new Properties();
+			header.put("Accept", "application/json");
+			String dataString = executeUrl("PUT", url, IOUtils.toInputStream(message), "application/json", 1000);
+	
+			logger.debug("Sent message: '" + message + "' to " + url);		
+			logger.debug("Received MyQ Execute JSON: {}", dataString);
+			if (dataString == null) 
 			{
-				Login();
-				return executeCommand(deviceID, state, ++attemps);
+				logger.error("Failed to connect to MyQ site");
+	
+				if(attemps < MaxRetrys)
+				{
+					Login();
+					return executeCommand(deviceID, state, ++attemps);
+				}
+				return false;
 			}
-			return false;
 		}
+		catch(Exception e) 
+		{
+			logger.error("Failed to connect to MyQ site");
+			return false;
+		}		
 		return true;
 	}
 }

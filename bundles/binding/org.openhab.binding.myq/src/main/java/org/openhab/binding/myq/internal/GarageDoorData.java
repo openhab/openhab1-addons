@@ -49,7 +49,7 @@ public class GarageDoorData
 		{
 			JsonNode rootNode = mapper.readTree(deviceStatusData);
 			int ReturnCode = rootNode.get("ReturnCode").asInt();
-			logger.debug("myq ReturnCode: "+Integer.toString(ReturnCode));
+			logger.debug("myq ReturnCode: " + Integer.toString(ReturnCode));
 
 			if(ReturnCode==0)
 			{
@@ -62,24 +62,24 @@ public class GarageDoorData
 						logger.info("Chamberlain MyQ Devices:");
 
 						int arraysize  = node.size();
-						for(int i = 0;i<arraysize;i++)
+						for(int i = 0; i < arraysize; i++)
 						{
 							int deviceId = node.get(i).get("DeviceId").asInt();
-							String deviceName = RemoveQuotes(node.get(i).get("DeviceName").toString());
-							String deviceType = RemoveQuotes(node.get(i).get("MyQDeviceTypeName").toString());
+							String deviceName = node.get(i).get("DeviceName").asText();
+							String deviceType = node.get(i).get("MyQDeviceTypeName").asText();
 
 							if(deviceType.contains("GarageDoorOpener"))
 							{
-								JsonNode Attributes = node.get(i).get("Attributes");
-								if(Attributes.isArray())
+								JsonNode attributes = node.get(i).get("Attributes");
+								if(attributes.isArray())
 								{
-									int AttributesSize  = Attributes.size();
-									for(int j = 0;j<AttributesSize;j++)
+									int attributesSize  = attributes.size();
+									for(int j = 0; j < attributesSize; j++)
 									{
-										String AttributeName = RemoveQuotes(Attributes.get(j).get("Name").toString());
-										if(AttributeName.contains("doorstate"))
+										String attributeName = attributes.get(j).get("Name").asText();
+										if(attributeName.contains("doorstate"))
 										{
-											int doorstate = Attributes.get(j).get("Value").asInt();
+											int doorstate = attributes.get(j).get("Value").asInt();
 											logger.info("DeviceID: " + Integer.toString(deviceId) + " DeviceName: " + deviceName +" DeviceType: " + deviceType + " Doorstate : " + Integer.toString(doorstate));
 
 											this.devices.put(deviceId,new Device(deviceId, deviceType, deviceName, doorstate));
@@ -107,12 +107,6 @@ public class GarageDoorData
 	public HashMap<Integer, Device> getDevices()
 	{
 		return this.devices;
-	}
-
-	//remove double quotes from JSON string values
-	private String RemoveQuotes(String input)
-	{
-		return input.replace("\"", "");
 	}
 }
 
