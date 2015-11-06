@@ -686,6 +686,23 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>4004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>50x5xx</Model>
+			<Label lang="en">Window Blind Control Insert Button</Label>
+			<ConfigFile>merten/50x5xx.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>8001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>50x5xx</Model>
+			<Label lang="en">Switch Plug</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
