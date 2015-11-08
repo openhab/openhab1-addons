@@ -110,6 +110,7 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:upnp-org:serviceId:HouseStatus1'"                >HouseStatus1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:ContentDirectory'"            >ContentDirectory</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:AudioIn'"                     >AudioIn</xsl:when>
+<xsl:when test="@service = 'urn:upnp-org:serviceId:ZoneGroupTopology'"           >ZoneGroupTopology</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:ZWaveDevice1'"         >ZWaveDevice1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:ZWaveNetwork1'"        >ZWaveNetwork1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:HaDevice1'"            >HaDevice1</xsl:when>
@@ -124,13 +125,16 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:AlarmPartition2'"      >AlarmPartition2</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Camera1'"              >Camera1</xsl:when>
 <xsl:when test="@service = 'urn:cd-jackson-com:serviceId:SystemMonitor'"         >SystemMonitor</xsl:when>
+<xsl:when test="@service = 'urn:cd-jackson-com:serviceId:Config'"                >CDJConfig</xsl:when>
 <xsl:when test="@service = 'urn:garrettwp-com:serviceId:WPSwitch1'"              >WPSwitch1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Nest1'"                >Nest1</xsl:when>
 <xsl:when test="@service = 'urn:watou-com:serviceId:NestStructure1'"             >NestStructure1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-micasaverde-com:serviceId:Weather1'"        >Weather1</xsl:when>
 <xsl:when test="@service = 'urn:demo-ted-striker:serviceId:PingSensor1'"         >PingSensor1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Sonos1'"               >Sonos1</xsl:when>
-<xsl:when test="@service = 'rn:demo-paradox-com:serviceId:ParadoxSecurityEVO1'"  >Paradox</xsl:when>
+<xsl:when test="@service = 'urn:demo-paradox-com:serviceId:ParadoxSecurityEVO1'" >Paradox</xsl:when>
+<xsl:when test="@service = 'upnp-rfxcom-com:serviceId:rfxtrx1'"                  >Rfxtrx</xsl:when>
+<xsl:when test="@service = 'urn:rfxcom-com:serviceId:rfxtrx1'"                   >RfxtrxNew</xsl:when>
 <xsl:when test="@service = 'urn:macrho-com:serviceId:LiftMasterOpener1'"         >LiftMasterOpener1</xsl:when>
 <xsl:when test="@service = 'urn:directv-com:serviceId:DVR1'"                     >DirecTVDVR1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:DigitalSecurityCameraSettings1'">DigitalSecurityCameraSettings1</xsl:when>
@@ -139,10 +143,13 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DiscretePower1'"       >DiscretePower1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:EnergyCalculator1'"           >EnergyCalculator1</xsl:when>
 <xsl:when test="@service = 'urn:upnp-org:serviceId:FanSpeed1'"                   >FanSpeed1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:GenericSensor1'"       >GenericSensor1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:InputSelection1'"      >InputSelection1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:LightSensor1'"         >LightSensor1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Keypad1'"              >Keypad1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:MediaNavigation1'"     >MediaNavigation1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:MenuNavigation1'"      >MenuNavigation1</xsl:when>
+<xsl:when test="@service = 'urn:micasaverde-com:serviceId:MiosUpdater1'"         >MiosUpdater1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Misc1'"                >Misc1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:NumericEntry1'"        >NumericEntry1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:PIP1'"                 >PIP1</xsl:when>
@@ -150,6 +157,7 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:TV1'"                  >TV1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:TogglePower1'"         >TogglePower1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Tuning1'"              >Tuning1</xsl:when>
+<xsl:when test="@service = 'urn:futzle-com:serviceId:UPnPProxy1'"                >UPnPProxy1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:VideoAdjustment1'"     >VideoAdjustment1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Volume1'"              >Volume1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:WMC1'"                 >WMC1</xsl:when>
@@ -303,6 +311,8 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:dcineco-com:serviceId:MSwitch1'          and @variable='Status6'"                    >Switch</xsl:when>
 <xsl:when test="@service = 'urn:dcineco-com:serviceId:MSwitch1'          and @variable='Status7'"                    >Switch</xsl:when>
 <xsl:when test="@service = 'urn:dcineco-com:serviceId:MSwitch1'          and @variable='Status8'"                    >Switch</xsl:when>
+<xsl:when test="@service = 'upnp-rfxcom-com:serviceId:rfxtrx1'           and @variable='NbrDevices'"                 >Integer</xsl:when>
+<xsl:when test="@service = 'upnp-rfxcom-com:serviceId:rfxtrx1'           and @variable='Voltage'"                    >Number</xsl:when>
 <xsl:otherwise>String</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
@@ -491,6 +501,55 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@variable = 'Remote'"               > Remote</xsl:when>
 <xsl:when test="@variable = 'MfrId'"                > Manufacturer Id</xsl:when>
 <xsl:when test="@variable = 'Last Check'"           > Last Check</xsl:when>
+<xsl:when test="@variable = 'LastCheck'"            > Last Check</xsl:when>
+<xsl:when test="@variable = 'AdjustMultiplier'"     > Adjust Multipler</xsl:when>
+<xsl:when test="@variable = 'AdjustConstant'"       > Adjust Constant</xsl:when>
+<xsl:when test="@variable = 'AdjustConstant2'"      > Adjust Constant 2</xsl:when>
+<xsl:when test="@variable = 'RepeatEvent'"          > Repeat Event</xsl:when>
+<xsl:when test="@variable = 'ActualUsage'"          > Actual Usage</xsl:when>
+<xsl:when test="@variable = 'ArmedTripped'"         > Armed/Tripped</xsl:when>
+<xsl:when test="@variable = 'KWHReading'"           > kWh Reading</xsl:when>
+<xsl:when test="@variable = 'ZoneGroupState'"       > Zone Group State</xsl:when>
+<xsl:when test="@variable = 'FirmwareVersion'"      > Firmware Version</xsl:when>
+<xsl:when test="@variable = 'DiscoveryResult'"      > Discovery Result</xsl:when>
+<xsl:when test="@variable = 'CurrentTransportActions'"      > Current Transport Actions</xsl:when>
+<xsl:when test="@variable = 'PluginVersion'"        > Plugin Version</xsl:when>
+<xsl:when test="@variable = 'DefaultLanguageTTS'"   > Default TTS Language</xsl:when>
+<xsl:when test="@variable = 'DefaultEngineTTS'"     > Default TTS Engine</xsl:when>
+<xsl:when test="@variable = 'GoogleTTSServerURL'"   > Google TTS URL</xsl:when>
+<xsl:when test="@variable = 'OSXTTSServerURL'"      > OSX TTS URL</xsl:when>
+<xsl:when test="@variable = 'MaryTTSServerURL'"     > Mary TTS URL</xsl:when>
+<xsl:when test="@variable = 'MicrosoftClientId'"    > Microsoft Client Id</xsl:when>
+<xsl:when test="@variable = 'MicrosoftClientSecret'" > Microsoft Client Secret</xsl:when>
+<xsl:when test="@variable = 'CurrentMediaDuration'" > Current Media Duration</xsl:when>
+<xsl:when test="@variable = 'CurrentCrossfadeMode'" > Current Crossfade Mode</xsl:when>
+<xsl:when test="@variable = 'NumberOfTracks'"       > Number of Tracks</xsl:when>
+<xsl:when test="@variable = 'SonosModel'"           > Sonos Model</xsl:when>
+<xsl:when test="@variable = 'SonosModelName'"       > Sonos Model Name</xsl:when>
+<xsl:when test="@variable = 'SonosServicesKeys'"    > Sonos Service Keys</xsl:when>
+<xsl:when test="@variable = 'Favorites'"            > Favorites</xsl:when>
+<xsl:when test="@variable = 'RelativeTimePosition'" > Relative Time Position</xsl:when>
+<xsl:when test="@variable = 'SonosOnline'"          > Sonos Online</xsl:when>
+<xsl:when test="@variable = 'CurrentTrackMetaData'" > Current Track Meta-Data</xsl:when>
+<xsl:when test="@variable = 'SonosID'"              > Sonos ID</xsl:when>
+<xsl:when test="@variable = 'GroupCoordinator'"     > Group Co-ordinator</xsl:when>
+<xsl:when test="@variable = 'CurrentTrackURI'"      > Current Track URI</xsl:when>
+<xsl:when test="@variable = 'AVTransportURI'"       > AV Transport URI</xsl:when>
+<xsl:when test="@variable = 'DebugLogs'"            > Debug Logs</xsl:when>
+<xsl:when test="@variable = 'FetchQueue'"           > Fetch Queue</xsl:when>
+<xsl:when test="@variable = 'RouterIp'"             > Router IP</xsl:when>
+<xsl:when test="@variable = 'RouterPort'"           > Router Port</xsl:when>
+<xsl:when test="@variable = 'ProxyUsed'"            > Proxy Used</xsl:when>
+<xsl:when test="@variable = 'StatusText'"           > Status Text</xsl:when>
+<xsl:when test="@variable = 'DisabledDevices'"      > Disabled Devices</xsl:when>
+<xsl:when test="@variable = 'AutoCreate'"           > Auto Create</xsl:when>
+<xsl:when test="@variable = 'NbrDevices'"           > # Devices</xsl:when>
+<xsl:when test="@variable = 'Voltage'"              > Voltage</xsl:when>
+<xsl:when test="@variable = 'LastReceivedMsg'"      > Last Received Msg</xsl:when>
+<xsl:when test="@variable = 'NorthQDevice'"         > NorthQ Device</xsl:when>
+<xsl:when test="@variable = 'API'"                  > API</xsl:when>
+<xsl:when test="@variable = 'Association'"          > Association</xsl:when>
+<xsl:when test="@variable = 'Documentation'"        > Documentation</xsl:when>
 <xsl:when test="../../@id = '1'"                    ><xsl:value-of select="concat(' ', @variable)"/></xsl:when>
 <xsl:otherwise                                      > FIXME <xsl:value-of select="@variable"/></xsl:otherwise>
 </xsl:choose>
