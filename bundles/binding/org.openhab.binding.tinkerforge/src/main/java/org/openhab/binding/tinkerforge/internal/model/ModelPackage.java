@@ -2665,13 +2665,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_PIEZO_SPEAKER__BRICKD = MDEVICE__BRICKD;
 
   /**
+   * The feature id for the '<em><b>Switch State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE = MDEVICE_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 0;
+  int MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>MBricklet Piezo Speaker</em>' class.
@@ -2680,7 +2689,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_PIEZO_SPEAKER_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 1;
+  int MBRICKLET_PIEZO_SPEAKER_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 2;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -2710,13 +2719,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_PIEZO_SPEAKER___DISABLE = MDEVICE___DISABLE;
 
   /**
-   * The operation id for the '<em>Action</em>' operation.
+   * The operation id for the '<em>Fetch Switch State</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_PIEZO_SPEAKER___ACTION__DEVICEOPTIONS = MDEVICE_OPERATION_COUNT + 0;
+  int MBRICKLET_PIEZO_SPEAKER___FETCH_SWITCH_STATE = MDEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Turn Switch</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_PIEZO_SPEAKER___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS = MDEVICE_OPERATION_COUNT + 1;
 
   /**
    * The number of operations of the '<em>MBricklet Piezo Speaker</em>' class.
@@ -2725,7 +2743,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_PIEZO_SPEAKER_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 1;
+  int MBRICKLET_PIEZO_SPEAKER_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl <em>Dual Button Button</em>}' class.

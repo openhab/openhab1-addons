@@ -69,6 +69,7 @@ import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
+import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
@@ -1009,6 +1010,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletSolidStateRelay");
               mDevice = factory.createMBrickletSolidStateRelay();
               mDevice.setDeviceIdentifier(BrickletSolidStateRelay.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletPiezoSpeaker.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletPiezoSpeaker");
+              mDevice = factory.createMBrickletPiezoSpeaker();
+              mDevice.setDeviceIdentifier(BrickletPiezoSpeaker.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

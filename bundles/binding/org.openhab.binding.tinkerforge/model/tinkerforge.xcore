@@ -285,7 +285,7 @@ interface DualButtonDevice extends MSubDevice<MBrickletDualButton>{
 
 }
 
-class MBrickletPiezoSpeaker extends MDevice<TinkerBrickletPiezoSpeaker>, ProgrammableActor{
+class MBrickletPiezoSpeaker extends MDevice<TinkerBrickletPiezoSpeaker>, ProgrammableSwitchActor{
 	readonly String deviceType = "bricklet_piezo_speaker"
 }
 

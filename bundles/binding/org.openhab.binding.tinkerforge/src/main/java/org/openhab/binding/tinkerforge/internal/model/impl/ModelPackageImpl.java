@@ -7607,7 +7607,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTinkerBrickletPiezoSpeaker());
     g1.getETypeArguments().add(g2);
     mBrickletPiezoSpeakerEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getProgrammableActor());
+    g1 = createEGenericType(this.getProgrammableSwitchActor());
     mBrickletPiezoSpeakerEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDualButtonDevice());
     dualButtonButtonEClass.getEGenericSuperTypes().add(g1);

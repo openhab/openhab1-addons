@@ -17,10 +17,10 @@ import com.tinkerforge.BrickletPiezoSpeaker;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletPiezoSpeaker()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletPiezoSpeaker> org.openhab.binding.tinkerforge.internal.model.ProgrammableActor"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletPiezoSpeaker> org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor"
  * @generated
  */
-public interface MBrickletPiezoSpeaker extends MDevice<BrickletPiezoSpeaker>, ProgrammableActor
+public interface MBrickletPiezoSpeaker extends MDevice<BrickletPiezoSpeaker>, ProgrammableSwitchActor
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

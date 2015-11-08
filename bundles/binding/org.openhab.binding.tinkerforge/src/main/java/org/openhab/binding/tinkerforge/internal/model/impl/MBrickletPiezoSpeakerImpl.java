@@ -2,34 +2,32 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletPiezoSpeaker;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
-
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
-
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletPiezoSpeaker;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -49,6 +47,7 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getBrickd <em>Brickd</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPiezoSpeakerImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
@@ -248,6 +247,26 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
   protected String name = NAME_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSwitchState()
+   * @generated
+   * @ordered
+   */
+  protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSwitchState()
+   * @generated
+   * @ordered
+   */
+  protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -256,6 +275,12 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_piezo_speaker";
+
+  private static final String DURATIONS = "durations";
+
+  private static final String FREQUENCIES = "frequencies";
+
+  private static final String REPEAT = "repeat";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -266,6 +291,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  private BeepFinishedListener beepfinishedListener;
 
   /**
    * <!-- begin-user-doc -->
@@ -568,57 +595,220 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
+  public OnOffValue getSwitchState()
+  {
+    return switchState;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSwitchState(OnOffValue newSwitchState)
+  {
+    OnOffValue oldSwitchState = switchState;
+    switchState = newSwitchState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE, oldSwitchState, switchState));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
-  public void action(DeviceOptions opts)
+  public void turnSwitch(OnOffValue state, DeviceOptions opts)
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    if (state == OnOffValue.ON) {
+      beep(opts);
+    } else {
+      stopBeep();
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSwitchState()
+  {
+    // nothing to do
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private void beep(DeviceOptions opts) {
+    try {
+      Long[] durations;
+      Integer[] frequencies;
+      boolean repeat = false;
+      if (opts != null) {
+        // long duration, int frequency
+        if (opts.containsKey(DURATIONS)) {
+          String durationsopt = opts.getOption(DURATIONS);
+          logger.debug("durationsopt: {}", durationsopt);
+          String[] numbers = durationsopt.split(",");
+          durations = new Long[numbers.length];
+          for (int i = 0; i < numbers.length; i++) {
+            durations[i] = new Long(numbers[i]);
+          }
+        } else {
+          logger.error("{} are missing", DURATIONS);
+          return;
+        }
+        if (opts.containsKey(FREQUENCIES)) {
+          String frequenciesopt = opts.getOption(FREQUENCIES);
+          logger.debug("frequenciesopt {}", frequenciesopt);
+          String[] numbers = frequenciesopt.split(",");
+          frequencies = new Integer[numbers.length];
+          for (int i = 0; i < numbers.length; i++) {
+            frequencies[i] = new Integer(numbers[i]);
+          }
+        } else {
+          logger.error("{} are missing", FREQUENCIES);
+          return;
+        }
+        if (opts.containsKey(REPEAT)) {
+          String opt = opts.getOption(REPEAT);
+          if (opt.toLowerCase().equals("true")) {
+            repeat = true;
+          } else {
+            repeat = false;
+          }
+        }
+        if (durations.length != frequencies.length) {
+          logger
+              .error(
+                  "every frequence needs a duration value and vice versa: frequencies count {}, durationscount {}",
+                  frequencies.length, durations.length);
+          return;
+        }
+        if (beepfinishedListener != null) {
+          tinkerforgeDevice.removeBeepFinishedListener(beepfinishedListener);
+          beepfinishedListener = null;
+        }
+        beepfinishedListener = new BeepFinishedListener(this, durations, frequencies, repeat);
+        tinkerforgeDevice.addBeepFinishedListener(beepfinishedListener);
+        // stop current beep tone and trigger beeping through the beepfinishedListener
+        tinkerforgeDevice.beep(0, 0);
+      } else {
+        // stop current beep tone
+        tinkerforgeDevice.beep(0, 0);
+        // default morse code
+        tinkerforgeDevice.morseCode("...---...", 5000);
+      }
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  private class BeepFinishedListener implements BrickletPiezoSpeaker.BeepFinishedListener {
+    Long[] durations;
+    Integer[] frequencies;
+    Integer currentTone;
+    MBrickletPiezoSpeakerImpl mbricklet;
+    private boolean repeat;
+
+    public BeepFinishedListener(MBrickletPiezoSpeakerImpl mbricklet, Long[] durations,
+        Integer[] frequencies, boolean repeat) {
+      this.durations = durations;
+      this.frequencies = frequencies;
+      this.mbricklet = mbricklet;
+      this.repeat = repeat;
+    }
+
+
+    @Override
+    public void beepFinished() {
+      try {
+        if (currentTone == null) {
+          currentTone = 0;
+        } else {
+          currentTone++;
+        }
+        if (currentTone > durations.length) {
+          if (repeat) {
+            currentTone = 0;
+          } else {
+            // we are done
+            setSwitchState(OnOffValue.OFF);
+            return;
+          }
+        }
+        tinkerforgeDevice.beep(durations[currentTone], frequencies[currentTone]);
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(mbricklet,
+            TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(mbricklet,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletPiezoSpeakerImpl.class);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = new BrickletPiezoSpeaker(getUid(), getIpConnection());
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
-  public void disable()
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+  public void disable() {
+    stopBeep();
+    tinkerforgeDevice = null;
+  }
+
+  private void stopBeep() {
+    if (beepfinishedListener != null) {
+      tinkerforgeDevice.removeBeepFinishedListener(beepfinishedListener);
+      beepfinishedListener = null;
+    }
+    try {
+      // stop beep
+      tinkerforgeDevice.beep(0, 0);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -703,6 +893,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
         return getName();
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
         return getBrickd();
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE:
+        return getSwitchState();
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE:
         return getDeviceType();
     }
@@ -752,6 +944,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE:
+        setSwitchState((OnOffValue)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -799,6 +994,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
         setBrickd((MBrickd)null);
         return;
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE:
+        setSwitchState(SWITCH_STATE_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -835,6 +1033,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER__BRICKD:
         return getBrickd() != null;
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE:
+        return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
@@ -847,13 +1047,73 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
    * @generated
    */
   @Override
+  public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+  {
+    if (baseClass == SwitchSensor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE: return ModelPackage.SWITCH_SENSOR__SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == ProgrammableSwitchActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        default: return -1;
+      }
+    }
+    return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+  {
+    if (baseClass == SwitchSensor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.SWITCH_SENSOR__SWITCH_STATE: return ModelPackage.MBRICKLET_PIEZO_SPEAKER__SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == ProgrammableSwitchActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        default: return -1;
+      }
+    }
+    return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == ProgrammableActor.class)
+    if (baseClass == SwitchSensor.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.PROGRAMMABLE_ACTOR___ACTION__DEVICEOPTIONS: return ModelPackage.MBRICKLET_PIEZO_SPEAKER___ACTION__DEVICEOPTIONS;
+        case ModelPackage.SWITCH_SENSOR___FETCH_SWITCH_STATE: return ModelPackage.MBRICKLET_PIEZO_SPEAKER___FETCH_SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == ProgrammableSwitchActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS: return ModelPackage.MBRICKLET_PIEZO_SPEAKER___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS;
         default: return -1;
       }
     }
@@ -870,8 +1130,11 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
   {
     switch (operationID)
     {
-      case ModelPackage.MBRICKLET_PIEZO_SPEAKER___ACTION__DEVICEOPTIONS:
-        action((DeviceOptions)arguments.get(0));
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS:
+        turnSwitch((OnOffValue)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER___FETCH_SWITCH_STATE:
+        fetchSwitchState();
         return null;
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER___INIT:
         init();
@@ -917,6 +1180,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
+    result.append(", switchState: ");
+    result.append(switchState);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(')');
