@@ -379,6 +379,7 @@
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">OpenedOrClosedContactHandler</message-handler>
+	<message-handler cmd="0x13">OpenedOrClosedContactHandler</message-handler>
 	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
