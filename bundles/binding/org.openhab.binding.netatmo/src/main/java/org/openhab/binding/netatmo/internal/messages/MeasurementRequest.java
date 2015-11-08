@@ -19,18 +19,24 @@ import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.netatmo.internal.NetatmoException;
 import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
+import org.openhab.binding.netatmo.internal.NetatmoScale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Queries the Netatmo API for the measures of a single device or module.
  * 
  * @author Andreas Brenk
  * @author Gaël L'hopital
+ * @author Rob Nielsen
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/getmeasure">getmeasure</a>
  */
 public class MeasurementRequest extends AbstractRequest {
 
 	private static final String RESOURCE_URL = API_BASE_URL + "getmeasure";
+
+	private static final Logger logger = LoggerFactory.getLogger(MeasurementRequest.class);
 
 	/**
 	 * @param deviceId
@@ -39,12 +45,13 @@ public class MeasurementRequest extends AbstractRequest {
 	 *            optional, may be <code>null</code>
 	 * @return a unique key suitable to store a request in a map
 	 */
-	public static String createKey(final String deviceId, final String moduleId) {
+	public static String createKey(final String deviceId, final String moduleId, final NetatmoScale scale) {
+		final String s =  ":" + scale.getScale();
 		if (moduleId == null) {
-			return "device:" + deviceId;
+			return "device:" + deviceId + s;
 
 		} else {
-			return "module:" + moduleId;
+			return "module:" + moduleId + s;
 		}
 	}
 
@@ -54,10 +61,13 @@ public class MeasurementRequest extends AbstractRequest {
 
 	private final String moduleId;
 
+	private final NetatmoScale scale;
+
 	private final SortedSet<String> measures = new TreeSet<String>();
 
 	/**
-	 * Creates a request for the measurements of a device or module.
+	 * Creates a request for the measurements of a device or module
+	 * using the default scale.
 	 * 
 	 * If you don't specify a moduleId you will retrieve the device's
 	 * measurements. If you do specify a moduleId you will retrieve the module's
@@ -70,12 +80,33 @@ public class MeasurementRequest extends AbstractRequest {
 	 */
 	public MeasurementRequest(final String accessToken, final String deviceId,
 			final String moduleId) {
+		this(accessToken, deviceId, moduleId, NetatmoScale.MAX);
+	}
+
+	/**
+	 * Creates a request for the measurements of a device or module
+	 * using the scale specified.
+	 *
+	 * If you don't specify a moduleId you will retrieve the device's
+	 * measurements. If you do specify a moduleId you will retrieve the module's
+	 * measurements.
+	 *
+	 * @param accessToken
+	 * @param deviceId
+	 * @param moduleId
+	 *            optional, may be <code>null</code>
+	 * @param scale
+	 */
+	public MeasurementRequest(final String accessToken, final String deviceId,
+			final String moduleId, final NetatmoScale scale) {
 		assert accessToken != null : "accessToken must not be null!";
 		assert deviceId != null : "deviceId must not be null!";
+		assert scale != null : "scale must not be null!";
 
 		this.accessToken = accessToken;
 		this.deviceId = deviceId;
 		this.moduleId = moduleId;
+		this.scale = scale;
 	}
 
 	/**
@@ -90,6 +121,9 @@ public class MeasurementRequest extends AbstractRequest {
 	@Override
 	public MeasurementResponse execute() {
 		final String url = buildQueryString();
+
+		logger.debug(url);
+
 		String json = null;
 
 		try {
@@ -109,7 +143,7 @@ public class MeasurementRequest extends AbstractRequest {
 	 * @see #createKey(String, String)
 	 */
 	public String getKey() {
-		return createKey(this.deviceId, this.moduleId);
+		return createKey(this.deviceId, this.moduleId, this.scale);
 	}
 
 	public SortedSet<String> getMeasures() {
@@ -139,7 +173,7 @@ public class MeasurementRequest extends AbstractRequest {
 		final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
 		urlBuilder.append("?access_token=");
 		urlBuilder.append(this.accessToken);
-		urlBuilder.append("&scale=max");
+		urlBuilder.append("&scale=" + scale.getScale());
 		urlBuilder.append("&date_end=last");
 		urlBuilder.append("&device_id=");
 		urlBuilder.append(this.deviceId);

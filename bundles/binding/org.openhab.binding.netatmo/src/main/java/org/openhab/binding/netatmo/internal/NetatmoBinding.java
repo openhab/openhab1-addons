@@ -12,9 +12,11 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequest.createKey;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -118,12 +120,17 @@ public class NetatmoBinding extends
 				}
 
 				DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials);
+				if (deviceMeasureValueMap == null) {
+					return;
+				}
+
 				for (final NetatmoBindingProvider provider : this.providers) {
 					for (final String itemName : provider.getItemNames()) {
 						final String deviceId = provider.getDeviceId(itemName);
 						final String moduleId = provider.getModuleId(itemName);
 						final NetatmoMeasureType measureType = provider
 								.getMeasureType(itemName);
+						final NetatmoScale scale = provider.getNetatmoScale(itemName);
 
 						State state = null;
 						switch (measureType) {
@@ -157,22 +164,60 @@ public class NetatmoBinding extends
 						case NOISE:
 						case PRESSURE:
 						case RAIN:
-							final String requestKey = createKey(deviceId,
-									moduleId);
-							BigDecimal value = deviceMeasureValueMap.get(
-									requestKey).get(measureType.getMeasure());
-							// Protect that sometimes Netatmo returns null where
-							// numeric value is awaited (issue #1848)
-							if (value != null) {
-								if (measureType == NetatmoMeasureType.TEMPERATURE) {
-									value = unitSystem.convertTemp(value);
-								} else if (measureType == NetatmoMeasureType.RAIN) {
-									value = unitSystem.convertRain(value);
-								} else if (measureType == NetatmoMeasureType.PRESSURE) {
-									value = pressureUnit.convertPressure(value);
-								}
+						case MIN_TEMP:
+						case MAX_TEMP:
+						case MIN_HUM:
+						case MAX_HUM:
+						case MIN_PRESSURE:
+						case MAX_PRESSURE:
+						case MIN_NOISE:
+						case MAX_NOISE:
+						case MIN_CO2:
+						case MAX_CO2:
+						case SUM_RAIN:
+							{
+								BigDecimal value = getValue(
+										deviceMeasureValueMap, measureType,
+										createKey(deviceId, moduleId, scale));
+								// Protect that sometimes Netatmo returns null where
+								// numeric value is awaited (issue #1848)
+								if (value != null) {
+									if (NetatmoMeasureType
+											.isTemperature(measureType)) {
+										value = unitSystem.convertTemp(value);
+									} else if (NetatmoMeasureType
+											.isRain(measureType)) {
+										value = unitSystem.convertRain(value);
+									} else if (NetatmoMeasureType
+											.isPressure(measureType)) {
+										value = pressureUnit.convertPressure(value);
+									}
 
-								state = new DecimalType(value);
+									state = new DecimalType(value);
+								}
+							}
+							break;
+						case DATE_MIN_TEMP:
+						case DATE_MAX_TEMP:
+						case DATE_MIN_HUM:
+						case DATE_MAX_HUM:
+						case DATE_MIN_PRESSURE:
+						case DATE_MAX_PRESSURE:
+						case DATE_MIN_NOISE:
+						case DATE_MAX_NOISE:
+						case DATE_MIN_CO2:
+						case DATE_MAX_CO2:
+							{
+								final BigDecimal value = getValue(
+										deviceMeasureValueMap, measureType,
+										createKey(deviceId, moduleId, scale));
+								if (value != null) {
+									final Calendar calendar = GregorianCalendar
+											.getInstance();
+									calendar.setTimeInMillis(value.longValue() * 1000);
+
+									state = new DateTimeType(calendar);
+								}
 							}
 							break;
 						case BATTERYVP:
@@ -206,13 +251,16 @@ public class NetatmoBinding extends
 							for (Device device : oauthCredentials.deviceListResponse
 									.getDevices()) {
 								if (stationPosition == null) {
+									DecimalType altitude = DecimalType.ZERO;
+									if (device.getAltitude() != null) {
+										altitude = new DecimalType(Math.round(unitSystem.
+												convertAltitude(device.getAltitude())));
+									}
 									stationPosition = new PointType(
 											new DecimalType(
-													device.getLatitude()),
-											new DecimalType(device
-													.getLongitude()),
-											new DecimalType(Math.round(unitSystem.
-													convertAltitude(device.getAltitude()))));
+													new BigDecimal(device.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
+											new DecimalType(new BigDecimal(device.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
+											altitude);
 								}
 								if (device.getId().equals(deviceId)) {
 									switch (measureType) {
@@ -253,6 +301,13 @@ public class NetatmoBinding extends
 		}
 	}
 
+	private BigDecimal getValue(DeviceMeasureValueMap deviceMeasureValueMap,
+			final NetatmoMeasureType measureType, final String requestKey) {
+		Map<String, BigDecimal> map = deviceMeasureValueMap.get(requestKey);
+
+		return map != null ? map.get(measureType.getMeasure()) : null;
+	}
+
 	static class DeviceMeasureValueMap extends
 			HashMap<String, Map<String, BigDecimal>> {
 
@@ -276,14 +331,20 @@ public class NetatmoBinding extends
 			if (response.isError()) {
 				final NetatmoError error = response.getError();
 
-				if (error.isAccessTokenExpired()) {
+				if (error.isAccessTokenExpired() || error.isTokenNotVaid()) {
+					logger.debug("Token is expired or is not valid, refreshing: code = {} message = {}",
+							error.getCode(), error.getMessage());
+
 					oauthCredentials.refreshAccessToken();
 					execute();
+
+					return null;
 				} else {
+					logger.error("Error sending measurement request: code = {} message = {}",
+							error.getCode(), error.getMessage());
+
 					throw new NetatmoException(error.getMessage());
 				}
-
-				break; // abort processing measurement requests
 			} else {
 				processMeasurementResponse(request, response,
 						deviceMeasureValueMap);
@@ -301,10 +362,16 @@ public class NetatmoBinding extends
 			final NetatmoError error = oauthCredentials.deviceListResponse
 					.getError();
 
-			if (error.isAccessTokenExpired()) {
+			if (error.isAccessTokenExpired() || error.isTokenNotVaid()) {
+				logger.debug("Token is expired or is not valid, refreshing: code = {} message = {}",
+						error.getCode(), error.getMessage());
+
 				oauthCredentials.refreshAccessToken();
 				execute();
 			} else {
+				logger.error("Error processing device list: code = {} message = {}",
+						error.getCode(), error.getMessage());
+
 				throw new NetatmoException(error.getMessage());
 			}
 
@@ -415,14 +482,8 @@ public class NetatmoBinding extends
 
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
-
-				final String userid = provider.getUserid(itemName);
-				final String deviceId = provider.getDeviceId(itemName);
-				final String moduleId = provider.getModuleId(itemName);
 				final NetatmoMeasureType measureType = provider
 						.getMeasureType(itemName);
-
-				final String requestKey = createKey(deviceId, moduleId);
 
 				switch (measureType) {
 				case TEMPERATURE:
@@ -431,16 +492,30 @@ public class NetatmoBinding extends
 				case NOISE:
 				case PRESSURE:
 				case RAIN:
-					OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
-					if (oauthCredentials != null) {
-						if (!requests.containsKey(requestKey)) {
-							requests.put(requestKey, new MeasurementRequest(
-									oauthCredentials.accessToken, deviceId,
-									moduleId));
-						}
-						requests.get(requestKey).addMeasure(measureType);
-						break;
-					}
+				case MIN_TEMP:
+				case MAX_TEMP:
+				case MIN_HUM:
+				case MAX_HUM:
+				case MIN_PRESSURE:
+				case MAX_PRESSURE:
+				case MIN_NOISE:
+				case MAX_NOISE:
+				case MIN_CO2:
+				case MAX_CO2:
+				case SUM_RAIN:
+				case DATE_MIN_TEMP:
+				case DATE_MAX_TEMP:
+				case DATE_MIN_HUM:
+				case DATE_MAX_HUM:
+				case DATE_MIN_PRESSURE:
+				case DATE_MAX_PRESSURE:
+				case DATE_MIN_NOISE:
+				case DATE_MAX_NOISE:
+				case DATE_MIN_CO2:
+				case DATE_MAX_CO2:
+					final NetatmoScale scale = provider.getNetatmoScale(itemName);
+					addMeasurement(requests, provider, itemName, measureType, scale);
+					break;
 				default:
 					break;
 				}
@@ -450,12 +525,40 @@ public class NetatmoBinding extends
 		return requests.values();
 	}
 
+	private void addMeasurement(final Map<String, MeasurementRequest> requests,
+			final NetatmoBindingProvider provider, final String itemName,
+			final NetatmoMeasureType measureType, final NetatmoScale scale) {
+
+		final String userid = provider.getUserid(itemName);
+		final OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+
+		if (oauthCredentials != null) {
+			final String deviceId = provider.getDeviceId(itemName);
+			final String moduleId = provider.getModuleId(itemName);
+			final String requestKey = createKey(deviceId, moduleId, scale);
+
+			if (!requests.containsKey(requestKey)) {
+				requests.put(requestKey, new MeasurementRequest(
+						oauthCredentials.accessToken, deviceId,
+						moduleId, scale));
+			}
+			requests.get(requestKey).addMeasure(measureType);
+		}
+	}
+
 	private void processMeasurementResponse(final MeasurementRequest request,
 			final MeasurementResponse response,
 			DeviceMeasureValueMap deviceMeasureValueMap) {
 		final List<BigDecimal> values = response.getBody().get(0).getValues()
 				.get(0);
-		final Map<String, BigDecimal> valueMap = new HashMap<String, BigDecimal>();
+
+		Map<String, BigDecimal> valueMap = deviceMeasureValueMap.get(request.getKey());
+		if (valueMap == null) {
+			valueMap = new HashMap<String, BigDecimal>();
+
+			deviceMeasureValueMap.put(request.getKey(), valueMap);
+			deviceMeasureValueMap.timeStamp = new DateTimeType(response.getTimeStamp());
+		}
 
 		int index = 0;
 		for (final String measure : request.getMeasures()) {
@@ -463,10 +566,6 @@ public class NetatmoBinding extends
 			valueMap.put(measure, value);
 			index++;
 		}
-
-		deviceMeasureValueMap.put(request.getKey(), valueMap);
-		deviceMeasureValueMap.timeStamp = new DateTimeType(
-				response.getTimeStamp());
 	}
 
 	/**
@@ -638,6 +737,14 @@ public class NetatmoBinding extends
 
 			final RefreshTokenResponse response = request.execute();
 			logger.debug("Response: {}", response);
+
+			if (response == null) {
+				throw new NetatmoException("Could not refresh access token! If you see "
+						+ "'Fatal transport error: javax.net.ssl.SSLHandshakeException' "
+						+ "above. You need to install the StartCom CA certificate and restart openHAB. "
+						+ "See https://github.com/openhab/openhab/wiki/Netatmo-Binding#missing-certificate-authority "
+						+ "for more information.");
+			}
 
 			this.accessToken = response.getAccessToken();
 

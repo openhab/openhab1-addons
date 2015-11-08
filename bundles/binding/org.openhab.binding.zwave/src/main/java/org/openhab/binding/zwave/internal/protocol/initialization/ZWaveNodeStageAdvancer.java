@@ -747,7 +747,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 				// If there are no configuration entries for this node, then continue.
 				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
-				if(configList.size() == 0) {
+				if(configList == null || configList.size() == 0) {
 					break;
 				}
 

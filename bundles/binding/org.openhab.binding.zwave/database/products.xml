@@ -2267,6 +2267,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0602</Type>
+				<Id>0334</Id>
+			</Reference>
+			<Model>VRMX1-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+			<ConfigFile>leviton/vrmx1-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1902</Type>
 				<Id>0334</Id>
 			</Reference>
@@ -2418,6 +2427,15 @@
 			<Model>ZMNHDA</Model>
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1</Type>
+				<Id>51</Id>
+			</Reference>
+			<Model>ZMNHDD</Model>
+			<Label lang="en">Flush Dimmer Plus</Label>
+			<ConfigFile>qubino/zmnhdd.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>

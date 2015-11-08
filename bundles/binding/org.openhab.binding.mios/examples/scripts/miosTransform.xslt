@@ -197,7 +197,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'MinPinSize'"          >Integer</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'MaxPinSize'"          >Integer</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'sl_CodeChanged'"      >Integer</xsl:when>
-<xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'sl_UserCode'"         >Integer</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'sl_LockChanged'"      >Integer</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'sl_LowBattery'"       >Integer</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:DoorLock1'          and @variable = 'sl_LockButton'"       >Integer</xsl:when>
@@ -553,6 +552,9 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 </xsl:choose>
 <xsl:value-of select="$ItemName"/> &quot;<xsl:value-of select="$ItemDescription"/>
 <xsl:value-of select="$ItemFormat"/>&quot; <xsl:value-of select="$ItemIcon"/><xsl:value-of select="$ItemGroups"/>{mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,device:<xsl:value-of select="../../@id"/>/service/<xsl:value-of select="$ServiceAlias"/>/<xsl:value-of select="@variable"/>"}
+<xsl:if test="@variable = 'sl_UserCode' and @service = 'urn:micasaverde-com:serviceId:DoorLock1'">Number   <xsl:value-of select="$ItemName"/>_userid &quot;<xsl:value-of select="$ItemDescription"/> (ID) [%d]&quot; <xsl:value-of select="$ItemGroups"/>{mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,device:<xsl:value-of select="../../@id"/>/service/<xsl:value-of select="$ServiceAlias"/>/<xsl:value-of select="@variable"/>,in:REGEX(UserID=\&quot;(.+)\&quot; UserName=\&quot;.*\&quot;)"}
+String   <xsl:value-of select="$ItemName"/>_username &quot;<xsl:value-of select="$ItemDescription"/> (Name) [%s]&quot; <xsl:value-of select="$ItemGroups"/>{mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,device:<xsl:value-of select="../../@id"/>/service/<xsl:value-of select="$ServiceAlias"/>/<xsl:value-of select="@variable"/>,in:REGEX(UserID=\&quot;.+\&quot; UserName=\&quot;(.*)\&quot;)"}
+</xsl:if>
 </xsl:if>
 </xsl:template>
 

@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.weather.internal.utils;
 
-import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
+import org.openhab.binding.weather.internal.common.Unit;
 
 /**
  * Utility class for different unit conversions.
@@ -143,17 +143,17 @@ public class UnitUtils {
 	/**
 	 * Converts a value to the unit configured in the item binding.
 	 */
-	public static Double convertUnit(Double value, WeatherBindingConfig bindingConfig) {
-		if (bindingConfig.hasUnit()) {
-			switch (bindingConfig.getUnit()) {
+	public static Double convertUnit(Double value, Unit unit, String property) {
+		if (unit != null) {
+			switch (unit) {
 			case FAHRENHEIT:
 				return celsiusToFahrenheit(value);
 			case MPH:
 				return kmhToMph(value);
 			case INCHES:
-				if ("atmosphere.pressure".equals(bindingConfig.getWeatherProperty())) {
+				if ("atmosphere.pressure".equals(property)) {
 					return millibarToInches(value);
-				} else if ("precipitation.snow".equals(bindingConfig.getWeatherProperty())) {
+				} else if ("precipitation.snow".equals(property)) {
 					return millimetersToInches(centimeterToMillimeter(value));
 				} else {
 					return millimetersToInches(value);
