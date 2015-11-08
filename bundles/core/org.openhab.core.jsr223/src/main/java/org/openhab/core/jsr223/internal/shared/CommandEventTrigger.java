@@ -29,7 +29,8 @@ public class CommandEventTrigger implements EventTrigger {
 
 	@Override
 	public boolean evaluate(Item item, State oldState, State newState, Command command, TriggerType type) {
-		return (type == TriggerType.COMMAND && this.itemName.equals(item.getName()) && command == this.command);
+		return (type == TriggerType.COMMAND && this.itemName.equals(item.getName()) && 
+				(this.command == null || command.equals(this.command)));
 	}
 
 	@Override
