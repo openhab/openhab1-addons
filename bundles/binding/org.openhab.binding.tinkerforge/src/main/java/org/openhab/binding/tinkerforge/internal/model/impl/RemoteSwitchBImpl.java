@@ -954,7 +954,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * 
    * @generated NOT
    */
-  public void fetchSwitchState() {}
+  public void fetchSwitchState() {
+    setSwitchState(getSwitchState()); // trigger a value update to the eventbus
+  }
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
