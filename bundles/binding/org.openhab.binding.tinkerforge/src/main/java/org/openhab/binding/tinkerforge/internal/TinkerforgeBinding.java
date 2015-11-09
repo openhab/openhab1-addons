@@ -434,6 +434,13 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         processValue((MBaseDevice) switchActor, notification);
       }
     }
+    if (notification.getNotifier() instanceof ProgrammableSwitchActor) {
+      ProgrammableSwitchActor switchActor = (ProgrammableSwitchActor) notification.getNotifier();
+      int featureID = notification.getFeatureID(ProgrammableSwitchActor.class);
+      if (featureID == ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE) {
+        processValue((MBaseDevice) switchActor, notification);
+      }
+    }
     if (notification.getNotifier() instanceof DigitalActor) {
       DigitalActor actor = (DigitalActor) notification.getNotifier();
       int featureID = notification.getFeatureID(DigitalActor.class);

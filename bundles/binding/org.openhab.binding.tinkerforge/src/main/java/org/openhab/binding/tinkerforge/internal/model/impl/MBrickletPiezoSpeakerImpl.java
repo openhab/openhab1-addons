@@ -20,6 +20,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -656,13 +657,15 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     try {
       Long[] durations;
       Integer[] frequencies;
-      boolean repeat = false;
       if (opts != null) {
         // long duration, int frequency
         if (opts.containsKey(DURATIONS)) {
           String durationsopt = opts.getOption(DURATIONS);
           logger.debug("durationsopt: {}", durationsopt);
-          String[] numbers = durationsopt.split(",");
+          String[] numbers = durationsopt.split("\\|");
+          for (int i = 0; i < numbers.length; i++) {
+            logger.debug("duration number {}", numbers[i]);
+          }
           durations = new Long[numbers.length];
           for (int i = 0; i < numbers.length; i++) {
             durations[i] = new Long(numbers[i]);
@@ -674,7 +677,7 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
         if (opts.containsKey(FREQUENCIES)) {
           String frequenciesopt = opts.getOption(FREQUENCIES);
           logger.debug("frequenciesopt {}", frequenciesopt);
-          String[] numbers = frequenciesopt.split(",");
+          String[] numbers = frequenciesopt.split("\\|");
           frequencies = new Integer[numbers.length];
           for (int i = 0; i < numbers.length; i++) {
             frequencies[i] = new Integer(numbers[i]);
@@ -683,14 +686,7 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
           logger.error("{} are missing", FREQUENCIES);
           return;
         }
-        if (opts.containsKey(REPEAT)) {
-          String opt = opts.getOption(REPEAT);
-          if (opt.toLowerCase().equals("true")) {
-            repeat = true;
-          } else {
-            repeat = false;
-          }
-        }
+        Long repeats = Tools.getLongOpt(REPEAT, opts, 1L);
         if (durations.length != frequencies.length) {
           logger
               .error(
@@ -699,17 +695,24 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
           return;
         }
         if (beepfinishedListener != null) {
+          logger.trace("removing beepFinishedListener");
           tinkerforgeDevice.removeBeepFinishedListener(beepfinishedListener);
           beepfinishedListener = null;
+          tinkerforgeDevice.beep(0, 0);
         }
-        beepfinishedListener = new BeepFinishedListener(this, durations, frequencies, repeat);
+        if (durations.length > 1) {
+        logger.debug("adding new BeepFinishedListener");
+          beepfinishedListener = new BeepFinishedListener(this, durations, frequencies, repeats);
         tinkerforgeDevice.addBeepFinishedListener(beepfinishedListener);
+        }
         // stop current beep tone and trigger beeping through the beepfinishedListener
-        tinkerforgeDevice.beep(0, 0);
+        logger.debug("stop current beep tone and trigger beeping");
+        tinkerforgeDevice.beep(durations[0], frequencies[0]);
       } else {
         // stop current beep tone
         tinkerforgeDevice.beep(0, 0);
         // default morse code
+        logger.debug("default morse code");
         tinkerforgeDevice.morseCode("...---...", 5000);
       }
     } catch (TimeoutException e) {
@@ -723,37 +726,40 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
   private class BeepFinishedListener implements BrickletPiezoSpeaker.BeepFinishedListener {
     Long[] durations;
     Integer[] frequencies;
-    Integer currentTone;
+    Integer currentTone = 1;
     MBrickletPiezoSpeakerImpl mbricklet;
-    private boolean repeat;
+    private long repeats;
+    private long round = 0;
 
     public BeepFinishedListener(MBrickletPiezoSpeakerImpl mbricklet, Long[] durations,
-        Integer[] frequencies, boolean repeat) {
+        Integer[] frequencies, long repeats) {
       this.durations = durations;
       this.frequencies = frequencies;
       this.mbricklet = mbricklet;
-      this.repeat = repeat;
+      this.repeats = repeats;
     }
 
 
     @Override
     public void beepFinished() {
       try {
-        if (currentTone == null) {
-          currentTone = 0;
-        } else {
-          currentTone++;
-        }
-        if (currentTone > durations.length) {
-          if (repeat) {
-            currentTone = 0;
+        round++;
+        logger.debug("currentTone {}", currentTone);
+        if (currentTone == durations.length) {
+          if (round < repeats) {
+            currentTone = 1;
           } else {
             // we are done
+            logger.debug("beep done");
+            // TODO does not work yet
             setSwitchState(OnOffValue.OFF);
             return;
           }
         }
+        logger.debug("beep duration {} frequency {}", durations[currentTone],
+            frequencies[currentTone]);
         tinkerforgeDevice.beep(durations[currentTone], frequencies[currentTone]);
+        currentTone++;
       } catch (TimeoutException e) {
         TinkerforgeErrorHandler.handleError(mbricklet,
             TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
