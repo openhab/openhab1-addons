@@ -16,8 +16,12 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface SonanceBindingProvider extends BindingProvider {
 	public String getIP(String itemName);
+
 	public int getPort(String itemName);
+
 	public String getGroup(String itemName);
+
 	public Boolean isMute(String itemName);
+
 	public Boolean isVolume(String itemName);
 }
