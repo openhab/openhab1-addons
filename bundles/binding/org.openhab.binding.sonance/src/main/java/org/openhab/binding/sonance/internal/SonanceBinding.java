@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
@@ -106,9 +108,9 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	public void deactivate(final int reason) {
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
-		socketCache = null;
-		outputStreamCache = null;
-		bufferedReaderCache = null;
+		socketCache.clear();
+		outputStreamCache.clear();
+		bufferedReaderCache.clear();
 	}
 
 	
@@ -130,32 +132,42 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 		}
 	
 		logger.info("Refreshing all items");
+		
+		List<String> offlineEndPoints = new ArrayList<String>();
 
 		for (SonanceBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				try {
-					String group = ((SonanceBindingProvider)provider).getGroup(itemName);
-					String ip = ((SonanceBindingProvider)provider).getIP(itemName);
-					int port = ((SonanceBindingProvider)provider).getPort(itemName);
-	
-					String key = ip + ":" + port;
-	
-					if (!socketCache.containsKey(key)) {
-						socketCache.put(key, new Socket(ip, port));
-						outputStreamCache.put(key, new DataOutputStream(socketCache.get(key).getOutputStream()));
-						bufferedReaderCache.put(key, new BufferedReader(new InputStreamReader(socketCache.get(key).getInputStream())));
-		            	logger.info("New socket created");
-					}		
-					
-			        if (((SonanceBindingProvider)provider).isMute(itemName))
-				        sendMuteCommand(itemName, "FF550212" + group, outputStreamCache.get(key), bufferedReaderCache.get(key));
-			        else if (((SonanceBindingProvider)provider).isVolume(itemName))
-				        sendVolumeCommand(itemName, "FF550210" + group, outputStreamCache.get(key), bufferedReaderCache.get(key));
-				} catch (UnknownHostException e) {
-					logger.error("UnknownHostException occured.");
-				} catch (IOException e) {
-					logger.error("IOException occured");
-				}			        
+				String group = ((SonanceBindingProvider)provider).getGroup(itemName);
+				String ip = ((SonanceBindingProvider)provider).getIP(itemName);
+				int port = ((SonanceBindingProvider)provider).getPort(itemName);
+
+				String key = ip + ":" + port;
+				if (!offlineEndPoints.contains(key)) {
+					try {
+						if (!socketCache.containsKey(key)) {
+							socketCache.put(key, new Socket(ip, port));
+							outputStreamCache.put(key, new DataOutputStream(socketCache.get(key).getOutputStream()));
+							bufferedReaderCache.put(key, new BufferedReader(new InputStreamReader(socketCache.get(key).getInputStream())));
+			            	logger.debug("New socket created");
+						}		
+						
+				        if (((SonanceBindingProvider)provider).isMute(itemName))
+					        sendMuteCommand(itemName, "FF550212" + group, outputStreamCache.get(key), bufferedReaderCache.get(key));
+				        else if (((SonanceBindingProvider)provider).isVolume(itemName))
+					        sendVolumeCommand(itemName, "FF550210" + group, outputStreamCache.get(key), bufferedReaderCache.get(key));
+					} catch (UnknownHostException e) {
+						logger.error("UnknownHostException occured.");
+					} catch (IOException e) {
+						logger.debug("Amplifier is offline, status can't be updated at this moment.");
+						try {
+							socketCache.get(key).close();
+						} catch (Exception ex) {}
+						socketCache.remove(key);
+						outputStreamCache.remove(key);
+						bufferedReaderCache.remove(key);
+						offlineEndPoints.add(key); // Stop trying to fetch other values from this end point until next execute cycle
+					}			        
+				}
 			}
 		}		
 	}
@@ -218,7 +230,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 	        	}
             s.close();            
 		} catch (IOException e) {
-			logger.error("IO Exception");
+			logger.debug("IO Exception when sending command");
 		} finally {
 				try {
 					if (s!=null)
