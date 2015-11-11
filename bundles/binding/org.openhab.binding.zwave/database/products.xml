@@ -147,7 +147,7 @@
 			</Reference>
 			<Model>RF9500</Model>
 			<Label lang="en">Battery Switch</Label>
-			<ConfigFile>cooper/9500.xml</ConfigFile>
+			<ConfigFile>cooper/rf9500.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -683,6 +683,23 @@
 			<Model>506004</Model>
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>50x5xx</Model>
+			<Label lang="en">Window Blind Control Insert Button</Label>
+			<ConfigFile>merten/50x5xx.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>8001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>50x5xx</Model>
+			<Label lang="en">Switch Plug</Label>
 		</Product>
 		<Product>
 			<Reference>
@@ -1452,6 +1469,10 @@
 			<Reference>
 				<Type>0400</Type>
 				<Id>100A</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
+				<Id>300A</Id>
 			</Reference>
 			<Model>FGS211</Model>
 			<Label lang="en">Relay Switch 1x3kW</Label>
