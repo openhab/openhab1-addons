@@ -413,49 +413,55 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         processValue((MBaseDevice) sensor, notification);
       }
     }
-    if (notification.getNotifier() instanceof SetPointActor<?>) {
+ else if (notification.getNotifier() instanceof SetPointActor<?>) {
       SetPointActor<?> actor = (SetPointActor<?>) notification.getNotifier();
       int setpointFeatureID = notification.getFeatureID(SetPointActor.class);
       if (setpointFeatureID == ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof MoveActor) {
+ else if (notification.getNotifier() instanceof MoveActor) {
       MoveActor actor = (MoveActor) notification.getNotifier();
       int moveFeatureID = notification.getFeatureID(MoveActor.class);
       if (moveFeatureID == ModelPackage.MOVE_ACTOR__DIRECTION) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof MSwitchActor) {
+ else if (notification.getNotifier() instanceof MSwitchActor) {
       MSwitchActor switchActor = (MSwitchActor) notification.getNotifier();
       int featureID = notification.getFeatureID(MSwitchActor.class);
       if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
         processValue((MBaseDevice) switchActor, notification);
       }
     }
-    if (notification.getNotifier() instanceof ProgrammableSwitchActor) {
+ else if (notification.getNotifier() instanceof ProgrammableSwitchActor) {
+      logger.trace("notification {}", notification);
+      logger.trace("notifier {}", notification.getNotifier());
       ProgrammableSwitchActor switchActor = (ProgrammableSwitchActor) notification.getNotifier();
-      int featureID = notification.getFeatureID(ProgrammableSwitchActor.class);
+      // use the super type class for getting the featureID. Should not be necessary according to
+      // the docs or I misunderstand it. But this approach works.
+      int featureID = notification.getFeatureID(SwitchSensor.class);
+      logger.trace("notification ProgrammableSwitchActor id {}", featureID);
       if (featureID == ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE) {
+        logger.trace("ProgrammableSwitchActor switch state changed sending notification");
         processValue((MBaseDevice) switchActor, notification);
       }
     }
-    if (notification.getNotifier() instanceof DigitalActor) {
+ else if (notification.getNotifier() instanceof DigitalActor) {
       DigitalActor actor = (DigitalActor) notification.getNotifier();
       int featureID = notification.getFeatureID(DigitalActor.class);
       if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof ColorActor) {
+ else if (notification.getNotifier() instanceof ColorActor) {
       ColorActor actor = (ColorActor) notification.getNotifier();
       int featureID = notification.getFeatureID(ColorActor.class);
       if (featureID == ModelPackage.COLOR_ACTOR__COLOR) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof MBrickd) {
+ else if (notification.getNotifier() instanceof MBrickd) {
       MBrickd brickd = (MBrickd) notification.getNotifier();
       int featureID = notification.getFeatureID(MBrickd.class);
       if (featureID == ModelPackage.MBRICKD__CONNECTED_COUNTER) {

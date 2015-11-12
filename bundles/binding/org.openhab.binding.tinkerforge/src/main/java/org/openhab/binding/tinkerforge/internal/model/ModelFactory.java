@@ -125,6 +125,33 @@ public interface ModelFactory extends EFactory
   MBrickletLinearPoti createMBrickletLinearPoti();
 
   /**
+   * Returns a new object of class '<em>MBricklet Rotary Encoder</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Rotary Encoder</em>'.
+   * @generated
+   */
+  MBrickletRotaryEncoder createMBrickletRotaryEncoder();
+
+  /**
+   * Returns a new object of class '<em>Rotary Encoder</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rotary Encoder</em>'.
+   * @generated
+   */
+  RotaryEncoder createRotaryEncoder();
+
+  /**
+   * Returns a new object of class '<em>Rotary Encoder Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rotary Encoder Button</em>'.
+   * @generated
+   */
+  RotaryEncoderButton createRotaryEncoderButton();
+
+  /**
    * Returns a new object of class '<em>MBricklet Joystick</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

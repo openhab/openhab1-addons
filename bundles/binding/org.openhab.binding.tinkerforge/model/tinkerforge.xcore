@@ -53,6 +53,7 @@ import com.tinkerforge.BrickletPTC
 import com.tinkerforge.BrickletIndustrialDual020mA
 import com.tinkerforge.BrickletSolidStateRelay
 import com.tinkerforge.BrickletPiezoSpeaker
+import com.tinkerforge.BrickletRotaryEncoder
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -108,6 +109,7 @@ type TinkerBrickletPTC wraps BrickletPTC
 type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
 type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
 type TinkerBrickletPiezoSpeaker wraps BrickletPiezoSpeaker
+type TinkerBrickletRotaryEncoder wraps BrickletRotaryEncoder
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -304,6 +306,26 @@ class DualButtonLed extends DualButtonDevice, DigitalActor,
 class MBrickletLinearPoti extends MDevice<TinkerBrickletLinearPoti>, CallbackListener,
 	MTFConfigConsumer<TFBaseConfiguration>, MSensor<MDecimalValue> {
 		readonly String deviceType = "bricklet_linear_poti"
+}
+
+class MBrickletRotaryEncoder extends MDevice<TinkerBrickletRotaryEncoder>, MSubDeviceHolder<RotaryEncoderDevice> {
+	readonly String deviceType = "bricklet_rotaryencoder"
+
+}
+
+interface RotaryEncoderDevice extends MSubDevice<MBrickletRotaryEncoder> {
+	
+}
+
+class RotaryEncoder extends RotaryEncoderDevice, MSensor<MDecimalValue>,
+	CallbackListener, MTFConfigConsumer<TFBaseConfiguration> {
+		readonly String deviceType = "rotary_encoder"
+	op void clear(){}
+}
+
+class RotaryEncoderButton extends RotaryEncoderDevice, MSensor<SwitchState>,
+	MTFConfigConsumer<ButtonConfiguration> {
+		readonly String deviceType = "rotary_encoder_button"
 }
 
 class MBrickletJoystick extends MDevice<BrickletJoystick>, MSubDeviceHolder<JoystickDevice>,
@@ -1002,4 +1024,8 @@ enum PTCSubIds {
 
 enum IndustrialDual020mASubIds {
 	sensor0, sensor1
+}
+
+enum RotaryEncoderSubIds {
+	encoder, button
 }

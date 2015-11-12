@@ -56,6 +56,7 @@ import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
@@ -112,7 +113,7 @@ public class ConfigurationHandler {
     bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, 
     bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
-    digital_4in, digital_4out
+ digital_4in, digital_4out, rotary_encoder, rotary_encoder_button
   }
 
 
@@ -245,7 +246,8 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.bricklet_linear_poti.name())
         || deviceType.equals(TypeKey.ptc_resistance.name())
         || deviceType.equals(TypeKey.ptc_temperature.name())
-        || deviceType.equals(TypeKey.industrial020ma_sensor.name())) {
+        || deviceType.equals(TypeKey.industrial020ma_sensor.name())
+        || deviceType.equals(TypeKey.rotary_encoder.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -279,6 +281,12 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, IndustrialDual020mASubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDual020mASubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.rotary_encoder.name())) {
+        OHTFDevice<TFBaseConfiguration, RotaryEncoderSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(RotaryEncoderSubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else {
@@ -448,6 +456,12 @@ public class ConfigurationHandler {
       ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
       OHTFDevice<ButtonConfiguration, JoystickSubIds> ohtfDevice = modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(JoystickSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.rotary_encoder_button.name())) {
+      ButtonConfiguration configuration = modelFactory.createButtonConfiguration();
+      OHTFDevice<ButtonConfiguration, RotaryEncoderSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(RotaryEncoderSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else if (deviceType.equals(TypeKey.lcd_button.name())) {

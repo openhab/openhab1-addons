@@ -104,6 +104,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
@@ -159,6 +160,10 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
@@ -224,6 +229,7 @@ import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletRotaryEncoder;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
@@ -486,6 +492,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletLinearPotiEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletRotaryEncoderEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass rotaryEncoderDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass rotaryEncoderEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass rotaryEncoderButtonEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1213,6 +1247,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum rotaryEncoderSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EEnum noSubIdsEEnum = null;
 
   /**
@@ -1578,6 +1619,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletPiezoSpeakerEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletRotaryEncoderEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3115,6 +3163,86 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getMBrickletLinearPoti_DeviceType()
   {
     return (EAttribute)mBrickletLinearPotiEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletRotaryEncoder()
+  {
+    return mBrickletRotaryEncoderEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletRotaryEncoder_DeviceType()
+  {
+    return (EAttribute)mBrickletRotaryEncoderEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRotaryEncoderDevice()
+  {
+    return rotaryEncoderDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRotaryEncoder()
+  {
+    return rotaryEncoderEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRotaryEncoder_DeviceType()
+  {
+    return (EAttribute)rotaryEncoderEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getRotaryEncoder__Clear()
+  {
+    return rotaryEncoderEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRotaryEncoderButton()
+  {
+    return rotaryEncoderButtonEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRotaryEncoderButton_DeviceType()
+  {
+    return (EAttribute)rotaryEncoderButtonEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -6182,6 +6310,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getRotaryEncoderSubIds()
+  {
+    return rotaryEncoderSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -6712,6 +6850,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletRotaryEncoder()
+  {
+    return tinkerBrickletRotaryEncoderEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7003,6 +7151,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mBrickletLinearPotiEClass = createEClass(MBRICKLET_LINEAR_POTI);
     createEAttribute(mBrickletLinearPotiEClass, MBRICKLET_LINEAR_POTI__DEVICE_TYPE);
+
+    mBrickletRotaryEncoderEClass = createEClass(MBRICKLET_ROTARY_ENCODER);
+    createEAttribute(mBrickletRotaryEncoderEClass, MBRICKLET_ROTARY_ENCODER__DEVICE_TYPE);
+
+    rotaryEncoderDeviceEClass = createEClass(ROTARY_ENCODER_DEVICE);
+
+    rotaryEncoderEClass = createEClass(ROTARY_ENCODER);
+    createEAttribute(rotaryEncoderEClass, ROTARY_ENCODER__DEVICE_TYPE);
+    createEOperation(rotaryEncoderEClass, ROTARY_ENCODER___CLEAR);
+
+    rotaryEncoderButtonEClass = createEClass(ROTARY_ENCODER_BUTTON);
+    createEAttribute(rotaryEncoderButtonEClass, ROTARY_ENCODER_BUTTON__DEVICE_TYPE);
 
     mBrickletJoystickEClass = createEClass(MBRICKLET_JOYSTICK);
     createEAttribute(mBrickletJoystickEClass, MBRICKLET_JOYSTICK__DEVICE_TYPE);
@@ -7444,6 +7604,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     joystickSubIdsEEnum = createEEnum(JOYSTICK_SUB_IDS);
     ptcSubIdsEEnum = createEEnum(PTC_SUB_IDS);
     industrialDual020mASubIdsEEnum = createEEnum(INDUSTRIAL_DUAL020M_ASUB_IDS);
+    rotaryEncoderSubIdsEEnum = createEEnum(ROTARY_ENCODER_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -7489,6 +7650,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletIndustrialDual020mAEDataType = createEDataType(TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A);
     tinkerBrickletSolidStateRelayEDataType = createEDataType(TINKER_BRICKLET_SOLID_STATE_RELAY);
     tinkerBrickletPiezoSpeakerEDataType = createEDataType(TINKER_BRICKLET_PIEZO_SPEAKER);
+    tinkerBrickletRotaryEncoderEDataType = createEDataType(TINKER_BRICKLET_ROTARY_ENCODER);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -7641,6 +7803,40 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickletLinearPotiEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletRotaryEncoder());
+    g1.getETypeArguments().add(g2);
+    mBrickletRotaryEncoderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getRotaryEncoderDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletRotaryEncoderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletRotaryEncoder());
+    g1.getETypeArguments().add(g2);
+    rotaryEncoderDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getRotaryEncoderDevice());
+    rotaryEncoderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    rotaryEncoderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    rotaryEncoderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    rotaryEncoderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getRotaryEncoderDevice());
+    rotaryEncoderButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getSwitchState());
+    g1.getETypeArguments().add(g2);
+    rotaryEncoderButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getButtonConfiguration());
+    g1.getETypeArguments().add(g2);
+    rotaryEncoderButtonEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getBrickletJoystick());
     g1.getETypeArguments().add(g2);
@@ -8518,6 +8714,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mBrickletLinearPotiEClass, MBrickletLinearPoti.class, "MBrickletLinearPoti", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletLinearPoti_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_linear_poti", 0, 1, MBrickletLinearPoti.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletRotaryEncoderEClass, MBrickletRotaryEncoder.class, "MBrickletRotaryEncoder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletRotaryEncoder_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_rotaryencoder", 0, 1, MBrickletRotaryEncoder.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(rotaryEncoderDeviceEClass, RotaryEncoderDevice.class, "RotaryEncoderDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(rotaryEncoderEClass, RotaryEncoder.class, "RotaryEncoder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRotaryEncoder_DeviceType(), theEcorePackage.getEString(), "deviceType", "rotary_encoder", 0, 1, RotaryEncoder.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getRotaryEncoder__Clear(), null, "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(rotaryEncoderButtonEClass, RotaryEncoderButton.class, "RotaryEncoderButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRotaryEncoderButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "rotary_encoder_button", 0, 1, RotaryEncoderButton.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletJoystickEClass, MBrickletJoystick.class, "MBrickletJoystick", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletJoystick_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_joystick", 0, 1, MBrickletJoystick.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -9165,6 +9374,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.SENSOR0);
     addEEnumLiteral(industrialDual020mASubIdsEEnum, IndustrialDual020mASubIds.SENSOR1);
 
+    initEEnum(rotaryEncoderSubIdsEEnum, RotaryEncoderSubIds.class, "RotaryEncoderSubIds");
+    addEEnumLiteral(rotaryEncoderSubIdsEEnum, RotaryEncoderSubIds.ENCODER);
+    addEEnumLiteral(rotaryEncoderSubIdsEEnum, RotaryEncoderSubIds.BUTTON);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -9209,6 +9422,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletIndustrialDual020mAEDataType, BrickletIndustrialDual020mA.class, "TinkerBrickletIndustrialDual020mA", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletSolidStateRelayEDataType, BrickletSolidStateRelay.class, "TinkerBrickletSolidStateRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletPiezoSpeakerEDataType, BrickletPiezoSpeaker.class, "TinkerBrickletPiezoSpeaker", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletRotaryEncoderEDataType, BrickletRotaryEncoder.class, "TinkerBrickletRotaryEncoder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

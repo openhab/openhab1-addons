@@ -59,6 +59,7 @@ import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletRotaryEncoder;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
@@ -128,6 +129,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
       case ModelPackage.DUAL_BUTTON_LED: return createDualButtonLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
+      case ModelPackage.MBRICKLET_ROTARY_ENCODER: return createMBrickletRotaryEncoder();
+      case ModelPackage.ROTARY_ENCODER: return createRotaryEncoder();
+      case ModelPackage.ROTARY_ENCODER_BUTTON: return createRotaryEncoderButton();
       case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
       case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
       case ModelPackage.JOYSTICK_YPOSITION: return createJoystickYPosition();
@@ -283,6 +287,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createPTCSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DUAL020M_ASUB_IDS:
         return createIndustrialDual020mASubIdsFromString(eDataType, initialValue);
+      case ModelPackage.ROTARY_ENCODER_SUB_IDS:
+        return createRotaryEncoderSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -369,6 +375,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletSolidStateRelayFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_PIEZO_SPEAKER:
         return createTinkerBrickletPiezoSpeakerFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_ROTARY_ENCODER:
+        return createTinkerBrickletRotaryEncoderFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -452,6 +460,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertPTCSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DUAL020M_ASUB_IDS:
         return convertIndustrialDual020mASubIdsToString(eDataType, instanceValue);
+      case ModelPackage.ROTARY_ENCODER_SUB_IDS:
+        return convertRotaryEncoderSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -538,6 +548,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletSolidStateRelayToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_PIEZO_SPEAKER:
         return convertTinkerBrickletPiezoSpeakerToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_ROTARY_ENCODER:
+        return convertTinkerBrickletRotaryEncoderToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -668,6 +680,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletLinearPotiImpl mBrickletLinearPoti = new MBrickletLinearPotiImpl();
     return mBrickletLinearPoti;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletRotaryEncoder createMBrickletRotaryEncoder()
+  {
+    MBrickletRotaryEncoderImpl mBrickletRotaryEncoder = new MBrickletRotaryEncoderImpl();
+    return mBrickletRotaryEncoder;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RotaryEncoder createRotaryEncoder()
+  {
+    RotaryEncoderImpl rotaryEncoder = new RotaryEncoderImpl();
+    return rotaryEncoder;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RotaryEncoderButton createRotaryEncoderButton()
+  {
+    RotaryEncoderButtonImpl rotaryEncoderButton = new RotaryEncoderButtonImpl();
+    return rotaryEncoderButton;
   }
 
   /**
@@ -1866,6 +1911,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public RotaryEncoderSubIds createRotaryEncoderSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    RotaryEncoderSubIds result = RotaryEncoderSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertRotaryEncoderSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public NoSubIds createNoSubIdsFromString(EDataType eDataType, String initialValue)
   {
     NoSubIds result = NoSubIds.get(initialValue);
@@ -2953,6 +3020,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletPiezoSpeakerToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRotaryEncoder createTinkerBrickletRotaryEncoderFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletRotaryEncoder)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletRotaryEncoderToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
