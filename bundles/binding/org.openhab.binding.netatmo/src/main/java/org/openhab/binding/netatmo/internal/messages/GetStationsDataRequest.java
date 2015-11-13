@@ -18,37 +18,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A devicelist request returns the list of devices owned by the user, and their
- * modules.
+ * A getstationsdata request returns information about user's weather
+ * stations such as last measures, state, etc.
  * 
- * @author Andreas Brenk
  * @author Rob Nielsen
- * @since 1.4.0
- * @see <a href="http://dev.netatmo.com/doc/restapi/devicelist">devicelist</a>
+ * @since 1.8.0
+ * @see <a href="https://api.netatmo.com/api/getstationsdata">getstationsdata</a>
  */
-public class DeviceListRequest extends AbstractRequest {
+public class GetStationsDataRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = API_BASE_URL + "devicelist";
+	private static final String RESOURCE_URL = API_BASE_URL + "getstationsdata";
 
-	private static final Logger logger = LoggerFactory.getLogger(DeviceListRequest.class);
+	private static final Logger logger = LoggerFactory.getLogger(GetStationsDataRequest.class);
 
 	private final String accessToken;
 
 	/**
-	 * Creates a request for the list of devices owned by the user, and their
-	 * modules.
+	 * Creates a request for information about user's weather stations
+	 * such as last measures, state, etc.
 	 * 
 	 * @param accessToken
 	 *            mandatory, must not be <code>null</code>
 	 */
-	public DeviceListRequest(final String accessToken) {
+	public GetStationsDataRequest(final String accessToken) {
 		assert accessToken != null : "accessToken must not be null!";
 
 		this.accessToken = accessToken;
 	}
 
 	@Override
-	public DeviceListResponse execute() {
+	public GetStationsDataResponse execute() {
 		final String url = prepare();
 
 		logger.debug(url);
@@ -58,12 +57,12 @@ public class DeviceListRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final DeviceListResponse response = JSON.readValue(json,
-					DeviceListResponse.class);
+			final GetStationsDataResponse response = JSON.readValue(json,
+					GetStationsDataResponse.class);
 
 			return response;
 		} catch (final Exception e) {
-			throw newException("Could not execute device list request!", e, url, json);
+			throw newException("Could not execute get stations data request!", e, url, json);
 		}
 	}
 
@@ -90,7 +89,7 @@ public class DeviceListRequest extends AbstractRequest {
 			return encodeQuery(urlBuilder.toString());
 		} catch (final URIException e) {
 			throw new NetatmoException(
-					"Could not prepare device list request!", e);
+					"Could not prepare get stations data request!", e);
 		}
 	}
 }

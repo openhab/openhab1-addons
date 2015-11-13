@@ -16,70 +16,100 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Java Bean to represent a JSON response to a <code>devicelist</code> API
+ * Java Bean to represent a JSON response to a <code>getstationsdata</code> API
  * method call.
  * <p>
  * Sample response:
  *
  * <pre>
  * {
- *   "status":  "ok",
  *   "body": {
  *     "devices": [
  *       {
- *         "_id": "f0:4d:a2:ee:bc:49",
- *         "firmware":  1,
- *         "ip":  "127.0.0.1",
- *         "last_fw_update":  1347008293,
- *         "last_radio_store":  1325675936,
- *         "last_status_store":  1347624601,
- *         "last_upgrade":  1347455989,
- *                         "module_name":  "Inside",
- *         "modules":  [
- *           "02:00:00:ee:bc:49"
+ *         "_id": "70:ee:50:00:00:14",
+ *         "co2_calibrating": false,
+ *         "firmware": 91,
+ *         "last_status_store": 1441872001,
+ *         "last_upgrade": 1440507643,
+ *         "module_name": "ind",
+ *         "modules": [
+ *           {
+ *             "_id": "05:00:00:00:00:14",
+ *             "module_name": "Pluie",
+ *             "type": "NAModule3",
+ *             "firmware": 91,
+ *             "last_message": 1437990885,
+ *             "last_seen": 1437990885,
+ *             "rf_status": 40,
+ *             "battery_vp": 4103,
+ *             "dashboard_data": {
+ *               "time_utc": 1437990885,
+ *               "Rain": 0.101
+ *             },
+ *             "data_type": [
+ *               "Rain"
+ *             ]
+ *           },
  *         ],
- *         "place":  {
- *           "altitude":  33,
- *            "country":  "FR",
- *            "location":  [
- *             2.35222,
- *              48.85661
+ *         "place": {
+ *           "altitude": 30.478512648583,
+ *           "city": "Saint-Denis",
+ *           "country": "FR",
+ *           "improveLocProposed": true,
+ *           "location": [
+ *             2.384033203125,
+ *             48.936934954094
  *           ],
- *            "timezone":  "Europe/Paris",
- *            "trust_location":  true
+ *           "timezone": "Europe/Paris"
  *         },
- *          "public_ext_data":  true,
- *         "station_name":  "LA",
- *          "type":  "NAMain",
- *          "user_owner":  [
- *           "4fe091cdc56a6eb606000118"
+ *         "station_name": "Station",
+ *         "type": "NAMain",
+ *         "wifi_status": 109,
+ *         "dashboard_data": {
+ *           "AbsolutePressure": 929.4,
+ *           "time_utc": 1441872001,
+ *           "Noise": 110,
+ *           "Temperature": 3.2,
+ *           "Humidity": 60,
+ *           "Pressure": 929.4,
+ *           "CO2": 4852,
+ *           "date_max_temp": 1441850941,
+ *           "date_min_temp": 1441862941,
+ *           "min_temp": -39.5,
+ *           "max_temp": 79.5
+ *         },
+ *         "data_type": [
+ *           "Temperature",
+ *           "CO2",
+ *           "Humidity",
+ *           "Noise",
+ *           "Pressure"
  *         ]
  *       }
  *     ],
- *     "modules":  [
- *       {
- *         "_id":  "02:00:00:ee:bc:49",
- *          "firmware":  4,
- *         "main_device":  "f0:4d:a2:ee:bc:49",
- *          "module_name":  "Outside",
- *         "public_ext_data":  true,
- *         "rf_status":  161,
- *         "type":  "NAModule1"
+ *     "user": {
+ *       "mail": "toto@netatmo.com",
+ *       "administrative": {
+ *         "reg_locale": "en-US",
+ *         "lang": "en-US",
+ *         "unit": 1,
+ *         "windunit": 1,
+ *         "pressureunit": 1,
+ *         "feel_like_algo": 1
  *       }
- *     ]
+ *     }
  *   },
- *   "time_exec":  0.019799947738647
+ *   "status": "ok",
+ *   "time_exec": 0.36015892028809,
+ *   "time_server": 1441872018
  * }
  * </pre>
  *
- * @author Andreas Brenk
- * @since 1.4.0
+ * @author Rob Nielsen
+ * @since 1.8.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeviceListResponse extends AbstractResponse {
-
-	// battery_vp, rf_status and wifi_status:
-	// http://forum.netatmo.com/viewtopic.php?f=5&t=2290&sid=bb1c0f95abcf3198908829eb89adf1a1
+public class GetStationsDataResponse extends AbstractResponse {
 
 	/**
 	 * <code>type</code> constant of the main indoor station.
@@ -91,11 +121,15 @@ public class DeviceListResponse extends AbstractResponse {
 	 * <code>type</code> constant of the outdoor module
 	 */
 	private static final String TYPE_MODULE_1 = "NAModule1";
+	
+	/**
+	 * <code>type</code> constant of the wind gauge module
+	 */
+	private static final String TYPE_MODULE_2 = "NAModule2";
 
 	/**
 	 * <code>type</code> constant of the rain gauge module
 	 */
-	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_3 = "NAModule3";
 
 	/**
@@ -152,35 +186,83 @@ public class DeviceListResponse extends AbstractResponse {
 	private static final int RF_STATUS_THRESHOLD_3 = 60;
 
 	/**
-	 * <code>battery_vp</code> threshold for type NAModule4: full
+	 * <code>battery_vp</code> threshold for type NAModule1: full
 	 */
 	private static final int BATTERY_MODULE_1_THRESHOLD_0 = 5500;
+	
 	/**
-	 * <code>battery_vp</code> threshold for type NAModule4: high
+	 * <code>battery_vp</code> threshold for type NAModule1: high
 	 */
 	private static final int BATTERY_MODULE_1_THRESHOLD_1 = 5000;
 	/**
-	 * <code>battery_vp</code> threshold for type NAModule4: medium
+	 * <code>battery_vp</code> threshold for type NAModule1: medium
 	 */
+	
 	private static final int BATTERY_MODULE_1_THRESHOLD_2 = 4500;
+	
 	/**
-	 * <code>battery_vp</code> threshold for type NAModule4: low, otherwise
+	 * <code>battery_vp</code> threshold for type NAModule1: low, otherwise
 	 * verylow
 	 */
 	private static final int BATTERY_MODULE_1_THRESHOLD_3 = 4000;
+	
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule2: full
+	 */
+	private static final int BATTERY_MODULE_2_THRESHOLD_0 = 5590;
+	
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule2: high
+	 */
+	private static final int BATTERY_MODULE_2_THRESHOLD_1 = 5180;
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule2: medium
+	 */
+	
+	private static final int BATTERY_MODULE_2_THRESHOLD_2 = 4770;
+	
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule2: low, otherwise
+	 * verylow
+	 */
+	private static final int BATTERY_MODULE_2_THRESHOLD_3 = 4360;
+	
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule3: full
+	 */
+	private static final int BATTERY_MODULE_3_THRESHOLD_0 = 5500;
+	
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule3: high
+	 */
+	private static final int BATTERY_MODULE_3_THRESHOLD_1 = 5000;
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule3: medium
+	 */
+	
+	private static final int BATTERY_MODULE_3_THRESHOLD_2 = 4500;
+	
+	/**
+	 * <code>battery_vp</code> threshold for type NAModule3: low, otherwise
+	 * verylow
+	 */
+	private static final int BATTERY_MODULE_3_THRESHOLD_3 = 4000;
 
 	/**
 	 * <code>battery_vp</code> threshold for type NAModule4: full
 	 */
 	private static final int BATTERY_MODULE_4_THRESHOLD_0 = 5640;
+	
 	/**
 	 * <code>battery_vp</code> threshold for type NAModule4: high
 	 */
 	private static final int BATTERY_MODULE_4_THRESHOLD_1 = 5280;
+	
 	/**
 	 * <code>battery_vp</code> threshold for type NAModule4: medium
 	 */
 	private static final int BATTERY_MODULE_4_THRESHOLD_2 = 4920;
+	
 	/**
 	 * <code>battery_vp</code> threshold for type NAModule4: low, otherwise
 	 * verylow
@@ -189,19 +271,11 @@ public class DeviceListResponse extends AbstractResponse {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Body extends AbstractMessagePart {
-
 		private List<Device> devices;
-
-		private List<Module> modules;
 
 		@JsonProperty("devices")
 		public List<Device> getDevices() {
 			return this.devices;
-		}
-
-		@JsonProperty("modules")
-		public List<Module> getModules() {
-			return this.modules;
 		}
 
 		@Override
@@ -209,7 +283,6 @@ public class DeviceListResponse extends AbstractResponse {
 			final ToStringBuilder builder = createToStringBuilder();
 			builder.appendSuper(super.toString());
 			builder.append("devices", this.devices);
-			builder.append("modules", this.modules);
 
 			return builder.toString();
 		}
@@ -217,123 +290,84 @@ public class DeviceListResponse extends AbstractResponse {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Device extends AbstractMessagePart {
-
 		private String id;
+		private Boolean co2Calibrating;
 		private Integer firmware;
-		private String ip;
-		private Date lastFirmwareUpdate;
-		private Date lastRadioStore;
 		private Date lastStatusStore;
 		private Date lastUpgrade;
 		private String moduleName;
-		private List<String> modules;
+		private List<Module> modules;
 		private Place place;
-		private Boolean publicData;
 		private String stationName;
 		private String type;
-		private List<String> owner;
-		private List<String> measurements;
 		private Integer wifiStatus;
+		private List<String> measurements;
 
 		/**
-		 * "firmware": 1
-		 */
-		@JsonProperty("firmware")
-		public Integer getFirmware() {
-			return this.firmware;
-		}
-
-		/**
-		 * "_id": "f0:4d:a2:ee:bc:49"
+		 * "_id": "70:ee:50:00:00:14"
 		 */
 		@JsonProperty("_id")
 		public String getId() {
 			return this.id;
 		}
-
+		
 		/**
-		 * "ip": "127.0.0.1"
+		 * "co2_calibrating": false
 		 */
-		@JsonProperty("ip")
-		public String getIp() {
-			return this.ip;
+		@JsonProperty("co2_calibrating")
+		public Boolean isCo2Calibrating() {
+			return this.co2Calibrating;
 		}
 
 		/**
-		 * "last_fw_update": 1347008293
+		 * "firmware": 91
 		 */
-		@JsonProperty("last_fw_update")
-		public Date getLastFirmwareUpdate() {
-			return this.lastFirmwareUpdate;
+		@JsonProperty("firmware")
+		public Integer getFirmware() {
+			return this.firmware;
 		}
-
+		
 		/**
-		 * "last_radio_store": 1325675936
-		 */
-		@JsonProperty("last_radio_store")
-		public Date getLastRadioStore() {
-			return this.lastRadioStore;
-		}
-
-		/**
-		 * "last_status_store": 1347624601
+		 * "last_status_store": 1441872001
 		 */
 		@JsonProperty("last_status_store")
 		public Date getLastStatusStore() {
 			return this.lastStatusStore;
 		}
-
+		
 		/**
-		 * "last_upgrade": 1347455989
+		 * "last_upgrade": 1440507643
 		 */
 		@JsonProperty("last_upgrade")
 		public Date getLastUpgrade() {
 			return this.lastUpgrade;
 		}
-
+		
 		/**
-		 * "data_type":["Temperature","Co2","Humidity","Noise","Pressure"]
-		 */
-		@JsonProperty("data_type")
-		public List<String> getMeasurements() {
-			return this.measurements;
-		}
-
-		/**
-		 * "module_name": "Inside"
+		 * "module_name": "ind"
 		 */
 		@JsonProperty("module_name")
 		public String getModuleName() {
 			return this.moduleName;
 		}
-
-		/**
-		 * "modules": [ "02:00:00:ee:bc:49" ]
-		 */
+		
 		@JsonProperty("modules")
-		public List<String> getModules() {
+		public List<Module> getModules() {
 			return this.modules;
 		}
-
-		/**
-		 * "user_owner": [ "4fe091cdc56a6eb606000118" ]
-		 */
-		@JsonProperty("user_owner")
-		public List<String> getOwner() {
-			return this.owner;
-		}
-
+		
 		/**
 		 * <pre>
 		 * "place": {
-		 *   "altitude":  33,
-		 * 	 "country":  "FR",
-		 * 	 "location":  [
-		 * 	   2.35222,
-		 * 	   48.85661
-		 * 	 ],
-		 * 	 "timezone":  "Europe/Paris",
-		 * 	 "trust_location":  true
+		 *   "altitude": 30.478512648583,
+		 *   "city": "Saint-Denis",
+		 *   "country": "FR",
+		 *   "improveLocProposed": true,
+		 *   "location": [
+		 *     2.384033203125,
+		 *     48.936934954094
+		 *   ],
+		 *   "timezone": "Europe/Paris"
 		 * }
 		 * </pre>
 		 */
@@ -341,15 +375,15 @@ public class DeviceListResponse extends AbstractResponse {
 		public Place getPlace() {
 			return this.place;
 		}
-
+		
 		/**
-		 * "station_name": "LA"
+		 * "station_name": "Station"
 		 */
 		@JsonProperty("station_name")
 		public String getStationName() {
 			return this.stationName;
 		}
-
+		
 		/**
 		 * "type": "NAMain"
 		 */
@@ -357,45 +391,47 @@ public class DeviceListResponse extends AbstractResponse {
 		public String getType() {
 			return this.type;
 		}
-
-		/**
-		 * "public_ext_data": true
-		 */
-		@JsonProperty("public_ext_data")
-		public Boolean isPublicData() {
-			return this.publicData;
-		}
-
-		@Override
-		public String toString() {
-			final ToStringBuilder builder = createToStringBuilder();
-			builder.appendSuper(super.toString());
-			// TODO
-			builder.append("id", this.id);
-			builder.append("firmware", this.firmware);
-			builder.append("ip", this.ip);
-			builder.append("lastFirmwareUpdate", this.lastFirmwareUpdate);
-			builder.append("lastRadioStore", this.lastRadioStore);
-			builder.append("lastStatusStore", this.lastStatusStore);
-			builder.append("lastUpgrade", this.lastUpgrade);
-			builder.append("moduleName", this.moduleName);
-			builder.append("modules", this.modules);
-			builder.append("place", this.place);
-			builder.append("publicData", this.publicData);
-			builder.append("stationName", this.stationName);
-			builder.append("type", this.type);
-			builder.append("owner", this.owner);
-			builder.append("wifistatus", this.wifiStatus);
-
-			return builder.toString();
-		}
-
+		
 		/**
 		 * "wifi_status"
 		 */
 		@JsonProperty("wifi_status")
 		public Integer getWifiStatus() {
 			return this.wifiStatus;
+		}
+		
+		/**
+		 * "data_type": [
+		 *   "Temperature",
+		 *   "CO2",
+		 *   "Humidity",
+		 *   "Noise",
+		 *   "Pressure"
+		 * ]
+		 */
+		@JsonProperty("data_type")
+		public List<String> getMeasurements() {
+			return this.measurements;
+		}
+
+		@Override
+		public String toString() {
+			final ToStringBuilder builder = createToStringBuilder();
+			builder.appendSuper(super.toString());
+			builder.append("id", this.id);
+			builder.append("co2Calibrating", this.co2Calibrating);
+			builder.append("firmware", this.firmware);
+			builder.append("lastStatusStore", this.lastStatusStore);
+			builder.append("lastUpgrade", this.lastUpgrade);
+			builder.append("moduleName", this.moduleName);
+			builder.append("modules", this.modules);
+			builder.append("place", this.place);
+			builder.append("stationName", this.stationName);
+			builder.append("type", this.type);
+			builder.append("wifiStatus", this.wifiStatus);
+			builder.append("measurements", this.measurements);
+
+			return builder.toString();
 		}
 
 		public int getWifiLevel() {
@@ -422,68 +458,96 @@ public class DeviceListResponse extends AbstractResponse {
 		public Double getLongitude() {
 			return this.place.location.get(0);
 		}
-
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Module extends AbstractMessagePart {
-
 		private String id;
-		private Integer firmware;
-		private String mainDevice;
 		private String moduleName;
-		private Boolean publicData;
+		private String type;
+		private Integer firmware;
+		private Date lastMessage;
+		private Date lastSeen;
 		private Integer rfStatus;
 		private Integer batteryVp;
-		private String type;
 		private List<String> measurements;
-
+		
 		/**
-		 * "firmware": 4
-		 */
-		@JsonProperty("firmware")
-		public Integer getFirmware() {
-			return this.firmware;
-		}
-
-		/**
-		 * "_id": "02:00:00:ee:bc:49"
+		 * "_id": "02:00:00:00:00:14"
 		 */
 		@JsonProperty("_id")
 		public String getId() {
 			return this.id;
 		}
-
+		
 		/**
-		 * "main_device": "f0:4d:a2:ee:bc:49"
-		 */
-		@JsonProperty("main_device")
-		public String getMainDevice() {
-			return this.mainDevice;
-		}
-
-		/**
-		 * "data_type":["Temperature","Co2","Humidity","Noise","Pressure"]
-		 */
-		@JsonProperty("data_type")
-		public List<String> getMeasurements() {
-			return this.measurements;
-		}
-
-		/**
-		 * "module_name": "Outside"
+		 * "module_name": "out"
 		 */
 		@JsonProperty("module_name")
 		public String getModuleName() {
 			return this.moduleName;
 		}
-
+		
 		/**
-		 * "rf_status": 161
+		 * "type": "NAModule1"
+		 */
+		@JsonProperty("type")
+		public String getType() {
+			return this.type;
+		}
+		
+		/**
+		 * "firmware": 91
+		 */
+		@JsonProperty("firmware")
+		public Integer getFirmware() {
+			return this.firmware;
+		}
+		
+		/**
+		 * "last_message": 1441872001
+		 */
+		@JsonProperty("last_message")
+		public Date getLastMessage() {
+			return this.lastMessage;
+		}
+		
+		/**
+		 * "last_seen": 1441868401
+		 */
+		@JsonProperty("last_seen")
+		public Date getLastSeen() {
+			return this.lastSeen;
+		}
+		
+		/**
+		 * "rf_status": 143
 		 */
 		@JsonProperty("rf_status")
 		public Integer getRfStatus() {
 			return this.rfStatus;
+		}
+		
+		/**
+		 * "battery_vp": 31188
+		 */
+		@JsonProperty("battery_vp")
+		public Integer getBatteryVp() {
+			return this.batteryVp;
+		}
+		
+		/**
+		 * "data_type": [
+		 *   "Temperature",
+		 *   "CO2",
+		 *   "Humidity",
+		 *   "Noise",
+		 *   "Pressure"
+		 * ]
+		 */
+		@JsonProperty("data_type")
+		public List<String> getMeasurements() {
+			return this.measurements;
 		}
 
 		public int getRfLevel() {
@@ -502,49 +566,42 @@ public class DeviceListResponse extends AbstractResponse {
 			return result;
 		}
 
-		/**
-		 * "battery_vp"
-		 */
-		@JsonProperty("battery_vp")
-		public Integer getBatteryVp() {
-			return this.batteryVp;
-		}
-
 		public Double getBatteryLevel() {
 			int value;
 			int minima;
 			int spread;
+			int threshold0;	
+			int threshold1;
+			int threshold2;
+			int threshold3;
 			if (this.type.equalsIgnoreCase(TYPE_MODULE_1)) {
-				value = Math.min(this.batteryVp, BATTERY_MODULE_1_THRESHOLD_0);
-				minima = BATTERY_MODULE_1_THRESHOLD_3
-						+ BATTERY_MODULE_1_THRESHOLD_2
-						- BATTERY_MODULE_1_THRESHOLD_1;
-				spread = BATTERY_MODULE_1_THRESHOLD_0 - minima;
+				threshold0 = BATTERY_MODULE_1_THRESHOLD_0;	
+				threshold1 = BATTERY_MODULE_1_THRESHOLD_1;
+				threshold2 = BATTERY_MODULE_1_THRESHOLD_2;
+				threshold3 = BATTERY_MODULE_1_THRESHOLD_3;
+			} else if (this.type.equalsIgnoreCase(TYPE_MODULE_2)) {
+				threshold0 = BATTERY_MODULE_2_THRESHOLD_0;	
+				threshold1 = BATTERY_MODULE_2_THRESHOLD_1;
+				threshold2 = BATTERY_MODULE_2_THRESHOLD_2;
+				threshold3 = BATTERY_MODULE_2_THRESHOLD_3;
+			} else if (this.type.equalsIgnoreCase(TYPE_MODULE_3)) {
+				threshold0 = BATTERY_MODULE_3_THRESHOLD_0;	
+				threshold1 = BATTERY_MODULE_3_THRESHOLD_1;
+				threshold2 = BATTERY_MODULE_3_THRESHOLD_2;
+				threshold3 = BATTERY_MODULE_3_THRESHOLD_3;
 			} else {
-				value = Math.min(this.batteryVp, BATTERY_MODULE_4_THRESHOLD_0);
-				minima = BATTERY_MODULE_4_THRESHOLD_3
-						+ BATTERY_MODULE_4_THRESHOLD_2
-						- BATTERY_MODULE_4_THRESHOLD_1;
-				spread = BATTERY_MODULE_4_THRESHOLD_0 - minima;
+				threshold0 = BATTERY_MODULE_4_THRESHOLD_0;	
+				threshold1 = BATTERY_MODULE_4_THRESHOLD_1;
+				threshold2 = BATTERY_MODULE_4_THRESHOLD_2;
+				threshold3 = BATTERY_MODULE_4_THRESHOLD_3;
 			}
+			
+			value = Math.min(this.batteryVp, threshold0);
+			minima = threshold3 + threshold2 - threshold1;
+			spread = threshold0 - minima;
+			
 			double percent = 100 * (value - minima) / spread;
 			return new Double(percent);
-		}
-
-		/**
-		 * "type": "NAModule1"
-		 */
-		@JsonProperty("type")
-		public String getType() {
-			return this.type;
-		}
-
-		/**
-		 * "public_ext_data": true
-		 */
-		@JsonProperty("public_ext_data")
-		public Boolean isPublicData() {
-			return this.publicData;
 		}
 
 		@Override
@@ -552,12 +609,14 @@ public class DeviceListResponse extends AbstractResponse {
 			final ToStringBuilder builder = createToStringBuilder();
 			builder.appendSuper(super.toString());
 			builder.append("id", this.id);
-			builder.append("firmware", this.firmware);
-			builder.append("mainDevice", this.mainDevice);
 			builder.append("moduleName", this.moduleName);
-			builder.append("publicData", this.publicData);
-			builder.append("rfStatus", this.rfStatus);
 			builder.append("type", this.type);
+			builder.append("firmware", this.firmware);
+			builder.append("lastMessage", this.lastMessage);
+			builder.append("lastSeen", this.lastSeen);
+			builder.append("rfStatus", this.rfStatus);
+			builder.append("batteryVp", this.batteryVp);
+			builder.append("dataTypes", this.measurements);
 
 			return builder.toString();
 		}
@@ -565,21 +624,29 @@ public class DeviceListResponse extends AbstractResponse {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Place extends AbstractMessagePart {
-
 		private Double altitude;
+		private String city;
 		private String country;
+		private Boolean improveLocProposed;
 		private List<Double> location;
 		private String timezone;
-		private Boolean trustedLocation;
-
+		
 		/**
-		 * "altitude": 33
+		 * "altitude": 30.478512648583
 		 */
 		@JsonProperty("altitude")
 		public Double getAltitude() {
 			return this.altitude;
 		}
-
+		
+		/**
+		 * "city": "Saint-Denis"
+		 */
+		@JsonProperty("city")
+		public String getCity() {
+			return this.city;
+		}
+		
 		/**
 		 * "country": "FR"
 		 */
@@ -587,12 +654,20 @@ public class DeviceListResponse extends AbstractResponse {
 		public String getCountry() {
 			return this.country;
 		}
-
+		
+		/**
+		 * "improveLocProposed": true
+		 */
+		@JsonProperty("improveLocProposed")
+		public Boolean isImproveLocProposed() {
+			return this.improveLocProposed;
+		}
+		
 		/**
 		 * <pre>
 		 * "location": [
-		 *   2.35222,
-		 *   48.85661
+		 *   2.384033203125,
+         *   48.936934954094
 		 * ]
 		 * </pre>
 		 */
@@ -609,23 +684,16 @@ public class DeviceListResponse extends AbstractResponse {
 			return this.timezone;
 		}
 
-		/**
-		 * "trust_location": true
-		 */
-		@JsonProperty("trust_location")
-		public Boolean isTrustedLocation() {
-			return this.trustedLocation;
-		}
-
 		@Override
 		public String toString() {
 			final ToStringBuilder builder = createToStringBuilder();
 			builder.appendSuper(super.toString());
 			builder.append("altitude", this.altitude);
+			builder.append("city", this.city);
 			builder.append("country", this.country);
+			builder.append("improveLocProposed", this.improveLocProposed);
 			builder.append("location", this.location);
 			builder.append("timezone", this.timezone);
-			builder.append("trustedLocation", this.trustedLocation);
 
 			return builder.toString();
 		}
@@ -652,10 +720,6 @@ public class DeviceListResponse extends AbstractResponse {
 	@JsonProperty("time_exec")
 	public Double getExecutionTime() {
 		return this.executionTime;
-	}
-
-	public List<Module> getModules() {
-		return this.body.modules;
 	}
 
 	@JsonProperty("status")
