@@ -57,6 +57,12 @@ import com.tinkerforge.TimeoutException;
  */
 public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container implements MBrickletPiezoSpeaker
 {
+  private static final String MORSE = "morse";
+
+  private static final String BEEP = "beep";
+
+  private static final String MODE = "mode";
+
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -283,6 +289,8 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
 
   private static final String REPEAT = "repeat";
 
+  private static final String MORSECODES = "morsecodes";
+
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -293,7 +301,9 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
-  private FinishedListener finishedListener;
+  private BeepFinishedListener beepFinishedListener;
+
+  private MorseFinishedListener morseFinishedListener;
 
   /**
    * <!-- begin-user-doc -->
@@ -648,6 +658,45 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     // nothing to do
   }
 
+  private enum Mode {
+    BEEP, MORSE
+  }
+
+  private Long[] getDurations(String durationsopt) {
+    if (durationsopt == null) {
+      return null;
+    }
+    Long[] durations = null;
+    logger.debug("durationsopt: {}", durationsopt);
+    String[] numbers = durationsopt.split("\\|");
+    for (int i = 0; i < numbers.length; i++) {
+      logger.debug("duration number {}", numbers[i]);
+    }
+    durations = new Long[numbers.length];
+    for (int i = 0; i < numbers.length; i++) {
+      durations[i] = new Long(numbers[i]);
+    }
+    return durations;
+  }
+
+  private Integer[] getFrequencies(String frequenciesopt) {
+    Integer[] frequencies = null;
+    logger.debug("frequenciesopt {}", frequenciesopt);
+    String[] numbers = frequenciesopt.split("\\|");
+    frequencies = new Integer[numbers.length];
+    for (int i = 0; i < numbers.length; i++) {
+      frequencies[i] = new Integer(numbers[i]);
+    }
+    return frequencies;
+  }
+
+  private String[] getMorseCodes(String morseCodeOpt) {
+    String[] morseCodes = null;
+    logger.debug("morseCodeOpt {}", morseCodeOpt);
+    morseCodes = morseCodeOpt.split("\\|");
+    return morseCodes;
+  }
+
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * 
@@ -657,59 +706,84 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     try {
       Long[] durations = null;
       Integer[] frequencies = null;
-      if (finishedListener != null) {
+      String[] morseCodes = null;
+      Long repeats = null;
+      Mode mode;
+      if (beepFinishedListener != null) {
         logger.trace("removing beepFinishedListener");
-        tinkerforgeDevice.removeBeepFinishedListener(finishedListener);
-        finishedListener = null;
+        tinkerforgeDevice.removeBeepFinishedListener(beepFinishedListener);
+        beepFinishedListener = null;
+        tinkerforgeDevice.beep(0, 0);
+      }
+      if (morseFinishedListener != null) {
+        logger.trace("removing morseFinishedListener");
+        tinkerforgeDevice.removeMorseCodeFinishedListener(morseFinishedListener);
+        morseFinishedListener = null;
         tinkerforgeDevice.beep(0, 0);
       }
       if (opts != null) {
-        // long duration, int frequency
-        if (opts.containsKey(DURATIONS)) {
-          String durationsopt = opts.getOption(DURATIONS);
-          logger.debug("durationsopt: {}", durationsopt);
-          String[] numbers = durationsopt.split("\\|");
-          for (int i = 0; i < numbers.length; i++) {
-            logger.debug("duration number {}", numbers[i]);
-          }
-          durations = new Long[numbers.length];
-          for (int i = 0; i < numbers.length; i++) {
-            durations[i] = new Long(numbers[i]);
-          }
-        }
-        if (opts.containsKey(FREQUENCIES)) {
-          String frequenciesopt = opts.getOption(FREQUENCIES);
-          logger.debug("frequenciesopt {}", frequenciesopt);
-          String[] numbers = frequenciesopt.split("\\|");
-          frequencies = new Integer[numbers.length];
-          for (int i = 0; i < numbers.length; i++) {
-            frequencies[i] = new Integer(numbers[i]);
-          }
-        }
-      }
-      if (durations != null && frequencies != null) {
-        Long repeats = Tools.getLongOpt(REPEAT, opts, 1L);
-        logger.debug("repeats {}", repeats);
-        if (durations.length != frequencies.length) {
-          logger
-              .error(
-                  "every frequence needs a duration value and vice versa: frequencies count {}, durationscount {}",
-                  frequencies.length, durations.length);
+        String modestr = Tools.getStringOpt(MODE, opts);
+        if (modestr == null) {
+          logger.error("mode is missing");
           return;
         }
+        if (modestr.toLowerCase().equals(BEEP)) {
+          mode = Mode.BEEP;
+          durations = getDurations(Tools.getStringOpt(DURATIONS, opts));
+          frequencies = getFrequencies(Tools.getStringOpt(FREQUENCIES, opts));
+          repeats = Tools.getLongOpt(REPEAT, opts, 1L);
+          logger.debug("repeats {}", repeats);
+          if (durations == null || frequencies == null) {
+            logger.error("durations and frequencies have values when mode is beep");
+            return;
+          } else if (durations.length != frequencies.length) {
+            logger
+                .error(
+                    "every frequence needs a duration value and vice versa: frequencies count {}, durationscount {}",
+                    frequencies.length, durations.length);
+            return;
+          }
+        } else if (modestr.toLowerCase().equals(MORSE)) {
+          mode = Mode.MORSE;
+          frequencies = getFrequencies(Tools.getStringOpt(FREQUENCIES, opts));
+          morseCodes = getMorseCodes(Tools.getStringOpt(MORSECODES, opts));
+          repeats = Tools.getLongOpt(REPEAT, opts, 1L);
+          logger.debug("repeats {}", repeats);
+          if (morseCodes == null || frequencies == null) {
+            logger.error("morseCodes and frequencies have values when mode is morse");
+            return;
+          } else if (morseCodes.length != frequencies.length) {
+            logger
+                .error(
+                    "every morseCodes needs a frequency value and vice versa: morseCodes count {}, frequencies {}",
+                    morseCodes.length, frequencies.length);
+            return;
+          }
+        } else {
+          logger.error("unknown mode string {}", modestr);
+          return;
+        }
+      } else {
+        logger.error("item configuration is missing");
+        return;
+      }
+
+      if (mode == Mode.BEEP) {
+        logger.debug("sending beeps");
         logger.debug("adding new BeepFinishedListener");
-          finishedListener = new FinishedListener(this, durations, frequencies, repeats);
-        tinkerforgeDevice.addBeepFinishedListener(finishedListener);
+        beepFinishedListener = new BeepFinishedListener(this, durations, frequencies, repeats);
+        tinkerforgeDevice.addBeepFinishedListener(beepFinishedListener);
         logger.debug("trigger beeping");
         tinkerforgeDevice.beep(durations[0], frequencies[0]);
       } else {
-        logger.debug("adding new BeepFinishedListener");
-        finishedListener = new FinishedListener(this);
-        tinkerforgeDevice.addMorseCodeFinishedListener(finishedListener);
+        logger.debug("sending morse codes");
+        logger.debug("adding new MorseFinishedListener");
+        morseFinishedListener = new MorseFinishedListener(this, morseCodes, frequencies, repeats);
+        tinkerforgeDevice.addMorseCodeFinishedListener(morseFinishedListener);
         logger.debug("trigger beeping");
         // default morse code
-        logger.debug("default morse code");
-        tinkerforgeDevice.morseCode("...---...", 5000);
+        logger.debug(" morse code");
+        tinkerforgeDevice.morseCode(morseCodes[0], frequencies[0]);
       }
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -719,10 +793,7 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     }
   }
 
-  private class FinishedListener
-      implements
-        BrickletPiezoSpeaker.BeepFinishedListener,
-        BrickletPiezoSpeaker.MorseCodeFinishedListener {
+  private class BeepFinishedListener implements BrickletPiezoSpeaker.BeepFinishedListener {
     Long[] durations;
     Integer[] frequencies;
     Integer currentTone = 1;
@@ -731,32 +802,17 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
     private long repeats;
     private long round = 0;
 
-    public FinishedListener(MBrickletPiezoSpeakerImpl mbricklet, Long[] durations,
+    public BeepFinishedListener(MBrickletPiezoSpeakerImpl mbricklet, Long[] durations,
         Integer[] frequencies, long repeats) {
       this.durations = durations;
       this.frequencies = frequencies;
       this.mbricklet = mbricklet;
       this.repeats = repeats;
-      this.sequenceLength = durations.length; // could also be frequencies length
+      this.sequenceLength = frequencies.length;
     }
-
-
-    public FinishedListener(MBrickletPiezoSpeakerImpl mBrickletPiezoSpeakerImpl) {
-      this.sequenceLength = 1;
-    }
-
 
     @Override
     public void beepFinished() {
-      soundFinished();
-    }
-
-    @Override
-    public void morseCodeFinished() {
-      soundFinished();
-    }
-
-    private void soundFinished() {
       try {
         logger.debug("currentTone {}", currentTone);
         if (currentTone >= sequenceLength) {
@@ -778,6 +834,60 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
             frequencies[currentTone]);
         tinkerforgeDevice.beep(durations[currentTone], frequencies[currentTone]);
         currentTone++;
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(mbricklet,
+            TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(mbricklet,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    }
+  }
+
+  private class MorseFinishedListener
+      implements
+        BrickletPiezoSpeaker.MorseCodeFinishedListener {
+    Integer[] frequencies;
+    String[] morseCodes;
+    Integer currentSequence = 1;
+    Integer sequenceLength;
+    MBrickletPiezoSpeakerImpl mbricklet;
+    private long repeats;
+    private long round = 0;
+
+    public MorseFinishedListener(MBrickletPiezoSpeakerImpl mbricklet, String[] morseCodes,
+        Integer[] frequencies, long repeats) {
+      this.frequencies = frequencies;
+      this.morseCodes = morseCodes;
+      this.mbricklet = mbricklet;
+      this.repeats = repeats;
+      this.sequenceLength = frequencies.length;
+    }
+
+    @Override
+    public void morseCodeFinished() {
+      try {
+        logger.debug("currentSequence {}", currentSequence);
+        if (currentSequence >= sequenceLength) {
+          round++;
+          logger.debug("round {} repeat {}", round, repeats);
+          if (round < repeats) {
+            currentSequence = 0; // for repeats currentSequence must be 0 because the initial Tone
+                                 // was send
+                             // from outside of the listener
+          } else {
+            // we are done
+            logger.debug("beep done");
+            setSwitchState(OnOffValue.OFF);
+            return;
+          }
+        } else {
+          logger.debug("currentSequence {}, sequenceLength {}", currentSequence, sequenceLength);
+        }
+        logger.debug("morse code {} frequency {}", morseCodes[currentSequence],
+            frequencies[currentSequence]);
+        tinkerforgeDevice.morseCode(morseCodes[currentSequence], frequencies[currentSequence]);
+        currentSequence++;
       } catch (TimeoutException e) {
         TinkerforgeErrorHandler.handleError(mbricklet,
             TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -820,9 +930,13 @@ public class MBrickletPiezoSpeakerImpl extends MinimalEObjectImpl.Container impl
   }
 
   private void stopBeep() {
-    if (finishedListener != null) {
-      tinkerforgeDevice.removeBeepFinishedListener(finishedListener);
-      finishedListener = null;
+    if (beepFinishedListener != null) {
+      tinkerforgeDevice.removeBeepFinishedListener(beepFinishedListener);
+      beepFinishedListener = null;
+    }
+    if (morseFinishedListener != null) {
+      tinkerforgeDevice.removeMorseCodeFinishedListener(morseFinishedListener);
+      morseFinishedListener = null;
     }
     try {
       // stop beep
