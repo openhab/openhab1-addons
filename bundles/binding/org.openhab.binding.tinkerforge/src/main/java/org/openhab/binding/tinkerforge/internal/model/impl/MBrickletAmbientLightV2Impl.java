@@ -4,6 +4,8 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -16,6 +18,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.config.ConfigurationException;
 import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -883,8 +886,9 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
    */
   public void enable()
   {
-    Integer[] illuminaceRange = new Integer[] {0, 1, 2, 3, 4, 5, 6};
-    Integer[] integrationTimeRange = new Integer[] {0, 1, 2, 3, 4, 5, 6, 7};
+    List<Integer> possibleIlluminanceValues = Arrays.asList(new Integer[] {0, 1, 2, 3, 4, 5, 6});
+    List<Integer> possibleIntegrationTimeValues =
+        Arrays.asList(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7});
     if (tfConfig != null) {
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
         logger.debug("threshold {}", tfConfig.getThreshold());
@@ -897,11 +901,19 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("illuminanceRange"))) {
         short illuminanceRange = tfConfig.getIlluminanceRange();
         logger.debug("illuminanceRange {}", illuminanceRange);
+        if (!possibleIlluminanceValues.contains(illuminanceRange)) {
+          logger.error("invalid illuminanceRange value: {}", illuminanceRange);
+          throw new ConfigurationException("invalid illuminanceRange value: " + illuminanceRange);
+        }
         setIlluminanceRange(illuminanceRange);
       }
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("integrationTime"))) {
         short integrationTime = tfConfig.getIntegrationTime();
         logger.debug("integrationTime {}", integrationTime);
+        if (!possibleIntegrationTimeValues.contains(integrationTime)) {
+          logger.error("invalid integrationTime value: {}", integrationTime);
+          throw new ConfigurationException("invalid integrationTime value: " + integrationTime);
+        }
         setIntegrationTime(integrationTime);
       }
     }
