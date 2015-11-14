@@ -18,20 +18,20 @@ import com.google.common.io.Resources;
  * @author Andreas Brenk
  * @since 1.4.0
  */
-public class DeviceListRequestStub extends DeviceListRequest {
+public class GetStationsDataRequestStub extends  GetStationsDataRequest {
 
 	protected static final String ACCESS_TOKEN = "test-access-token";
 
-	public static DeviceListRequestStub createRequest(final String resource)
+	public static GetStationsDataRequestStub createRequest(final String resource)
 			throws Exception {
-		return new DeviceListRequestStub(resource);
+		return new GetStationsDataRequestStub(resource);
 	}
 
 	private final String response;
 
 	private String query;
 
-	private DeviceListRequestStub(final String response) throws Exception {
+	private GetStationsDataRequestStub(final String response) throws Exception {
 		super(ACCESS_TOKEN);
 
 		final URL resource = getClass().getResource(response);

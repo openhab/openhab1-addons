@@ -25,10 +25,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.openhab.binding.netatmo.NetatmoBindingProvider;
-import org.openhab.binding.netatmo.internal.messages.DeviceListRequest;
-import org.openhab.binding.netatmo.internal.messages.DeviceListResponse;
-import org.openhab.binding.netatmo.internal.messages.DeviceListResponse.Device;
-import org.openhab.binding.netatmo.internal.messages.DeviceListResponse.Module;
+import org.openhab.binding.netatmo.internal.messages.GetStationsDataRequest;
+import org.openhab.binding.netatmo.internal.messages.GetStationsDataResponse;
+import org.openhab.binding.netatmo.internal.messages.GetStationsDataResponse.Device;
+import org.openhab.binding.netatmo.internal.messages.GetStationsDataResponse.Module;
 import org.openhab.binding.netatmo.internal.messages.MeasurementRequest;
 import org.openhab.binding.netatmo.internal.messages.MeasurementResponse;
 import org.openhab.binding.netatmo.internal.messages.NetatmoError;
@@ -116,7 +116,7 @@ public class NetatmoBinding extends
 
 			try {
 				if (oauthCredentials.firstExecution) {
-					processDeviceList(oauthCredentials);
+					processGetStationsData(oauthCredentials);
 				}
 
 				DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials);
@@ -136,7 +136,7 @@ public class NetatmoBinding extends
 						switch (measureType) {
 						case MODULENAME:
 							if (moduleId == null) // we're on the main device
-								for (Device device : oauthCredentials.deviceListResponse
+								for (Device device : oauthCredentials.getStationsDataResponse
 										.getDevices()) {
 									if (device.getId().equals(deviceId)) {
 										state = new StringType(
@@ -145,12 +145,13 @@ public class NetatmoBinding extends
 									}
 								}
 							else {
-								for (Module module : oauthCredentials.deviceListResponse
-										.getModules()) {
-									if (module.getId().equals(moduleId)) {
-										state = new StringType(
-												module.getModuleName());
-										break;
+								for (Device device : oauthCredentials.getStationsDataResponse.getDevices()) {
+									for (Module module : device.getModules()) {
+										if (module.getId().equals(moduleId)) {
+											state = new StringType(
+													module.getModuleName());
+											break;
+										}
 									}
 								}
 							}
@@ -222,22 +223,23 @@ public class NetatmoBinding extends
 							break;
 						case BATTERYVP:
 						case RFSTATUS:
-							for (Module module : oauthCredentials.deviceListResponse
-									.getModules()) {
-								if (module.getId().equals(moduleId)) {
-									switch (measureType) {
-									case BATTERYVP:
-										state = new DecimalType(
-												module.getBatteryLevel());
-										break;
-									case RFSTATUS:
-										state = new DecimalType(
-												module.getRfLevel());
-										break;
-									case MODULENAME:
-										state = new StringType(
-												module.getModuleName());
-										break;
+							for (Device device : oauthCredentials.getStationsDataResponse.getDevices()) {
+								for (Module module : device.getModules()) {
+									if (module.getId().equals(moduleId)) {
+										switch (measureType) {
+										case BATTERYVP:
+											state = new DecimalType(
+													module.getBatteryLevel());
+											break;
+										case RFSTATUS:
+											state = new DecimalType(
+													module.getRfLevel());
+											break;
+										case MODULENAME:
+											state = new StringType(
+													module.getModuleName());
+											break;
+										}
 									}
 								}
 							}
@@ -248,7 +250,7 @@ public class NetatmoBinding extends
 						case WIFISTATUS:
 						case COORDINATE:
 						case STATIONNAME:
-							for (Device device : oauthCredentials.deviceListResponse
+							for (Device device : oauthCredentials.getStationsDataResponse
 									.getDevices()) {
 								if (stationPosition == null) {
 									DecimalType altitude = DecimalType.ZERO;
@@ -354,12 +356,12 @@ public class NetatmoBinding extends
 		return deviceMeasureValueMap;
 	}
 
-	private void processDeviceList(OAuthCredentials oauthCredentials) {
-		logger.debug("Request: {}", oauthCredentials.deviceListRequest);
-		logger.debug("Response: {}", oauthCredentials.deviceListResponse);
+	private void processGetStationsData(OAuthCredentials oauthCredentials) {
+		logger.debug("Request: {}", oauthCredentials.getStationsDataRequest);
+		logger.debug("Response: {}", oauthCredentials.getStationsDataResponse);
 
-		if (oauthCredentials.deviceListResponse.isError()) {
-			final NetatmoError error = oauthCredentials.deviceListResponse
+		if (oauthCredentials.getStationsDataResponse.isError()) {
+			final NetatmoError error = oauthCredentials.getStationsDataResponse
 					.getError();
 
 			if (error.isAccessTokenExpired() || error.isTokenNotVaid()) {
@@ -377,16 +379,16 @@ public class NetatmoBinding extends
 
 			return; // abort processing
 		} else {
-			processDeviceListResponse(oauthCredentials.deviceListResponse);
+			processGetStationsDataResponse(oauthCredentials.getStationsDataResponse);
 			oauthCredentials.firstExecution = false;
 		}
 	}
 
 	/**
-	 * Processes an incoming {@link DeviceListResponse}.
+	 * Processes an incoming {@link GetStationsDataResponse}.
 	 * <p>
 	 */
-	private void processDeviceListResponse(final DeviceListResponse response) {
+	private void processGetStationsDataResponse(final GetStationsDataResponse response) {
 		// Prepare a map of all known device measurements
 		final Map<String, Device> deviceMap = new HashMap<String, Device>();
 		final Map<String, Set<String>> deviceMeasurements = new HashMap<String, Set<String>>();
@@ -407,17 +409,23 @@ public class NetatmoBinding extends
 		// Prepare a map of all known module measurements
 		final Map<String, Module> moduleMap = new HashMap<String, Module>();
 		final Map<String, Set<String>> moduleMeasurements = new HashMap<String, Set<String>>();
+		final Map<String, String> mainDeviceMap = new HashMap<String, String>();
 
-		for (final Module module : response.getModules()) {
-			final String moduleId = module.getId();
-			moduleMap.put(moduleId, module);
+		for (final Device device : response.getDevices()) {
+			final String deviceId = device.getId();
 
-			for (final String measurement : module.getMeasurements()) {
-				if (!moduleMeasurements.containsKey(moduleId)) {
-					moduleMeasurements.put(moduleId, new HashSet<String>());
+			for (final Module module : device.getModules()) {
+				final String moduleId = module.getId();
+				moduleMap.put(moduleId, module);
+
+				for (final String measurement : module.getMeasurements()) {
+					if (!moduleMeasurements.containsKey(moduleId)) {
+						moduleMeasurements.put(moduleId, new HashSet<String>());
+						mainDeviceMap.put(moduleId, deviceId);
+					}
+
+					moduleMeasurements.get(moduleId).add(measurement);
 				}
-
-				moduleMeasurements.get(moduleId).add(measurement);
 			}
 		}
 
@@ -460,7 +468,7 @@ public class NetatmoBinding extends
 			final Module module = moduleMap.get(moduleId);
 
 			for (String measurement : entry.getValue()) {
-				message.append("\t" + module.getMainDevice() + "#" + moduleId
+				message.append("\t" + mainDeviceMap.get(moduleId) + "#" + moduleId
 						+ "#" + measurement + " (" + module.getModuleName()
 						+ ")\n");
 			}
@@ -719,8 +727,8 @@ public class NetatmoBinding extends
 		 */
 		String accessToken;
 
-		DeviceListResponse deviceListResponse = null;
-		DeviceListRequest deviceListRequest = null;
+		GetStationsDataResponse getStationsDataResponse = null;
+		GetStationsDataRequest getStationsDataRequest = null;
 
 		boolean firstExecution = true;
 
@@ -748,8 +756,8 @@ public class NetatmoBinding extends
 
 			this.accessToken = response.getAccessToken();
 
-			deviceListRequest = new DeviceListRequest(this.accessToken);
-			deviceListResponse = deviceListRequest.execute();
+			getStationsDataRequest = new GetStationsDataRequest(this.accessToken);
+			getStationsDataResponse = getStationsDataRequest.execute();
 		}
 
 	}
