@@ -2899,6 +2899,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+	  <Id>019a</Id>
+	  <Name>Sensative</Name>
+	  <Product>
+	    <Reference>
+	      <Type>0003</Type>
+	      <Id>0003</Id>
+	    </Reference>
+	    <Model>11 01 011</Model>
+	    <Label lang="en">Strips-MaZw</Label>
+	    <ConfigFile>sensative/strips11-01-011.xml</ConfigFile>
+	  </Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0108</Id>
 		<Name>D-Link</Name>
 		<Product>
