@@ -1058,14 +1058,17 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			logger.trace("NODE {}: Node Status event during initialisation processed", statusEvent.getNodeId());
 		} else if (event instanceof ZWaveNodeInfoEvent) {
 			logger.debug("NODE {}: {} NIF event during initialisation stage {}", event.getNodeId(), node.getNodeId(), currentStage);
-			if (node.getNodeId() != event.getNodeId() || currentStage != ZWaveNodeInitStage.PING) {
+			if (node.getNodeId() != event.getNodeId()) {
 				return;
 			}
-			logger.debug("NODE {}: NIF event during initialisation stage PING - advancing", event.getNodeId());
-			setCurrentStage(currentStage.getNextStage());
-			logger.debug("NODE {}: NIF event during initialisation stage PING - now {} - next", event.getNodeId(), currentStage);
+			
+			if(currentStage == ZWaveNodeInitStage.PING) {
+				logger.debug("NODE {}: NIF event during initialisation stage PING - advancing", event.getNodeId());
+				setCurrentStage(currentStage.getNextStage());
+			}
+			logger.debug("NODE {}: NIF event during initialisation stage {}", event.getNodeId(), currentStage);
 			advanceNodeStage(null);
-		} else if (event instanceof ZWaveCommandClassValueEvent) {
+/*		} else if (event instanceof ZWaveCommandClassValueEvent) {
 			// This code is used to detect an event during the IDLE stage.
 			// This is used to kick start the initialisation for battery nodes that do not support
 			// the WAKE_UP class and don't send the ApplicationUpdateMessage when they are initialised.
@@ -1077,7 +1080,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			logger.debug("NODE {}: CC event during initialisation stage PING - advancing", event.getNodeId());
 			setCurrentStage(currentStage.getNextStage());
 			logger.debug("NODE {}: CC event during initialisation stage PING - now {} - next", event.getNodeId(), currentStage);
-			advanceNodeStage(null);
+			advanceNodeStage(null);*/
 		}
 	}
 	
