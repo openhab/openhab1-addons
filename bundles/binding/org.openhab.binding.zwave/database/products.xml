@@ -2413,6 +2413,15 @@
 		<Product>
 			<Reference>
 				<Type>2</Type>
+				<Id>52</Id>
+			</Reference>
+			<Model>ZMNHAD</Model>
+			<Label lang="en">Flush 1 relay</Label>
+			<ConfigFile>qubino/zmnhad.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
 				<Id>1</Id>
 			</Reference>
 			<Model>ZMNHBA</Model>
