@@ -54,6 +54,7 @@ import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
@@ -1024,6 +1025,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletRotaryEncoder");
               mDevice = factory.createMBrickletRotaryEncoder();
               mDevice.setDeviceIdentifier(BrickletRotaryEncoder.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletDustDetector.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletDustDetector");
+              mDevice = factory.createMBrickletDustDetector();
+              mDevice.setDeviceIdentifier(BrickletDustDetector.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

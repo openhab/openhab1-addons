@@ -890,6 +890,15 @@ public interface ModelFactory extends EFactory
   MBrickletSoundIntensity createMBrickletSoundIntensity();
 
   /**
+   * Returns a new object of class '<em>MBricklet Dust Detector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Dust Detector</em>'.
+   * @generated
+   */
+  MBrickletDustDetector createMBrickletDustDetector();
+
+  /**
    * Returns a new object of class '<em>MBricklet Moisture</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

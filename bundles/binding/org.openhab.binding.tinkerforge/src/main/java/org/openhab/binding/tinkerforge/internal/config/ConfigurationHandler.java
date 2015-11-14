@@ -114,7 +114,8 @@ public class ConfigurationHandler {
     bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, 
     bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
-    digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2
+    digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2,
+    bricklet_dustdetector
   }
 
 
@@ -248,7 +249,8 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.ptc_resistance.name())
         || deviceType.equals(TypeKey.ptc_temperature.name())
         || deviceType.equals(TypeKey.industrial020ma_sensor.name())
-        || deviceType.equals(TypeKey.rotary_encoder.name())) {
+        || deviceType.equals(TypeKey.rotary_encoder.name())
+        || deviceType.equals(TypeKey.bricklet_dustdetector.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {

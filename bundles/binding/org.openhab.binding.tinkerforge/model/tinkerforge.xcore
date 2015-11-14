@@ -55,6 +55,7 @@ import com.tinkerforge.BrickletSolidStateRelay
 import com.tinkerforge.BrickletPiezoSpeaker
 import com.tinkerforge.BrickletRotaryEncoder
 import com.tinkerforge.BrickletAmbientLightV2
+import com.tinkerforge.BrickletDustDetector
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -112,6 +113,7 @@ type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
 type TinkerBrickletPiezoSpeaker wraps BrickletPiezoSpeaker
 type TinkerBrickletRotaryEncoder wraps BrickletRotaryEncoder
 type TinkerBrickletAmbientLightV2 wraps BrickletAmbientLightV2
+type TinkerBrickletDustDetector wraps BrickletDustDetector
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -732,6 +734,14 @@ class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
     op void init(){}
 }
 
+class MBrickletDustDetector extends MDevice<TinkerBrickletDustDetector>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_dustdetector"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+	
 class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFMoistureBrickletConfiguration>,
         CallbackListener {

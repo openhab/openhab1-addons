@@ -42,6 +42,7 @@ import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
@@ -190,6 +191,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2: return createMBrickletAmbientLightV2();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
+      case ModelPackage.MBRICKLET_DUST_DETECTOR: return createMBrickletDustDetector();
       case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
       case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
@@ -382,6 +384,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletRotaryEncoderFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_AMBIENT_LIGHT_V2:
         return createTinkerBrickletAmbientLightV2FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_DUST_DETECTOR:
+        return createTinkerBrickletDustDetectorFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -557,6 +561,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletRotaryEncoderToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_AMBIENT_LIGHT_V2:
         return convertTinkerBrickletAmbientLightV2ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_DUST_DETECTOR:
+        return convertTinkerBrickletDustDetectorToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -1622,6 +1628,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletSoundIntensityImpl mBrickletSoundIntensity = new MBrickletSoundIntensityImpl();
     return mBrickletSoundIntensity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletDustDetector createMBrickletDustDetector()
+  {
+    MBrickletDustDetectorImpl mBrickletDustDetector = new MBrickletDustDetectorImpl();
+    return mBrickletDustDetector;
   }
 
   /**
@@ -3089,6 +3106,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletAmbientLightV2ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletDustDetector createTinkerBrickletDustDetectorFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletDustDetector)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletDustDetectorToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

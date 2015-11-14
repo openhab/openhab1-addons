@@ -89,6 +89,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
@@ -214,6 +215,7 @@ import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
@@ -1159,6 +1161,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mBrickletDustDetectorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mBrickletMoistureEClass = null;
 
   /**
@@ -1650,6 +1659,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletAmbientLightV2EDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletDustDetectorEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -6044,6 +6060,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletDustDetector()
+  {
+    return mBrickletDustDetectorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletDustDetector_DeviceType()
+  {
+    return (EAttribute)mBrickletDustDetectorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletDustDetector_Threshold()
+  {
+    return (EAttribute)mBrickletDustDetectorEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletDustDetector__Init()
+  {
+    return mBrickletDustDetectorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMBrickletMoisture()
   {
     return mBrickletMoistureEClass;
@@ -6984,6 +7040,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletDustDetector()
+  {
+    return tinkerBrickletDustDetectorEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7562,6 +7628,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletSoundIntensityEClass, MBRICKLET_SOUND_INTENSITY__THRESHOLD);
     createEOperation(mBrickletSoundIntensityEClass, MBRICKLET_SOUND_INTENSITY___INIT);
 
+    mBrickletDustDetectorEClass = createEClass(MBRICKLET_DUST_DETECTOR);
+    createEAttribute(mBrickletDustDetectorEClass, MBRICKLET_DUST_DETECTOR__DEVICE_TYPE);
+    createEAttribute(mBrickletDustDetectorEClass, MBRICKLET_DUST_DETECTOR__THRESHOLD);
+    createEOperation(mBrickletDustDetectorEClass, MBRICKLET_DUST_DETECTOR___INIT);
+
     mBrickletMoistureEClass = createEClass(MBRICKLET_MOISTURE);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__DEVICE_TYPE);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__THRESHOLD);
@@ -7787,6 +7858,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletPiezoSpeakerEDataType = createEDataType(TINKER_BRICKLET_PIEZO_SPEAKER);
     tinkerBrickletRotaryEncoderEDataType = createEDataType(TINKER_BRICKLET_ROTARY_ENCODER);
     tinkerBrickletAmbientLightV2EDataType = createEDataType(TINKER_BRICKLET_AMBIENT_LIGHT_V2);
+    tinkerBrickletDustDetectorEDataType = createEDataType(TINKER_BRICKLET_DUST_DETECTOR);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -8567,6 +8639,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletSoundIntensityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletDustDetector());
+    g1.getETypeArguments().add(g2);
+    mBrickletDustDetectorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickletDustDetectorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletDustDetectorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletDustDetectorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletMoisture());
     g1.getETypeArguments().add(g2);
     mBrickletMoistureEClass.getEGenericSuperTypes().add(g1);
@@ -9182,6 +9268,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletSoundIntensity__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletDustDetectorEClass, MBrickletDustDetector.class, "MBrickletDustDetector", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletDustDetector_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_dustdetector", 0, 1, MBrickletDustDetector.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletDustDetector_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletDustDetector.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletDustDetector__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mBrickletMoistureEClass, MBrickletMoisture.class, "MBrickletMoisture", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletMoisture_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_moisture", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletMoisture_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9587,6 +9679,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletPiezoSpeakerEDataType, BrickletPiezoSpeaker.class, "TinkerBrickletPiezoSpeaker", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletRotaryEncoderEDataType, BrickletRotaryEncoder.class, "TinkerBrickletRotaryEncoder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletAmbientLightV2EDataType, BrickletAmbientLightV2.class, "TinkerBrickletAmbientLightV2", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletDustDetectorEDataType, BrickletDustDetector.class, "TinkerBrickletDustDetector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
