@@ -158,5 +158,8 @@
     <module>org.openhab.binding.lightwaverf</module>
 	<module>org.openhab.binding.souliss</module>
     <module>org.openhab.binding.sagercaster</module>
+    <module>org.openhab.binding.ipx800</module>
+    <module>org.openhab.binding.tacmi</module>
+    <module>org.openhab.binding.lcn</module>
   </modules>
 </project>

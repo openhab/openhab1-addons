@@ -14,6 +14,8 @@ import static org.openhab.io.net.http.HttpUtil.executeUrl;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.netatmo.internal.NetatmoException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A devicelist request returns the list of devices owned by the user, and their
@@ -27,6 +29,8 @@ import org.openhab.binding.netatmo.internal.NetatmoException;
 public class DeviceListRequest extends AbstractRequest {
 
 	private static final String RESOURCE_URL = API_BASE_URL + "devicelist";
+
+	private static final Logger logger = LoggerFactory.getLogger(DeviceListRequest.class);
 
 	private final String accessToken;
 
@@ -46,6 +50,9 @@ public class DeviceListRequest extends AbstractRequest {
 	@Override
 	public DeviceListResponse execute() {
 		final String url = prepare();
+
+		logger.debug(url);
+
 		String json = null;
 
 		try {

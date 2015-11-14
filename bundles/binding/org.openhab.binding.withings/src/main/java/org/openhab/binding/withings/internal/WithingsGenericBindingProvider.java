@@ -47,7 +47,7 @@ public class WithingsGenericBindingProvider extends
 		MeasureType measureType = null;
 		
 		if (configElements.length == 1) {
-			measureType = MeasureType.valueOf(configElements[1].toUpperCase());
+			measureType = MeasureType.valueOf(configElements[0].toUpperCase());
 		}
 		else if (configElements.length == 2) {
 			accountId = configElements[0];

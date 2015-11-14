@@ -500,12 +500,12 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.mios</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.astro</artifactId>
@@ -1251,7 +1251,13 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency> 
+		<dependency>
+		    	<groupId>org.openhab.binding</groupId>
+		    	<artifactId>org.openhab.binding.ipx800</artifactId>
+		    	<version>${project.version}</version>
+		    	<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.frontiersiliconradio</artifactId>
 			<version>${project.version}</version>
@@ -1296,6 +1302,18 @@
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.sagercaster</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.tacmi</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.lcn</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

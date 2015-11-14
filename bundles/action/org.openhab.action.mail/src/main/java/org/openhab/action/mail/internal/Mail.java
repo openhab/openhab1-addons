@@ -10,6 +10,8 @@ package org.openhab.action.mail.internal;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -60,7 +62,7 @@ import org.slf4j.LoggerFactory;
 		@ParamDoc(name="to") String to, 
 		@ParamDoc(name="subject") String subject, 
 		@ParamDoc(name="message") String message) {
-		return sendMail(to, subject, message, null);
+		return sendMail(to, subject, message, (String)null);
 	}
 
 	/**
@@ -80,22 +82,50 @@ import org.slf4j.LoggerFactory;
 			@ParamDoc(name="subject") String subject, 
 			@ParamDoc(name="message") String message,
 			@ParamDoc(name="attachmentUrl") String attachmentUrl) {
+		List<String> attachmentUrlList = null;
+		if (StringUtils.isNotBlank(attachmentUrl)) {
+			attachmentUrlList = new ArrayList<String>();
+			attachmentUrlList.add(attachmentUrl);
+		}
+		return sendMail(to, subject, message, attachmentUrlList);
+	}
+	
+	/**
+	 * Sends an email with attachment(s) via SMTP
+	 * 
+	 * @param to the email address of the recipient
+	 * @param subject the subject of the email
+	 * @param message the body of the email
+	 * @param attachmentUrlList a list of URL strings of the contents to send as attachments
+	 * 
+	 * @return <code>true</code>, if sending the email has been successful and 
+	 * <code>false</code> in all other cases.
+	 */
+	@ActionDoc(text="Sends an email with attachment via SMTP")
+	static public boolean sendMail(
+			@ParamDoc(name="to") String to, 
+			@ParamDoc(name="subject") String subject, 
+			@ParamDoc(name="message") String message,
+			@ParamDoc(name="attachmentUrlList") List<String> attachmentUrlList) {
 		boolean success = false;
-		if(MailActionService.isProperlyConfigured) {
+		if (MailActionService.isProperlyConfigured) {
 			Email email = new SimpleEmail();
-			if(attachmentUrl!=null) {
-				// Create the attachment
-				  try {
-					  email = new MultiPartEmail();
-					  EmailAttachment attachment = new EmailAttachment();
-					  attachment.setURL(new URL(attachmentUrl));
-					  attachment.setDisposition(EmailAttachment.ATTACHMENT);
-					  attachment.setName("Attachment");
-					  ((MultiPartEmail) email).attach(attachment);
-				} catch (MalformedURLException e) {
-					logger.error("Invalid attachment url.", e);
-				} catch (EmailException e) {
-					logger.error("Error adding attachment to email.", e);
+			if (attachmentUrlList != null && !attachmentUrlList.isEmpty()) {
+				email = new MultiPartEmail();
+				for (String attachmentUrl : attachmentUrlList) {
+					// Create the attachment
+					try {
+						EmailAttachment attachment = new EmailAttachment();
+						attachment.setURL(new URL(attachmentUrl));
+						attachment.setDisposition(EmailAttachment.ATTACHMENT);
+						String fileName = attachmentUrl.replaceFirst(".*/([^/?]+).*", "$1");
+						attachment.setName(StringUtils.isNotBlank(fileName) ? fileName : "Attachment");
+						((MultiPartEmail) email).attach(attachment);
+					} catch (MalformedURLException e) {
+						logger.error("Invalid attachment url.", e);
+					} catch (EmailException e) {
+						logger.error("Error adding attachment to email.", e);
+					}
 				}
 			}
 
@@ -136,5 +166,4 @@ import org.slf4j.LoggerFactory;
 		
 		return success;
 	}
-
 }

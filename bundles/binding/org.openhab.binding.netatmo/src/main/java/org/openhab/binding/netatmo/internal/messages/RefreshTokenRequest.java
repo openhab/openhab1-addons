@@ -54,6 +54,9 @@ public class RefreshTokenRequest extends AbstractRequest {
 					this.clientId, this.clientSecret);
 
 			json = executeQuery(content);
+			if (json == null) {
+				return null;
+			}
 
 			final RefreshTokenResponse response = JSON.readValue(json,
 					RefreshTokenResponse.class);

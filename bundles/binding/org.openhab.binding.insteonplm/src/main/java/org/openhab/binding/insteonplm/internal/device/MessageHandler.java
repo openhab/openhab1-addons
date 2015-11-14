@@ -726,24 +726,36 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
-			if (cmd1 != 0x11) return;
 			try {
 				byte cmd2 = msg.getByte("command2");
-				switch (cmd2) {
-				case 0x02:
-					m_feature.publish(OpenClosedType.CLOSED, StateChangeType.CHANGED);
+				switch (cmd1) {
+				case 0x11:
+					switch (cmd2) {
+					case 0x02:
+						m_feature.publish(OpenClosedType.CLOSED, StateChangeType.CHANGED);
+						break;
+					case 0x01:
+					case 0x04:
+						m_feature.publish(OpenClosedType.OPEN, StateChangeType.CHANGED);
+						break;
+					default: // do nothing
+						break;
+					}
 					break;
-				case 0x01:
-					m_feature.publish(OpenClosedType.OPEN, StateChangeType.CHANGED);
-					break;
-				default: // do nothing
+				case 0x13:
+					switch (cmd2) {
+					case 0x04:
+						m_feature.publish(OpenClosedType.CLOSED, StateChangeType.CHANGED);
+						break;
+					default: // do nothing
+						break;
+					}
 					break;
 				}
 			} catch (FieldException e) {
 				logger.debug("{} no cmd2 found, dropping msg {}", nm(), msg);
 				return;
 			}
-
 		}
 	}
 
