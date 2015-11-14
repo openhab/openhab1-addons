@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
@@ -187,6 +188,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_BAROMETER: return createMBrickletBarometer();
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
+      case ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2: return createMBrickletAmbientLightV2();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
       case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
       case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
@@ -200,6 +202,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TFPTC_BRICKLET_CONFIGURATION: return createTFPTCBrickletConfiguration();
       case ModelPackage.TF_INDUSTRIAL_DUAL020M_ACONFIGURATION: return createTFIndustrialDual020mAConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
+      case ModelPackage.AMBIENT_LIGHT_V2_CONFIGURATION: return createAmbientLightV2Configuration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
       case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION: return createTFDistanceUSBrickletConfiguration();
@@ -377,6 +380,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletPiezoSpeakerFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_ROTARY_ENCODER:
         return createTinkerBrickletRotaryEncoderFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_AMBIENT_LIGHT_V2:
+        return createTinkerBrickletAmbientLightV2FromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -550,6 +555,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletPiezoSpeakerToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_ROTARY_ENCODER:
         return convertTinkerBrickletRotaryEncoderToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_AMBIENT_LIGHT_V2:
+        return convertTinkerBrickletAmbientLightV2ToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -1512,6 +1519,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public AmbientLightV2Configuration createAmbientLightV2Configuration()
+  {
+    AmbientLightV2ConfigurationImpl ambientLightV2Configuration = new AmbientLightV2ConfigurationImpl();
+    return ambientLightV2Configuration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration()
   {
     TFObjectTemperatureConfigurationImpl tfObjectTemperatureConfiguration = new TFObjectTemperatureConfigurationImpl();
@@ -1582,6 +1600,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletAmbientLightImpl mBrickletAmbientLight = new MBrickletAmbientLightImpl();
     return mBrickletAmbientLight;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletAmbientLightV2 createMBrickletAmbientLightV2()
+  {
+    MBrickletAmbientLightV2Impl mBrickletAmbientLightV2 = new MBrickletAmbientLightV2Impl();
+    return mBrickletAmbientLightV2;
   }
 
   /**
@@ -3040,6 +3069,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletRotaryEncoderToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAmbientLightV2 createTinkerBrickletAmbientLightV2FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletAmbientLightV2)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletAmbientLightV2ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

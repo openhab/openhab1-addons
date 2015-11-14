@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
@@ -113,7 +114,7 @@ public class ConfigurationHandler {
     bricklet_linear_poti, dualbutton_button, dualbutton_led, lcd_button, 
     bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
- digital_4in, digital_4out, rotary_encoder, rotary_encoder_button
+    digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2
   }
 
 
@@ -538,6 +539,15 @@ public class ConfigurationHandler {
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
       OHTFDevice<?, IndustrialDigitalOutSubIDs> ohtfDevice = modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDigitalOutSubIDs.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_ambient_lightv2.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      AmbientLightV2Configuration configuration = modelFactory.createAmbientLightV2Configuration();
+      OHTFDevice<AmbientLightV2Configuration, NoSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {
       logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);

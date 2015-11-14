@@ -54,6 +54,7 @@ import com.tinkerforge.BrickletIndustrialDual020mA
 import com.tinkerforge.BrickletSolidStateRelay
 import com.tinkerforge.BrickletPiezoSpeaker
 import com.tinkerforge.BrickletRotaryEncoder
+import com.tinkerforge.BrickletAmbientLightV2
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -110,6 +111,7 @@ type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
 type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
 type TinkerBrickletPiezoSpeaker wraps BrickletPiezoSpeaker
 type TinkerBrickletRotaryEncoder wraps BrickletRotaryEncoder
+type TinkerBrickletAmbientLightV2 wraps BrickletAmbientLightV2
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -711,6 +713,17 @@ class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>,
 	op void init(){}
 }
 
+class MBrickletAmbientLightV2 extends MDevice<TinkerBrickletAmbientLightV2>, 
+		MSensor<MDecimalValue>, MTFConfigConsumer<AmbientLightV2Configuration>, 
+		CallbackListener {
+	readonly String deviceType = "bricklet_ambient_lightv2"
+	BigDecimal threshold = "1"
+	short illuminanceRange = "3"
+	short integrationTime = "3"
+	
+	op void init(){}
+}
+
 class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
         CallbackListener {
@@ -805,6 +818,11 @@ class TFIndustrialDual020mAConfiguration extends TFConfig {
 class TFBaseConfiguration extends TFConfig {
 	BigDecimal threshold
 	int callbackPeriod
+}
+
+class AmbientLightV2Configuration extends TFBaseConfiguration {
+	short illuminanceRange
+	short integrationTime
 }
 
 class TFObjectTemperatureConfiguration extends TFBaseConfiguration {

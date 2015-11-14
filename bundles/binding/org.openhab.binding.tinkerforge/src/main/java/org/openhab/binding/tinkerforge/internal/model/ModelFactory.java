@@ -800,6 +800,15 @@ public interface ModelFactory extends EFactory
   TFBaseConfiguration createTFBaseConfiguration();
 
   /**
+   * Returns a new object of class '<em>Ambient Light V2 Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Ambient Light V2 Configuration</em>'.
+   * @generated
+   */
+  AmbientLightV2Configuration createAmbientLightV2Configuration();
+
+  /**
    * Returns a new object of class '<em>TF Object Temperature Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -861,6 +870,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletAmbientLight createMBrickletAmbientLight();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Ambient Light V2</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Ambient Light V2</em>'.
+   * @generated
+   */
+  MBrickletAmbientLightV2 createMBrickletAmbientLightV2();
 
   /**
    * Returns a new object of class '<em>MBricklet Sound Intensity</em>'.

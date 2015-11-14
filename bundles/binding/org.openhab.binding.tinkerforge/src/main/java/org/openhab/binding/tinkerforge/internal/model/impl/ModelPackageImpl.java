@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
@@ -83,6 +84,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
@@ -206,6 +208,7 @@ import org.slf4j.Logger;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
@@ -1086,6 +1089,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass ambientLightV2ConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfObjectTemperatureConfigurationEClass = null;
 
   /**
@@ -1129,6 +1139,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletAmbientLightEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletAmbientLightV2EClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1626,6 +1643,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletRotaryEncoderEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletAmbientLightV2EDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -5680,6 +5704,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getAmbientLightV2Configuration()
+  {
+    return ambientLightV2ConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAmbientLightV2Configuration_IlluminanceRange()
+  {
+    return (EAttribute)ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAmbientLightV2Configuration_IntegrationTime()
+  {
+    return (EAttribute)ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFObjectTemperatureConfiguration()
   {
     return tfObjectTemperatureConfigurationEClass;
@@ -5883,6 +5937,66 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletAmbientLight__Init()
   {
     return mBrickletAmbientLightEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletAmbientLightV2()
+  {
+    return mBrickletAmbientLightV2EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAmbientLightV2_DeviceType()
+  {
+    return (EAttribute)mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAmbientLightV2_Threshold()
+  {
+    return (EAttribute)mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAmbientLightV2_IlluminanceRange()
+  {
+    return (EAttribute)mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAmbientLightV2_IntegrationTime()
+  {
+    return (EAttribute)mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletAmbientLightV2__Init()
+  {
+    return mBrickletAmbientLightV2EClass.getEOperations().get(0);
   }
 
   /**
@@ -6860,6 +6974,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletAmbientLightV2()
+  {
+    return tinkerBrickletAmbientLightV2EDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7426,6 +7550,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletAmbientLightEClass, MBRICKLET_AMBIENT_LIGHT__THRESHOLD);
     createEOperation(mBrickletAmbientLightEClass, MBRICKLET_AMBIENT_LIGHT___INIT);
 
+    mBrickletAmbientLightV2EClass = createEClass(MBRICKLET_AMBIENT_LIGHT_V2);
+    createEAttribute(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2__DEVICE_TYPE);
+    createEAttribute(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2__THRESHOLD);
+    createEAttribute(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2__ILLUMINANCE_RANGE);
+    createEAttribute(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2__INTEGRATION_TIME);
+    createEOperation(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2___INIT);
+
     mBrickletSoundIntensityEClass = createEClass(MBRICKLET_SOUND_INTENSITY);
     createEAttribute(mBrickletSoundIntensityEClass, MBRICKLET_SOUND_INTENSITY__DEVICE_TYPE);
     createEAttribute(mBrickletSoundIntensityEClass, MBRICKLET_SOUND_INTENSITY__THRESHOLD);
@@ -7490,6 +7621,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
+
+    ambientLightV2ConfigurationEClass = createEClass(AMBIENT_LIGHT_V2_CONFIGURATION);
+    createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__ILLUMINANCE_RANGE);
+    createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__INTEGRATION_TIME);
 
     tfObjectTemperatureConfigurationEClass = createEClass(TF_OBJECT_TEMPERATURE_CONFIGURATION);
     createEAttribute(tfObjectTemperatureConfigurationEClass, TF_OBJECT_TEMPERATURE_CONFIGURATION__EMISSIVITY);
@@ -7651,6 +7786,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletSolidStateRelayEDataType = createEDataType(TINKER_BRICKLET_SOLID_STATE_RELAY);
     tinkerBrickletPiezoSpeakerEDataType = createEDataType(TINKER_BRICKLET_PIEZO_SPEAKER);
     tinkerBrickletRotaryEncoderEDataType = createEDataType(TINKER_BRICKLET_ROTARY_ENCODER);
+    tinkerBrickletAmbientLightV2EDataType = createEDataType(TINKER_BRICKLET_AMBIENT_LIGHT_V2);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -8403,6 +8539,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletAmbientLightEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletAmbientLightV2());
+    g1.getETypeArguments().add(g2);
+    mBrickletAmbientLightV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickletAmbientLightV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getAmbientLightV2Configuration());
+    g1.getETypeArguments().add(g2);
+    mBrickletAmbientLightV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletAmbientLightV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletSoundIntensity());
     g1.getETypeArguments().add(g2);
     mBrickletSoundIntensityEClass.getEGenericSuperTypes().add(g1);
@@ -8476,6 +8626,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfptcBrickletConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfIndustrialDual020mAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    ambientLightV2ConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -9017,6 +9168,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletAmbientLight__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletAmbientLightV2EClass, MBrickletAmbientLightV2.class, "MBrickletAmbientLightV2", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletAmbientLightV2_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ambient_lightv2", 0, 1, MBrickletAmbientLightV2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAmbientLightV2_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "1", 0, 1, MBrickletAmbientLightV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAmbientLightV2_IlluminanceRange(), theEcorePackage.getEShort(), "illuminanceRange", "3", 0, 1, MBrickletAmbientLightV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAmbientLightV2_IntegrationTime(), theEcorePackage.getEShort(), "integrationTime", "3", 0, 1, MBrickletAmbientLightV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletAmbientLightV2__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mBrickletSoundIntensityEClass, MBrickletSoundIntensity.class, "MBrickletSoundIntensity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletSoundIntensity_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_soundintensity", 0, 1, MBrickletSoundIntensity.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletSoundIntensity_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletSoundIntensity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9114,6 +9273,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ambientLightV2ConfigurationEClass, AmbientLightV2Configuration.class, "AmbientLightV2Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAmbientLightV2Configuration_IlluminanceRange(), theEcorePackage.getEShort(), "illuminanceRange", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAmbientLightV2Configuration_IntegrationTime(), theEcorePackage.getEShort(), "integrationTime", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfObjectTemperatureConfigurationEClass, TFObjectTemperatureConfiguration.class, "TFObjectTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFObjectTemperatureConfiguration_Emissivity(), theEcorePackage.getEInt(), "emissivity", null, 0, 1, TFObjectTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9423,6 +9586,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletSolidStateRelayEDataType, BrickletSolidStateRelay.class, "TinkerBrickletSolidStateRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletPiezoSpeakerEDataType, BrickletPiezoSpeaker.class, "TinkerBrickletPiezoSpeaker", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletRotaryEncoderEDataType, BrickletRotaryEncoder.class, "TinkerBrickletRotaryEncoder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletAmbientLightV2EDataType, BrickletAmbientLightV2.class, "TinkerBrickletAmbientLightV2", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

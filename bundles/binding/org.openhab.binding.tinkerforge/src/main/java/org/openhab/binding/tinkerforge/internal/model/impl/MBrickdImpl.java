@@ -48,6 +48,7 @@ import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
@@ -911,6 +912,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 				logger.debug("{} addDevice AmbientLight", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletAmbientLight();
 				mDevice.setDeviceIdentifier(BrickletAmbientLight.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAmbientLightV2.DEVICE_IDENTIFIER){
+              logger.debug("{} addDevice AmbientLighV2", LoggerConstants.TFINIT);
+              mDevice = factory.createMBrickletAmbientLightV2();
+              mDevice.setDeviceIdentifier(BrickletAmbientLightV2.DEVICE_IDENTIFIER);
 			} else if (deviceIdentifier == BrickletDistanceIR.DEVICE_IDENTIFIER){
 				logger.debug("{} addDevice DistanceIR", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletDistanceIR();
