@@ -28,30 +28,32 @@ import org.slf4j.LoggerFactory;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class myqGenericBindingProvider extends AbstractGenericBindingProvider implements myqBindingProvider 
-{
+public class myqGenericBindingProvider extends AbstractGenericBindingProvider
+		implements myqBindingProvider {
 	static final Logger logger = LoggerFactory
 			.getLogger(myqGenericBindingProvider.class);
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getBindingType() 
-	{
+	public String getBindingType() {
 		return "myq";
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException 
-	{
-		if (!(item instanceof SwitchItem || item instanceof ContactItem|| item instanceof StringItem))
-		{
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-				+ "', only SwitchItems, ContactItem or StringItem are allowed "
-				+ "- please check your *.items configuration");
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof ContactItem || item instanceof StringItem)) {
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only SwitchItems, ContactItem or StringItem are allowed "
+							+ "- please check your *.items configuration");
 		}
 	}
 
@@ -59,30 +61,30 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException 
-	{
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		myqBindingConfig config = parseBindingConfig(item, bindingConfig);
-		
-		//parse bindingconfig here ...		
+
+		// parse bindingconfig here ...
 		addBindingConfig(item, config);
 	}
 
 	/**
 	 * Parse item type to see what the action is used for
 	 */
-	private myqBindingConfig parseBindingConfig(Item item, String bindingConfig) throws BindingConfigParseException 
-	{
+	private myqBindingConfig parseBindingConfig(Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		final myqBindingConfig config = new myqBindingConfig();
 
-		if(item instanceof SwitchItem)
+		if (item instanceof SwitchItem) {
 			config.Type = ITEMTYPE.Switch;
-		else if(item instanceof ContactItem)
+		} else if (item instanceof ContactItem) {
 			config.Type = ITEMTYPE.ContactStatus;
-		else if(item instanceof StringItem)
+		} else if (item instanceof StringItem) {
 			config.Type = ITEMTYPE.StringStatus;
+		}
 		config.DeviceID = Integer.parseInt(bindingConfig);
-
 		return config;
 	}
 
@@ -90,17 +92,15 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public myqBindingConfig getItemConfig(String itemName) 
-	{
+	public myqBindingConfig getItemConfig(String itemName) {
 		return (myqBindingConfig) bindingConfigs.get(itemName);
 	}
 
-	
-	public List<String> getInBindingItemNames()
-	{
+	public List<String> getInBindingItemNames() {
 		List<String> inBindings = new ArrayList<String>();
-		for (String itemName : bindingConfigs.keySet())		
-			inBindings.add(itemName);		
+		for (String itemName : bindingConfigs.keySet()) {
+			inBindings.add(itemName);
+		}
 		return inBindings;
 	}
 }

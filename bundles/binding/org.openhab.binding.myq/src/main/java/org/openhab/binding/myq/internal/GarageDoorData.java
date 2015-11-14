@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This Class parses the JSON data and creates a HashMap of Garage Door Opener Devices
- * with the TypeName as the Key. 
+ * This Class parses the JSON data and creates a HashMap of Garage Door Opener
+ * Devices with the TypeName as the Key.
  * <ul>
  * <li>success: JSON request was successful</li>
  * <li>devices: HashMap of Devices</li>
@@ -27,11 +27,10 @@ import org.slf4j.LoggerFactory;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class GarageDoorData 
-{
+public class GarageDoorData {
 	static final Logger logger = LoggerFactory.getLogger(GarageDoorData.class);
 
-	//JSON returnCode was 0 
+	// JSON returnCode was 0
 	private boolean success = false;
 
 	HashMap<Integer, Device> devices = new HashMap<Integer, Device>();
@@ -42,47 +41,55 @@ public class GarageDoorData
 	 * @param deviceStatusData
 	 *            The Json string as it has been returned myq website.
 	 */
-	public GarageDoorData(String deviceStatusData)
-	{
+	public GarageDoorData(String deviceStatusData) {
 		ObjectMapper mapper = new ObjectMapper();
-		try 
-		{
+		try {
 			JsonNode rootNode = mapper.readTree(deviceStatusData);
 			int ReturnCode = rootNode.get("ReturnCode").asInt();
 			logger.debug("myq ReturnCode: " + Integer.toString(ReturnCode));
 
-			if(ReturnCode==0)
-			{
+			if (ReturnCode == 0) {
 				this.success = true;
-				if(rootNode.has("Devices"))
-				{
+				if (rootNode.has("Devices")) {
 					JsonNode node = rootNode.get("Devices");
-					if(node.isArray())
-					{
+					if (node.isArray()) {
 						logger.info("Chamberlain MyQ Devices:");
 
-						int arraysize  = node.size();
-						for(int i = 0; i < arraysize; i++)
-						{
+						int arraysize = node.size();
+						for (int i = 0; i < arraysize; i++) {
 							int deviceId = node.get(i).get("DeviceId").asInt();
-							String deviceName = node.get(i).get("DeviceName").asText();
-							String deviceType = node.get(i).get("MyQDeviceTypeName").asText();
+							String deviceName = node.get(i).get("DeviceName")
+									.asText();
+							String deviceType = node.get(i)
+									.get("MyQDeviceTypeName").asText();
 
-							if(deviceType.contains("GarageDoorOpener"))
-							{
-								JsonNode attributes = node.get(i).get("Attributes");
-								if(attributes.isArray())
-								{
-									int attributesSize  = attributes.size();
-									for(int j = 0; j < attributesSize; j++)
-									{
-										String attributeName = attributes.get(j).get("Name").asText();
-										if(attributeName.contains("doorstate"))
-										{
-											int doorstate = attributes.get(j).get("Value").asInt();
-											logger.info("DeviceID: " + Integer.toString(deviceId) + " DeviceName: " + deviceName +" DeviceType: " + deviceType + " Doorstate : " + Integer.toString(doorstate));
+							if (deviceType.contains("GarageDoorOpener")) {
+								JsonNode attributes = node.get(i).get(
+										"Attributes");
+								if (attributes.isArray()) {
+									int attributesSize = attributes.size();
+									for (int j = 0; j < attributesSize; j++) {
+										String attributeName = attributes
+												.get(j).get("Name").asText();
+										if (attributeName.contains("doorstate")) {
+											int doorstate = attributes.get(j)
+													.get("Value").asInt();
+											logger.info("DeviceID: "
+													+ Integer
+															.toString(deviceId)
+													+ " DeviceName: "
+													+ deviceName
+													+ " DeviceType: "
+													+ deviceType
+													+ " Doorstate : "
+													+ Integer
+															.toString(doorstate));
 
-											this.devices.put(deviceId,new Device(deviceId, deviceType, deviceName, doorstate));
+											this.devices.put(deviceId,
+													new Device(deviceId,
+															deviceType,
+															deviceName,
+															doorstate));
 											break;
 										}
 									}
@@ -92,20 +99,16 @@ public class GarageDoorData
 					}
 				}
 			}
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			logger.error("Could not read GarageDoor JSON from MyQ Site.", e);
 		}
 	}
 
-	public boolean getSuccess()
-	{
+	public boolean getSuccess() {
 		return this.success;
 	}
 
-	public HashMap<Integer, Device> getDevices()
-	{
+	public HashMap<Integer, Device> getDevices() {
 		return this.devices;
 	}
 }
@@ -114,77 +117,67 @@ public class GarageDoorData
  * This Class holds the Garage Door Opener Device data.
  * <ul>
  * <li>DeviceId: DeviceId from API, need for http Posts</li>
- * <li>MyQDeviceType: Device Type. GarageDoorOpener or Gateway I've seen</li>
+ * <li>DeviceType: MYQ Device Type. GarageDoorOpener or Gateway I've seen</li>
  * <li>DeviceName: Serial number of device I think</li>
- * <li>TypeName: Name That appears in myQ App</li>
  * <li>Status: Garage Door Opener "doorstate" Attribute</li>
  * </ul>
  * 
  * @author Scott Hanson
  * @since 1.8.0
  */
-class Device
-{
+class Device {
 	private int DeviceId;
 	private String DeviceType;
 	private String DeviceName;
 	private int Status;
 
-	public Device(int deviceId, String deviceType, String deviceName, int status )
-	{
+	public Device(int deviceId, String deviceType, String deviceName, int status) {
 		this.DeviceId = deviceId;
 		this.DeviceType = deviceType;
 		this.DeviceName = deviceName;
 		this.Status = status;
 	}
 
-	public int getDeviceId() 
-	{
+	public int getDeviceId() {
 		return this.DeviceId;
 	}
 
-	public String getDeviceType()
-	{
+	public String getDeviceType() {
 		return this.DeviceType;
 	}
 
-	public String getDeviceName()
-	{
+	public String getDeviceName() {
 		return this.DeviceName;
 	}
 
-	public int getStatus()
-	{
+	public int getStatus() {
 		return this.Status;
 	}
 
-	public boolean IsDoorClosed()
-	{
-		if(this.Status == 2)
+	public boolean IsDoorClosed() {
+		if (this.Status == 2) {
 			return true;
+		}
 		return false;
 	}
 
-	public String GetStrStatus()
-	{
-		switch (this.Status)
-		{
-			case 1:
-				return "Open";
-			case 2:
-				return "Closed";
-			case 3:
-				return "Partially Open/Closed";
-			case 4:
-				return "Opening";
-			case 5:
-				return "Closing";
+	public String GetStrStatus() {
+		switch (this.Status) {
+		case 1:
+			return "Open";
+		case 2:
+			return "Closed";
+		case 3:
+			return "Partially Open/Closed";
+		case 4:
+			return "Opening";
+		case 5:
+			return "Closing";
 		}
 		return "Unknown";
 	}
 
-	public String toString() 
-	{
+	public String toString() {
 		return this.DeviceName;
 	}
 }

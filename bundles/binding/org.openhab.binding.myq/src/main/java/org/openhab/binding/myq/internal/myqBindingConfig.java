@@ -7,6 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.myq.internal;
+
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -21,14 +22,12 @@ import org.openhab.core.binding.BindingConfig;
  * <li>StringStatus</li>
  * <li>ContactStatus</li>
  * </ul>
- * <li>id is unused at this time</li>
- * </ul>
+ * <li>id is unused at this time</li> </ul>
  * 
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class myqBindingConfig implements BindingConfig 
-{
+public class myqBindingConfig implements BindingConfig {
 	/**
 	 * The binding type of the myq item.
 	 * <ul>
@@ -42,5 +41,5 @@ public class myqBindingConfig implements BindingConfig
 	};
 
 	int DeviceID;
-	ITEMTYPE Type;	
+	ITEMTYPE Type;
 }

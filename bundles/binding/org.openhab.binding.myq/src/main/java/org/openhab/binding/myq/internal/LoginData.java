@@ -17,7 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This Class parses the JSON data and stores if the login request was successful.
+ * This Class parses the JSON data and stores if the login request was
+ * successful.
  * <ul>
  * <li>success: json request was successful</li>
  * <li>securityToken: securityToken from login request</li>
@@ -26,8 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class LoginData
-{
+public class LoginData {
 	static final Logger logger = LoggerFactory.getLogger(LoginData.class);
 
 	boolean success = false;
@@ -40,25 +40,21 @@ public class LoginData
 	 *            The Json string as it has been returned myq website.
 	 */
 	@SuppressWarnings("unchecked")
-	public LoginData(String loginData)
-	{
+	public LoginData(String loginData) {
 		ObjectMapper mapper = new ObjectMapper();
-		try
-		{
+		try {
 			JsonNode rootNode = mapper.readTree(loginData);
-			Map<String, Object> treeData = mapper.readValue(rootNode, Map.class);
+			Map<String, Object> treeData = mapper
+					.readValue(rootNode, Map.class);
 			String test = treeData.get("ReturnCode").toString();
 			logger.debug("myq ReturnCode: " + test);
 
-			if(Integer.parseInt(treeData.get("ReturnCode").toString())==0)
-			{
+			if (Integer.parseInt(treeData.get("ReturnCode").toString()) == 0) {
 				this.success = true;
 				this.securityToken = treeData.get("SecurityToken").toString();
 				logger.debug("myq securityToken: " + this.securityToken);
 			}
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			logger.error("Could not read Settings-Json from myq site.", e);
 		}
 	}
@@ -66,16 +62,14 @@ public class LoginData
 	/**
 	 * @return if it works return true
 	 */
-	public boolean getSuccess()
-	{
+	public boolean getSuccess() {
 		return this.success;
 	}
 
 	/**
 	 * @return Login SecurityToken
 	 */
-	public String getSecurityToken()
-	{
+	public String getSecurityToken() {
 		return this.securityToken;
 	}
 }
