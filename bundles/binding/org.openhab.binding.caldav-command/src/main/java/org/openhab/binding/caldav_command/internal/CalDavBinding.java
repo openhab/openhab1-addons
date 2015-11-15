@@ -353,7 +353,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		} else if (type == CalDavType.DISABLE) {
 			// ok
 		} else {
-			logger.warn("unhandled type: " + type);
+			logger.warn("unhandled type: {}", type);
 		}
 	}
 }

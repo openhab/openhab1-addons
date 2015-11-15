@@ -37,8 +37,7 @@ public class CaldavConfiguration implements ManagedService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
+	public void updated(Dictionary<String, ? > config) throws ConfigurationException {
 		if (config != null) {
 			String calendarIdString = (String) config.get("calendarId");
 			if (StringUtils.isNotBlank(calendarIdString)) {

@@ -61,7 +61,7 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
 		if (bindingConfig == null) {
-			logger.debug("binding-configuration is currently not set for item: " + item.getName());
+			logger.debug("binding-configuration is currently not set for item: {}", item.getName());
 		}
 		
 		String itemName = null;
