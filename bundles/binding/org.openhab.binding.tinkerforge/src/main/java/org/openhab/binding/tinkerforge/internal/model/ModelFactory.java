@@ -800,6 +800,15 @@ public interface ModelFactory extends EFactory
   TFBaseConfiguration createTFBaseConfiguration();
 
   /**
+   * Returns a new object of class '<em>Load Cell Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Load Cell Configuration</em>'.
+   * @generated
+   */
+  LoadCellConfiguration createLoadCellConfiguration();
+
+  /**
    * Returns a new object of class '<em>Ambient Light V2 Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -897,6 +906,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletDustDetector createMBrickletDustDetector();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Load Cell</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Load Cell</em>'.
+   * @generated
+   */
+  MBrickletLoadCell createMBrickletLoadCell();
 
   /**
    * Returns a new object of class '<em>MBricklet Moisture</em>'.

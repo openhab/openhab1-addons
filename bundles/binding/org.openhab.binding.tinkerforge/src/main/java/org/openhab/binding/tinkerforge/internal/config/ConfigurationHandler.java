@@ -45,6 +45,7 @@ import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
@@ -115,7 +116,7 @@ public class ConfigurationHandler {
     bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
     digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2,
-    bricklet_dustdetector
+ bricklet_dustdetector, bricklet_loadcell
   }
 
 
@@ -543,11 +544,21 @@ public class ConfigurationHandler {
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDigitalOutSubIDs.values()));
       fillupConfig(ohtfDevice, deviceConfig);
     } else if (deviceType.equals(TypeKey.bricklet_ambient_lightv2.name())) {
-      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting AmbientLightV2Configuration device_type {}", LoggerConstants.CONFIG,
+          deviceType);
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
       AmbientLightV2Configuration configuration = modelFactory.createAmbientLightV2Configuration();
       OHTFDevice<AmbientLightV2Configuration, NoSubIds> ohtfDevice =
           modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_loadcell.name())) {
+      logger.trace("{} setting LoadCellConfiguration device_type {}", LoggerConstants.CONFIG,
+          deviceType);
+      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      LoadCellConfiguration configuration = modelFactory.createLoadCellConfiguration();
+      OHTFDevice<LoadCellConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);

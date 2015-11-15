@@ -77,6 +77,7 @@ import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MActor;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -101,6 +102,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
@@ -228,6 +230,7 @@ import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLinearPoti;
+import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -1091,6 +1094,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass loadCellConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass ambientLightV2ConfigurationEClass = null;
 
   /**
@@ -1162,6 +1172,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletDustDetectorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletLoadCellEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1666,6 +1683,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletDustDetectorEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletLoadCellEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -5720,6 +5744,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getLoadCellConfiguration()
+  {
+    return loadCellConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLoadCellConfiguration_MovingAverage()
+  {
+    return (EAttribute)loadCellConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getAmbientLightV2Configuration()
   {
     return ambientLightV2ConfigurationEClass;
@@ -6093,6 +6137,76 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletDustDetector__Init()
   {
     return mBrickletDustDetectorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletLoadCell()
+  {
+    return mBrickletLoadCellEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLoadCell_DeviceType()
+  {
+    return (EAttribute)mBrickletLoadCellEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLoadCell_Threshold()
+  {
+    return (EAttribute)mBrickletLoadCellEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLoadCell_MovingAverage()
+  {
+    return (EAttribute)mBrickletLoadCellEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletLoadCell__Init()
+  {
+    return mBrickletLoadCellEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletLoadCell__Tare()
+  {
+    return mBrickletLoadCellEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickletLoadCell__Led__OnOffValue()
+  {
+    return mBrickletLoadCellEClass.getEOperations().get(2);
   }
 
   /**
@@ -7050,6 +7164,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletLoadCell()
+  {
+    return tinkerBrickletLoadCellEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7633,6 +7757,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletDustDetectorEClass, MBRICKLET_DUST_DETECTOR__THRESHOLD);
     createEOperation(mBrickletDustDetectorEClass, MBRICKLET_DUST_DETECTOR___INIT);
 
+    mBrickletLoadCellEClass = createEClass(MBRICKLET_LOAD_CELL);
+    createEAttribute(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL__DEVICE_TYPE);
+    createEAttribute(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL__THRESHOLD);
+    createEAttribute(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL__MOVING_AVERAGE);
+    createEOperation(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL___INIT);
+    createEOperation(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL___TARE);
+    createEOperation(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL___LED__ONOFFVALUE);
+
     mBrickletMoistureEClass = createEClass(MBRICKLET_MOISTURE);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__DEVICE_TYPE);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__THRESHOLD);
@@ -7692,6 +7824,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
+
+    loadCellConfigurationEClass = createEClass(LOAD_CELL_CONFIGURATION);
+    createEAttribute(loadCellConfigurationEClass, LOAD_CELL_CONFIGURATION__MOVING_AVERAGE);
 
     ambientLightV2ConfigurationEClass = createEClass(AMBIENT_LIGHT_V2_CONFIGURATION);
     createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__ILLUMINANCE_RANGE);
@@ -7859,6 +7994,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletRotaryEncoderEDataType = createEDataType(TINKER_BRICKLET_ROTARY_ENCODER);
     tinkerBrickletAmbientLightV2EDataType = createEDataType(TINKER_BRICKLET_AMBIENT_LIGHT_V2);
     tinkerBrickletDustDetectorEDataType = createEDataType(TINKER_BRICKLET_DUST_DETECTOR);
+    tinkerBrickletLoadCellEDataType = createEDataType(TINKER_BRICKLET_LOAD_CELL);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -8653,6 +8789,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletDustDetectorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletLoadCell());
+    g1.getETypeArguments().add(g2);
+    mBrickletLoadCellEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickletLoadCellEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getLoadCellConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletLoadCellEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletLoadCellEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletMoisture());
     g1.getETypeArguments().add(g2);
     mBrickletMoistureEClass.getEGenericSuperTypes().add(g1);
@@ -8712,6 +8862,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfptcBrickletConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfIndustrialDual020mAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    loadCellConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     ambientLightV2ConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -9274,6 +9425,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletDustDetector__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletLoadCellEClass, MBrickletLoadCell.class, "MBrickletLoadCell", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletLoadCell_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_loadcell", 0, 1, MBrickletLoadCell.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLoadCell_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletLoadCell.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLoadCell_MovingAverage(), theEcorePackage.getEShort(), "movingAverage", "4", 0, 1, MBrickletLoadCell.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEOperation(getMBrickletLoadCell__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getMBrickletLoadCell__Tare(), null, "tare", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getMBrickletLoadCell__Led__OnOffValue(), null, "led", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mBrickletMoistureEClass, MBrickletMoisture.class, "MBrickletMoisture", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletMoisture_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_moisture", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletMoisture_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9365,6 +9528,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(loadCellConfigurationEClass, LoadCellConfiguration.class, "LoadCellConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLoadCellConfiguration_MovingAverage(), theEcorePackage.getEShort(), "movingAverage", null, 0, 1, LoadCellConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(ambientLightV2ConfigurationEClass, AmbientLightV2Configuration.class, "AmbientLightV2Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAmbientLightV2Configuration_IlluminanceRange(), theEcorePackage.getEShort(), "illuminanceRange", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9680,6 +9846,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletRotaryEncoderEDataType, BrickletRotaryEncoder.class, "TinkerBrickletRotaryEncoder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletAmbientLightV2EDataType, BrickletAmbientLightV2.class, "TinkerBrickletAmbientLightV2", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletDustDetectorEDataType, BrickletDustDetector.class, "TinkerBrickletDustDetector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletLoadCellEDataType, BrickletLoadCell.class, "TinkerBrickletLoadCell", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

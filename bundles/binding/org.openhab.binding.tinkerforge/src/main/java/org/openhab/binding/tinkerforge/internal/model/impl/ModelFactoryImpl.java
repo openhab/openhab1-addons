@@ -55,6 +55,7 @@ import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLinearPoti;
+import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -192,6 +193,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2: return createMBrickletAmbientLightV2();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
       case ModelPackage.MBRICKLET_DUST_DETECTOR: return createMBrickletDustDetector();
+      case ModelPackage.MBRICKLET_LOAD_CELL: return createMBrickletLoadCell();
       case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
       case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
@@ -204,6 +206,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TFPTC_BRICKLET_CONFIGURATION: return createTFPTCBrickletConfiguration();
       case ModelPackage.TF_INDUSTRIAL_DUAL020M_ACONFIGURATION: return createTFIndustrialDual020mAConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
+      case ModelPackage.LOAD_CELL_CONFIGURATION: return createLoadCellConfiguration();
       case ModelPackage.AMBIENT_LIGHT_V2_CONFIGURATION: return createAmbientLightV2Configuration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
@@ -386,6 +389,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletAmbientLightV2FromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_DUST_DETECTOR:
         return createTinkerBrickletDustDetectorFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
+        return createTinkerBrickletLoadCellFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -563,6 +568,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletAmbientLightV2ToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_DUST_DETECTOR:
         return convertTinkerBrickletDustDetectorToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
+        return convertTinkerBrickletLoadCellToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -1525,6 +1532,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public LoadCellConfiguration createLoadCellConfiguration()
+  {
+    LoadCellConfigurationImpl loadCellConfiguration = new LoadCellConfigurationImpl();
+    return loadCellConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public AmbientLightV2Configuration createAmbientLightV2Configuration()
   {
     AmbientLightV2ConfigurationImpl ambientLightV2Configuration = new AmbientLightV2ConfigurationImpl();
@@ -1639,6 +1657,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletDustDetectorImpl mBrickletDustDetector = new MBrickletDustDetectorImpl();
     return mBrickletDustDetector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletLoadCell createMBrickletLoadCell()
+  {
+    MBrickletLoadCellImpl mBrickletLoadCell = new MBrickletLoadCellImpl();
+    return mBrickletLoadCell;
   }
 
   /**
@@ -3126,6 +3155,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletDustDetectorToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletLoadCell createTinkerBrickletLoadCellFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletLoadCell)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletLoadCellToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

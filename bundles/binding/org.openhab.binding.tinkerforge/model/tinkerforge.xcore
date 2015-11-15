@@ -56,6 +56,7 @@ import com.tinkerforge.BrickletPiezoSpeaker
 import com.tinkerforge.BrickletRotaryEncoder
 import com.tinkerforge.BrickletAmbientLightV2
 import com.tinkerforge.BrickletDustDetector
+import com.tinkerforge.BrickletLoadCell
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -114,6 +115,7 @@ type TinkerBrickletPiezoSpeaker wraps BrickletPiezoSpeaker
 type TinkerBrickletRotaryEncoder wraps BrickletRotaryEncoder
 type TinkerBrickletAmbientLightV2 wraps BrickletAmbientLightV2
 type TinkerBrickletDustDetector wraps BrickletDustDetector
+type TinkerBrickletLoadCell wraps BrickletLoadCell
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -741,7 +743,18 @@ class MBrickletDustDetector extends MDevice<TinkerBrickletDustDetector>,
     BigDecimal threshold = "0"
     op void init(){}
 }
-	
+
+class MBrickletLoadCell extends MDevice<TinkerBrickletLoadCell>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<LoadCellConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_loadcell"
+    BigDecimal threshold = "0"
+	short movingAverage = "4"
+    op void init(){}
+    op void tare(){}
+    op void led(SwitchState state){}
+}
+
 class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFMoistureBrickletConfiguration>,
         CallbackListener {
@@ -828,6 +841,10 @@ class TFIndustrialDual020mAConfiguration extends TFConfig {
 class TFBaseConfiguration extends TFConfig {
 	BigDecimal threshold
 	int callbackPeriod
+}
+
+class LoadCellConfiguration extends TFBaseConfiguration {
+	short movingAverage
 }
 
 class AmbientLightV2Configuration extends TFBaseConfiguration {
