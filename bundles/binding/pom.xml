@@ -161,5 +161,7 @@
     <module>org.openhab.binding.ipx800</module>
     <module>org.openhab.binding.tacmi</module>
     <module>org.openhab.binding.lcn</module>
+	<module>org.openhab.binding.caldav-command</module>
+	<module>org.openhab.binding.caldav-personal</module>
   </modules>
 </project>
