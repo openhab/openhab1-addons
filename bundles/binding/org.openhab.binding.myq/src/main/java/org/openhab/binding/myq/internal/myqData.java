@@ -18,11 +18,10 @@ import java.util.Properties;
 /**
  * This Class handles the Chamberlain myQ http connection.
  * 
- * @method Login()
- * 
  *         <ul>
  *         <li>userName: myQ Login Username</li>
  *         <li>password: myQ Login Password</li>
+ *         <li>logDeviceData: Log Device Data</li>
  *         <li>sercurityTokin: sercurityTokin for API requests</li>
  *         <li>webSite: url of myQ API</li>
  *         <li>appId: appId for API requests</li>
@@ -38,15 +37,30 @@ public class myqData {
 	private String userName;
 	private String password;
 	private String sercurityTokin;
+	private boolean logDeviceData;
 
 	private final String webSite = "https://myqexternal.myqdevice.com";
 	private final String appId = "Vj8pQggXLhLy0WHahglCD4N1nAkkXQtGYpq2HrHD7H1nvmbT55KqtN6RSF4ILB%2fi";
 
 	private final int MaxRetrys = 3;
 
-	public myqData(String username, String password) {
+	/**
+	 * Constructor For Chamberlain MyQ http connection
+	 * 
+	 * @param username
+	 *            Chamberlain MyQ UserName
+	 *            
+	 * @param password
+	 *            Chamberlain MyQ password
+	 *            
+	 * @param logdevicedata
+	 *            Log Device Data to openHAB Log
+	 *            
+	 */
+	public myqData(String username, String password, boolean logdevicedata) {
 		this.userName = username;
 		this.password = password;
+		this.logDeviceData = logdevicedata;
 	}
 
 	/**
@@ -56,7 +70,7 @@ public class myqData {
 		if (this.sercurityTokin == null)
 			Login();
 		String json = getGarageStatus(0);
-		return json != null ? new GarageDoorData(json) : null;
+		return json != null ? new GarageDoorData(json, this.logDeviceData) : null;
 	}
 
 	/**

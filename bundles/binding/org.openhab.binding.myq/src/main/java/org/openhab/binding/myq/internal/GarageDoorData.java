@@ -40,8 +40,11 @@ public class GarageDoorData {
 	 * 
 	 * @param deviceStatusData
 	 *            The Json string as it has been returned myq website.
+	 *            
+	 * @param logData
+	 *            Boolean to determine if devicedata should be logged.
 	 */
-	public GarageDoorData(String deviceStatusData) {
+	public GarageDoorData(String deviceStatusData, boolean logData) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			JsonNode rootNode = mapper.readTree(deviceStatusData);
@@ -53,7 +56,9 @@ public class GarageDoorData {
 				if (rootNode.has("Devices")) {
 					JsonNode node = rootNode.get("Devices");
 					if (node.isArray()) {
-						logger.info("Chamberlain MyQ Devices:");
+						if(logData){
+							logger.info("Chamberlain MyQ Devices:");
+						}
 
 						int arraysize = node.size();
 						for (int i = 0; i < arraysize; i++) {
@@ -74,17 +79,18 @@ public class GarageDoorData {
 										if (attributeName.contains("doorstate")) {
 											int doorstate = attributes.get(j)
 													.get("Value").asInt();
-											logger.info("DeviceID: "
-													+ Integer
-															.toString(deviceId)
-													+ " DeviceName: "
-													+ deviceName
-													+ " DeviceType: "
-													+ deviceType
-													+ " Doorstate : "
-													+ Integer
-															.toString(doorstate));
-
+											if(logData){
+												logger.info("DeviceID: "
+														+ Integer
+																.toString(deviceId)
+														+ " DeviceName: "
+														+ deviceName
+														+ " DeviceType: "
+														+ deviceType
+														+ " Doorstate : "
+														+ Integer
+																.toString(doorstate));
+											}
 											this.devices.put(deviceId,
 													new Device(deviceId,
 															deviceType,

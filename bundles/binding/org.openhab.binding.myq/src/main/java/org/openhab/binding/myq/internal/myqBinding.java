@@ -57,6 +57,8 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider> {
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
+	
+	private boolean logDeviceData = true;
 
 	public myqBinding() {
 	}
@@ -75,16 +77,17 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider> {
 			final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 
-		// the configuration is guaranteed not to be null, because the component
-		// definition has the
-		// configuration-policy set to require. If set to 'optional' then the
-		// configuration may be null
-
 		// to override the default refresh interval one has to add a
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 		String refreshIntervalString = (String) configuration.get("refresh");
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
 			refreshInterval = Long.parseLong(refreshIntervalString);
+		}
+		
+		//Log Device Data to openHAB log
+		String logDeviceDataString = (String) configuration.get("logdevicedata");
+		if (StringUtils.isNotBlank(logDeviceDataString)) {
+			logDeviceData = Boolean.parseBoolean(logDeviceDataString);
 		}
 
 		String usernameString = (String) configuration.get("username");
@@ -93,7 +96,7 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider> {
 		// initialize connection object if username and password is set
 		if (StringUtils.isNotBlank(usernameString)
 				&& StringUtils.isNotBlank(passwordString)) {
-			myqOnlineData = new myqData(usernameString, passwordString);
+			myqOnlineData = new myqData(usernameString, passwordString, logDeviceData);
 		}
 
 		setProperlyConfigured(true);
@@ -107,6 +110,16 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider> {
 	 *            Updated configuration properties
 	 */
 	public void modified(final Map<String, Object> configuration) {
+		
+		String refreshIntervalString = (String) configuration.get("refresh");
+		if (StringUtils.isNotBlank(refreshIntervalString)) {
+			refreshInterval = Long.parseLong(refreshIntervalString);
+		}
+		
+		String logDeviceDataString = (String) configuration.get("logdevicedata");
+		if (StringUtils.isNotBlank(logDeviceDataString)) {
+			logDeviceData = Boolean.parseBoolean(logDeviceDataString);
+		}
 		// update the internal configuration accordingly
 		String usernameString = (String) configuration.get("username");
 		String passwordString = (String) configuration.get("password");
@@ -114,7 +127,7 @@ public class myqBinding extends AbstractActiveBinding<myqBindingProvider> {
 		// reinitialize connection object if username and password is changed
 		if (StringUtils.isNotBlank(usernameString)
 				&& StringUtils.isNotBlank(passwordString)) {
-			myqOnlineData = new myqData(usernameString, passwordString);
+			myqOnlineData = new myqData(usernameString, passwordString, logDeviceData);
 		}
 	}
 
