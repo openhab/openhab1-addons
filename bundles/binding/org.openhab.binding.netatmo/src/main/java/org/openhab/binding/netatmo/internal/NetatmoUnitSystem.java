@@ -24,6 +24,8 @@ public enum NetatmoUnitSystem {
 
 	public static final NetatmoUnitSystem DEFAULT_UNIT_SYSTEM = NetatmoUnitSystem.M;
 
+	private static final BigDecimal KPH_TO_MPH = new BigDecimal("0.6214");
+
 	private static final double METERS_TO_FEET = 3.2808399;
 
 	private static final BigDecimal MM_TO_INCHES = new BigDecimal("0.0394");
@@ -104,5 +106,23 @@ public enum NetatmoUnitSystem {
 		}
 		
 		return value.multiply(ONE_POINT_EIGHT).add(THIRTY_TWO);
+	}
+
+	/**
+	 * Convert to appropriate measurement.
+	 *
+	 * The Wind gauge is accurate to 0.5 m/s (1.8 km/h, 1 mph)
+	 *
+	 * @param value
+	 *            wind in Kilometers per Hour
+	 *
+	 * @return value in the proper measurement
+	 */
+	public BigDecimal convertWind(BigDecimal value) {
+		if (this == DEFAULT_UNIT_SYSTEM) {
+			return value;
+		}
+
+		return value.multiply(KPH_TO_MPH);
 	}
 }

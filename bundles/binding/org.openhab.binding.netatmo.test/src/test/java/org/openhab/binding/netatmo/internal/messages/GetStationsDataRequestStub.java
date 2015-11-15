@@ -15,8 +15,8 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 /**
- * @author Andreas Brenk
- * @since 1.4.0
+ * @author Rob Nielsen
+ * @since 1.8.0
  */
 public class GetStationsDataRequestStub extends  GetStationsDataRequest {
 
@@ -29,7 +29,7 @@ public class GetStationsDataRequestStub extends  GetStationsDataRequest {
 
 	private final String response;
 
-	private String query;
+	private String content;
 
 	private GetStationsDataRequestStub(final String response) throws Exception {
 		super(ACCESS_TOKEN);
@@ -43,13 +43,13 @@ public class GetStationsDataRequestStub extends  GetStationsDataRequest {
 		this.response = Resources.toString(resource, Charsets.UTF_8);
 	}
 
-	public String getQuery() {
-		return this.query;
+	public String getContent() {
+		return this.content;
 	}
 
 	@Override
-	protected String executeQuery(final String query) {
-		this.query = query;
+	protected String executeQuery(final String content) {
+		this.content = content;
 
 		return this.response;
 	}

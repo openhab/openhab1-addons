@@ -59,6 +59,8 @@ public class NetatmoBinding extends
 
 	private static final String DEFAULT_USER_ID = "DEFAULT_USER";
 
+	private static final String WIND = "Wind";
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(NetatmoBinding.class);
 
@@ -176,6 +178,10 @@ public class NetatmoBinding extends
 						case MIN_CO2:
 						case MAX_CO2:
 						case SUM_RAIN:
+						case WINDSTRENGTH:
+						case WINDANGLE:
+						case GUSTSTRENGTH:
+						case GUSTANGLE:
 							{
 								BigDecimal value = getValue(
 										deviceMeasureValueMap, measureType,
@@ -192,6 +198,9 @@ public class NetatmoBinding extends
 									} else if (NetatmoMeasureType
 											.isPressure(measureType)) {
 										value = pressureUnit.convertPressure(value);
+									} else if (NetatmoMeasureType
+											.isWind(measureType)) {
+										value = unitSystem.convertWind(value);
 									}
 
 									state = new DecimalType(value);
@@ -208,6 +217,7 @@ public class NetatmoBinding extends
 						case DATE_MAX_NOISE:
 						case DATE_MIN_CO2:
 						case DATE_MAX_CO2:
+						case DATE_MAX_GUST:
 							{
 								final BigDecimal value = getValue(
 										deviceMeasureValueMap, measureType,
@@ -446,7 +456,8 @@ public class NetatmoBinding extends
 				}
 
 				if (measurements != null) {
-					measurements.remove(measureType.getMeasure());
+					String measure = measureType != NetatmoMeasureType.WINDSTRENGTH ? measureType.getMeasure() : WIND;
+					measurements.remove(measure);
 				}
 			}
 		}
@@ -468,6 +479,9 @@ public class NetatmoBinding extends
 			final Module module = moduleMap.get(moduleId);
 
 			for (String measurement : entry.getValue()) {
+				if (measurement.equals(WIND)) {
+					measurement = NetatmoMeasureType.WINDSTRENGTH.toString().toLowerCase();
+				}
 				message.append("\t" + mainDeviceMap.get(moduleId) + "#" + moduleId
 						+ "#" + measurement + " (" + module.getModuleName()
 						+ ")\n");
@@ -521,6 +535,11 @@ public class NetatmoBinding extends
 				case DATE_MAX_NOISE:
 				case DATE_MIN_CO2:
 				case DATE_MAX_CO2:
+				case WINDSTRENGTH:
+				case WINDANGLE:
+				case GUSTSTRENGTH:
+				case GUSTANGLE:
+				case DATE_MAX_GUST:
 					final NetatmoScale scale = provider.getNetatmoScale(itemName);
 					addMeasurement(requests, provider, itemName, measureType, scale);
 					break;

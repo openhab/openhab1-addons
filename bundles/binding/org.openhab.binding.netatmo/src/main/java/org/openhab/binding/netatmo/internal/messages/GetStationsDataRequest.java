@@ -8,12 +8,12 @@
  */
 package org.openhab.binding.netatmo.internal.messages;
 
-import static org.apache.commons.httpclient.util.URIUtil.encodeQuery;
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
 
-import org.apache.commons.httpclient.URIException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.openhab.binding.netatmo.internal.NetatmoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,9 @@ import org.slf4j.LoggerFactory;
  */
 public class GetStationsDataRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = API_BASE_URL + "getstationsdata";
+	private static final String URL = API_BASE_URL + "getstationsdata";
+
+	private static final String CONTENT = "access_token=%s";
 
 	private static final Logger logger = LoggerFactory.getLogger(GetStationsDataRequest.class);
 
@@ -48,21 +50,15 @@ public class GetStationsDataRequest extends AbstractRequest {
 
 	@Override
 	public GetStationsDataResponse execute() {
-		final String url = prepare();
-
-		logger.debug(url);
+		final String content = String.format(CONTENT, this.accessToken);
 
 		String json = null;
-
 		try {
-			json = executeQuery(url);
+			json = executeQuery(content);
 
-			final GetStationsDataResponse response = JSON.readValue(json,
-					GetStationsDataResponse.class);
-
-			return response;
+			return JSON.readValue(json, GetStationsDataResponse.class);
 		} catch (final Exception e) {
-			throw newException("Could not execute get stations data request!", e, url, json);
+			throw newException("Could not execute get stations data request!", e, URL, content, json);
 		}
 	}
 
@@ -75,21 +71,13 @@ public class GetStationsDataRequest extends AbstractRequest {
 		return builder.toString();
 	}
 
-	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_GET, url, HTTP_HEADERS, null, null,
-				HTTP_REQUEST_TIMEOUT);
-	}
+	protected String executeQuery(final String content) throws Exception {
+		final InputStream stream = new ByteArrayInputStream(
+				content.getBytes(CHARSET));
 
-	private String prepare() {
-		final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
-		urlBuilder.append("?access_token=");
-		urlBuilder.append(this.accessToken);
+		logger.debug("HTTP Post url='{}' content='{}'", URL, content);
 
-		try {
-			return encodeQuery(urlBuilder.toString());
-		} catch (final URIException e) {
-			throw new NetatmoException(
-					"Could not prepare get stations data request!", e);
-		}
+		return executeUrl(HTTP_POST, URL, HTTP_HEADERS, stream,
+				HTTP_CONTENT_TYPE, HTTP_REQUEST_TIMEOUT);
 	}
 }

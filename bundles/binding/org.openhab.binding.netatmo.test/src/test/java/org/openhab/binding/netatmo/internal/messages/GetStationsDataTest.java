@@ -21,8 +21,8 @@ import org.openhab.binding.netatmo.internal.messages. GetStationsDataResponse.De
 import org.openhab.binding.netatmo.internal.messages. GetStationsDataResponse.Module;
 
 /**
- * @author Andreas Brenk
- * @since 1.4.0
+ * @author Rob Nielsen
+ * @since 1.8.0
  */
 public class GetStationsDataTest {
 
@@ -40,8 +40,7 @@ public class GetStationsDataTest {
 		final  GetStationsDataResponse response = request.execute();
 
 		assertFalse(response.isError());
-		assertEquals("https://api.netatmo.net/api/getstationsdata?access_token="
-				+ ACCESS_TOKEN, request.getQuery());
+		assertEquals("access_token=" + ACCESS_TOKEN, request.getContent());
 		assertEquals("ok", response.getStatus());
 
 		final List<Device> devices = response.getDevices();
