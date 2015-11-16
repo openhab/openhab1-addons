@@ -889,7 +889,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
         setCallbackPeriod(tfConfig.getCallbackPeriod());
       }
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(movingAverage))) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("movingAverage"))) {
         logger.debug("movingAverage configured as {}", tfConfig.getMovingAverage());
         setMovingAverage(tfConfig.getMovingAverage());
       }
