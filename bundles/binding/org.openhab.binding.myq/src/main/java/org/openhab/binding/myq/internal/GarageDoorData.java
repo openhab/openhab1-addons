@@ -40,7 +40,7 @@ public class GarageDoorData {
 	 * 
 	 * @param deviceStatusData
 	 *            The Json string as it has been returned myq website.
-	 *            
+	 * 
 	 * @param logData
 	 *            Boolean to determine if devicedata should be logged.
 	 */
@@ -56,7 +56,7 @@ public class GarageDoorData {
 				if (rootNode.has("Devices")) {
 					JsonNode node = rootNode.get("Devices");
 					if (node.isArray()) {
-						if(logData){
+						if (logData) {
 							logger.info("Chamberlain MyQ Devices:");
 						}
 
@@ -68,7 +68,9 @@ public class GarageDoorData {
 							String deviceType = node.get(i)
 									.get("MyQDeviceTypeName").asText();
 
-							if (deviceType.contains("GarageDoorOpener")) {
+							if (deviceType.contains("Garage")
+									&& deviceType.contains("Door")
+									&& deviceType.contains("Opener")) {
 								JsonNode attributes = node.get(i).get(
 										"Attributes");
 								if (attributes.isArray()) {
@@ -79,7 +81,7 @@ public class GarageDoorData {
 										if (attributeName.contains("doorstate")) {
 											int doorstate = attributes.get(j)
 													.get("Value").asInt();
-											if(logData){
+											if (logData) {
 												logger.info("DeviceID: "
 														+ Integer
 																.toString(deviceId)
