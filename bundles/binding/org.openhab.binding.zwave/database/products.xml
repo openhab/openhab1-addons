@@ -2328,6 +2328,10 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>702</Type>
+				<Id>261</Id>
+			</Reference>
+			<Reference>
 				<Type>802</Type>
 				<Id>261</Id>
 			</Reference>
