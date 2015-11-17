@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
-import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContext;
+import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContextImpl;
 import org.openhab.binding.tinkerforge.internal.config.ConfigurationHandler;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
@@ -154,7 +154,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
   private ModelFactory modelFactory;
   private OHConfig ohConfig;
   private boolean isConnected;
-  private TinkerforgeContext context = TinkerforgeContext.getInstance();
+  private TinkerforgeContextImpl context = (TinkerforgeContextImpl) TinkerforgeContextImpl
+      .getInstance();
 
   public TinkerforgeBinding() {
     modelFactory = ModelFactory.eINSTANCE;

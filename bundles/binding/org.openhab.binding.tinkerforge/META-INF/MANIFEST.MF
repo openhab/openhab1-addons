@@ -25,8 +25,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.event,
  org.slf4j
 Export-Package: org.openhab.binding.tinkerforge,
- org.openhab.binding.tinkerforge.ecosystem,
- org.openhab.binding.tinkerforge.internal.model
+ org.openhab.binding.tinkerforge.ecosystem
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
