@@ -27,7 +27,7 @@ Import-Package: org.apache.commons.lang,
 Export-Package: org.openhab.binding.tinkerforge,
  org.openhab.binding.tinkerforge.ecosystem
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/tinkerforge-2.1.6.jar
