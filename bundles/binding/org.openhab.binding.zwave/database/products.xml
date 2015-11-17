@@ -2825,6 +2825,10 @@
 				<Type>5452</Type>
 				<Id>5433</Id>
 			</Reference>
+			<Reference>
+				<Type>5452</Type>
+				<Id>5439</Id>
+			</Reference>
 			<Model>TZEMT400BB32MAA</Model>
 			<Label lang="en">Trane Z-Wave Programmable Thermostat</Label>
 			<ConfigFile>trane/tzemt400bb32maa.xml</ConfigFile>
