@@ -13,6 +13,7 @@ import java.util.Formatter;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.ComplexType;
 import org.openhab.core.types.PrimitiveType;
@@ -74,15 +75,18 @@ public class PointType implements ComplexType, Command, State {
 	}
 
 	public PointType(String value) {
-		if (!value.isEmpty()) {
+		if (StringUtils.isNotBlank(value)) {
 			String[] elements = value.split(",");
 			if (elements.length >= 2) {
-				canonicalize(new DecimalType(elements[0]), new DecimalType(
-						elements[1]));
+				canonicalize(new DecimalType(elements[0]), new DecimalType(elements[1]));
 				if (elements.length == 3) {
 					setAltitude(new DecimalType(elements[2]));
 				}
+			} else {
+				throw new IllegalArgumentException(value + " is not a valid PointType syntax");
 			}
+		} else {
+			throw new IllegalArgumentException("Constructor argument must not be blank");
 		}
 	}
 
@@ -113,6 +117,25 @@ public class PointType implements ComplexType, Command, State {
 	}
 
 	/**
+	 * Return the distance in meters from otherPoint, ignoring altitude. This algorithm also
+	 * ignores the oblate spheroid shape of Earth and assumes a perfect sphere, so results
+	 * are inexact.
+	 *
+	 * @param otherPoint
+	 * @return distance in meters
+	 * @see <a href="https://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a>
+	 */
+	public DecimalType distanceFrom(PointType otherPoint) {
+		double dLat  = Math.toRadians(otherPoint.latitude.doubleValue() - this.latitude.doubleValue());
+		double dLong = Math.toRadians(otherPoint.longitude.doubleValue() - this.longitude.doubleValue());
+		double a = Math.pow(Math.sin(dLat / 2D), 2D) + Math.cos(Math.toRadians(this.latitude.doubleValue()))
+				* Math.cos(Math.toRadians(otherPoint.latitude.doubleValue()))
+				* Math.pow(Math.sin(dLong / 2D), 2D);
+		double c = 2D * Math.atan2(Math.sqrt(a), Math.sqrt(1D - a));
+		return new DecimalType(WGS84_a * c);
+	}
+
+	/**
 	 * <p>
 	 * Formats the value of this type according to a pattern (@see
 	 * {@link Formatter}). One single value of this type can be referenced by
@@ -129,13 +152,20 @@ public class PointType implements ComplexType, Command, State {
 		return String.format(pattern, getConstituents().values().toArray());
 	}
 
-	public PointType valueOf(String value) {
+	public static PointType valueOf(String value) {
 		return new PointType(value);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("%1$.2f°N, %2$.2f°W, %3$.2f m", latitude, longitude, altitude);
+		StringBuilder sb = new StringBuilder(latitude.toPlainString());
+		sb.append(',');
+		sb.append(longitude.toPlainString());
+		if (!altitude.equals(BigDecimal.ZERO)) {
+			sb.append(',');
+			sb.append(altitude.toPlainString());
+		}
+		return sb.toString();
 	}
 
 	@Override
