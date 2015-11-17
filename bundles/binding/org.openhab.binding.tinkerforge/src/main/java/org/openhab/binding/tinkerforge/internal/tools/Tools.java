@@ -40,6 +40,10 @@ public class Tools {
     return calculate(value, BigDecimal.TEN);
   }
 
+  public static DecimalValue calculate10(long value) {
+    return calculate(value, BigDecimal.TEN);
+  }
+
   public static DecimalValue calculate1000(int value){
     return calculate(value, new BigDecimal("1000"));
   }
@@ -66,6 +70,11 @@ public class Tools {
     return new DecimalValue(bvalue);
   }
   
+  public static DecimalValue calculate(long value, BigDecimal devider) {
+    BigDecimal bvalue = new BigDecimal(String.valueOf(value)).divide(devider);
+    return new DecimalValue(bvalue);
+  }
+
   public static BigDecimal getBigDecimalOpt(String key, DeviceOptions opts){
     return getBigDecimalOpt(key, opts, null);
   }
