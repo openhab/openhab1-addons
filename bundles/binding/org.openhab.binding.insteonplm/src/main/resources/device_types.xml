@@ -42,6 +42,14 @@ Example entry:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
+ <device productKey="0x000039">
+     <model>2663-222</model>
+     <description>On/Off Outlet</description>
+     <feature name="topoutlet">GenericSwitch</feature>
+     <feature name="bottomoutlet">BottomOutlet</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+</device>
+ 
  <device productKey="0x000041">
      <model>2484DWH8</model>
      <description>KeypadLinc Countdown Timer</description>
