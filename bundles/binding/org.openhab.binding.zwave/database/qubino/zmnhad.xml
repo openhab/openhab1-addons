@@ -46,7 +46,7 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en"> NC (normaly close) input type</Label>
+				<Label lang="en">NC (normaly close) input type</Label>
 			</Item>
 			<Help lang="en">Input 2 contact type</Help>
 		</Parameter>
@@ -63,7 +63,7 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en"> NC (normaly close) input type</Label>
+				<Label lang="en">NC (normaly close) input type</Label>
 			</Item>
 			<Help lang="en">Input 3 contact type</Help>
 		</Parameter>
@@ -102,7 +102,11 @@ other controller belonging to the system.</Help>
 			<Size>2</Size>
 			<Label lang="en">Automatic turning off relay after set time</Label>			
 			
-			<Help lang="en">1 – 32535 = 1second (0,01s) – 32535 seconds
+			<Help lang="en">When relay is ON it goes automatically OFF after time defined by this parameter. 
+Timer is reset to zero each time the module receive ON command regardless from where it comes 
+(push button, associated module, controller,..).
+0 - Auto OFF disabled.
+1 – 32535 = 1second (0,01s) – 32535 seconds
 (325,35s) Auto OFF enabled with define time, step
 is 1s or 10ms according to parameter nr.15.</Help>
 		</Parameter>
@@ -114,7 +118,11 @@ is 1s or 10ms according to parameter nr.15.</Help>
 			<Size>2</Size>
 			<Label lang="en">Automatic turning on relay after set time</Label>			
 			
-			<Help lang="en">1 – 32535 = 1second (0,01s) – 32536 seconds
+			<Help lang="en">When relay is OFF it goes automatically ON after time defined by this parameter.
+Timer is reset to zero each time the module receive OFF command regardless from where it comes
+(push button, associated module, controller,..).
+0 - Auto ON disabled.
+1 – 32535 = 1second (0,01s) – 32536 seconds
 (325,35s) Auto ON enabled with define time, step is
 1s or 10ms according to parameter nr.15.</Help>
 		</Parameter>
@@ -122,18 +130,18 @@ is 1s or 10ms according to parameter nr.15.</Help>
 		<Parameter>
 			<Index>15</Index>
 			<Type>list</Type>
-			<Default>255</Default>
+			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Automatic turning off / on seconds or milliseconds selection</Label>			
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Seconds</Label>
+				<Label lang="en">Seconds selected</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Milliseconds</Label>
+				<Label lang="en">Milliseconds selected</Label>
 			</Item>
-			<Help lang="en"></Help>
+			<Help lang="en">NOTE: Parameter is the same for turning OFF or ON.</Help>
 		</Parameter>
 
 		<Parameter>
@@ -157,7 +165,7 @@ is 1s or 10ms according to parameter nr.15.</Help>
 		<Parameter>
 			<Index>40</Index>
 			<Type>byte</Type>
-			<Default>3</Default>
+			<Default>10</Default>
 			<Size>1</Size>
 			<Label lang="en">Power reporting in Watts on power change</Label>			
 			
@@ -167,7 +175,7 @@ Power report is send (push) only when actual
 power in Watts in real time change for more than 
 set percentage comparing to previous actual 
 power in Watts, step is 1%.
-NOTE: if power changed is less than 1W, the report is 
+NOTE: If power changed is less than 1W, the report is 
 not send (pushed), independent of percentage set. </Help>
 		</Parameter>
 
@@ -178,38 +186,176 @@ not send (pushed), independent of percentage set. </Help>
 			<Size>2</Size>
 			<Label lang="en">Power reporting in Watts on power change</Label>			
 			
-			<Help lang="en">default value 300 (power report in Watts is 
-send each 300s)
+			<Help lang="en">Set value means time interval (0 – 32535) in seconds, when power report is send.
+Default value 300 (power report in Watts is send each 300s)
 0 – Reporting Disabled
-1 – 65535 = 1second – 65535 seconds.
-Reporting enabled. Power report is send with time 
+1 – 32535 = 1second – 32535 seconds. Reporting enabled. Power report is send with time 
 interval set by entered value. </Help>
 		</Parameter>
+
+		<Parameter>
+			<Index>63</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Output Switch selection</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">When system is turned off the output is 0V (NC).</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">When system is turned off the output is 230V or 24V (NO).</Label>
+			</Item>
+			<Help lang="en">Set value means the type of the device that is connected to the output. 
+The device type can be normally open (NO) or normally close (NC).</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>100</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable Endpoints I2 or select Notification Type and Event</Label>			
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Home Security; Motion Detection, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Carbon Monoxide; Carbon Monoxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Carbon Dioxide; Carbon Dioxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Water Alarm; Water Leak detected, unknown lo..</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Heat Alarm; Overheat detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Smoke Alarm; Smoke detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Endpoint, I2 disabled</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Sensor binary. /Label>
+			</Item>
+			<Help lang="en">Enabling I2 means that Endpoint (I2) will be present on UI. 
+Disabling it will result in hiding the endpoint according to the parameter set value. 
+Additionally, a Notification Type and Event can be selected for the endpoint.
+Endpoint device type selection:
+ Notification sensor (1 - 6): GENERIC_TYPE_SENSOR_NOTIFICATION, SPECIFIC_TYPE_NOTIFICATION_SENSOR
+ Sensor binary (9): GENERIC_TYPE_SENSOR_BINARY, SPECIFIC_TYPE_NOT_USED
+NOTE: After parameter change, module has to be re included into the network in order setting to take effect!</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>101</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable / Disable Endpoints I3 or select Notification Type and Event</Label>			
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Home Security; Motion Detection, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Carbon Monoxide; Carbon Monoxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Carbon Dioxide; Carbon Dioxide detected, unknown location.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Water Alarm; Water Leak detected, unknown lo..</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Heat Alarm; Overheat detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Smoke Alarm; Smoke detected, unknown loc.</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Endpoint, I3 disabled</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Sensor binary. /Label>
+			</Item>
+			<Help lang="en">Enabling I3 means that Endpoint (I3) will be present on UI. 
+Disabling it will result in hiding the endpoint according to the parameter set value. 
+Additionally, a Notification Type and Event can be selected for the endpoint.
+Endpoint device type selection:
+ Notification sensor (1 - 6): GENERIC_TYPE_SENSOR_NOTIFICATION, SPECIFIC_TYPE_NOTIFICATION_SENSOR
+ Sensor binary (9): GENERIC_TYPE_SENSOR_BINARY, SPECIFIC_TYPE_NOT_USED
+NOTE: After parameter change, module has to be re included into the network in order setting to take effect!</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>110</Index>
+			<Type>byte</Type>
+			<Default>32536</Default>
+			<Size>2</Size>
+			<Label lang="en">Temperature sensor offset settings</Label>			
+			
+			<Help lang="en">Set value is added or subtracted to actual measured value by sensor.
+32536 – offset is 0.0C
+From 1 to 100–value from 0.1°C to 10.0°C is added to actual measured temperature.
+From 1001 to 1100 – value from -0.1 °C to -10.0 °C is subtracted to actual measured temperature.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>120</Index>
+			<Type>byte</Type>
+			<Default>32536</Default>
+			<Size>1</Size>
+			<Label lang="en">Digital temperature sensor reporting</Label>			
+			
+			<Help lang="en">If digital temperature sensor is connected, module reports measured temperature 
+on temperature change defined by this parameter.
+0 – Reporting disabled
+1- 127 = 0,1°C – 12,7°C, step is 0,1°C</Help>
+		</Parameter>
+
 	</Configuration>
 
 	<Associations>
 		<Group>
 			<Index>1</Index>
 			<Maximum>1</Maximum>
-			<Label lang="en">Lifeline to Controller</Label>
+			<Label lang="en">Lifeline to Controller (reserved for communication with the main controller)</Label>
 			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en"> basic on/off (triggered at change of the input Q 
+			<Label lang="en">Basic on/off (triggered at change of the input Q 
 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en"> basic on/off (triggered at change of the input I2 
+			<Label lang="en">Basic on/off (triggered at change of the input I2 
 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>4</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Notification (triggered at change of the input I2 
+			<Label lang="en">Notification report (triggered at change of the input I2 
 state and reflecting its state)</Label>
 		</Group>
 		<Group>
@@ -221,25 +367,25 @@ state and reflecting its state)</Label>
 		<Group>
 			<Index>6</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en"> basic on/off (triggered at change of the input I3 
+			<Label lang="en">Basic on/off (triggered at change of the input I3 
 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>7</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Notification (triggered at change of the input I3
+			<Label lang="en">Notification report (triggered at change of the input I3
 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>8</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Binary Sensor (triggered at change of the input I3 
+			<Label lang="en">Binary Sensor report(triggered at change of the input I3 
 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>9</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Multilevel Sensor</Label>
+			<Label lang="en">Multilevel Sensor report (triggered at change of temperature sensor)</Label>
 		</Group>
 	</Associations>
 </Product>
