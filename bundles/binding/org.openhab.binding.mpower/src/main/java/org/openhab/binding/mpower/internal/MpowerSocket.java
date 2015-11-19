@@ -8,7 +8,6 @@ import java.util.Calendar;
  * @author magcode
  */
 public class MpowerSocket {
-	// private PersistenceExtensions service;
 	private String voltageItemName;
 	private String powerItemName;
 	private String switchItemName;
@@ -20,17 +19,8 @@ public class MpowerSocket {
 	private long lastUpdated = 0;
 
 	public MpowerSocket() {
-
-		// updateMid(service, energyItemName);
 	}
 
-	/*
-	 * private static State updateMid(PersistenceExtensions aService, String
-	 * itemName) { DateTime datTime = new DateTime(); HistoricItem item =
-	 * aService.historicState(new FakeItem(itemName),
-	 * datTime.withHourOfDay(0).withMinuteOfHour(0)); State histState =
-	 * item.getState(); histState.toString(); return histState; }
-	 */
 	public String getVoltageItemName() {
 		return voltageItemName;
 	}

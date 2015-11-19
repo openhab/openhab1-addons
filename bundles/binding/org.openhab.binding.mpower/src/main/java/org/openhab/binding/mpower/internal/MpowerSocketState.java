@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class MpowerSocketState {
 	private int voltage;
 	private long energy;
-	private long energyPerDay;
 	private double power;
 	private boolean on;
 	private int socket;
@@ -23,7 +22,7 @@ public class MpowerSocketState {
 			.getLogger(MpowerSocketState.class);
 
 	public MpowerSocketState(String voltage, String power, String energy,
-			String relayState, int socket, String address) {
+			String relayState, int socket, String address, double factor) {
 		try {
 			Double voltageAsDouble = Double.parseDouble(voltage);
 			this.voltage = voltageAsDouble.intValue();
@@ -33,10 +32,17 @@ public class MpowerSocketState {
 			powerRounded = powerRounded / 10;
 			this.power = powerRounded;
 			Double eneryAsDouble = Double.parseDouble(energy);
+			eneryAsDouble = eneryAsDouble * factor;
 			this.energy = eneryAsDouble.longValue();
 			this.on = "1".equals(relayState) ? true : false;
 		} catch (NumberFormatException nfe) {
 			logger.error("Could not parse mPower response", nfe);
+			logger.error("voltage", voltage);
+			logger.error("power", power);
+			logger.error("energy", energy);
+			logger.error("relayState", relayState);
+			logger.error("socket", socket);
+			logger.error("address", address);
 		}
 
 		this.socket = socket;
@@ -110,13 +116,5 @@ public class MpowerSocketState {
 
 	public void setEnergy(long energy) {
 		this.energy = energy;
-	}
-
-	public long getEnergyPerDay() {
-		return energyPerDay;
-	}
-
-	public void setEnergyPerDay(long energyPerDay) {
-		this.energyPerDay = energyPerDay;
 	}
 }

@@ -38,7 +38,7 @@ public class PollingAgent extends Thread {
 					for (int i = 1; i < this.connector.getPorts() + 1; i++) {
 						builder.append(" /proc/power/v_rms").append(i);
 						builder.append(" /proc/power/active_pwr").append(i);
-						builder.append(" /proc/power/energy_sum").append(i);
+						builder.append(" /proc/power/cf_count").append(i);
 						builder.append(" /proc/power/relay").append(i);
 					}
 					String command = builder.toString();

@@ -248,9 +248,21 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 					State itemState = new DecimalType(socketState.getEnergy());
 					eventPublisher.postUpdate(energyItemname, itemState);
 				}
+				
+				// update switch
+				String switchItemname = bindingCfg
+						.getSwitchItemName(socketState.getSocket());
+				if (StringUtils.isNotBlank(switchItemname)) {
+					OnOffType state = socketState.isOn() ? OnOffType.ON
+							: OnOffType.OFF;
+					eventPublisher.postUpdate(switchItemname, state);
+					// update the cache
+					bindingCfg.setCachedState(socketNumber, socketState);
+				}
 
 				// update the cache
 				bindingCfg.setCachedState(socketNumber, socketState);
+				cachedState = bindingCfg.getCacheForSocket(socketNumber);
 			} else {
 				logger.trace("suppressing update as socket state has not changed");
 			}

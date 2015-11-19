@@ -79,6 +79,10 @@ public class MpowerBindingConfig implements BindingConfig {
 		sockets.get(socket).setValueCache(state);
 		sockets.get(socket).updateTotalConsumptionAtMidnight(state.getEnergy());
 	}
+	
+	public void resetCache(int socket) {
+		sockets.get(socket).setValueCache(null);
+	}
 
 	/**
 	 * looks through all sockets and returns the number for a given switch item

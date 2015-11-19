@@ -96,7 +96,7 @@ public class MpowerGenericBindingProvider extends
 		if ("energytoday".equals(variable)) {
 			config.setEnergyTodayItemName(socket, item.getName());
 		}
-
+		config.resetCache(socket);
 		addBindingConfig(item, config);
 	}
 

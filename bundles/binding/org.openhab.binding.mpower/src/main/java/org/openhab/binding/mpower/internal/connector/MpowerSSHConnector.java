@@ -51,9 +51,12 @@ public class MpowerSSHConnector {
 			aSession.setPassword(password);
 			aSession.setConfig(config);
 			aSession.setTimeout(3000);
+			aSession.setServerAliveInterval(1000*60);
+			aSession.setServerAliveCountMax(10);
 			aSession.connect();
 			this.session = aSession;
 			getNumberOfSockets();
+			enableEnergyMeasurement();
 			this.agent = new PollingAgent(this);
 			agent.start();
 			logger.info("connected to {} on host {}", this.id, this.host);
@@ -61,6 +64,21 @@ public class MpowerSSHConnector {
 			logger.error("Could not connect.", e);
 		} finally {
 			this.isConnecting = false;
+		}
+	}
+
+	private void enableEnergyMeasurement() {
+		try {
+			SSHExecutor exec = new SSHExecutor(this.session);
+			StringBuilder builder = new StringBuilder();
+			
+			for (int i = 1; i < this.ports + 1; i++) {
+				builder.append("echo 1 > /proc/power/enabled").append(i).append(";");				
+			}
+			String command = builder.toString();			
+			exec.execute(command);		
+		} catch (JSchException e) {
+			logger.error("Failed to enable enery measurement");
 		}
 	}
 
@@ -139,8 +157,7 @@ public class MpowerSSHConnector {
 				this.ports = Integer.parseInt(result);
 			}
 		} catch (JSchException e) {
-			logger.error("Failed to switch");
-
+			logger.error("Failed to read number of ports");
 		}
 	}
 
