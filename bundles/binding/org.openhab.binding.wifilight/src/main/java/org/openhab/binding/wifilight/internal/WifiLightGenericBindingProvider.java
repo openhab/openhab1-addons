@@ -22,22 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * This class can parse information from the generic binding format. It
- * registers as a {@link WifiLightBindingProvider} service as well.
- * </p>
- * 
- * <p>
- * Here are some examples for valid binding configuration strings:
- * <ul>
- * <li><code>{milight="livingroom;1"}</code> - Connects to bulb 1 and switches or dims the bulb without changing the color.
- * </li>
- * <li>
- * <code>{milight="livingroom;1;colorTemperature"} - Connects to bulb 1 and dims the bulbs color temperature without changing the brightness.</code>
- * </ul>
- * 
- * @author Hans-Joerg Merk
- * @author Kai Kreuzer
+ * @author magcode
  * @since 1.3.0
  */
 
@@ -74,7 +59,8 @@ public class WifiLightGenericBindingProvider extends AbstractGenericBindingProvi
 			if (bindingConfig != null) {
 				String[] configParts = bindingConfig.split(":");
 				if (configParts.length != 2) {
-					throw new BindingConfigParseException("milight binding configuration must not have more than four parts");
+					throw new BindingConfigParseException(
+							"WifiLight binding configuration must not have more than four parts");
 				}
 
 				if (item instanceof ColorItem) {

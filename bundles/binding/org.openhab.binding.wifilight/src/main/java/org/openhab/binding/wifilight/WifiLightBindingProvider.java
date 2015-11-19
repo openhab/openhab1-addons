@@ -12,10 +12,9 @@ import org.openhab.binding.wifilight.internal.WifiLightBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
- * The interface to implement for classes that want to contribute binding configurations for Milight.
+ * Wifilight binding
  * 
- * @author Hans-Joerg Merk
- * @author Kai Kreuzer
+ * @author magcode
  * @since 1.3.0
  */
 public interface WifiLightBindingProvider extends BindingProvider {

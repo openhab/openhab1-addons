@@ -34,6 +34,10 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author magcode
+ *
+ */
 public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		implements ManagedService {
 
@@ -44,13 +48,13 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern
 			.compile("^(.*?)\\.(host|port)$");
 
-	private final static int DEFAULT_PORT = 50000;
+	private final static int DEFAULT_PORT = 5577;
 
 	protected Map<String, DeviceConfig> deviceConfigs = new HashMap<String, DeviceConfig>();
 
-	protected Map<String, String> bridgeIpConfig = new HashMap<String, String>();
+	protected Map<String, String> controllerIpConfig = new HashMap<String, String>();
 
-	protected Map<String, Integer> bridgePortConfig = new HashMap<String, Integer>();
+	protected Map<String, Integer> controllerPortConfig = new HashMap<String, Integer>();
 
 	protected Map<String, PercentType> dimmerState = new HashMap<String, PercentType>();
 
@@ -102,7 +106,8 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 							deviceConfig.getCommandType(), controllerId);
 					eventPublisher.postUpdate(itemName, newValue);
 				} else if (command instanceof PercentType) {
-					sendDecreaseOrIncrease(deviceConfig.getCommandType(), ((PercentType) command).intValue(), controllerId);
+					sendDecreaseOrIncrease(deviceConfig.getCommandType(),
+							((PercentType) command).intValue(), controllerId);
 				}
 			}
 		} catch (Exception e) {
@@ -111,6 +116,13 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		}
 	}
 
+	/**
+	 * Retrieves the current state of brightness of a color channel.
+	 * 
+	 * @param controllerId
+	 * @param type
+	 * @return
+	 */
 	private PercentType getCurrentState(String controllerId, BindingType type) {
 		PercentType percent = dimmerState.get(controllerId + type);
 		if (percent == null) {
@@ -119,13 +131,27 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		return percent;
 	}
 
+	/**
+	 * Stores the current state of brightness of a color channel.
+	 * 
+	 * @param controllerId
+	 * @param command
+	 * @param type
+	 */
 	private void setCurrentState(String controllerId, PercentType command,
 			BindingType type) {
 		dimmerState.put(controllerId + type, command);
 	}
 
+	/**
+	 * Sends a command to increase brightness of a color channel. The channel
+	 * (rgbw) is defined by the "type"
+	 * 
+	 * @param type
+	 * @param controllerId
+	 * @return
+	 */
 	private PercentType sendIncrease(BindingType type, String controllerId) {
-		logger.debug("milight: sendIncrease");
 
 		int currentPercent = getCurrentState(controllerId, type).intValue();
 		if (currentPercent == 0) {
@@ -144,8 +170,15 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		return newValue;
 	}
 
+	/**
+	 * Sends a command to decrease brightness of a color channel. The channel
+	 * (rgbw) is defined by the "type"
+	 * 
+	 * @param type
+	 * @param controllerId
+	 * @return
+	 */
 	private PercentType sendDecrease(BindingType type, String controllerId) {
-		logger.debug("milight: sendDecrease");
 		int newPercent = getCurrentState(controllerId, type).intValue() - 10;
 		if (newPercent < 0) {
 			newPercent = 0;
@@ -155,6 +188,15 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		return newValue;
 	}
 
+	/**
+	 * Sends a command to increase or decrease brightness of a color channel.
+	 * The channel (rgbw) is defined by the "type"
+	 * 
+	 * @param type
+	 * @param newPercent
+	 * @param controllerId
+	 * @return
+	 */
 	private PercentType sendDecreaseOrIncrease(BindingType type,
 			int newPercent, String controllerId) {
 
@@ -189,39 +231,7 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 			green = getHexFromCurrentState(controllerId, BindingType.green);
 			blue = getHexFromCurrentState(controllerId, BindingType.blue);
 			white = Integer.toHexString(target.intValue());
-
-			int whiteOld = (int) (getCurrentState(controllerId, type)
-					.doubleValue() * 2.55);
-			logger.debug("old: " + whiteOld);
-			logger.debug("new: " + target.intValue());
-			if (whiteOld < target.intValue()) {
-				// dimm up
-				for (int i = whiteOld; i < target.intValue(); i = i + 2) {
-					String currentWhite = Integer.toHexString(i);
-					String messageBytes = "31:" + red + ":" + green + ":"
-							+ blue + ":" + currentWhite + ":00:00";
-					sendMessage(messageBytes, controllerId);
-					try {
-						Thread.sleep(20);
-					} catch (InterruptedException e) {
-						// ignore
-					}
-				}
-			} else {
-				// dimm down
-				for (int i = whiteOld; i > target.intValue(); i = i - 2) {
-					String currentWhite = Integer.toHexString(i);
-					String messageBytes = "31:" + red + ":" + green + ":"
-							+ blue + ":" + currentWhite + ":00:00";
-					sendMessage(messageBytes, controllerId);
-					try {
-						Thread.sleep(20);
-					} catch (InterruptedException e) {
-						// ignore
-					}
-				}
-			}
-
+			break;
 		default:
 			break;
 		}
@@ -240,7 +250,6 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 	}
 
 	private void sendOn(String controllerId) {
-		logger.debug("milight: sendOn");
 		String messageBytes = "71:23";
 		String checkSum = checkSum("71:23");
 		logger.debug(checkSum);
@@ -248,25 +257,29 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 	}
 
 	private void sendOff(String controllerId) {
-		logger.debug("milight: sendOff");
 		String messageBytes = "71:24";
 		sendMessage(messageBytes, controllerId);
 		setCurrentState(controllerId, PercentType.ZERO, BindingType.blue);
 		setCurrentState(controllerId, PercentType.ZERO, BindingType.red);
 		setCurrentState(controllerId, PercentType.ZERO, BindingType.green);
 		setCurrentState(controllerId, PercentType.ZERO, BindingType.white);
-		// setCurrentState(controllerId, PercentType.ZERO,
-		// BindingType.brightness);
 	}
 
+	/**
+	 * Sets rgb color (white channel not affected)
+	 * 
+	 * @param command
+	 * @param controllerId
+	 */
 	private void sendColor(Command command, String controllerId) {
 		HSBType hsbCommand = (HSBType) command;
 
 		String messageBytes = "31:"
 				+ Integer.toHexString(hsbCommand.toColor().getRed()) + ":"
 				+ Integer.toHexString(hsbCommand.toColor().getGreen()) + ":"
-				+ Integer.toHexString(hsbCommand.toColor().getBlue())
-				+ ":00:00:00";
+				+ Integer.toHexString(hsbCommand.toColor().getBlue()) + ":"
+				+ getHexFromCurrentState(controllerId, BindingType.white)
+				+ "F:00:00";
 		sendMessage(messageBytes, controllerId);
 		// save the rgb selection
 		setCurrentState(controllerId, new PercentType((int) (hsbCommand
@@ -278,6 +291,12 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 
 	}
 
+	/**
+	 * Builds checksum for communication with the controller
+	 * 
+	 * @param message
+	 * @return
+	 */
 	private String checkSum(String message) {
 		String[] parts = message.split(":");
 		Integer check = 0;
@@ -302,8 +321,8 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 
 	protected void sendMessage(String messageBytes, String controllerId) {
 		messageBytes = messageBytes + ":" + checkSum(messageBytes);
-		String bridgeIp = bridgeIpConfig.get(controllerId);
-		Integer bridgePort = bridgePortConfig.get(controllerId);
+		String bridgeIp = controllerIpConfig.get(controllerId);
+		Integer bridgePort = controllerPortConfig.get(controllerId);
 
 		SocketAddress address = new InetSocketAddress(bridgeIp, bridgePort);
 		Socket clientSocket = new Socket();
@@ -321,11 +340,6 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 	}
 
 	private byte[] getMessageBytes(String messageBytes) {
-		logger.debug("milight: messageBytes to transform: '{}'", messageBytes);
-		if (messageBytes == null) {
-			logger.error("messageBytes must not be null");
-		}
-
 		String[] hex = messageBytes.split("(\\:|\\-)");
 		byte[] buffer = new byte[hex.length];
 		int hexIndex = 0;
@@ -394,10 +408,10 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 
 				if ("host".equals(configKey)) {
 					deviceConfig.host = value;
-					bridgeIpConfig.put(deviceId, value);
+					controllerIpConfig.put(deviceId, value);
 				} else if ("port".equals(configKey)) {
 					deviceConfig.port = Integer.valueOf(value);
-					bridgePortConfig.put(deviceId, Integer.valueOf(value));
+					controllerPortConfig.put(deviceId, Integer.valueOf(value));
 				} else {
 					throw new ConfigurationException(configKey,
 							"the given configKey '" + configKey

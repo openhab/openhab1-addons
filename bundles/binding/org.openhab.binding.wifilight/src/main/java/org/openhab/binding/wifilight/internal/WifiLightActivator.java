@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  * 
- * @author Hans-Joerg Merk
+ * @author magcode
  * @since 1.3.0
  */
 public final class WifiLightActivator implements BundleActivator {
@@ -31,7 +31,7 @@ public final class WifiLightActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("Milight binding has been started.");
+		logger.debug("WifiLight binding has been started.");
 	}
 
 	/**
@@ -39,7 +39,7 @@ public final class WifiLightActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("Milight binding has been stopped.");
+		logger.debug("WifiLight binding has been stopped.");
 	}
 	
 	/**
