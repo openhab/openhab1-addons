@@ -309,7 +309,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		}
 		if(properties.get("scale") != null) {
 			scale = Double.parseDouble((String)properties.get("scale"));
-			if(scale < 0.5)
+			if(scale < 0.1)
 				scale = 1.0;
 		}
 	}
