@@ -130,10 +130,10 @@ fi
 case "$1" in
   start)
         log_daemon_msg "Starting $DESC" "$NAME"
-		${OPENHAB_INST_DIR}/bin/setpermissions.sh > /dev/null
-		if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
-			--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
-		then
+	${OPENHAB_INST_DIR}/bin/setpermissions.sh > /dev/null
+	if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
+		--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
+	then
         	log_end_msg 0
         else
         	log_end_msg 1
@@ -161,14 +161,14 @@ case "$1" in
         	rm -f $PIDFILE
         	if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
 				--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
-			then
+		then
 	        	log_end_msg 0
 	        else
 	        	log_end_msg 1
-			fi
-		else
-			log_end_msg 1
 		fi
+	else
+		log_end_msg 1
+	fi
         ;;
   *)
         echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
