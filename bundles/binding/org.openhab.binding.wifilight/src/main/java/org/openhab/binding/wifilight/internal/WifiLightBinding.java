@@ -77,45 +77,36 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		}
 
 		try {
-			// int bulb = deviceConfig.getChannelNumber();
-			int rgbwSteps = deviceConfig.getSteps();
 			String controllerId = deviceConfig.getDeviceId();
 
-			if (deviceConfig.getCommandType().equals(BindingType.brightness)) {
-				logger.debug("milight: item is of type brightness");
+			if (deviceConfig.getCommandType().equals(BindingType.rgb)) {
+				if (command instanceof HSBType) {
+					sendColor(command, controllerId);
+				}
+
+			} else if (deviceConfig.getCommandType().equals(BindingType.red)
+					|| deviceConfig.getCommandType().equals(BindingType.blue)
+					|| deviceConfig.getCommandType().equals(BindingType.green)
+					|| deviceConfig.getCommandType().equals(BindingType.white)) {
 				if (OnOffType.ON.equals(command)) {
 					sendOn(controllerId);
 				} else if (OnOffType.OFF.equals(command)) {
 					sendOff(controllerId);
 				}
 				if (IncreaseDecreaseType.INCREASE.equals(command)) {
-					// sendOn(bulb, controllerId);
-					Thread.sleep(100);
-					PercentType newValue = sendIncrease(rgbwSteps, controllerId);
+					PercentType newValue = sendIncrease(
+							deviceConfig.getCommandType(), controllerId);
 					eventPublisher.postUpdate(itemName, newValue);
 				} else if (IncreaseDecreaseType.DECREASE.equals(command)) {
-					PercentType newValue = sendDecrease(rgbwSteps, controllerId);
+					PercentType newValue = sendDecrease(
+							deviceConfig.getCommandType(), controllerId);
 					eventPublisher.postUpdate(itemName, newValue);
 				} else if (command instanceof PercentType) {
-					logger.debug("milight: command is of type PercentType");
-
+					sendDecreaseOrIncrease(deviceConfig.getCommandType(), ((PercentType) command).intValue(), controllerId);
 				}
-
-			} else if (deviceConfig.getCommandType().equals(BindingType.rgb)) {
-				logger.debug("milight: item is of type rgb");
-				if (command instanceof HSBType) {
-					sendColor(command, controllerId);
-				}
-
-			} else if (deviceConfig.getCommandType().equals(BindingType.blue)) {
-				if (command instanceof PercentType) {
-					sendChannel(command, controllerId,
-							deviceConfig.getCommandType());
-				}
-
 			}
 		} catch (Exception e) {
-			logger.error("milight: Failed to send {} command ",
+			logger.error("wifilight: Failed to send {} command ",
 					deviceConfig.getCommandType(), e);
 		}
 	}
@@ -133,11 +124,10 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		dimmerState.put(controllerId + type, command);
 	}
 
-	private PercentType sendIncrease(int rgbwSteps, String controllerId) {
+	private PercentType sendIncrease(BindingType type, String controllerId) {
 		logger.debug("milight: sendIncrease");
 
-		int currentPercent = getCurrentState(controllerId,
-				BindingType.brightness).intValue();
+		int currentPercent = getCurrentState(controllerId, type).intValue();
 		if (currentPercent == 0) {
 			try {
 				sendOn(controllerId);
@@ -149,33 +139,104 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		if (newPercent > 100) {
 			newPercent = 100;
 		}
-		Double target = newPercent * 2.55;
-		PercentType newValue = new PercentType(newPercent);
-		String messageBytes = "31:00:00:"
-				+ Integer.toHexString(target.intValue()) + ":00:00:00";
-
-		sendMessage(messageBytes, controllerId);
-		setCurrentState(controllerId, newValue, BindingType.brightness);
+		PercentType newValue = sendDecreaseOrIncrease(type, newPercent,
+				controllerId);
 		return newValue;
 	}
 
-	private PercentType sendDecrease(int rgbwSteps, String controllerId) {
+	private PercentType sendDecrease(BindingType type, String controllerId) {
 		logger.debug("milight: sendDecrease");
-		int newPercent = getCurrentState(controllerId, BindingType.brightness)
-				.intValue() - 10;
+		int newPercent = getCurrentState(controllerId, type).intValue() - 10;
 		if (newPercent < 0) {
 			newPercent = 0;
 		}
-		Double target = newPercent * 2.55;
-		PercentType newValue = new PercentType(newPercent);
-		String hex = Integer.toHexString(target.intValue());
-		if (hex.length() == 1) {
-			hex = "0" + hex;
-		}
-		String messageBytes = "31:00:00:" + hex + ":00:00:00";
-		sendMessage(messageBytes, controllerId);
-		setCurrentState(controllerId, newValue, BindingType.brightness);
+		PercentType newValue = sendDecreaseOrIncrease(type, newPercent,
+				controllerId);
 		return newValue;
+	}
+
+	private PercentType sendDecreaseOrIncrease(BindingType type,
+			int newPercent, String controllerId) {
+
+		Double target = newPercent * 2.55;
+		String red = "";
+		String green = "";
+		String blue = "";
+		String white = "";
+
+		switch (type) {
+
+		case blue:
+			red = getHexFromCurrentState(controllerId, BindingType.red);
+			green = getHexFromCurrentState(controllerId, BindingType.green);
+			blue = Integer.toHexString(target.intValue());
+			white = getHexFromCurrentState(controllerId, BindingType.white);
+			break;
+		case green:
+			red = getHexFromCurrentState(controllerId, BindingType.red);
+			green = Integer.toHexString(target.intValue());
+			blue = getHexFromCurrentState(controllerId, BindingType.blue);
+			white = getHexFromCurrentState(controllerId, BindingType.white);
+			break;
+		case red:
+			red = Integer.toHexString(target.intValue());
+			green = getHexFromCurrentState(controllerId, BindingType.green);
+			blue = getHexFromCurrentState(controllerId, BindingType.blue);
+			white = getHexFromCurrentState(controllerId, BindingType.white);
+			break;
+		case white:
+			red = getHexFromCurrentState(controllerId, BindingType.red);
+			green = getHexFromCurrentState(controllerId, BindingType.green);
+			blue = getHexFromCurrentState(controllerId, BindingType.blue);
+			white = Integer.toHexString(target.intValue());
+
+			int whiteOld = (int) (getCurrentState(controllerId, type)
+					.doubleValue() * 2.55);
+			logger.debug("old: " + whiteOld);
+			logger.debug("new: " + target.intValue());
+			if (whiteOld < target.intValue()) {
+				// dimm up
+				for (int i = whiteOld; i < target.intValue(); i = i + 2) {
+					String currentWhite = Integer.toHexString(i);
+					String messageBytes = "31:" + red + ":" + green + ":"
+							+ blue + ":" + currentWhite + ":00:00";
+					sendMessage(messageBytes, controllerId);
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						// ignore
+					}
+				}
+			} else {
+				// dimm down
+				for (int i = whiteOld; i > target.intValue(); i = i - 2) {
+					String currentWhite = Integer.toHexString(i);
+					String messageBytes = "31:" + red + ":" + green + ":"
+							+ blue + ":" + currentWhite + ":00:00";
+					sendMessage(messageBytes, controllerId);
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						// ignore
+					}
+				}
+			}
+
+		default:
+			break;
+		}
+
+		String messageBytes = "31:" + red + ":" + green + ":" + blue + ":"
+				+ white + ":00:00";
+		sendMessage(messageBytes, controllerId);
+		PercentType newValue = new PercentType(newPercent);
+		setCurrentState(controllerId, newValue, type);
+		return newValue;
+	}
+
+	private String getHexFromCurrentState(String controllerId, BindingType type) {
+		return Integer.toHexString((int) (getCurrentState(controllerId, type)
+				.doubleValue() * 2.55));
 	}
 
 	private void sendOn(String controllerId) {
@@ -190,52 +251,31 @@ public class WifiLightBinding extends AbstractBinding<WifiLightBindingProvider>
 		logger.debug("milight: sendOff");
 		String messageBytes = "71:24";
 		sendMessage(messageBytes, controllerId);
-		setCurrentState(controllerId, PercentType.ZERO, BindingType.brightness);
+		setCurrentState(controllerId, PercentType.ZERO, BindingType.blue);
+		setCurrentState(controllerId, PercentType.ZERO, BindingType.red);
+		setCurrentState(controllerId, PercentType.ZERO, BindingType.green);
+		setCurrentState(controllerId, PercentType.ZERO, BindingType.white);
+		// setCurrentState(controllerId, PercentType.ZERO,
+		// BindingType.brightness);
 	}
 
 	private void sendColor(Command command, String controllerId) {
 		HSBType hsbCommand = (HSBType) command;
+
 		String messageBytes = "31:"
 				+ Integer.toHexString(hsbCommand.toColor().getRed()) + ":"
 				+ Integer.toHexString(hsbCommand.toColor().getGreen()) + ":"
 				+ Integer.toHexString(hsbCommand.toColor().getBlue())
 				+ ":00:00:00";
 		sendMessage(messageBytes, controllerId);
-	}
+		// save the rgb selection
+		setCurrentState(controllerId, new PercentType((int) (hsbCommand
+				.toColor().getRed() / 2.55)), BindingType.red);
+		setCurrentState(controllerId, new PercentType((int) (hsbCommand
+				.toColor().getGreen() / 2.55)), BindingType.green);
+		setCurrentState(controllerId, new PercentType((int) (hsbCommand
+				.toColor().getBlue() / 2.55)), BindingType.blue);
 
-	private void sendChannel(Command command, String controllerId,
-			BindingType type) {
-		PercentType oldPercent = getCurrentState(controllerId, BindingType.blue);
-		PercentType percent = (PercentType) command;
-
-		Double oldD = oldPercent.intValue() * 2.55;
-		Double targetD = percent.intValue() * 2.55;
-		int target = targetD.intValue();
-		int old = oldD.intValue();
-		if (target > old) {
-			for (int i = old; i <= target; i = i + 5) {
-				String messageBytes = "31:00:00:" + Integer.toHexString(i)
-						+ ":00:00:00";
-				sendMessage(messageBytes, controllerId);
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					// ignore
-				}
-			}
-		} else {
-			for (int i = old; i >= target; i = i - 5) {
-				String messageBytes = "31:00:00:" + Integer.toHexString(i)
-						+ ":00:00:00";
-				sendMessage(messageBytes, controllerId);
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					// ignore
-				}
-			}
-		}
-		setCurrentState(controllerId, percent, BindingType.blue);
 	}
 
 	private String checkSum(String message) {
