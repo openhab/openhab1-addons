@@ -27,6 +27,7 @@ public class JpaConfiguration {
 	private static final String CFG_DRIVER_CLASS = "driver";
 	private static final String CFG_USERNAME = "user";
 	private static final String CFG_PASSWORD = "password";
+	private static final String CFG_SYNCMAPPING = "syncmappings";	
 	
 	public static boolean isInitialized = false;
 	
@@ -34,6 +35,7 @@ public class JpaConfiguration {
 	public static String dbDriverClass = "";
 	public static String dbUserName = "";
 	public static String dbPassword = "";
+	public static String dbSyncMapping = "";
 
 	public void activate(final BundleContext bundleContext, final Map<String, Object> properties) {
 		logger.debug("Update config...");
@@ -72,6 +74,11 @@ public class JpaConfiguration {
 			logger.info(CFG_PASSWORD + " was not specified!");
 		}
 		dbPassword = (String)properties.get(CFG_PASSWORD);		
+
+		if(properties.get(CFG_SYNCMAPPING) == null) {
+			logger.info(CFG_SYNCMAPPING + " was not specified!");
+		}
+		dbSyncMapping = (String)properties.get(CFG_SYNCMAPPING);		
 
 		isInitialized = true;
 		logger.debug("Update config...done");
