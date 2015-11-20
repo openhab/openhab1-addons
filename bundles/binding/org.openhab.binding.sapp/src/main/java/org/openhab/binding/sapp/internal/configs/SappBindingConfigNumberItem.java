@@ -101,7 +101,7 @@ public class SappBindingConfigNumberItem extends SappBindingConfig {
 		if (!ArrayUtils.contains(validSubAddresses, subAddress)) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
-		
+
 		if (bindingAddress.length == 6) {
 			try {
 				minScale = Integer.parseInt(bindingAddress[4]);

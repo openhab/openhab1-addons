@@ -23,8 +23,7 @@ import com.github.paolodenti.jsapp.core.command.base.SappConnection;
 import com.github.paolodenti.jsapp.core.command.base.SappException;
 
 /**
- * Centralized picnet command execution queue
- * executions on pnmas are synchronized on a single serial queue
+ * Centralized picnet command execution queue executions on pnmas are synchronized on a single serial queue
  * 
  * @author Paolo Denti
  * @since 1.8.0
@@ -61,7 +60,7 @@ public class SappCentralExecuter {
 			SappConnection sappConnection = null;
 			try {
 				sappConnection = new SappConnection(ip, port);
-				
+
 				sappConnection.openConnection();
 
 				SappCommand sappCommand;

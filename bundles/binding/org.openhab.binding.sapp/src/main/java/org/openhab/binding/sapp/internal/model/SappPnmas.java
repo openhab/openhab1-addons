@@ -10,7 +10,7 @@ package org.openhab.binding.sapp.internal.model;
 
 /**
  * Class which represents a Pnmas controller
- *  
+ * 
  * @author Paolo Denti
  * @since 1.8.0
  */
@@ -40,7 +40,7 @@ public class SappPnmas {
 	public int getPort() {
 		return port;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

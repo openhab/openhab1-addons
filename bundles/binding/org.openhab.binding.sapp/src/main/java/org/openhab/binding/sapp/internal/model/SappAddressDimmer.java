@@ -16,7 +16,7 @@ package org.openhab.binding.sapp.internal.model;
  * 
  */
 public class SappAddressDimmer extends SappAddressDecimal {
-	
+
 	private int increment;
 
 	/**
@@ -24,10 +24,10 @@ public class SappAddressDimmer extends SappAddressDecimal {
 	 */
 	public SappAddressDimmer(String pnmasId, SappAddressType addressType, int address, String subAddress, int minScale, int maxScale, int increment) {
 		super(pnmasId, addressType, address, subAddress, minScale, maxScale);
-		
+
 		this.increment = increment;
 	}
-	
+
 	/**
 	 * increment getter
 	 */

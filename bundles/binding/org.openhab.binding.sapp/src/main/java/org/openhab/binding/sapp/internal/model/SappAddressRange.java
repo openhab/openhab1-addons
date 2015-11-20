@@ -16,10 +16,10 @@ package org.openhab.binding.sapp.internal.model;
  * 
  */
 public class SappAddressRange {
-	
+
 	private int loRange;
 	private int hiRange;
-	
+
 	/**
 	 * Constructor
 	 */

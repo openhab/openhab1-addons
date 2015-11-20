@@ -57,7 +57,7 @@ public class SappBindingConfigRollershutterItem extends SappBindingConfig {
 	public SappAddressRollershutterStatus getStatus() {
 		return status;
 	}
-	
+
 	/**
 	 * upControl getter
 	 */
@@ -149,7 +149,7 @@ public class SappBindingConfigRollershutterItem extends SappBindingConfig {
 
 		return new SappAddressRollershutterStatus(pnmasId, addressType, address, subAddress, openValue, closedValue);
 	}
-	
+
 	private SappAddressRollershutterControl parseSappAddressControl(String bindingStringAddress) throws BindingConfigParseException {
 
 		String pnmasId;

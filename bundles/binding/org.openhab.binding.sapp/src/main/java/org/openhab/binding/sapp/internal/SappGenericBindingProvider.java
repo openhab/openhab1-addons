@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.sapp.SappBindingProvider;
-import org.openhab.binding.sapp.SappUpdatePendingRequests;
+import org.openhab.binding.sapp.SappUpdatePendingRequestsProvider;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfig;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigContactItem;
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigDimmerItem;
@@ -48,11 +48,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	private Map<String, SappPnmas> pnmasMap = new HashMap<String, SappPnmas>();
 
 	/**
-	 * map of existing items.
-	 */
-	private Map<String, Item> items = new HashMap<String, Item>();
-
-	/**
 	 * virtuals cache.
 	 */
 	private Map<Integer, Integer> virtualsCache = new HashMap<Integer, Integer>();
@@ -66,11 +61,11 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * outputs cache.
 	 */
 	private Map<Integer, Integer> outputsCache = new HashMap<Integer, Integer>();
-	
+
 	/**
 	 * pending update requests
 	 */
-	private SappUpdatePendingRequests sappUpdatePendingRequests = new SappUpdatePendingRequests();
+	private SappUpdatePendingRequestsProvider sappUpdatePendingRequests = new SappUpdatePendingRequests();
 
 	/**
 	 * {@inheritDoc}
@@ -80,11 +75,11 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		logger.debug(String.format("validating item '%s' against config '%s'", item, bindingConfig));
+		logger.debug("validating item '{}' against config '{}'", item, bindingConfig);
 
 		if (item instanceof SwitchItem) {
 			; // OK, nothing to validate
@@ -106,7 +101,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		logger.debug("processing binding configuration for context " + context);
+		logger.debug("processing binding configuration for context {}", context);
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
@@ -129,7 +124,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 				throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + " - not yet implemented, please check your *.items configuration");
 			}
 		} else {
-			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+			logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
 		}
 	}
 
@@ -138,7 +133,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	protected void addBindingConfig(Item item, BindingConfig config) {
-		items.put(item.getName(), item);
 		super.addBindingConfig(item, config);
 		sappUpdatePendingRequests.addPendingUpdateRequest(item.getName());
 	}
@@ -157,14 +151,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public Map<String, SappPnmas> getPnmasMap() {
 		return pnmasMap;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Item getItem(String itemName) {
-		return items.get(itemName);
 	}
 
 	/**
@@ -216,7 +202,7 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 
 	@Override
-	public SappUpdatePendingRequests getSappUpdatePendingRequests() {
+	public SappUpdatePendingRequestsProvider getSappUpdatePendingRequests() {
 		return sappUpdatePendingRequests;
 	}
 }

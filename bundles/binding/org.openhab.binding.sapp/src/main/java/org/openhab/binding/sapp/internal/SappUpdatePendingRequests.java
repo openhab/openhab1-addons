@@ -6,53 +6,50 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.sapp;
+package org.openhab.binding.sapp.internal;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.openhab.binding.sapp.SappUpdatePendingRequestsProvider;
+
 /**
- * Storage for items changed in cofiguration, to be reloaded. Synchronized access 
+ * Storage for items changed in configuration, to be reloaded. Synchronized access
  * 
  * @author Paolo Denti
  * @since 1.8.0
  */
-public class SappUpdatePendingRequests {
-	
-	private Boolean mutex;
-	private Set<String> pendingUpdateRequests;
-	
-	public SappUpdatePendingRequests() {
-		mutex = new Boolean(true);
-		pendingUpdateRequests = new HashSet<String>();
-	}
-	
+public class SappUpdatePendingRequests implements SappUpdatePendingRequestsProvider {
+
+	private Set<String> pendingUpdateRequests = Collections.synchronizedSet(new HashSet<String>());
+
+	@Override
 	public void addPendingUpdateRequest(String itemName) {
-		synchronized (mutex) {
-			pendingUpdateRequests.add(itemName);
-		}
+		pendingUpdateRequests.add(itemName);
 	}
-	
+
+	@Override
 	public void replaceAllPendingUpdateRequests(String itemName) {
-		synchronized (mutex) {
+		synchronized (pendingUpdateRequests) {
 			pendingUpdateRequests.clear();
 			pendingUpdateRequests.add(itemName);
 		}
 	}
-	
+
+	@Override
 	public Set<String> getAndClearPendingUpdateRequests() {
 		Set<String> toBeReturned = new HashSet<String>();
-		synchronized (mutex) {
+		synchronized (pendingUpdateRequests) {
 			toBeReturned.addAll(pendingUpdateRequests);
 			pendingUpdateRequests.clear();
 		}
-		
+
 		return toBeReturned;
 	}
-	
+
+	@Override
 	public boolean areUpdatePendingRequestsPresent() {
-		synchronized (mutex) {
-			return pendingUpdateRequests.size() > 0;
-		}
+		return pendingUpdateRequests.size() > 0;
 	}
 }

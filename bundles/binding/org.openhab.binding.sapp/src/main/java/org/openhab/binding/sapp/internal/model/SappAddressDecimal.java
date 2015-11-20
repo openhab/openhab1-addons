@@ -43,7 +43,7 @@ public class SappAddressDecimal extends SappAddress {
 	 */
 	public SappAddressDecimal(String pnmasId, SappAddressType addressType, int address, String subAddress) {
 		super(pnmasId, addressType, address, subAddress);
-		
+
 		setOriginalScale(subAddress);
 		this.minScale = originalMinScale;
 		this.maxScale = originalMaxScale;
@@ -62,7 +62,7 @@ public class SappAddressDecimal extends SappAddress {
 	public int getMaxScale() {
 		return maxScale;
 	}
-	
+
 	/**
 	 * originalMinScale getter
 	 */
@@ -78,7 +78,7 @@ public class SappAddressDecimal extends SappAddress {
 	}
 
 	private void setOriginalScale(String subAddress) {
-		
+
 		if (subAddress.equals("*")) {
 			originalMinScale = 0;
 			originalMaxScale = 0xFFFF;
@@ -93,14 +93,14 @@ public class SappAddressDecimal extends SappAddress {
 			originalMaxScale = 0x0001;
 		}
 	}
-	
+
 	/**
 	 * returns the scaled value with respect to the original scale
 	 */
 	public double scaledValue(double value) {
 		return (((double) (value - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale);
 	}
-	
+
 	/**
 	 * converts a scaled value back to the original scale
 	 */

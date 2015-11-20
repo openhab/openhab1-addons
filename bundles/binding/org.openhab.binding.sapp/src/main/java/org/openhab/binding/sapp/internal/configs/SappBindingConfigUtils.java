@@ -16,15 +16,17 @@ package org.openhab.binding.sapp.internal.configs;
  * 
  */
 public class SappBindingConfigUtils {
-	
+
 	/**
 	 * mask the value against the subAddress
 	 * 
-	 * @param subAddress subAddress (*, H, L, bit)
-	 * @param value value to be masked against the subAddress
+	 * @param subAddress
+	 *            subAddress (*, H, L, bit)
+	 * @param value
+	 *            value to be masked against the subAddress
 	 */
 	public static int maskWithSubAddress(String subAddress, int value) {
-		
+
 		if (subAddress.equals("*")) {
 			return value & 0xFFFF;
 		} else if (subAddress.equals("L")) {
@@ -36,16 +38,19 @@ public class SappBindingConfigUtils {
 			return ((0x0001 << (shift - 1) & value) >> (shift - 1));
 		}
 	}
-	
+
 	/**
 	 * mask the value against the subAddress and overwrite the previous value with the masked value
 	 * 
-	 * @param subAddress subAddress (*, H, L, bit)
-	 * @param newValue value to be masked against the subAddress
-	 * @param previousValue previous word value to be masked against the new masked value
+	 * @param subAddress
+	 *            subAddress (*, H, L, bit)
+	 * @param newValue
+	 *            value to be masked against the subAddress
+	 * @param previousValue
+	 *            previous word value to be masked against the new masked value
 	 */
 	public static int maskWithSubAddressAndSet(String subAddress, int newValue, int previousValue) {
-		
+
 		if (subAddress.equals("*")) {
 			return newValue & 0xFFFF;
 		} else if (subAddress.equals("L")) {

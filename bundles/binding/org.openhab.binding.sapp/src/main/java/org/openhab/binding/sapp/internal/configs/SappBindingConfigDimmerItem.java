@@ -98,7 +98,7 @@ public class SappBindingConfigDimmerItem extends SappBindingConfig {
 		if (!ArrayUtils.contains(validSubAddresses, subAddress)) {
 			throw new BindingConfigParseException(errorMessage(bindingStringAddress));
 		}
-		
+
 		// increment
 		try {
 			increment = Integer.parseInt(bindingAddress[4]);

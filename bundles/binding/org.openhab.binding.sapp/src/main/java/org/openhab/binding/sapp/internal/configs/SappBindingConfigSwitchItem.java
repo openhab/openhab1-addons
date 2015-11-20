@@ -44,7 +44,7 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 	public SappBindingConfigSwitchItem(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		super(item.getName());
-		
+
 		if ("P".equals(bindingConfig)) {
 			pollerSuspender = true;
 
@@ -76,7 +76,7 @@ public class SappBindingConfigSwitchItem extends SappBindingConfig {
 	public SappAddressOnOffControl getControl() {
 		return control;
 	}
-	
+
 	/**
 	 * pollerSuspender getter
 	 */

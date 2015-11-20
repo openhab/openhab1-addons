@@ -23,7 +23,7 @@ import org.openhab.core.binding.BindingConfig;
  * 
  */
 public abstract class SappBindingConfig implements BindingConfig {
-	
+
 	/**
 	 * valid address ranges for each address type
 	 */
@@ -52,7 +52,7 @@ public abstract class SappBindingConfig implements BindingConfig {
 	/**
 	 * Constructor
 	 */
-	public SappBindingConfig(String itemName)  {
+	public SappBindingConfig(String itemName) {
 
 		this.itemName = itemName;
 	}
