@@ -173,20 +173,20 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 		
 		switch (charPresentation) {
 			case ENCODING_ASCII:
-				logger.info("NODE {} : Node Name is encoded with standard ASCII codes", this.getNode().getNodeId());
+				logger.debug("NODE {} : Node Name is encoded with standard ASCII codes", this.getNode().getNodeId());
 				break;
 			case ENCODING_EXTENDED_ASCII:
-				logger.info("NODE {} : Node Name is encoded with Using standard and OEM Extended ASCII codes", this.getNode().getNodeId());
+				logger.debug("NODE {} : Node Name is encoded with Using standard and OEM Extended ASCII codes", this.getNode().getNodeId());
 				break;
 			case ENCODING_UTF16:
-				logger.info("NODE {} : Node Name is encoded with Unicode UTF-16", this.getNode().getNodeId());
+				logger.debug("NODE {} : Node Name is encoded with Unicode UTF-16", this.getNode().getNodeId());
 				break;
 			default:
 				logger.error("NODE {} : Node Name encodeding is unsupported. Encoding code {}", this.getNode().getNodeId(), charPresentation);
 				return null;
 		}
 				
-		int numBytes = serialMessage.getMessagePayload().length - 3;
+		int numBytes = serialMessage.getMessagePayload().length - (offset + 2);
 		
 		if(numBytes <= 0) {
 			logger.error("NODE {} : Node Name report error in message length", this.getNode().getNodeId());
@@ -199,7 +199,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 			numBytes = MAX_STRING_LENGTH;
 		}
 		
-		byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, serialMessage.getMessagePayload().length);
+		byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, offset + 2 + numBytes);
 		
 		try {
 			switch(charPresentation) {
