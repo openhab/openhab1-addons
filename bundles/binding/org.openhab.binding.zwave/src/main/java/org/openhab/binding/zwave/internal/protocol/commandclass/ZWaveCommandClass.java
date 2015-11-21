@@ -367,7 +367,7 @@ public abstract class ZWaveCommandClass {
 		ZIP_SERVER(0x24,"ZIP_SERVER",null),
 		SWITCH_BINARY(0x25,"SWITCH_BINARY",ZWaveBinarySwitchCommandClass.class),
 		SWITCH_MULTILEVEL(0x26,"SWITCH_MULTILEVEL",ZWaveMultiLevelSwitchCommandClass.class),
-		SWITCH_ALL(0x27,"SWITCH_ALL",null),
+		SWITCH_ALL(0x27,"SWITCH_ALL",ZWaveSwitchAllCommandClass.class),
 		SWITCH_TOGGLE_BINARY(0x28,"SWITCH_TOGGLE_BINARY",null),
 		SWITCH_TOGGLE_MULTILEVEL(0x29,"SWITCH_TOGGLE_MULTILEVEL",null),
 		CHIMNEY_FAN(0x2A,"CHIMNEY_FAN",null),
