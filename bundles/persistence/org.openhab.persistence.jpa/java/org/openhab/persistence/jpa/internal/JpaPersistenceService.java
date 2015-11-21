@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -92,7 +94,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		logger.debug("Storing item: " + item.getName());
 		
 		if (item.getState() instanceof UnDefType) {
-			logger.debug("This item is of undefined type. Cannot perist it!");
+			logger.debug("This item is of undefined type. Cannot persist it!");
 			return;
 		}
 		
@@ -106,7 +108,9 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		
 		JpaPersistentItem pItem = new JpaPersistentItem();
 		try {
-			pItem.setValue(StateHelper.toString(item.getState()));
+			String newValue = StateHelper.toString(item.getState());
+			pItem.setValue(newValue);
+			logger.debug("Stored new value: {}", newValue);
 		} catch (Exception e1) {
 			logger.error("Error on converting state value to string: {}", e1.getMessage());
 			return;
@@ -136,7 +140,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		logger.debug("querying for historic item: " + filter.getItemName());
+		logger.debug("Querying for historic item: {}", filter.getItemName());
 		
 		if(!JpaConfiguration.isInitialized) {
 			logger.warn("Trying to create EntityManagerFactory but we don't have configuration yet!");
@@ -186,6 +190,10 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 			logger.debug("Retrieving result list...done");
 			
 			List<HistoricItem> historicList = JpaHistoricItem.fromResultList(result, item);
+			if(historicList != null) {
+				logger.debug(String.format("Convert to HistoricItem: %d", historicList.size()));
+			}
+            
 			em.getTransaction().commit();
 			
 			return historicList;
@@ -194,6 +202,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 			logger.error("Error on querying database!");
 			logger.error(e.getMessage(), e);
 			em.getTransaction().rollback();
+            
 		} finally {
 			em.close();
 		}
@@ -219,6 +228,10 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		}
 		if(JpaConfiguration.dbUserName != null && JpaConfiguration.dbPassword == null) {
 			logger.warn("JPA persistence - it is recommended to use a password to protect data store");
+		}
+		if(JpaConfiguration.dbSyncMapping != null && !StringUtils.isBlank(JpaConfiguration.dbSyncMapping)) {
+			logger.warn("You are settings openjpa.jdbc.SynchronizeMappings, I hope you know what you're doing!");
+		    properties.put("openjpa.jdbc.SynchronizeMappings", JpaConfiguration.dbSyncMapping);
 		}
 		
 		EntityManagerFactory fac = Persistence.createEntityManagerFactory(getPersistenceUnitName(), properties);
