@@ -15,6 +15,7 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfEnergyMonitorMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoResponse;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
@@ -45,7 +46,7 @@ public class LightwaverfConvertor {
 
 		switch (deviceType) {
 		case HEATING_BATTERY:
-		case HEATING_SIGNAL:
+		case SIGNAL:
 		case HEATING_CURRENT_TEMP:
 		case HEATING_MODE:
 		case VERSION:
@@ -107,6 +108,8 @@ public class LightwaverfConvertor {
 			return new LightwaveRfDimCommand(message);
 		} else if (LightwaveRfOnOffCommand.matches(message)) {
 			return new LightwaveRfOnOffCommand(message);
+		} else if (LightwaveRfEnergyMonitorMessage.matches(message)){
+			return new LightwaveRfEnergyMonitorMessage(message);
 		}
 		throw new LightwaveRfMessageException("Message not recorgnised: "
 				+ message);

@@ -8,43 +8,77 @@
  */
 package org.openhab.binding.lightwaverf.internal;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSetHeatingTemperatureCommand;
 import org.openhab.core.library.types.OnOffType;
 
 public class LightwaveRFSenderTest {
-
+	
+	private final String LIGHTWAVE_IP = "255.255.255.255";
+	private final int TRANSMIT_PORT = 9760;
+	private final int RECEIVE_PORT = 9761;
+	private final LightwaverfConvertor CONVERTOR = new LightwaverfConvertor();
+	private final int TIME_BETWEEN_COMMANDS = 2000;
+	private final int TIMEOUT_OK = 2000;
+	private final int THREAD_SLEEP = 10 * 1000;
+	
 	@Test
-	@Ignore
-	public void test() throws Exception {
-		
-		LightwaverfConvertor convertor = new LightwaverfConvertor();
-
-		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(convertor, 9761);
-		LightwaveRFSender sender = new LightwaveRFSender("255.255.255.255", 9760, 1000, 1000);
+	@Ignore(value="This is a functional test to ensure the code is working")
+	public void testSwitch() throws Exception {
+		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(CONVERTOR, TRANSMIT_PORT);
+		LightwaveRFSender sender = new LightwaveRFSender(LIGHTWAVE_IP, TRANSMIT_PORT, RECEIVE_PORT, CONVERTOR, TIME_BETWEEN_COMMANDS, TIMEOUT_OK);
 		receiver2.start();
-		receiver2.addListener(sender);
-		
 		sender.start();
 		
+		LightwaveRFCommand command = CONVERTOR.convertToLightwaveRfMessage("3", "5", LightwaveRfType.SWITCH, OnOffType.OFF);
+		sender.sendLightwaveCommand(command);
 		
-		LightwaveRFCommand command1 = convertor.convertToLightwaveRfMessage("2", "2", LightwaveRfType.DIMMER, OnOffType.OFF);
-		LightwaveRFCommand command2 = convertor.convertToLightwaveRfMessage("3", "3", LightwaveRfType.SWITCH, OnOffType.OFF);
-		LightwaveRFCommand command3 = convertor.convertToLightwaveRfMessage("3", "5", LightwaveRfType.SWITCH, OnOffType.OFF);
-		LightwaveRFCommand command4 = convertor.convertToLightwaveRfMessage("3", "6", LightwaveRfType.DIMMER, OnOffType.OFF);
-		LightwaveRFCommand command5 = convertor.convertToLightwaveRfMessage("1", "1", LightwaveRfType.DIMMER, OnOffType.OFF);
+		Thread.sleep(THREAD_SLEEP);
+	}	
+	
+	@Test
+	@Ignore(value="This is a functional test to ensure the code is working")
+	public void testDimmer() throws Exception {
+		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(CONVERTOR, TRANSMIT_PORT);
+		LightwaveRFSender sender = new LightwaveRFSender(LIGHTWAVE_IP, TRANSMIT_PORT, RECEIVE_PORT, CONVERTOR, TIME_BETWEEN_COMMANDS, TIMEOUT_OK);
+		receiver2.start();
+		sender.start();
 		
-		sender.sendLightwaveCommand(command1);
-		sender.sendLightwaveCommand(command2);
-		sender.sendLightwaveCommand(command3);
-		sender.sendLightwaveCommand(command4);
-		sender.sendLightwaveCommand(command5);
+		LightwaveRFCommand command = CONVERTOR.convertToLightwaveRfMessage("2", "2", LightwaveRfType.DIMMER, OnOffType.OFF);
+		sender.sendLightwaveCommand(command);
 		
-		Thread.sleep(10 * 60 * 1000);
-		fail("Not yet implemented");
-	}
+		Thread.sleep(THREAD_SLEEP);
+	}	
 
+	
+	@Test
+	@Ignore(value="This is a functional test to ensure the code is working")
+	public void testSetHeating() throws Exception {
+		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(CONVERTOR, TRANSMIT_PORT);
+		LightwaveRFSender sender = new LightwaveRFSender(LIGHTWAVE_IP, TRANSMIT_PORT, RECEIVE_PORT, CONVERTOR, TIME_BETWEEN_COMMANDS, TIMEOUT_OK);
+		receiver2.start();
+		sender.start();
+		
+		LightwaveRFCommand command = new LightwaveRfSetHeatingTemperatureCommand(100, "4", 17);
+		sender.sendLightwaveCommand(command);
+		
+		Thread.sleep(THREAD_SLEEP);
+	}			
+
+	@Test
+	@Ignore(value="This is a functional test to ensure the code is working")
+	public void testHeatingInfo() throws Exception {
+		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(CONVERTOR, TRANSMIT_PORT);
+		LightwaveRFSender sender = new LightwaveRFSender(LIGHTWAVE_IP, TRANSMIT_PORT, RECEIVE_PORT, CONVERTOR, TIME_BETWEEN_COMMANDS, TIMEOUT_OK);
+		receiver2.start();
+		sender.start();
+		
+		LightwaveRfHeatInfoRequest command = new LightwaveRfHeatInfoRequest(500, "4");
+		sender.sendLightwaveCommand(command);
+		
+		Thread.sleep(THREAD_SLEEP);
+	}			
 }

@@ -47,7 +47,7 @@ public class LightwaveRfHeatingInfoCommandTest {
 		assertEquals(new DecimalType(2.99), command.getState(LightwaveRfType.HEATING_BATTERY));
 		assertEquals(new DecimalType("22.3").doubleValue(), ((DecimalType) command.getState(LightwaveRfType.HEATING_CURRENT_TEMP)).doubleValue(), 0.001);
 		assertEquals(new DecimalType(24.0), command.getState(LightwaveRfType.HEATING_SET_TEMP));
-		assertEquals(new DecimalType(54.0), command.getState(LightwaveRfType.HEATING_SIGNAL));
+		assertEquals(new DecimalType(54.0), command.getState(LightwaveRfType.SIGNAL));
 		assertEquals(new StringType("56"), command.getState(LightwaveRfType.VERSION));
 		assertEquals(message, command.getLightwaveRfCommandString());
 		assertEquals("064402", command.getSerial());

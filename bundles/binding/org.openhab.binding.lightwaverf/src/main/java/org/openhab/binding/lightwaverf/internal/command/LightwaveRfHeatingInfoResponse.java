@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
-import org.openhab.binding.lightwaverf.internal.message.LightwaveRfHeatingMessageId;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfJsonMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -88,7 +88,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 	private final int prof;
 
 	public LightwaveRfHeatingInfoResponse(String message) {
-		messageId = new LightwaveRfHeatingMessageId(
+		messageId = new LightwaveRfJsonMessageId(
 				Integer.valueOf(getStringFromText(MESSAGE_ID_REG_EXP, message)));
 		mac = getStringFromText(MAC_ID_REG_EXP, message);
 		time = new Date(
@@ -142,7 +142,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		switch (type) {
 		case HEATING_BATTERY:
 			return new DecimalType(getBatteryLevel());
-		case HEATING_SIGNAL:
+		case SIGNAL:
 			return new DecimalType(getSignal());
 		case HEATING_CURRENT_TEMP:
 			return new DecimalType(getCurrentTemperature());
@@ -150,7 +150,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 			return new DecimalType(getCurrentTargetTemperature());
 		case HEATING_MODE:
 			return new StringType(getState());
-		case HEATING_UPDATETIME:
+		case UPDATETIME:
 			Calendar cal = Calendar.getInstance();
 			// The date seems to be in a strange timezone so at the moment we
 			// use server date.

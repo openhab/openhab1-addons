@@ -107,7 +107,7 @@ public class LightwaveRfGenericBindingProvider extends
 
 			logger.info(
 					"ConfigString[{}] Room[{}] Device[{}] Serial[{}] Type[{}] Poll[{}]",
-					bindingConfig, roomId, deviceId, serialId, type, poll);
+					new Object[] {bindingConfig, roomId, deviceId, serialId, type, poll});
 			addBindingConfig(item, config);
 		} catch (Exception e) {
 			throw new BindingConfigParseException(
