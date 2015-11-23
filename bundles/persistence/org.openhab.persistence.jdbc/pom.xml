@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>persistence</artifactId>
+		<version>1.8.0-SNAPSHOT</version>
+	</parent>
+
+	<name>openHAB JDBC SQL Persistence</name>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.persistence</groupId>
+	<artifactId>org.openhab.persistence.jdbc</artifactId>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<hikari.version>2.4.1</hikari.version>
+		<!-- <hikari.version>2.3.9</hikari.version> <hikari.version>2.4.1</hikari.version> -->
+		<dbutils.version>1.6</dbutils.version>
+		<yank.version>3.0.3-SNAPSHOT</yank.version>
+		<!-- <yank.version>3.0.2</yank.version> <yank.version>3.0.3-SNAPSHOT</yank.version> -->
+
+		<bundle.symbolicName>org.openhab.persistence.jdbc</bundle.symbolicName>
+		<bundle.namespace>org.openhab.persistence.jdbc</bundle.namespace>
+		<classpath.ext>lib/</classpath.ext>
+		<deb.name>openhab-addon-persistence-jdbc</deb.name>
+		<deb.description>${project.name}</deb.description>
+		<derby.version>10.11.1.1</derby.version>
+		<h2.version>1.4.189</h2.version>
+		<hsqldb.version>2.3.3</hsqldb.version>
+		<mariadb.version>1.2.0</mariadb.version>
+		<mysql.version>5.1.36</mysql.version>
+		<postgresql.version>9.4-1201-jdbc41</postgresql.version>
+		<sqlite.version>3.8.11.1</sqlite.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>${dbutils.version}</version>
+		</dependency>
+		<!-- http://stackoverflow.com/questions/4955635/how-to-add-local-jar-files-in-maven-project 
+			<dependency> <groupId>com.xeiam</groupId> <artifactId>yank</artifactId> <version>${yank.version}</version> 
+			<scope>system</scope> <systemPath>${project.basedir}/org.openhab.persistence.jdbc/lib/yank-3.0.3-SNAPSHOT.jar</systemPath> 
+			</dependency> -->
+
+		<!-- <dependency> <groupId>com.xeiam</groupId> <artifactId>yank</artifactId> 
+			<version>${yank.version}</version> </dependency> -->
+
+		<!-- <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP-java6</artifactId> 
+			<version>${hikari.version}</version> <scope>compile</scope> </dependency> -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikari.version}</version>
+			<!--scope>compile</scope -->
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>${derby.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldb.version}</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.mariadb.jdbc</groupId> <artifactId>mariadb-java-client</artifactId> 
+			<version>${mariadb.version}</version> </dependency> -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>${sqlite.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+
+			<!-- https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-artifacts.html 
+				copying jars for embedding to 'lib' -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-libraries-dependencies</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+
+								<artifactItem>
+									<groupId>commons-dbutils</groupId>
+									<artifactId>commons-dbutils</artifactId>
+									<version>${dbutils.version}</version>
+								</artifactItem>
+								<!-- <artifactItem> <groupId>com.xeiam</groupId> <artifactId>yank</artifactId> 
+									<version>${yank.version}</version> </artifactItem> -->
+								<artifactItem>
+									<groupId>com.zaxxer</groupId>
+									<artifactId>HikariCP</artifactId>
+									<version>${hikari.version}</version>
+								</artifactItem>
+
+
+								<!-- <artifactItem> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId> 
+									<version>${mysql.version}</version> </artifactItem> <artifactItem> <groupId>org.postgresql</groupId> 
+									<artifactId>postgresql</artifactId> <version>${postgresql.version}</version> 
+									</artifactItem> -->
+							</artifactItems>
+							<outputDirectory>lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- cleaning 'lib' from not uses Jars -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.6.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/lib</directory>
+							<includes>
+								<include>*.jar</include>
+							</includes>
+
+							<excludes>
+								<exclude>*commons-dbutils*.jar</exclude>
+								<exclude>*HikariCP*.jar</exclude>
+								<exclude>*yank*.jar</exclude>
+							</excludes>
+
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+
+<!-- http://stackoverflow.com/questions/8726884/create-multiple-runnable-jars-with-depencies-included-from-a-single-maven-proj -->
+		<!--<plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>h2</id>
+                    <configuration>
+						<classifier>h2</classifier>
+						<includes>
+							<include>**/*</include>
+							<include>${basedir}/drivers/h2-1.4.189.jar</include>
+						</includes>
+                        <archive>
+                            <manifest>
+                                <mainClass>firstMainClass</mainClass>
+                            </manifest>
+                        </archive>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <appendAssemblyId>false</appendAssemblyId>
+                    </configuration>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>derby</id>
+                    <configuration>
+						<classifier>derby</classifier>
+                        <archive>
+                            <manifest>
+                                <mainClass>SecondMainClass</mainClass>
+                            </manifest>
+                        </archive>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <appendAssemblyId>false</appendAssemblyId>
+                    </configuration>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        -->
+
+<!-- http://blog.sonatype.com/2010/01/how-to-create-two-jars-from-one-project-and-why-you-shouldnt/
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>derby</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<classifier>derby</classifier>
+							<includes>
+								<include>**/*</include>
+								<include>${basedir}/drivers/h2-1.4.189.jar</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>h2</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<classifier>h2</classifier>
+							<includes>
+								<include>**/*</include>
+								<include>${basedir}/drivers/h2-1.4.189.jar</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+-->
+
+
+
+
+
+		</plugins>
+	</build>
+
+
+
+
+
+	<!-- <profiles> <profile> <id>org.openhab.persistence.jdbc.derby</id> <build> 
+		<plugins> <plugin> <artifactId>maven-jar-plugin</artifactId> <configuration> 
+		<classifier>derby</classifier> <includes> <include>**/*</include> <include>${basedir}/drivers/derby-10.11.1.1.jar</include> 
+		</includes> </configuration> </plugin> </plugins> </build> </profile> <profile> 
+		<id>org.openhab.persistence.jdbc.h2</id> <build> <plugins> <plugin> <artifactId>maven-jar-plugin</artifactId> 
+		<configuration> <classifier>h2</classifier> <excludes> <include>**/*</include> 
+		<include>${basedir}/drivers/h2-1.4.189.jar</include> </excludes> </configuration> 
+		</plugin> </plugins> </build> </profile> </profiles> -->
+
+
+
+
+	<!-- INFOS: exclude/include: http://felix.apache.org/documentation/subprojects/apache-felix-maven-bundle-plugin-bnd.html -->
+</project>
