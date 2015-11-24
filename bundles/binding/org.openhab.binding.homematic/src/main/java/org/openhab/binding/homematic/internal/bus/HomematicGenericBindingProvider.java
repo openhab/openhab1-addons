@@ -96,4 +96,13 @@ public class HomematicGenericBindingProvider extends AbstractGenericBindingProvi
 		return items.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean autoUpdate(String itemName) {
+		// this bindung updates the items, so alway false
+		return false;
+	}
+
 }

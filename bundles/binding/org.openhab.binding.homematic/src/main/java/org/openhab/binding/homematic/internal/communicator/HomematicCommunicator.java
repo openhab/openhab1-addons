@@ -229,27 +229,30 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 
 	/**
 	 * Receives a update from openHAB and sends it to the Homematic server.
+	 * @return <code>true</code> if successful
 	 */
-	public void receiveUpdate(Item item, State newState, HomematicBindingConfig bindingConfig) {
+	public boolean receiveUpdate(Item item, State newState, HomematicBindingConfig bindingConfig) {
 		logger.debug("Received update {} for item {}", newState, item.getName());
 		Event event = new Event(item, newState, bindingConfig);
-		receiveType(event);
+		return receiveType(event);
 	}
 
 	/**
 	 * Receives a command from openHAB and sends it to the Homematic server.
+	 * @return <code>true</code> if successful
 	 */
-	public void receiveCommand(Item item, Command command, HomematicBindingConfig bindingConfig) {
+	public boolean receiveCommand(Item item, Command command, HomematicBindingConfig bindingConfig) {
 		logger.debug("Received command {} for item {}", command, item.getName());
 		Event event = new Event(item, command, bindingConfig);
-		receiveType(event);
+		return receiveType(event);
 	}
 
 	/**
 	 * Receives updates/commands from openHAB and sends messages to the
 	 * Homematic server.
+	 * @return <code>true</code> if successful
 	 */
-	public void receiveType(Event event) {
+	public boolean receiveType(Event event) {
 		if (event.isProgram()) {
 			if (event.isOnType()) {
 				executeProgram(event);
@@ -264,6 +267,8 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 
 			if (event.getHmValueItem() == null) {
 				logger.warn("Can't find {}, value is not published to Homematic server!", event.getBindingConfig());
+				return false;
+				
 			} else {
 				try {
 					if (event.isStopLevelDatapoint()) {
@@ -288,11 +293,16 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 					}
 				} catch (Exception ex) {
 					logger.error(ex.getMessage(), ex);
+					
 					context.getStateHolder().reloadDatapoints();
 					context.getStateHolder().reloadVariables();
+
+					return false;
 				}
 			}
 		}
+		
+		return true;
 	}
 
 	/**
