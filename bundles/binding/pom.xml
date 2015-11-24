@@ -161,5 +161,6 @@
     <module>org.openhab.binding.ipx800</module>
     <module>org.openhab.binding.tacmi</module>
     <module>org.openhab.binding.lcn</module>
+    <module>org.openhab.binding.connectsdk</module>
   </modules>
 </project>
