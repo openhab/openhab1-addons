@@ -23,13 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +44,7 @@ import com.connectsdk.service.capability.TVControl;
 import com.connectsdk.service.capability.TVControl.ChannelListener;
 import com.connectsdk.service.capability.ToastControl;
 import com.connectsdk.service.capability.VolumeControl;
+import com.connectsdk.service.capability.VolumeControl.MuteListener;
 import com.connectsdk.service.capability.VolumeControl.VolumeListener;
 import com.connectsdk.service.capability.listeners.ResponseListener;
 import com.connectsdk.service.command.ServiceCommandError;
@@ -57,73 +58,40 @@ import com.google.common.collect.Iterables;
  * @author Sebastian Prehn
  * @since 1.8.0
  */
-public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingProvider> implements
-		DiscoveryManagerListener { // maybe move to AbstractBinding ... active
-									// may not be required as connectsdk manages
-									// own threads.
-
+public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider> implements DiscoveryManagerListener {
 	private static final Logger logger = LoggerFactory.getLogger(ConnectSDKBinding.class);
-	private DiscoveryManager mDiscoveryManager;
+	private DiscoveryManager discoveryManager;
 
 	/**
-	 * Device IP to TVControl.ChannelListener map
+	 * Device IP to TVControl.ChannelListener map.
 	 * 
 	 */
 	private Map<String, ServiceSubscription<ChannelListener>> tvControlsChannelSubscriptions = new ConcurrentHashMap<String, ServiceSubscription<ChannelListener>>();
 	/**
-	 * Device IP to VolumeControl.VolumeListener map
+	 * Device IP to VolumeControl.VolumeListener map.
 	 * 
 	 */
 	private Map<String, ServiceSubscription<VolumeListener>> volumeControlVolumeSubscriptions = new ConcurrentHashMap<String, ServiceSubscription<VolumeListener>>();
 	/**
-	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate() method and must not
-	 * be accessed anymore once the deactivate() method was called or before activate() was called.
+	 * Device IP to VolumeControl.MuteListener map.
+	 * 
 	 */
-	private BundleContext bundleContext;
-
-	/**
-	 * the refresh interval which is used to poll values from the ConnectSDK server (optional, defaults to 60000ms)
-	 */
-	private long refreshInterval = 60000;
+	private Map<String, ServiceSubscription<MuteListener>> volumeControlMuteSubscriptions = new ConcurrentHashMap<String, ServiceSubscription<MuteListener>>();
 
 	public ConnectSDKBinding() {
 
 	}
 
-	/**
-	 * Called by the SCR to activate the component with its configuration read from CAS
-	 * 
-	 * @param bundleContext
-	 *            BundleContext of the Bundle that defines this component
-	 * @param configuration
-	 *            Configuration properties for this component obtained from the ConfigAdmin service
-	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+	@Override
+	public void activate() {
 		logger.debug("activated");
-		this.bundleContext = bundleContext;
 
-		setProperlyConfigured(true);
-
-		// start connect sdk
 		ContextImpl ctx = new ContextImpl();
 		DiscoveryManager.init(ctx);
-
-		// This step could even happen in your app's delegate
-		mDiscoveryManager = DiscoveryManager.getInstance();
-		mDiscoveryManager.setPairingLevel(DiscoveryManager.PairingLevel.ON);
-		mDiscoveryManager.addListener(this);
-		mDiscoveryManager.start();
-	}
-
-	/**
-	 * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
-	 * 
-	 * @param configuration
-	 *            Updated configuration properties
-	 */
-	public void modified(final Map<String, Object> configuration) {
-		logger.debug("modified");
-		// update the internal configuration accordingly
+		discoveryManager = DiscoveryManager.getInstance();
+		discoveryManager.setPairingLevel(DiscoveryManager.PairingLevel.ON);
+		discoveryManager.addListener(this);
+		discoveryManager.start();
 	}
 
 	/**
@@ -144,37 +112,10 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 	 */
 	public void deactivate(final int reason) {
 		logger.debug("deactivate {}", reason);
-		this.bundleContext = null;
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
-		this.mDiscoveryManager = null;
+
+		discoveryManager = null;
 		DiscoveryManager.destroy();
 
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected String getName() {
-		return "ConnectSDK Service";
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		// logger.debug("execute() method is called!");
 	}
 
 	/**
@@ -193,14 +134,13 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 
 			ConnectableDevice d;
 			try {
-				d = this.mDiscoveryManager.getCompatibleDevices().get(InetAddress.getByName(device).getHostAddress());
+				d = this.discoveryManager.getCompatibleDevices().get(InetAddress.getByName(device).getHostAddress());
 				if (d == null) {
-					logger.warn("Device not found {} under connectsdk devices. Skipping processing for item {}",
-							device, itemName);
+					logger.warn("{} not found under connect sdk devices. Skipping item {}", device, itemName);
 					continue;
 				}
 			} catch (UnknownHostException e) {
-				logger.error("Failed to resolve {} to IP address. Skipping processing for item {}", device, itemName);
+				logger.error("Failed to resolve {} to IP address. Skipping item {}", device, itemName);
 				continue;
 			}
 
@@ -208,6 +148,7 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 			final String property = provider.getPropertyForItem(itemName);
 			onReceiveCommandTVControlChannel(d, clazz, property, command);
 			onReceiveCommandVolumeControlVolume(d, clazz, property, command);
+			onReceiveCommandVolumeControlMute(d, clazz, property, command); // here
 		}
 
 	}
@@ -243,13 +184,13 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 
 							@Override
 							public void onError(ServiceCommandError error) {
-								logger.error("error changing channel: {}.", error.getMessage());
+								logger.error("Error changing channel: {}.", error.getMessage());
 
 							}
 
 							@Override
 							public void onSuccess(Object object) {
-								logger.info("successfully changed channel: {}.", object);
+								logger.debug("Successfully changed channel: {}.", object);
 
 							}
 						});
@@ -286,13 +227,13 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 
 				@Override
 				public void onError(ServiceCommandError error) {
-					logger.error("error changing volume: {}.", error.getMessage());
+					logger.error("Error changing volume: {}.", error.getMessage());
 
 				}
 
 				@Override
 				public void onSuccess(Object object) {
-					logger.info("successfully changed volume: {}.", object);
+					logger.debug("Successfully changed volume: {}.", object);
 
 				}
 			});
@@ -301,6 +242,41 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 
 	}
 
+	
+	private void onReceiveCommandVolumeControlMute(final ConnectableDevice d, final String clazz,
+			final String property, Command command) { // here
+		if ("VolumeControl".equals(clazz) && "mute".equals(property) && d.hasCapabilities(VolumeControl.Mute_Set)) {
+
+			OnOffType onOffType;
+			if (command instanceof OnOffType) {
+				onOffType = (OnOffType) command;
+			} else if (command instanceof StringType) {
+				onOffType = OnOffType.valueOf(command.toString());
+			} else {
+				logger.warn("only accept OnOffType");
+				return;
+			}
+			final boolean value = OnOffType.ON.equals(onOffType);
+			final VolumeControl control = d.getCapability(VolumeControl.class);
+
+			control.setMute(value, new ResponseListener<Object>() {
+
+				@Override
+				public void onError(ServiceCommandError error) {
+					logger.error("Error setting mute: {}.", error.getMessage());
+
+				}
+
+				@Override
+				public void onSuccess(Object object) {
+					logger.debug("Successfully set mute: {}.", object);
+
+				}
+			});
+
+		}
+
+	}
 	/**
 	 * @{inheritDoc
 	 */
@@ -323,42 +299,42 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 			@Override
 			public void onPairingRequired(ConnectableDevice device, DeviceService service, PairingType pairingType) {
 
-				logger.info("pairing required ");
-//				if (DeviceService.PairingType.PIN_CODE.equals(pairingType)) {
-//					String key = "123";
-//					service.sendPairingKey(key);
-//				}
+				logger.info("Pairing required.");
+				// if (DeviceService.PairingType.PIN_CODE.equals(pairingType)) {
+				// String key = "123";
+				// service.sendPairingKey(key);
+				// }
 
 			}
 
 			@Override
 			public void onDeviceReady(ConnectableDevice device) {
-				logger.info("device ready: " + device.toJSONObject());
+				logger.info("Device ready: {}", device);
+				handleSubscriptions(device);
 
 			}
 
 			@Override
 			public void onDeviceDisconnected(ConnectableDevice device) {
-				logger.info("device disconnected: " + device.toJSONObject());
+				logger.info("Device disconnected: {}", device);
 
 			}
 
 			@Override
 			public void onConnectionFailed(ConnectableDevice device, ServiceCommandError error) {
-				logger.warn("connection failed: " + device.toJSONObject() + " - error: " + error.getMessage());
+				logger.warn("Connection failed: {} - error: {}", device, error.getMessage());
 
 			}
 
 			@Override
 			public void onCapabilityUpdated(ConnectableDevice device, List<String> added, List<String> removed) {
-				logger.info("compatibility updated: " + device.toJSONObject() + " - added: " + added.toString()
-						+ " - removed: " + removed.toString());
+				logger.debug("Capabilities updated: {} - added: {} - removed: {}", device, added, removed);
 				handleSubscriptions(device);
 			}
 		});
 
 		handleSubscriptions(device);
-		logger.info("capabilities: " + device.getFriendlyName() + " : " + device.getCapabilities().toString());
+		logger.debug("Capabilities: " + device.getFriendlyName() + " : " + device.getCapabilities().toString());
 
 		sendHelloWorld(device);
 
@@ -376,12 +352,12 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 				if (!device.isConnected()) {
 					device.connect();
 				}
-				device.getCapability(ToastControl.class).showToast("Hello World", result, "png",
+				device.getCapability(ToastControl.class).showToast("Welcome to Openhab!", result, "png",
 						new ResponseListener<Object>() {
 
 							@Override
 							public void onSuccess(Object object) {
-								logger.info("toast: " + object.toString());
+								logger.debug("toast: {}", object);
 							}
 
 							@Override
@@ -399,31 +375,33 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 
 	@Override
 	public void onDeviceUpdated(DiscoveryManager manager, ConnectableDevice device) {
-		logger.info("update: " + device.toJSONObject());
+		logger.info("Device updated: {}", device);
 		handleSubscriptions(device);
+	}
+
+	@Override
+	public void onDeviceRemoved(DiscoveryManager manager, ConnectableDevice device) {
+		logger.info("Device removed: {}", device);
+		removeAnyChannelSubscription(device);
+		removeAnyVolumeSubscription(device);
+		removeAnyMuteSubscription(device); // here
+	}
+
+	@Override
+	public void onDiscoveryFailed(DiscoveryManager manager, ServiceCommandError error) {
+		logger.warn("Discovery failed: {}", error.getMessage());
 	}
 
 	private void handleSubscriptions(ConnectableDevice device) {
 		handleTVControlChannelSubscription(device);
 		handleVolumeControlVolumeSubscription(device);
-	}
-
-	@Override
-	public void onDeviceRemoved(DiscoveryManager manager, ConnectableDevice device) {
-		logger.info("removed: " + device.toJSONObject());
-		removeAnyChannelSubscription(device);
-		removeAnyVolumeSubscription(device);
-	}
-
-	@Override
-	public void onDiscoveryFailed(DiscoveryManager manager, ServiceCommandError error) {
-		logger.warn("failed: " + error.getMessage());
+		handleVolumeControlMuteSubscription(device); // here
 	}
 
 	private void handleTVControlChannelSubscription(final ConnectableDevice device) {
 		removeAnyChannelSubscription(device);
 		if (device.hasCapability(TVControl.Channel_Subscribe)) {
-			logger.info("subscribe channel listener on ip: " + device.getIpAddress());
+			logger.debug("Subscribe channel listener on IP: {}", device.getIpAddress());
 			ServiceSubscription<ChannelListener> listener = device.getCapability(TVControl.class)
 					.subscribeCurrentChannel(new ChannelListener() {
 
@@ -444,15 +422,12 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 																.getHostAddress())) {
 											if (eventPublisher != null) {
 												eventPublisher.postUpdate(itemName,
-														new StringType(channelInfo.getNumber())); // channel
-																									// ->
-																									// channelName
-																									// and
-																									// channelNumber
+														new StringType(channelInfo.getNumber()));
 											}
 										}
 									} catch (UnknownHostException e) {
-										logger.error("failed to resolve {} to IP address", device);
+										logger.error("Failed to resolve {} to IP address. Skipping update on item {}.",
+												device, itemName);
 									}
 								}
 							}
@@ -467,7 +442,7 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 		ServiceSubscription<ChannelListener> l = tvControlsChannelSubscriptions.remove(device.getIpAddress());
 		if (l != null) {
 			l.unsubscribe();
-			logger.debug("unsubscribed channel listener on ip: " + device.getIpAddress());
+			logger.debug("Unsubscribed channel listener on IP: {}", device.getIpAddress());
 		}
 	}
 
@@ -475,6 +450,7 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 		removeAnyVolumeSubscription(device);
 
 		if (device.hasCapability(VolumeControl.Volume_Subscribe)) {
+			logger.debug("Subscribe volume listener on IP: {}", device.getIpAddress());
 			ServiceSubscription<VolumeListener> listener = device.getCapability(VolumeControl.class).subscribeVolume(
 					new VolumeListener() {
 
@@ -499,7 +475,8 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 											}
 										}
 									} catch (UnknownHostException e) {
-										logger.error("failed to resolve {} to IP address", device);
+										logger.error("Failed to resolve {} to IP address. Skipping update on item {}.",
+												device, itemName);
 									}
 								}
 							}
@@ -514,6 +491,55 @@ public class ConnectSDKBinding extends AbstractActiveBinding<ConnectSDKBindingPr
 		ServiceSubscription<VolumeListener> l = volumeControlVolumeSubscriptions.remove(device.getIpAddress());
 		if (l != null) {
 			l.unsubscribe();
+			logger.debug("Unsubscribed volume listener on IP: {}", device.getIpAddress());
+		}
+	}
+	
+	private void handleVolumeControlMuteSubscription(final ConnectableDevice device) { // here
+		removeAnyMuteSubscription(device);
+
+		if (device.hasCapability(VolumeControl.Mute_Subscribe)) {
+			logger.debug("Subscribe mute listener on IP: {}", device.getIpAddress());
+			ServiceSubscription<MuteListener> listener = device.getCapability(VolumeControl.class).subscribeMute(
+					new MuteListener() {
+
+						@Override
+						public void onError(ServiceCommandError error) {
+							logger.error("error: ", error.getMessage());
+						}
+
+						@Override
+						public void onSuccess(Boolean value) {
+							for (ConnectSDKBindingProvider provider : providers) {
+								for (String itemName : provider.getItemNames()) {
+									try {
+										if ("VolumeControl".equals(provider.getClassForItem(itemName))
+												&& "mute".equals(provider.getPropertyForItem(itemName))
+												&& device.getIpAddress().equals(
+														InetAddress.getByName(provider.getDeviceForItem(itemName))
+																.getHostAddress())) {
+											if (eventPublisher != null) {
+												eventPublisher.postUpdate(itemName,	value ? OnOffType.ON : OnOffType.OFF);
+											}
+										}
+									} catch (UnknownHostException e) {
+										logger.error("Failed to resolve {} to IP address. Skipping update on item {}.",
+												device, itemName);
+									}
+								}
+							}
+						}
+					});
+			volumeControlMuteSubscriptions.put(device.getIpAddress(), listener);
+
+		}
+	}
+
+	private void removeAnyMuteSubscription(final ConnectableDevice device) { // here
+		ServiceSubscription<MuteListener> l = volumeControlMuteSubscriptions.remove(device.getIpAddress());
+		if (l != null) {
+			l.unsubscribe();
+			logger.debug("Unsubscribed mute listener on IP: {}", device.getIpAddress());
 		}
 	}
 
