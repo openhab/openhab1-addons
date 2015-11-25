@@ -35,7 +35,6 @@ public class CalDavConfig implements BindingConfig {
 	
 	public CalDavConfig(List<String> calendar, Type type, int eventNr,
 			Value value) {
-		super();
 		this.calendar = calendar;
 		this.type = type;
 		this.eventNr = eventNr;

@@ -25,12 +25,10 @@ public class CalDavConfig {
 	private boolean disableCertificateVerification;
 	
 	public CalDavConfig() {
-		super();
 	}
 
 	public CalDavConfig(String key, String username, String password, String url, 
 			int reloadMinutes, int historicLoadMinutes) {
-		super();
 		this.key = key;
 		this.username = username;
 		this.password = password;

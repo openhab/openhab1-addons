@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * Implementation of the caldav command binding.
  * Every event which is loaded from the server can be triggered with 4 notifications.
  * <br/>
- * All events which are loaded must fulfil a name syntax for the description.
+ * All events which are loaded must fulfill a name syntax for the description.
  * All other fields of a event are free to choose.
  * 
  * <pre>
@@ -272,6 +272,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, this.itemRegistry, null);
 			for (EventUtils.EventContent eventContent : parseContent) {
 				if (disabledItems.contains(eventContent.getItem().getName())) {
+					// changing this is item is disabled, do not change it
 					continue;
 				}
 				
@@ -314,24 +315,19 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		
 		for (CalDavEvent calDavEvent : events) {
-			Item item = null;
 			try {
-				item = this.itemRegistry.getItem(itemName);
+				final Item item = this.itemRegistry.getItem(itemName);
+				
+				final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, item);
+				for (EventUtils.EventContent eventContent : parseContent) {
+					if (!eventContent.getTime().isBefore(DateTime.now()) 
+							&& (time == null || time.isAfter(eventContent.getTime()))) {
+						time = eventContent.getTime();
+						state = eventContent.getCommand();
+					}
+				}
 			} catch (ItemNotFoundException e) {
 				logger.error("item {} could not be found", itemName);
-				continue;
-			}
-			
-			final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, item);
-			for (EventUtils.EventContent eventContent : parseContent) {
-				if (eventContent.getTime().isBefore(DateTime.now())) {
-					continue;
-				}
-				
-				if (time == null || time.isAfter(eventContent.getTime())) {
-					time = eventContent.getTime();
-					state = eventContent.getCommand();
-				}
 			}
 		}
 		
@@ -351,7 +347,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			logger.debug("setting value for '{}' to: {}", itemNamePreview, c);
 			eventPublisher.sendCommand(itemNamePreview, c);
 		} else if (type == CalDavType.DISABLE) {
-			// ok
+			// nothing to do
+			return;
 		} else {
 			logger.warn("unhandled type: {}", type);
 		}
