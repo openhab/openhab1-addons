@@ -26,6 +26,7 @@ import java.util.TooManyListenersException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.items.NumberItem;
@@ -64,31 +65,33 @@ public class SerialDevice implements SerialPortEventListener {
 
 	private OutputStream outputStream;
 
-	private Map<String, ItemType> patternMap;
+	private Map<String, ItemType> configMap;
 
 	class ItemType {
 		String pattern;
+		boolean base64;
 		Class<?> type;
 	}
 	
 	public boolean isEmpty() {
-		return patternMap.isEmpty();
+		return configMap.isEmpty();
 	}
 	
-	public void addRegEx(String itemName, Class<?> type, String pattern) {
-		if(patternMap == null)
-			patternMap = new HashMap<String, ItemType>();
+	public void addConfig(String itemName, Class<?> type, String pattern, boolean base64) {
+		if(configMap == null)
+			configMap = new HashMap<String, ItemType>();
 		
 		ItemType typeItem = new ItemType();
 		typeItem.pattern = pattern;
+		typeItem.base64 = base64;
 		typeItem.type = type;
 		
-		patternMap.put(itemName, typeItem);
+		configMap.put(itemName, typeItem);
 	}
 	
-	public void removeRegEx(String itemName) {
-		if(patternMap != null) {
-			patternMap.remove(itemName);
+	public void removeConfig(String itemName) {
+		if(configMap != null) {
+			configMap.remove(itemName);
 		}
 	}
 
@@ -222,8 +225,8 @@ public class SerialDevice implements SerialPortEventListener {
 				logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
 
 				if (eventPublisher != null) {
-					if(patternMap != null && !patternMap.isEmpty()) {
-						for (Entry<String, ItemType> entry : patternMap.entrySet()) {
+					if(configMap != null && !configMap.isEmpty()) {
+						for (Entry<String, ItemType> entry : configMap.entrySet()) {
 
 							// use pattern
 							if(entry.getValue().pattern != null) {
@@ -249,10 +252,12 @@ public class SerialDevice implements SerialPortEventListener {
 									}
 								}
 								
-							} else if(entry.getValue().type.isInstance(StringItem.class)) {
+							} else if(entry.getValue().type == StringItem.class) {
+								if (entry.getValue().base64)
+									result = Base64.encodeBase64String(result.getBytes());
 								eventPublisher.postUpdate(entry.getKey(), new StringType(result));
 								
-							} else if(entry.getValue().type.isInstance(SwitchItem.class) && result.trim().isEmpty()) {
+							} else if(entry.getValue().type == SwitchItem.class && result.trim().isEmpty()) {
 								eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
 								eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
 							}
@@ -277,7 +282,11 @@ public class SerialDevice implements SerialPortEventListener {
 		logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
 		try {
 			// write string to serial port
-			outputStream.write(msg.getBytes());
+			if (msg.startsWith("BASE64:"))
+				outputStream.write(Base64.decodeBase64(msg.substring(7, msg.length())));
+			else
+				outputStream.write(msg.getBytes());
+
 			outputStream.flush();
 		} catch (IOException e) {
 			logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });

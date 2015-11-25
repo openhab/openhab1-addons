@@ -130,6 +130,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 		int indexOf = bindingConfig.indexOf(',');
 		String serialPart = bindingConfig;
 		String pattern = null;
+		boolean base64 = false;
 
 		if(indexOf != -1) {
 			String substring = bindingConfig.substring(indexOf+1);
@@ -137,6 +138,10 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 
 			if(substring.startsWith("REGEX(")) {
 				pattern = substring.substring(6, substring.length()-1);
+			}
+
+			if(substring.equals("BASE64")) {
+				base64 = true;
 			}
 		}
 
@@ -172,7 +177,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 			serialDevices.put(port, serialDevice);
 		}
 
-		serialDevice.addRegEx(item.getName(), item.getClass(), pattern);
+		serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64);
 		
 		Set<String> itemNames = contextMap.get(context);
 		if (itemNames == null) {
@@ -196,7 +201,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 					continue;
 				}
 
-				serialDevice.removeRegEx(itemName);
+				serialDevice.removeConfig(itemName);
 				
 				// if there is no binding left, dispose this device
 				if(serialDevice.isEmpty()) {
