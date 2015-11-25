@@ -1,11 +1,8 @@
 package org.openhab.io.caldav.internal.job;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import net.fortuna.ical4j.data.ParserException;
 
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.EventNotifier;
