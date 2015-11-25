@@ -37,7 +37,9 @@ public enum NetatmoMeasureType {
 	DATE_MAX_HUM("date_max_hum", NetatmoScale.ONE_DAY), DATE_MIN_PRESSURE("date_min_pressure", NetatmoScale.ONE_DAY),
 	DATE_MAX_PRESSURE("date_max_pressure", NetatmoScale.ONE_DAY), DATE_MIN_NOISE("date_min_noise", NetatmoScale.ONE_DAY),
 	DATE_MAX_NOISE("date_max_noise", NetatmoScale.ONE_DAY), DATE_MIN_CO2("date_min_co2", NetatmoScale.ONE_DAY),
-	DATE_MAX_CO2("date_max_co2", NetatmoScale.ONE_DAY);
+	DATE_MAX_CO2("date_max_co2", NetatmoScale.ONE_DAY), WINDSTRENGTH("WindStrength", NetatmoScale.MAX),
+	WINDANGLE("WindAngle", NetatmoScale.MAX), GUSTSTRENGTH("GustStrength", NetatmoScale.MAX),
+	GUSTANGLE("GustAngle", NetatmoScale.MAX), DATE_MAX_GUST("date_max_gust", NetatmoScale.ONE_DAY);
 
 	final String measure;
 
@@ -82,5 +84,10 @@ public enum NetatmoMeasureType {
 		return measureType == NetatmoMeasureType.TEMPERATURE
 				|| measureType == NetatmoMeasureType.MIN_TEMP
 				|| measureType == NetatmoMeasureType.MAX_TEMP;
+	}
+
+	public static boolean isWind(NetatmoMeasureType measureType) {
+		return measureType == NetatmoMeasureType.WINDSTRENGTH
+				|| measureType == NetatmoMeasureType.GUSTSTRENGTH;
 	}
 }
