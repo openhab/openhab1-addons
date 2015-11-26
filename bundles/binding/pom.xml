@@ -138,6 +138,8 @@
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
     <module>org.openhab.binding.bticino</module>
+    <module>org.openhab.binding.caldav-command</module>
+    <module>org.openhab.binding.caldav-personal</module>
     <module>org.openhab.binding.ebus</module>
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
