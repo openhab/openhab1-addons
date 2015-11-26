@@ -563,6 +563,7 @@ class RemoteSwitchB extends MSensor<MDecimalValue>, RemoteSwitch, DimmableActor<
     Short unit
     Short repeats
     Short targetDimmvalue = "0"
+    PercentValue percentValue
 }
 
 class RemoteSwitchC extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchCConfiguration>{

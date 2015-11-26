@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 
 
 /**
@@ -27,6 +28,7 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit <em>Unit</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getRepeats <em>Repeats</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getTargetDimmvalue <em>Target Dimmvalue</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getPercentValue <em>Percent Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -157,4 +159,30 @@ public interface RemoteSwitchB extends MSensor<DecimalValue>, RemoteSwitch, Dimm
    * @generated
    */
   void setTargetDimmvalue(Short value);
+
+  /**
+   * Returns the value of the '<em><b>Percent Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Percent Value</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Percent Value</em>' attribute.
+   * @see #setPercentValue(PercentValue)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB_PercentValue()
+   * @model unique="false" dataType="org.openhab.binding.tinkerforge.internal.model.PercentValue"
+   * @generated
+   */
+  PercentValue getPercentValue();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getPercentValue <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Percent Value</em>' attribute.
+   * @see #getPercentValue()
+   * @generated
+   */
+  void setPercentValue(PercentValue value);
 } // RemoteSwitchB

@@ -10280,13 +10280,22 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH_B__TARGET_DIMMVALUE = MSENSOR_FEATURE_COUNT + 14;
 
   /**
+   * The feature id for the '<em><b>Percent Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__PERCENT_VALUE = MSENSOR_FEATURE_COUNT + 15;
+
+  /**
    * The number of structural features of the '<em>Remote Switch B</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 15;
+  int REMOTE_SWITCH_B_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 16;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -21481,6 +21490,17 @@ public interface ModelPackage extends EPackage
   EAttribute getRemoteSwitchB_TargetDimmvalue();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getPercentValue <em>Percent Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Percent Value</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getPercentValue()
+   * @see #getRemoteSwitchB()
+   * @generated
+   */
+  EAttribute getRemoteSwitchB_PercentValue();
+
+  /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC <em>Remote Switch C</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -26763,6 +26783,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute REMOTE_SWITCH_B__TARGET_DIMMVALUE = eINSTANCE.getRemoteSwitchB_TargetDimmvalue();
+
+    /**
+     * The meta object literal for the '<em><b>Percent Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_B__PERCENT_VALUE = eINSTANCE.getRemoteSwitchB_PercentValue();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl <em>Remote Switch C</em>}' class.

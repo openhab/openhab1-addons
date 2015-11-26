@@ -4344,6 +4344,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getRemoteSwitchB_PercentValue()
+  {
+    return (EAttribute)remoteSwitchBEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getRemoteSwitchC()
   {
     return remoteSwitchCEClass;
@@ -7638,6 +7648,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__UNIT);
     createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__REPEATS);
     createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__TARGET_DIMMVALUE);
+    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__PERCENT_VALUE);
 
     remoteSwitchCEClass = createEClass(REMOTE_SWITCH_C);
     createEAttribute(remoteSwitchCEClass, REMOTE_SWITCH_C__DEVICE_TYPE);
@@ -9294,6 +9305,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getRemoteSwitchB_Unit(), theEcorePackage.getEShortObject(), "unit", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRemoteSwitchB_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRemoteSwitchB_TargetDimmvalue(), theEcorePackage.getEShortObject(), "targetDimmvalue", "0", 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchB_PercentValue(), this.getPercentValue(), "percentValue", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(remoteSwitchCEClass, RemoteSwitchC.class, "RemoteSwitchC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getRemoteSwitchC_DeviceType(), theEcorePackage.getEString(), "deviceType", "remote_switch_c", 0, 1, RemoteSwitchC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
