@@ -2660,6 +2660,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>3</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>05438</Model>
+			<Label lang="en">Outdoor Wall Plug Switch</Label>
+			<ConfigFile>popp/05438.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1100</Type>
 				<Id>0001</Id>
 			</Reference>
