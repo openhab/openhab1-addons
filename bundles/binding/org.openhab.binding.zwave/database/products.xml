@@ -612,10 +612,6 @@
 				<Type>3001</Type>
 				<Id>0000</Id>
 			</Reference>
-			<Reference>
-				<Type>3002</Type>
-				<Id>0000</Id>
-			</Reference>
 			<Model>054375</Model>
 			<Label lang="en">Schuko Plug Switch</Label>
 			<ConfigFile>reitz/054375.xml</ConfigFile>
@@ -784,7 +780,7 @@
 			<Model>ZW096</Model>
 			<Label lang="en">Smart Switch 6</Label>
 			<ConfigFile>aeon/zw096.xml</ConfigFile>
-		</Product>
+		</Product>	
 		<Product>
 			<Reference>
 				<Type>0002</Type>
@@ -1334,7 +1330,7 @@
 			<Model>ZM1602</Model>
 			<Label lang="en">AC/DC Siren</Label>
 			<ConfigFile VersionMin="1" VersionMax="15.2">vision/zm1602.xml</ConfigFile>
-			<ConfigFile VersionMax="15.3">vision/zm1602v4.xml</ConfigFile>
+			<ConfigFile VersionMax="15.3">vision/zm1602v4.xml</ConfigFile> 
 		</Product>
 		<Product>
 			<Reference>
@@ -1527,10 +1523,6 @@
 			<Reference>
 				<Type>0202</Type>
 				<Id>1002</Id>
-			</Reference>
-			<Reference>
-				<Type>0202</Type>
-				<Id>3002</Id>
 			</Reference>
 			<Model>FGS222</Model>
 			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
@@ -1922,7 +1914,7 @@
 			<Label lang="en">Energy Monitoring Wall Plug</Label>
 			<ConfigFile>tkb/tz88.xml</ConfigFile>
 		</Product>
-		<Product>
+		<Product>	
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
@@ -2336,10 +2328,6 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>702</Type>
-				<Id>261</Id>
-			</Reference>
-			<Reference>
 				<Type>802</Type>
 				<Id>261</Id>
 			</Reference>
@@ -2622,7 +2610,7 @@
 			<Model>builtInDimmer</Model>
 			<Label lang="en">BeNext Built-in Dimmer</Label>
 			<ConfigFile>benext/builtindimmer.xml</ConfigFile>
-		</Product>
+		</Product>		
 		<Product>
 			<Reference>
 				<Type>0018</Type>
@@ -2698,7 +2686,7 @@
 			<Label lang="en">Z Weather</Label>
 			<ConfigFile>popp/zweather.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+	</Manufacturer>	
 	<Manufacturer>
 		<Id>0129</Id>
 		<Name>Yale Locks</Name>
@@ -2836,10 +2824,6 @@
 			<Reference>
 				<Type>5452</Type>
 				<Id>5433</Id>
-			</Reference>
-			<Reference>
-				<Type>5452</Type>
-				<Id>5439</Id>
 			</Reference>
 			<Model>TZEMT400BB32MAA</Model>
 			<Label lang="en">Trane Z-Wave Programmable Thermostat</Label>

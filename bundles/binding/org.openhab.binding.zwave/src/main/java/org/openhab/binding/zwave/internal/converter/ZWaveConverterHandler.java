@@ -74,7 +74,6 @@ public class ZWaveConverterHandler {
 				eventPublisher));
 		converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
-		converters.put(CommandClass.SWITCH_ALL, new ZWaveSwitchAllConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
 		converters.put(CommandClass.SENSOR_BINARY, new ZWaveBinarySensorConverter(controller, eventPublisher));
 		converters.put(CommandClass.SENSOR_MULTILEVEL, new ZWaveMultiLevelSensorConverter(controller, eventPublisher));
@@ -143,7 +142,7 @@ public class ZWaveConverterHandler {
 			return null;
 		}
 
-		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {	
+		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {
 			ZWaveCommandClass result = node.resolveCommandClass(commandClass, endpointId);
 
 			if (result != null && converters.containsKey(commandClass)) {
@@ -288,10 +287,6 @@ public class ZWaveConverterHandler {
 			if (commandClassName.equalsIgnoreCase("info")) {
 				return infoConverter.getRefreshInterval();
 			}
-			
-			if(node.getNodeId() == this.controller.getOwnNodeId() && commandClassName.equalsIgnoreCase("switch_all")) {
-			    return 0;
-			}
 
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
 					bindingConfiguration.getEndpoint());
@@ -390,37 +385,30 @@ public class ZWaveConverterHandler {
 		}
 		ZWaveCommandClass commandClass;
 		String commandClassName = bindingConfiguration.getArguments().get("command");
-		
+
 		if (commandClassName != null) {
-			
-			if(node.getNodeId() == this.controller.getOwnNodeId() && commandClassName.equalsIgnoreCase("switch_all")) {
-			    commandClass = ZWaveCommandClass.getInstance(0x27, node, this.controller);
+			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
+					bindingConfiguration.getEndpoint());
+
+			if (commandClass == null) {
+				logger.warn(
+						"NODE {}: No command class found for item = {}. Class = {}({}), endpoint = {}. Ignoring command.",
+						node.getNodeId(), itemName, commandClassName, CommandClass.getCommandClass(commandClassName)
+								.toString(), bindingConfiguration.getEndpoint());
+				return;
 			}
-			else {
-				commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
-						bindingConfiguration.getEndpoint());
-	
-				if (commandClass == null) {
-					logger.warn(
-							"NODE {}: No command class found for item = {}. Class = {}({}), endpoint = {}. Ignoring command.",
-							node.getNodeId(), itemName, commandClassName, CommandClass.getCommandClass(commandClassName)
-									.toString(), bindingConfiguration.getEndpoint());
-					return;
-				} 
-			}
-		}
-		else {
+		} else {
 			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
 		}
-		
+
 		if (commandClass == null) {
 			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
 			return;
 		}
 
-		ZWaveCommandClassConverter<ZWaveCommandClass> converter = 
-				(ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass.getCommandClass());
-		
+		ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass
+				.getCommandClass());
+
 		if (converter == null) {
 			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
 			return;

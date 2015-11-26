@@ -35,7 +35,6 @@
     <module>org.openhab.action.ecobee</module>
     <module>org.openhab.action.mqtt</module>
     <module>org.openhab.action.dscalarm</module>
-    <module>org.openhab.action.telegram</module>
   </modules>
 
 </project>
