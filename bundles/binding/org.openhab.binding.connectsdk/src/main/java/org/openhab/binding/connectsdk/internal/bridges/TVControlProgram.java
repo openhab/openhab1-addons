@@ -14,16 +14,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.connectsdk.core.ChannelInfo;
+import com.connectsdk.core.ProgramInfo;
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.TVControl;
 import com.connectsdk.service.capability.TVControl.ChannelListener;
+import com.connectsdk.service.capability.TVControl.ProgramInfoListener;
 import com.connectsdk.service.command.ServiceCommandError;
 import com.connectsdk.service.command.ServiceSubscription;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<ChannelListener> {
-	private static final Logger logger = LoggerFactory.getLogger(TVControlChannel.class);
+public class TVControlProgram extends AbstractOpenhabConnectSDKPropertyBridge<ProgramInfoListener> {
+	private static final Logger logger = LoggerFactory.getLogger(TVControlProgram.class);
 
 	@Override
 	protected String getItemClass() {
@@ -32,7 +34,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 	
 	@Override
 	protected String getItemProperty() {
-		return "channel"; 
+		return "program"; 
 	}
 
 	
@@ -42,47 +44,14 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 	
 	@Override
 	public void onReceiveCommand(final ConnectableDevice d, final String clazz, final String property, Command command) {
-		if (matchClassAndProperty(clazz, property) && d.hasCapabilities(TVControl.Channel_List, TVControl.Channel_Set)) {
-		
-				final String value = command.toString();
-				final TVControl control = getControl(d);
-				control.getChannelList(new TVControl.ChannelListListener() {
-					@Override
-					public void onError(ServiceCommandError error) {
-						logger.error("error requesting channel list: {}.", error.getMessage());
-					}
-
-					@Override
-					public void onSuccess(List<ChannelInfo> channels) {
-						if (logger.isDebugEnabled()) {
-							for (ChannelInfo c : channels) {
-								logger.debug("Channel {} - {}", c.getNumber(), c.getName());
-							}
-						}
-						try {
-							ChannelInfo channelInfo = Iterables.find(channels, new Predicate<ChannelInfo>() {
-								public boolean apply(ChannelInfo c) {
-									return c.getNumber().equals(value);
-								};
-							});
-							control.setChannel(channelInfo, createDefaultResponseListener());
-						} catch (NoSuchElementException ex) {
-							logger.warn("TV does not have a channel: {}.", value);
-						}
-
-					}
-				});
-
-			}
-		
-
+		//nothing to do, this is read only.
 	}
 	
 	@Override
-	protected ServiceSubscription<ChannelListener> getSubscription(final ConnectableDevice device,
+	protected ServiceSubscription<ProgramInfoListener> getSubscription(final ConnectableDevice device,
 			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
-		if (device.hasCapability(TVControl.Channel_Subscribe)) {
-			return getControl(device).subscribeCurrentChannel(new ChannelListener() {
+		if (device.hasCapability(TVControl.Program_Subscribe)) {
+			return getControl(device).subscribeProgramInfo(new ProgramInfoListener() {
 
 						@Override
 						public void onError(ServiceCommandError error) {
@@ -90,7 +59,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 						}
 
 						@Override
-						public void onSuccess(ChannelInfo channelInfo) {
+						public void onSuccess(ProgramInfo programInfo) {
 							for (ConnectSDKBindingProvider provider : providers) {
 								for (String itemName : provider.getItemNames()) {
 									try {
@@ -99,8 +68,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 														InetAddress.getByName(provider.getDeviceForItem(itemName))
 																.getHostAddress())) {
 											if (eventPublisher != null) {
-												eventPublisher.postUpdate(itemName,
-														new StringType(channelInfo.getNumber()));
+												eventPublisher.postUpdate(itemName,	new StringType(programInfo.getName()));
 											}
 										}
 									} catch (UnknownHostException e) {

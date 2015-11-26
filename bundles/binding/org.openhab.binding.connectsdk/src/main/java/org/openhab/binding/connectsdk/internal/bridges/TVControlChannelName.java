@@ -22,8 +22,8 @@ import com.connectsdk.service.command.ServiceSubscription;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<ChannelListener> {
-	private static final Logger logger = LoggerFactory.getLogger(TVControlChannel.class);
+public class TVControlChannelName extends AbstractOpenhabConnectSDKPropertyBridge<ChannelListener> {
+	private static final Logger logger = LoggerFactory.getLogger(TVControlChannelName.class);
 
 	@Override
 	protected String getItemClass() {
@@ -32,7 +32,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 	
 	@Override
 	protected String getItemProperty() {
-		return "channel"; 
+		return "channelName"; 
 	}
 
 	
@@ -42,40 +42,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 	
 	@Override
 	public void onReceiveCommand(final ConnectableDevice d, final String clazz, final String property, Command command) {
-		if (matchClassAndProperty(clazz, property) && d.hasCapabilities(TVControl.Channel_List, TVControl.Channel_Set)) {
-		
-				final String value = command.toString();
-				final TVControl control = getControl(d);
-				control.getChannelList(new TVControl.ChannelListListener() {
-					@Override
-					public void onError(ServiceCommandError error) {
-						logger.error("error requesting channel list: {}.", error.getMessage());
-					}
-
-					@Override
-					public void onSuccess(List<ChannelInfo> channels) {
-						if (logger.isDebugEnabled()) {
-							for (ChannelInfo c : channels) {
-								logger.debug("Channel {} - {}", c.getNumber(), c.getName());
-							}
-						}
-						try {
-							ChannelInfo channelInfo = Iterables.find(channels, new Predicate<ChannelInfo>() {
-								public boolean apply(ChannelInfo c) {
-									return c.getNumber().equals(value);
-								};
-							});
-							control.setChannel(channelInfo, createDefaultResponseListener());
-						} catch (NoSuchElementException ex) {
-							logger.warn("TV does not have a channel: {}.", value);
-						}
-
-					}
-				});
-
-			}
-		
-
+		//nothing to do, this is read only.
 	}
 	
 	@Override
@@ -100,7 +67,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 																.getHostAddress())) {
 											if (eventPublisher != null) {
 												eventPublisher.postUpdate(itemName,
-														new StringType(channelInfo.getNumber()));
+														new StringType(channelInfo.getName()));
 											}
 										}
 									} catch (UnknownHostException e) {
