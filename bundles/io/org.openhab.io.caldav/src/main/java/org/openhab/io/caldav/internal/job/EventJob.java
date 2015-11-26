@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EventJob implements Job {
-	private static final Logger LOG = LoggerFactory.getLogger(EventJob.class);
+	private static final Logger log = LoggerFactory.getLogger(EventJob.class);
 	
 	public static final String KEY_CONFIG = "config";
 	public static final String KEY_EVENT = "event";
@@ -32,7 +32,7 @@ public class EventJob implements Job {
 			EventContainer eventContainer = calendarRuntime.getEventMap().get(eventId);
 			CalDavEvent event = eventContainer.getEventList().get(recIndex);
 			
-			LOG.info("event {} for: {}", eventTrigger, event.getShortName());
+			log.info("event {} for: {}", eventTrigger, event.getShortName());
 			for (EventNotifier notifier : CalDavLoaderImpl.INSTANCE.getEventListenerList()) {
 				try {
 					if (eventTrigger == EventTrigger.BEGIN) {
@@ -43,7 +43,7 @@ public class EventJob implements Job {
 						throw new IllegalStateException("not implemented event trigger: " + eventTrigger);
 					}
 				} catch (Exception e) {
-					LOG.error("error while invoking listener", e);
+					log.error("error while invoking listener", e);
 				}
 			}
 			
@@ -52,7 +52,7 @@ public class EventJob implements Job {
 				calendarRuntime.getEventMap().remove(eventContainer.getEventId());
 			}
 		} catch (Exception e) {
-			LOG.error("error executing event job", e);
+			log.error("error executing event job", e);
 			throw new JobExecutionException("error executing event job", e, false);
 		}
 	}

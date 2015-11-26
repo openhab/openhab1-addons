@@ -41,7 +41,7 @@ import com.github.sardine.Sardine;
 import com.github.sardine.impl.SardineImpl;
 
 public final class Util {
-	private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+	private static final Logger log = LoggerFactory.getLogger(Util.class);
 	
 	private Util() {}
 	
@@ -92,9 +92,9 @@ public final class Util {
 			fout.flush();
 			fout.close();
 		} catch (IOException e) {
-			LOG.error("cannot store event '{}' to disk", filename);
+			log.error("cannot store event '{}' to disk", filename);
 		} catch (ValidationException e) {
-			LOG.error("cannot store event '{}' to disk", filename);
+			log.error("cannot store event '{}' to disk", filename);
 		}
 	}
 	
@@ -110,11 +110,11 @@ public final class Util {
 				    }
 				}).build());
 			} catch (KeyManagementException e) {
-				LOG.error("error verifying certificate", e);
+				log.error("error verifying certificate", e);
 			} catch (NoSuchAlgorithmException e) {
-				LOG.error("error verifying certificate", e);
+				log.error("error verifying certificate", e);
 			} catch (KeyStoreException e) {
-				LOG.error("error verifying certificate", e);
+				log.error("error verifying certificate", e);
 			}
 			if (StringUtils.isEmpty(config.getUsername()) && StringUtils.isEmpty(config.getPassword())) {
 				return new SardineImpl(httpClientBuilder);

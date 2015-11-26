@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class EventUtils {
-	private static final Logger LOG = LoggerFactory.getLogger(EventUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(EventUtils.class);
 	
 	public static final String SCOPE_BEGIN = "BEGIN";
 	public static final String SCOPE_END = "END";
@@ -55,7 +55,7 @@ public final class EventUtils {
 				if (line.startsWith(SCOPE_BEGIN)) {
 					scope = SCOPE_BEGIN;
 					if (line.length() < scope.length() + 4) {
-						LOG.error("invalid format for line: {}", line);
+						log.error("invalid format for line: {}", line);
 						continue;
 					}
 					indexItemName = scope.length();
@@ -63,7 +63,7 @@ public final class EventUtils {
 				} else if (line.startsWith(SCOPE_END)) {
 					scope = SCOPE_END;
 					if (line.length() < scope.length() + 4) {
-						LOG.error("invalid format for line: {}", line);
+						log.error("invalid format for line: {}", line);
 						continue;
 					}
 					indexItemName = scope.length();
@@ -71,25 +71,25 @@ public final class EventUtils {
 				} else if (line.startsWith(SCOPE_BETWEEN)) {
 					scope = SCOPE_BETWEEN;
 					if (line.length() < scope.length() + 4 + 1 + 19) {
-						LOG.error("invalid format for line: {}", line);
+						log.error("invalid format for line: {}", line);
 						continue;
 					}
 					String timeString = line.substring(SCOPE_BETWEEN.length() + 1, SCOPE_BETWEEN.length() + 1 + 19);
 					time = DateTimeFormat.forPattern(EventUtils.DATE_FORMAT).parseDateTime(timeString);
 					indexItemName = scope.length() + 19 + 1;
 				} else {
-					LOG.trace("line skipped: unknown content: " + line);
+					log.trace("line skipped: unknown content: " + line);
 					continue;
 				}
 				
 				if (line.substring(indexItemName + 1, indexItemName + 2).equals(":")) {
-					LOG.error("invalid format for line: {}", line);
+					log.error("invalid format for line: {}", line);
 				}
 				
 				String itemAndCommand = line.substring(indexItemName + 1);
 				final String[] split = itemAndCommand.split(SEPERATOR);
 				if (split.length != 2) {
-					LOG.error("invalid format for line: {}", line);
+					log.error("invalid format for line: {}", line);
 					continue;
 				}
 				
@@ -102,30 +102,30 @@ public final class EventUtils {
 				
 				if (item == null) {
 					if (itemRegistry == null) {
-						LOG.error("item is null, but itemRegistry as well");
+						log.error("item is null, but itemRegistry as well");
 						continue;
 					}
 					
 					try {
 						item = itemRegistry.getItem(itemName);
 					} catch (ItemNotFoundException e) {
-						LOG.error("cannot find item: {}", itemName);
+						log.error("cannot find item: {}", itemName);
 						continue;
 					}
 				}
 				
 				if (!item.getName().equals(itemName)) {
-					LOG.debug("name of item {} does not match itemName {}", item.getName(), itemName);
+					log.debug("name of item {} does not match itemName {}", item.getName(), itemName);
 					continue;
 				}
 				
 				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
 				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), stateString);
-				LOG.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
+				log.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
 				outMap.add(new EventContent(scope, item, state, command, time));
 			}
 		} catch (IOException e) {
-			LOG.error("cannot parse event content", e);
+			log.error("cannot parse event content", e);
 		}
 		
 		return outMap;

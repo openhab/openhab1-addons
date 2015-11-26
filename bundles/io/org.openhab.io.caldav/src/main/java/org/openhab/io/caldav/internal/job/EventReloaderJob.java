@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventReloaderJob implements Job {
 	public static final String KEY_CONFIG = "config";
-	private static final Logger LOG = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(EventReloaderJob.class);
 
 	@Override
@@ -32,7 +32,7 @@ public class EventReloaderJob implements Job {
 			
 			CalendarRuntime eventRuntime = EventStorage.getInstance().getEventCache().get(config);
 		
-			LOG.debug("loading events for config: " + config);
+			log.debug("loading events for config: " + config);
 			List<String> oldEventIds = new ArrayList<String>();
 			for (EventContainer eventContainer : eventRuntime.getEventMap()
 					.values()) {
@@ -46,13 +46,13 @@ public class EventReloaderJob implements Job {
 				try {
 					notifier.calendarReloaded(config);
 				} catch (Exception e) {
-					LOG.error("error while invoking listener", e);
+					log.error("error while invoking listener", e);
 				}
 			}
 
 			printAllEvents();
 		} catch (Exception e) {
-			LOG.error("error while loading calendar entries: " + e.getMessage(), e);
+			log.error("error while loading calendar entries: " + e.getMessage(), e);
 			throw new JobExecutionException("error while loading calendar entries", e, false);
 		}
 	}
@@ -63,7 +63,7 @@ public class EventReloaderJob implements Job {
 		for (String filename : oldMap) {
 			EventContainer eventContainer = eventRuntime.getEventContainerByFilename(filename);
 			if (eventContainer == null) {
-				LOG.error("cannot find event container for filename: {}", filename);
+				log.error("cannot find event container for filename: {}", filename);
 				continue;
 			}
 			
@@ -72,7 +72,7 @@ public class EventReloaderJob implements Job {
 				try {
 					CalDavLoaderImpl.INSTANCE.getScheduler().deleteJob(JobKey.jobKey(jobId));
 				} catch (SchedulerException e) {
-					LOG.error("cannot delete job '{}'", jobId);
+					log.error("cannot delete job '{}'", jobId);
 				}
 			}
 			eventContainer.getTimerMap().clear();
@@ -82,7 +82,7 @@ public class EventReloaderJob implements Job {
 					try {
 						notifier.eventRemoved(event);
 					} catch (Exception e) {
-						LOG.error("error while invoking listener", e);
+						log.error("error while invoking listener", e);
 					}
 				}
 			}
@@ -91,7 +91,7 @@ public class EventReloaderJob implements Job {
 			if (eventContainer != null) {
 				this.removeFromDisk(eventContainer);
 				
-				LOG.debug("remove deleted event: {}", eventContainer.getEventId());
+				log.debug("remove deleted event: {}", eventContainer.getEventId());
 				eventContainerMap.remove(eventContainer.getEventId());
 			}
 		}
@@ -103,13 +103,13 @@ public class EventReloaderJob implements Job {
 
 	private synchronized void printAllEvents() {
 		for (CalendarRuntime eventRuntime : EventStorage.getInstance().getEventCache().values()) {
-			LOG.trace("------------ list " + eventRuntime.getEventMap().size() + " -------------");
+			log.trace("------------ list " + eventRuntime.getEventMap().size() + " -------------");
 			for (EventContainer eventContainer : eventRuntime.getEventMap().values()) {
 				for (CalDavEvent event : eventContainer.getEventList()) {
-					LOG.trace(event.getShortName());
+					log.trace(event.getShortName());
 				}
 			}
-			LOG.trace("------------ list end ---------");
+			log.trace("------------ list end ---------");
 		}
 	}
 }

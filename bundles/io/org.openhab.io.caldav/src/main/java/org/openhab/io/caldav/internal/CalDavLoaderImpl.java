@@ -97,7 +97,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
 	private DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
 
-	private static final Logger LOG = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(CalDavLoaderImpl.class);
 	public static final String CACHE_PATH = "etc/caldav";
 
@@ -118,7 +118,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			scheduler = new StdSchedulerFactory().getScheduler();
 			scheduler.clear();
 		} catch (SchedulerException e) {
-			LOG.error("cannot get job-scheduler", e);
+			log.error("cannot get job-scheduler", e);
 			throw new IllegalStateException("cannot get job-scheduler", e);
 		}
 		
@@ -137,18 +137,18 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			Enumeration<String> iter = config.keys();
 			while (iter.hasMoreElements()) {
 				String key = iter.nextElement();
-				LOG.trace("configuration parameter: " + key);
+				log.trace("configuration parameter: " + key);
 				if (key.equals("service.pid")) {
 					continue;
 				} else if (key.equals(PROP_TIMEZONE)) {
-					LOG.debug("overriding default timezone {} with {}",
+					log.debug("overriding default timezone {} with {}",
 							defaultTimeZone, config.get(key));
 					defaultTimeZone = DateTimeZone.forID(config.get(key) + "");
 					if (defaultTimeZone == null) {
 						throw new ConfigurationException(PROP_TIMEZONE,
 								"invalid timezone value: " + config.get(key));
 					}
-					LOG.debug("found timeZone: {}", defaultTimeZone);
+					log.debug("found timeZone: {}", defaultTimeZone);
 					continue;
 				}
 				String[] keys = key.split(":");
@@ -199,7 +199,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					throw new ConfigurationException(PROP_PASSWORD,
 							PROP_PASSWORD + " must be set");
 				}
-				LOG.trace("config for id '{}': {}", id, configMap.get(id));
+				log.trace("config for id '{}': {}", id, configMap.get(id));
 			}
 
 			// initialize event cache
@@ -208,7 +208,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				eventRuntime.setConfig(calDavConfig);
 				File cachePath = Util.getCachePath(calDavConfig.getKey());
 				if (!cachePath.exists() && !cachePath.mkdirs()) {
-					LOG.error("cannot create directory (" + CACHE_PATH
+					log.error("cannot create directory (" + CACHE_PATH
 							+ ") for calendar caching (missing rights?)");
 					continue;
 				}
@@ -263,13 +263,13 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			// event is already in map
 			if (eventContainer.getLastChanged().isAfter(
 					eventContainerOld.getLastChanged())) {
-				LOG.debug("event is already in event map and newer -> delete the old one, reschedule timer");
+				log.debug("event is already in event map and newer -> delete the old one, reschedule timer");
 				// cancel old jobs
 				for (String timerKey : eventContainerOld.getTimerMap()) {
 					try {
 						this.scheduler.deleteJob(JobKey.jobKey(timerKey));
 					} catch (SchedulerException e) {
-						LOG.error("cannot cancel event with job-id: "
+						log.error("cannot cancel event with job-id: "
 								+ timerKey, e);
 					}
 				}
@@ -281,21 +281,21 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 				for (EventNotifier notifier : eventListenerList) {
 					for (CalDavEvent event : eventContainerOld.getEventList()) {
-						LOG.trace("notify listener... {}", notifier);
+						log.trace("notify listener... {}", notifier);
 						try {
 							notifier.eventRemoved(event);
 						} catch (Exception e) {
-							LOG.error("error while invoking listener", e);
+							log.error("error while invoking listener", e);
 						}
 					}
 				}
 				for (EventNotifier notifier : eventListenerList) {
 					for (CalDavEvent event : eventContainer.getEventList()) {
-						LOG.trace("notify listener... {}", notifier);
+						log.trace("notify listener... {}", notifier);
 						try {
 							notifier.eventLoaded(event);
 						} catch (Exception e) {
-							LOG.error("error while invoking listener", e);
+							log.error("error while invoking listener", e);
 						}
 					}
 				}
@@ -307,7 +307,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							try {
 								createJob(eventContainer, event, index);
 							} catch (SchedulerException e) {
-								LOG.error("cannot create jobs for event: "
+								log.error("cannot create jobs for event: "
 										+ event.getShortName());
 							}
 						}
@@ -320,14 +320,14 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		} else {
 			// event is new
 			eventContainerMap.put(eventContainer.getEventId(), eventContainer);
-			LOG.trace("listeners for events: {}", eventListenerList.size());
+			log.trace("listeners for events: {}", eventListenerList.size());
 			for (EventNotifier notifier : eventListenerList) {
 				for (CalDavEvent event : eventContainer.getEventList()) {
-					LOG.trace("notify listener... {}", notifier);
+					log.trace("notify listener... {}", notifier);
 					try {
 						notifier.eventLoaded(event);
 					} catch (Exception e) {
-						LOG.error("error while invoking listener", e);
+						log.error("error while invoking listener", e);
 					}
 				}
 			}
@@ -338,7 +338,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						try {
 							createJob(eventContainer, event, index);
 						} catch (SchedulerException e) {
-							LOG.error("cannot create jobs for event: "
+							log.error("cannot create jobs for event: "
 									+ event.getShortName());
 						}
 					}
@@ -368,7 +368,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		this.scheduler.scheduleJob(jobStart, jobTriggerStart);
 
 		eventContainer.getTimerMap().add(triggerStart);
-		LOG.debug("begin timer scheduled for event '{}' @ {}",
+		log.debug("begin timer scheduled for event '{}' @ {}",
 				event.getShortName(), startDate);
 
 		final String triggerEnd = JOB_NAME_EVENT_END + "-"
@@ -388,7 +388,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				.build();
 		this.scheduler.scheduleJob(jobEnd, jobTriggerEnd);
 		eventContainer.getTimerMap().add(triggerEnd);
-		LOG.debug("end timer scheduled for event '{}' @ {}",
+		log.debug("end timer scheduled for event '{}' @ {}",
 				event.getShortName(), endDate);
 	}
 
@@ -422,9 +422,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			final org.joda.time.DateTime lastResourceChange = new org.joda.time.DateTime(
 					resource.getModified());
 
-			LOG.trace("eventContainer found: {}", eventContainer != null);
-			LOG.trace("last resource modification: {}", lastResourceChange);
-			LOG.trace("last change of already loaded event: {}",
+			log.trace("eventContainer found: {}", eventContainer != null);
+			log.trace("last resource modification: {}", lastResourceChange);
+			log.trace("last change of already loaded event: {}",
 					eventContainer != null ? eventContainer.getLastChanged()
 							: null);
 			if (eventContainer != null
@@ -437,14 +437,14 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 								config.getReloadMinutes()))) {
 					// the event is calculated as long as the next reload
 					// interval can handle this
-					LOG.trace("skipping resource {}, not changed",
+					log.trace("skipping resource {}, not changed",
 							resource.getName());
 					continue;
 				}
 
 				if (eventContainer.isHistoricEvent()) {
 					// no more upcoming events, do nothing
-					LOG.trace("skipping resource {}, not changed",
+					log.trace("skipping resource {}, not changed",
 							resource.getName());
 					continue;
 				}
@@ -459,7 +459,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				}
 			}
 
-			LOG.debug("loading resource: {}", resource);
+			log.debug("loading resource: {}", resource);
 
 			URL url = new URL(config.getUrl());
 			url = new URL(url.getProtocol(), url.getHost(), url.getPort(),
@@ -472,7 +472,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				this.loadEvents(filename, lastResourceChange, inputStream, config,
 						oldEventIds, false);
 			} catch (ParserException e) {
-				LOG.error("cannot load calendar entry: " + filename, e);
+				log.error("cannot load calendar entry: " + filename, e);
 			}
 		}
 	}
@@ -492,7 +492,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		final UnfoldingReader uin = new UnfoldingReader(in, 50, true);
 		Calendar calendar = builder.build(uin);
 		uin.close();
-		LOG.trace("calendar: {}", calendar);
+		log.trace("calendar: {}", calendar);
 
 		EventContainer eventContainer = new EventContainer(config.getKey());
 		eventContainer.setFilename(filename);
@@ -514,7 +514,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		}
 		for (CalendarComponent comp : vEventComponents) {
 			VEvent vEvent = (VEvent) comp;
-			LOG.trace("loading event: " + vEvent.getUid().getValue() + ":"
+			log.trace("loading event: " + vEvent.getUid().getValue() + ":"
 					+ vEvent.getSummary().getValue());
 
 			PeriodList periods = vEvent.calculateRecurrenceSet(new Period(
@@ -531,7 +531,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						new net.fortuna.ical4j.model.Date(
 								org.joda.time.DateTime.now().plusYears(10)
 										.getMillis())).size() == 0) {
-					LOG.trace("event will never be occur (historic): {}",
+					log.trace("event will never be occur (historic): {}",
 							eventName);
 					eventContainer.setHistoricEvent(true);
 				}
@@ -548,25 +548,25 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 				if (p.getStart().getTimeZone() == null) {
 					if (p.getStart().isUtc()) {
-						LOG.trace("start is without timezone, but UTC");
+						log.trace("start is without timezone, but UTC");
 						start = new org.joda.time.DateTime(p.getRangeStart(),
 								DateTimeZone.UTC).toLocalDateTime().toDateTime(
 								defaultTimeZone);
 					} else {
-						LOG.trace("start is without timezone, not UTC");
+						log.trace("start is without timezone, not UTC");
 						start = new LocalDateTime(p.getRangeStart())
 								.toDateTime();
 					}
 				} else if (DateTimeZone.getAvailableIDs().contains(
 						p.getStart().getTimeZone().getID())) {
-					LOG.trace("start is with known timezone: {}", p.getStart()
+					log.trace("start is with known timezone: {}", p.getStart()
 							.getTimeZone().getID());
 					start = new org.joda.time.DateTime(p.getRangeStart(),
 							DateTimeZone.forID(p.getStart().getTimeZone()
 									.getID()));
 				} else {
 					// unknown timezone
-					LOG.trace("start is with unknown timezone: {}", p
+					log.trace("start is with unknown timezone: {}", p
 							.getStart().getTimeZone().getID());
 					start = new org.joda.time.DateTime(p.getRangeStart(),
 							defaultTimeZone);
@@ -601,7 +601,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					event.setContent(vEvent.getDescription().getValue());
 				}
 				event.setFilename(filename);
-				LOG.trace("adding event: " + event.getShortName());
+				log.trace("adding event: " + event.getShortName());
 				eventContainer.getEventList().add(event);
 
 			}
@@ -616,12 +616,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		if (execService != null) {
 			return;
 		}
-		LOG.trace("starting execution...");
+		log.trace("starting execution...");
 
 		for (final CalendarRuntime eventRuntime : EventStorage.getInstance()
 				.getEventCache().values()) {
 			try {
-				LOG.debug("reload cached events for config: {}", eventRuntime
+				log.debug("reload cached events for config: {}", eventRuntime
 						.getConfig().getKey());
 				for (File fileCalendarKeys : new File(CACHE_PATH).listFiles()) {
 					if (!eventRuntime
@@ -642,11 +642,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 											.getConfig(),
 									new ArrayList<String>(), true);
 						} catch (IOException e) {
-							LOG.error(
+							log.error(
 									"cannot load events for file: " + icsFile,
 									e);
 						} catch (ParserException e) {
-							LOG.error(
+							log.error(
 									"cannot load events for file: " + icsFile,
 									e);
 						}
@@ -654,7 +654,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					break;
 				}
 			} catch (Throwable e) {
-				LOG.error("cannot load events", e);
+				log.error("cannot load events", e);
 			}
 
 			try {
@@ -677,7 +677,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 						.build();
 				this.scheduler.scheduleJob(job, jobTrigger);
 			} catch (SchedulerException e) {
-				LOG.error("cannot schedule calendar-reloader", e);
+				log.error("cannot schedule calendar-reloader", e);
 			}
 		}
 	}
@@ -703,7 +703,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				.getEventCache().get(calDavEvent.getCalendarId());
 		CalDavConfig config = calendarRuntime.getConfig();
 		if (config == null) {
-			LOG.error("cannot find config for calendar id: {}",
+			log.error("cannot find config for calendar id: {}",
 					calDavEvent.getCalendarId());
 		}
 		Sardine sardine = Util.getConnection(config);
@@ -716,14 +716,14 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					+ calDavEvent.getFilename() + ".ics";
 			if (calendarRuntime.getEventContainerByFilename(calDavEvent
 					.getFilename()) != null) {
-				LOG.debug("event will be updated: {}", fullIcsFile);
+				log.debug("event will be updated: {}", fullIcsFile);
 				try {
 					sardine.delete(fullIcsFile);
 				} catch (IOException e) {
-					LOG.error("cannot remove old ics file: {}", fullIcsFile);
+					log.error("cannot remove old ics file: {}", fullIcsFile);
 				}
 			} else {
-				LOG.debug("event is new: {}", fullIcsFile);
+				log.debug("event is new: {}", fullIcsFile);
 			}
 
 			sardine.put(fullIcsFile, calendar.toString().getBytes("UTF-8"));
@@ -737,15 +737,15 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			eventContainer.setLastChanged(calDavEvent.getLastChanged());
 			this.addEventToMap(eventContainer, false);
 		} catch (UnsupportedEncodingException e) {
-			LOG.error("cannot write event", e);
+			log.error("cannot write event", e);
 		} catch (IOException e) {
-			LOG.error("cannot write event", e);
+			log.error("cannot write event", e);
 		}
 	}
 
 	@Override
 	public List<CalDavEvent> getEvents(final CalDavQuery query) {
-		LOG.trace("quering events for filter: {}", query);
+		log.trace("quering events for filter: {}", query);
 		final ArrayList<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
 		if (query.getCalendarIds() != null) {
@@ -753,7 +753,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				final CalendarRuntime eventRuntime = EventStorage.getInstance()
 						.getEventCache().get(calendarId);
 				if (eventRuntime == null) {
-					LOG.debug("calendar id {} not found", calendarId);
+					log.debug("calendar id {} not found", calendarId);
 					continue;
 				}
 
@@ -794,7 +794,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			});
 		}
 
-		LOG.debug("return event list for {} with {} entries", query,
+		log.debug("return event list for {} with {} entries", query,
 				eventList.size());
 		return eventList;
 	}
