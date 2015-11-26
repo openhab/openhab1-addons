@@ -16,41 +16,31 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
+import org.openhab.binding.connectsdk.internal.bridges.OpenhabConnectSDKPropertyBridge;
+import org.openhab.binding.connectsdk.internal.bridges.TVControlChannel;
+import org.openhab.binding.connectsdk.internal.bridges.VolumeControlDown;
+import org.openhab.binding.connectsdk.internal.bridges.VolumeControlMute;
+import org.openhab.binding.connectsdk.internal.bridges.VolumeControlUp;
+import org.openhab.binding.connectsdk.internal.bridges.VolumeControlVolume;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.connectsdk.core.ChannelInfo;
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.device.ConnectableDeviceListener;
 import com.connectsdk.discovery.DiscoveryManager;
 import com.connectsdk.discovery.DiscoveryManagerListener;
 import com.connectsdk.service.DeviceService;
 import com.connectsdk.service.DeviceService.PairingType;
-import com.connectsdk.service.capability.TVControl;
-import com.connectsdk.service.capability.TVControl.ChannelListener;
 import com.connectsdk.service.capability.ToastControl;
-import com.connectsdk.service.capability.VolumeControl;
-import com.connectsdk.service.capability.VolumeControl.MuteListener;
-import com.connectsdk.service.capability.VolumeControl.VolumeListener;
 import com.connectsdk.service.capability.listeners.ResponseListener;
 import com.connectsdk.service.command.ServiceCommandError;
-import com.connectsdk.service.command.ServiceSubscription;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * Implement this class if you are going create an actively polling service like querying a Website/Device.
@@ -62,25 +52,9 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 	private static final Logger logger = LoggerFactory.getLogger(ConnectSDKBinding.class);
 	private DiscoveryManager discoveryManager;
 
-	/**
-	 * Device IP to TVControl.ChannelListener map.
-	 * 
-	 */
-	private Map<String, ServiceSubscription<ChannelListener>> tvControlsChannelSubscriptions = new ConcurrentHashMap<String, ServiceSubscription<ChannelListener>>();
-	/**
-	 * Device IP to VolumeControl.VolumeListener map.
-	 * 
-	 */
-	private Map<String, ServiceSubscription<VolumeListener>> volumeControlVolumeSubscriptions = new ConcurrentHashMap<String, ServiceSubscription<VolumeListener>>();
-	/**
-	 * Device IP to VolumeControl.MuteListener map.
-	 * 
-	 */
-	private Map<String, ServiceSubscription<MuteListener>> volumeControlMuteSubscriptions = new ConcurrentHashMap<String, ServiceSubscription<MuteListener>>();
-
-	public ConnectSDKBinding() {
-
-	}
+	private static OpenhabConnectSDKPropertyBridge[] bridges = new OpenhabConnectSDKPropertyBridge[] {
+			new VolumeControlVolume(), new VolumeControlMute(), new VolumeControlUp(), new VolumeControlDown(),
+			new TVControlChannel() };
 
 	@Override
 	public void activate() {
@@ -132,7 +106,7 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 			final String device = provider.getDeviceForItem(itemName);
 
-			ConnectableDevice d;
+			final ConnectableDevice d;
 			try {
 				d = this.discoveryManager.getCompatibleDevices().get(InetAddress.getByName(device).getHostAddress());
 				if (d == null) {
@@ -146,137 +120,14 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 			final String clazz = provider.getClassForItem(itemName);
 			final String property = provider.getPropertyForItem(itemName);
-			onReceiveCommandTVControlChannel(d, clazz, property, command);
-			onReceiveCommandVolumeControlVolume(d, clazz, property, command);
-			onReceiveCommandVolumeControlMute(d, clazz, property, command); // here
-		}
 
-	}
-
-	private void onReceiveCommandTVControlChannel(final ConnectableDevice d, final String clazz, final String property,
-			Command command) {
-		if ("TVControl".equals(clazz) && "channel".equals(property)
-				&& d.hasCapabilities(TVControl.Channel_List, TVControl.Channel_Set)) {// TODO use connect sdk control
-																						// classes or create enum
-			final String value = command.toString();
-			final TVControl control = d.getCapability(TVControl.class);
-			control.getChannelList(new TVControl.ChannelListListener() {
-				@Override
-				public void onError(ServiceCommandError error) {
-					logger.error("error requesting channel list: {}.", error.getMessage());
-
-				}
-
-				@Override
-				public void onSuccess(List<ChannelInfo> channels) {
-					if (logger.isDebugEnabled()) {
-						for (ChannelInfo c : channels) {
-							logger.debug("Channel {} - {}", c.getNumber(), c.getName());
-						}
-					}
-					try {
-						ChannelInfo channelInfo = Iterables.find(channels, new Predicate<ChannelInfo>() {
-							public boolean apply(ChannelInfo c) {
-								return c.getNumber().equals(value);
-							};
-						});
-						control.setChannel(channelInfo, new ResponseListener<Object>() {
-
-							@Override
-							public void onError(ServiceCommandError error) {
-								logger.error("Error changing channel: {}.", error.getMessage());
-
-							}
-
-							@Override
-							public void onSuccess(Object object) {
-								logger.debug("Successfully changed channel: {}.", object);
-
-							}
-						});
-					} catch (NoSuchElementException ex) {
-						logger.warn("TV does not have a channel: {}.", value);
-					}
-
-				}
-			});
-
-		}
-
-	}
-
-	private void onReceiveCommandVolumeControlVolume(final ConnectableDevice d, final String clazz,
-			final String property, Command command) {
-		if ("VolumeControl".equals(clazz) && "volume".equals(property) && d.hasCapabilities(VolumeControl.Volume_Set)) {
-
-			PercentType percent;
-			if (command instanceof PercentType) {
-				percent = (PercentType) command;
-			} else if (command instanceof DecimalType) {
-				percent = new PercentType(((DecimalType) command).toBigDecimal());
-			} else if (command instanceof StringType) {
-				percent = new PercentType(((StringType) command).toString());
-			} else {
-				logger.warn("only accept precentType");
-				return;
+			for (OpenhabConnectSDKPropertyBridge b : bridges) {
+				b.onReceiveCommand(d, clazz, property, command);
 			}
-			final float value = percent.floatValue() / 100.0f;
-			final VolumeControl control = d.getCapability(VolumeControl.class);
-
-			control.setVolume(value, new ResponseListener<Object>() {
-
-				@Override
-				public void onError(ServiceCommandError error) {
-					logger.error("Error changing volume: {}.", error.getMessage());
-
-				}
-
-				@Override
-				public void onSuccess(Object object) {
-					logger.debug("Successfully changed volume: {}.", object);
-
-				}
-			});
-
 		}
 
 	}
 
-	
-	private void onReceiveCommandVolumeControlMute(final ConnectableDevice d, final String clazz,
-			final String property, Command command) { // here
-		if ("VolumeControl".equals(clazz) && "mute".equals(property) && d.hasCapabilities(VolumeControl.Mute_Set)) {
-
-			OnOffType onOffType;
-			if (command instanceof OnOffType) {
-				onOffType = (OnOffType) command;
-			} else if (command instanceof StringType) {
-				onOffType = OnOffType.valueOf(command.toString());
-			} else {
-				logger.warn("only accept OnOffType");
-				return;
-			}
-			final boolean value = OnOffType.ON.equals(onOffType);
-			final VolumeControl control = d.getCapability(VolumeControl.class);
-
-			control.setMute(value, new ResponseListener<Object>() {
-
-				@Override
-				public void onError(ServiceCommandError error) {
-					logger.error("Error setting mute: {}.", error.getMessage());
-
-				}
-
-				@Override
-				public void onSuccess(Object object) {
-					logger.debug("Successfully set mute: {}.", object);
-
-				}
-			});
-
-		}
-
-	}
 	/**
 	 * @{inheritDoc
 	 */
@@ -340,6 +191,31 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 	}
 
+	@Override
+	public void onDeviceUpdated(DiscoveryManager manager, ConnectableDevice device) {
+		logger.info("Device updated: {}", device);
+		handleSubscriptions(device);
+	}
+
+	@Override
+	public void onDeviceRemoved(DiscoveryManager manager, ConnectableDevice device) {
+		logger.info("Device removed: {}", device);
+		for (OpenhabConnectSDKPropertyBridge b : bridges) {
+			b.removeAnySubscription(device);
+		}
+	}
+
+	@Override
+	public void onDiscoveryFailed(DiscoveryManager manager, ServiceCommandError error) {
+		logger.warn("Discovery failed: {}", error.getMessage());
+	}
+
+	private void handleSubscriptions(ConnectableDevice device) {
+		for (OpenhabConnectSDKPropertyBridge b : bridges) {
+			b.updateSubscription(device, providers, eventPublisher);
+		}
+	}
+
 	private void sendHelloWorld(ConnectableDevice device) {
 		if (device.hasCapability(ToastControl.Show_Toast)) {
 			try {
@@ -370,176 +246,6 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 				logger.error(ex.getMessage(), ex);
 			}
 
-		}
-	}
-
-	@Override
-	public void onDeviceUpdated(DiscoveryManager manager, ConnectableDevice device) {
-		logger.info("Device updated: {}", device);
-		handleSubscriptions(device);
-	}
-
-	@Override
-	public void onDeviceRemoved(DiscoveryManager manager, ConnectableDevice device) {
-		logger.info("Device removed: {}", device);
-		removeAnyChannelSubscription(device);
-		removeAnyVolumeSubscription(device);
-		removeAnyMuteSubscription(device); // here
-	}
-
-	@Override
-	public void onDiscoveryFailed(DiscoveryManager manager, ServiceCommandError error) {
-		logger.warn("Discovery failed: {}", error.getMessage());
-	}
-
-	private void handleSubscriptions(ConnectableDevice device) {
-		handleTVControlChannelSubscription(device);
-		handleVolumeControlVolumeSubscription(device);
-		handleVolumeControlMuteSubscription(device); // here
-	}
-
-	private void handleTVControlChannelSubscription(final ConnectableDevice device) {
-		removeAnyChannelSubscription(device);
-		if (device.hasCapability(TVControl.Channel_Subscribe)) {
-			logger.debug("Subscribe channel listener on IP: {}", device.getIpAddress());
-			ServiceSubscription<ChannelListener> listener = device.getCapability(TVControl.class)
-					.subscribeCurrentChannel(new ChannelListener() {
-
-						@Override
-						public void onError(ServiceCommandError error) {
-							logger.error("error: ", error.getMessage());
-						}
-
-						@Override
-						public void onSuccess(ChannelInfo channelInfo) {
-							for (ConnectSDKBindingProvider provider : providers) {
-								for (String itemName : provider.getItemNames()) {
-									try {
-										if ("TVControl".equals(provider.getClassForItem(itemName))
-												&& "channel".equals(provider.getPropertyForItem(itemName))
-												&& device.getIpAddress().equals(
-														InetAddress.getByName(provider.getDeviceForItem(itemName))
-																.getHostAddress())) {
-											if (eventPublisher != null) {
-												eventPublisher.postUpdate(itemName,
-														new StringType(channelInfo.getNumber()));
-											}
-										}
-									} catch (UnknownHostException e) {
-										logger.error("Failed to resolve {} to IP address. Skipping update on item {}.",
-												device, itemName);
-									}
-								}
-							}
-						}
-					});
-			tvControlsChannelSubscriptions.put(device.getIpAddress(), listener);
-
-		}
-	}
-
-	private void removeAnyChannelSubscription(final ConnectableDevice device) {
-		ServiceSubscription<ChannelListener> l = tvControlsChannelSubscriptions.remove(device.getIpAddress());
-		if (l != null) {
-			l.unsubscribe();
-			logger.debug("Unsubscribed channel listener on IP: {}", device.getIpAddress());
-		}
-	}
-
-	private void handleVolumeControlVolumeSubscription(final ConnectableDevice device) {
-		removeAnyVolumeSubscription(device);
-
-		if (device.hasCapability(VolumeControl.Volume_Subscribe)) {
-			logger.debug("Subscribe volume listener on IP: {}", device.getIpAddress());
-			ServiceSubscription<VolumeListener> listener = device.getCapability(VolumeControl.class).subscribeVolume(
-					new VolumeListener() {
-
-						@Override
-						public void onError(ServiceCommandError error) {
-							logger.error("error: ", error.getMessage());
-						}
-
-						@Override
-						public void onSuccess(Float value) {
-							for (ConnectSDKBindingProvider provider : providers) {
-								for (String itemName : provider.getItemNames()) {
-									try {
-										if ("VolumeControl".equals(provider.getClassForItem(itemName))
-												&& "volume".equals(provider.getPropertyForItem(itemName))
-												&& device.getIpAddress().equals(
-														InetAddress.getByName(provider.getDeviceForItem(itemName))
-																.getHostAddress())) {
-											if (eventPublisher != null) {
-												eventPublisher.postUpdate(itemName,
-														new PercentType(Math.round(value * 100)));
-											}
-										}
-									} catch (UnknownHostException e) {
-										logger.error("Failed to resolve {} to IP address. Skipping update on item {}.",
-												device, itemName);
-									}
-								}
-							}
-						}
-					});
-			volumeControlVolumeSubscriptions.put(device.getIpAddress(), listener);
-
-		}
-	}
-
-	private void removeAnyVolumeSubscription(final ConnectableDevice device) {
-		ServiceSubscription<VolumeListener> l = volumeControlVolumeSubscriptions.remove(device.getIpAddress());
-		if (l != null) {
-			l.unsubscribe();
-			logger.debug("Unsubscribed volume listener on IP: {}", device.getIpAddress());
-		}
-	}
-	
-	private void handleVolumeControlMuteSubscription(final ConnectableDevice device) { // here
-		removeAnyMuteSubscription(device);
-
-		if (device.hasCapability(VolumeControl.Mute_Subscribe)) {
-			logger.debug("Subscribe mute listener on IP: {}", device.getIpAddress());
-			ServiceSubscription<MuteListener> listener = device.getCapability(VolumeControl.class).subscribeMute(
-					new MuteListener() {
-
-						@Override
-						public void onError(ServiceCommandError error) {
-							logger.error("error: ", error.getMessage());
-						}
-
-						@Override
-						public void onSuccess(Boolean value) {
-							for (ConnectSDKBindingProvider provider : providers) {
-								for (String itemName : provider.getItemNames()) {
-									try {
-										if ("VolumeControl".equals(provider.getClassForItem(itemName))
-												&& "mute".equals(provider.getPropertyForItem(itemName))
-												&& device.getIpAddress().equals(
-														InetAddress.getByName(provider.getDeviceForItem(itemName))
-																.getHostAddress())) {
-											if (eventPublisher != null) {
-												eventPublisher.postUpdate(itemName,	value ? OnOffType.ON : OnOffType.OFF);
-											}
-										}
-									} catch (UnknownHostException e) {
-										logger.error("Failed to resolve {} to IP address. Skipping update on item {}.",
-												device, itemName);
-									}
-								}
-							}
-						}
-					});
-			volumeControlMuteSubscriptions.put(device.getIpAddress(), listener);
-
-		}
-	}
-
-	private void removeAnyMuteSubscription(final ConnectableDevice device) { // here
-		ServiceSubscription<MuteListener> l = volumeControlMuteSubscriptions.remove(device.getIpAddress());
-		if (l != null) {
-			l.unsubscribe();
-			logger.debug("Unsubscribed mute listener on IP: {}", device.getIpAddress());
 		}
 	}
 
