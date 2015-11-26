@@ -72,7 +72,8 @@ import com.dropbox.core.DbxWriteMode;
  * to connect to a predefined App-Folder (see <a 
  * href="https://www.dropbox.com/developers/apps">Dropbox Documentation</a> for more information).
  * 
- * @author Thomas.Eichstaedt-Engelen
+ * @author Thomas.Eichstaedt-Engelen - Initial Contribution
+ * @author Theo Weiss - add smarthome.userdata support
  * @since 1.0.0
  */
 public class DropboxSynchronizer implements ManagedService {
@@ -103,10 +104,13 @@ public class DropboxSynchronizer implements ManagedService {
 	private static String appSecret = "gu5v7lp1f5bbs07";
 
 	/** The default directory to download files from Dropbox to (currently '.') */
-	private static final String DEFAULT_CONTENT_DIR = ".";
+	private static final String DEFAULT_CONTENT_DIR = getConfigDirFolder();
 	
 	/** the base directory to synchronize with openHAB, configure 'filter' to select files (defaults to DEFAULT_CONTENT_DIR) */
 	private static String contentDir = DEFAULT_CONTENT_DIR;
+
+	/** the base directory for the .dbx files */
+	public final static String DBX_FOLDER = getUserDbxDataFolder();
 
 	/** the configured synchronization mode (defaults to LOCAL_TO_DROPBOX) */
 	private static DropboxSyncMode syncMode = DropboxSyncMode.LOCAL_TO_DROPBOX;
@@ -288,7 +292,7 @@ public class DropboxSynchronizer implements ManagedService {
 		Map<String, Long> dropboxEntries = new HashMap<String, Long>();
 
 		WithChildren metadata = client.getMetadataWithChildren("/");
-		File dropboxEntryFile = new File(contentDir + DROPBOX_ENTRIES_FILE_NAME);
+		File dropboxEntryFile = new File(DBX_FOLDER + DROPBOX_ENTRIES_FILE_NAME);
 		if (!dropboxEntryFile.exists() || !metadata.hash.equals(lastHash)) {
 			collectDropboxEntries(client, dropboxEntries, "/");
 			serializeDropboxEntries(dropboxEntryFile, dropboxEntries);
@@ -494,12 +498,17 @@ public class DropboxSynchronizer implements ManagedService {
 	}
 	
 	private void writeAccessToken(String content) {
-		File tokenFile = new File(contentDir + AUTH_FILE_NAME);
+	  // create folder for .dbx files if it does not exist
+      File folder = new File(DBX_FOLDER);
+      if(!folder.exists()) {
+          folder.mkdirs();
+      }
+		File tokenFile = new File(DBX_FOLDER + AUTH_FILE_NAME);
 		writeLocalFile(tokenFile, content);
 	}
 	
 	private String readAccessToken() {
-		File tokenFile = new File(contentDir + AUTH_FILE_NAME);
+		File tokenFile = new File(DBX_FOLDER + AUTH_FILE_NAME);
 		return readFile(tokenFile);
 	}
 	
@@ -510,14 +519,14 @@ public class DropboxSynchronizer implements ManagedService {
 	private void writeDeltaCursor(String deltaCursor) {
 		if (!deltaCursor.equals(lastCursor)) {
 			logger.trace("Delta-Cursor changed (lastCursor '{}', newCursor '{}')", lastCursor, deltaCursor);
-			File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
+			File cursorFile = new File(DBX_FOLDER + DELTA_CURSOR_FILE_NAME);
 			writeLocalFile(cursorFile, deltaCursor);
 			lastCursor = deltaCursor;
 		}
 	}
 
 	private String readDeltaCursor() {
-		File cursorFile = new File(contentDir + DELTA_CURSOR_FILE_NAME);
+		File cursorFile = new File(DBX_FOLDER + DELTA_CURSOR_FILE_NAME);
 		return readFile(cursorFile);
 	}
 
@@ -594,7 +603,8 @@ public class DropboxSynchronizer implements ManagedService {
 			if (isNotBlank(contentDirString)) {
 				DropboxSynchronizer.contentDir = contentDirString;
 			}
-
+			logger.debug("contentdir: {}", contentDir);
+			
 			String uploadIntervalString = (String) config.get("uploadInterval");
 			if (isNotBlank(uploadIntervalString)) {
 				DropboxSynchronizer.uploadInterval = uploadIntervalString;
@@ -630,6 +640,7 @@ public class DropboxSynchronizer implements ManagedService {
 			
 			// we got thus far, so we define this synchronizer as properly configured ...
 			isProperlyConfigured = true;
+			logger.debug("bundle is properly configured: activating synchronizer");
 			activateSynchronizer();
 		}
 	}
@@ -643,6 +654,7 @@ public class DropboxSynchronizer implements ManagedService {
 		if (isProperlyConfigured) {
 			cancelAllJobs();
 			if (isAuthenticated()) {
+			  logger.debug("authenticated: scheduling jobs");
 				scheduleJobs();
 			} else {
 				logger.debug("Dropbox-Bundle isn't authorized properly, so the synchronization jobs " +
@@ -658,12 +670,18 @@ public class DropboxSynchronizer implements ManagedService {
 	private void scheduleJobs() {
 		switch (syncMode) {
 			case DROPBOX_TO_LOCAL:
+				logger.debug("scheduling DROPBOX_TO_LOCAL download interval: {}",
+						DropboxSynchronizer.downloadInterval);
 				schedule(DropboxSynchronizer.downloadInterval, false);
 				break;
 			case LOCAL_TO_DROPBOX:
+				logger.debug("scheduling LOCAL_TO_DROPBOX upload interval: {}",
+						DropboxSynchronizer.uploadInterval);
 				schedule(DropboxSynchronizer.uploadInterval, true);
 				break;
 			case BIDIRECTIONAL:
+				logger.debug("scheduling BIDIRECTIONAL download interval: {}, upload interval: {}",
+					DropboxSynchronizer.downloadInterval, DropboxSynchronizer.uploadInterval);
 				schedule(DropboxSynchronizer.downloadInterval, false);
 				schedule(DropboxSynchronizer.uploadInterval, true);
 				break;
@@ -693,8 +711,8 @@ public class DropboxSynchronizer implements ManagedService {
 			    .withSchedule(CronScheduleBuilder.cronSchedule(interval))
 			    .build();
 
-			sched.scheduleJob(job, trigger);
 			logger.debug("Scheduled synchronization job (direction={}) with cron expression '{}'", direction, interval);
+			sched.scheduleJob(job, trigger);
 		} catch (SchedulerException e) {
 			logger.warn("Could not create synchronization job: {}", e.getMessage());
 		}		
@@ -762,6 +780,7 @@ public class DropboxSynchronizer implements ManagedService {
 		private DbxClient getClient(DropboxSynchronizer synchronizer) {
 			String accessToken = synchronizer.readAccessToken();
 		 	if (StringUtils.isNotBlank(accessToken)) {
+		 		logger.debug("creating new DbxClient with config");
 		 		return new DbxClient(requestConfig, accessToken);
 		 	}
 			return null;
@@ -769,5 +788,25 @@ public class DropboxSynchronizer implements ManagedService {
 		
 	}
 	
+	static private String getUserDbxDataFolder() {
+		String progArg = System.getProperty("smarthome.userdata");
+		if (progArg != null) {
+			return progArg + File.separator + "dropbox";
+		} else {
+			return ".";
+		}
+	}
+
+	static private String getConfigDirFolder() {
+		String smartHomeProgArg = System.getProperty("smarthome.configdir");
+		String openHABProgArg = System.getProperty("openhab.configdir");
+		if (smartHomeProgArg != null) {
+			return smartHomeProgArg;
+		} else if (openHABProgArg != null) {
+			return openHABProgArg;
+		} else {
+			return ".";
+		}
+	}
 
 }
