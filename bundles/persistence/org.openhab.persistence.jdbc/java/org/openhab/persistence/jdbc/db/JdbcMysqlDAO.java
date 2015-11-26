@@ -22,72 +22,73 @@ import com.xeiam.yank.Yank;
  * @since 1.8.0
  */
 public class JdbcMysqlDAO extends JdbcBaseDAO {
-	private static final Logger logger = LoggerFactory.getLogger(JdbcMysqlDAO.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcMysqlDAO.class);
 
-	/********
-	 * INIT *
-	 ********/
-	public JdbcMysqlDAO() {
-		super();
-		initSqlTypes();
-		initDbProps();
-		initSqlQueries();
-	}
+    /********
+     * INIT *
+     ********/
+    public JdbcMysqlDAO() {
+        super();
+        initSqlTypes();
+        initDbProps();
+        initSqlQueries();
+    }
 
-	private void initSqlQueries() {
-		logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
-	}
+    private void initSqlQueries() {
+        logger.debug("JDBC::initSqlQueries: '{}'", this.getClass().getSimpleName());
+    }
 
-	/**
-	 * INFO: http://www.java2s.com/Code/Java/Database-SQL-JDBC/StandardSQLDataTypeswithTheirJavaEquivalents.htm
-	 */
-	private void initSqlTypes() {
-		logger.debug("JDBC::initSqlTypes: Initialize the type array");
-		//sqlTypes.put("STRINGITEM", "VARCHAR(65500)");//jdbc max 21845
-	}
+    /**
+     * INFO: http://www.java2s.com/Code/Java/Database-SQL-JDBC/StandardSQLDataTypeswithTheirJavaEquivalents.htm
+     */
+    private void initSqlTypes() {
+        logger.debug("JDBC::initSqlTypes: Initialize the type array");
+        // sqlTypes.put("STRINGITEM", "VARCHAR(65500)");//jdbc max 21845
+    }
 
-	/**
-	 * INFO: https://github.com/brettwooldridge/HikariCP
-	 */
-	private void initDbProps() {
-		
-		//Performancetuning
-		databaseProps.setProperty("dataSource.cachePrepStmts", "true");
-		databaseProps.setProperty("dataSource.prepStmtCacheSize", "250");
-		databaseProps.setProperty("dataSource.prepStmtCacheSqlLimit", "2048");
-		databaseProps.setProperty("dataSource.jdbcCompliantTruncation", "false");//jdbc standard max varchar max length of 21845
-		
-		// Properties for HikariCP
-		// Use driverClassName 
-		databaseProps.setProperty("driverClassName", "com.mysql.jdbc.Driver");
-		// OR dataSourceClassName
-		//databaseProps.setProperty("dataSourceClassName", "com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-		databaseProps.setProperty("maximumPoolSize", "3");
-		databaseProps.setProperty("minimumIdle", "2");
-	}
-		
-	/**************
-	 * ITEMS DAOs *
-	 **************/
-	@Override
-	public Integer doPingDB(){
-		return Yank.queryScalar(SQL_PING_DB, Long.class, null).intValue();
-	}
+    /**
+     * INFO: https://github.com/brettwooldridge/HikariCP
+     */
+    private void initDbProps() {
 
-	/*************
-	 * ITEM DAOs *
-	 *************/
+        // Performancetuning
+        databaseProps.setProperty("dataSource.cachePrepStmts", "true");
+        databaseProps.setProperty("dataSource.prepStmtCacheSize", "250");
+        databaseProps.setProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+        databaseProps.setProperty("dataSource.jdbcCompliantTruncation", "false");// jdbc standard max varchar max length
+                                                                                 // of 21845
 
-	/****************************
-	 * SQL generation Providers *
-	 ****************************/
-	
-	/*****************
-	 * H E L P E R S *
-	 *****************/
-	
-	/******************************
-	 * public Getters and Setters *
-	 ******************************/
+        // Properties for HikariCP
+        // Use driverClassName
+        databaseProps.setProperty("driverClassName", "com.mysql.jdbc.Driver");
+        // OR dataSourceClassName
+        // databaseProps.setProperty("dataSourceClassName", "com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        databaseProps.setProperty("maximumPoolSize", "3");
+        databaseProps.setProperty("minimumIdle", "2");
+    }
+
+    /**************
+     * ITEMS DAOs *
+     **************/
+    @Override
+    public Integer doPingDB() {
+        return Yank.queryScalar(SQL_PING_DB, Long.class, null).intValue();
+    }
+
+    /*************
+     * ITEM DAOs *
+     *************/
+
+    /****************************
+     * SQL generation Providers *
+     ****************************/
+
+    /*****************
+     * H E L P E R S *
+     *****************/
+
+    /******************************
+     * public Getters and Setters *
+     ******************************/
 
 }

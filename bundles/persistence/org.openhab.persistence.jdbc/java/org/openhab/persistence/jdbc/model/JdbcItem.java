@@ -21,39 +21,39 @@ import org.openhab.core.types.State;
  */
 public class JdbcItem implements HistoricItem {
 
-	final private String name;
-	final private State state;
-	final private Date timestamp;
+    final private String name;
+    final private State state;
+    final private Date timestamp;
 
-	public JdbcItem(String name, State state, Date timestamp) {
-		this.name = name;
-		this.state = state;
-		this.timestamp = timestamp;
-	}
+    public JdbcItem(String name, State state, Date timestamp) {
+        this.name = name;
+        this.state = state;
+        this.timestamp = timestamp;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public State getState() {
-		return state;
-	}
+    public State getState() {
+        return state;
+    }
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("JdbcItem [name=");
-		builder.append(name);
-		builder.append(", state=");
-		builder.append(state);
-		builder.append(", timestamp=");
-		builder.append(timestamp);
-		builder.append("]");
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("JdbcItem [name=");
+        builder.append(name);
+        builder.append(", state=");
+        builder.append(state);
+        builder.append(", timestamp=");
+        builder.append(timestamp);
+        builder.append("]");
+        return builder.toString();
+    }
 
 }
