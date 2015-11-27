@@ -47,9 +47,9 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Automatically switch off after x seconds.</Label>
-			<Help lang="en">If not zero, automatically switch device off after a user defined time.
-			0 -> Disabled,
-			1-65535 -> Enabled, seconds</Help>
+			<Help lang="en"><![CDATA[If not zero, automatically switch device off after a user defined time.<br>
+			0 -> Disabled<br>
+			1-65535 -> Enabled, seconds]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>3</Index>
@@ -73,12 +73,12 @@
 				<Value>3</Value>
 				<Label lang="en">Switch on if load is off, else switch off</Label>
 			</Item>
-			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with
-				Auto Off function: Ignore - to switch on the light by motion detectors and switch it off
-				after some amount of time: in case of multiple motion detectors each would try to switch
-				the light off that would break logics; Switch on - to switch on the light on both On and
-				Off paddle press on the remote and switch it off after some amount of time. Button off
-				click will still work (if button operations are not disabled).
+			<Help lang="en"><![CDATA[Defines how to interpret RF Off command.<br>
+				Can be used in conjunction with Auto Off function:<br>
+				Ignore - to switch on the light by motion detectors and switch it off after some amount of time:<br>
+				in case of multiple motion detectors each would try to switch the light off that would break logics;<br>
+				Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time.<br>
+				Button off click will still work (if button operations are not disabled).]]>
 			</Help>
 		</Parameter>
 		<Parameter>
@@ -95,17 +95,18 @@
 				<Value>1</Value>
 				<Label lang="en">Yes, default</Label>
 			</Item>
-			<Help lang="en">Defines if the switch should restore switch state to the last state prior
-				to device power off (power cycle).</Help>
+			<Help lang="en"><![CDATA[Defines if the switch should restore switch state to the last state prior<br>
+				to device power off (power cycle).]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>20</Index>
 			<Type>int</Type>
 			<Default>0</Default>
 			<Size>2</Size>
-			<Label lang="en">Specify the consumption of the load in watts, for the
-				calculation of power consumption. Max load 3500 W.</Label>
-			<Help lang="en">0 -> Disabled, 1 - 3500 -> Watts.</Help>
+			<Label lang="en"><![CDATA[Specify the consumption of the load in watts, for the calculation of power<br>
+				consumption. Max load 3500 W.]]></Label>
+			<Help lang="en"><![CDATA[0 -> Disabled<br>
+			 1 - 3500 -> Watts]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>21</Index>
