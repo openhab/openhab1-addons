@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>11 01 011</Model>
+	<Label lang="en">Open/Close Magnet-sensor</Label>
+	<CommandClasses>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x73</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>constant</Type>
+			<Default>01</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">Binary Sensor report</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">Notification report</Label>
+			</Item>
+			<Item>
+				<Value>02</Value>
+				<Label lang="en">Basic report</Label>
+			</Item>
+			<Label lang="en">Notification type</Label>
+			<Help lang="en">Define the notification type.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>constant</Type>
+			<Default>01</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>00</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>01</Value>
+				<Label lang="en">On</Label>
+			</Item>
+			<Label lang="en">LED indication</Label>
+			<Help lang="en">Specify if LED should indicate special event.</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Lifeline</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

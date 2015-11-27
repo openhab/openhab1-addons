@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @author Chris Jackson
  * @author Gaël L'hopital
+ * @author Jan N. Klug
  * @since 1.0.0
  *
  */
@@ -358,7 +359,7 @@ public class PersistenceExtensions implements ManagedService {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * Gets the average value of the state of a given <code>item</code> since a certain point in time. 
 	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
@@ -371,25 +372,175 @@ public class PersistenceExtensions implements ManagedService {
 	static public DecimalType averageSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
-		
-		DecimalType value = (DecimalType) item.getStateAs(DecimalType.class);
-		if (value == null) {
-			value = DecimalType.ZERO;
-		}
-		
-		double average = value.doubleValue();
-		int quantity = 1;
+
+		double total = 0;
+		int quantity = 0;
+		DecimalType histValue = null;
 		while(it.hasNext()) {
 			State state = it.next().getState();
 			if (state instanceof DecimalType) {
-				value = (DecimalType) state;
-				average += value.doubleValue();
+				histValue = (DecimalType) state;
+				total += histValue.doubleValue();
 				quantity++;
 			}
 		}
-		average /= quantity;
 		
-		return new DecimalType(average);
+		// If the current value has not been persisted it should be included in the average as well.
+		// Assume that any current value different from the last historical value has not been 
+		// persisted and include it.
+		DecimalType currentValue = (DecimalType) item.getStateAs(DecimalType.class);
+		if (currentValue != null && currentValue != histValue ) {
+			total += currentValue.doubleValue();
+			quantity++;
+		}
+
+		if (quantity == 0 ){
+			return null;
+		}
+		else{
+			double average = total / quantity;
+			return new DecimalType(average);
+			
+		}
+	}
+
+	
+	/**
+	 * Gets the variance value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @return the variance of the value since the given point in time
+	 */
+	static public DecimalType varianceSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return varianceSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the variance value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the variance of the value since the given point in time
+	 */
+	static public DecimalType varianceSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+
+		DecimalType average = averageSince(item, timestamp, serviceName);
+		if (average == null) {
+			return null;
+		}
+				
+		double total = 0;
+		int quantity = 0;
+		DecimalType histValue = null;
+		while(it.hasNext()) {
+			State state = it.next().getState();
+			if (state instanceof DecimalType) {
+				histValue = (DecimalType) state;
+				total += Math.pow(histValue.doubleValue()- average.doubleValue(), 2);
+				quantity++;
+			}
+		}
+
+		// If the current value has not been persisted it should be included in the average as well.
+		// Assume that any current value different from the last historical value has not been 
+		// persisted and include it.
+		DecimalType currentValue = (DecimalType) item.getStateAs(DecimalType.class);
+		if (currentValue != null && currentValue != histValue ) {
+			total += Math.pow(currentValue.doubleValue()- average.doubleValue(), 2);
+			quantity++;
+		}
+
+		if (quantity == 0 ){
+			return null;
+		}
+		else{
+			double variance = total / quantity;
+			return new DecimalType(variance);
+		}
+
+	}
+
+	/**
+	 * Gets the standard deviation value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @return the standard deviation of the value since the given point in time
+	 */
+	static public DecimalType deviationSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return deviationSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the standard deviation value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the standard deviation of the value since the given point in time
+	 */
+	static public DecimalType deviationSince(Item item, AbstractInstant timestamp, String serviceName) {
+		DecimalType variance = varianceSince(item, timestamp, serviceName);
+		double deviation = Math.sqrt(variance.doubleValue());
+		
+ 		return new DecimalType(deviation);
+	}
+	
+	/**
+	 * Gets the sum of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @return the average state value since the given point in time
+	 */
+	static public DecimalType sumSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return sumSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the sum of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the sum state value since the given point in time
+	 */
+
+	static public DecimalType sumSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+		
+		double sum = 0;
+		while(it.hasNext()) {
+			State state = it.next().getState();
+			if (state instanceof DecimalType) {
+				sum += ((DecimalType) state).doubleValue();
+			}
+		}
+
+		return new DecimalType(sum);
 	}
 	
 	/**

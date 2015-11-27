@@ -67,18 +67,20 @@ public class DeviceFeature {
 	private InsteonDevice				m_device = null;
 	private String						m_name	 = "INVALID_FEATURE_NAME";
 	private boolean						m_isStatus = false;
+	private int							m_directAckTimeout = 6000;
 	private QueryStatus	                m_queryStatus = QueryStatus.NEVER_QUERIED;
 	
 	private MessageHandler				m_defaultMsgHandler = new MessageHandler.DefaultMsgHandler(this);
 	private CommandHandler				m_defaultCommandHandler = new CommandHandler.WarnCommandHandler(this);
 	private PollHandler					m_pollHandler = null;
-	private	 MessageDispatcher			m_dispatcher = null;
+	private	MessageDispatcher			m_dispatcher = null;
 
 	private HashMap<Integer, MessageHandler> m_msgHandlers =
 				new HashMap<Integer, MessageHandler>();
 	private HashMap<Class<? extends Command>, CommandHandler> m_commandHandlers =
 				new HashMap<Class<? extends Command>, CommandHandler>();
 	private ArrayList<DeviceFeatureListener> m_listeners = new ArrayList<DeviceFeatureListener>();
+	private ArrayList<DeviceFeature>	m_connectedFeatures = new ArrayList<DeviceFeature>();
 	
 	
 	/**
@@ -103,12 +105,16 @@ public class DeviceFeature {
 	public String	 	getName()			{ return m_name; }
 	public synchronized QueryStatus	getQueryStatus()	{ return m_queryStatus; }
 	public InsteonDevice getDevice() 		{ return m_device; }
-	public boolean 		hasListeners() 		{ return !m_listeners.isEmpty(); }
 	public boolean		isStatusFeature()	{ return m_isStatus; }
+	public int			getDirectAckTimeout() { return m_directAckTimeout; }
 	public MessageHandler getDefaultMsgHandler() { return m_defaultMsgHandler; }
 	public HashMap<Integer, MessageHandler> getMsgHandlers() {
 		return this.m_msgHandlers;
 	}
+	public ArrayList<DeviceFeature>	getConnectedFeatures() {
+		 return (m_connectedFeatures); 
+	}
+
 	// various simple setters
 	public void setStatusFeature(boolean f)	{ m_isStatus = f; }
 	public void setPollHandler(PollHandler h)	{ m_pollHandler = h; }
@@ -119,6 +125,17 @@ public class DeviceFeature {
 	public synchronized void setQueryStatus(QueryStatus status)	{
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
+	}
+	
+	public void setTimeout(String s) {
+		if (s != null && !s.isEmpty()) {
+			try {
+				m_directAckTimeout = Integer.parseInt(s);
+				logger.trace("ack timeout set to {}", m_directAckTimeout);
+			} catch (NumberFormatException e) {
+				logger.error("invalid number for timeout: {}", s);
+			}
+		}
 	}
 
 	/**
@@ -134,6 +151,22 @@ public class DeviceFeature {
 			}
 			m_listeners.add(l);
 		}
+	}
+	/**
+	 * Adds a connected feature such that this DeviceFeature can
+	 * act as a feature group
+	 * @param f the device feature related to this feature
+	 */
+	public void addConnectedFeature(DeviceFeature f) {
+		m_connectedFeatures.add(f);
+	}
+
+	public boolean hasListeners() {
+		if (!m_listeners.isEmpty()) return true;
+		for (DeviceFeature f: m_connectedFeatures) {
+			if (f.hasListeners()) return true;
+		}
+		return false;
 	}
 
 	/**

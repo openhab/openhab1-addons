@@ -15,6 +15,7 @@
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
 		<provide interface="org.osgi.service.cm.ManagedService" />
+		<provide interface="org.openhab.binding.ecobee.EcobeeActionProvider" />
 	</service>
 
 	<property name="event.topics" type="String" value="openhab/*" />
@@ -23,9 +24,6 @@
 	<reference bind="setEventPublisher" cardinality="1..1"
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
-	<reference bind="setItemRegistry" cardinality="1..1" 
-		interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" 
-		policy="dynamic" unbind="unsetItemRegistry" />
 	<reference bind="addBindingProvider" cardinality="1..n"
 		interface="org.openhab.binding.ecobee.EcobeeBindingProvider" name="EcobeeBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />

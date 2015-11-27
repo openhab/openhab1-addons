@@ -232,6 +232,10 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:upnp-org:serviceId:HouseStatus1`|`HouseStatus1`,`HouseStatus`|
 |`urn:upnp-org:serviceId:ContentDirectory`|`ContentDirectory`|
 |`urn:upnp-org:serviceId:AudioIn`|`AudioIn`|
+|`urn:upnp-org:serviceId:DigitalSecurityCameraSettings1`|`DigitalSecurityCameraSettings1`|
+|`urn:upnp-org:serviceId:DigitalSecurityCameraStillImage1`|`DigitalSecurityCameraStillImage1`|
+|`urn:upnp-org:serviceId:EnergyCalculator1`|`EnergyCalculator1`|
+|`urn:upnp-org:serviceId:FanSpeed1`|`FanSpeed1`|
 
 
 
@@ -260,7 +264,22 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:micasaverde-com:serviceId:IrTransmitter1`|`IrTransmitter1`,`IrTransmitter`|
 |`urn:micasaverde-com:serviceId:IrDevice1`|`IrDevice1`,`IrDevice`|
 |`urn:micasaverde-com:serviceId:GenericIO`|`GenericIO`|
-
+|`urn:micasaverde-com:serviceId:CameraMotionDetection1` |`CameraMotionDetection1`
+|`urn:micasaverde-com:serviceId:DiscretePower1` |`DiscretePower1`
+|`urn:micasaverde-com:serviceId:InputSelection1` |`InputSelection1`
+|`urn:micasaverde-com:serviceId:Keypad1` |`Keypad1`
+|`urn:micasaverde-com:serviceId:MediaNavigation1` |`MediaNavigation1`
+|`urn:micasaverde-com:serviceId:MenuNavigation1` |`MenuNavigation1`
+|`urn:micasaverde-com:serviceId:Misc1` |`Misc1`
+|`urn:micasaverde-com:serviceId:NumericEntry1` |`NumericEntry1`
+|`urn:micasaverde-com:serviceId:PIP1` |`PIP1`
+|`urn:micasaverde-com:serviceId:Scene1` |`Scene1`
+|`urn:micasaverde-com:serviceId:TV1` |`TV1`
+|`urn:micasaverde-com:serviceId:TogglePower1` |`TogglePower1`
+|`urn:micasaverde-com:serviceId:Tuning1` |`Tuning1`
+|`urn:micasaverde-com:serviceId:VideoAdjustment1` |`VideoAdjustment1`
+|`urn:micasaverde-com:serviceId:Volume1` |`Volume1`
+|`urn:micasaverde-com:serviceId:WMC1` |`WMC1`
 
 
 
@@ -509,6 +528,27 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
     _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
 
 [Back to Table of Contents](MiOS-Binding#configuration)
+
+
+##### A Roller shutter...
+
+The simple version, using internal defaults for the `WindowCovering1` service of the Device:
+
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1"}
+
+or the full version:
+
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1,command:MAP(miosShutterCommand.map)"}
+
+Since Rollershutter Items in openHAB can be sent `UP`, `DOWN`, `STOP` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`UP`, `DOWN`, `STOP`) as well as the possibility of a _Command Value_ being sent.
+
+The `examples/transform/miosShutterCommand.map` file has a definition that handles this situation:
+
+    DOWN=urn:upnp-org:serviceId:WindowCovering1/Down()
+    UP=urn:upnp-org:serviceId:WindowCovering1/Up()
+    STOP=urn:upnp-org:serviceId:WindowCovering1/Stop()
+    _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
+
 
 ##### A Thermostat...
 

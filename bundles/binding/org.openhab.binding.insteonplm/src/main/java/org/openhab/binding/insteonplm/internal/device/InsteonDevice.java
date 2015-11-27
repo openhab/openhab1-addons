@@ -9,13 +9,13 @@
 package org.openhab.binding.insteonplm.internal.device;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 
 import org.openhab.binding.insteonplm.InsteonPLMBindingConfig;
+import org.openhab.binding.insteonplm.internal.device.DeviceType.FeatureGroup;
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
@@ -51,9 +51,12 @@ public class InsteonDevice {
 	private Long						m_lastTimePolled = 0L;
 	private Long						m_lastMsgReceived = 0L;
 	private boolean						m_isModem		= false;
-	private	 Deque<QEntry>				m_requestQueue  = new LinkedList<QEntry>();
-	private DeviceFeature.QueryStatus	m_requestQueueState = DeviceFeature.QueryStatus.QUERY_ANSWERED;
-	private static final long			QUERY_TIMEOUT	= 2000;
+	private	PriorityQueue<QEntry>		m_requestQueue  = new PriorityQueue<QEntry>();
+	private	DeviceFeature				m_featureQueried = null;
+	/** need to wait after query to avoid misinterpretation of duplicate replies */
+	private static final int			QUIET_TIME_DIRECT_MESSAGE = 2000;
+	/** how far to space out poll messages */
+	private static final int			TIME_BETWEEN_POLL_MESSAGES = 1500;
 	private long						m_lastQueryTime	= 0L;					
 	private	boolean						m_hasModemDBEntry = false;
 	private DeviceStatus				m_status		= DeviceStatus.INITIALIZED;
@@ -116,6 +119,16 @@ public class InsteonDevice {
 		logger.trace("setting poll interval for {} to {} ", m_address, pi);
 		if (pi > 0) m_pollInterval = pi;
 	}
+	public void setFeatureQueried(DeviceFeature f) {
+		synchronized (m_requestQueue) {
+			m_featureQueried = f;
+		}
+	};
+	public DeviceFeature getFeatureQueried() {
+		synchronized (m_requestQueue) {
+			return (m_featureQueried);
+		}
+	};
 
 	/**
 	 * Add a port. Currently only a single port is being used.
@@ -166,14 +179,20 @@ public class InsteonDevice {
 	 * Execute poll on this device: create an array of messages,
 	 * add them to the request queue, and schedule the queue
 	 * for processing.
+	 * @param delay scheduling delay (in milliseconds)
 	 */
-	public void doPoll() {
+	public void doPoll(long delay) {
+		long now = System.currentTimeMillis();
 		ArrayList<QEntry> l = new ArrayList<QEntry>();
 		synchronized(m_features) {
+			int spacing = 0;
 			for (DeviceFeature i : m_features.values()) {
 				if (i.hasListeners()) {
 					Msg m = i.makePollMsg();
-					if (m != null) l.add(new QEntry(i, m));
+					if (m != null) {
+						l.add(new QEntry(i, m, now + delay + spacing));
+						spacing += TIME_BETWEEN_POLL_MESSAGES;
+					}
 				}
 			}
 		}
@@ -183,8 +202,7 @@ public class InsteonDevice {
 				m_requestQueue.add(e);
 			}
 		}
-		long now = System.currentTimeMillis();
-		RequestQueueManager.s_instance().addQueue(this, now);
+		RequestQueueManager.s_instance().addQueue(this, now + delay);
 		
 		if (!l.isEmpty()) {
 			synchronized(m_lastTimePolled) {
@@ -209,6 +227,10 @@ public class InsteonDevice {
 			for (DeviceFeature f : m_features.values()) {
 				if (!f.isStatusFeature()) {
 					if (f.handleMessage(msg, fromPort)) {
+						// handled a reply to a query,
+						// mark it as processed
+						logger.trace("handled reply of direct: {}", f);
+						setFeatureQueried(null);
 						break;
 					}
 				}
@@ -283,17 +305,52 @@ public class InsteonDevice {
 	 * @throws IOException
 	 */
 	public Msg makeExtendedMessage(byte flags, byte cmd1, byte cmd2)
+				throws FieldException, IOException {
+		return makeExtendedMessage(flags, cmd1, cmd2, new byte[] {});
+	}
+	/**
+	 * Helper method to make extended message
+	 * @param flags
+	 * @param cmd1
+	 * @param cmd2
+	 * @param data array with userdata
+	 * @return extended message
+	 * @throws FieldException
+	 * @throws IOException
+	 */
+	public Msg makeExtendedMessage(byte flags, byte cmd1, byte cmd2, byte[] data)
 			throws FieldException, IOException {
 		Msg m = Msg.s_makeMessage("SendExtendedMessage");
 		m.setAddress("toAddress", getAddress());
 		m.setByte("messageFlags", (byte) (((flags & 0xff) | 0x10) & 0xff));
 		m.setByte("command1", cmd1);
 		m.setByte("command2", cmd2);
-		int checksum = (~(cmd1 + cmd2) + 1) &0xff;
-		m.setByte("userData14", (byte)checksum);
+		m.setUserData(data);
+		m.setCRC();
 		return m;
 	}
-
+	/**
+	 * Helper method to make extended message, but with different CRC calculation
+	 * @param flags
+	 * @param cmd1
+	 * @param cmd2
+	 * @param data array with user data
+	 * @return extended message
+	 * @throws FieldException
+	 * @throws IOException
+	 */
+	public Msg makeExtendedMessageCRC2(byte flags, byte cmd1, byte cmd2, byte[] data)
+			throws FieldException, IOException {
+		Msg m = Msg.s_makeMessage("SendExtendedMessage");
+		m.setAddress("toAddress", getAddress());
+		m.setByte("messageFlags", (byte) (((flags & 0xff) | 0x10) & 0xff));
+		m.setByte("command1", cmd1);
+		m.setByte("command2", cmd2);
+		m.setUserData(data);
+		m.setCRC2();
+		return m;
+	}
+	
 	/**
 	 * Called by the RequestQueueManager when the queue has expired
 	 * @param timeNow
@@ -304,27 +361,44 @@ public class InsteonDevice {
 			if (m_requestQueue.isEmpty()) {
 				return 0L;
 			}
-			if (m_requestQueueState == DeviceFeature.QueryStatus.QUERY_PENDING) {
-				long dt = timeNow - (m_lastQueryTime + QUERY_TIMEOUT);
+			if (m_featureQueried != null) {
+				// A feature has been queried, but
+				// the response has not been digested yet.
+				// Must wait for the query to be processed.
+				long dt = timeNow - (m_lastQueryTime + m_featureQueried.getDirectAckTimeout());
 				if (dt < 0) {
 					logger.debug("still waiting for query reply from {} for another {} usec",
-							m_address, dt);
-					return (m_lastQueryTime + QUERY_TIMEOUT);
+							m_address, -dt);
+					return (timeNow + 2000L); // retry soon
 				} else {
-					logger.warn("gave up waiting for query reply from device {}", m_address);
+					logger.debug("gave up waiting for query reply from device {}", m_address);
 				}
-			} 
-			m_lastQueryTime = timeNow;
-			QEntry qe = m_requestQueue.poll();
-			qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
+			}
+			QEntry qe = m_requestQueue.poll(); // take it off the queue!
+			if (!qe.getMsg().isBroadcast()) {
+				logger.debug("qe taken off direct: {} {}", qe.getFeature(), qe.getMsg());
+				m_lastQueryTime = timeNow;
+				// mark feature as pending
+				qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
+				// also mark this queue as pending so there is no doubt
+				m_featureQueried = qe.getFeature();
+			} else {
+				logger.debug("qe taken off bcast: {} {}", qe.getFeature(), qe.getMsg());
+			}
 			long quietTime = qe.getMsg().getQuietTime();
-			qe.getMsg().setQuietTime(500L); // rate limiting downstream:
+			qe.getMsg().setQuietTime(500L); // rate limiting downstream!
 			try {
 				writeMessage(qe.getMsg());
 			} catch (IOException e) {
 				logger.error("message write failed for msg {}", qe.getMsg(), e);
 			}
-			return (timeNow + quietTime);
+			// figure out when the request queue should be checked next
+			QEntry qnext = m_requestQueue.peek();
+			long nextExpTime = (qnext == null ? 0L : qnext.getExpirationTime());
+			long nextTime = Math.max(timeNow + quietTime, nextExpTime);
+			logger.debug("next request queue processed in {} msec, quiettime = {}",
+						 nextTime - timeNow, quietTime);
+			return (nextTime);
 		}
 	}
 	/**
@@ -343,10 +417,13 @@ public class InsteonDevice {
 	 * @param d time (in milliseconds)to delay before enqueuing message
 	 */
 	public void enqueueDelayedMessage(Msg m, DeviceFeature f, long delay) {
-		synchronized (m_requestQueue) {
-			m_requestQueue.add(new QEntry(f, m));
-		}
 		long now = System.currentTimeMillis();
+		synchronized (m_requestQueue) {
+			m_requestQueue.add(new QEntry(f, m, now + delay));
+		}
+		if (!m.isBroadcast()) {
+			m.setQuietTime(QUIET_TIME_DIRECT_MESSAGE);
+		}
 		logger.trace("enqueing direct message with delay {}", delay);
 		RequestQueueManager.s_instance().addQueue(this, now + delay);
 	}
@@ -362,6 +439,29 @@ public class InsteonDevice {
 				logger.error("device type {} references unknown feature: {}", dt, fe.getValue());
 			} else {
 				addFeature(fe.getKey(), f);
+			}
+		}
+		for (Entry<String, FeatureGroup> fe : dt.getFeatureGroups().entrySet()) {
+			FeatureGroup fg = fe.getValue();
+			DeviceFeature f = DeviceFeature.s_makeDeviceFeature(fg.getType());
+			if (f == null) {
+				logger.error("device type {} references unknown feature group: {}",
+						dt, fg.getType());
+			} else {
+				addFeature(fe.getKey(), f);
+			}
+			connectFeatures(fe.getKey(), f, fg.getFeatures());
+		}
+	}
+
+	private void connectFeatures(String gn, DeviceFeature fg, ArrayList<String> features) {
+		for (String fs : features) {
+			DeviceFeature f = m_features.get(fs);
+			if (f == null) {
+				logger.error("feature group {} references unknown feature {}", gn, fs);
+			} else {
+				logger.debug("{} connected feature: {}", gn, f);
+				fg.addConnectedFeature(f);
 			}
 		}
 	}
@@ -392,19 +492,27 @@ public class InsteonDevice {
 		dev.instantiateFeatures(dt);
 		return dev;
 	}
-	
+	 
+
 	/**
 	 * Queue entry helper class
 	 * @author Bernd Pfrommer
 	 */
-	public static class QEntry {
+	public static class QEntry implements Comparable<QEntry> {
 		private DeviceFeature	m_feature	= null;
 		private Msg 			m_msg		= null;
+		private long			m_expirationTime = 0L;
 		public DeviceFeature getFeature() { return m_feature; }
 		public Msg getMsg() { return m_msg; }
-		QEntry(DeviceFeature f, Msg m) {
-			m_feature	= f;
-			m_msg		= m;
+		public long getExpirationTime() { return m_expirationTime; }
+		QEntry(DeviceFeature f, Msg m, long t) {
+			m_feature			= f;
+			m_msg				= m;
+			m_expirationTime	= t;
+		}
+		@Override
+		public int compareTo(QEntry a) {
+			return (int)(m_expirationTime - a.m_expirationTime);
 		}
 	}
 }

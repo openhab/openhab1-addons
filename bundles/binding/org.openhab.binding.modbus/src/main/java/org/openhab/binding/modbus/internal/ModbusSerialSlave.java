@@ -8,12 +8,7 @@
  */
 package org.openhab.binding.modbus.internal;
 
-import java.util.Enumeration;
-
-import gnu.io.CommPortIdentifier;
-
 import net.wimpi.modbus.Modbus;
-import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.io.ModbusSerialTransaction;
 import net.wimpi.modbus.net.SerialConnection;
 import net.wimpi.modbus.util.SerialParameters;
@@ -33,31 +28,41 @@ public class ModbusSerialSlave extends ModbusSlave {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModbusSerialSlave.class);
 
+	//TODO replace through a none static modbus.utils.SerialParameters instance
 	private static String port = null;
 	private static int baud = 9600;
 	private static int dataBits = 8;
 	private static String parity = "None"; // "none", "even" or "odd"
-	private static int stopBits = 1;
+	private static Double stopBits = 1.0;
 	private static String serialEncoding = Modbus.DEFAULT_SERIAL_ENCODING;
 	
 	public void setPort(String port) {
+		if ((port != null) && (ModbusSerialSlave.port != port)) {
+			logger.debug("overriding modbus port: " + ModbusSerialSlave.port
+					+ " by: " + port
+					+ "but there is currently only one port supported");
+		}
 		ModbusSerialSlave.port = port;
 	}
 
 	public void setBaud(int baud) {
+		//TODO replace by modbus.utils.SerialParameters setter
 		ModbusSerialSlave.baud = baud;
 	}
 
 	public void setDatabits(int dataBits) {
+		//TODO replace by modbus.utils.SerialParameters setter
 		ModbusSerialSlave.dataBits = dataBits;
 	}
 	
 	// Parity string should be "none", "even" or "odd"
 	public void setParity(String parity) {
+		//TODO replace by modbus.utils.SerialParameters setter
 		ModbusSerialSlave.parity = parity;
 	}
 	
-	public void setStopbits(int stopBits) {
+	public void setStopbits(Double stopBits) {
+		//TODO replace by modbus.utils.SerialParameters setter
 		ModbusSerialSlave.stopBits = stopBits;
 	}
 
@@ -72,10 +77,11 @@ public class ModbusSerialSlave extends ModbusSlave {
 	public void setEncoding(String serialEncoding) {
 		serialEncoding = serialEncoding.toLowerCase();
 
+		//TODO replace by modbus.utils.SerialParameters setter
 		if ( isEncodingValid(serialEncoding) ) {
 			ModbusSerialSlave.serialEncoding = serialEncoding;
 		} else {
-			logger.info("Encoding '" + serialEncoding + "' is unknown");
+			logger.info("Encoding '{}' is unknown", serialEncoding);
 		}
 	}
 
@@ -124,7 +130,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 			}
 			((ModbusSerialTransaction)transaction).setSerialConnection(connection);
 		} catch (Exception e) {
-			logger.error("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.error("ModbusSlave: Error connecting to master: {}", e.getMessage());
 			return false;
 		}
 		return true;

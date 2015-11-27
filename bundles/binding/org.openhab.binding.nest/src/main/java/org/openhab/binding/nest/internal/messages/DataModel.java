@@ -11,6 +11,7 @@ package org.openhab.binding.nest.internal.messages;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openhab.binding.nest.internal.messages.Structure.AwayState;
 import org.openhab.binding.nest.internal.messages.Thermostat.HvacMode;
+import org.openhab.binding.nest.internal.messages.Thermostat.HvacState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.AlarmState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.BatteryHealth;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.ColorState;
@@ -72,6 +74,17 @@ public class DataModel extends AbstractMessagePart {
 				}
 			}
 		}, HvacMode.class);
+		convertUtils.register(new Converter() {
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof StringType) {
+					return HvacState.forValue(value.toString());
+				} else {
+					return null;
+				}
+			}
+		}, HvacState.class);
 		convertUtils.register(new Converter() {
 			@SuppressWarnings("rawtypes")
 			@Override
@@ -146,6 +159,8 @@ public class DataModel extends AbstractMessagePart {
 	private Map<String, Structure> structures_by_id;
 	@JsonIgnore
 	private Map<String, Structure> structures_by_name;
+	@JsonIgnore
+	Date last_connection;
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Devices extends AbstractMessagePart implements DataModelElement {
@@ -155,6 +170,9 @@ public class DataModel extends AbstractMessagePart {
 		private Map<String, SmokeCOAlarm> smoke_co_alarms_by_id;
 		@JsonIgnore
 		private Map<String, SmokeCOAlarm> smoke_co_alarms_by_name;
+		private Map<String, Camera> cameras_by_id;
+		@JsonIgnore
+		private Map<String, Camera> cameras_by_name;
 
 		/**
 		 * @return the thermostats_by_id
@@ -209,6 +227,31 @@ public class DataModel extends AbstractMessagePart {
 		}
 
 		/**
+		 * @return the cameras_by_id
+		 */
+		@JsonProperty("cameras")
+		public Map<String, Camera> getCameras_by_id() {
+			return this.cameras_by_id;
+		}
+
+		/**
+		 * @param cameras_by_id
+		 *            the cameras to set (mapped by ID)
+		 */
+		@JsonProperty("cameras")
+		public void setCameras_by_id(Map<String, Camera> cameras_by_id) {
+			this.cameras_by_id = cameras_by_id;
+		}
+
+		/**
+		 * @return the cameras_by_name
+		 */
+		@JsonIgnore
+		public Map<String, Camera> getCameras() {
+			return this.cameras_by_name;
+		}
+
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
@@ -229,6 +272,14 @@ public class DataModel extends AbstractMessagePart {
 					this.smoke_co_alarms_by_name.put(smoke_co_alarm.getName(), smoke_co_alarm);
 				}
 			}
+			// Create our map of Camera names to objects
+			this.cameras_by_name = new HashMap<String, Camera>();
+			if (this.cameras_by_id != null) {
+				for (Camera camera : this.cameras_by_id.values()) {
+					camera.sync(dataModel);
+					this.cameras_by_name.put(camera.getName(), camera);
+				}
+			}
 		}
 
 		@Override
@@ -237,6 +288,7 @@ public class DataModel extends AbstractMessagePart {
 			builder.appendSuper(super.toString());
 			builder.append("thermostats", this.thermostats_by_id);
 			builder.append("smoke_co_alarms", this.smoke_co_alarms_by_id);
+			builder.append("cameras", this.cameras_by_id);
 
 			return builder.toString();
 		}
@@ -327,8 +379,9 @@ public class DataModel extends AbstractMessagePart {
 	 * 
 	 * @return name-based map of thermostats
 	 */
+	@JsonIgnore
 	public Map<String, Thermostat> getThermostats() {
-		return devices.getThermostats();
+		return (devices == null) ? null : devices.getThermostats();
 	}
 
 	/**
@@ -336,8 +389,19 @@ public class DataModel extends AbstractMessagePart {
 	 * 
 	 * @return name-based map of smoke_co_alarms
 	 */
+	@JsonIgnore
 	public Map<String, SmokeCOAlarm> getSmoke_co_alarms() {
-		return devices.getSmoke_co_alarms();
+		return (devices == null) ? null : devices.getSmoke_co_alarms();
+	}
+
+	/**
+	 * Convenience method so property specs don't have to include "devices." in each one.
+	 * 
+	 * @return name-based map of cameras
+	 */
+	@JsonIgnore
+	public Map<String, Camera> getCameras() {
+		return (devices == null) ? null : devices.getCameras();
 	}
 
 	/**
@@ -357,6 +421,7 @@ public class DataModel extends AbstractMessagePart {
 		this.structures_by_id = structures_by_id;
 	}
 
+	@JsonIgnore
 	public Map<String, Structure> getStructures() {
 		return this.structures_by_name;
 	}
@@ -367,6 +432,23 @@ public class DataModel extends AbstractMessagePart {
 	 */
 	public void setStructures_by_name(final Map<String, Structure> structures_by_name) {
 		this.structures_by_name = structures_by_name;
+	}
+
+	/**
+	 * @param last_connection
+	 *            the last time we obtained the data model from the Nest API
+	 */
+	@JsonIgnore
+	public void setLast_connection(final Date last_connection) {
+		this.last_connection = last_connection;
+	}
+
+	/**
+	 * @return the last_connection
+	 */
+	@JsonIgnore
+	public Date getLast_connection() {
+		return this.last_connection;
 	}
 
 	/**
@@ -387,9 +469,9 @@ public class DataModel extends AbstractMessagePart {
 	}
 
 	/**
-	 * This method returns a new data model containing only the affected Structure, Thermostat or SmokeCOAlarm, and only
-	 * the property of the bean that was changed. This new DataModel object can be sent to the Nest API in order to
-	 * perform an update via HTTP PUT.
+	 * This method returns a new data model containing only the affected Structure, Thermostat, SmokeCOAlarm or Camera,
+	 * and only the property of the bean that was changed. This new DataModel object can be sent to the Nest API in
+	 * order to perform an update via HTTP PUT.
 	 * 
 	 * @param property
 	 *            the property to change
@@ -404,13 +486,14 @@ public class DataModel extends AbstractMessagePart {
 			InvocationTargetException, NoSuchMethodException {
 
 		/**
-		 * Find the Structure, Thermostat or SmokeCOAlarm that the given property is trying to update.
+		 * Find the Structure, Thermostat, SmokeCOAlarm or Camera that the given property is trying to update.
 		 */
 		Object oldObject = null;
 		String beanProperty = property;
 		do {
 			Object obj = this.getProperty(beanProperty);
-			if (obj instanceof Structure || obj instanceof Thermostat || obj instanceof SmokeCOAlarm) {
+			if (obj instanceof Structure || obj instanceof Thermostat || obj instanceof SmokeCOAlarm
+					|| obj instanceof Camera) {
 				oldObject = obj;
 				break;
 			}
@@ -460,6 +543,17 @@ public class DataModel extends AbstractMessagePart {
 				updateDataModel.devices.smoke_co_alarms_by_id.put(deviceId, smokeCOAlarm);
 				updateDataModel.devices.smoke_co_alarms_by_name = new HashMap<String, SmokeCOAlarm>();
 				updateDataModel.devices.smoke_co_alarms_by_name.put(deviceName, smokeCOAlarm);
+			} else if (oldObject instanceof Camera) {
+				String deviceId = ((Camera) oldObject).getDevice_id();
+				String deviceName = ((Camera) oldObject).getName();
+
+				updateDataModel = new DataModel();
+				updateDataModel.devices = new Devices();
+				Camera camera = new Camera(null);
+				updateDataModel.devices.cameras_by_id = new HashMap<String, Camera>();
+				updateDataModel.devices.cameras_by_id.put(deviceId, camera);
+				updateDataModel.devices.cameras_by_name = new HashMap<String, Camera>();
+				updateDataModel.devices.cameras_by_name.put(deviceName, camera);
 			}
 		}
 
@@ -476,6 +570,7 @@ public class DataModel extends AbstractMessagePart {
 			if (updateDataModel.devices != null) {
 				updateDataModel.devices.smoke_co_alarms_by_name = null;
 				updateDataModel.devices.thermostats_by_name = null;
+				updateDataModel.devices.cameras_by_name = null;
 			}
 		}
 

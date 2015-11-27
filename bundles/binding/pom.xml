@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -72,6 +72,7 @@
     <module>org.openhab.binding.mqttitude</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
+    <module>org.openhab.binding.systeminfo.test</module>
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.pilight</module>
     <module>org.openhab.binding.pilight.test</module>
@@ -86,6 +87,7 @@
     <module>org.openhab.binding.em</module>
     <module>org.openhab.binding.s300th</module>
     <module>org.openhab.binding.heatmiser</module>
+    <module>org.openhab.binding.hms</module>
     <module>org.openhab.binding.swegonventilation</module>
     <module>org.openhab.binding.maxcube</module>
     <module>org.openhab.binding.maxcube.test</module>
@@ -136,13 +138,39 @@
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
     <module>org.openhab.binding.bticino</module>
+    <module>org.openhab.binding.caldav-command</module>
+    <module>org.openhab.binding.caldav-personal</module>
+    <module>org.openhab.binding.ebus</module>
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
     <module>org.openhab.binding.ecobee</module>
+    <module>org.openhab.binding.autelis</module>
     <module>org.openhab.binding.nest</module>
     <module>org.openhab.binding.satel</module>
+<<<<<<< HEAD
     <module>org.openhab.binding.akm868</module>
   </modules>
 
 </project>
+=======
+    <module>org.openhab.binding.harmonyhub</module>
+    <module>org.openhab.binding.plex</module>
+    <module>org.openhab.binding.mochadx10</module>
+    <module>org.openhab.binding.denon</module>
+    <module>org.openhab.binding.mailcontrol</module>
+    <module>org.openhab.binding.primare</module>
+    <module>org.openhab.binding.frontiersiliconradio</module>
+    <module>org.openhab.binding.panasonictv</module>
+    <module>org.openhab.binding.enphaseenergy</module>
+    <module>org.openhab.binding.lightwaverf</module>
+	<module>org.openhab.binding.souliss</module>
+    <module>org.openhab.binding.sagercaster</module>
+    <module>org.openhab.binding.ipx800</module>
+    <module>org.openhab.binding.tacmi</module>
+    <module>org.openhab.binding.rwesmarthome</module>
+    <module>org.openhab.binding.lcn</module>
+    <module>org.openhab.binding.sapp</module>
+  </modules>
+</project>
+>>>>>>> 7e84654820d9fffacaed3bb7f1b3a9585b00f43a

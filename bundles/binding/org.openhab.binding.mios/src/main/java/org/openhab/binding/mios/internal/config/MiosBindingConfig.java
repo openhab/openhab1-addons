@@ -72,7 +72,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 public abstract class MiosBindingConfig implements BindingConfig {
-	private static Pattern TRANSFORM_PATTERN = Pattern.compile("(?<transform>.+)[(]{1}?(?<param>.*)[)]{1}");
+	private static Pattern TRANSFORM_PATTERN = Pattern.compile("(?<transform>[a-zA-Z]+)[(]{1}?(?<param>.*)[)]{1}");
 
 	protected static final Logger logger = LoggerFactory.getLogger(MiosBindingConfig.class);
 
@@ -576,11 +576,11 @@ public abstract class MiosBindingConfig implements BindingConfig {
 		Class<? extends Item> t = getItemType();
 
 		if (!((t == StringItem.class) || (t == SwitchItem.class) || (t == DimmerItem.class) || (t == NumberItem.class)
-				|| (t == ContactItem.class) || (t == DateTimeItem.class))) {
+				|| (t == ContactItem.class) || (t == DateTimeItem.class) || (t == RollershutterItem.class))) {
 
 			throw new BindingConfigParseException(
 					String.format(
-							"Item %s is of type %s, but only String, Switch, Dimmer, Number, Contact and DataTime Items are allowed.",
+							"Item %s is of type %s, but only String, Switch, Dimmer, Number, Contact, DataTime, and Rollershutter Items are allowed.",
 							item.getName(), item.getClass().getSimpleName()));
 
 		}

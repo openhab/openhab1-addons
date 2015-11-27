@@ -1,14 +1,13 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-@GenModel(literalsInterface="true", loadInitialization="false")
+@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false")
 package org.openhab.binding.tinkerforge.internal.model
-
 
 import com.tinkerforge.Device
 import com.tinkerforge.IPConnection
@@ -31,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import org.openhab.binding.tinkerforge.internal.types.PercentValue
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue
+import org.openhab.binding.tinkerforge.internal.types.HSBValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
@@ -49,6 +49,9 @@ import com.tinkerforge.BrickletLEDStrip
 import com.tinkerforge.BrickletJoystick
 import com.tinkerforge.BrickletLinearPoti
 import com.tinkerforge.BrickletDualButton
+import com.tinkerforge.BrickletPTC
+import com.tinkerforge.BrickletIndustrialDual020mA
+import com.tinkerforge.BrickletSolidStateRelay
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -73,6 +76,7 @@ type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
 type MTinkerBrickletIndustrialDigitalOut4 wraps BrickletIndustrialDigitalOut4
 type SwitchState wraps OnOffValue
 type DigitalValue wraps HighLowValue
+type HSBValue wraps HSBValue
 type TinkerBrickletIO16 wraps BrickletIO16
 type MTinkerBrickServo wraps BrickServo
 type MTinkerforgeValue wraps TinkerforgeValue
@@ -99,6 +103,9 @@ type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type BrickletJoystick wraps BrickletJoystick
 type TinkerBrickletLinearPoti wraps BrickletLinearPoti
 type TinkerBrickletDualButton wraps BrickletDualButton
+type TinkerBrickletPTC wraps BrickletPTC
+type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
+type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -122,9 +129,11 @@ class MBrickd {
 	MIPConnection ipConnection
 	String host = "localhost"
 	int port = "4223"
-	boolean isConnected = "false"
+	String authkey
+	DigitalValue isConnected
 	boolean autoReconnect = "true"
 	boolean reconnected = "false"
+	MDecimalValue connectedCounter = "0"
 	int timeout = "2500"
 	
 	op void connect() 
@@ -174,20 +183,16 @@ interface MSubDeviceHolder<S extends MSubDevice<?>> {
 interface MActor{
 }
 interface SwitchSensor {
+	SwitchState switchState
     op void fetchSwitchState()
 }
 
 interface MSwitchActor extends SwitchSensor{
-	SwitchState switchState
 	op void turnSwitch(SwitchState state)
 }
 
 interface ProgrammableSwitchActor extends SwitchSensor{
-    SwitchState switchState
     op void turnSwitch(SwitchState state, DeviceOptions opts)
-}
-
-interface MOutSwitchActor extends MSwitchActor{
 }
 
 interface MInSwitchActor extends MSwitchActor{
@@ -235,7 +240,15 @@ interface NumberActor {
 }
 
 interface ColorActor {
-    op void setColor(HSBType color, DeviceOptions opts)
+	HSBValue color
+}
+
+interface ProgrammableColorActor extends ColorActor {
+    op void setSelectedColor(HSBType color, DeviceOptions opts)
+}
+
+interface SimpleColorActor extends ColorActor {
+    op void setSelectedColor(HSBType color)
 }
 
 interface MoveActor {
@@ -259,27 +272,23 @@ interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C
 
 class MBrickletDualButton extends MDevice<TinkerBrickletDualButton>,
 	MSubDeviceHolder<DualButtonDevice>{
-
+	readonly String deviceType = "bricklet_dualbutton"
 }
 
 interface DualButtonDevice extends MSubDevice<MBrickletDualButton>{
 
 }
 
-class DualButtonLeftButton extends DualButtonDevice, MSensor<DigitalValue> {
-	
+class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
+	MTFConfigConsumer<ButtonConfiguration> {
+	String deviceType = "dualbutton_button"
+	DualButtonDevicePosition position
 }
 
-class DualButtonRightButton extends DualButtonDevice, MSensor<DigitalValue> {
-	
-}
-
-class DualButtonLeftLed extends DualButtonDevice, DigitalActor {
-	
-}
-
-class DualButtonRightLed extends DualButtonDevice, DigitalActor {
-	
+class DualButtonLed extends DualButtonDevice, DigitalActor,
+	MTFConfigConsumer<DualButtonLEDConfiguration> {
+	String deviceType = "dualbutton_led"
+	DualButtonDevicePosition position
 }
 
 class MBrickletLinearPoti extends MDevice<TinkerBrickletLinearPoti>, CallbackListener,
@@ -305,7 +314,8 @@ class JoystickYPosition extends JoystickDevice, MSensor<MDecimalValue> {
 		readonly String deviceType = "joystick_yposition"
 }
 
-class JoystickButton extends JoystickDevice, MSensor<DigitalValue> {
+class JoystickButton extends JoystickDevice, MSensor<SwitchState>,
+	MTFConfigConsumer<ButtonConfiguration> {
 		readonly String deviceType = "joystick_button"
 }
 
@@ -356,11 +366,12 @@ class MDualRelayBricklet extends MDevice<MTinkerBrickletDualRelay>,
 class MIndustrialQuadRelayBricklet extends 
 			MDevice<MTinkerBrickletIndustrialQuadRelay>,
 			MSubDeviceHolder<MIndustrialQuadRelay>{
+	readonly String deviceType = "bricklet_quad_relay"
 }
 
 class MIndustrialQuadRelay extends MInSwitchActor, 
 				MSubDevice<MIndustrialQuadRelayBricklet>{
-	readonly String deviceType = "industrial_quad_relay"
+	readonly String deviceType = "quad_relay"
 }
 
 class MBrickletIndustrialDigitalIn4 extends 
@@ -372,23 +383,33 @@ class MBrickletIndustrialDigitalIn4 extends
 
 class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, 
 		MSensor<DigitalValue> {
+	readonly String deviceType = "digital_4in"
 }
 
 class MBrickletIndustrialDigitalOut4 extends MDevice<MTinkerBrickletIndustrialDigitalOut4>,
         MSubDeviceHolder<DigitalActorDigitalOut4>{
+	readonly String deviceType = "bricklet_industrial_digital_4out"
 }
 
 class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustrialDigitalOut4> {
     int pin
+    readonly String deviceType = "digital_4out"
 }
+
 
 class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegmentDisplay4x7>{
-    
+    readonly String deviceType = "bricklet_segmentdisplay4x7"
 }
 
+class MBrickletLEDStrip extends ProgrammableColorActor, MDevice<TinkerBrickletLEDStrip>,
+    MTFConfigConsumer<LEDStripConfiguration>, MSubDeviceHolder<LEDGroup> {
+	readonly String deviceType = "bricklet_ledstrip"
+	String colorMapping = "rgb"
+}
 
-class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
-    
+class LEDGroup extends MSubDevice<MBrickletLEDStrip>, SimpleColorActor, MSwitchActor,
+	 MTFConfigConsumer<LEDGroupConfiguration>{
+	readonly String deviceType = "ledgroup"
 }
 
 class DigitalActorIO16 extends DigitalActor, IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
@@ -529,6 +550,50 @@ class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>,
 	op void init(){}
 }
 
+class MBrickletSolidStateRelay extends MDevice<TinkerBrickletSolidStateRelay>,
+	 MSwitchActor {
+	readonly String deviceType = "bricklet_solidstaterelay"
+	op void init(){}
+}
+
+class MBrickletIndustrialDual020mA extends MDevice<TinkerBrickletIndustrialDual020mA>,
+	MSubDeviceHolder<Dual020mADevice>, MTFConfigConsumer<TFIndustrialDual020mAConfiguration> {
+	readonly String deviceType = "bricklet_industrialdual020ma"
+	op void init(){}
+}
+
+class Dual020mADevice extends MSubDevice<MBrickletIndustrialDual020mA>, 
+	MSensor<MDecimalValue>, CallbackListener, MTFConfigConsumer<TFBaseConfiguration> {
+	readonly String deviceType = "industrial020ma_sensor"
+	BigDecimal threshold = "1"
+	short sensorNum
+}
+
+class MBrickletPTC extends MDevice<TinkerBrickletPTC>,
+	MTFConfigConsumer<TFPTCBrickletConfiguration>, MSubDeviceHolder<PTCDevice> {
+	readonly String deviceType = "bricklet_ptc"
+	op void init(){}
+}
+
+interface PTCDevice extends MSubDevice<MBrickletPTC> {
+}
+
+class PTCTemperature extends PTCDevice, MSensor<MDecimalValue>,
+	MTFConfigConsumer<TFBaseConfiguration>, CallbackListener{
+	readonly String deviceType = "ptc_temperature"
+	BigDecimal threshold = "2"
+}
+
+class PTCResistance extends PTCDevice, MSensor<MDecimalValue>,
+	MTFConfigConsumer<TFBaseConfiguration>, CallbackListener{
+	readonly String deviceType = "ptc_resistance"
+	BigDecimal threshold = "2"
+}
+
+class PTCConnected extends PTCDevice, MSensor<DigitalValue> {
+	readonly String deviceType = "ptc_connected"
+}
+
 class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, 
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
@@ -655,7 +720,7 @@ class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 	readonly String deviceType = "backlight"
 }
 
-class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice, CallbackListener{
+class MLCD20x4Button extends MSensor<SwitchState>, MLCDSubDevice, MTFConfigConsumer<ButtonConfiguration>{
 	readonly String deviceType = "lcd_button"
 	short buttonNum
 }
@@ -694,6 +759,15 @@ class OHConfig {
 }
 
 class TFNullConfiguration extends TFConfig {
+}
+
+class TFPTCBrickletConfiguration extends TFConfig {
+	Short noiseRejectionFilter
+	Short wireMode
+}
+
+class TFIndustrialDual020mAConfiguration extends TFConfig {
+	Short sampleRate
 }
 
 class TFBaseConfiguration extends TFConfig {
@@ -790,12 +864,36 @@ class DimmableConfiguration extends TFConfig {
     BigDecimal maxValue
 }
 
+class ButtonConfiguration extends TFConfig {
+	boolean tactile  = "false"
+}
+
+class DualButtonLEDConfiguration extends TFConfig {
+	boolean autotoggle = "false"
+}
+
+class LEDStripConfiguration extends TFConfig {
+	String chiptype
+	Integer frameduration
+	Long clockfrequency
+	String colorMapping
+	String subDevices
+}
+
+class LEDGroupConfiguration extends TFConfig {
+	String leds
+}
+
 enum NoSubIds {
 	
 }
 
 enum IndustrialDigitalInSubIDs {
 	IN0, IN1, IN2,IN3
+}
+
+enum IndustrialDigitalOutSubIDs {
+	OUT0, OUT1, OUT2, OUT3
 }
 
 enum IndustrialQuadRelayIDs {
@@ -870,4 +968,28 @@ enum DCDriveMode {
 enum ConfigOptsServo {
     VELOCITY, ACCELERATION, PULSEWIDTHMIN, PULSEWIDTHMAX,
     PERIOD, POSITION, LEFTPOSITION, RIGHTPOSITION
+}
+
+enum DualButtonDevicePosition {
+	LEFT, RIGHT
+}
+
+enum DualButtonLedSubIds {
+	DUALBUTTON_LEFTLED, DUALBUTTON_RIGHTLED
+}
+
+enum DualButtonButtonSubIds {
+	DUALBUTTON_LEFTBUTTON, DUALBUTTON_RIGHTBUTTON
+}
+
+enum JoystickSubIds {
+	joystick_xposition, joystick_yposition, joystick_button
+}
+
+enum PTCSubIds {
+	ptc_temperature, ptc_resistance, ptc_connected
+}
+
+enum IndustrialDual020mASubIds {
+	sensor0, sensor1
 }

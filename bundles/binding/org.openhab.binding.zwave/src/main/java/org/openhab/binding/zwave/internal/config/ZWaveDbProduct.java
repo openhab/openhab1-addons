@@ -42,12 +42,12 @@ public class ZWaveDbProduct {
 		String Filename;
 	}
 
-	public String getConfigFile(Double version) {
+	public String getConfigFile(String version) {
 		if(ConfigFile == null) {
 			return null;
 		}
 
-		Version vIn = new Version(Double.toString(version));
+		Version vIn = new Version(version);
 		String filename = null;
 		// Check for a version'ed file
 		// There are multiple permutations of the file that we need to account for -:

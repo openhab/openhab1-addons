@@ -23,7 +23,21 @@ public enum DSCAlarmItemType{
 	PANEL_MESSAGE("panel_message"),
 	PANEL_COMMAND("panel_command"),
 	PANEL_SYSTEM_ERROR("panel_system_error"),
-	PANEL_TIME_DATE("panel_time_date"),
+
+	PANEL_TROUBLE_MESSAGE("panel_trouble_message"),
+	PANEL_TROUBLE_LED("panel_trouble_led"),
+	PANEL_SERVICE_REQUIRED("panel_service_required"),
+	PANEL_AC_TROUBLE("panel_ac_trouble"),
+	PANEL_TELEPHONE_TROUBLE("panel_telephone_trouble"),
+	PANEL_FTC_TROUBLE("panel_ftc_trouble"),
+	PANEL_ZONE_FAULT("panel_zone_fault"),
+	PANEL_ZONE_TAMPER("panel_zone_tamper"),
+	PANEL_ZONE_LOW_BATTERY("panel_zone_low_battery"),
+	PANEL_TIME_LOSS("panel_time_loss"),
+
+	PANEL_TIME("panel_time"),
+	PANEL_TIME_STAMP("panel_time_stamp"),
+	PANEL_TIME_BROADCAST("panel_time_broadcast"),
 
 	PANEL_FIRE_KEY_ALARM("panel_fire_key_alarm"),
 	PANEL_PANIC_KEY_ALARM("panel_panic_key_alarm"),
@@ -37,6 +51,7 @@ public enum DSCAlarmItemType{
 	PARTITION_ENTRY_DELAY("partition_entry_delay"),
 	PARTITION_EXIT_DELAY("partition_exit_delay"),
 	PARTITION_IN_ALARM("partition_in_alarm"),
+	PARTITION_OPENING_CLOSING_MODE("partition_opening_closing_mode"),
 	
 	ZONE_GENERAL_STATUS("zone_general_status"),
 	ZONE_ALARM_STATUS("zone_alarm_status"),
@@ -48,6 +63,7 @@ public enum DSCAlarmItemType{
 	ZONE_TAMPER("zone_tamper"),
 	ZONE_FAULT("zone_fault"),
 	ZONE_TRIPPED("zone_tripped"),
+	ZONE_STATE("zone_state"),
 	
 	KEYPAD_READY_LED("keypad_ready_led"),
 	KEYPAD_ARMED_LED("keypad_armed_led"),

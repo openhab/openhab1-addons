@@ -179,7 +179,8 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 		POWER_MANAGEMENT(8, "Power Management"),
 		SYSTEM(9, "System"),
 		EMERGENCY(10, "Emergency"),
-		COUNT(11, "Count");
+		COUNT(11, "Count"),
+		UNKNOWN12(12, "Unknown12");
 
 		/**
 		 * A mapping between the integer code and its corresponding Alarm type

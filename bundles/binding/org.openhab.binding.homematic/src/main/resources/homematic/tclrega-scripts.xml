@@ -71,6 +71,10 @@ Write('</valid></result>');
 string dev_id;
 string channel_id;
 string dp_id;
+string extraDatapoints = "BOOT\tWORKING\tDIRECTION\tINSTALL_TEST\tPRESS_LONG_RELEASE\t";
+extraDatapoints = extraDatapoints # "PRESS_CONT\tHUMIDITYF\tLAST_TICKS\tUNITSPTURN\t";
+string extraDatapointName;
+
 Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
 Write("<devices>\n");
 foreach (dev_id, root.Devices().EnumUsedIDs()) {
@@ -78,6 +82,10 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
   string dev_interface= dev_obj.Interface();
   string interface_name = dom.GetObject(dev_interface).Name();
   boolean is_ready = dev_obj.ReadyConfig();
+  boolean isChannelFourPartyDevice = (dev_obj.HssType() == "HM-CC-RT-DN") || (dev_obj.HssType() == "HM-CC-RT-DN-BoM");
+  boolean isChannelTwoPartyDevice = (dev_obj.HssType() == "HM-TC-IT-WM-W-EU");
+  boolean isSmokeDevice = (dev_obj.HssType() == "HM-Sec-SD");
+
   if(is_ready && 
      (dev_obj.HssType() != "HMW-RCV-50")) {
 
@@ -85,104 +93,44 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
     Write(" address='"); WriteXML(dev_obj.Address());
     Write("' interface='"); WriteXML(interface_name);
     Write("' type='"); WriteXML(dev_obj.HssType());
-	Write("'>\n");
+    Write("'>\n");
     foreach(channel_id, dev_obj.Channels()) {
       object channel_obj = dom.GetObject(channel_id);
+      string channel_number = channel_obj.Address().StrValueByIndex(":",1).ToString();
+      boolean isChannelFour = channel_number == "4";
+      boolean isChannelTwo = channel_number == "2";
+      boolean isChannelOne = channel_number == "1";
 
       Write("    <channel");
-      Write(" number='"); WriteXML(channel_obj.Address().StrValueByIndex(":",1));
+      Write(" number='"); WriteXML(channel_number);
       Write("'>\n");
       
-      object boot_dp = channel_obj.DPByHssDP("BOOT");
-      if (boot_dp) {
-        Write("      <datapoint");
-        Write(" name='BOOT'");
-        Write(" value='false'");
- 	    Write(" valueType='" # boot_dp.ValueType());
-        Write("' writeable='false'");
-        Write(" />\n");
+      foreach (extraDatapointName, extraDatapoints) {
+        object edp = channel_obj.DPByHssDP(extraDatapointName);
+        if (edp) {
+          Write("      <datapoint");
+          Write(" name='" # extraDatapointName);
+          Write("' value='"); 
+          if (edp.ValueType() == 2) {
+            Write("false");
+          }
+          else {
+            WriteXML(edp.Value());
+          }
+          Write("' valueType='" # edp.ValueType());
+          if (edp.ValueType() == 16) {
+            Write("' subType='"); WriteXML(edp.ValueSubType());
+            Write("' valueList='" # edp.ValueList());
+          }
+          if ((edp.ValueType() != 2) && (edp.ValueType() != 20)) {
+            Write("' min='" # edp.ValueMin());
+            Write("' max='" # edp.ValueMax());
+          }
+          Write("' writeable='false'");
+          Write(" />\n");
+        }
       }
-      object work_dp = channel_obj.DPByHssDP("WORKING");
-      if (work_dp) {
-        Write("      <datapoint");
-        Write(" name='WORKING'");
-        Write(" value='false'");
- 	    Write(" valueType='" # work_dp.ValueType());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object dir_dp = channel_obj.DPByHssDP("DIRECTION");
-      if (dir_dp) {
-        Write("      <datapoint");
-        Write(" name='DIRECTION'")
-        Write(" value='0'");
- 	    Write(" valueType='" # dir_dp.ValueType());
-        Write("' subType='"); WriteXML(dir_dp.ValueSubType());
-        Write("' valueList='" # dir_dp.ValueList());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object install_test_dp = channel_obj.DPByHssDP("INSTALL_TEST");
-      if (install_test_dp) {
-        Write("      <datapoint");
-        Write(" name='INSTALL_TEST'")
-        Write(" value='false'");
- 	    Write(" valueType='" # install_test_dp.ValueType());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object press_long_release_dp = channel_obj.DPByHssDP("PRESS_LONG_RELEASE");
-      if (press_long_release_dp) {
-        Write("      <datapoint");
-        Write(" name='PRESS_LONG_RELEASE'")
-        Write(" value='false'");
- 	    Write(" valueType='" # press_long_release_dp.ValueType());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object press_cont = channel_obj.DPByHssDP("PRESS_CONT");
-      if (press_cont) {
-        Write("      <datapoint");
-        Write(" name='PRESS_CONT'")
-        Write(" value='false'");
-        Write(" valueType='" # press_cont.ValueType());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object humidityF = channel_obj.DPByHssDP("HUMIDITYF");
-      if (humidityF) {
-        Write("      <datapoint");
-        Write(" name='HUMIDITYF'")
-        Write(" value='"); WriteXML(humidityF.Value());
-        Write("' valueType='" # humidityF.ValueType());
-        Write("' min='" # humidityF.ValueMin());
-        Write("' max='" # humidityF.ValueMax());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object lastTicks = channel_obj.DPByHssDP("LAST_TICKS");
-      if (lastTicks) {
-        Write("      <datapoint");
-        Write(" name='LAST_TICKS'")
-        Write(" value='"); WriteXML(lastTicks.Value());
-        Write("' valueType='" # lastTicks.ValueType());
-        Write("' min='" # lastTicks.ValueMin());
-        Write("' max='" # lastTicks.ValueMax());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-      object unitSpturn = channel_obj.DPByHssDP("UNITSPTURN");
-      if (unitSpturn) {
-        Write("      <datapoint");
-        Write(" name='UNITSPTURN'")
-        Write(" value='"); WriteXML(unitSpturn.Value());
-        Write("' valueType='" # unitSpturn.ValueType());
-        Write("' min='" # unitSpturn.ValueMin());
-        Write("' max='" # unitSpturn.ValueMax());
-        Write("' writeable='false'");
-        Write(" />\n");
-      }
-
+      
       foreach(dp_id, channel_obj.DPs().EnumUsedIDs()) {
         object dp_obj = dom.GetObject(dp_id);
         if(dp_obj) {
@@ -213,6 +161,23 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
           }
         }
       }
+      
+      if ((isChannelFour && isChannelFourPartyDevice) || (isChannelTwo && isChannelTwoPartyDevice)) {
+        Write("      <datapoint name='PARTY_TEMPERATURE' value='5.0' valueType='4' min='5.0' max='30.0' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_TIME' value='0' valueType='8' min='0' max='1410' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_DAY' value='1' valueType='8' min='1' max='31' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_MONTH' value='1' valueType='8' min='1' max='12' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_YEAR' value='12' valueType='8' min='0' max='99' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_TIME' value='0' valueType='8' min='0' max='1410' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_DAY' value='1' valueType='8' min='1' max='31' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_MONTH' value='1' valueType='8' min='1' max='12' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_YEAR' value='12' valueType='8' min='0' max='99' writeable='true' />\n");
+      }
+      
+      if (isChannelOne && isSmokeDevice) {
+        Write("      <datapoint name='STATE' value='false' valueType='2' writeable='false' />\n");
+      }
+
       Write("    </channel>\n");
     }
     Write("  </device>\n");

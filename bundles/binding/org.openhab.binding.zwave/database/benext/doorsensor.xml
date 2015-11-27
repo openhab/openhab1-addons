@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>doorSensor</Model>
+	<Label lang="en">BeNext Door Sensor</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>		
+		<Class>
+			<id>0x30</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x71</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x84</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>256</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset to factory settings</Label>
+			<Help lang="en">Set all configuration values to default values (factory settings).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">External contact behavior</Label>
+			<Help lang="en">Configure what the external contact sends when triggered.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Send alarm</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Send basic frame</Label>
+			</Item>			
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Operating mode.</Label>
+			<Help lang="en">The main operating mode for the device.</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Normal</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Mode 1 report</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Always-on</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Minimum>-32768</Minimum>
+            <Maximum>32767</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Temperature offset</Label>
+			<Help lang="en">An offset for the temperature.</Help>
+		</Parameter>		
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Send frame to every node in this group (internal contact)</Label>
+			<Help lang="en">If the internal door contact (magnet) is triggered it sends a Z-Wave frame to every node in this group.</Help>
+			<SetToController>true</SetToController>			
+		</Group>		
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Send frame to every node in this group (external contact)</Label>
+			<Help lang="en">If the external door contact is triggered it sends a Z-Wave frame to every node in this group if it is.</Help>
+		</Group>		
+	</Associations>
+</Product>

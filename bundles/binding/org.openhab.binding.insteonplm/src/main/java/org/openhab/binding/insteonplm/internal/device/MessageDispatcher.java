@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.insteonplm.internal.device;
 
+import java.util.HashMap;
+
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
@@ -24,6 +26,8 @@ public abstract class MessageDispatcher {
 	private static final Logger logger = LoggerFactory.getLogger(MessageDispatcher.class);
 
 	DeviceFeature m_feature = null;
+	HashMap<String, String> m_parameters = new HashMap<String, String>();
+
 	/**
 	 * Constructor
 	 * @param f DeviceFeature to which this MessageDispatcher belongs
@@ -31,6 +35,8 @@ public abstract class MessageDispatcher {
 	MessageDispatcher(DeviceFeature f) {
 		m_feature = f;
 	}
+	
+	public void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
 	/**
 	 * Generic handling of incoming ALL LINK messages
 	 * @param msg the message received
@@ -59,15 +65,28 @@ public abstract class MessageDispatcher {
 			int group = (msg.isCleanup() ? msg.getByte("command2") : a.getLowByte()) & 0xff;
 			MessageHandler h = m_feature.getMsgHandlers().get(cmd1 & 0xFF);
 			if (h == null) h = m_feature.getDefaultMsgHandler();
-			logger.debug("{}:{}->{} cmd1:{} group {}/{}:{}", m_feature.getDevice().getAddress(), m_feature.getName(),
-						h.getClass().getSimpleName(), Utils.getHexByte(cmd1), group, h.getGroup(), msg);
-			if (h.getGroup() == group) {
-				h.handleMessage(group, cmd1, msg, m_feature, port);
+			logger.debug("all link message: {}", msg);
+			if (!h.isDuplicate(msg)) {
+				logger.debug("all link message is no duplicate: {}/{}", h.matchesGroup(group), h.matches(msg));
+				if (h.matchesGroup(group) && h.matches(msg)) {
+					logger.debug("{}:{}->{} cmd1:{} group {}/{}:{}", m_feature.getDevice().getAddress(), m_feature.getName(),
+							h.getClass().getSimpleName(), Utils.getHexByte(cmd1), group, h.getGroup(), msg);
+					h.handleMessage(group, cmd1, msg, m_feature, port);
+				}
 			}
 		} catch (FieldException e) {
 			logger.error("couldn't parse ALL_LINK message: {}", msg, e);
 		}
 		return true;
+	}
+	/**
+	 * Checks if this message is in response to previous query by this feature
+	 * @param msg
+	 * @return true;
+	 */
+	boolean isMyDirectAck(Msg msg) {
+		return msg.isAckOfDirect() && (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING)
+				&& m_feature.getDevice().getFeatureQueried() == m_feature;
 	}
 	/**
 	 * Dispatches message
@@ -84,7 +103,7 @@ public abstract class MessageDispatcher {
 	//
 	//
 	
-	private static class DefaultDispatcher extends MessageDispatcher {
+	public static class DefaultDispatcher extends MessageDispatcher {
 		DefaultDispatcher(DeviceFeature f) { super(f); }
 		@Override
 		public boolean dispatch(Msg msg, String port) {
@@ -99,6 +118,11 @@ public abstract class MessageDispatcher {
 				logger.debug("no command found, dropping msg {}", msg);
 				return false;
 			}
+			if (msg.isAllLinkCleanupAckOrNack()) {
+				// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+				// in response to a direct status query message
+				return false; 
+			}
 			if (handleAllLinkMessage(msg, port)) {
 				return false;
 			}
@@ -106,14 +130,15 @@ public abstract class MessageDispatcher {
 				// in the case of direct ack, the cmd1 code is useless.
 				// you have to know what message was sent before to
 				// interpret the reply message
-				if (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING
-						&& cmd == 0x50) {
-					// must be a reply to our message, tweak the cmd1 code!
-					logger.trace("changing key to 0x19 for msg {}", msg);
-					key = 0x19; // we have installed a handler under that command number
+				if (isMyDirectAck(msg)) {
+					logger.debug("{}:{} DIRECT_ACK: q:{} cmd: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+							m_feature.getQueryStatus(), cmd);
 					isConsumed = true;
-				} else {
-					key = -1;
+					if (cmd == 0x50) {
+						// must be a reply to our message, tweak the cmd1 code!
+						logger.debug("changing key to 0x19 for msg {}", msg);
+						key = 0x19; // we have installed a handler under that command number
+					}
 				}
 			} else {
 				key = (cmd1 & 0xFF);
@@ -121,18 +146,111 @@ public abstract class MessageDispatcher {
 			if (key != -1 || m_feature.isStatusFeature()) {
 				MessageHandler h = m_feature.getMsgHandlers().get(key);
 				if (h == null) h = m_feature.getDefaultMsgHandler();
-				logger.trace("{}:{}->{} DIRECT: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
-						h.getClass().getSimpleName(), msg);
-				h.handleMessage(-1, cmd1, msg, m_feature, port);
+				if (h.matches(msg)) {
+					if (!isConsumed) {
+						logger.debug("{}:{}->{} DIRECT", m_feature.getDevice().getAddress(), m_feature.getName(),
+								h.getClass().getSimpleName());
+					}
+					h.handleMessage(-1, cmd1, msg, m_feature, port);
+				}
 			}
 			if (isConsumed) {
 				m_feature.setQueryStatus(DeviceFeature.QueryStatus.QUERY_ANSWERED);
+				logger.debug("defdisp: {}:{} set status to: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						m_feature.getQueryStatus());
 			}
 			return isConsumed;
 		}
 	}
+
+	public static class DefaultGroupDispatcher extends MessageDispatcher {
+		DefaultGroupDispatcher(DeviceFeature f) { super(f); }
+		@Override
+		public boolean dispatch(Msg msg, String port) {
+			byte cmd  = 0x00;
+			byte cmd1 = 0x00;
+			boolean isConsumed = false;
+			int key = -1;
+			try {
+				cmd  = msg.getByte("Cmd");
+				cmd1 = msg.getByte("command1");
+			} catch (FieldException e) {
+				logger.debug("no command found, dropping msg {}", msg);
+				return false;
+			}
+			if (msg.isAllLinkCleanupAckOrNack()) {
+				// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+				// in response to a direct status query message
+				return false; 
+			}
+			if (handleAllLinkMessage(msg, port)) {
+				return false;
+			}
+			if (msg.isAckOfDirect()) {
+				// in the case of direct ack, the cmd1 code is useless.
+				// you have to know what message was sent before to
+				// interpret the reply message
+				if (isMyDirectAck(msg)) {
+					logger.debug("{}:{} qs:{} cmd: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+							m_feature.getQueryStatus(), cmd);
+					isConsumed = true;
+					if (cmd == 0x50) {
+						// must be a reply to our message, tweak the cmd1 code!
+						logger.debug("changing key to 0x19 for msg {}", msg);
+						key = 0x19; // we have installed a handler under that command number
+					}
+				}
+			} else {
+				key = (cmd1 & 0xFF);
+			}
+			if (key != -1) {
+				for (DeviceFeature f : m_feature.getConnectedFeatures()) {
+					MessageHandler h = f.getMsgHandlers().get(key);
+					if (h == null) h = f.getDefaultMsgHandler();
+					if (h.matches(msg)) {
+						if (!isConsumed) {
+							logger.debug("{}:{}->{} DIRECT", f.getDevice().getAddress(), f.getName(),
+									h.getClass().getSimpleName());
+						}
+						h.handleMessage(-1, cmd1, msg, f, port);
+					}
+					
+				}
+			}
+			if (isConsumed) {
+				m_feature.setQueryStatus(DeviceFeature.QueryStatus.QUERY_ANSWERED);
+				logger.debug("{}:{} set status to: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+							m_feature.getQueryStatus());
+			}
+			return isConsumed;
+		}
+	}
+
+	public static class PollGroupDispatcher extends MessageDispatcher {
+		PollGroupDispatcher(DeviceFeature f) { super(f); }
+		@Override
+		public boolean dispatch(Msg msg, String port) {
+			if (msg.isAllLinkCleanupAckOrNack()) {
+				// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+				// in response to a direct status query message
+				return false; 
+			}
+			if (handleAllLinkMessage(msg, port)) {
+				return false;
+			}
+			if (msg.isAckOfDirect()) {
+				boolean isMyAck = isMyDirectAck(msg);
+				if (isMyAck) {
+					logger.debug("{}:{} got poll ACK", m_feature.getDevice().getAddress(), m_feature.getName());
+				}
+				return (isMyAck);
+			}
+			return (false); // not a direct ack, so we didn't consume it either
+		}
+	}
+
 	
-	private static class SimpleDispatcher extends MessageDispatcher {
+	public static class SimpleDispatcher extends MessageDispatcher {
 		SimpleDispatcher(DeviceFeature f) { super(f); }
 		@Override
 		public boolean dispatch(Msg msg, String port) {
@@ -141,23 +259,30 @@ public abstract class MessageDispatcher {
 				if (handleAllLinkMessage(msg, port)) {
 					return false;
 				}
+				if (msg.isAllLinkCleanupAckOrNack()) {
+					// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+					// in response to a direct status query message
+					return false; 
+				}
 				cmd1 = msg.getByte("command1");
 			} catch (FieldException e) {
 				logger.debug("no cmd1 found, dropping msg {}", msg);
 				return false;
 			}
-			boolean isConsumed = msg.isAckOfDirect() && (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING);
+			boolean isConsumed = isMyDirectAck(msg);
 			int key = (cmd1 & 0xFF);
 			MessageHandler h = m_feature.getMsgHandlers().get(key);
 			if (h == null) h = m_feature.getDefaultMsgHandler();
-			logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
-					h.getClass().getSimpleName(), msg);
-			h.handleMessage(-1, cmd1, msg, m_feature, port);
+			if (h.matches(msg)) {
+				logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						h.getClass().getSimpleName(), msg);
+				h.handleMessage(-1, cmd1, msg, m_feature, port);
+			}
 			return isConsumed;
 		}
 	}
 
-	private static class X10Dispatcher extends MessageDispatcher {
+	public static class X10Dispatcher extends MessageDispatcher {
 		X10Dispatcher(DeviceFeature f) { super(f); }
 		@Override
 		public boolean dispatch(Msg msg, String port) {
@@ -168,7 +293,9 @@ public abstract class MessageDispatcher {
 				if (h == null) h = m_feature.getDefaultMsgHandler();
 				logger.debug("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
 								h.getClass().getSimpleName(), msg);
-						h.handleMessage(-1, (byte)cmd, msg, m_feature, port);
+				if (h.matches(msg)) {
+					h.handleMessage(-1, (byte)cmd, msg, m_feature, port);
+				}
 			} catch (FieldException e) {
 				logger.error("error parsing {}: ", msg, e);
 			}
@@ -176,33 +303,49 @@ public abstract class MessageDispatcher {
 		}
 	}
 
-	private static class PassThroughDispatcher extends MessageDispatcher {
+	public static class PassThroughDispatcher extends MessageDispatcher {
 		PassThroughDispatcher(DeviceFeature f) { super(f); }
 		@Override
 		public boolean dispatch(Msg msg, String port) {
 			MessageHandler h = m_feature.getDefaultMsgHandler();
-			logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
-					h.getClass().getSimpleName(), msg);
-			h.handleMessage(-1, (byte)0x01, msg, m_feature, port);
+			if (h.matches(msg)) {
+				logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						h.getClass().getSimpleName(), msg);
+				h.handleMessage(-1, (byte)0x01, msg, m_feature, port);
+			}
 			return false;
 		}
 	}
-
 	/**
-	 * Factory method for creating device dispatchers given a name.
-	 * The name is usually the class name.
-	 * @param name the name of the dispatcher to create
-	 * @param f the feature for which to create the dispatcher
-	 * @return the dispatcher which was created
+	 * Drop all incoming messages silently
 	 */
-	public static MessageDispatcher s_makeMessageDispatcher(String name, DeviceFeature f) {
-		if (name.equals("PassThroughDispatcher")) return new PassThroughDispatcher(f);
-		else if (name.equals("DefaultDispatcher")) return new DefaultDispatcher(f);
-		else if (name.equals("SimpleDispatcher")) return new SimpleDispatcher(f);
-		else if (name.equals("X10Dispatcher")) return new X10Dispatcher(f);
-		else {
-			logger.error("unimplemented message dispatcher requested: {}", name);
-			return null;
+	public static class NoOpDispatcher extends MessageDispatcher {
+		NoOpDispatcher(DeviceFeature f) { super(f); }
+		@Override
+		public boolean dispatch(Msg msg, String port) {
+			return false;
 		}
+	}
+	
+	/**
+	 * Factory method for creating a dispatcher of a given name using java reflection
+	 * @param name the name of the dispatcher to create
+	 * @param params 
+	 * @param f the feature for which to create the dispatcher
+	 * @return the handler which was created
+	 */
+	public static <T extends MessageDispatcher> T s_makeHandler(String name, HashMap<String, String> params, DeviceFeature f) {
+		String cname = MessageDispatcher.class.getName() + "$" + name;
+		try {
+			Class<?> c = Class.forName(cname);
+			@SuppressWarnings("unchecked")
+			Class<? extends T> dc = (Class <? extends T>) c;
+			T ch = dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			ch.setParameters(params);
+			return ch;
+		} catch (Exception e) {
+			logger.error("error trying to create dispatcher: {}", name, e);
+		}
+		return null;
 	}
 }

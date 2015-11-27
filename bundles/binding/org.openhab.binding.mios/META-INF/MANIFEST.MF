@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB MiOS Binding
 Bundle-SymbolicName: org.openhab.binding.mios
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.binding.mios.internal.MiosActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the MiOS binding of the open Home Automation Bus (openHAB)
@@ -33,3 +33,4 @@ Service-Component: OSGI-INF/activebinding.xml,
  OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/async-http-client-1.8.4.jar
+Bundle-ActivationPolicy: lazy

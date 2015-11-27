@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -153,9 +153,9 @@ public abstract class SatelCommand {
 			return true;
 		default:
 			if (responseCode >= 0x80 && responseCode <= 0x8f) {
-				errorMsg = String.format("Other error: {}", responseCode);
+				errorMsg = String.format("Other error: %02X", responseCode);
 			} else {
-				errorMsg = String.format("Unknown response code: {}", responseCode);
+				errorMsg = String.format("Unknown response code: %02X", responseCode);
 			}
 		}
 

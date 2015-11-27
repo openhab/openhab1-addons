@@ -313,33 +313,37 @@ public abstract class ZWaveCommandClass {
 	 */
 	protected byte[] encodeValue(BigDecimal value) throws ArithmeticException {
 		
-		if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+		// Remove any trailing zero's so we send the least amount of bytes possible
+		BigDecimal normalizedValue = value.stripTrailingZeros();
+
+		// Make our scale at least 0, precision cannot be more than 7 but
+		// this is guarded by the Integer min / max values already.
+		if (normalizedValue.scale() < 0)
+		{
+			normalizedValue = normalizedValue.setScale(0);
+		}
+
+		if (normalizedValue.unscaledValue().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
 			throw new ArithmeticException();
-		} else if (value.unscaledValue().compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0)
+		} else if (normalizedValue.unscaledValue().compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) < 0)
 			throw new ArithmeticException();
 		
 		// default size = 4
 		int size = 4;
 		
 		// it might fit in a byte or short
-		if (value.unscaledValue().intValue() >= Byte.MIN_VALUE && value.unscaledValue().intValue() <= Byte.MAX_VALUE) {
+		if (normalizedValue.unscaledValue().intValue() >= Byte.MIN_VALUE && normalizedValue.unscaledValue().intValue() <= Byte.MAX_VALUE) {
 			size = 1;
-		} else if (value.unscaledValue().intValue() >= Short.MIN_VALUE && value.unscaledValue().intValue() <= Short.MAX_VALUE) {
+		} else if (normalizedValue.unscaledValue().intValue() >= Short.MIN_VALUE && normalizedValue.unscaledValue().intValue() <= Short.MAX_VALUE) {
 			size = 2;
 		}
 		
-		int precision = value.scale();
-		
-		// precision cannot be negative, cannot be more than 7 as well, 
-		// but this is guarded by the Integer min / max values already.
-		if (precision < 0) {
-			throw new ArithmeticException();
-		}
-		
+		int precision = normalizedValue.scale();
+
 		byte[] result = new byte[size + 1];
 		// precision + scale (unused) + size
 		result[0] = (byte) ((precision << PRECISION_SHIFT) | size);
-		int unscaledValue = value.unscaledValue().intValue(); // ie. 22.5 = 225
+		int unscaledValue = normalizedValue.unscaledValue().intValue(); // ie. 22.5 = 225
 		for (int i = 0; i < size; i++) {
 			result[size - i] = (byte) ((unscaledValue >> (i * 8)) & 0xFF);
 		}
@@ -363,7 +367,7 @@ public abstract class ZWaveCommandClass {
 		ZIP_SERVER(0x24,"ZIP_SERVER",null),
 		SWITCH_BINARY(0x25,"SWITCH_BINARY",ZWaveBinarySwitchCommandClass.class),
 		SWITCH_MULTILEVEL(0x26,"SWITCH_MULTILEVEL",ZWaveMultiLevelSwitchCommandClass.class),
-		SWITCH_ALL(0x27,"SWITCH_ALL",null),
+		SWITCH_ALL(0x27,"SWITCH_ALL",ZWaveSwitchAllCommandClass.class),
 		SWITCH_TOGGLE_BINARY(0x28,"SWITCH_TOGGLE_BINARY",null),
 		SWITCH_TOGGLE_MULTILEVEL(0x29,"SWITCH_TOGGLE_MULTILEVEL",null),
 		CHIMNEY_FAN(0x2A,"CHIMNEY_FAN",null),
@@ -406,7 +410,7 @@ public abstract class ZWaveCommandClass {
 		POWERLEVEL(0x73,"POWERLEVEL",null),
 		PROTECTION(0x75,"PROTECTION",null),
 		LOCK(0x76,"LOCK",null),
-		NODE_NAMING(0x77,"NODE_NAMING",null),
+		NODE_NAMING(0x77,"NODE_NAMING", ZWaveNodeNamingCommandClass.class),
 		FIRMWARE_UPDATE_MD(0x7A,"FIRMWARE_UPDATE_MD",null),
 		GROUPING_NAME(0x7B,"GROUPING_NAME",null),
 		REMOTE_ASSOCIATION_ACTIVATE(0x7C,"REMOTE_ASSOCIATION_ACTIVATE",null),
@@ -417,7 +421,7 @@ public abstract class ZWaveCommandClass {
 		WAKE_UP(0x84,"WAKE_UP", ZWaveWakeUpCommandClass.class),
 		ASSOCIATION(0x85,"ASSOCIATION",ZWaveAssociationCommandClass.class),
 		VERSION(0x86,"VERSION",ZWaveVersionCommandClass.class),
-		INDICATOR(0x87,"INDICATOR",null),
+		INDICATOR(0x87,"INDICATOR",ZWaveIndicatorCommandClass.class),
 		PROPRIETARY(0x88,"PROPRIETARY",null),
 		LANGUAGE(0x89,"LANGUAGE",null),
 		TIME(0x8A,"TIME",null),

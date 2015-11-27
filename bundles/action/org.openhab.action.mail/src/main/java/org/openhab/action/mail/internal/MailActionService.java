@@ -74,6 +74,8 @@ public class MailActionService implements ActionService, ManagedService {
 			if (StringUtils.isNotBlank(popBeforeSmtpString)) {
 				Mail.popBeforeSmtp = popBeforeSmtpString.equalsIgnoreCase("true"); 
 			}
+
+			Mail.charset = (String) config.get("charset");
 			
 			// check mandatory settings
 			if (StringUtils.isBlank(Mail.hostname) || StringUtils.isBlank(Mail.from)) {

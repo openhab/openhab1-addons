@@ -123,15 +123,21 @@ public abstract class ZWaveCommandProcessor {
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetCapabilities, SerialApiGetCapabilitiesMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetInitData, SerialApiGetInitDataMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiSetTimeouts, SerialApiSetTimeoutsMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.SerialApiSoftReset, SerialApiSoftResetMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SetSucNodeID, SetSucNodeMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.SetDefault, ControllerSetDefaultMessageClass.class);
 		}
 
 		Constructor<? extends ZWaveCommandProcessor> constructor;
 		try {
+			if(messageMap.get(serialMessage) == null) {
+				logger.warn("SerialMessage class {} is not implemented!", serialMessage.getLabel());
+				return null;
+			}
 			constructor = messageMap.get(serialMessage).getConstructor();
 			return constructor.newInstance();
 		} catch (Exception e) {
-			logger.error("Command processor error: {}", e);
+			logger.error("Command processor error");
 		}
 		
 		return null;

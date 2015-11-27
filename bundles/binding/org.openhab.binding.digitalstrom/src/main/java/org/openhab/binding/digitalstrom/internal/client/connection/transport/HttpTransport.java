@@ -52,7 +52,7 @@ public class HttpTransport {
 			BufferedReader in = null;
 			try {
 				URL url = new URL(this.uri+request);
-				
+								
 				connection = (HttpURLConnection) url.openConnection();
 				int responseCode =-1;
 				if (connection != null) {

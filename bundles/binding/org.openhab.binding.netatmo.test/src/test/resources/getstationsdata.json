@@ -1,0 +1,189 @@
+{
+    "body": {
+        "devices": [
+            {
+                "_id": "70:ee:50:00:00:14",
+                "co2_calibrating": false,
+                "firmware": 91,
+                "last_status_store": 1441872001,
+                "last_upgrade": 1440507643,
+                "module_name": "ind",
+                "modules": [
+                    {
+                        "_id": "05:00:00:00:00:14",
+                        "module_name": "Pluie",
+                        "type": "NAModule3",
+                        "firmware": 91,
+                        "last_message": 1437990885,
+                        "last_seen": 1437990885,
+                        "rf_status": 40,
+                        "battery_vp": 4103,
+                        "dashboard_data": {
+                            "time_utc": 1437990885,
+                            "Rain": 0.101
+                        },
+                        "data_type": [
+                            "Rain"
+                        ]
+                    },
+                    {
+                        "_id": "03:00:00:00:00:14",
+                        "module_name": "Inter",
+                        "type": "NAModule4",
+                        "firmware": 91,
+                        "last_message": 1437991542,
+                        "last_seen": 1437991541,
+                        "rf_status": 72,
+                        "battery_vp": 44568,
+                        "dashboard_data": {
+                            "time_utc": 1437991550,
+                            "Noise": 10,
+                            "Temperature": 40.2,
+                            "Humidity": 23,
+                            "date_max_temp": 1437991547,
+                            "date_min_temp": 1437991549,
+                            "min_temp": -31.7,
+                            "max_temp": 46.9
+                        },
+                        "data_type": [
+                            "Temperature",
+                            "CO2",
+                            "Humidity"
+                        ]
+                    },
+                    {
+                        "_id": "02:00:00:00:00:14",
+                        "module_name": "out",
+                        "type": "NAModule1",
+                        "firmware": 91,
+                        "last_message": 1441872001,
+                        "last_seen": 1441868401,
+                        "rf_status": 143,
+                        "battery_vp": 31188,
+                        "dashboard_data": {
+                            "time_utc": 1441872001,
+                            "Temperature": 3.2,
+                            "Humidity": 60,
+                            "date_max_temp": 1441851001,
+                            "date_min_temp": 1441863001,
+                            "min_temp": -39.5,
+                            "max_temp": 79.5
+                        },
+                        "data_type": [
+                            "Temperature",
+                            "Humidity"
+                        ]
+                    },
+                    {
+                        "_id": "06:00:00:00:00:14",
+                        "module_name": "wind",
+                        "type": "NAModule2",
+                        "firmware": 91,
+                        "last_message": 1441872001,
+                        "last_seen": 1441868401,
+                        "rf_status": 143,
+                        "battery_vp": 31188,
+                        "dashboard_data": {
+                            "WindAngle": 155,
+                            "WindStrength": 25,
+                            "GustAngle": 156,
+                            "GustStrength": 35,
+                            "time_utc": 1441872001,
+                            "WindHistoric": [
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441868401
+                                },
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441869001
+                                },
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441869601
+                                },
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441870201
+                                },
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441870801
+                                },
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441871402
+                                },
+                                {
+                                    "WindStrength": 25,
+                                    "WindAngle": 155,
+                                    "time_utc": 1441872001
+                                }
+                            ],
+                            "date_max_wind_str": 1441836001,
+                            "max_wind_angle": 156,
+                            "max_wind_str": 35
+                        },
+                        "data_type": [
+                            "Wind"
+                        ]
+                    }
+                ],
+                "place": {
+                    "altitude": 30.478512648583,
+                    "city": "Saint-Denis",
+                    "country": "FR",
+                    "improveLocProposed": true,
+                    "location": [
+                        2.384033203125,
+                        48.936934954094
+                    ],
+                    "timezone": "Europe/Paris"
+                },
+                "station_name": "Station",
+                "type": "NAMain",
+                "wifi_status": 109,
+                "dashboard_data": {
+                    "AbsolutePressure": 929.4,
+                    "time_utc": 1441872001,
+                    "Noise": 110,
+                    "Temperature": 3.2,
+                    "Humidity": 60,
+                    "Pressure": 929.4,
+                    "CO2": 4852,
+                    "date_max_temp": 1441850941,
+                    "date_min_temp": 1441862941,
+                    "min_temp": -39.5,
+                    "max_temp": 79.5
+                },
+                "data_type": [
+                    "Temperature",
+                    "CO2",
+                    "Humidity",
+                    "Noise",
+                    "Pressure"
+                ]
+            }
+        ],
+        "user": {
+            "mail": "toto@netatmo.com",
+            "administrative": {
+                "reg_locale": "en-US",
+                "lang": "en-US",
+                "unit": 1,
+                "windunit": 1,
+                "pressureunit": 1,
+                "feel_like_algo": 1
+            }
+        }
+    },
+    "status": "ok",
+    "time_exec": 0.36015892028809,
+    "time_server": 1441872018
+}

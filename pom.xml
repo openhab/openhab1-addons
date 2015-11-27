@@ -8,7 +8,7 @@
     
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
     <name>openHAB</name>
     
     <organization>
@@ -47,16 +47,21 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
     
     <properties>
-        <tycho-version>0.19.0</tycho-version>
+        <tycho-version>0.22.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wagon.version>1.0-beta-2</wagon.version>
+        
         <deb.maintainer>openHAB &lt;admin@openhab.org&gt;</deb.maintainer>
         <deb.section>misc</deb.section>
         <deb.distribution>development</deb.distribution>
         <deb.depends>openhab-runtime</deb.depends>
+        
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+        
+        <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
     </properties>
     
     <packaging>pom</packaging>
@@ -217,9 +222,9 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>com.mycila.maven-license-plugin</groupId>
-                    <artifactId>maven-license-plugin</artifactId>
-                    <version>1.9.0</version>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>2.11</version>
                     <configuration>
                         <basedir>${basedir}</basedir>
                         <header>src/etc/header.txt</header>
@@ -239,7 +244,7 @@
                         </excludes>
                         <useDefaultExcludes>true</useDefaultExcludes>
                         <properties>
-                            <year>2013</year>
+                            <year>2015</year>
                         </properties>
                         <encoding>UTF-8</encoding>
                     </configuration>
@@ -262,12 +267,8 @@
     
     <pluginRepositories>
         <pluginRepository>
-            <id>fornax.repository</id>
-            <name>Fornax Repository</name>
-            <url>https://projects.itemis.de/nexus/content/groups/public/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>tycho-snapshots</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
         </pluginRepository>
         <pluginRepository>
             <id>xtend.repository</id>
@@ -278,21 +279,22 @@
             </snapshots>
         </pluginRepository>
         <pluginRepository>
+            <id>openhab.repository</id>
+            <name>openHAB Repository</name>
+            <url>https://dl.bintray.com/openhab/mvn/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>openhab.repository.rc</id>
+            <name>openHAB Snapshot Repository</name>
+            <url>https://dl.bintray.com/openhab/mvn/</url>
+        </pluginRepository>
+        <pluginRepository>
             <id>openhab.repository.snapshot</id>
-            <name>openHAB Cloudbees Repository</name>
-            <url>http://repository-openhab.forge.cloudbees.com/snapshot/</url>
+            <name>openHAB Snapshot Repository</name>
+            <url>https://dl.bintray.com/openhab/mvn/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>openhab.repository</id>
-            <name>openHAB Cloudbees Repository</name>
-            <url>http://repository-openhab.forge.cloudbees.com/release/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>tycho-snapshots</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
     
@@ -323,8 +325,8 @@
             <id>deploy</id>
             <distributionManagement>
                 <repository>
-                    <id>${repo.id}</id>
-                    <url>${repo.url}/maven</url>
+                    <id>bintray</id>
+                    <url>${repo.url}</url>
                     <uniqueVersion>false</uniqueVersion>
                 </repository>
             </distributionManagement>
@@ -346,39 +348,6 @@
                         <configuration>
                             <sourceBundle>true</sourceBundle>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
-                        <version>${wagon.version}</version>
-                        <executions>
-                            <execution>
-                                <id>upload-p2-repo</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>upload</goal>
-                                </goals>
-                                <configuration>
-                                    <serverId>${repo.id}</serverId>
-                                    <url>${repo.url}</url>
-                                    <fromDir>${project.basedir}/products/org.openhab.runtime.product/target/repository</fromDir>
-                                    <toDir>${p2.repo.dir}</toDir>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>upload-apt-repo</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>upload</goal>
-                                </goals>
-                                <configuration>
-                                    <serverId>${repo.id}</serverId>
-                                    <url>${repo.url}</url>
-                                    <fromDir>${project.basedir}/distribution/target/apt-repo</fromDir>
-                                    <toDir>${apt.repo.dir}</toDir>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

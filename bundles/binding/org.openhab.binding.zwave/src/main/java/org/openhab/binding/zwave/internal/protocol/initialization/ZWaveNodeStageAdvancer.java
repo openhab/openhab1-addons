@@ -22,7 +22,7 @@ import org.openhab.binding.zwave.internal.config.ZWaveDbConfigurationParameter;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -39,8 +39,10 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstan
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeInfoEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
@@ -362,7 +364,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// It seems that PC_CONTROLLERs don't respond to a lot of requests, so let's
 				// just assume their OK!
 				// If this is a controller, we're done
-				if (node.getDeviceClass().getGenericDeviceClass() == Generic.STATIC_CONTOLLER) {
+				if (node.getDeviceClass().getSpecificDeviceClass() == Specific.PC_CONTROLLER) {
 					logger.debug("NODE {}: Node advancer: FAILED_CHECK - Controller - terminating initialisation", node.getNodeId());
 					currentStage = ZWaveNodeInitStage.DONE;
 					break;
@@ -721,11 +723,13 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					if(group.SetToController == true) {
 						// Check if we're already a member
 						if(associationCls.getGroupMembers(group.Index).contains(controller.getOwnNodeId())) {
-							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION already set for group {}", node.getNodeId(), group.Index);
+							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION set for group {}", node.getNodeId(), group.Index);
 						}
 						else {
 							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}", node.getNodeId(), group.Index);
+							// Set the association, and request the update so we confirm if it's set 
 							addToQueue(associationCls.setAssociationMessage(group.Index, controller.getOwnNodeId()));
+							addToQueue(associationCls.getAssociationMessage(group.Index));
 						}
 					}
 				}
@@ -743,13 +747,19 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 						.getCommandClass(CommandClass.CONFIGURATION);
 
+				// If there are no configuration entries for this node, then continue.
+				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+				if(configList == null || configList.size() == 0) {
+					break;
+				}
+
+				// If the node doesn't support configuration class, then we better let people know!
 				if (configurationCommandClass == null) {
 					logger.error("NODE {}: Node advancer: GET_CONFIGURATION - CONFIGURATION class not supported", node.getNodeId());
 					break;
 				}
 
 				// Request all parameters for this node
-				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 				for (ZWaveDbConfigurationParameter parameter : configList) {
 					// Some parameters don't return anything, so don't request them!
 					if(parameter.WriteOnly != null && parameter.WriteOnly == true) {
@@ -1046,6 +1056,31 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 			}
 			logger.trace("NODE {}: Node Status event during initialisation processed", statusEvent.getNodeId());
+		} else if (event instanceof ZWaveNodeInfoEvent) {
+			logger.debug("NODE {}: {} NIF event during initialisation stage {}", event.getNodeId(), node.getNodeId(), currentStage);
+			if (node.getNodeId() != event.getNodeId()) {
+				return;
+			}
+			
+			if(currentStage == ZWaveNodeInitStage.PING) {
+				logger.debug("NODE {}: NIF event during initialisation stage PING - advancing", event.getNodeId());
+				setCurrentStage(currentStage.getNextStage());
+			}
+			logger.debug("NODE {}: NIF event during initialisation stage {}", event.getNodeId(), currentStage);
+			advanceNodeStage(null);
+/*		} else if (event instanceof ZWaveCommandClassValueEvent) {
+			// This code is used to detect an event during the IDLE stage.
+			// This is used to kick start the initialisation for battery nodes that do not support
+			// the WAKE_UP class and don't send the ApplicationUpdateMessage when they are initialised.
+			logger.debug("NODE {}: {} CC event during initialisation stage {}", event.getNodeId(), node.getNodeId(), currentStage);
+			// A command class event is received. Make sure it's for this node.
+			if (node.getNodeId() != event.getNodeId() || currentStage != ZWaveNodeInitStage.PING) {
+				return;
+			}
+			logger.debug("NODE {}: CC event during initialisation stage PING - advancing", event.getNodeId());
+			setCurrentStage(currentStage.getNextStage());
+			logger.debug("NODE {}: CC event during initialisation stage PING - now {} - next", event.getNodeId(), currentStage);
+			advanceNodeStage(null);*/
 		}
 	}
 	

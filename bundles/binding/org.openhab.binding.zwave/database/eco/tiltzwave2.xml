@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>TILTZWAVE2</Model>
+	<Label lang="en">Z-Wave Garage Door Sensor</Label>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en"><![CDATA[All nodes associated with Group 1 will receive unsolicited alarm report 
+			frames, and basic report frames of ON and OFF.]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 2</Label>
+			<Help lang="en"><![CDATA[This group is intended for any device that is controllable with a Basic 
+			Set of ON such as lights, sirens, or chimes.]]></Help>
+		</Group>
+	</Associations>
+</Product>

@@ -2,15 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Serial Binding
 Bundle-SymbolicName: org.openhab.binding.serial
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: gnu.io,
+ org.apache.commons.codec.binary,
  org.apache.commons.io,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.core.transform,
  org.openhab.core.types,
  org.openhab.model.item.binding,
  org.osgi.framework,

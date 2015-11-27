@@ -10,6 +10,7 @@ package org.openhab.persistence.mysql.internal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,10 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -49,12 +49,10 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,9 +80,10 @@ import org.slf4j.LoggerFactory;
  * @author Henrik Sjöstrand
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson
+ * @author Helmut Lehmeyer
  * @since 1.1.0
  */
-public class MysqlPersistenceService implements QueryablePersistenceService, ManagedService {
+public class MysqlPersistenceService implements QueryablePersistenceService {
 
 	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.([0-9.a-zA-Z]+)$");
 
@@ -97,8 +96,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
-	private PersistentStateRestorer persistentStateRestorer;
-
+	
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
 	private int errReconnectThreshold = 0;
@@ -110,21 +108,80 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private Map<String, String> sqlTables = new HashMap<String, String>();
 	private Map<String, String> sqlTypes = new HashMap<String, String>();
 
-	
-	public void activate() {
-		// Initialise the type array
-		sqlTypes.put("COLORITEM", "VARCHAR(70)");
-		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
-		sqlTypes.put("DATETIMEITEM", "DATETIME(3)");
-		sqlTypes.put("DIMMERITEM", "TINYINT");
-		sqlTypes.put("GROUPITEM", "DOUBLE");
-		sqlTypes.put("NUMBERITEM", "DOUBLE");
-		sqlTypes.put("ROLERSHUTTERITEM", "TINYINT");
-		sqlTypes.put("STRINGITEM", "VARCHAR(20000)");
-		sqlTypes.put("SWITCHITEM", "CHAR(3)");
+	/**
+	 * Initialise the type array
+	 * If other Types like DOUBLE or INT needed for serialisation it can be set in openhab.cfg
+	 */
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		sqlTypes.put("CALLITEM", 		"VARCHAR(200)");
+		sqlTypes.put("COLORITEM", 		"VARCHAR(70)");
+		sqlTypes.put("CONTACTITEM", 	"VARCHAR(6)");
+		sqlTypes.put("DATETIMEITEM", 	"DATETIME");
+		sqlTypes.put("DIMMERITEM", 		"TINYINT");
+		sqlTypes.put("LOCATIONITEM", 	"VARCHAR(30)");
+		sqlTypes.put("NUMBERITEM", 		"DOUBLE");
+		sqlTypes.put("ROLLERSHUTTERITEM","TINYINT");
+		sqlTypes.put("STRINGITEM", 		"VARCHAR(20000)");
+		sqlTypes.put("SWITCHITEM", 		"CHAR(3)");
+		
+		Iterator<String> keys = config.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = (String) keys.next();
+
+			Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			matcher.reset();
+			matcher.find();
+
+			if (!matcher.group(1).equals("sqltype"))
+				continue;
+
+			String itemType = matcher.group(2).toUpperCase() + "ITEM";
+			String value = (String) config.get(key);
+
+			sqlTypes.put(itemType, value);
+		}
+
+		url = (String) config.get("url");
+		if (StringUtils.isBlank(url)) {
+			logger.warn("The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
+		}
+
+		user = (String) config.get("user");
+		if (StringUtils.isBlank(user)) {
+			logger.warn("The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
+		}
+
+		password = (String) config.get("password");
+		if (StringUtils.isBlank(password)) {
+			logger.warn("The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
+		}
+
+		String tmpString = (String) config.get("reconnectCnt");
+		if (StringUtils.isNotBlank(tmpString)) {
+			errReconnectThreshold = Integer.parseInt(tmpString);
+		}
+
+		tmpString = (String) config.get("waitTimeout");
+		if (StringUtils.isNotBlank(tmpString)) {
+			waitTimeout = Integer.parseInt(tmpString);
+		}
+
+		// reconnect to the database in case the configuration has changed.
+		disconnectFromDatabase();
+		connectToDatabase();
+
+		// connection has been established ... initialization completed!
+		initialized = true;
+		
+		logger.debug("mySQL configuration complete.");
 	}
 
-	public void deactivate() {
+	public void deactivate(final int reason) {
 		logger.debug("mySQL persistence bundle stopping. Disconnecting from database.");
 		disconnectFromDatabase();
 	}
@@ -137,41 +194,64 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		this.itemRegistry = null;
 	}
 	
-	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
-	}
 	
-	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
-	}
-
 	/**
 	 * @{inheritDoc
 	 */
 	public String getName() {
 		return "mysql";
 	}
+	
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+	private String getItemType(Item i) {
+		Item item = i;		
+		if(i instanceof GroupItem){
+			item = ((GroupItem) i).getBaseItem();
+			if(item == null){//if GroupItem:<ItemType> is not defined in *.items using StringType
+				logger.debug("mySQL: Cannot detect ItemType for {} because the GroupItems' base type isn't set in *.items File.", i.getName());
+				item = ((GroupItem) i).getMembers().get(0);
+				if(item == null){
+					logger.debug("mySQL: No ItemType found for first Child-Member of GroupItem {}, use ItemType STRINGITEM ({}) as Fallback", i.getName(), sqlTypes.get("STRINGITEM"));
+					return sqlTypes.get("STRINGITEM");
+				}
+			}
+		}
+		String itemType = item.getClass().getSimpleName().toUpperCase();
+		if(sqlTypes.get(itemType) == null){
+			logger.debug("mySQL: No sqlType found for ItemType {}, use ItemType STRINGITEM ({}) as Fallback for {}", itemType, sqlTypes.get("STRINGITEM"), i.getName());
+			return sqlTypes.get("STRINGITEM");
+		}
+
+		logger.debug("mySQL: Use ItemType {} ({}) for Item {}", itemType, sqlTypes.get(itemType), itemType, i.getName());
+		return sqlTypes.get(itemType);
+	}
 
 	private String getTable(Item item) {
-		Statement statement = null;
+		PreparedStatement statement = null;
 		String sqlCmd = null;
 		int rowId = 0;
-
+		
 		String itemName = item.getName();
-
 		String tableName = sqlTables.get(itemName);
 
 		// Table already exists - return the name
 		if (tableName != null)
 			return tableName;
 
+		logger.debug("mySQL: no Table found for itemName={} get:{}", itemName, sqlTables.get(itemName));
+		
 		// Create a new entry in the Items table. This is the translation of
 		// item name to table
 		try {
-			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES ('" + itemName + "')");
-
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlCmd, Statement.RETURN_GENERATED_KEYS);
+			sqlCmd = new String("INSERT INTO Items (ItemName) VALUES (?)");
+			
+			statement = connection.prepareStatement(sqlCmd, PreparedStatement.RETURN_GENERATED_KEYS);
+			statement.setString(1, itemName);
+			statement.executeUpdate();
 
 			ResultSet resultSet = statement.getGeneratedKeys();
 			if (resultSet != null && resultSet.next()) {
@@ -179,14 +259,15 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			}
 
 			if (rowId == 0) {
-				throw new SQLException("mySQL: Creating table for item '" + itemName + "' failed.");
+				throw new SQLException("mySQL: Creating table for item '{}' failed.", itemName);
 			}
 
 			// Create the table name
 			tableName = new String("Item" + rowId);
 			logger.debug("mySQL: new item {} is Item{}", itemName, rowId);
 		} catch (SQLException e) {
-			logger.error("mySQL: Could not create table for item '{}': ", itemName, e.getMessage());
+			errCnt++;
+			logger.error("mySQL: Could not create entry for '{}' in table 'Items' with statement '{}': {}", itemName, sqlCmd, e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
@@ -202,29 +283,22 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			return null;
 		}
 
-		// Default the type to double
-		String mysqlType = new String("DOUBLE");
-		String itemType = item.getClass().toString().toUpperCase();
-		itemType = itemType.substring(itemType.lastIndexOf('.') + 1);
-		if (sqlTypes.get(itemType) != null) {
-			mysqlType = sqlTypes.get(itemType);
-		}
+		String mysqlType = getItemType(item);
 
 		// We have a rowId, create the table for the data
-		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType
-				+ ", PRIMARY KEY(Time));");
-		logger.debug("SQL: " + sqlCmd);
+		sqlCmd = new String("CREATE TABLE " + tableName + " (Time DATETIME, Value " + mysqlType + ", PRIMARY KEY(Time));");
+		logger.debug("mySQL: query: {}", sqlCmd);
 
 		try {
-			statement = connection.createStatement();
-			statement.executeUpdate(sqlCmd);
+			statement = connection.prepareStatement(sqlCmd);
+			statement.executeUpdate();
 
-			logger.debug("mySQL: Table created for item '" + itemName + "' with datatype " + mysqlType
-					+ " in SQL database.");
+			logger.debug("mySQL: Table created for item '{}' with datatype {} in SQL database.", itemName, mysqlType);
 			sqlTables.put(itemName, tableName);
 		} catch (Exception e) {
-			logger.error("mySQL: Could not create table for item '" + itemName + "' with statement '" + sqlCmd + "': "
-					+ e.getMessage());			
+			errCnt++;
+			
+			logger.error("mySQL: Could not create table for item '{}' with statement '{}': {}",itemName ,sqlCmd , e.getMessage());			
 		} finally {
 			if (statement != null) {
 				try {
@@ -239,15 +313,17 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// The item needs to be removed from the index table to avoid duplicates
 		if(sqlTables.get(itemName) == null) {
 			logger.error("mySQL: Item '{}' was not added to the table - removing index", itemName);
-			sqlCmd = new String("DELETE FROM Items WHERE ItemName='" + itemName+"'");
-			logger.debug("SQL: {}", sqlCmd);
+			sqlCmd = new String("DELETE FROM Items WHERE ItemName=?");
+			logger.debug("mySQL: query: {}", sqlCmd);
 	
 			try {
-				statement = connection.createStatement();
-				statement.executeUpdate(sqlCmd);	
+				statement = connection.prepareStatement(sqlCmd);
+				statement.setString(1, itemName);
+				statement.executeUpdate();	
 			} catch (Exception e) {
-				logger.error("mySQL: Could not remove index for item '" + itemName + "' with statement '" + sqlCmd + "': "
-						+ e.getMessage());			
+				errCnt++;
+				
+				logger.error("mySQL: Could not remove index for item '{}' with statement '{}': ",itemName ,sqlCmd , e.getMessage());		
 			} finally {
 				if (statement != null) {
 					try {
@@ -279,9 +355,9 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 		// If we still didn't manage to connect, then return!
 		if (!isConnected()) {
-			logger.warn(
-					"mySQL: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
-					item);
+			logger.warn("mySQL: No connection to database. Can not persist item '{}'! "
+					+ "Will retry connecting to database when error count:{} equals errReconnectThreshold:{}",
+					item, errCnt, errReconnectThreshold);
 			return;
 		}
 
@@ -298,35 +374,49 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		// eg. DimmerItem can return OnOffType (ON, OFF), or PercentType (0-100).
 		// We need to make sure we cover the best type for serialisation.
 		String value;
-		if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-			value = item.getStateAs(PercentType.class).toString();
-		} else if (item instanceof ColorItem) {
-			value = item.getStateAs(HSBType.class).toString();
+		if (item instanceof ColorItem) {
+			value = item.getStateAs(HSBType.class).toString();			
+		} else if (item instanceof RollershutterItem) {
+			value = item.getStateAs(PercentType.class).toString();			
 		} else {
+			/*
+			!!ATTENTION!!
+			
+			1.
+			DimmerItem.getStateAs(PercentType.class).toString() always returns 0
+			RollershutterItem.getStateAs(PercentType.class).toString() works as expected
+			
+			2.
+			(item instanceof ColorItem) == (item instanceof DimmerItem) = true
+			Therefore for instance tests ColorItem always has to be tested before DimmerItem
+			
+			!!ATTENTION!!
+			*/
+			
 			// All other items should return the best format by default
 			value = item.getState().toString();
 		}
 
 		String sqlCmd = null;
-		Statement statement = null;
-		try {
-			statement = connection.createStatement();
-			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
-					+ item.getState().toString() + "') ON DUPLICATE KEY UPDATE VALUE='"
-					+ item.getState().toString() + "';");
-			statement.executeUpdate(sqlCmd);
+		PreparedStatement statement = null;
+		try {			
+			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),?) ON DUPLICATE KEY UPDATE VALUE=?;");
+			statement = connection.prepareStatement(sqlCmd);
+			statement.setString(1, value);
+			statement.setString(2, value);
+			statement.executeUpdate();
 
 			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
 					.toString(), value, (new java.util.Date()).toString());
-			logger.debug("mySQL: {}", sqlCmd);
+			logger.debug("mySQL: query: {}", sqlCmd);
 
 			// Success
 			errCnt = 0;
 		} catch (Exception e) {
 			errCnt++;
 
-			logger.error("mySQL: Could not store item '{}' in database with statement '{}': {}", item.getName(),
-					sqlCmd, e.getMessage());
+			logger.error("mySQL: Could not store item '{}' in database with "
+					+ "statement '{}': {}", item.getName(), sqlCmd, e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
@@ -350,6 +440,18 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @return true if connection has been established, false otherwise
 	 */
 	private boolean isConnected() {
+		//Check if connection is valid
+		try {
+			if (connection!= null && !connection.isValid(5000)) {
+				errCnt++;
+				logger.error("mySQL: Connection is not valid!");
+			}
+		} catch (SQLException e) {
+			errCnt++;
+			
+			logger.error("mySQL: Error while checking connection: {}", e);
+		}
+		
 		// Error check. If we have 'errReconnectThreshold' errors in a row, then
 		// reconnect to the database
 		if (errReconnectThreshold != 0 && errCnt >= errReconnectThreshold) {
@@ -384,8 +486,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			}
 			if (result == 0) {
 				st = connection.createStatement();
-				st.executeUpdate(
-						"CREATE TABLE Items (ItemId INT NOT NULL AUTO_INCREMENT,ItemName VARCHAR(200) NOT NULL,PRIMARY KEY (ItemId));",
+				st.executeUpdate("CREATE TABLE Items (ItemId INT NOT NULL AUTO_INCREMENT,ItemName VARCHAR(200) NOT NULL,PRIMARY KEY (ItemId));",
 						Statement.RETURN_GENERATED_KEYS);
 				st.close();
 			}
@@ -402,8 +503,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			rs.close();
 			st.close();
 		} catch (Exception e) {
-			logger.error("mySQL: Failed connecting to the SQL database using: driverClass=" + driverClass + ", url="
-					+ url + ", user=" + user + ", password=" + password, e);
+			logger.error("mySQL: Failed connecting to the SQL database using: driverClass={}, url={}, user={}, password={}", driverClass, url, user, password, e);
 		}
 	}
 
@@ -436,77 +536,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 */
 	protected String formatAlias(String alias, Object... values) {
 		return String.format(alias, values);
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("mySQL configuration starting");
-		if (config != null) {
-			Enumeration<String> keys = config.keys();
-
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
-
-				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
-
-				if (!matcher.matches()) {
-					continue;
-				}
-
-				matcher.reset();
-				matcher.find();
-
-				if (!matcher.group(1).equals("sqltype"))
-					continue;
-
-				String itemType = matcher.group(2).toUpperCase() + "ITEM";
-				String value = (String) config.get(key);
-
-				sqlTypes.put(itemType, value);
-			}
-
-			url = (String) config.get("url");
-			if (StringUtils.isBlank(url)) {
-				throw new ConfigurationException("mysql:url",
-						"The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
-			}
-
-			user = (String) config.get("user");
-			if (StringUtils.isBlank(user)) {
-				throw new ConfigurationException("sql:user",
-						"The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
-			}
-
-			password = (String) config.get("password");
-			if (StringUtils.isBlank(password)) {
-				throw new ConfigurationException(
-						"mysql:password",
-						"The SQL password is missing. Attempting to connect without password. To specify a password configure the sql:password parameter in openhab.cfg.");
-			}
-
-			String tmpString = (String) config.get("reconnectCnt");
-			if (StringUtils.isNotBlank(tmpString)) {
-				errReconnectThreshold = Integer.parseInt(tmpString);
-			}
-
-			tmpString = (String) config.get("waitTimeout");
-			if (StringUtils.isNotBlank(tmpString)) {
-				waitTimeout = Integer.parseInt(tmpString);
-			}
-
-			// reconnect to the database in case the configuration has changed.
-			disconnectFromDatabase();
-			connectToDatabase();
-
-			// connection has been established ... initialization completed!
-			initialized = true;
-			
-			logger.debug("mySQL configuration complete.");
-			persistentStateRestorer.initializeItems(getName());
-		}
-
 	}
 
 	@Override
@@ -549,7 +578,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 		String table = sqlTables.get(itemName);
 		if (table == null) {
-			logger.error("mySQL: Unable to find table for query '" + itemName + "'.");
+			logger.error("mySQL: Unable to find table for query '{}'.", itemName);
 			return Collections.emptyList();
 		}
 
@@ -590,7 +619,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			if (!filterString.isEmpty())
 				queryString += filterString;
 
-			logger.debug("mySQL: " + queryString);
+			logger.debug("mySQL: query:" + queryString);
 
 			// Turn use of the cursor on.
 			st.setFetchSize(50);
@@ -619,7 +648,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTimeInMillis(rs.getTimestamp(2).getTime());
 					state = new DateTimeType(calendar);
-				} else
+				} else	//Call, Location, String
 					state = new StringType(rs.getString(2));
 
 				MysqlItem mysqlItem = new MysqlItem(itemName, state, rs.getTimestamp(1));
@@ -638,7 +667,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			return items;
 		} catch (SQLException e) {
 			errCnt++;
-			logger.error("mySQL: Error running querying : " + e.getMessage());
+			logger.error("mySQL: Error running querying : ", e.getMessage());
 		}
 		return null;
 	}

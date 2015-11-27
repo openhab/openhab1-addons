@@ -24,9 +24,15 @@ import net.wimpi.modbus.msg.ModbusResponse;
 import net.wimpi.modbus.util.ModbusUtil;
 
 import java.io.IOException;
+
 import gnu.io.CommPort;
+
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gnu.io.UnsupportedCommOperationException;
 
 /**
@@ -40,6 +46,8 @@ import gnu.io.UnsupportedCommOperationException;
  */
 abstract public class ModbusSerialTransport
     implements ModbusTransport {
+
+  private static final Logger logger = LoggerFactory.getLogger(ModbusSerialTransport.class);
   protected CommPort  m_CommPort;
   protected boolean   m_Echo = false;     // require RS-485 echo processing
 
@@ -135,7 +143,7 @@ abstract public class ModbusSerialTransport
     try {
       m_CommPort.enableReceiveThreshold(th); /* chars */
     } catch (UnsupportedCommOperationException e) {
-      System.out.println(e.getMessage());
+      logger.error("Failed to setReceiveThreshold: {}", e.getMessage());
     }
   }
   
@@ -148,7 +156,7 @@ abstract public class ModbusSerialTransport
     try {
       m_CommPort.enableReceiveTimeout(ms); /* milliseconds */
     } catch (UnsupportedCommOperationException e) {
-      System.out.println(e.getMessage());
+      logger.error("Failed to setReceiveTimeout: {}", e.getMessage());
     }
   }
 
@@ -166,14 +174,13 @@ abstract public class ModbusSerialTransport
     byte echoBuf[] = new byte[len];
     setReceiveThreshold(len);
     int echoLen = m_CommPort.getInputStream().read(echoBuf, 0, len);
-    if (Modbus.debug)
-      System.out.println("Echo: " +
-                         ModbusUtil.toHex(echoBuf, 0, echoLen));
+    
+    logger.debug("Echo: {}", ModbusUtil.toHex(echoBuf, 0, echoLen));
     m_CommPort.disableReceiveThreshold();
     if (echoLen != len) {
-      if (Modbus.debug)
-        System.err.println("Error: Transmit echo not received.");
-      throw new IOException("Echo not received.");
+      final String errMsg = "Echo not received";
+      logger.error("Transmit {}", errMsg);
+      throw new IOException(errMsg);
     }
   }//readEcho
 

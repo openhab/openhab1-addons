@@ -25,6 +25,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBatteryCommandClass;
@@ -32,6 +33,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSwitchAllCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
@@ -65,6 +67,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	private Timer timer = new Timer();
 
 	private TimerTask timerTask = null;
+	
+	private final String MAX_VERSION = "255.255";
 	
 	private PendingConfiguration PendingCfg = new PendingConfiguration();
 
@@ -143,7 +147,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 4:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), MAX_VERSION) == false) {
 					break;
 				}
 
@@ -162,7 +166,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 5:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), MAX_VERSION) == false) {
 					break;
 				}
 
@@ -312,15 +316,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Add the action buttons
 				record.addAction("Heal", "Heal Node");
+				record.addAction("Initialise", "Reinitialise Node");
 				
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
 					record.addAction("Delete", "Delete Node");
 				}
 				records.add(record);
-
-				// This needs to be removed - temporary only until it's added to initialisation code.
-				record.addAction("Version", "Version Info");
 			}
 			return records;
 		}
@@ -353,6 +355,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record.value = node.getLocation();
 				records.add(record);
 
+				ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
+	            if (switchAllCommandClass != null) {
+	            	record = new OpenHABConfigurationRecord(domain, "SwitchAll", "Switch All", false);
+	            	record.type = OpenHABConfigurationRecord.TYPE.LIST;
+					record.addValue("0", "Exclude from All On and All Off groups");
+					record.addValue("1", "Include in All On group");
+					record.addValue("2", "Include in All Off group");
+					record.addValue("255", "Include in All On and All Off groups");
+					record.value = String.valueOf(switchAllCommandClass.getMode());
+	            	records.add(record);
+	            }
+				
 				if(node.getManufacturer() != Integer.MAX_VALUE) {
 					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == true) {
 						// Add links to configuration if the node supports the various command classes
@@ -391,6 +405,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				record = new OpenHABConfigurationRecord(domain + "info/", "Information");
 				records.add(record);
+			} else if (arg.equals("switch_all/")) { 
+				/*ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
+	            if (switchAllCommandClass != null) {
+	                logger.debug("NODE {}: Supports Switch All Command Class Adding Switch All Configuration ", (Object)nodeId);
+	                record = new OpenHABConfigurationRecord(domain, "Mode", "Mode", true);
+	                record.type = OpenHABConfigurationRecord.TYPE.LIST;
+					record.addValue("0x00", "Exclude from All On and All Off groups");
+					record.addValue("0x01", "Include in All On group");
+					record.addValue("0x02", "Include in All Off group");
+					record.addValue("0xFF", "Include in All On and All Off groups");
+					records.add(record);
+	            }*/
 			} else if (arg.equals("info/")) {
 				record = new OpenHABConfigurationRecord(domain, "NodeID", "Node ID", true);
 				record.value = Integer.toString(node.getNodeId());
@@ -491,7 +517,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = "Unknown";
 					}
 					else {
-						record.value = Double.toString(versionCommandClass.getProtocolVersion());
+						record.value = versionCommandClass.getProtocolVersion();
 					}
 					records.add(record);
 
@@ -500,7 +526,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = "Unknown";
 					}
 					else {
-						record.value = Double.toString(versionCommandClass.getApplicationVersion());
+						record.value = versionCommandClass.getApplicationVersion();
 					}
 					records.add(record);
 				}
@@ -768,6 +794,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
+				record = new OpenHABConfigurationRecord(domain, "LastWake", "Last Wakeup", true);
+				if(wakeupCommandClass.getLastWakeup() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(wakeupCommandClass.getLastWakeup());
+				}
+				records.add(record);
+
 				record = new OpenHABConfigurationRecord(domain, "Target", "Target Node", true);
 				record.value = Integer.toString(wakeupCommandClass.getTargetNodeId());
 				records.add(record);
@@ -882,8 +917,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// Process Controller Reset requests even if the controller isn't initialised
-		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network") && action.equals("SoftReset")) {
-			zController.requestSoftReset();
+		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network")) {
+			if(action.equals("SoftReset")) {
+				zController.requestSoftReset();
+			}
+			else if(action.equals("HardReset")) {
+				zController.requestHardReset();				
+			}
 		}
 		
 		// If the controller isn't ready, then ignore any further requests
@@ -947,23 +987,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					nodeSerializer.SerializeNode(node);
 				}
 
+				if (action.equals("Initialise")) {
+					logger.debug("NODE {}: re-initialising node", nodeId);
+
+					// Delete the saved XML
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(nodeId);
+					
+					this.zController.reinitialiseNode(nodeId);
+				}
+
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
-				}
-
-				// This is temporary
-				// It should be in the startup code, but that needs refactoring
-				if (action.equals("Version")) {
-					logger.debug("NODE {}: Get node version", nodeId);
-					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-							.getCommandClass(CommandClass.VERSION);
-					if (versionCommandClass == null) {
-						return;
-					}
-
-					// Request the version report for this node
-					this.zController.sendData(versionCommandClass.getVersionMessage());
 				}
 
 				// Return here as afterwards we assume there are more elements
@@ -1090,6 +1126,27 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				if (splitDomain[2].equals("Location")) {
 					node.setLocation(value);
+				}
+				
+				if (splitDomain[2].equals("SwitchAll")) {
+					ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass) node
+							.getCommandClass(CommandClass.SWITCH_ALL);
+
+					if (switchAllCommandClass == null) {
+						logger.error("NODE {}: Error getting switchAllCommandClass in doSet", nodeId);
+						return;
+					}
+
+					
+					// Set the switch all mode
+					int mode = Integer.parseInt(value);
+					
+					PendingCfg.Add(ZWaveSwitchAllCommandClass.CommandClass.SWITCH_ALL.getKey(), node.getNodeId(), 0, mode);
+					
+					SerialMessage msg = switchAllCommandClass.setValueMessage(mode);
+					this.zController.sendData(msg);
+					// And request a read-back
+					this.zController.sendData(switchAllCommandClass.getValueMessage());
 				}
 				
 				// Write the node to disk
@@ -1271,6 +1328,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			// Remove this node from the pending list
 			PendingCfg.Remove(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), event.getNodeId());
+			return;
+		}
+		
+		if (event instanceof ZWaveSwitchAllCommandClass.ZWaveSwitchAllModeEvent) {
+			ZWaveSwitchAllCommandClass.ZWaveSwitchAllModeEvent e = (ZWaveSwitchAllCommandClass.ZWaveSwitchAllModeEvent) event;
+			
+			// Write the node to disk
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(zController.getNode(event.getNodeId()));
+
+			// Remove this node from the pending list
+			PendingCfg.Remove(ZWaveCommandClass.CommandClass.SWITCH_ALL.getKey(), e.getNodeId());
 			return;
 		}
 

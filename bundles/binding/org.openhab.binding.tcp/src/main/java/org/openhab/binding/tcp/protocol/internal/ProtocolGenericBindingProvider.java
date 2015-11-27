@@ -56,9 +56,9 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 			LoggerFactory.getLogger(ProtocolGenericBindingProvider.class);
 
 	/** {@link Pattern} which matches a binding configuration part */
-	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<|>]\\[.*?\\])*");
-	private static final Pattern ACTION_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(.*?):\'?(.*?)\'?\\]");
-	private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*):(.*):\'?(.*?)\'?\\]");
+	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:\\s|$)");
+	private static final Pattern ACTION_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(.*?):(?:'(.*)'|(.*))\\]");
+	private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(?:'(.*)'|(.*))\\]");
 
 	static int counter = 0;
 
@@ -135,13 +135,17 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 					commandAsString = actionMatcher.group(2);
 					host = actionMatcher.group(3);
 					port = actionMatcher.group(4);
-					protocolCommand = actionMatcher.group(5);					
+					protocolCommand = actionMatcher.group(5) != null
+							? actionMatcher.group(5)
+							: actionMatcher.group(6);
 				} else if (statusMatcher.matches()) {
 					direction = statusMatcher.group(1);
 					commandAsString = null;
 					host = statusMatcher.group(2);
 					port = statusMatcher.group(3);
-					protocolCommand = statusMatcher.group(4);
+					protocolCommand = statusMatcher.group(4) != null
+							? statusMatcher.group(4)
+							: statusMatcher.group(5);
 				}
 
 				if (direction.equals(">")){
@@ -250,7 +254,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 		List<Command> commands = new ArrayList<Command>();
 		ProtocolBindingConfig aConfig = (ProtocolBindingConfig) bindingConfigs.get(itemName);
 		for(Command aCommand : aConfig.keySet()) {
-			if(aCommand == command) {
+			if (aCommand.equals(command)) {
 				commands.add(aCommand);
 			} else {
 				if(aCommand instanceof DecimalType) {

@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>action</artifactId>
-		<version>1.7.0-SNAPSHOT</version>
+		<version>1.8.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.action.prowl</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.prowl</bundle.namespace>
 		<deb.name>openhab-addon-action-prowl</deb.name>
-		<deb.description>openhab addon action prowl</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

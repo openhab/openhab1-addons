@@ -433,7 +433,8 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		logger.trace("Process Multi-channel Encapsulation");
 
 		if(serialMessage.getMessagePayload().length < offset + 2) {
-			logger.error("NODE {}: Invalid data length", this.getNode().getNodeId());
+			logger.error("NODE {}: Invalid data length ({}/{})", this.getNode().getNodeId(),
+					serialMessage.getMessagePayload().length, offset);
 			return;
 		}
 

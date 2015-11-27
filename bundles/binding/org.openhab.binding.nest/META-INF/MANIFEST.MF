@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Nest Binding
 Bundle-SymbolicName: org.openhab.binding.nest
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.binding.nest.internal.NestActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Nest binding of the open Home Aut
@@ -24,6 +24,7 @@ Import-Package: com.google.common.base,
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
+ org.codehaus.jackson.map.annotate,
  org.openhab.binding.nest,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -44,4 +45,3 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: lib/commons-beanutils-1.8.3.jar,
  .
-Require-Bundle: org.openhab.io.rest.lib

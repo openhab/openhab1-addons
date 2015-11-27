@@ -27,7 +27,9 @@ public class DSCAlarmDeviceProperties {
 	private int systemConnection = 0;
 	private String systemConnectionDescription = "";
 	private String systemMessage = "";
-	private Date systemTimeDate;
+	private Date systemTime = new Date(0);
+	private boolean systemTimeStamp = false;
+	private boolean systemTimeBroadcast = false;
 	private int systemCommand = -1;
 	private int systemError = 0;
 	private int systemErrorCode = 0;
@@ -48,7 +50,16 @@ public class DSCAlarmDeviceProperties {
 	private String tamperStateDescription = "";
 	private int faultState = 0;
 	private String faultStateDescription = "";
-
+	private int openingClosingState = 0; /* 0=None, 1=User Closing, 2=Special Closing, 3=Partial Closing, 4=User Opening, 5=Special Opening */
+	private String openingClosingStateDescription = "";
+	/* Bitwise representation of a zones state:
+	   bit0=General State (0-Closed, 1-Open),
+	   bit1=Arm State (0-Armed, 1-Bypassed)
+	   bit2=Alarm State (0-No Alarm, 1-Alarm)
+	   bit3=Tamper State (0-No Tamper, 1-Tamper)
+	   bit4=Fault State (0-No Fault, 1-Fault) */
+	private int zoneBitState = 0;
+	
 	private String ledStates[] = {"Off","On","Flashing"};
 	private int readyLEDState = 0; /* 0=Off, 1=On, 2=Flashing*/
 	private String readyLEDStateDescription = "Off";
@@ -69,6 +80,17 @@ public class DSCAlarmDeviceProperties {
 	private int acLEDState = 0; /* 0=Off, 1=On, 2=Flashing*/
 	private String acLEDStateDescription = "Off";
 
+	private String troubleMessage = "";
+	private boolean troubleLED = false;
+	private boolean serviceRequired = false;
+	private boolean acTrouble = false;
+	private boolean telephoneLineTrouble = false;
+	private boolean failureToCommunicate = false;
+	private boolean zoneFault = false;
+	private boolean zoneTamper = false;
+	private boolean zoneLowBattery = false;
+	private boolean lossOfTime = false;
+		
 	private boolean fireKeyAlarm = false;
 	private boolean panicKeyAlarm = false;
 	private boolean auxKeyAlarm = false;
@@ -85,12 +107,12 @@ public class DSCAlarmDeviceProperties {
 	
 	enum StateType{
 		CONNECTION_STATE,
-		TIME_DATE,
 		GENERAL_STATE,
 		ARM_STATE,
 		ALARM_STATE,
 		TAMPER_STATE,
-		FAULT_STATE;
+		FAULT_STATE,
+		OPENING_CLOSING_STATE;
 	}
 	
 	enum LEDStateType{
@@ -105,6 +127,17 @@ public class DSCAlarmDeviceProperties {
 		AC_LED_STATE;
 	}
 
+	enum TroubleType{
+		SERVICE_REQUIRED,
+		AC_TROUBLE,
+		TELEPHONE_LINE_TROUBLE,
+		FAILURE_TO_COMMUNICATE,
+		ZONE_FAULT,
+		ZONE_TAMPER,
+		ZONE_LOW_BATTERY,
+		LOSS_OF_TIME;
+	}
+	
 	enum TriggerType{
 		FIRE_KEY_ALARM,
 		PANIC_KEY_ALARM,
@@ -133,9 +166,18 @@ public class DSCAlarmDeviceProperties {
 		return systemMessage;
 	}
 	
-	public String getTimeDate() {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:mm MM/dd/YY");
-		return tm.format(systemTimeDate);
+	public String getSystemTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		
+		return sdf.format(systemTime);
+	}
+
+	public boolean getSystemTimeStamp() {
+		return systemTimeStamp;
+	}
+
+	public boolean getSystemTimeBroadcast() {
+		return systemTimeBroadcast;
 	}
 
 	public int getSystemCommand() {
@@ -192,6 +234,9 @@ public class DSCAlarmDeviceProperties {
 			case FAULT_STATE:
 				state = faultState;
 				break;
+			case OPENING_CLOSING_STATE:
+				state = openingClosingState;
+				break;
 			default:
 				break;
 		}
@@ -221,13 +266,59 @@ public class DSCAlarmDeviceProperties {
 			case FAULT_STATE:
 				stateDescription = faultStateDescription;
 				break;
+			case OPENING_CLOSING_STATE:
+				stateDescription = openingClosingStateDescription;
+				break;
 			default:
 				break;
 		}
 		
 		return stateDescription;
 	}
-
+	
+	public int getZoneBitState() {
+		return zoneBitState;
+	}
+	
+	public boolean getZoneBitState(int bit) {
+		int bitState;
+		boolean state = false;
+		
+		if(bit >= 0 && bit <= 7) {
+			bitState = (this.zoneBitState >> bit) & 1;
+			if(bitState == 1)
+				state = true;
+		}
+		
+		return state;
+	}
+	
+	public boolean getZoneBitState(StateType stateType) {
+		int bit = -1;
+		
+		switch(stateType) {
+			case GENERAL_STATE:
+				bit = 0;
+				break;
+			case ARM_STATE:
+				bit = 1;
+				break;
+			case ALARM_STATE:
+				bit = 2;
+				break;
+			case TAMPER_STATE:
+				bit = 3;
+				break;
+			case FAULT_STATE:
+				bit = 4;
+				break;
+			default:
+				break;
+		}
+		
+		return getZoneBitState(bit);
+	}
+	
 	public int getLEDState(LEDStateType stateType) {
 		int state = 0;
 		
@@ -306,6 +397,50 @@ public class DSCAlarmDeviceProperties {
 
 	}
 	
+	public String getTroubleMessage() {
+		return troubleMessage;
+	}
+
+	public boolean getTroubleLED() {
+		return troubleLED;
+	}
+
+	public boolean getTrouble(TroubleType troubleType) {
+		boolean trouble = false;
+		
+		switch(troubleType) {
+			case SERVICE_REQUIRED:
+				trouble = serviceRequired;
+				break;
+			case AC_TROUBLE:
+				trouble = acTrouble;
+				break;
+			case TELEPHONE_LINE_TROUBLE:
+				trouble = telephoneLineTrouble;
+				break;
+			case FAILURE_TO_COMMUNICATE:
+				trouble = failureToCommunicate;
+				break;
+			case ZONE_FAULT:
+				trouble = zoneFault;
+				break;
+			case ZONE_TAMPER:
+				trouble = zoneTamper;
+				break;
+			case ZONE_LOW_BATTERY:
+				trouble = zoneLowBattery;
+				break;
+			case LOSS_OF_TIME:
+				trouble = lossOfTime;
+				break;
+			default:
+				break;
+		}
+		
+		return trouble;
+		
+	}
+	
 	public boolean getTrigger(TriggerType triggerType) {
 		boolean trigger = false;
 		
@@ -364,13 +499,25 @@ public class DSCAlarmDeviceProperties {
 		this.systemMessage = systemMessage;
 	}
 
-	public void setTimeDate(String timeDate) {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:MM MM/DD/YY");
+	public void setSystemTime(String time) {
+		SimpleDateFormat sdf = new SimpleDateFormat("HHmmMMddyy");
+		Date date = null;
+		
 		try {
-			systemTimeDate = tm.parse(timeDate);
-		} catch (ParseException parseException) {
-			logger.error("setTimeDate(): parse error {} ", parseException);
+			date = sdf.parse(time);
+		} catch (ParseException e) {
+			logger.error("setTimeDate(): Parse Exception occured while trying parse date string - {}. ",e);
 		}
+		
+		this.systemTime = date;
+	}
+
+	public void setSystemTimeStamp(boolean systemTimeStamp) {
+		this.systemTimeStamp = systemTimeStamp;
+	}
+
+	public void setSystemTimeBroadcast(boolean systemTimeBroadcast) {
+		this.systemTimeBroadcast = systemTimeBroadcast;
 	}
 
 	public void setSystemError(int systemError) {
@@ -432,6 +579,10 @@ public class DSCAlarmDeviceProperties {
 				faultState = state;
 				faultStateDescription = stateDescription;
 				break;
+			case OPENING_CLOSING_STATE:
+				openingClosingState = state;
+				openingClosingStateDescription = stateDescription;
+				break;
 			default:
 				break;
 		}
@@ -458,11 +609,57 @@ public class DSCAlarmDeviceProperties {
 			case FAULT_STATE:
 				faultStateDescription = stateDescription;
 				break;
+			case OPENING_CLOSING_STATE:
+				openingClosingStateDescription = stateDescription;
+				break;
 			default:
 				break;
 		}
 	}
+
+	public void clearZoneBitState() {
+		zoneBitState = 0;
+	}
 	
+	public void setZoneBitState(int bit, boolean set) {
+		
+		if(bit >= 0 && bit <= 7) {
+			if(set) {
+				zoneBitState |= 1 << bit;
+			}
+			else {
+				zoneBitState &= ~(1 << bit);
+				
+			}
+		}
+	}
+
+	public void setZoneBitState(StateType stateType, boolean set) {
+		int bit = -1;
+		
+		switch(stateType) {
+			case GENERAL_STATE:
+				bit = 0;
+				break;
+			case ARM_STATE:
+				bit = 1;
+				break;
+			case ALARM_STATE:
+				bit = 2;
+				break;
+			case TAMPER_STATE:
+				bit = 3;
+				break;
+			case FAULT_STATE:
+				bit = 4;
+				break;
+			default:
+				break;
+		}
+		
+		setZoneBitState(bit, set);
+	}
+
 	public void setLEDState(LEDStateType stateType, int state) {
 		
 		switch(stateType) {
@@ -506,6 +703,47 @@ public class DSCAlarmDeviceProperties {
 				break;
 		}	
 	}
+
+	public void setTroubleMessage(String troubleCondition) {
+		this.troubleMessage = troubleCondition;
+	}
+
+	public void setTroubleLED(boolean troubleLED) {
+		this.troubleLED = troubleLED;
+	}
+
+	public void setTrouble(TroubleType troubleType, boolean trouble) {
+		
+		switch(troubleType) {
+			case SERVICE_REQUIRED:
+				serviceRequired = trouble;
+				break;
+			case AC_TROUBLE:
+				acTrouble = trouble;
+				break;
+			case TELEPHONE_LINE_TROUBLE:
+				telephoneLineTrouble = trouble;
+				break;
+			case FAILURE_TO_COMMUNICATE:
+				failureToCommunicate = trouble;
+				break;
+			case ZONE_FAULT:
+				zoneFault = trouble;
+				break;
+			case ZONE_TAMPER:
+				zoneTamper = trouble;
+				break;
+			case ZONE_LOW_BATTERY:
+				zoneLowBattery = trouble;
+				break;
+			case LOSS_OF_TIME:
+				lossOfTime = trouble;
+				break;
+			default:
+				break;
+		}		
+	}
+	
 	public void setTrigger(TriggerType triggerType, boolean trigger) {
 		
 		switch(triggerType) {
@@ -551,5 +789,66 @@ public class DSCAlarmDeviceProperties {
 			default:
 				break;
 		}
+	}
+	
+	public static void main (String[] arg) {
+		DSCAlarmDeviceProperties prop = new DSCAlarmDeviceProperties();
+		int bitState = prop.getZoneBitState();
+		boolean state = false;
+		System.out.println(bitState + " " + state);
+		
+		prop.setZoneBitState(StateType.GENERAL_STATE, true);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.GENERAL_STATE);
+		System.out.println("General State: " + bitState + " " + state);
+		prop.setZoneBitState(StateType.GENERAL_STATE, false);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.GENERAL_STATE);
+		System.out.println("General State: " + bitState + " " + state);
+		
+		prop.setZoneBitState(StateType.ARM_STATE, true);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.ARM_STATE);
+		System.out.println("Arm State: " + bitState + " " + state);
+		prop.setZoneBitState(StateType.ARM_STATE, false);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.ARM_STATE);
+		System.out.println("Arm State: " + bitState + " " + state);
+
+		prop.setZoneBitState(StateType.ALARM_STATE, true);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.ALARM_STATE);
+		System.out.println("Alarm State: " + bitState + " " + state);
+		prop.setZoneBitState(StateType.ALARM_STATE, false);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.ALARM_STATE);
+		System.out.println("Alarm State: " + bitState + " " + state);
+
+		prop.setZoneBitState(StateType.TAMPER_STATE, true);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.TAMPER_STATE);
+		System.out.println("Tamper State: " + bitState + " " + state);
+		prop.setZoneBitState(StateType.TAMPER_STATE, false);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.ALARM_STATE);
+		System.out.println("Tamper State: " + bitState + " " + state);
+
+		prop.setZoneBitState(StateType.FAULT_STATE, true);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.FAULT_STATE);
+		System.out.println("Fault State: " + bitState + " " + state);
+		prop.setZoneBitState(StateType.FAULT_STATE, false);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(StateType.FAULT_STATE);
+		System.out.println("Fault State: " + bitState + " " + state);
+		
+		prop.setZoneBitState(7, true);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(7);
+		System.out.println("Seventh Bit: " + bitState + " " + state);
+		prop.setZoneBitState(7, false);
+		bitState = prop.getZoneBitState();
+		state = prop.getZoneBitState(7);
+		System.out.println("Seventh Bit: " + bitState + " " + state);
 	}
 }
