@@ -17,6 +17,13 @@ package org.openhab.binding.sapp.internal.configs;
  */
 public class SappBindingConfigUtils {
 
+	public static final String WORD_MASK_U = "*";
+	public static final String WORD_MASK_S = "+";
+	public static final String LOW_MASK_U = "L";
+	public static final String LOW_MASK_S = "L+";
+	public static final String HIGH_MASK_U = "H";
+	public static final String HIGH_MASK_S = "H+";
+
 	/**
 	 * mask the value against the subAddress
 	 * 
@@ -27,11 +34,11 @@ public class SappBindingConfigUtils {
 	 */
 	public static int maskWithSubAddress(String subAddress, int value) {
 
-		if (subAddress.equals("*")) {
+		if (subAddress.equals(WORD_MASK_U) || subAddress.equals(WORD_MASK_S)) {
 			return value & 0xFFFF;
-		} else if (subAddress.equals("L")) {
+		} else if (subAddress.equals(LOW_MASK_U) || subAddress.equals(LOW_MASK_S)) {
 			return (value & 0x00FF);
-		} else if (subAddress.equals("H")) {
+		} else if (subAddress.equals(HIGH_MASK_U) || subAddress.equals(HIGH_MASK_S)) {
 			return ((value >> 8) & 0x00FF);
 		} else {
 			int shift = Integer.parseInt(subAddress);
@@ -51,11 +58,11 @@ public class SappBindingConfigUtils {
 	 */
 	public static int maskWithSubAddressAndSet(String subAddress, int newValue, int previousValue) {
 
-		if (subAddress.equals("*")) {
+		if (subAddress.equals(WORD_MASK_U) || subAddress.equals(WORD_MASK_S)) {
 			return newValue & 0xFFFF;
-		} else if (subAddress.equals("L")) {
+		} else if (subAddress.equals(LOW_MASK_U) || subAddress.equals(LOW_MASK_S)) {
 			return (newValue & 0x00FF) | (previousValue & 0xFF00);
-		} else if (subAddress.equals("H")) {
+		} else if (subAddress.equals(HIGH_MASK_U) || subAddress.equals(HIGH_MASK_S)) {
 			return ((newValue << 8) & 0xFF00) | (previousValue & 0x00FF);
 		} else {
 			int shift = Integer.parseInt(subAddress);

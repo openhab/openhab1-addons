@@ -20,15 +20,17 @@ public interface SappUpdatePendingRequestsProvider {
 
 	/**
 	 * adds itemName to the items list to be refreshed
-	 *  
-	 * @param itemName name of item 
+	 * 
+	 * @param itemName
+	 *            name of item
 	 */
 	public void addPendingUpdateRequest(String itemName);
 
 	/**
 	 * clears all pending requests and adds itemName to the items list to be refreshed. Must be implemented atomically
-	 *  
-	 * @param itemName name of item 
+	 * 
+	 * @param itemName
+	 *            name of item
 	 */
 	public void replaceAllPendingUpdateRequests(String itemName);
 
