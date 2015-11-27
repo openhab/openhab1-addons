@@ -8,8 +8,6 @@ import org.openhab.core.types.Command;
 
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.TVControl;
-import com.connectsdk.service.capability.VolumeControl;
-import com.connectsdk.service.capability.VolumeControl.MuteListener;
 import com.connectsdk.service.command.ServiceSubscription;
 
 public class TVControlUp extends AbstractOpenhabConnectSDKPropertyBridge<Void> {

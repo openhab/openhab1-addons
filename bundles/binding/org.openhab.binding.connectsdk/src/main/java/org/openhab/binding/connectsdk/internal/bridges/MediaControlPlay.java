@@ -7,29 +7,29 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 
 import com.connectsdk.device.ConnectableDevice;
-import com.connectsdk.service.capability.VolumeControl;
+import com.connectsdk.service.capability.MediaControl;
 import com.connectsdk.service.command.ServiceSubscription;
 
-public class VolumeControlDown extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
+public class MediaControlPlay extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
+	
+	@Override
+	protected String getItemClass() {
+		return "MediaControl";
+	}
 	
 	@Override
 	protected String getItemProperty() {
-		return "down";
+		return "play";
 	}
 
-	@Override
-	protected String getItemClass() {
-		return "VolumeControl";
-	}
-
-	private VolumeControl getControl(final ConnectableDevice device) {
-		return device.getCapability(VolumeControl.class);
+	private MediaControl getControl(final ConnectableDevice device) {
+		return device.getCapability(MediaControl.class);
 	}
 
 	@Override
 	public void onReceiveCommand(final ConnectableDevice d, final String clazz, final String property, Command command) {
-		if (matchClassAndProperty(clazz, property) && d.hasCapabilities(VolumeControl.Volume_Up_Down)) {
-			getControl(d).volumeDown(createDefaultResponseListener());
+		if (matchClassAndProperty(clazz, property) && d.hasCapabilities(MediaControl.Play)) {
+			getControl(d).play(createDefaultResponseListener());
 		}
 
 	}

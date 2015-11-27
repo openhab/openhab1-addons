@@ -86,7 +86,7 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 
 						@Override
 						public void onError(ServiceCommandError error) {
-							logger.error("error: ", error.getMessage());
+							logger.error("error: {} {} {}", error.getCode(), error.getPayload(), error.getMessage());
 						}
 
 						@Override

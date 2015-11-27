@@ -3,8 +3,6 @@ package org.openhab.binding.connectsdk.internal.bridges;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
 import org.openhab.core.events.EventPublisher;
@@ -13,16 +11,12 @@ import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.connectsdk.core.ChannelInfo;
 import com.connectsdk.core.ProgramInfo;
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.TVControl;
-import com.connectsdk.service.capability.TVControl.ChannelListener;
 import com.connectsdk.service.capability.TVControl.ProgramInfoListener;
 import com.connectsdk.service.command.ServiceCommandError;
 import com.connectsdk.service.command.ServiceSubscription;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 public class TVControlProgram extends AbstractOpenhabConnectSDKPropertyBridge<ProgramInfoListener> {
 	private static final Logger logger = LoggerFactory.getLogger(TVControlProgram.class);
@@ -55,7 +49,7 @@ public class TVControlProgram extends AbstractOpenhabConnectSDKPropertyBridge<Pr
 
 						@Override
 						public void onError(ServiceCommandError error) {
-							logger.error("error: ", error.getMessage());
+							logger.error("error: {} {} {}", error.getCode(), error.getPayload(), error.getMessage());
 						}
 
 						@Override
