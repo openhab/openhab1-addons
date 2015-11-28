@@ -112,10 +112,10 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 					// For temperature, there are only two scales, so we simplify the conversion
                     if (sensorEvent.getSensorScale() == 0) {
                         // Scale is celsius, convert to fahrenheit
-                        val = val.multiply(ONE_POINT_EIGHT).add(THIRTY_TWO).movePointRight(1);
+                        val = val.multiply(ONE_POINT_EIGHT).add(THIRTY_TWO);
                     } else if (sensorEvent.getSensorScale() == 1) {
                         // Scale is fahrenheit, convert to celsius
-                        val = val.movePointLeft(1).subtract(THIRTY_TWO).divide(ONE_POINT_EIGHT, MathContext.DECIMAL32);
+                        val = val.subtract(THIRTY_TWO).divide(ONE_POINT_EIGHT, MathContext.DECIMAL32);
                     }
 					break;
 				default:
