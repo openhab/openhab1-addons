@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.sapp.internal.model;
 
+import org.openhab.binding.sapp.internal.configs.SappBindingConfigUtils;
+
 /**
  * Decimal Address model
  * 
@@ -79,13 +81,13 @@ public class SappAddressDecimal extends SappAddress {
 
 	private void setOriginalScale(String subAddress) {
 
-		if (subAddress.equals("*")) {
+		if (subAddress.equals(SappBindingConfigUtils.WORD_MASK_U) || subAddress.equals(SappBindingConfigUtils.WORD_MASK_S)) {
 			originalMinScale = 0;
 			originalMaxScale = 0xFFFF;
-		} else if (subAddress.equals("L")) {
+		} else if (subAddress.equals(SappBindingConfigUtils.LOW_MASK_U) || subAddress.equals(SappBindingConfigUtils.LOW_MASK_S)) {
 			originalMinScale = 0;
 			originalMaxScale = 0x00FF;
-		} else if (subAddress.equals("H")) {
+		} else if (subAddress.equals(SappBindingConfigUtils.HIGH_MASK_U) || subAddress.equals(SappBindingConfigUtils.HIGH_MASK_S)) {
 			originalMinScale = 0;
 			originalMaxScale = 0x00FF;
 		} else {
@@ -97,8 +99,20 @@ public class SappAddressDecimal extends SappAddress {
 	/**
 	 * returns the scaled value with respect to the original scale
 	 */
-	public double scaledValue(double value) {
-		return (((double) (value - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale);
+	public double scaledValue(int value, String subAddress) {
+		double toScaleValue;
+
+		if (subAddress.equals(SappBindingConfigUtils.WORD_MASK_S) && value > 0x7FFF) {
+			toScaleValue = value - 0xFFFF - 1;
+		} else if (subAddress.equals(SappBindingConfigUtils.LOW_MASK_S) && value > 0x7F) {
+			toScaleValue = value - 0xFF - 1;
+		} else if (subAddress.equals(SappBindingConfigUtils.HIGH_MASK_S) && value > 0x7F) {
+			toScaleValue = value - 0xFF - 1;
+		} else {
+			toScaleValue = value;
+		}
+
+		return (((double) (toScaleValue - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale);
 	}
 
 	/**

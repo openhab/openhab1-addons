@@ -38,13 +38,16 @@ public abstract class SappBindingConfig implements BindingConfig {
 	protected static final String[] validSubAddresses;
 
 	static {
-		validSubAddresses = new String[19];
+		validSubAddresses = new String[22];
 		for (int i = 0; i < 16; i++) {
 			validSubAddresses[i] = String.valueOf(i + 1);
 		}
-		validSubAddresses[16] = "L";
-		validSubAddresses[17] = "H";
-		validSubAddresses[18] = "*";
+		validSubAddresses[16] = SappBindingConfigUtils.WORD_MASK_U;
+		validSubAddresses[17] = SappBindingConfigUtils.WORD_MASK_S;
+		validSubAddresses[18] = SappBindingConfigUtils.LOW_MASK_U;
+		validSubAddresses[19] = SappBindingConfigUtils.LOW_MASK_S;
+		validSubAddresses[20] = SappBindingConfigUtils.HIGH_MASK_U;
+		validSubAddresses[21] = SappBindingConfigUtils.HIGH_MASK_S;
 	}
 
 	private String itemName;
