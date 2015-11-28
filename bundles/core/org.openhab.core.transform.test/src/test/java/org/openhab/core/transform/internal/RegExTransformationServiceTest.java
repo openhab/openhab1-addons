@@ -69,5 +69,21 @@ public class RegExTransformationServiceTest extends AbstractTransformationServic
 		Assert.assertEquals("8", transformedResponse);
 	}
 	
+	@Test
+	public void testTransformByRegex_substituteFirst() throws TransformationException {
+		// method under test
+		String transformedResponse = processor.transform("s/^OP:(.*?),ARG:(.*)$/$1($2)/", "OP:SetMode,ARG:42");
+		
+		// Asserts
+		Assert.assertEquals("SetMode(42)", transformedResponse);
+	}
 
+	@Test
+	public void testTransformByRegex_substituteAll() throws TransformationException {
+		// method under test
+		String transformedResponse = processor.transform("s/([A-Z]+)([0-9]+),*/var$1=$2 /g", "X12,Y54");
+		
+		// Asserts
+		Assert.assertEquals("varX=12 varY=54 ", transformedResponse);
+	}
 }

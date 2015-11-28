@@ -29,7 +29,9 @@ import org.slf4j.LoggerFactory;
 public class RegExTransformationService implements TransformationService {
 
 	static final Logger logger = LoggerFactory.getLogger(RegExTransformationService.class);
-
+	
+	private static final Pattern substPattern = Pattern.compile("^s/(.*?[^\\\\])/(.*?[^\\\\])/(.*)$");
+	
 	/**
 	 * @{inheritDoc
 	 */
@@ -42,7 +44,24 @@ public class RegExTransformationService implements TransformationService {
 		logger.debug("about to transform '{}' by the function '{}'", source, regExpression);
 
 		String result = source;
-
+		
+		Matcher substMatcher = substPattern.matcher(regExpression);
+		if (substMatcher.matches()) {
+			logger.debug("Using substitution form of regex transformation");
+			String regex = substMatcher.group(1);
+			String substitution = substMatcher.group(2);
+			String options = substMatcher.group(3);
+			if (options.equals("g")) {
+				result = source.trim().replaceAll(regex, substitution);
+			}
+			else {
+				result = source.trim().replaceFirst(regex, substitution);
+			}
+			if (result != null) {
+				return result;
+			}
+		}
+		
 		Matcher matcher = Pattern.compile("^" + regExpression + "$", Pattern.DOTALL).matcher(source.trim());
 		if (!matcher.matches()) {
 			logger.debug("the given regex '^{}$' doesn't match the given content '{}' -> couldn't compute transformation", regExpression, source);
