@@ -2949,4 +2949,17 @@
 			<ConfigFile>nodon/crc3100.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>020e</Id>
+		<Name>Domitech</Name>
+		<Product>
+			<Reference>
+				<Type>4c42</Type>
+				<Id>3135</Id>
+			</Reference>
+			<Model>ZB22UK</Model>
+			<Label lang="en">Smart LED Light Bulb</Label>
+			<ConfigFile>domitech/domezbulb.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
