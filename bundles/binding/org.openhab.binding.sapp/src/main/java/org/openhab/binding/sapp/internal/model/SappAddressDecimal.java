@@ -8,6 +8,10 @@
  */
 package org.openhab.binding.sapp.internal.model;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 import org.openhab.binding.sapp.internal.configs.SappBindingConfigUtils;
 
 /**
@@ -99,27 +103,32 @@ public class SappAddressDecimal extends SappAddress {
 	/**
 	 * returns the scaled value with respect to the original scale
 	 */
-	public double scaledValue(int value, String subAddress) {
-		double toScaleValue;
+	public BigDecimal scaledValue(int value, String subAddress) {
+		BigDecimal toScaleValue = new BigDecimal(value);
 
 		if (subAddress.equals(SappBindingConfigUtils.WORD_MASK_S) && value > 0x7FFF) {
-			toScaleValue = value - 0xFFFF - 1;
+			toScaleValue = (toScaleValue.subtract(new BigDecimal(0xFFFF))).subtract(BigDecimal.ONE);
 		} else if (subAddress.equals(SappBindingConfigUtils.LOW_MASK_S) && value > 0x7F) {
-			toScaleValue = value - 0xFF - 1;
+			toScaleValue = (toScaleValue.subtract(new BigDecimal(0xFF))).subtract(BigDecimal.ONE);
 		} else if (subAddress.equals(SappBindingConfigUtils.HIGH_MASK_S) && value > 0x7F) {
-			toScaleValue = value - 0xFF - 1;
-		} else {
-			toScaleValue = value;
+			toScaleValue = (toScaleValue.subtract(new BigDecimal(0xFF))).subtract(BigDecimal.ONE);
 		}
 
-		return (((double) (toScaleValue - originalMinScale)) * ((double) (maxScale - minScale)) / ((double) (originalMaxScale - originalMinScale))) + ((double) minScale);
+		BigDecimal originalScale = new BigDecimal(originalMaxScale - originalMinScale);
+		BigDecimal scale = new BigDecimal(maxScale - minScale);
+
+		return toScaleValue.subtract(new BigDecimal(originalMinScale)).multiply(scale).divide(originalScale, MathContext.DECIMAL128).add(new BigDecimal(minScale));
 	}
 
 	/**
 	 * converts a scaled value back to the original scale
 	 */
-	public int backScaledValue(double value) {
-		return (int) Math.round((((double) (value - minScale)) * ((double) (originalMaxScale - originalMinScale)) / ((double) (maxScale - minScale))) + ((double) originalMinScale));
+	public int backScaledValue(BigDecimal value) {
+
+		BigDecimal originalScale = new BigDecimal(originalMaxScale - originalMinScale);
+		BigDecimal scale = new BigDecimal(maxScale - minScale);
+
+		return value.subtract(new BigDecimal(minScale)).multiply(originalScale).divide(scale, MathContext.DECIMAL128).add(new BigDecimal(originalMinScale)).round(new MathContext(0, RoundingMode.HALF_EVEN)).intValue();
 	}
 
 	/**
