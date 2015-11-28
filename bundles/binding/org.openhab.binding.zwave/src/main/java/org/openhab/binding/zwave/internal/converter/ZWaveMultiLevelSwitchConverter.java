@@ -104,11 +104,14 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			return;
 		}
 
+		State state = converter.convertFromValueToState(event.getValue());
+
 		// If we read 99%, then change it to 100%
 		// This just appears better in OH otherwise you can't get 100%!
-		State state = converter.convertFromValueToState(event.getValue());
-		if(((DecimalType)state).intValue() == 99) {
-			state = new PercentType(100);
+		if(converter instanceof IntegerPercentTypeConverter) {
+			if(((DecimalType)state).intValue() == 99) {
+				state = new PercentType(100);
+			}
 		}
 
 		if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
