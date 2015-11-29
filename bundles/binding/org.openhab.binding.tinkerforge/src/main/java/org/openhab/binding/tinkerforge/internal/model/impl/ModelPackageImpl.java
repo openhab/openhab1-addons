@@ -24,164 +24,6 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
-import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
-import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
-import org.openhab.binding.tinkerforge.internal.model.ColorActor;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
-import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
-import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
-import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
-import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
-import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
-import org.openhab.binding.tinkerforge.internal.model.Electrode;
-import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
-import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IO4Device;
-import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IODevice;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
-import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
-import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
-import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
-import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
-import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
-import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
-import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
-import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.MActor;
-import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
-import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
-import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
-import org.openhab.binding.tinkerforge.internal.model.MDevice;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
-import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
-import org.openhab.binding.tinkerforge.internal.model.MServo;
-import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
-import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
-import org.openhab.binding.tinkerforge.internal.model.MTextActor;
-import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
-import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.MoveActor;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
-import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
-import org.openhab.binding.tinkerforge.internal.model.NumberActor;
-import org.openhab.binding.tinkerforge.internal.model.OHConfig;
-import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
-import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
-import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
-import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
-import org.openhab.binding.tinkerforge.internal.model.PTCNoiseRejectionFilter;
-import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
-import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
-import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
-import org.openhab.binding.tinkerforge.internal.model.PTCWireMode;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.Proximity;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
-import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
-import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
-import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFConfig;
-import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
-import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
-import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
-import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
-import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
-import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -1029,6 +871,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass tfBaseConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfTemperatureConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -5188,6 +5037,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickletTemperature_SlowI2C()
+  {
+    return (EAttribute)mBrickletTemperatureEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EOperation getMBrickletTemperature__Init()
   {
     return mBrickletTemperatureEClass.getEOperations().get(0);
@@ -5481,6 +5340,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getTFBaseConfiguration_CallbackPeriod()
   {
     return (EAttribute)tfBaseConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFTemperatureConfiguration()
+  {
+    return tfTemperatureConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFTemperatureConfiguration_SlowI2C()
+  {
+    return (EAttribute)tfTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -7134,6 +7013,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletTemperatureEClass = createEClass(MBRICKLET_TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__DEVICE_TYPE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__THRESHOLD);
+    createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__SLOW_I2C);
     createEOperation(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE___INIT);
 
     mBrickletTemperatureIREClass = createEClass(MBRICKLET_TEMPERATURE_IR);
@@ -7250,6 +7130,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
+
+    tfTemperatureConfigurationEClass = createEClass(TF_TEMPERATURE_CONFIGURATION);
+    createEAttribute(tfTemperatureConfigurationEClass, TF_TEMPERATURE_CONFIGURATION__SLOW_I2C);
 
     tfObjectTemperatureConfigurationEClass = createEClass(TF_OBJECT_TEMPERATURE_CONFIGURATION);
     createEAttribute(tfObjectTemperatureConfigurationEClass, TF_OBJECT_TEMPERATURE_CONFIGURATION__EMISSIVITY);
@@ -8007,7 +7890,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
-    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g2 = createEGenericType(this.getTFTemperatureConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
@@ -8193,6 +8076,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfptcBrickletConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfIndustrialDual020mAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -8657,6 +8541,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mBrickletTemperatureEClass, MBrickletTemperature.class, "MBrickletTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_temperature", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletTemperature_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletTemperature_SlowI2C(), theEcorePackage.getEBoolean(), "slowI2C", "false", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -8810,6 +8695,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfTemperatureConfigurationEClass, TFTemperatureConfiguration.class, "TFTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFTemperatureConfiguration_SlowI2C(), theEcorePackage.getEBoolean(), "slowI2C", null, 0, 1, TFTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfObjectTemperatureConfigurationEClass, TFObjectTemperatureConfiguration.class, "TFObjectTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFObjectTemperatureConfiguration_Emissivity(), theEcorePackage.getEInt(), "emissivity", null, 0, 1, TFObjectTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
