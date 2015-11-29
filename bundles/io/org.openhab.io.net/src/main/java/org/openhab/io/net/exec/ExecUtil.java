@@ -137,7 +137,12 @@ public class ExecUtil {
 			resultHandler.waitFor();
 			int exitCode = resultHandler.getExitValue();
 			retval = StringUtils.chomp(stdout.toString());
-			logger.debug("exit code '{}', result '{}'", exitCode, retval);
+			if (resultHandler.getException() != null) {
+				logger.warn(resultHandler.getException().getMessage());
+			}
+			else {
+				logger.debug("exit code '{}', result '{}'", exitCode, retval);
+			}
 
 		} catch (InterruptedException e) {
 			logger.error("Timeout occured when executing commandLine '"
