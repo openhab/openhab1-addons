@@ -46,7 +46,7 @@ public class ExternalInputControlInput extends AbstractOpenhabConnectSDKProperty
 			control.getExternalInputList(new ExternalInputListListener() {
 				@Override
 				public void onError(ServiceCommandError error) {
-					logger.error("error requesting channel list: {}.", error.getMessage());
+					logger.error("error requesting external input list: {}.", error.getMessage());
 				}
 
 				@Override

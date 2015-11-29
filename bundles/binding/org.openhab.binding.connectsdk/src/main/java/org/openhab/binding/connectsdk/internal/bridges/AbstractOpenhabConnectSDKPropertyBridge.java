@@ -17,8 +17,14 @@ import com.connectsdk.service.command.ServiceSubscription;
 public abstract class AbstractOpenhabConnectSDKPropertyBridge<T> implements OpenhabConnectSDKPropertyBridge {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractOpenhabConnectSDKPropertyBridge.class);
 
-	private Map<String, ServiceSubscription<T>> subscriptions = new ConcurrentHashMap<String, ServiceSubscription<T>>(); 
+	private Map<String, ServiceSubscription<T>> subscriptions;
 
+	private synchronized Map<String, ServiceSubscription<T>> getSubscriptions() {
+		if (subscriptions == null) {
+			subscriptions = new ConcurrentHashMap<String, ServiceSubscription<T>>();
+		}
+		return subscriptions;
+	}
 
 	@Override
 	public final void updateSubscription(final ConnectableDevice device,
@@ -26,27 +32,33 @@ public abstract class AbstractOpenhabConnectSDKPropertyBridge<T> implements Open
 		removeAnySubscription(device);
 
 		ServiceSubscription<T> listener = getSubscription(device, providers, eventPublisher);
-		if (listener != null) { 
-			logger.debug("Subscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(), device.getIpAddress());
-			subscriptions.put(device.getIpAddress(), listener);
+		if (listener != null) {
+			logger.debug("Subscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(),
+					device.getIpAddress());
+			getSubscriptions().put(device.getIpAddress(), listener);
 		}
 	}
 
 	/**
 	 * Creates a subscription instance for this device.
+	 * 
 	 * @param device
 	 * @param providers
 	 * @param eventPublisher
 	 * @return instance or <code>null</code> if no subscription is possible or required
 	 */
-	protected abstract ServiceSubscription<T> getSubscription(final ConnectableDevice device, final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher); 
+	protected abstract ServiceSubscription<T> getSubscription(final ConnectableDevice device,
+			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher);
+
 	@Override
-	public final void removeAnySubscription(final ConnectableDevice device) { // here
-		ServiceSubscription<T> l = subscriptions.remove(device.getIpAddress());
-		if (l != null) {
-			l.unsubscribe();
-			logger.debug("Unsubscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(),
-					device.getIpAddress());
+	public final synchronized void removeAnySubscription(final ConnectableDevice device) { // here
+		if (subscriptions != null) {
+			ServiceSubscription<T> l = subscriptions.remove(device.getIpAddress());
+			if (l != null) {
+				l.unsubscribe();
+				logger.debug("Unsubscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(),
+						device.getIpAddress());
+			}
 		}
 	}
 
@@ -65,19 +77,19 @@ public abstract class AbstractOpenhabConnectSDKPropertyBridge<T> implements Open
 	protected boolean matchClassAndProperty(String clazz, String property) {
 		return getItemClass().equals(clazz) && getItemProperty().equals(property);
 	}
-	
+
 	protected <O> ResponseListener<O> createDefaultResponseListener() {
 		return new ResponseListener<O>() {
 
 			@Override
 			public void onError(ServiceCommandError error) {
-				logger.error("Error setting {}:{}: {}.", getItemClass(), getItemProperty(),error.getMessage());
+				logger.error("Error setting {}:{}: {}.", getItemClass(), getItemProperty(), error.getMessage());
 
 			}
 
 			@Override
 			public void onSuccess(O object) {
-				logger.debug("Successfully set {}:{}: {}.", getItemClass(), getItemProperty(),object);
+				logger.debug("Successfully set {}:{}: {}.", getItemClass(), getItemProperty(), object);
 
 			}
 		};
