@@ -20,9 +20,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<hikari.version>2.4.1</hikari.version>
+		<hikari.version>2.4.2</hikari.version>
 		<dbutils.version>1.6</dbutils.version>
-		<yank.version>3.1.0-SNAPSHOT</yank.version>
+		<yank.version>3.1.0</yank.version>
 		<bundle.symbolicName>org.openhab.persistence.jdbc</bundle.symbolicName>
 		<bundle.namespace>org.openhab.persistence.jdbc</bundle.namespace>
 		<classpath.ext>lib/</classpath.ext>
@@ -34,7 +34,7 @@
 		<mariadb.version>1.2.0</mariadb.version>
 		<mysql.version>5.1.36</mysql.version>
 		<postgresql.version>9.4-1201-jdbc41</postgresql.version>
-		<sqlite.version>3.8.11.1</sqlite.version>
+		<sqlite.version>3.8.11.2</sqlite.version>
 	</properties>
 
 	<dependencies>
@@ -48,6 +48,11 @@
 			<artifactId>HikariCP</artifactId>
 			<version>${hikari.version}</version>
 			<!--scope>compile</scope -->
+		</dependency>
+		<dependency>
+			<groupId>org.knowm</groupId>
+			<artifactId>yank</artifactId>
+            <version>${yank.version}</version>
 		</dependency>
 
 
@@ -123,6 +128,11 @@
 									<artifactId>HikariCP</artifactId>
 									<version>${hikari.version}</version>
 								</artifactItem>
+                                <artifactItem>
+                                    <groupId>org.knowm</groupId>
+                                    <artifactId>yank</artifactId>
+                                    <version>${yank.version}</version>
+                                </artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
@@ -148,7 +158,7 @@
 							<excludes>
 								<exclude>*commons-dbutils*.jar</exclude>
 								<exclude>*HikariCP*.jar</exclude>
-								<exclude>*yank*.jar</exclude>
+                                <exclude>*yank*.jar</exclude>
 							</excludes>
 
 							<followSymlinks>false</followSymlinks>

@@ -25,7 +25,7 @@ import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xeiam.yank.Yank;
+import org.knowm.yank.Yank;
 
 /**
  * Extended Database Configuration class. Class represents

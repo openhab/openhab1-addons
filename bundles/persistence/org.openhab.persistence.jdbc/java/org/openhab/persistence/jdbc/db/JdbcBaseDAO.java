@@ -41,7 +41,7 @@ import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xeiam.yank.Yank;
+import org.knowm.yank.Yank;
 
 public class JdbcBaseDAO {
     private static final Logger logger = LoggerFactory.getLogger(JdbcBaseDAO.class);

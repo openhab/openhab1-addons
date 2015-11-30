@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.knowm.yank.Yank;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.HistoricItem;
@@ -12,8 +13,6 @@ import org.openhab.persistence.jdbc.model.ItemVO;
 import org.openhab.persistence.jdbc.model.ItemsVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.xeiam.yank.Yank;
 
 public class JdbcMapper {
     static final Logger logger = LoggerFactory.getLogger(JdbcMapper.class);
