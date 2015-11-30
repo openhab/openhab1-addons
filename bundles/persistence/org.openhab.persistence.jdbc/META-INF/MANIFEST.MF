@@ -27,11 +27,13 @@ Import-Package: com.mysql.jdbc;resolution:=optional,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.postgresql;resolution:=optional,
- org.slf4j
+ org.slf4j,
+ org.sqlite;resolution:=optional,
+ org.sqlite.jdbc4;resolution:=optional
 Bundle-ClassPath: .,
- lib/HikariCP-2.4.1.jar,
+ lib/HikariCP-2.4.2.jar,
  lib/commons-dbutils-1.6.jar,
- lib/yank-3.1.0-SNAPSHOT.jar
+ lib/yank-3.1.0.jar
 Service-Component: OSGI-INF/jdbc.xml
 Export-Package: org.openhab.persistence.jdbc.db,
  org.openhab.persistence.jdbc.internal,
