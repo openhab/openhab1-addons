@@ -1514,6 +1514,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.persistence</groupId>
+			<artifactId>org.openhab.persistence.jdbc</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.persistence</groupId>
 			<artifactId>org.openhab.persistence.mapdb</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
