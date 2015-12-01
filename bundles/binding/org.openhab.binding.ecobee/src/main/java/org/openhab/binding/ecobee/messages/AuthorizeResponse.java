@@ -65,7 +65,7 @@ public class AuthorizeResponse extends AbstractAuthResponse {
 	}
 
 	/**
-	 * @return the number of minutes until the PIN expires. Ensure you inform the user how much time they have.
+	 * @return the number of seconds until the PIN expires. Ensure you inform the user how much time they have.
 	 */
 	@JsonProperty("expires_in")
 	public Integer getExpiresIn() {

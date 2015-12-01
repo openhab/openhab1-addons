@@ -63,6 +63,8 @@ public class Thermostat extends AbstractMessagePart {
 	private String thermostatRev;
 	private Boolean isRegistered;
 	private String modelNumber;
+	private String brand;
+	private String features;
 	private Date lastModified;
 	private Date thermostatTime;
 	private Date utcTime;
@@ -191,6 +193,34 @@ public class Thermostat extends AbstractMessagePart {
 	@JsonProperty("modelNumber")
 	public String getModelNumber() {
 		return this.modelNumber;
+	}
+
+	/**
+	 * @return the thermostat brand. As of this writing:
+	 *         <ul>
+	 *         <li>ecobee</li>
+	 *         <li>Bryant</li>
+	 *         <li>Daikin</li>
+	 *         <li>ClimateMaster</li>
+	 *         <li>Carrier</li>
+	 *         </ul>
+	 */
+	@JsonProperty("brand")
+	public String getBrand() {
+		return this.brand;
+	}
+
+	/**
+	 * @return the comma-separated list of the thermostat's additional features, if any. As of this writing:
+	 *         <ul>
+	 *         <li>HomeKit</li>
+	 *         <li>ClimateTalk</li>
+	 *         <li>Serial Communicating</li>
+	 *         </ul>
+	 */
+	@JsonProperty("features")
+	public String getFeatures() {
+		return this.features;
 	}
 
 	/**

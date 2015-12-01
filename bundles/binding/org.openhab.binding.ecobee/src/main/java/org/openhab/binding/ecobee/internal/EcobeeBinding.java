@@ -1075,7 +1075,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			logger.info("#########################################################################################");
 			logger.info("# Ecobee-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
 			logger.info("# 1. Login to www.ecobee.com using your '{}' account", this.userid);
-			logger.info("# 2. Enter the PIN '{}' in My Apps within the next {} minutes.", response.getEcobeePin(),
+			logger.info("# 2. Enter the PIN '{}' in My Apps within the next {} seconds.", response.getEcobeePin(),
 					response.getExpiresIn());
 			logger.info("# NOTE: Any API attempts will fail in the meantime.");
 			logger.info("#########################################################################################");
