@@ -62,8 +62,8 @@ public class GarageDoorData {
 
 						int arraysize = node.size();
 						for (int i = 0; i < arraysize; i++) {
-							int deviceId = node.get(i).get("DeviceId").asInt();
-							String deviceName = node.get(i).get("DeviceName")
+							int deviceId = node.get(i).get("MyQDeviceId").asInt();
+							String deviceName = node.get(i).get("SerialNumber")
 									.asText();
 							String deviceType = node.get(i)
 									.get("MyQDeviceTypeName").asText();
@@ -77,7 +77,7 @@ public class GarageDoorData {
 									int attributesSize = attributes.size();
 									for (int j = 0; j < attributesSize; j++) {
 										String attributeName = attributes
-												.get(j).get("Name").asText();
+												.get(j).get("AttributeDisplayName").asText();
 										if (attributeName.contains("doorstate")) {
 											int doorstate = attributes.get(j)
 													.get("Value").asInt();

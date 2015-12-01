@@ -18,15 +18,15 @@ import java.util.Properties;
 /**
  * This Class handles the Chamberlain myQ http connection.
  * 
- *         <ul>
- *         <li>userName: myQ Login Username</li>
- *         <li>password: myQ Login Password</li>
- *         <li>logDeviceData: Log Device Data</li>
- *         <li>sercurityTokin: sercurityTokin for API requests</li>
- *         <li>webSite: url of myQ API</li>
- *         <li>appId: appId for API requests</li>
- *         <li>MaxRetrys: max login attempts in a row</li>
- *         </ul>
+ * <ul>
+ * <li>userName: myQ Login Username</li>
+ * <li>password: myQ Login Password</li>
+ * <li>logDeviceData: Log Device Data</li>
+ * <li>sercurityTokin: sercurityTokin for API requests</li>
+ * <li>webSite: url of myQ API</li>
+ * <li>appId: appId for API requests</li>
+ * <li>MaxRetrys: max login attempts in a row</li>
+ * </ul>
  * 
  * @author Scott Hanson
  * @since 1.8.0
@@ -40,7 +40,7 @@ public class myqData {
 	private boolean logDeviceData;
 
 	private final String webSite = "https://myqexternal.myqdevice.com";
-	private final String appId = "Vj8pQggXLhLy0WHahglCD4N1nAkkXQtGYpq2HrHD7H1nvmbT55KqtN6RSF4ILB%2fi";
+	private final String appId = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
 
 	private final int MaxRetrys = 3;
 
@@ -49,13 +49,13 @@ public class myqData {
 	 * 
 	 * @param username
 	 *            Chamberlain MyQ UserName
-	 *            
+	 * 
 	 * @param password
 	 *            Chamberlain MyQ password
-	 *            
+	 * 
 	 * @param logdevicedata
 	 *            Log Device Data to openHAB Log
-	 *            
+	 * 
 	 */
 	public myqData(String username, String password, boolean logdevicedata) {
 		this.userName = username;
@@ -70,7 +70,8 @@ public class myqData {
 		if (this.sercurityTokin == null)
 			Login();
 		String json = getGarageStatus(0);
-		return json != null ? new GarageDoorData(json, this.logDeviceData) : null;
+		return json != null ? new GarageDoorData(json, this.logDeviceData)
+				: null;
 	}
 
 	/**
@@ -85,15 +86,14 @@ public class myqData {
 			return null;
 		}
 		String url = String.format(
-				"%s/api/UserDeviceDetails?appId=%s&securityToken=%s",
+				"%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s",
 				this.webSite, this.appId, this.sercurityTokin);
-
 		try {
 			Properties header = new Properties();
 			header.put("Accept", "application/json");
-
+			header.put("User-Agent", "myq-openhab-api/1.0");
 			String dataString = executeUrl("GET", url, header, null, null,
-					10000);
+					5000);
 
 			if (dataString == null) {
 				logger.error("Failed to connect to MyQ site");
@@ -117,13 +117,14 @@ public class myqData {
 	 */
 	private boolean Login() {
 		String url = String
-				.format("%s/Membership/ValidateUserWithCulture?appId=%s&securityToken=null&username=%s&password=%s&culture=en",
+				.format("%s/api/user/validate?appId=%s&SecurityToken=null&username=%s&password=%s",
 						this.webSite, this.appId, this.userName, this.password);
 		try {
 			Properties header = new Properties();
 			header.put("Accept", "application/json");
+			header.put("User-Agent", "myq-openhab-api/1.0");
 			String loginString = executeUrl("GET", url, header, null, null,
-					10000);
+					5000);
 
 			if (loginString == null) {
 				logger.error("Failed to connect to MyQ site");
@@ -157,16 +158,22 @@ public class myqData {
 		if (this.sercurityTokin == null && Login()) {
 			return false;
 		}
-		String message = String
-				.format("{\"AttributeName\":\"desireddoorstate\",\"DeviceId\":\"%d\",\"ApplicationId\":\"%s\",\"AttributeValue\":\"%d\",\"SecurityToken\":\"%s\"}",
-						deviceID, this.appId, state, this.sercurityTokin);
+		String message = String.format("{\"ApplicationId\":\"%s\","
+									+ "\"SecurityToken\":\"%s\","
+									+ "\"MyQDeviceId\":\"%d\","
+									+ "\"AttributeName\":\"desireddoorstate\","
+									+ "\"AttributeValue\":\"%d\"}",
+									this.appId, this.sercurityTokin, deviceID, state);
 		String url = String
-				.format("%s/Device/setDeviceAttribute", this.webSite);
+				.format("%s/api/v4/deviceattribute/putdeviceattribute?appId=%s&SecurityToken=%s",
+						this.webSite, this.appId, this.sercurityTokin);
 		try {
 			Properties header = new Properties();
 			header.put("Accept", "application/json");
-			String dataString = executeUrl("PUT", url,
-					IOUtils.toInputStream(message), "application/json", 1000);
+			header.put("User-Agent", "myq-openhab-api/1.0");
+
+			String dataString = executeUrl("PUT", url, header,
+					IOUtils.toInputStream(message), "application/json", 5000);
 
 			logger.debug("Sent message: '" + message + "' to " + url);
 			logger.debug("Received MyQ Execute JSON: {}", dataString);
