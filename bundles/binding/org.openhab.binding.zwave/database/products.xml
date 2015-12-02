@@ -2962,4 +2962,17 @@
 			<ConfigFile>domitech/domezbulb.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0214</Id>
+		<Name>Unknown (0x0214)</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>IM-20</Model>
+			<Label lang="en">Door Sensor</Label>
+			<ConfigFile>unknown/im-20.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
