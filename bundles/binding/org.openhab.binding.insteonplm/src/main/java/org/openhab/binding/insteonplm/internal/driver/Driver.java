@@ -34,7 +34,7 @@ public class Driver {
 	private DriverListener m_listener = null; // single listener for notifications
 	private HashMap<InsteonAddress, ModemDBEntry> m_modemDBEntries = new HashMap<InsteonAddress, ModemDBEntry>();
 	private ReentrantLock m_modemDBEntriesLock = new ReentrantLock();
-	private int	m_modemDBRetryTimeout	= 30000;	// in milliseconds
+	private int	m_modemDBRetryTimeout	= 120000;	// in milliseconds
 
 	public void setDriverListener(DriverListener listener) {
 		m_listener = listener;

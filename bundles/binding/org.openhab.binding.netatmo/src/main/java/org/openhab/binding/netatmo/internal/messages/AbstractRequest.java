@@ -18,6 +18,7 @@ import org.openhab.binding.netatmo.internal.NetatmoException;
  * Base class for all Netatmo API requests.
  * 
  * @author Andreas Brenk
+ * @author Rob Nielsen
  * @since 1.4.0
  */
 public abstract class AbstractRequest extends AbstractMessage implements Request {
@@ -34,6 +35,11 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 
 	protected static final ObjectMapper JSON = new ObjectMapper();
 
+	protected static final String CHARSET = "UTF-8";
+
+	protected static final String HTTP_CONTENT_TYPE = "application/x-www-form-urlencoded;charset="
+			+ CHARSET;
+
 	static {
 		HTTP_HEADERS = new Properties();
 		HTTP_HEADERS.put("Accept", "application/json");
@@ -41,10 +47,12 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 
 	protected final RuntimeException newException(
 			final String message, final Exception cause,
-			final String url, final String json) {
+			final String url, final String content,
+			final String json) {
 		if(cause instanceof JsonMappingException) {
 			return new NetatmoException("Could not parse JSON from URL '"
-					+ url + "': " + json, cause);
+					+ url + "' content='" + content + "' json='" + json
+					+ "'", cause);
 		}
 
 		return new NetatmoException(message, cause);

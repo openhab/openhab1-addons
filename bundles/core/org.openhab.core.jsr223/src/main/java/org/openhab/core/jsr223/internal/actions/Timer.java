@@ -10,6 +10,7 @@ package org.openhab.core.jsr223.internal.actions;
 
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.util.Date;
 import org.joda.time.DateTime;
 import org.joda.time.base.AbstractInstant;
 import org.quartz.JobExecutionContext;
@@ -72,15 +73,17 @@ public class Timer {
 	public boolean reschedule(AbstractInstant newTime) {
 		try {
 			Trigger trigger = newTrigger().startAt(newTime.toDate()).build();
-			scheduler.rescheduleJob(triggerKey, trigger);
-			this.triggerKey = trigger.getKey();
-			this.cancelled = false;
-			this.terminated = false;
-			return true;
+			Date nextTriggerTime = scheduler.rescheduleJob(triggerKey, trigger);
+			if (nextTriggerTime != null) {
+				this.triggerKey = trigger.getKey();
+				this.cancelled = false;
+				this.terminated = false;
+				return true;
+			}
 		} catch (SchedulerException e) {
 			logger.warn("An error occured while rescheduling the job '{}': {}", new String[] { jobKey.toString(), e.getMessage() });
-			return false;
 		}
+		return false;
 	}
 
 	public boolean isRunning() {

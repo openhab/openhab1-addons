@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.persistence.caldav</module>
     <module>org.openhab.persistence.db4o</module>
     <module>org.openhab.persistence.db4o.test</module>
     <module>org.openhab.persistence.logging</module>

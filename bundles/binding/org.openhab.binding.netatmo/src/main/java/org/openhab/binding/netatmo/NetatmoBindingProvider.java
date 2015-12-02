@@ -10,6 +10,7 @@ package org.openhab.binding.netatmo;
 
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
+import org.openhab.binding.netatmo.internal.NetatmoScale;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -19,6 +20,7 @@ import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
  * taken into account.
  * 
  * @author Andreas Brenk
+ * @author Rob Nielsen
  * @since 1.4.0
  */
 public interface NetatmoBindingProvider extends BindingProvider {
@@ -62,4 +64,13 @@ public interface NetatmoBindingProvider extends BindingProvider {
 	 */
 	String getModuleId(String itemName);
 
+	/**
+	 * Returns the scale to use when querying the Netatmo measure of the given
+	 * {@code itemName}.
+	 *
+	 * @param itemName
+	 * @return the Netatmo scale of the Item identified by {@code itemName} if
+	 *         it has a Netatmo binding, <code>null</code> otherwise
+	 */
+	NetatmoScale getNetatmoScale(String itemName);
 }

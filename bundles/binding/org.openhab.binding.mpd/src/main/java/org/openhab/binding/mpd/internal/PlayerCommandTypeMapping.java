@@ -29,6 +29,13 @@ public enum PlayerCommandTypeMapping {
 		}
 	},
 	
+	PLAYSONG {
+		{
+			command = "playsong";
+			type = OnOffType.ON;
+		}
+	},
+	
 	PLAY {
 		{
 			command = "play";

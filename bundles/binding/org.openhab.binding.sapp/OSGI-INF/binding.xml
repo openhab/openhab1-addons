@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010-2015, openHAB.org and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.sapp.binding" immediate="true" configuration-pid="org.openhab.sapp" configuration-policy="require">
+	<implementation class="org.openhab.binding.sapp.internal.SappBinding" />
+
+	<service>
+		<provide interface="org.osgi.service.event.EventHandler" />
+	</service>
+
+	<property name="event.topics" type="String" value="openhab/command/*" />
+
+	<reference bind="setEventPublisher" cardinality="1..1"
+		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
+		policy="dynamic" unbind="unsetEventPublisher" />
+	<reference bind="addBindingProvider" cardinality="1..n"
+		interface="org.openhab.binding.sapp.SappBindingProvider" name="SappBindingProvider"
+		policy="dynamic" unbind="removeBindingProvider" />
+	<reference bind="setItemRegistry" cardinality="1..1"  
+		interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry"
+		policy="dynamic" unbind="unsetItemRegistry" />
+	
+</scr:component>

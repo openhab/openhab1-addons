@@ -32,7 +32,7 @@ public class ModemDBBuilder implements MsgListener, Runnable {
 	private boolean	m_isComplete 	= false;
 	private Port	m_port 			= null;
 	private	Thread	m_writeThread	= null;
-	private int		m_timeoutMillis = 60000;
+	private int		m_timeoutMillis = 120000;
 
 	public ModemDBBuilder(Port port) {
 		m_port = port;

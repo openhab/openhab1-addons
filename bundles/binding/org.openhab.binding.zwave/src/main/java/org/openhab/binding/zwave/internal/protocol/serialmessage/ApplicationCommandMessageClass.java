@@ -65,7 +65,7 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 			zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
 			
 			if (zwaveCommandClass != null) {
-				logger.debug("NODE {}: Adding command class %s", nodeId, commandClass.getLabel());
+				logger.debug("NODE {}: Adding command class {}", nodeId, commandClass.getLabel());
 				node.addCommandClass(zwaveCommandClass);
 			}
 		}

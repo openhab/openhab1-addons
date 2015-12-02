@@ -1,0 +1,2 @@
+ON=urn:dcineco-com:serviceId:MSwitch1/SetStatus4(newStatus4=1)
+OFF=urn:dcineco-com:serviceId:MSwitch1/SetStatus4(newStatus4=0)
