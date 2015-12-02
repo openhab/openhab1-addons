@@ -133,9 +133,26 @@ public class RESTApplication extends Application {
 				logger.error("Could not start Jersey framework", e);
 			}
         	
-    		httpPort = Integer.parseInt(bundleContext.getProperty("jetty.port"));
-    		httpSSLPort = Integer.parseInt(bundleContext.getProperty("jetty.port.ssl"));
-    		
+
+			String bundleProperty =  bundleContext.getProperty("jetty.port");
+			if (bundleProperty != null) {
+				httpPort = Integer.parseInt(bundleProperty);
+			} else {
+				httpPort = -1;
+			}
+
+			bundleProperty = bundleContext.getProperty("jetty.port.ssl");
+			if (bundleProperty != null) {
+				httpSSLPort = Integer.parseInt(bundleProperty);
+			} else {
+				httpSSLPort = -1;
+			}
+
+			if (httpPort < 0 && httpSSLPort < 0) {
+				logger.error("Please set at least one of jetty.port, jetty.port.ssl property");
+				throw new RuntimeException("There are no jetty ports settings");
+			}
+
     		Servlet atmosphereServlet = new AtmosphereServlet();
 
 			httpService.registerServlet(REST_SERVLET_ALIAS,
@@ -144,8 +161,13 @@ public class RESTApplication extends Application {
 			logger.info("Started REST API at {}", REST_SERVLET_ALIAS);
 
  			if (discoveryService != null) {
- 				discoveryService.registerService(getDefaultServiceDescription());
- 				discoveryService.registerService(getSSLServiceDescription());
+				if (httpPort > 0) {
+					discoveryService.registerService(getDefaultServiceDescription());
+				}
+
+				if (httpSSLPort > 0) {
+					discoveryService.registerService(getSSLServiceDescription());
+				}
 			}
         } catch (ServletException se) {
             throw new RuntimeException(se);
@@ -161,8 +183,14 @@ public class RESTApplication extends Application {
         }
         
         if (discoveryService != null) {
- 			discoveryService.unregisterService(getDefaultServiceDescription());
-			discoveryService.unregisterService(getSSLServiceDescription()); 			
+
+			if (httpPort > 0) {
+				discoveryService.unregisterService(getDefaultServiceDescription());
+			}
+
+			if (httpSSLPort > 0) {
+				discoveryService.unregisterService(getSSLServiceDescription());
+			}
  		}
 	}
 	
