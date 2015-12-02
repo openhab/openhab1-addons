@@ -2945,8 +2945,8 @@
 				<Id>000e</Id>
 			</Reference>
 			<Model>DCH-Z110</Model>
-			<Label lang="en">Remote Control</Label>
-			<ConfigFile>nodon/crc3100.xml</ConfigFile>
+			<Label lang="en">Door &amp; Window Sensor</Label>
+			<ConfigFile>dlink/dch-z110.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
