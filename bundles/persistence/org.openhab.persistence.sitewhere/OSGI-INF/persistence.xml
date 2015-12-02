@@ -11,6 +11,7 @@
 		class="org.openhab.persistence.sitewhere.internal.SiteWherePersistenceService" />
 	<service>
 		<provide interface="org.osgi.service.cm.ManagedService" />
+		<provide interface="org.openhab.core.persistence.PersistenceService" />
 		<provide interface="org.openhab.core.persistence.QueryablePersistenceService" />
 	</service>
 	<reference bind="setEventPublisher" cardinality="1..1"
