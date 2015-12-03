@@ -10,11 +10,11 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.myq.genericbindingprovider">
-   <implementation class="org.openhab.binding.myq.internal.myqGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.myq.internal.MyqGenericBindingProvider"/>
    
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.myq.myqBindingProvider"/>
+      <provide interface="org.openhab.binding.myq.MyqBindingProvider"/>
    </service>
    
 </scr:component>

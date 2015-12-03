@@ -27,19 +27,20 @@ import org.openhab.core.binding.BindingConfig;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class myqBindingConfig implements BindingConfig {
+public class MyqBindingConfig implements BindingConfig {
 	/**
 	 * The binding type of the myq item.
 	 * <ul>
 	 * <li>Switch</li>
+	 * <li>Rollershutter</li>
 	 * <li>StringStatus</li>
 	 * <li>ContactStatus</li>
 	 * </ul>
 	 */
 	public enum ITEMTYPE {
-		Switch, StringStatus, ContactStatus
+		Switch, Rollershutter, StringStatus, ContactStatus
 	};
 
-	int DeviceID;
-	ITEMTYPE Type;
+	int deviceID;
+	ITEMTYPE type;
 }

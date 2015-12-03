@@ -31,14 +31,14 @@ import java.util.Properties;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class myqData {
-	static final Logger logger = LoggerFactory.getLogger(myqData.class);
+public class MyqData {
+	static final Logger logger = LoggerFactory.getLogger(MyqData.class);
 
 	private String userName;
 	private String password;
 	private String sercurityTokin;
-	private boolean logDeviceData;
-
+	
+	private Properties header;
 	private final String webSite = "https://myqexternal.myqdevice.com";
 	private final String appId = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
 
@@ -57,20 +57,23 @@ public class myqData {
 	 *            Log Device Data to openHAB Log
 	 * 
 	 */
-	public myqData(String username, String password, boolean logdevicedata) {
+	public MyqData(String username, String password) {
 		this.userName = username;
 		this.password = password;
-		this.logDeviceData = logdevicedata;
+		
+		header = new Properties();
+		header.put("Accept", "application/json");
+		header.put("User-Agent", "myq-openhab-api/1.0");
 	}
 
 	/**
 	 * Gets Garage Door Opener Data in GarageDoorData object format
 	 */
 	public GarageDoorData getMyqData() {
-		if (this.sercurityTokin == null)
+		if (sercurityTokin == null)
 			Login();
 		String json = getGarageStatus(0);
-		return json != null ? new GarageDoorData(json, this.logDeviceData)
+		return json != null ? new GarageDoorData(json)
 				: null;
 	}
 
@@ -82,16 +85,14 @@ public class myqData {
 	 *            Attempt number when it recursively calls itself
 	 */
 	private String getGarageStatus(int attemps) {
-		if (this.sercurityTokin == null && Login()) {
+		if (sercurityTokin == null && !Login()) {
 			return null;
 		}
 		String url = String.format(
 				"%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s",
-				this.webSite, this.appId, this.sercurityTokin);
+				webSite, appId, sercurityTokin);
 		try {
-			Properties header = new Properties();
-			header.put("Accept", "application/json");
-			header.put("User-Agent", "myq-openhab-api/1.0");
+			
 			String dataString = executeUrl("GET", url, header, null, null,
 					5000);
 
@@ -118,11 +119,8 @@ public class myqData {
 	private boolean Login() {
 		String url = String
 				.format("%s/api/user/validate?appId=%s&SecurityToken=null&username=%s&password=%s",
-						this.webSite, this.appId, this.userName, this.password);
+						webSite, appId, userName, password);
 		try {
-			Properties header = new Properties();
-			header.put("Accept", "application/json");
-			header.put("User-Agent", "myq-openhab-api/1.0");
 			String loginString = executeUrl("GET", url, header, null, null,
 					5000);
 
@@ -132,13 +130,10 @@ public class myqData {
 			}
 			logger.debug("Received MyQ Login JSON: {}", loginString);
 			LoginData login = new LoginData(loginString);
-			if (login.getSuccess()) {
-				this.sercurityTokin = login.getSecurityToken();
-				return true;
-			}
-			return false;
+			sercurityTokin = login.getSecurityToken();
+			return true;
 		} catch (Exception e) {
-			logger.error("Failed to connect to MyQ site");
+			logger.error("Failed to login to MyQ site",e);
 			return false;
 		}
 	}
@@ -155,7 +150,7 @@ public class myqData {
 	 *            Attempt number when it recursively calls itself
 	 */
 	public boolean executeCommand(int deviceID, int state, int attemps) {
-		if (this.sercurityTokin == null && Login()) {
+		if (sercurityTokin == null && !Login()) {
 			return false;
 		}
 		String message = String.format("{\"ApplicationId\":\"%s\","
@@ -163,15 +158,11 @@ public class myqData {
 									+ "\"MyQDeviceId\":\"%d\","
 									+ "\"AttributeName\":\"desireddoorstate\","
 									+ "\"AttributeValue\":\"%d\"}",
-									this.appId, this.sercurityTokin, deviceID, state);
+									appId, sercurityTokin, deviceID, state);
 		String url = String
 				.format("%s/api/v4/deviceattribute/putdeviceattribute?appId=%s&SecurityToken=%s",
-						this.webSite, this.appId, this.sercurityTokin);
+						webSite, appId, sercurityTokin);
 		try {
-			Properties header = new Properties();
-			header.put("Accept", "application/json");
-			header.put("User-Agent", "myq-openhab-api/1.0");
-
 			String dataString = executeUrl("PUT", url, header,
 					IOUtils.toInputStream(message), "application/json", 5000);
 
