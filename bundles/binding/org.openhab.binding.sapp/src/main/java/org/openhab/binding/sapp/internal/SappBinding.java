@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.sapp.internal;
 
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -406,7 +408,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 
 							// mask bits on previous value
 							int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), false);
-							int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((DecimalType) command).doubleValue()), previousValue);
+							int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((DecimalType) command).toBigDecimal()), previousValue);
 
 							// update pnmas
 							SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
@@ -544,7 +546,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 
 							// mask bits on previous value
 							int previousValue = getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), false);
-							int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((PercentType) command).doubleValue()), previousValue);
+							int newValue = SappBindingConfigUtils.maskWithSubAddressAndSet(address.getSubAddress(), address.backScaledValue(((PercentType) command).toBigDecimal()), previousValue);
 
 							// update pnmas
 							SappPnmas pnmas = provider.getPnmasMap().get(address.getPnmasId());
@@ -706,7 +708,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 					if (address.getAddressType() == sappAddressType && address.getPnmasId().equals(pnmasId) && addressToUpdate == address.getAddress()) {
 						logger.debug("found binding to update {}", sappBindingConfigNumberItem);
 						int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), newState);
-						eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
+						eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result, address.getSubAddress())));
 					}
 				} else if (item instanceof RollershutterItem) {
 					SappBindingConfigRollershutterItem sappBindingConfigRollershutterItem = (SappBindingConfigRollershutterItem) provider.getBindingConfig(itemName);
@@ -721,7 +723,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 					SappAddressDimmer statusAddress = sappBindingConfigDimmerItem.getStatus();
 					if (statusAddress.getAddressType() == sappAddressType && statusAddress.getPnmasId().equals(pnmasId) && addressToUpdate == statusAddress.getAddress()) {
 						logger.debug("found binding to update {}", sappBindingConfigDimmerItem);
-						int result = (int) statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState));
+						int result = statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), newState), statusAddress.getSubAddress()).round(new MathContext(0, RoundingMode.HALF_EVEN)).intValue();
 						if (result <= PercentType.ZERO.intValue()) {
 							eventPublisher.postUpdate(itemName, PercentType.ZERO);
 						} else if (result >= PercentType.HUNDRED.intValue()) {
@@ -847,7 +849,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 		case VIRTUAL:
 			try {
 				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getVirtualValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), true));
-				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
+				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result, address.getSubAddress())));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand", e);
 			}
@@ -856,7 +858,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 		case INPUT:
 			try {
 				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getInputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), true));
-				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
+				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result, address.getSubAddress())));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand", e);
 			}
@@ -865,7 +867,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 		case OUTPUT:
 			try {
 				int result = SappBindingConfigUtils.maskWithSubAddress(address.getSubAddress(), getOutputValue(provider, address.getPnmasId(), address.getAddress(), address.getSubAddress(), true));
-				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result)));
+				eventPublisher.postUpdate(itemName, new DecimalType(address.scaledValue(result, address.getSubAddress())));
 			} catch (SappException e) {
 				logger.error("could not run sappcommand: " + e.getMessage());
 			}
@@ -914,7 +916,7 @@ public class SappBinding extends AbstractActiveBinding<SappBindingProvider> impl
 		switch (statusAddress.getAddressType()) {
 		case VIRTUAL:
 			try {
-				int result = (int) statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true)));
+				int result = statusAddress.scaledValue(SappBindingConfigUtils.maskWithSubAddress(statusAddress.getSubAddress(), getVirtualValue(provider, statusAddress.getPnmasId(), statusAddress.getAddress(), statusAddress.getSubAddress(), true)), statusAddress.getSubAddress()).round(new MathContext(0, RoundingMode.HALF_EVEN)).intValue();
 				if (result <= PercentType.ZERO.intValue()) {
 					eventPublisher.postUpdate(itemName, PercentType.ZERO);
 				} else if (result >= PercentType.HUNDRED.intValue()) {

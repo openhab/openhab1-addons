@@ -187,6 +187,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
@@ -1102,6 +1103,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass ambientLightV2ConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfTemperatureConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -5444,6 +5452,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickletTemperature_SlowI2C()
+  {
+    return (EAttribute)mBrickletTemperatureEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EOperation getMBrickletTemperature__Init()
   {
     return mBrickletTemperatureEClass.getEOperations().get(0);
@@ -5787,6 +5805,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getAmbientLightV2Configuration_IntegrationTime()
   {
     return (EAttribute)ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFTemperatureConfiguration()
+  {
+    return tfTemperatureConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFTemperatureConfiguration_SlowI2C()
+  {
+    return (EAttribute)tfTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -7688,6 +7726,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletTemperatureEClass = createEClass(MBRICKLET_TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__DEVICE_TYPE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__THRESHOLD);
+    createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__SLOW_I2C);
     createEOperation(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE___INIT);
 
     mBrickletTemperatureIREClass = createEClass(MBRICKLET_TEMPERATURE_IR);
@@ -7831,6 +7870,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ambientLightV2ConfigurationEClass = createEClass(AMBIENT_LIGHT_V2_CONFIGURATION);
     createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__ILLUMINANCE_RANGE);
     createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__INTEGRATION_TIME);
+
+    tfTemperatureConfigurationEClass = createEClass(TF_TEMPERATURE_CONFIGURATION);
+    createEAttribute(tfTemperatureConfigurationEClass, TF_TEMPERATURE_CONFIGURATION__SLOW_I2C);
 
     tfObjectTemperatureConfigurationEClass = createEClass(TF_OBJECT_TEMPERATURE_CONFIGURATION);
     createEAttribute(tfObjectTemperatureConfigurationEClass, TF_OBJECT_TEMPERATURE_CONFIGURATION__EMISSIVITY);
@@ -8634,7 +8676,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
-    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g2 = createEGenericType(this.getTFTemperatureConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
@@ -8864,6 +8906,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     loadCellConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     ambientLightV2ConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    tfTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
@@ -9349,6 +9392,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mBrickletTemperatureEClass, MBrickletTemperature.class, "MBrickletTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_temperature", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletTemperature_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletTemperature_SlowI2C(), theEcorePackage.getEBoolean(), "slowI2C", "false", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -9535,6 +9579,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(ambientLightV2ConfigurationEClass, AmbientLightV2Configuration.class, "AmbientLightV2Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAmbientLightV2Configuration_IlluminanceRange(), theEcorePackage.getEShort(), "illuminanceRange", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAmbientLightV2Configuration_IntegrationTime(), theEcorePackage.getEShort(), "integrationTime", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfTemperatureConfigurationEClass, TFTemperatureConfiguration.class, "TFTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFTemperatureConfiguration_SlowI2C(), theEcorePackage.getEBoolean(), "slowI2C", null, 0, 1, TFTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfObjectTemperatureConfigurationEClass, TFObjectTemperatureConfiguration.class, "TFObjectTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFObjectTemperatureConfiguration_Emissivity(), theEcorePackage.getEInt(), "emissivity", null, 0, 1, TFObjectTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

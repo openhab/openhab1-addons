@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>05438</Model>
+	<Label lang="en">Outdoor Wall Plug Switch 05438</Label>
+	<CommandClasses>
+		<Class>	<id>0x20</id></Class>
+		<Class>	<id>0x25</id></Class>
+		<Class>	<id>0x27</id></Class>
+		<Class>	<id>0x32</id></Class>
+		<Class>	<id>0x59</id></Class>
+		<Class>	<id>0x5A</id></Class>
+		<Class>	<id>0x5E</id></Class>
+		<Class>	<id>0x5E</id></Class>
+		<Class>	<id>0x60</id></Class>
+		<Class>	<id>0x70</id></Class>
+		<Class>	<id>0x72</id></Class>
+		<Class>	<id>0x75</id></Class>
+		<Class>	<id>0x85</id></Class>
+		<Class>	<id>0x86</id></Class>
+		<Class>	<id>0x87</id></Class>
+		<Class>	<id>0x8E</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">LED indication mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state (default)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Operated by Indicator Command Class</Label>
+			</Item>
+			<Help lang="en">Set LED indication mode.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Automatically switch off after x seconds.</Label>
+			<Help lang="en"><![CDATA[If not zero, automatically switch device off after a user defined time.<br>
+			0 -> Disabled<br>
+			1-65535 -> Enabled, seconds]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">What to do on RF off command.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off (default)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off, else switch off</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines how to interpret RF Off command.<br>
+				Can be used in conjunction with Auto Off function:<br>
+				Ignore - to switch on the light by motion detectors and switch it off after some amount of time:<br>
+				in case of multiple motion detectors each would try to switch the light off that would break logics;<br>
+				Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time.<br>
+				Button off click will still work (if button operations are not disabled).]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state after power cycle.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No, turn off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes, default</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines if the switch should restore switch state to the last state prior<br>
+				to device power off (power cycle).]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en"><![CDATA[Specify the consumption of the load in watts, for the calculation of power<br>
+				consumption. Max load 3500 W.]]></Label>
+			<Help lang="en"><![CDATA[0 -> Disabled<br>
+			 1 - 3500 -> Watts]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Off color</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Help lang="en">Color for Off state.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label>LED On color.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Red</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Green</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Blue</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Yellow</Label>
+			</Item>
+			<Help lang="en">Color for On state.</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Send Reports on switch state change.</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Controlled by buttons</Label>
+			<SetToController>false</SetToController>
+		</Group>
+	</Associations>
+</Product>

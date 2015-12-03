@@ -816,6 +816,14 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   AmbientLightV2Configuration createAmbientLightV2Configuration();
+  /**
+   * Returns a new object of class '<em>TF Temperature Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Temperature Configuration</em>'.
+   * @generated
+   */
+  TFTemperatureConfiguration createTFTemperatureConfiguration();
 
   /**
    * Returns a new object of class '<em>TF Object Temperature Configuration</em>'.

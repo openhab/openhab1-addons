@@ -2660,6 +2660,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>3</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>05438</Model>
+			<Label lang="en">Outdoor Wall Plug Switch</Label>
+			<ConfigFile>popp/05438.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1100</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -2936,8 +2945,34 @@
 				<Id>000e</Id>
 			</Reference>
 			<Model>DCH-Z110</Model>
-			<Label lang="en">Remote Control</Label>
-			<ConfigFile>nodon/crc3100.xml</ConfigFile>
+			<Label lang="en">Door &amp; Window Sensor</Label>
+			<ConfigFile>dlink/dch-z110.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>020e</Id>
+		<Name>Domitech</Name>
+		<Product>
+			<Reference>
+				<Type>4c42</Type>
+				<Id>3135</Id>
+			</Reference>
+			<Model>ZB22UK</Model>
+			<Label lang="en">Smart LED Light Bulb</Label>
+			<ConfigFile>domitech/domezbulb.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0214</Id>
+		<Name>Unknown (0x0214)</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>IM-20</Model>
+			<Label lang="en">Door Sensor</Label>
+			<ConfigFile>unknown/im-20.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

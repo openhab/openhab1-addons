@@ -31,7 +31,9 @@
     <module>org.openhab.persistence.mongodb</module>
     <module>org.openhab.persistence.influxdb</module>
     <module>org.openhab.persistence.jpa</module>
+    <module>org.openhab.persistence.jdbc</module>
     <module>org.openhab.persistence.mapdb</module>
+    <module>org.openhab.persistence.sitewhere</module>
   </modules>
 
 </project>

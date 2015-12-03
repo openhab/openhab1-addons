@@ -208,6 +208,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
       case ModelPackage.LOAD_CELL_CONFIGURATION: return createLoadCellConfiguration();
       case ModelPackage.AMBIENT_LIGHT_V2_CONFIGURATION: return createAmbientLightV2Configuration();
+      case ModelPackage.TF_TEMPERATURE_CONFIGURATION: return createTFTemperatureConfiguration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
       case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION: return createTFDistanceUSBrickletConfiguration();
@@ -1547,6 +1548,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     AmbientLightV2ConfigurationImpl ambientLightV2Configuration = new AmbientLightV2ConfigurationImpl();
     return ambientLightV2Configuration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFTemperatureConfiguration createTFTemperatureConfiguration()
+  {
+    TFTemperatureConfigurationImpl tfTemperatureConfiguration = new TFTemperatureConfigurationImpl();
+    return tfTemperatureConfiguration;
   }
 
   /**
