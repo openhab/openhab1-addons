@@ -62,7 +62,9 @@ public class GarageDoorData {
 							String deviceType = node.get(i)
 									.get("MyQDeviceTypeName").asText();
 
-							if (deviceType.contains("GarageDoorOpener")) {
+							if (deviceType.contains("Garage")
+									&& deviceType.contains("Door")
+									&& deviceType.contains("Opener")) {
 								JsonNode attributes = node.get(i).get(
 										"Attributes");
 								if (attributes.isArray()) {
