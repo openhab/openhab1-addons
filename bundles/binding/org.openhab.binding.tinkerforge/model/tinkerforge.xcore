@@ -557,13 +557,12 @@ class RemoteSwitchA extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchAConfigu
     Short repeats
 }
 
-class RemoteSwitchB extends MSensor<MDecimalValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>{
+class RemoteSwitchB extends MSensor<PercentValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>{
     readonly String deviceType = "remote_switch_b"
     Long address
     Short unit
     Short repeats
     Short targetDimmvalue = "0"
-    PercentValue percentValue
 }
 
 class RemoteSwitchC extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchCConfiguration>{

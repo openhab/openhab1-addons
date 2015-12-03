@@ -658,7 +658,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
   private void postUpdate(String uid, String subId, TinkerforgeValue sensorValue) {
     // TODO undef handling
-    logger.trace("postUpdate for uid {} subid {}", uid, subId);
+    logger.trace("postUpdate called for uid {} subid {}", uid, subId);
     Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(uid, subId);
     if (providerMap.size() == 0) {
       logger.debug("{} found no item for uid {}, subid {}", LoggerConstants.TFMODELUPDATE, uid,
