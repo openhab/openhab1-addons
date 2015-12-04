@@ -23,4 +23,6 @@
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="setMqttService" cardinality="1..1" 
    		interface="org.openhab.io.transport.mqtt.MqttService" name="MqttService" policy="static" unbind="unsetMqttService"/>
+	<reference bind="setItemRegistry" cardinality="1..1"
+		interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry" />
 </scr:component>

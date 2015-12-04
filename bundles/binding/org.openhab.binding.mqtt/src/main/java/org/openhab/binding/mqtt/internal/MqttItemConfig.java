@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class MqttItemConfig implements BindingConfig {
 	 * @throws BindingConfigParseException
 	 *             If the configuration string is invalid.
 	 */
-	public MqttItemConfig(String itemName, String bindingConfig) throws BindingConfigParseException {
+	public MqttItemConfig(Item item, String bindingConfig) throws BindingConfigParseException {
 
 		String[] configurationStrings = bindingConfig.split("],");
 
@@ -57,20 +58,20 @@ public class MqttItemConfig implements BindingConfig {
 			}
 			
 			if (type.equals("<")) {
-				MqttMessageSubscriber subscribeConfig = new MqttMessageSubscriber(configContent);
+				MqttMessageSubscriber subscribeConfig = new MqttMessageSubscriber(configContent, item);
 				subscribeConfigurations.add(subscribeConfig);
 			} else if (type.equals(">")) {
 				MqttMessagePublisher publishConfig = new MqttMessagePublisher(configContent);
 				publishConfigurations.add(publishConfig);
 			} else {
 				throw new BindingConfigParseException(
-					"Invalid mqtt binding configuration '" + configContent + "' for item " + itemName);
+					"Invalid mqtt binding configuration '" + configContent + "' for item " + item.getName());
 			}
 		}
 
 		logger.debug(
 				"Loaded MQTT config for item '{}' : {} subscribers, {} publishers",
-				new Object[] { itemName, subscribeConfigurations.size(),
+				new Object[] { item.getName(), subscribeConfigurations.size(),
 						publishConfigurations.size() });
 	}
 
