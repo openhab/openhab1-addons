@@ -10,7 +10,7 @@ Bundle-ManifestVersion: 2
 Bundle-Description: This is the DMX binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
- org.eclipse.osgi.framework.console,
+ org.eclipse.osgi.framework.console;resolution:=optional,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
