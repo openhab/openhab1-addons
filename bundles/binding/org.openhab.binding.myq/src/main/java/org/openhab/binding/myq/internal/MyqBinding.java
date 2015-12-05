@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.myq.internal;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import org.openhab.binding.myq.MyqBindingProvider;
 import org.openhab.binding.myq.internal.MyqBindingConfig;
 import org.openhab.binding.myq.internal.GarageDoorDevice.GarageDoorStatus;
+import org.openhab.binding.myq.internal.MyqData.InvalidLoginException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.OnOffType;
@@ -55,18 +57,17 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 */
 	private MyqData myqOnlineData = null;
 
-	/**
-	 * The GarageDoorData. This object stores the garage door opener status
-	 */
-	private GarageDoorData garageStatus = null;
+//	/**
+//	 * The GarageDoorData. This object stores the garage door opener status
+//	 */
+//	private GarageDoorData garageStatus = null;
 
 	/**
 	 * the refresh interval which is used to poll values from the myq server
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-	
-	
+		
 	/**
 	 * We use our own polling service so we can adjust the polling rate during periods
 	 * of activity when a device has been sent a command or is in motion
@@ -94,6 +95,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 */
 	private static int MAX_RAPID_REFRESH = 30 * 1000;
 	
+	private boolean configured;
 
 	public MyqBinding() {
 	}
@@ -112,7 +114,6 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 			final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 		modified(configuration);
-		//setProperlyConfigured(true);
 	}
 
 	/**
@@ -138,7 +139,9 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 				&& StringUtils.isNotBlank(passwordString)) {
 			myqOnlineData = new MyqData(usernameString, passwordString);
 		}
+		configured = true;
 		schedulePoll(refreshInterval);
+		
 	}
 
 	/**
@@ -162,18 +165,35 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
+		
+		if(pollFuture !=null && !pollFuture.isCancelled())
+			pollFuture.cancel(true);
+		
+		if(pollResetFuture !=null && !pollResetFuture.isCancelled())
+			pollResetFuture.cancel(true);
 	}
 	
 	/**
 	 * Poll for device changes
 	 */
 	private void poll(){
-		if (this.myqOnlineData == null) {
+		if (!configured || this.myqOnlineData == null) {
 			return;
 		}
 		// Get myQ Data
-		this.garageStatus = myqOnlineData.getMyqData();
-
+		GarageDoorData garageStatus = null;
+		try {
+			garageStatus = myqOnlineData.getGarageData();
+		} catch (InvalidLoginException e) {
+			logger.error("Could not log in, please check your credentials.",e);
+			configured = false;
+		} catch (IOException e) {
+			logger.error("Could not connect to MyQ service",e);
+		}
+		
+		if(garageStatus == null)
+			return;
+		
 		for (MyqBindingProvider provider : providers) {
 			for (String mygItemName : provider.getInBindingItemNames()) {
 				MyqBindingConfig deviceConfig = getConfigForItemName(mygItemName);
@@ -251,50 +271,57 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 			return;
 		}
 
-		garageStatus = myqOnlineData.getMyqData();
-
-		if (garageStatus.getDevices().containsKey(deviceConfig.deviceID)) {
-			GarageDoorDevice garageopener = garageStatus.getDevices().get(deviceConfig.deviceID);
-			// only send command if switch is flipped on like pushbutton
-			if((command instanceof OnOffType && OnOffType.ON.equals(command))){
-				if (garageopener.getStatus().isClosedOrClosing()) {
-					openGarageDoor(deviceConfig.deviceID); 					
-				} else {
-					closeGarageDoor(deviceConfig.deviceID);
+		try {
+			GarageDoorData garageStatus = myqOnlineData.getGarageData();
+	
+			if (garageStatus.getDevices().containsKey(deviceConfig.deviceID)) {
+				GarageDoorDevice garageopener = garageStatus.getDevices().get(deviceConfig.deviceID);
+				// only send command if switch is flipped on like pushbutton
+				if((command instanceof OnOffType && OnOffType.ON.equals(command))){
+					if (garageopener.getStatus().isClosedOrClosing()) {
+						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 1); 					
+					} else {
+						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 0);
+					}
+					beginRapidPoll(true);
 				}
-				beginRapidPoll(true);
-			}
-			else if(command instanceof UpDownType){
-				if(UpDownType.UP.equals(command)){
-					openGarageDoor(deviceConfig.deviceID);
-				} else {
-					closeGarageDoor(deviceConfig.deviceID);
+				else if(command instanceof UpDownType){
+					if(UpDownType.UP.equals(command)){
+						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 1);
+					} else {
+						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 0);
+					}
+					beginRapidPoll(true);
 				}
-				beginRapidPoll(true);
+				else {
+					logger.warn("Unknown command {}", command);
+				}
+			} else {
+				logger.warn("no MyQ device found with id: {}", deviceConfig.deviceID);
 			}
-			else {
-				logger.warn("Unknown command {}", command);
-			}
-		} else {
-			logger.warn("no MyQ device found with id: {}", deviceConfig.deviceID);
+		} catch (InvalidLoginException e) {
+			logger.error("Could not log in, please check your credentials.",e);
+			configured = false;
+		} catch (IOException e) {
+			logger.error("Could not connect to MyQ service",e);
 		}
 	}
 
-	/**
-	 * Sends the command to open the door
-	 * @param deviceID
-	 */
-	private void openGarageDoor(int deviceID){
-		myqOnlineData.executeCommand(deviceID, 1, 0);
-	}
-
-	/**
-	 * Sends the command to close the door
-	 * @param deviceID
-	 */
-	private void closeGarageDoor(int deviceID){
-		myqOnlineData.executeCommand(deviceID, 0, 0);
-	}
+//	/**
+//	 * Sends the command to open the door
+//	 * @param deviceID
+//	 */
+//	private void openGarageDoor(int deviceID){
+//		myqOnlineData.executeCommand(deviceID, 1, 0);
+//	}
+//
+//	/**
+//	 * Sends the command to close the door
+//	 * @param deviceID
+//	 */
+//	private void closeGarageDoor(int deviceID){
+//		myqOnlineData.executeCommand(deviceID, 0, 0);
+//	}
 
 	/**
 	 * get item config based on item name(copied from HUE binding)
@@ -312,18 +339,16 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 * @param millis
 	 */
 	private void schedulePoll(long millis){
-		
+	
 	if(pollFuture !=null && !pollFuture.isCancelled())
 		pollFuture.cancel(false);
 
-		logger.debug("rapidRefreshFuture scheduleing");
+		logger.debug("rapidRefreshFuture scheduleing for {} millis", millis);
 		//start polling at the RAPID_REFRESH_SECS interval
 		pollFuture = pollService.scheduleAtFixedRate(new  Runnable() {
 			@Override
 			public void run() {
-				logger.debug("rapidRefreshFuture executing");
 				poll();
-
 			}
 		}, 0, millis, TimeUnit.MILLISECONDS);		
 	}

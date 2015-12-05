@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,63 +40,47 @@ public class GarageDoorData {
 	 * @param logData
 	 *            Boolean to determine if devicedata should be logged.
 	 */
-	public GarageDoorData(String deviceStatusData) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode rootNode = mapper.readTree(deviceStatusData);
-			int ReturnCode = rootNode.get("ReturnCode").asInt();
-			logger.debug("myq ReturnCode: {}", Integer.toString(ReturnCode));
+	public GarageDoorData(JsonNode rootNode) throws IOException {
+		if (rootNode.has("Devices")) {
+			JsonNode node = rootNode.get("Devices");
+			if (node.isArray()) {
+				logger.trace("Chamberlain MyQ Devices:");
+				int arraysize = node.size();
+				for (int i = 0; i < arraysize; i++) {
+					int deviceId = node.get(i).get("MyQDeviceId").asInt();
+					String deviceName = node.get(i).get("SerialNumber")
+							.asText();
+					String deviceType = node.get(i).get("MyQDeviceTypeName")
+							.asText();
 
-			if (ReturnCode == 0) {
-				if (rootNode.has("Devices")) {
-					JsonNode node = rootNode.get("Devices");
-					if (node.isArray()) {
-						logger.trace("Chamberlain MyQ Devices:");
-						int arraysize = node.size();
-						for (int i = 0; i < arraysize; i++) {
-							int deviceId = node.get(i).get("MyQDeviceId")
-									.asInt();
-							String deviceName = node.get(i).get("SerialNumber")
-									.asText();
-							String deviceType = node.get(i)
-									.get("MyQDeviceTypeName").asText();
+					if (deviceType.contains("Garage")
+							&& deviceType.contains("Door")
+							&& deviceType.contains("Opener")) {
+						JsonNode attributes = node.get(i).get("Attributes");
+						if (attributes.isArray()) {
+							int attributesSize = attributes.size();
+							for (int j = 0; j < attributesSize; j++) {
+								String attributeName = attributes.get(j)
+										.get("AttributeDisplayName").asText();
+								if (attributeName.contains("doorstate")) {
+									int doorstate = attributes.get(j)
+											.get("Value").asInt();
+									logger.trace(
+											"DeviceID: {} DeviceName: {} DeviceType: {} Doorstate : ",
+											deviceId, deviceName, deviceType,
+											doorstate);
 
-							if (deviceType.contains("Garage")
-									&& deviceType.contains("Door")
-									&& deviceType.contains("Opener")) {
-								JsonNode attributes = node.get(i).get(
-										"Attributes");
-								if (attributes.isArray()) {
-									int attributesSize = attributes.size();
-									for (int j = 0; j < attributesSize; j++) {
-										String attributeName = attributes
-												.get(j)
-												.get("AttributeDisplayName")
-												.asText();
-										if (attributeName.contains("doorstate")) {
-											int doorstate = attributes.get(j)
-													.get("Value").asInt();
-											logger.trace(
-													"DeviceID: {} DeviceName: {} DeviceType: {} Doorstate : ",
-													deviceId, deviceName,
-													deviceType, doorstate);
-
-											this.devices.put(deviceId,
-													new GarageDoorDevice(deviceId,
-															deviceType,
-															deviceName,
-															doorstate));
-											break;
-										}
-									}
+									this.devices.put(deviceId,
+											new GarageDoorDevice(deviceId,
+													deviceType, deviceName,
+													doorstate));
+									break;
 								}
 							}
 						}
 					}
 				}
 			}
-		} catch (IOException e) {
-			logger.error("Could not read GarageDoor JSON from MyQ Site.", e);
 		}
 	}
 
@@ -125,7 +108,8 @@ class GarageDoorDevice {
 	private String DeviceName;
 	private GarageDoorStatus Status;
 
-	public GarageDoorDevice(int deviceId, String deviceType, String deviceName, int status) {
+	public GarageDoorDevice(int deviceId, String deviceType, String deviceName,
+			int status) {
 		this.DeviceId = deviceId;
 		this.DeviceType = deviceType;
 		this.DeviceName = deviceName;
@@ -149,12 +133,9 @@ class GarageDoorDevice {
 	}
 
 	public enum GarageDoorStatus {
-		OPEN("Open", 1), 
-		CLOSED("Closed", 2), 
-		PARTIAL("Partially Open/Closed",3), 
-		OPENING("Opening", 4), 
-		CLOSING("Closing", 5), 
-		UNKNOWN("Unknown", -1);
+		OPEN("Open", 1), CLOSED("Closed", 2), PARTIAL("Partially Open/Closed",
+				3), OPENING("Opening", 4), CLOSING("Closing", 5), UNKNOWN(
+				"Unknown", -1);
 
 		/**
 		 * The label used to display status to a user
@@ -196,12 +177,13 @@ class GarageDoorDevice {
 		public boolean isClosedOrClosing() {
 			return (this == CLOSED || this == CLOSING);
 		}
-		
+
 		/**
 		 * Is the door in motion
+		 * 
 		 * @return door in motion
 		 */
-		public boolean inMotion(){
+		public boolean inMotion() {
 			return (this == OPENING || this == CLOSING);
 		}
 

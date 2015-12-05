@@ -12,7 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
+
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -25,10 +31,10 @@ import java.util.Properties;
  * <li>sercurityTokin: sercurityTokin for API requests</li>
  * <li>webSite: url of myQ API</li>
  * <li>appId: appId for API requests</li>
- * <li>MaxRetrys: max login attempts in a row</li>
  * </ul>
  * 
  * @author Scott Hanson
+ * @author Dan Cunningham
  * @since 1.8.0
  */
 public class MyqData {
@@ -37,12 +43,12 @@ public class MyqData {
 	private String userName;
 	private String password;
 	private String sercurityTokin;
-	
+
 	private Properties header;
 	private final String webSite = "https://myqexternal.myqdevice.com";
 	private final String appId = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
 
-	private final int MaxRetrys = 3;
+	ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Constructor For Chamberlain MyQ http connection
@@ -60,82 +66,43 @@ public class MyqData {
 	public MyqData(String username, String password) {
 		this.userName = username;
 		this.password = password;
-		
+
 		header = new Properties();
 		header.put("Accept", "application/json");
 		header.put("User-Agent", "myq-openhab-api/1.0");
 	}
 
 	/**
-	 * Gets Garage Door Opener Data in GarageDoorData object format
-	 */
-	public GarageDoorData getMyqData() {
-		if (sercurityTokin == null)
-			Login();
-		String json = getGarageStatus(0);
-		return json != null ? new GarageDoorData(json)
-				: null;
-	}
-
-	/**
-	 * Retrieves JSON string of device data from myq website returns null if
+	 * Retrieves garage door device data from myq website returns null if
 	 * connection fails or user login fails
 	 * 
 	 * @param attemps
 	 *            Attempt number when it recursively calls itself
 	 */
-	private String getGarageStatus(int attemps) {
-		if (sercurityTokin == null && !Login()) {
-			return null;
-		}
+	public GarageDoorData getGarageData() throws InvalidLoginException,
+			IOException {
+		logger.debug("Retreiveing door data");
 		String url = String.format(
 				"%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s",
-				webSite, appId, sercurityTokin);
-		try {
-			
-			String dataString = executeUrl("GET", url, header, null, null,
-					5000);
+				webSite, appId, getSecurityToken());
 
-			if (dataString == null) {
-				logger.error("Failed to connect to MyQ site");
-				if (attemps < MaxRetrys) {
-					Login();
-					return getGarageStatus(++attemps);
-				}
-				return null;
-			}
-			logger.debug("Received MyQ Device Data: {}", dataString);
-			return dataString;
-		} catch (Exception e) {
-			logger.error("Failed to connect to MyQ site");
-			return null;
-		}
+		JsonNode data = request("GET", url, null, null, true);
+
+		return new GarageDoorData(data);
 	}
 
 	/**
 	 * Validates Username and Password then saved sercurityTokin to a variable
-	 * Returns false if return code from API is not correct or connection fails
 	 */
-	private boolean Login() {
+	private void login() throws InvalidLoginException, IOException {
+		logger.debug("attempting to login");
 		String url = String
 				.format("%s/api/user/validate?appId=%s&SecurityToken=null&username=%s&password=%s",
 						webSite, appId, userName, password);
-		try {
-			String loginString = executeUrl("GET", url, header, null, null,
-					5000);
 
-			if (loginString == null) {
-				logger.error("Failed to connect to MyQ site");
-				return false;
-			}
-			logger.debug("Received MyQ Login JSON: {}", loginString);
-			LoginData login = new LoginData(loginString);
-			sercurityTokin = login.getSecurityToken();
-			return true;
-		} catch (Exception e) {
-			logger.error("Failed to login to MyQ site",e);
-			return false;
-		}
+		JsonNode data = request("GET", url, null, null, true);
+		LoginData login = new LoginData(data);
+		sercurityTokin = login.getSecurityToken();
 	}
 
 	/**
@@ -149,38 +116,107 @@ public class MyqData {
 	 * @param attemps
 	 *            Attempt number when it recursively calls itself
 	 */
-	public boolean executeCommand(int deviceID, int state, int attemps) {
-		if (sercurityTokin == null && !Login()) {
-			return false;
-		}
+	public void executeGarageDoorCommand(int deviceID, int state)
+			throws InvalidLoginException, IOException {
 		String message = String.format("{\"ApplicationId\":\"%s\","
-									+ "\"SecurityToken\":\"%s\","
-									+ "\"MyQDeviceId\":\"%d\","
-									+ "\"AttributeName\":\"desireddoorstate\","
-									+ "\"AttributeValue\":\"%d\"}",
-									appId, sercurityTokin, deviceID, state);
+				+ "\"SecurityToken\":\"%s\"," + "\"MyQDeviceId\":\"%d\","
+				+ "\"AttributeName\":\"desireddoorstate\","
+				+ "\"AttributeValue\":\"%d\"}", appId, sercurityTokin,
+				deviceID, state);
 		String url = String
 				.format("%s/api/v4/deviceattribute/putdeviceattribute?appId=%s&SecurityToken=%s",
-						webSite, appId, sercurityTokin);
-		try {
-			String dataString = executeUrl("PUT", url, header,
-					IOUtils.toInputStream(message), "application/json", 5000);
+						webSite, appId, getSecurityToken());
 
-			logger.debug("Sent message: '" + message + "' to " + url);
-			logger.debug("Received MyQ Execute JSON: {}", dataString);
-			if (dataString == null) {
-				logger.error("Failed to connect to MyQ site");
+		request("PUT", url, message, "application/json", true);
+	}
 
-				if (attemps < MaxRetrys) {
-					Login();
-					return executeCommand(deviceID, state, ++attemps);
-				}
-				return false;
-			}
-		} catch (Exception e) {
-			logger.error("Failed to connect to MyQ site");
-			return false;
+	/**
+	 * Returns the currently cached security token, this will make a call to
+	 * login if the token does not exist.
+	 * 
+	 * @return The cached security token
+	 * @throws IOException
+	 * @throws InvalidLoginException
+	 */
+	private String getSecurityToken() throws IOException, InvalidLoginException {
+		if (sercurityTokin == null) {
+			login();
 		}
-		return true;
+		return sercurityTokin;
+	}
+
+	/**
+	 * Make a request to the server, optionally retry the call if there is a
+	 * login issue. Will throw a InvalidLoginExcpetion if the account is
+	 * invalid, locked or soon to be locked.
+	 * 
+	 * @param method
+	 *            The Http Method Type (GET,PUT)
+	 * @param url
+	 *            The request URL
+	 * @param payload
+	 *            Payload string for put operations
+	 * @param payloadType
+	 *            Payload content type for put operations
+	 * @param retry
+	 *            Retry the attempt if our session key is not valid
+	 * @return The JsonNode representing the response data
+	 * @throws IOException
+	 * @throws InvalidLoginException
+	 */
+	private synchronized JsonNode request(String method, String url,
+			String payload, String payloadType, boolean retry)
+			throws IOException, InvalidLoginException {
+
+		logger.debug("Requsting URL {}", url);
+
+		String dataString = executeUrl(method, url, header,
+				payload == null ? null : IOUtils.toInputStream(payload),
+				payloadType, 5000);
+
+		logger.debug("Received MyQ  JSON: {}", dataString);
+
+		if (dataString == null)
+			throw new IOException("Null response from MyQ server");
+
+		try {
+			JsonNode rootNode = mapper.readTree(dataString);
+			int returnCode = rootNode.get("ReturnCode").asInt();
+			logger.debug("myq ReturnCode: {}", returnCode);
+
+			MyQResponseCode rc = MyQResponseCode.FromCode(returnCode);
+
+			switch (rc) {
+			case OK: {
+				return rootNode;
+			}
+			case ACCOUNT_INVALID:
+			case ACCOUNT_NOT_FOUND:
+			case ACCOUNT_LOCKED:
+			case ACCOUNT_LOCKED_PENDING:
+				// these are bad, we do not want to continue to log in and
+				// possible lock an account
+				throw new InvalidLoginException(rc.getDesc());
+			case LOGIN_ERROR:
+				// Our session key has expired, request a new one
+				if (retry) {
+					login();
+					return request(method, url, payload, payloadType, false);
+				}
+				// fall through to default
+			default:
+				throw new IOException("Request Failed: " + rc.getDesc());
+			}
+
+		} catch (JsonProcessingException e) {
+			throw new IOException("Could not parse response", e);
+		}
+	}
+
+	@SuppressWarnings("serial")
+	public class InvalidLoginException extends Exception {
+		public InvalidLoginException(String message) {
+			super(message);
+		}
 	}
 }
