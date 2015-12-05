@@ -267,7 +267,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 */
 	private void computeCommandForItem(Command command, String itemName) {
 		MyqBindingConfig deviceConfig = getConfigForItemName(itemName);
-		if (deviceConfig == null) {
+		if (!configured || deviceConfig == null) {
 			return;
 		}
 
