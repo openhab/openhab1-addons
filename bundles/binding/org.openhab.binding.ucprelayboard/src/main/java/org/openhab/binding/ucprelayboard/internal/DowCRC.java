@@ -36,7 +36,7 @@ public class DowCRC {
 	public static byte compute(byte[] tab) {
 		int result = 0;
 		for (byte value : tab) {
-			result = crc8[ (int)value ^ result];
+			result = crc8[(value ^ result) & 0xFF];
 		}
 		return (byte) result;
 	}
