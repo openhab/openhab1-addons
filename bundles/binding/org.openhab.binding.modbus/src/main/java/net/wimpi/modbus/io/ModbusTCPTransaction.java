@@ -222,9 +222,6 @@ public class ModbusTCPTransaction
     } catch (InterruptedException ex) {
       throw new ModbusIOException("Thread acquiring lock was interrupted.");
     } finally {
-    	if (m_Connection != null && m_Connection.isConnected()) {
-        	m_Connection.close();
-    	}
       m_TransactionLock.release();
     }
   }//execute

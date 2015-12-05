@@ -60,9 +60,14 @@ public class ModbusASCIITransport
   }//constructor
   
   public void close() throws IOException {
-    m_InputStream.close();
-    m_OutputStream.close();
-  }//close
+    if (m_InputStream != null) {
+      m_InputStream.close();
+    }
+    if (m_OutputStream != null) {
+      m_OutputStream.close();
+    }
+    super.close();
+}// close
 
   public void writeMessage(ModbusMessage msg)
       throws ModbusIOException {

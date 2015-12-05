@@ -232,11 +232,17 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 		}
 	}
 	
+	private void clearSlaves() {
+		for(ModbusSlave slave : modbusSlaves.values()){
+			slave.resetConnection();
+		}
+		modbusSlaves.clear();
+	}
 
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		// remove all known items if configuration changed
-		modbusSlaves.clear();
+		clearSlaves();
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 			while (keys.hasMoreElements()) {
