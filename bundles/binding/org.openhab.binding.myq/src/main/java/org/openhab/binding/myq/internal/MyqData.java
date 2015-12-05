@@ -48,7 +48,6 @@ public class MyqData {
 	private final String webSite = "https://myqexternal.myqdevice.com";
 	private final String appId = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
 
-	ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Constructor For Chamberlain MyQ http connection
@@ -180,6 +179,7 @@ public class MyqData {
 			throw new IOException("Null response from MyQ server");
 
 		try {
+			ObjectMapper mapper = new ObjectMapper();
 			JsonNode rootNode = mapper.readTree(dataString);
 			int returnCode = rootNode.get("ReturnCode").asInt();
 			logger.debug("myq ReturnCode: {}", returnCode);
