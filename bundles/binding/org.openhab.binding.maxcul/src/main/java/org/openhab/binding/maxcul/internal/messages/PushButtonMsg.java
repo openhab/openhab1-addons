@@ -27,6 +27,9 @@ public class PushButtonMsg extends BaseMsg {
 
 	private PushButtonMode mode = PushButtonMode.UNKNOWN;
 	private boolean isRetransmission = false;
+	private boolean batteryLow;
+	
+	private boolean rfError;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(PushButtonMsg.class);
@@ -48,6 +51,9 @@ public class PushButtonMsg extends BaseMsg {
 			logger.error("Got " + this.msgType
 					+ " message with incorrect length!");
 		}
+		rfError = extractBitFromByte(this.payload[0], 6);
+		/* extract battery status */
+		batteryLow = extractBitFromByte(this.payload[0], 7);
 	}
 
 	public PushButtonMode getMode() {
@@ -56,5 +62,17 @@ public class PushButtonMsg extends BaseMsg {
 
 	public boolean isRetransmission() {
 		return isRetransmission;
+	}
+	
+	public boolean getBatteryLow(){
+		return batteryLow;
+	}
+	
+	@Override
+	protected void printFormattedPayload() {
+		super.printFormattedPayload();
+		logger.debug("\tMode 				=> " + mode);
+		logger.debug("\tRF Error            => " + rfError);
+		logger.debug("\tBattery Low         => " + batteryLow);
 	}
 }

@@ -24,6 +24,7 @@ import org.openhab.binding.maxcul.internal.messages.AckMsg;
 import org.openhab.binding.maxcul.internal.messages.AddLinkPartnerMsg;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
+import org.openhab.binding.maxcul.internal.messages.SetDisplayActualTempMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
@@ -695,7 +696,23 @@ public class MaxCulMsgHandler implements CULListener {
 		listenMode = listenModeOn;
 		logger.debug("Listen Mode is " + (listenMode ? "ON" : "OFF"));
 	}
-
+	
+	
+	public void setLedMode(boolean ledModeOn) {
+		String data="";
+		if(ledModeOn){
+			data="l02";			
+		}else{
+			data="l00";
+		}
+		try {
+			cul.send(data);
+		} catch (CULCommunicationException e) {
+			logger.error("Unable to send CUL message " + data + " because: "
+					+ e.getMessage());
+		}
+	}
+	
 	public void startSequence(MessageSequencer ps, BaseMsg msg) {
 		logger.debug("Starting sequence");
 		ps.runSequencer(msg);
@@ -703,5 +720,12 @@ public class MaxCulMsgHandler implements CULListener {
 
 	public int getCreditStatus() {
 		return cul.getCredit10ms();
+	}
+
+	public void sendSetDisplayActualTemp(String devAddr, boolean displayActualTemp) {
+		SetDisplayActualTempMsg displaySettingMsg = new SetDisplayActualTempMsg(getMessageCount(), (byte) 0, (byte) 0,
+				this.srcAddr, devAddr, displayActualTemp);
+		sendMessage(displaySettingMsg);
+		
 	}
 }
