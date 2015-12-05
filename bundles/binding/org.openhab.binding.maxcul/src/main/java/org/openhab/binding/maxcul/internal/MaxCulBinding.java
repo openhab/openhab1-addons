@@ -216,7 +216,9 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 							command, bindingConfig, messageHandler,
 							super.providers), PACED_TRANSMIT_TIME);
 				}  else if (bindingConfig.getFeature() == MaxCulFeature.DISPLAYSETTING) {
-					messageHandler.sendSetDisplayActualTemp(bindingConfig.getDevAddr(),((OnOffType) command == OnOffType.ON));
+                    messageHandler.sendSetDisplayActualTemp(
+                            bindingConfig.getDevAddr(),
+                            ((OnOffType) command == OnOffType.ON));
 				} else if (bindingConfig.getFeature() == MaxCulFeature.RESET) {
 					messageHandler.sendReset(bindingConfig.getDevAddr());
 				} else {
@@ -228,7 +230,8 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			case SHUTTER_CONTACT:
 				if (bindingConfig.getFeature() == MaxCulFeature.RESET) {
 					messageHandler.sendReset(bindingConfig.getDevAddr());
-				}				
+				}
+				break;
 			default:
 				logger.warn("Command not handled for "
 						+ bindingConfig.getDeviceType());
@@ -559,15 +562,12 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 					for (MaxCulBindingConfig bc : bindingConfigs) {
 						String itemName = provider.getItemNameForConfig(bc);
 						if (bc.getFeature() == MaxCulFeature.SWITCH) {
-							// ON maps to 'AUTO'
-							if (pbMsg.getMode() == PushButtonMode.AUTO)
-								eventPublisher.postUpdate(itemName,
-										OnOffType.ON);
-							// OFF maps to 'ECO'
-							else if (pbMsg.getMode() == PushButtonMode.ECO)
-								eventPublisher.postUpdate(itemName,
-										OnOffType.OFF);
-							
+                            // 'AUTO' maps to 'ON' and 'ECO' maps to 'OFF'
+                            eventPublisher
+                                    .postUpdate(
+                                            itemName,
+                                            pbMsg.getMode() == PushButtonMode.AUTO ? OnOffType.ON
+                                                    : OnOffType.OFF);							
 						} else if (bc.getFeature() == MaxCulFeature.BATTERY) {
 								eventPublisher.postUpdate(itemName, pbMsg
 									.getBatteryLow() ? OnOffType.ON
@@ -580,7 +580,8 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 					this.messageHandler.sendAck(pbMsg);
 				break;
 			case SHUTTER_CONTACT_STATE:
-				ShutterContactStateMsg shutterContactStateMsg = new ShutterContactStateMsg(data);
+                ShutterContactStateMsg shutterContactStateMsg = new ShutterContactStateMsg(
+                        data);
 				shutterContactStateMsg.printMessage();
 				for (MaxCulBindingProvider provider : super.providers) {
 					Collection<MaxCulBindingConfig> bindingConfigs = provider
@@ -597,9 +598,11 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 							}
 						} else if (bc.getFeature() == MaxCulFeature.BATTERY) {
 							eventPublisher
-							.postUpdate(itemName, shutterContactStateMsg
-									.getBatteryLow() ? OnOffType.ON
-									: OnOffType.OFF);
+									.postUpdate(
+											itemName,
+											shutterContactStateMsg
+													.getBatteryLow() ? OnOffType.ON
+													: OnOffType.OFF);
 						}
 					}
 				}

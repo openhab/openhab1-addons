@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.messages;
 
 import org.slf4j.Logger;
@@ -12,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ShutterContactStateMsg extends BaseMsg {
 	
-	final static private int SHUTTER_CONTACT_STATE_PAYLOAD_LEN = 1; /* in bytes */
+	private static final int SHUTTER_CONTACT_STATE_PAYLOAD_LEN = 1; /* in bytes */
 	
 	public enum ShutterContactState {
 		OPEN, CLOSED, UNKNOWN;

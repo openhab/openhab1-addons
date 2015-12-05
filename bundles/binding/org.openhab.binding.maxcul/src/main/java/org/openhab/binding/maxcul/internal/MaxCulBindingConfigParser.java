@@ -162,7 +162,7 @@ public class MaxCulBindingConfigParser {
 			} else if (configPart.equals("displaySetting")){
 				if (cfg.getDeviceType() != MaxCulDevice.WALL_THERMOSTAT)
 					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "
+							"Invalid device feature. Can only use 'temperature' on wall thermostats. This is a "
 									+ cfg.getDeviceType());
 				cfg.setFeature(MaxCulFeature.DISPLAYSETTING);
 			} else if (configPart.equals("mode")) {
@@ -176,13 +176,13 @@ public class MaxCulBindingConfigParser {
 			} else if (configPart.equals("switch")) {
 				if (cfg.getDeviceType() != MaxCulDevice.PUSH_BUTTON)				
 					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'switch' on PushButton. This is a {}"
+							"Invalid device feature. Can only use 'switch' on PushButton. This is a "
 									+ cfg.getDeviceType());
 				cfg.setFeature(MaxCulFeature.SWITCH);
 			} else if (configPart.equals("contact")) {
 				if (cfg.getDeviceType() != MaxCulDevice.SHUTTER_CONTACT)
 					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'contact' on ShutterContact. This is a {}"
+							"Invalid device feature. Can only use 'contact' on ShutterContact. This is a "
 									+ cfg.getDeviceType());
 				cfg.setFeature(MaxCulFeature.CONTACT);
 			} else if (configPart.equals("valvepos")) {
@@ -268,7 +268,7 @@ public class MaxCulBindingConfigParser {
 			else if (config.getFeature() == MaxCulFeature.CONTACT
 					&& !(item instanceof ContactItem))
 				throw new BindingConfigParseException(
-						"Invalid item type. Feature 'switch' can only be a Switch");
+						"Invalid item type. Feature 'contact' can only be a Contact");
 			else if (config.getFeature() == MaxCulFeature.RESET
 					&& !(item instanceof SwitchItem))
 				throw new BindingConfigParseException(
@@ -300,7 +300,7 @@ public class MaxCulBindingConfigParser {
 			else if (config.getFeature() == MaxCulFeature.DISPLAYSETTING
 					&& !(item instanceof SwitchItem))
 				throw new BindingConfigParseException(
-						"Invalid item type. Feature 'reset' can only be a Switch");
+						"Invalid item type. Feature 'displaysetting' can only be a Switch");
 			else if (config.getFeature() == MaxCulFeature.RESET
 					&& !(item instanceof SwitchItem))
 				throw new BindingConfigParseException(
