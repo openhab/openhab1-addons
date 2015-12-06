@@ -339,7 +339,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	}
 
 	/**
-	 * Schedule the task to reset out poll rate in a fture time
+	 * Schedule the task to reset out poll rate in a future time
 	 */
 	private void scheduleFuturePollReset() {
 		// stop rapid polling after MAX_RAPID_REFRESH_SECS

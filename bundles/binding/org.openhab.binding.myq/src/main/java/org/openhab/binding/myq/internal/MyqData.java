@@ -195,7 +195,7 @@ public class MyqData {
 			case ACCOUNT_LOCKED:
 			case ACCOUNT_LOCKED_PENDING:
 				// these are bad, we do not want to continue to log in and
-				// possible lock an account
+				// lock an account
 				throw new InvalidLoginException(rc.getDesc());
 			case LOGIN_ERROR:
 				// Our session key has expired, request a new one
