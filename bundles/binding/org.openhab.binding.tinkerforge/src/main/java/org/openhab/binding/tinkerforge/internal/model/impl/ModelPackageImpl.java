@@ -153,6 +153,7 @@ import org.openhab.binding.tinkerforge.internal.model.PTCNoiseRejectionFilter;
 import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
 import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
 import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
 import org.openhab.binding.tinkerforge.internal.model.PTCWireMode;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
@@ -452,6 +453,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dimmableActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass percentTypeActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3072,6 +3080,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getPercentTypeActor()
+  {
+    return percentTypeActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getPercentTypeActor_PercentValue()
+  {
+    return (EAttribute)percentTypeActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getPercentTypeActor__SetValue__PercentType_DeviceOptions()
+  {
+    return percentTypeActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getSetPointActor()
   {
     return setPointActorEClass;
@@ -3082,29 +3120,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getSetPointActor_PercentValue()
-  {
-    return (EAttribute)setPointActorEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EOperation getSetPointActor__SetValue__BigDecimal_DeviceOptions()
   {
     return setPointActorEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EOperation getSetPointActor__SetValue__PercentType_DeviceOptions()
-  {
-    return setPointActorEClass.getEOperations().get(1);
   }
 
   /**
@@ -4342,7 +4360,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getRemoteSwitchB_TargetDimmvalue()
+  public EAttribute getRemoteSwitchB_AbsDimmValue()
   {
     return (EAttribute)remoteSwitchBEClass.getEStructuralFeatures().get(4);
   }
@@ -7480,10 +7498,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(dimmableActorEClass, DIMMABLE_ACTOR__MAX_VALUE);
     createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS);
 
+    percentTypeActorEClass = createEClass(PERCENT_TYPE_ACTOR);
+    createEAttribute(percentTypeActorEClass, PERCENT_TYPE_ACTOR__PERCENT_VALUE);
+    createEOperation(percentTypeActorEClass, PERCENT_TYPE_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS);
+
     setPointActorEClass = createEClass(SET_POINT_ACTOR);
-    createEAttribute(setPointActorEClass, SET_POINT_ACTOR__PERCENT_VALUE);
     createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS);
-    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS);
 
     mBrickletDualButtonEClass = createEClass(MBRICKLET_DUAL_BUTTON);
     createEAttribute(mBrickletDualButtonEClass, MBRICKLET_DUAL_BUTTON__DEVICE_TYPE);
@@ -7675,7 +7695,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__ADDRESS);
     createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__UNIT);
     createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__REPEATS);
-    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__TARGET_DIMMVALUE);
+    createEAttribute(remoteSwitchBEClass, REMOTE_SWITCH_B__ABS_DIMM_VALUE);
 
     remoteSwitchCEClass = createEClass(REMOTE_SWITCH_C);
     createEAttribute(remoteSwitchCEClass, REMOTE_SWITCH_C__DEVICE_TYPE);
@@ -8139,6 +8159,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(setPointActorEClass_C);
     g1.getETypeArguments().add(g2);
     setPointActorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPercentTypeActor());
+    setPointActorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletDualButton());
     g1.getETypeArguments().add(g2);
@@ -8554,6 +8576,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getDimmableActor());
     g2 = createEGenericType(this.getRemoteSwitchBConfiguration());
     g1.getETypeArguments().add(g2);
+    remoteSwitchBEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getPercentTypeActor());
     remoteSwitchBEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getRemoteSwitch());
     remoteSwitchCEClass.getEGenericSuperTypes().add(g1);
@@ -9115,15 +9139,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getIncreaseDecreaseType(), "increaseDecrease", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(percentTypeActorEClass, PercentTypeActor.class, "PercentTypeActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPercentTypeActor_PercentValue(), this.getPercentValue(), "percentValue", null, 0, 1, PercentTypeActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getPercentTypeActor__SetValue__PercentType_DeviceOptions(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getPercentType(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(setPointActorEClass, SetPointActor.class, "SetPointActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getSetPointActor_PercentValue(), this.getPercentValue(), "percentValue", null, 0, 1, SetPointActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getSetPointActor__SetValue__BigDecimal_DeviceOptions(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEBigDecimal(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getSetPointActor__SetValue__PercentType_DeviceOptions(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getPercentType(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletDualButtonEClass, MBrickletDualButton.class, "MBrickletDualButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -9336,7 +9362,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getRemoteSwitchB_Address(), theEcorePackage.getELongObject(), "address", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRemoteSwitchB_Unit(), theEcorePackage.getEShortObject(), "unit", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRemoteSwitchB_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getRemoteSwitchB_TargetDimmvalue(), theEcorePackage.getEShortObject(), "targetDimmvalue", "0", 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRemoteSwitchB_AbsDimmValue(), theEcorePackage.getEShortObject(), "absDimmValue", null, 0, 1, RemoteSwitchB.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(remoteSwitchCEClass, RemoteSwitchC.class, "RemoteSwitchC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getRemoteSwitchC_DeviceType(), theEcorePackage.getEString(), "deviceType", "remote_switch_c", 0, 1, RemoteSwitchC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

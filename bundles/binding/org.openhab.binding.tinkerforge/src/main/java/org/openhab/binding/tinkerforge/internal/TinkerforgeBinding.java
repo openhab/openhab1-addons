@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tinkerforge.internal;
 
+import java.math.BigDecimal;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,7 @@ import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
@@ -709,9 +711,24 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
           continue;
         }
       } else if (sensorValue instanceof PercentValue) {
-        if (itemType.isAssignableFrom(RollershutterItem.class)
+         if (itemType.isAssignableFrom(SwitchItem.class)) {
+          value =
+              ((PercentValue) sensorValue).toBigDecimal().compareTo(BigDecimal.ZERO) == 1
+                  ? OnOffType.ON
+                  : OnOffType.OFF;
+          logger.debug("switch found {}", itemName);
+        } 
+         else if (itemType.isAssignableFrom(RollershutterItem.class)
             || itemType.isAssignableFrom(DimmerItem.class)) {
           value = new PercentType(((PercentValue) sensorValue).toBigDecimal());
+          logger.debug("Rollershutter or dimmer found {} {}", itemName);
+        } 
+        else if (itemType.isAssignableFrom(ContactItem.class)) {
+          value =
+              ((PercentValue) sensorValue).toBigDecimal().compareTo(BigDecimal.ZERO) == -1
+                  ? OpenClosedType.OPEN
+                  : OpenClosedType.CLOSED;
+          logger.debug("contact found {}", itemName);
         } else {
           continue;
         }
@@ -817,6 +834,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                 if (mDevice instanceof SetPointActor) {
                   ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
                       provider.getDeviceOptions(itemName));
+                  logger.debug("found SetpointActor");
+                } else if (mDevice instanceof PercentTypeActor) {
+                  ((PercentTypeActor) mDevice).setValue(((PercentType) command),
+                      provider.getDeviceOptions(itemName));
+                  logger.debug("found PercentType actor");
                 } else {
                   logger.error("found no percenttype actor");
                 }

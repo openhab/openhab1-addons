@@ -278,10 +278,14 @@ interface DimmableActor<TC extends DimmableConfiguration>   extends MTFConfigCon
     op void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts)
 }
 
-interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C> {
+interface PercentTypeActor {
     PercentValue percentValue
+	op void setValue(PercentType newValue, DeviceOptions opts)
+}
+
+interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C>,
+	PercentTypeActor {
     op void setValue(BigDecimal newValue, DeviceOptions opts)
-    op void setValue(PercentType newValue, DeviceOptions opts)
 }
 
 class MBrickletDualButton extends MDevice<TinkerBrickletDualButton>,
@@ -557,12 +561,15 @@ class RemoteSwitchA extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchAConfigu
     Short repeats
 }
 
-class RemoteSwitchB extends MSensor<PercentValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>{
+class RemoteSwitchB extends MSensor<PercentValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>,
+      PercentTypeActor {
     readonly String deviceType = "remote_switch_b"
     Long address
     Short unit
     Short repeats
-    Short targetDimmvalue = "0"
+    Short absDimmValue
+    //minValue = "0" is not configurable is hard coded in the binding
+    //maxValue = "15" is not configurable is hard coded in the binding
 }
 
 class RemoteSwitchC extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchCConfiguration>{
