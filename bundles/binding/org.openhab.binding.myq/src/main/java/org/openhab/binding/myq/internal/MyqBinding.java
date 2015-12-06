@@ -57,48 +57,51 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 */
 	private MyqData myqOnlineData = null;
 
-//	/**
-//	 * The GarageDoorData. This object stores the garage door opener status
-//	 */
-//	private GarageDoorData garageStatus = null;
+	// /**
+	// * The GarageDoorData. This object stores the garage door opener status
+	// */
+	// private GarageDoorData garageStatus = null;
 
 	/**
 	 * the refresh interval which is used to poll values from the myq server
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-		
+
 	/**
-	 * We use our own polling service so we can adjust the polling rate during periods
-	 * of activity when a device has been sent a command or is in motion
+	 * We use our own polling service so we can adjust the polling rate during
+	 * periods of activity when a device has been sent a command or is in motion
 	 */
-	private ScheduledExecutorService pollService = Executors.newSingleThreadScheduledExecutor();
-	
+	private ScheduledExecutorService pollService = Executors
+			.newSingleThreadScheduledExecutor();
+
 	/**
 	 * The regular polling task
 	 */
 	private ScheduledFuture<?> pollFuture;
-	
+
 	/**
-	 * This task will reset the poll interval back to normal after a rapid poll cycle
+	 * This task will reset the poll interval back to normal after a rapid poll
+	 * cycle
 	 */
 	private ScheduledFuture<?> pollResetFuture;
-	
-	
+
 	/**
 	 * When polling quickly, how often do we poll
 	 */
 	private static int RAPID_REFRESH = 2000;
-	
+
 	/**
-	 * Cap the time we poll rapidly to not overwhelm the servers with api requests.
+	 * Cap the time we poll rapidly to not overwhelm the servers with api
+	 * requests.
 	 */
 	private static int MAX_RAPID_REFRESH = 30 * 1000;
-	
-	private boolean configured;
 
-	public MyqBinding() {
-	}
+	/**
+	 * If our login credentials are invalid then we will stop api requests until
+	 * our configuration is changed
+	 */
+	private boolean invalidCredentials;
 
 	/**
 	 * Called by the SCR to activate the component with its configuration read
@@ -139,9 +142,8 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 				&& StringUtils.isNotBlank(passwordString)) {
 			myqOnlineData = new MyqData(usernameString, passwordString);
 		}
-		configured = true;
+		invalidCredentials = false;
 		schedulePoll(refreshInterval);
-		
 	}
 
 	/**
@@ -165,81 +167,78 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
-		
-		if(pollFuture !=null && !pollFuture.isCancelled())
+
+		if (pollFuture != null && !pollFuture.isCancelled())
 			pollFuture.cancel(true);
-		
-		if(pollResetFuture !=null && !pollResetFuture.isCancelled())
+
+		if (pollResetFuture != null && !pollResetFuture.isCancelled())
 			pollResetFuture.cancel(true);
 	}
-	
+
 	/**
 	 * Poll for device changes
 	 */
-	private void poll(){
-		if (!configured || this.myqOnlineData == null) {
+	private void poll() {
+		if (invalidCredentials || this.myqOnlineData == null) {
 			return;
 		}
-		// Get myQ Data
-		GarageDoorData garageStatus = null;
-		try {
-			garageStatus = myqOnlineData.getGarageData();
-		} catch (InvalidLoginException e) {
-			logger.error("Could not log in, please check your credentials.",e);
-			configured = false;
-		} catch (IOException e) {
-			logger.error("Could not connect to MyQ service",e);
-		}
-		
-		if(garageStatus == null)
-			return;
-		
-		for (MyqBindingProvider provider : providers) {
-			for (String mygItemName : provider.getInBindingItemNames()) {
-				MyqBindingConfig deviceConfig = getConfigForItemName(mygItemName);
 
-				if (deviceConfig != null) {
-					if (garageStatus.getDevices().containsKey(
-							deviceConfig.deviceID)) {
-						GarageDoorDevice garageopener = garageStatus.getDevices()
-								.get(deviceConfig.deviceID);
-						if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.StringStatus){
-							eventPublisher
-							.postUpdate(mygItemName, new StringType(
-									garageopener.getStatus().getLabel()));
-						}
-						if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.ContactStatus) {
-							if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
+		try {
+			// Get myQ Data
+			GarageDoorData garageStatus = myqOnlineData.getGarageData();
+
+			for (MyqBindingProvider provider : providers) {
+				for (String mygItemName : provider.getInBindingItemNames()) {
+					MyqBindingConfig deviceConfig = getConfigForItemName(mygItemName);
+
+					if (deviceConfig != null) {
+						if (garageStatus.getDevices().containsKey(
+								deviceConfig.deviceID)) {
+							GarageDoorDevice garageopener = garageStatus
+									.getDevices().get(deviceConfig.deviceID);
+							if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.StringStatus) {
 								eventPublisher.postUpdate(mygItemName,
-										OpenClosedType.CLOSED);
-							} else {
-								eventPublisher.postUpdate(mygItemName,
-										OpenClosedType.OPEN);
+										new StringType(garageopener.getStatus()
+												.getLabel()));
 							}
-						}
-						if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.Rollershutter) {
-							if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
-								eventPublisher.postUpdate(mygItemName,
-										UpDownType.DOWN);
+							if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.ContactStatus) {
+								if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
+									eventPublisher.postUpdate(mygItemName,
+											OpenClosedType.CLOSED);
+								} else {
+									eventPublisher.postUpdate(mygItemName,
+											OpenClosedType.OPEN);
+								}
 							}
-							else if (garageopener.getStatus() == GarageDoorStatus.OPEN) {
-								eventPublisher.postUpdate(mygItemName,
-										UpDownType.UP);
+							if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.Rollershutter) {
+								if (garageopener.getStatus() == GarageDoorStatus.CLOSED) {
+									eventPublisher.postUpdate(mygItemName,
+											UpDownType.DOWN);
+								} else if (garageopener.getStatus() == GarageDoorStatus.OPEN) {
+									eventPublisher.postUpdate(mygItemName,
+											UpDownType.UP);
+								}
+								// if its not open, close or unknown then its in
+								// a half-way state.
+								else if (garageopener.getStatus() != GarageDoorStatus.UNKNOWN) {
+									eventPublisher.postUpdate(mygItemName,
+											new PercentType(50));
+								}
 							}
-							//if its not open, close or unknown then its in a half-way state.
-							else if (garageopener.getStatus() != GarageDoorStatus.UNKNOWN) {
-								eventPublisher.postUpdate(mygItemName,
-										new PercentType(50));
+
+							// make sure we are polling frequently
+							if (garageopener.getStatus().inMotion()) {
+								beginRapidPoll(false);
 							}
-						}
-						
-						//make sure we are polling frequently
-						if(garageopener.getStatus().inMotion()){
-							beginRapidPoll(false);
 						}
 					}
 				}
 			}
+		} catch (InvalidLoginException e) {
+			logger.error("Could not log in, please check your credentials.", e);
+			invalidCredentials = true;
+		} catch (IOException e) {
+			logger.error("Could not connect to MyQ service", e);
 		}
 	}
 
@@ -249,7 +248,8 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		super.internalReceiveCommand(itemName, command);
-		logger.debug("MyQ binding received command '{}' for item '{}'", command, itemName);
+		logger.debug("MyQ binding received command '{}' for item '{}'",
+				command, itemName);
 		if (myqOnlineData != null) {
 			computeCommandForItem(command, itemName);
 		}
@@ -267,61 +267,50 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 */
 	private void computeCommandForItem(Command command, String itemName) {
 		MyqBindingConfig deviceConfig = getConfigForItemName(itemName);
-		if (!configured || deviceConfig == null) {
+		if (invalidCredentials || deviceConfig == null) {
 			return;
 		}
 
 		try {
 			GarageDoorData garageStatus = myqOnlineData.getGarageData();
-	
+
 			if (garageStatus.getDevices().containsKey(deviceConfig.deviceID)) {
-				GarageDoorDevice garageopener = garageStatus.getDevices().get(deviceConfig.deviceID);
+				GarageDoorDevice garageopener = garageStatus.getDevices().get(
+						deviceConfig.deviceID);
 				// only send command if switch is flipped on like pushbutton
-				if((command instanceof OnOffType && OnOffType.ON.equals(command))){
+				if ((command instanceof OnOffType && OnOffType.ON
+						.equals(command))) {
 					if (garageopener.getStatus().isClosedOrClosing()) {
-						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 1); 					
+						myqOnlineData.executeGarageDoorCommand(
+								deviceConfig.deviceID, 1);
 					} else {
-						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 0);
+						myqOnlineData.executeGarageDoorCommand(
+								deviceConfig.deviceID, 0);
 					}
 					beginRapidPoll(true);
-				}
-				else if(command instanceof UpDownType){
-					if(UpDownType.UP.equals(command)){
-						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 1);
+				} else if (command instanceof UpDownType) {
+					if (UpDownType.UP.equals(command)) {
+						myqOnlineData.executeGarageDoorCommand(
+								deviceConfig.deviceID, 1);
 					} else {
-						myqOnlineData.executeGarageDoorCommand(deviceConfig.deviceID, 0);
+						myqOnlineData.executeGarageDoorCommand(
+								deviceConfig.deviceID, 0);
 					}
 					beginRapidPoll(true);
-				}
-				else {
+				} else {
 					logger.warn("Unknown command {}", command);
 				}
 			} else {
-				logger.warn("no MyQ device found with id: {}", deviceConfig.deviceID);
+				logger.warn("no MyQ device found with id: {}",
+						deviceConfig.deviceID);
 			}
 		} catch (InvalidLoginException e) {
-			logger.error("Could not log in, please check your credentials.",e);
-			configured = false;
+			logger.error("Could not log in, please check your credentials.", e);
+			invalidCredentials = true;
 		} catch (IOException e) {
-			logger.error("Could not connect to MyQ service",e);
+			logger.error("Could not connect to MyQ service", e);
 		}
 	}
-
-//	/**
-//	 * Sends the command to open the door
-//	 * @param deviceID
-//	 */
-//	private void openGarageDoor(int deviceID){
-//		myqOnlineData.executeCommand(deviceID, 1, 0);
-//	}
-//
-//	/**
-//	 * Sends the command to close the door
-//	 * @param deviceID
-//	 */
-//	private void closeGarageDoor(int deviceID){
-//		myqOnlineData.executeCommand(deviceID, 0, 0);
-//	}
 
 	/**
 	 * get item config based on item name(copied from HUE binding)
@@ -333,50 +322,53 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Schedule our polling task
+	 * 
 	 * @param millis
 	 */
-	private void schedulePoll(long millis){
-	
-	if(pollFuture !=null && !pollFuture.isCancelled())
-		pollFuture.cancel(false);
+	private void schedulePoll(long millis) {
+
+		if (pollFuture != null && !pollFuture.isCancelled())
+			pollFuture.cancel(false);
 
 		logger.debug("rapidRefreshFuture scheduleing for {} millis", millis);
-		//start polling at the RAPID_REFRESH_SECS interval
-		pollFuture = pollService.scheduleAtFixedRate(new  Runnable() {
+		// start polling at the RAPID_REFRESH_SECS interval
+		pollFuture = pollService.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				poll();
 			}
-		}, 0, millis, TimeUnit.MILLISECONDS);		
+		}, 0, millis, TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * Schedule the task to reset out poll rate in a fture time
 	 */
-	private void scheduleFuturePollReset(){
-		//stop rapid polling after MAX_RAPID_REFRESH_SECS
+	private void scheduleFuturePollReset() {
+		// stop rapid polling after MAX_RAPID_REFRESH_SECS
 		pollResetFuture = pollService.schedule(new Runnable() {
-	       public void run() { 
-	    	   logger.debug("rapidRefreshFutureEnd stopping");
-	    	   schedulePoll(refreshInterval);
-	       }
+			public void run() {
+				logger.debug("rapidRefreshFutureEnd stopping");
+				schedulePoll(refreshInterval);
+			}
 		}, MAX_RAPID_REFRESH, TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * Start rapid polling
-	 * @param restart if already running, otherwise ignore. 
+	 * 
+	 * @param restart
+	 *            if already running, otherwise ignore.
 	 */
-	private void beginRapidPoll(boolean restart){
-		if(restart && pollResetFuture != null){
+	private void beginRapidPoll(boolean restart) {
+		if (restart && pollResetFuture != null) {
 			pollResetFuture.cancel(true);
 			pollResetFuture = null;
 		}
-			
-		if(pollResetFuture == null || pollResetFuture.isCancelled()){
+
+		if (pollResetFuture == null || pollResetFuture.isCancelled()) {
 			schedulePoll(RAPID_REFRESH);
 			scheduleFuturePollReset();
 		}
