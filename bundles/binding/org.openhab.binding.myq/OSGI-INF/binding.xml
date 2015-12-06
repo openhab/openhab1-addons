@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" modified="modified" deactivate="deactivate" name="org.openhab.binding.myq.binding" immediate="true" configuration-pid="org.openhab.myq" configuration-policy="require">
-	<implementation class="org.openhab.binding.myq.internal.myqBinding" />
+	<implementation class="org.openhab.binding.myq.internal.MyqBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
@@ -22,7 +22,7 @@
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="addBindingProvider" cardinality="1..n"
-		interface="org.openhab.binding.myq.myqBindingProvider" name="myqBindingProvider"
+		interface="org.openhab.binding.myq.MyqBindingProvider" name="MyqBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
 	
 </scr:component>

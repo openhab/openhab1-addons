@@ -11,9 +11,10 @@ package org.openhab.binding.myq.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openhab.binding.myq.myqBindingProvider;
-import org.openhab.binding.myq.internal.myqBindingConfig.ITEMTYPE;
+import org.openhab.binding.myq.MyqBindingProvider;
+import org.openhab.binding.myq.internal.MyqBindingConfig.ITEMTYPE;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.StringItem;
@@ -28,10 +29,10 @@ import org.slf4j.LoggerFactory;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public class myqGenericBindingProvider extends AbstractGenericBindingProvider
-		implements myqBindingProvider {
+public class MyqGenericBindingProvider extends AbstractGenericBindingProvider
+		implements MyqBindingProvider {
 	static final Logger logger = LoggerFactory
-			.getLogger(myqGenericBindingProvider.class);
+			.getLogger(MyqGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -46,13 +47,14 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof ContactItem || item instanceof StringItem)) {
+		if (!(item instanceof SwitchItem || item instanceof RollershutterItem
+				|| item instanceof ContactItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', only SwitchItems, ContactItem or StringItem are allowed "
+							+ "', only SwitchItems, RollershutterItem, ContactItem or StringItem are allowed "
 							+ "- please check your *.items configuration");
 		}
 	}
@@ -64,7 +66,7 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		myqBindingConfig config = parseBindingConfig(item, bindingConfig);
+		MyqBindingConfig config = parseBindingConfig(item, bindingConfig);
 
 		// parse bindingconfig here ...
 		addBindingConfig(item, config);
@@ -73,18 +75,20 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider
 	/**
 	 * Parse item type to see what the action is used for
 	 */
-	private myqBindingConfig parseBindingConfig(Item item, String bindingConfig)
+	private MyqBindingConfig parseBindingConfig(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		final myqBindingConfig config = new myqBindingConfig();
+		final MyqBindingConfig config = new MyqBindingConfig();
 
 		if (item instanceof SwitchItem) {
-			config.Type = ITEMTYPE.Switch;
+			config.type = ITEMTYPE.Switch;
+		} else if (item instanceof RollershutterItem) {
+			config.type = ITEMTYPE.Rollershutter;
 		} else if (item instanceof ContactItem) {
-			config.Type = ITEMTYPE.ContactStatus;
+			config.type = ITEMTYPE.ContactStatus;
 		} else if (item instanceof StringItem) {
-			config.Type = ITEMTYPE.StringStatus;
+			config.type = ITEMTYPE.StringStatus;
 		}
-		config.DeviceID = Integer.parseInt(bindingConfig);
+		config.deviceID = Integer.parseInt(bindingConfig);
 		return config;
 	}
 
@@ -92,8 +96,8 @@ public class myqGenericBindingProvider extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public myqBindingConfig getItemConfig(String itemName) {
-		return (myqBindingConfig) bindingConfigs.get(itemName);
+	public MyqBindingConfig getItemConfig(String itemName) {
+		return (MyqBindingConfig) bindingConfigs.get(itemName);
 	}
 
 	public List<String> getInBindingItemNames() {

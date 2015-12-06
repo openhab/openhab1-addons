@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class LoginData {
 	static final Logger logger = LoggerFactory.getLogger(LoginData.class);
 
-	boolean success = false;
 	String securityToken;
 
 	/**
@@ -40,36 +39,20 @@ public class LoginData {
 	 *            The Json string as it has been returned myq website.
 	 */
 	@SuppressWarnings("unchecked")
-	public LoginData(String loginData) {
+	public LoginData(JsonNode root) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode rootNode = mapper.readTree(loginData);
-			Map<String, Object> treeData = mapper
-					.readValue(rootNode, Map.class);
-			String test = treeData.get("ReturnCode").toString();
-			logger.debug("myq ReturnCode: " + test);
-
-			if (Integer.parseInt(treeData.get("ReturnCode").toString()) == 0) {
-				this.success = true;
-				this.securityToken = treeData.get("SecurityToken").toString();
-				logger.debug("myq securityToken: " + this.securityToken);
-			}
-		} catch (IOException e) {
-			logger.error("Could not read Settings-Json from myq site.", e);
-		}
-	}
-
-	/**
-	 * @return if it works return true
-	 */
-	public boolean getSuccess() {
-		return this.success;
+		Map<String, Object> treeData = mapper.readValue(root, Map.class);
+		Object data = treeData.get("SecurityToken");
+		if(data == null)
+			throw new IOException("Could not find SecurityToken in JSON data");
+		securityToken = data.toString();
+		logger.debug("myq securityToken: {}", securityToken);
 	}
 
 	/**
 	 * @return Login SecurityToken
 	 */
 	public String getSecurityToken() {
-		return this.securityToken;
+		return securityToken;
 	}
 }

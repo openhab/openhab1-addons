@@ -11,7 +11,7 @@ package org.openhab.binding.myq;
 import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.binding.myq.internal.myqBindingConfig;
+import org.openhab.binding.myq.internal.MyqBindingConfig;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -22,7 +22,7 @@ import org.openhab.binding.myq.internal.myqBindingConfig;
  * @author Scott Hanson
  * @since 1.8.0
  */
-public interface myqBindingProvider extends BindingProvider {
+public interface MyqBindingProvider extends BindingProvider {
 	/**
 	 * Returns the configuration for the item with the given name.
 	 * 
@@ -30,7 +30,7 @@ public interface myqBindingProvider extends BindingProvider {
 	 * @return The configuration if there is an item with the given name, null
 	 *         otherwise.
 	 */
-	public myqBindingConfig getItemConfig(String itemName);
+	public MyqBindingConfig getItemConfig(String itemName);
 
 	/**
 	 * Returns a list of item names
