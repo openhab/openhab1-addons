@@ -57,11 +57,6 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 */
 	private MyqData myqOnlineData = null;
 
-	// /**
-	// * The GarageDoorData. This object stores the garage door opener status
-	// */
-	// private GarageDoorData garageStatus = null;
-
 	/**
 	 * the refresh interval which is used to poll values from the myq server
 	 * (optional, defaults to 60000ms)
