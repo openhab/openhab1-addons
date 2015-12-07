@@ -54,7 +54,7 @@ public class GPIOLinux implements GPIO, ManagedService {
 	private volatile long defaultDebounceInterval = 0;
 
 	/** Forcibly use the pins after unclean shutdown */
-	private volatile boolean force = false;
+	private volatile boolean defaultForce = false;
 
 	/** GPIO subsystem read/write lock. */
 	private final ReentrantReadWriteLock gpioLock = new ReentrantReadWriteLock();
@@ -123,7 +123,7 @@ public class GPIOLinux implements GPIO, ManagedService {
 
 			String propForce = (String) properties.get(PROP_FORCE);
 			if (propForce != null) {
-				force = Boolean.parseBoolean(propForce);
+				defaultForce = Boolean.parseBoolean(propForce);
 			}
 
 		}
@@ -179,12 +179,16 @@ public class GPIOLinux implements GPIO, ManagedService {
 		return false;
 	}
 
+	public GPIOPin reservePin(Integer pinNumber) throws IOException {
+		return reservePin(pinNumber, false);
+	}
 	/**
 	 *  Exports the pin to user space, creates and initializes the
 	 *  backend object representing the pin. Updates the registry for
 	 *  initialized pins. 
 	 */
-	public GPIOPin reservePin(Integer pinNumber) throws IOException {
+	public GPIOPin reservePin(Integer pinNumber, boolean force)
+			throws IOException {
 
 		final String SYSFS_CLASS_GPIO = sysFS + "/class/gpio/";
 
@@ -212,7 +216,7 @@ public class GPIOLinux implements GPIO, ManagedService {
 					try {
 						Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
 					} catch (IOException e){
-						if (force) {
+						if (force || defaultForce) {
 							/* Forcibly use the pin as unexport it and export it again */
 							Files.write(Paths.get(SYSFS_CLASS_GPIO + "unexport"), pinNumber.toString().getBytes());
 							Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
