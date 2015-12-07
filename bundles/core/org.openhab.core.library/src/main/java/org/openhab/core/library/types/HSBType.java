@@ -134,7 +134,22 @@ public class HSBType extends PercentType implements ComplexType, State, Command 
 	}
 
 	public String toString() {
-		return getHue() + "," + getSaturation() + "," + getBrightness();
+		String hue = getHue().toString();
+		try {
+			hue = hue.substring(0,6);
+		} catch (StringIndexOutOfBoundsException e) { };
+
+		String sat = getSaturation().toString();
+		try {
+			sat = sat.substring(0,6);
+		} catch (StringIndexOutOfBoundsException e) { };
+
+		String bright = getBrightness().toString();
+		try {
+			bright = bright.substring(0,6);
+		} catch (StringIndexOutOfBoundsException e) { };
+
+		return (hue + "," + sat + "," + bright);
 	}
 
 	@Override
