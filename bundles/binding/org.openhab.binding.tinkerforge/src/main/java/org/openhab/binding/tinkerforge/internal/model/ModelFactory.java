@@ -107,6 +107,51 @@ public interface ModelFactory extends EFactory
   DualButtonButton createDualButtonButton();
 
   /**
+   * Returns a new object of class '<em>MBricklet Color</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Color</em>'.
+   * @generated
+   */
+  MBrickletColor createMBrickletColor();
+
+  /**
+   * Returns a new object of class '<em>Color Color</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Color</em>'.
+   * @generated
+   */
+  ColorColor createColorColor();
+
+  /**
+   * Returns a new object of class '<em>Color Illuminance</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Illuminance</em>'.
+   * @generated
+   */
+  ColorIlluminance createColorIlluminance();
+
+  /**
+   * Returns a new object of class '<em>Color Color Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Color Temperature</em>'.
+   * @generated
+   */
+  ColorColorTemperature createColorColorTemperature();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Color Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Color Led</em>'.
+   * @generated
+   */
+  BrickletColorLed createBrickletColorLed();
+
+  /**
    * Returns a new object of class '<em>Dual Button Led</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -618,6 +663,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   LEDGroupConfiguration createLEDGroupConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Color Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Color Configuration</em>'.
+   * @generated
+   */
+  BrickletColorConfiguration createBrickletColorConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.

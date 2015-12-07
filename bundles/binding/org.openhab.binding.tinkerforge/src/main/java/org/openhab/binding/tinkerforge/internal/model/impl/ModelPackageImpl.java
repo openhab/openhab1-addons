@@ -27,11 +27,17 @@ import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorLed;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
@@ -87,6 +93,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
@@ -215,6 +222,7 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
@@ -495,6 +503,48 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dualButtonButtonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletColorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletColorDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass colorColorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass colorIlluminanceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass colorColorTemperatureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletColorLedEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -908,6 +958,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass ledGroupConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletColorConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1706,6 +1763,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletLoadCellEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletColorEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3203,6 +3267,136 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getDualButtonButton_Position()
   {
     return (EAttribute)dualButtonButtonEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletColor()
+  {
+    return mBrickletColorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletColor_DeviceType()
+  {
+    return (EAttribute)mBrickletColorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletColor_Gain()
+  {
+    return (EAttribute)mBrickletColorEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletColor_IntegrationTime()
+  {
+    return (EAttribute)mBrickletColorEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletColorDevice()
+  {
+    return brickletColorDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getColorColor()
+  {
+    return colorColorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getColorColor_DeviceType()
+  {
+    return (EAttribute)colorColorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getColorIlluminance()
+  {
+    return colorIlluminanceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getColorIlluminance_DeviceType()
+  {
+    return (EAttribute)colorIlluminanceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getColorColorTemperature()
+  {
+    return colorColorTemperatureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getColorColorTemperature_DeviceType()
+  {
+    return (EAttribute)colorColorTemperatureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletColorLed()
+  {
+    return brickletColorLedEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletColorLed_DeviceType()
+  {
+    return (EAttribute)brickletColorLedEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -4913,6 +5107,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getLEDGroupConfiguration_Leds()
   {
     return (EAttribute)ledGroupConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletColorConfiguration()
+  {
+    return brickletColorConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletColorConfiguration_Gain()
+  {
+    return (EAttribute)brickletColorConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletColorConfiguration_IntegrationTime()
+  {
+    return (EAttribute)brickletColorConfigurationEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -7230,6 +7454,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletColor()
+  {
+    return tinkerBrickletColorEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7516,6 +7750,25 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonButtonEClass = createEClass(DUAL_BUTTON_BUTTON);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__DEVICE_TYPE);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__POSITION);
+
+    mBrickletColorEClass = createEClass(MBRICKLET_COLOR);
+    createEAttribute(mBrickletColorEClass, MBRICKLET_COLOR__DEVICE_TYPE);
+    createEAttribute(mBrickletColorEClass, MBRICKLET_COLOR__GAIN);
+    createEAttribute(mBrickletColorEClass, MBRICKLET_COLOR__INTEGRATION_TIME);
+
+    brickletColorDeviceEClass = createEClass(BRICKLET_COLOR_DEVICE);
+
+    colorColorEClass = createEClass(COLOR_COLOR);
+    createEAttribute(colorColorEClass, COLOR_COLOR__DEVICE_TYPE);
+
+    colorIlluminanceEClass = createEClass(COLOR_ILLUMINANCE);
+    createEAttribute(colorIlluminanceEClass, COLOR_ILLUMINANCE__DEVICE_TYPE);
+
+    colorColorTemperatureEClass = createEClass(COLOR_COLOR_TEMPERATURE);
+    createEAttribute(colorColorTemperatureEClass, COLOR_COLOR_TEMPERATURE__DEVICE_TYPE);
+
+    brickletColorLedEClass = createEClass(BRICKLET_COLOR_LED);
+    createEAttribute(brickletColorLedEClass, BRICKLET_COLOR_LED__DEVICE_TYPE);
 
     dualButtonLedEClass = createEClass(DUAL_BUTTON_LED);
     createEAttribute(dualButtonLedEClass, DUAL_BUTTON_LED__DEVICE_TYPE);
@@ -7980,6 +8233,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ledGroupConfigurationEClass = createEClass(LED_GROUP_CONFIGURATION);
     createEAttribute(ledGroupConfigurationEClass, LED_GROUP_CONFIGURATION__LEDS);
 
+    brickletColorConfigurationEClass = createEClass(BRICKLET_COLOR_CONFIGURATION);
+    createEAttribute(brickletColorConfigurationEClass, BRICKLET_COLOR_CONFIGURATION__GAIN);
+    createEAttribute(brickletColorConfigurationEClass, BRICKLET_COLOR_CONFIGURATION__INTEGRATION_TIME);
+
     // Create enums
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
     industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
@@ -8057,6 +8314,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletAmbientLightV2EDataType = createEDataType(TINKER_BRICKLET_AMBIENT_LIGHT_V2);
     tinkerBrickletDustDetectorEDataType = createEDataType(TINKER_BRICKLET_DUST_DETECTOR);
     tinkerBrickletLoadCellEDataType = createEDataType(TINKER_BRICKLET_LOAD_CELL);
+    tinkerBrickletColorEDataType = createEDataType(TINKER_BRICKLET_COLOR);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -8189,6 +8447,54 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getButtonConfiguration());
     g1.getETypeArguments().add(g2);
     dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletColor());
+    g1.getETypeArguments().add(g2);
+    mBrickletColorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getBrickletColorDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletColorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getBrickletColorConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletColorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletColor());
+    g1.getETypeArguments().add(g2);
+    brickletColorDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getBrickletColorDevice());
+    colorColorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getHSBValue());
+    g1.getETypeArguments().add(g2);
+    colorColorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    colorColorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getBrickletColorDevice());
+    colorIlluminanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    colorIlluminanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    colorIlluminanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getBrickletColorDevice());
+    colorColorTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    colorColorTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    colorColorTemperatureEClass.getEGenericSuperTypes().add(g1);
+    brickletColorLedEClass.getESuperTypes().add(this.getBrickletColorDevice());
+    brickletColorLedEClass.getESuperTypes().add(this.getDigitalActor());
     g1 = createEGenericType(this.getDualButtonDevice());
     dualButtonLedEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDigitalActor());
@@ -9164,6 +9470,25 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDualButtonButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_button", 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDualButtonButton_Position(), this.getDualButtonDevicePosition(), "position", null, 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletColorEClass, MBrickletColor.class, "MBrickletColor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletColor_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_color", 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletColor_Gain(), theEcorePackage.getEShortObject(), "gain", null, 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletColor_IntegrationTime(), theEcorePackage.getEShortObject(), "integrationTime", null, 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(brickletColorDeviceEClass, BrickletColorDevice.class, "BrickletColorDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(colorColorEClass, ColorColor.class, "ColorColor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getColorColor_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_color", 0, 1, ColorColor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(colorIlluminanceEClass, ColorIlluminance.class, "ColorIlluminance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getColorIlluminance_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_illuminance", 0, 1, ColorIlluminance.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(colorColorTemperatureEClass, ColorColorTemperature.class, "ColorColorTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getColorColorTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_color_temperature", 0, 1, ColorColorTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(brickletColorLedEClass, BrickletColorLed.class, "BrickletColorLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBrickletColorLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_led", 0, 1, BrickletColorLed.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(dualButtonLedEClass, DualButtonLed.class, "DualButtonLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDualButtonLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_led", 0, 1, DualButtonLed.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDualButtonLed_Position(), this.getDualButtonDevicePosition(), "position", null, 0, 1, DualButtonLed.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9695,6 +10020,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(ledGroupConfigurationEClass, LEDGroupConfiguration.class, "LEDGroupConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLEDGroupConfiguration_Leds(), theEcorePackage.getEString(), "leds", null, 0, 1, LEDGroupConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(brickletColorConfigurationEClass, BrickletColorConfiguration.class, "BrickletColorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBrickletColorConfiguration_Gain(), theEcorePackage.getEShortObject(), "gain", null, 0, 1, BrickletColorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBrickletColorConfiguration_IntegrationTime(), theEcorePackage.getEShortObject(), "integrationTime", null, 0, 1, BrickletColorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     // Initialize enums and add enum literals
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
 
@@ -9920,6 +10249,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletAmbientLightV2EDataType, BrickletAmbientLightV2.class, "TinkerBrickletAmbientLightV2", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletDustDetectorEDataType, BrickletDustDetector.class, "TinkerBrickletDustDetector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLoadCellEDataType, BrickletLoadCell.class, "TinkerBrickletLoadCell", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletColorEDataType, BrickletColor.class, "TinkerBrickletColor", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

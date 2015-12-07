@@ -38,6 +38,7 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
@@ -130,6 +131,11 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER: return createMBrickletPiezoSpeaker();
       case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
+      case ModelPackage.MBRICKLET_COLOR: return createMBrickletColor();
+      case ModelPackage.COLOR_COLOR: return createColorColor();
+      case ModelPackage.COLOR_ILLUMINANCE: return createColorIlluminance();
+      case ModelPackage.COLOR_COLOR_TEMPERATURE: return createColorColorTemperature();
+      case ModelPackage.BRICKLET_COLOR_LED: return createBrickletColorLed();
       case ModelPackage.DUAL_BUTTON_LED: return createDualButtonLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
       case ModelPackage.MBRICKLET_ROTARY_ENCODER: return createMBrickletRotaryEncoder();
@@ -229,6 +235,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DUAL_BUTTON_LED_CONFIGURATION: return createDualButtonLEDConfiguration();
       case ModelPackage.LED_STRIP_CONFIGURATION: return createLEDStripConfiguration();
       case ModelPackage.LED_GROUP_CONFIGURATION: return createLEDGroupConfiguration();
+      case ModelPackage.BRICKLET_COLOR_CONFIGURATION: return createBrickletColorConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -392,6 +399,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletDustDetectorFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
         return createTinkerBrickletLoadCellFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_COLOR:
+        return createTinkerBrickletColorFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -571,6 +580,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletDustDetectorToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
         return convertTinkerBrickletLoadCellToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_COLOR:
+        return convertTinkerBrickletColorToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -679,6 +690,61 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DualButtonButtonImpl dualButtonButton = new DualButtonButtonImpl();
     return dualButtonButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletColor createMBrickletColor()
+  {
+    MBrickletColorImpl mBrickletColor = new MBrickletColorImpl();
+    return mBrickletColor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorColor createColorColor()
+  {
+    ColorColorImpl colorColor = new ColorColorImpl();
+    return colorColor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorIlluminance createColorIlluminance()
+  {
+    ColorIlluminanceImpl colorIlluminance = new ColorIlluminanceImpl();
+    return colorIlluminance;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorColorTemperature createColorColorTemperature()
+  {
+    ColorColorTemperatureImpl colorColorTemperature = new ColorColorTemperatureImpl();
+    return colorColorTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletColorLed createBrickletColorLed()
+  {
+    BrickletColorLedImpl brickletColorLed = new BrickletColorLedImpl();
+    return brickletColorLed;
   }
 
   /**
@@ -1306,6 +1372,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     LEDGroupConfigurationImpl ledGroupConfiguration = new LEDGroupConfigurationImpl();
     return ledGroupConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletColorConfiguration createBrickletColorConfiguration()
+  {
+    BrickletColorConfigurationImpl brickletColorConfiguration = new BrickletColorConfigurationImpl();
+    return brickletColorConfiguration;
   }
 
   /**
@@ -3187,6 +3264,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletLoadCellToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletColor createTinkerBrickletColorFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletColor)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletColorToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
