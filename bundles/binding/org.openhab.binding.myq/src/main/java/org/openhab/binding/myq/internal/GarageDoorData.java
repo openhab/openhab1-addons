@@ -71,7 +71,7 @@ public class GarageDoorData {
 											deviceId, deviceName, deviceType,
 											doorstate);
 
-									this.devices.add(new GarageDoorDevice(deviceId,
+									devices.add(new GarageDoorDevice(deviceId,
 													deviceType, deviceName,
 													doorstate));
 									break;
@@ -103,33 +103,33 @@ public class GarageDoorData {
  * @since 1.8.0
  */
 class GarageDoorDevice {
-	private int DeviceId;
-	private String DeviceType;
-	private String DeviceName;
-	private GarageDoorStatus Status;
+	private int deviceId;
+	private String deviceType;
+	private String deviceName;
+	private GarageDoorStatus status;
 
 	public GarageDoorDevice(int deviceId, String deviceType, String deviceName,
 			int status) {
-		this.DeviceId = deviceId;
-		this.DeviceType = deviceType;
-		this.DeviceName = deviceName;
-		this.Status = GarageDoorStatus.GetDoorStatus(status);
+		this.deviceId = deviceId;
+		this.deviceType = deviceType;
+		this.deviceName = deviceName;
+		this.status = GarageDoorStatus.GetDoorStatus(status);
 	}
 
 	public int getDeviceId() {
-		return this.DeviceId;
+		return deviceId;
 	}
 
 	public String getDeviceType() {
-		return this.DeviceType;
+		return deviceType;
 	}
 
 	public String getDeviceName() {
-		return this.DeviceName;
+		return deviceName;
 	}
 
 	public GarageDoorStatus getStatus() {
-		return this.Status;
+		return status;
 	}
 
 	public enum GarageDoorStatus {
@@ -203,6 +203,6 @@ class GarageDoorDevice {
 	}
 
 	public String toString() {
-		return this.DeviceName;
+		return deviceName;
 	}
 }
