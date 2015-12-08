@@ -187,10 +187,8 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 					MyqBindingConfig deviceConfig = getConfigForItemName(mygItemName);
 
 					if (deviceConfig != null) {
-						if (garageStatus.getDevices().containsKey(
-								deviceConfig.deviceID)) {
-							GarageDoorDevice garageopener = garageStatus
-									.getDevices().get(deviceConfig.deviceID);
+						GarageDoorDevice garageopener = garageStatus.getDevice(deviceConfig.deviceIndex);
+						if (garageopener != null) {
 							if (deviceConfig.type == MyqBindingConfig.ITEMTYPE.StringStatus) {
 								eventPublisher.postUpdate(mygItemName,
 										new StringType(garageopener.getStatus()
@@ -261,43 +259,43 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	 *            The name of the targeted item.
 	 */
 	private void computeCommandForItem(Command command, String itemName) {
+		
 		MyqBindingConfig deviceConfig = getConfigForItemName(itemName);
+		
 		if (invalidCredentials || deviceConfig == null) {
 			return;
 		}
 
 		try {
 			GarageDoorData garageStatus = myqOnlineData.getGarageData();
-
-			if (garageStatus.getDevices().containsKey(deviceConfig.deviceID)) {
-				GarageDoorDevice garageopener = garageStatus.getDevices().get(
-						deviceConfig.deviceID);
+			GarageDoorDevice garageopener = garageStatus.getDevice(deviceConfig.deviceIndex);
+			if (garageopener != null) {
 				// only send command if switch is flipped on like pushbutton
 				if ((command instanceof OnOffType && OnOffType.ON
 						.equals(command))) {
 					if (garageopener.getStatus().isClosedOrClosing()) {
 						myqOnlineData.executeGarageDoorCommand(
-								deviceConfig.deviceID, 1);
+								garageopener.getDeviceId(), 1);
 					} else {
 						myqOnlineData.executeGarageDoorCommand(
-								deviceConfig.deviceID, 0);
+								garageopener.getDeviceId(), 0);
 					}
 					beginRapidPoll(true);
 				} else if (command instanceof UpDownType) {
 					if (UpDownType.UP.equals(command)) {
 						myqOnlineData.executeGarageDoorCommand(
-								deviceConfig.deviceID, 1);
+								garageopener.getDeviceId(), 1);
 					} else {
 						myqOnlineData.executeGarageDoorCommand(
-								deviceConfig.deviceID, 0);
+								garageopener.getDeviceId(), 0);
 					}
 					beginRapidPoll(true);
 				} else {
 					logger.warn("Unknown command {}", command);
 				}
 			} else {
-				logger.warn("no MyQ device found with id: {}",
-						deviceConfig.deviceID);
+				logger.warn("no MyQ device found with index: {}",
+						deviceConfig.deviceIndex);
 			}
 		} catch (InvalidLoginException e) {
 			logger.error("Could not log in, please check your credentials.", e);
