@@ -83,14 +83,6 @@ public class GarageDoorData {
 			}
 		}
 	}
-
-//	public HashMap<Integer, GarageDoorDevice> getDevices() {
-//		return this.devices;
-//	}
-	
-	public LinkedList<GarageDoorDevice> getDevices() {
-		return this.devices;
-	}
 	
 	public GarageDoorDevice getDevice(int index) {
 		return index >= devices.size() ? null : devices.get(index);
