@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,12 +63,19 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 					RFXComValueSelector.SIGNAL_LEVEL,
 					RFXComValueSelector.BATTERY_LEVEL,
 					RFXComValueSelector.WIND_DIRECTION,
-					RFXComValueSelector.WIND_SPEED);
+					RFXComValueSelector.WIND_AVSPEED,
+					RFXComValueSelector.WIND_SPEED,
+					RFXComValueSelector.TEMPERATURE,
+					RFXComValueSelector.CHILL_FACTOR
+					);
 
 	public SubType subType = SubType.WTGR800;
 	public int sensorId = 0;
 	public double windDirection = 0;
 	public double windSpeed = 0;
+	public double windAvSpeed = 0; //TFA type only
+	public double temperature = 0; //TFA type only
+	public double chillFactor = 0; //TFA type only
 	public byte signalLevel = 0;
 	public byte batteryLevel = 0;
 
@@ -89,6 +96,11 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 		str += "\n - Id = " + sensorId;
 		str += "\n - Wind direction = " + windDirection;
 		str += "\n - Wind speed = " + windSpeed;
+		if(subType == SubType.TFA) {
+			str += "\n - Average Wind speed = " + windAvSpeed;
+			str += "\n - Temperature = " + temperature;
+			str += "\n - Chill Factor = " + chillFactor;
+		}
 		str += "\n - Signal level = " + signalLevel;
 		str += "\n - Battery level = " + batteryLevel;
 
@@ -109,6 +121,22 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 
 		windDirection = (short) ((data[6] & 0xFF) << 8 | (data[7] & 0xFF));
 		windSpeed = (short) ((data[10] & 0xFF) << 8 | (data[11] & 0xFF)) * 0.1;
+
+		if(subType == SubType.TFA) {
+			windAvSpeed = (short) ((data[8] & 0xFF) << 8 | (data[9] & 0xFF)) * 0.1;
+			temperature = (short) ((data[12] & 0x7F) << 8 | (data[13] & 0xFF)) * 0.1;
+			if ((data[12] & 0x80) != 0)
+				temperature = -temperature;
+			chillFactor = (short) ((data[14] & 0x7F) << 8 | (data[15] & 0xFF)) * 0.1;
+			if ((data[14] & 0x80) != 0)
+				chillFactor = -chillFactor;
+		}
+		else {
+			windAvSpeed = 0;	
+			temperature = 0;	
+			chillFactor = 0;	
+		}
+
 		signalLevel = (byte) ((data[16] & 0xF0) >> 4);
 		batteryLevel = (byte) (data[16] & 0x0F);
 	}
@@ -132,6 +160,24 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 		data[10] = (byte) ((WindS >> 8) & 0xFF);
 		data[11] = (byte) (WindS & 0xFF);
 
+		if(subType == SubType.TFA) {
+			int WindAS = (short) Math.abs(windAvSpeed) * 10;
+			data[8] = (byte) ((WindAS >> 8) & 0xFF);
+			data[9] = (byte) (WindAS & 0xFF);
+
+			short temp = (short) Math.abs(temperature * 10);
+			data[12] = (byte) ((temp >> 8) & 0xFF);
+			data[13] = (byte) (temp & 0xFF);
+			if (temperature < 0)
+				data[12] |= 0x80;
+
+			short chill = (short) Math.abs(chillFactor * 10);
+			data[14] = (byte) ((chill >> 8) & 0xFF);
+			data[15] = (byte) (chill & 0xFF);
+			if (chillFactor < 0)
+				data[14] |= 0x80;
+		}
+
 		data[16] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
 		return data;
@@ -151,21 +197,19 @@ public class RFXComWindMessage extends RFXComBaseMessage {
 		if (valueSelector.getItemClass() == NumberItem.class) {
 
 			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
-
 				state = new DecimalType(signalLevel);
-
 			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
-
 				state = new DecimalType(batteryLevel);
-
 			} else if (valueSelector == RFXComValueSelector.WIND_DIRECTION) {
-
 				state = new DecimalType(windDirection);
 			} else if (valueSelector == RFXComValueSelector.WIND_SPEED) {
-
 				state = new DecimalType(windSpeed);
-			
-
+			} else if (valueSelector == RFXComValueSelector.WIND_AVSPEED) {
+				state = new DecimalType(windAvSpeed);
+			} else if (valueSelector == RFXComValueSelector.TEMPERATURE) {
+				state = new DecimalType(temperature);
+			} else if (valueSelector == RFXComValueSelector.CHILL_FACTOR) {
+				state = new DecimalType(chillFactor);
 			} else {
 				throw new RFXComException("Can't convert "
 						+ valueSelector + " to NumberItem");

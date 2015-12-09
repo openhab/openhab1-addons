@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.resources.ItemResource;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
+import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +59,17 @@ public class ItemStateChangeListener extends ResourceStateChangeListener {
 				String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath())+ RESTApplication.REST_SERVLET_ALIAS +"/";
 				if (pathInfo.startsWith("/" + ItemResource.PATH_ITEMS)) {
 		        	String[] pathSegments = pathInfo.substring(1).split("/");
+		        	Item item = null;
 		            if(pathSegments.length>=2) {
 		            	String itemName = pathSegments[1];
-						Item item = ItemResource.getItem(itemName);
-						if(item!=null) {
-			            	Object itemBean = ItemResource.createItemBean(item, true, basePath);	    	
-			            	return itemBean;
-						}
+						item = ItemResource.getItem(itemName);
+		            } else {
+		            	item = lastChange;
 		            }
+		            if(item!=null) {
+		            	Object itemBean = ItemResource.createItemBean(item, true, basePath);	    	
+		            	return itemBean;
+					}
 		        }
 			}
 		}
@@ -91,6 +95,15 @@ public class ItemStateChangeListener extends ResourceStateChangeListener {
 
             if(pathSegments.length>=2) {
             	return Collections.singleton(pathSegments[1]);
+            } else if (pathSegments.length == 1) {
+            	ItemUIRegistry registry = RESTApplication.getItemUIRegistry();
+                if(registry!=null) {
+                	final Set<String> set = new HashSet<String>();
+                	for (Item item : registry.getItems()) {
+                		set.add(item.getName());
+                	}
+                	return set;
+                }
             }
         }
         return new HashSet<String>();

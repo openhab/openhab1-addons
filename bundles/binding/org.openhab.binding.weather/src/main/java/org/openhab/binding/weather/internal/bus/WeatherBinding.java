@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,8 +18,6 @@ import org.openhab.binding.weather.internal.parser.CommonIdHandler;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -106,17 +104,5 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider> impl
 			}
 		}
 		super.bindingChanged(provider, itemName);
-	}
-
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.warn("Received command for readonly item {}, republishing state", itemName);
-		WeatherPublisher.getInstance().republishItem(itemName);
-	}
-
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		logger.warn("Received new state for readonly item {}, republishing state", itemName);
-		WeatherPublisher.getInstance().republishItem(itemName);
 	}
 }

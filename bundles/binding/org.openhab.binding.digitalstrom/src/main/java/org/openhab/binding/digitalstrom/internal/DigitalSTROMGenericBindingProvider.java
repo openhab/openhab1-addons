@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,9 +9,7 @@
 package org.openhab.binding.digitalstrom.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.openhab.binding.digitalstrom.DigitalSTROMBindingProvider;
 import org.openhab.binding.digitalstrom.internal.config.DigitalSTROMBindingConfig;
@@ -120,10 +118,5 @@ public class DigitalSTROMGenericBindingProvider extends AbstractGenericBindingPr
 			}
 		}
 		return deviceConsumptionItems;
-	}
-
-	@Override
-	public Set<Item> getItemNamesByContext(String context) {
-		return new HashMap<String, Set<Item>>(super.contextMap).get(context);
 	}
 }

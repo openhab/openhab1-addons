@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,7 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -25,8 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -55,7 +54,7 @@ import com.google.gdata.util.ServiceException;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class GCalPersistenceService implements PersistenceService, ManagedService {
+public class GCalPersistenceService implements PersistenceService {
 
 	private static final Logger logger =
 		LoggerFactory.getLogger(GCalPersistenceService.class);
@@ -88,11 +87,46 @@ public class GCalPersistenceService implements PersistenceService, ManagedServic
 	private static Queue<CalendarEventEntry> entries = new ConcurrentLinkedQueue<CalendarEventEntry>();
 	
 	
-	public void activate() {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		String usernameString = (String) config.get("username");
+		username = usernameString;
+		if (StringUtils.isBlank(username)) {
+			logger.warn("gcal:username must not be blank - please configure an aproppriate username in openhab.cfg");
+		}
+
+		String passwordString = (String) config.get("password");
+		password = passwordString;
+		if (StringUtils.isBlank(password)) {
+			logger.warn("gcal:password must not be blank - please configure an aproppriate password in openhab.cfg");
+		}
+
+		String urlString = (String) config.get("url");
+		url = urlString;
+		if (StringUtils.isBlank(url)) {
+			logger.warn("gcal:url must not be blank - please configure an aproppriate url in openhab.cfg");
+		}
+		
+		String offsetString = (String) config.get("offset");
+		if (StringUtils.isNotBlank(offsetString)) {
+			try {
+				offset = Integer.valueOf(offsetString);
+			}
+			catch (IllegalArgumentException iae) {
+				logger.warn("couldn't parse '{}' to an integer");
+			}
+		}
+		
+		String executeScriptString = (String) config.get("executescript");
+		if (StringUtils.isNotBlank(executeScriptString)) {
+			executeScript = executeScriptString;
+		}
+		
+		initialized = true;
+		
 		scheduleUploadJob();
 	}
 	
-	public void deactivate() {
+	public void deactivate(final int reason) {
 		cancelAllJobs();
 	}
 	
@@ -242,47 +276,6 @@ public class GCalPersistenceService implements PersistenceService, ManagedServic
 			return myService.insert(feedUrl, event);
 		}	
 		
-	}
-
-
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config != null) {
-			String usernameString = (String) config.get("username");
-			username = usernameString;
-			if (StringUtils.isBlank(username)) {
-				throw new ConfigurationException("gcal:username", "username must not be blank - please configure an aproppriate username in openhab.cfg");
-			}
-
-			String passwordString = (String) config.get("password");
-			password = passwordString;
-			if (StringUtils.isBlank(password)) {
-				throw new ConfigurationException("gcal:password", "password must not be blank - please configure an aproppriate password in openhab.cfg");
-			}
-
-			String urlString = (String) config.get("url");
-			url = urlString;
-			if (StringUtils.isBlank(url)) {
-				throw new ConfigurationException("gcal:url", "url must not be blank - please configure an aproppriate url in openhab.cfg");
-			}
-			
-			String offsetString = (String) config.get("offset");
-			if (StringUtils.isNotBlank(offsetString)) {
-				try {
-					offset = Integer.valueOf(offsetString);
-				}
-				catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
-			}
-			
-			String executeScriptString = (String) config.get("executescript");
-			if (StringUtils.isNotBlank(executeScriptString)) {
-				executeScript = executeScriptString;
-			}
-			
-			initialized = true;
-		}
 	}
 	
 

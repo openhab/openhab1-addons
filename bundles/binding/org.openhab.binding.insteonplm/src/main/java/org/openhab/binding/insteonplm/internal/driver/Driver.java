@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,10 +34,19 @@ public class Driver {
 	private DriverListener m_listener = null; // single listener for notifications
 	private HashMap<InsteonAddress, ModemDBEntry> m_modemDBEntries = new HashMap<InsteonAddress, ModemDBEntry>();
 	private ReentrantLock m_modemDBEntriesLock = new ReentrantLock();
+	private int	m_modemDBRetryTimeout	= 120000;	// in milliseconds
 
 	public void setDriverListener(DriverListener listener) {
 		m_listener = listener;
 	}
+
+	public void setModemDBRetryTimeout(int timeout) {
+		m_modemDBRetryTimeout = timeout;
+		for (Port p : m_ports.values()) {
+			p.setModemDBRetryTimeout(m_modemDBRetryTimeout);
+		}
+	}
+
 	public boolean isReady() {
 		for (Port p : m_ports.values()) {
 			if (!p.isRunning()) return false;
@@ -60,7 +69,9 @@ public class Driver {
 		if (m_ports.keySet().contains(port)) {
 			logger.warn("ignored attempt to add duplicate port: {} {}", name, port);
 		} else {
-			m_ports.put(port, new Port(port, this));
+			Port p = new Port(port, this);
+			p.setModemDBRetryTimeout(m_modemDBRetryTimeout);
+			m_ports.put(port, p);
 			logger.debug("added new port: {} {}", name, port);
 		}
 	}

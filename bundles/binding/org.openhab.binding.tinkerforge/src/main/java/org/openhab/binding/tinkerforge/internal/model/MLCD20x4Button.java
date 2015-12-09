@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model;
+
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 
 
 /**
@@ -26,10 +28,10 @@ package org.openhab.binding.tinkerforge.internal.model;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMLCD20x4Button()
- * @model
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.SwitchState> org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
  * @generated
  */
-public interface MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice, CallbackListener
+public interface MLCD20x4Button extends MSensor<OnOffValue>, MLCDSubDevice, MTFConfigConsumer<ButtonConfiguration>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

@@ -1,16 +1,17 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.persistence.jpa.internal;
 
+import java.util.Locale;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 
 /**
@@ -33,6 +34,13 @@ public class StateHelper {
 		if(state instanceof DecimalType) {
 			return String.valueOf(((DecimalType)state).doubleValue());
 		}
+        if(state instanceof PointType) {
+            PointType pType = (PointType)state;
+            return String.format(Locale.ENGLISH, "%f;%f;%f",
+                pType.getLatitude().doubleValue(),
+                    pType.getLongitude().doubleValue(),
+                        pType.getAltitude().doubleValue());
+        }
 
 		return state.toString();
 	}	

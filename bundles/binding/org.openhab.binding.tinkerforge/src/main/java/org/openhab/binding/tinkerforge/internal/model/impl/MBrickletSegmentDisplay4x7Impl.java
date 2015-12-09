@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getDeviceIdentifier <em>Device Identifier</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getBrickd <em>Brickd</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -259,6 +260,26 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_segmentdisplay4x7";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -559,6 +580,16 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void init()
@@ -687,6 +718,8 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
         return getName();
       case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD:
         return getBrickd();
+      case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__DEVICE_TYPE:
+        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -817,6 +850,8 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__BRICKD:
         return getBrickd() != null;
+      case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -978,6 +1013,8 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
+    result.append(", deviceType: ");
+    result.append(deviceType);
     result.append(')');
     return result.toString();
   }

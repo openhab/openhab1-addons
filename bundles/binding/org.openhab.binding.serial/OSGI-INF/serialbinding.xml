@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2014, openHAB.org and others.
+    Copyright (c) 2010-2015, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -17,4 +17,5 @@
    </service>
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <property name="event.topics" type="String" value="openhab/command/*"/>
+   <reference bind="setTransformationService" cardinality="0..1" interface="org.openhab.core.transform.TransformationService" name="TransformationService" policy="dynamic" target="(openhab.transform=REGEX)" unbind="unsetTransformationService"/>
 </scr:component>

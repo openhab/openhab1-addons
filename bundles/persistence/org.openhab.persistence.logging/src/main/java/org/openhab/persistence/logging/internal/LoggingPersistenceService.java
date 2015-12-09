@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,15 +9,13 @@
 package org.openhab.persistence.logging.internal;
 
 import java.io.File;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +32,7 @@ import ch.qos.logback.core.FileAppender;
  * @author Kai Kreuzer
  * @since 1.0.0
  */
-public class LoggingPersistenceService implements PersistenceService, ManagedService {
+public class LoggingPersistenceService implements PersistenceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoggingPersistenceService.class);
 	
@@ -48,10 +46,18 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 	
 	private Map<String,FileAppender<ILoggingEvent>> appenders = new HashMap<String,FileAppender<ILoggingEvent>>();
 	
-	public void activate() {
+	/**
+	 * @{inheritDoc}
+	 */
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		pattern = (String) config.get("pattern");
+		if (StringUtils.isBlank(pattern)) {
+			pattern = DEFAULT_PATTERN;
+		}
+		initialized = true;
 	}
-
-	public void deactivate() {
+	
+	public void deactivate(final int reason) {
 		for(FileAppender<ILoggingEvent> appender : appenders.values()) {
 			appender.stop();
 		}
@@ -113,19 +119,5 @@ public class LoggingPersistenceService implements PersistenceService, ManagedSer
 		return appender;
 	}
 	
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
-		if (config!=null) {
-			pattern = (String) config.get("pattern");
-			if (StringUtils.isBlank(pattern)) {
-				pattern = DEFAULT_PATTERN;
-			}
-			initialized = true;
-		}
-	}
-	
+		
 }

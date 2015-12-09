@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -75,12 +75,7 @@ public class OmniLinkGenericBindingProvider extends
 				new Object[] { config.getObjectType(), config.getNumber() });
 		addBindingConfig(item, config);
 
-		Set<Item> items = contextMap.get(context);
-		if (items == null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-		items.add(item);
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 
 	@Override

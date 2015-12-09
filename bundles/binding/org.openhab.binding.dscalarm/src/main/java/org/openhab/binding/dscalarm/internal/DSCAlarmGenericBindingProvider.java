@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -59,7 +59,6 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 	 * {@inheritDoc}
 	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
 
 		String[] sections = bindingConfig.split(":");
 		
@@ -107,13 +106,8 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 		
 		DSCAlarmBindingConfig config = new DSCAlarmBindingConfig(dscAlarmDeviceType, partitionId, zoneId, dscAlarmItemType);
 		addBindingConfig(item, config);
-		Set<Item> items = contextMap.get(context);
-		if (items == null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-		items.add(item);
 		
+		super.processBindingConfiguration(context, item, bindingConfig);
 		logger.debug("processBindingConfiguration(): Item added: {} - {}",item.getName(),bindingConfig);
 	}
 	

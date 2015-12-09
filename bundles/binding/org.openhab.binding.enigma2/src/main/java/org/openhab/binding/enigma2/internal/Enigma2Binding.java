@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -120,6 +120,8 @@ public class Enigma2Binding extends
 					case MUTE:
 						value = node.getMuteUnmute();
 						break;
+					case DOWNMIX:
+						value = node.getDownmix();
 					default:
 						break;
 					}
@@ -214,6 +216,9 @@ public class Enigma2Binding extends
 					break;
 				case POWERSTATE:
 					node.sendOnOff(command, Enigma2PowerState.STANDBY);
+					break;
+				case DOWNMIX:
+					node.setDownmix(command);
 					break;
 				default:
 					logger.error("Unknown cmdId \"{}\"",

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,6 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.util.TimerTask;
 
 import org.openhab.binding.weather.WeatherBindingProvider;
-import org.openhab.binding.weather.internal.bus.WeatherPublisher;
 import org.openhab.binding.weather.internal.common.LocationConfig;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
@@ -127,7 +126,6 @@ public class WeatherJobScheduler {
 		} catch (SchedulerException ex) {
 			logger.error(ex.getMessage(), ex);
 		}
-		WeatherPublisher.getInstance().clear();
 	}
 
 	/**

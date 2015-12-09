@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>iTemp</Model>
-	<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
+	<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay
+	</Label>
 	<CommandClasses>
-		<Class><id>0x91</id></Class>
-		<Class><id>0x86</id></Class>
-		<Class><id>0x71</id></Class>
-		<Class><id>0x30</id></Class>
-		<Class><id>0x31</id></Class>
-		<Class><id>0x35</id></Class>
-		<Class><id>0x70</id></Class>
-		<Class><id>0x85</id></Class>
-		<Class><id>0x25</id></Class>
+		<Class>
+			<id>0x91</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x71</id>
+		</Class>
+		<Class>
+			<id>0x30</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x35</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x25</id>
+		</Class>
 	</CommandClasses>
 	<Associations>
 		<Group>
@@ -33,16 +52,186 @@
 			<Help lang="en"><![CDATA[If a power dropout occurs, the MIMOlite will send an Alarm Command Class report (if there is enough available residual power)]]></Help>
 		</Group>
 		<Group>
-		<Index>4</Index>
-		<Maximum>2</Maximum>
-		<Label lang="en">Binary Sensor report</Label>
-		<Help lang="en"><![CDATA[When the input is triggered or untriggered, the MIMOlite will automatically send a Binary Sensor report to this group’s associated device(s).]]></Help>
-	</Group>
-	<Group>
-		<Index>5</Index>
-		<Maximum>2</Maximum>
-		<Label lang="en">Pulse Meter Sensor report</Label>
-		<Help lang="en"><![CDATA[Pulse meter counts will be sent to this group’s associated device(s). This will be sent periodically at the same intervals as Association Group 2, MLS Report except that if the pulse meter count is unchanged the report will not be sent.]]]></Help>
-	</Group>
+			<Index>4</Index>
+			<Maximum>2</Maximum>
+			<Label lang="en">Binary Sensor report</Label>
+			<Help lang="en"><![CDATA[When the input is triggered or untriggered, the MIMOlite will automatically send a Binary Sensor report to this group’s associated device(s).]]></Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>2</Maximum>
+			<Label lang="en">Pulse Meter Sensor report</Label>
+			<Help lang="en"><![CDATA[Pulse meter counts will be sent to this group’s associated device(s). This will be sent periodically at the same intervals as Association Group 2, MLS Report except that if the pulse meter count is unchanged the report will not be sent.]]]></Help>
+		</Group>
 	</Associations>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Not_Used_1</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Null</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Clear_Pulse_Meter_Counts</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Actual value doesn't matter. Count gets reset whenever this command is received</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Trigger_Mapping</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">SIG1 triggered/untriggered sets or clears Relay1</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>187</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Lower_Threshold_High</Label>
+			<Item>
+				<Value>187</Value>
+				<Label lang="en">Default (0xBB)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>171</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Lower_Threshold_Low</Label>
+			<Item>
+				<Value>171</Value>
+				<Label lang="en">Default (0xAB)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Upper_Threshold_High</Label>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">Default (0xFF)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>254</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Upper_Threshold_Low</Label>
+			<Item>
+				<Value>254</Value>
+				<Label lang="en">Default (0xFE)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>8</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Trigger_Level_And_Input_Threshold</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">TriggerLevel ANALOG and Triggered when input falls OUTSIDE of thresholds</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">TriggerLevel ANALOG and Triggered when input falls BETWEEN thresholds</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">TriggerLevel DIGITAL and Triggered when input falls OUTSIDE of thresholds</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">TriggerLevel DIGITAL and Triggered when input falls BETWEEN thresholds (Default)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Multilevel_AutoReport_Interval</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable Automatic Reports</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Enable Reports every 30 seconds (Default)</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Not_Used_2</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Null</Label>
+			</Item>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Momentary_Relay1_Duration</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled (Default)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">500 milliseconds</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
 </Product>

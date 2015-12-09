@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,17 +9,22 @@
 package org.openhab.io.cv;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 
+import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.io.cv.internal.resources.LoginResource;
+import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.io.cv.internal.resources.ReadResource;
 import org.openhab.io.cv.internal.resources.RrdResource;
 import org.openhab.io.cv.internal.resources.WriteResource;
@@ -66,7 +71,9 @@ public class CVApplication extends PackagesResourceConfig  {
 	
 	static private ItemUIRegistry itemUIRegistry;
 
-	static private ModelRepository modelRepository;
+	static public ModelRepository modelRepository;
+	
+	static protected Map<String, QueryablePersistenceService> persistenceServices = new HashMap<String, QueryablePersistenceService>();
 	
 	public CVApplication() {
 		super("org.openhab.io.cv.internal.resources");
@@ -89,7 +96,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	}
 
 	static public EventPublisher getEventPublisher() {
-		return eventPublisher;
+		return CVApplication.eventPublisher;
 	}
 
 	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
@@ -101,7 +108,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	}
 
 	static public ItemUIRegistry getItemUIRegistry() {
-		return itemUIRegistry;
+		return CVApplication.itemUIRegistry;
 	}
 
 	public void setModelRepository(ModelRepository modelRepository) {
@@ -113,7 +120,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	}
 
 	static public ModelRepository getModelRepository() {
-		return modelRepository;
+		return CVApplication.modelRepository;
 	}
 
 	public void setDiscoveryService(DiscoveryService discoveryService) {
@@ -122,6 +129,20 @@ public class CVApplication extends PackagesResourceConfig  {
 	
 	public void unsetDiscoveryService(DiscoveryService discoveryService) {
 		this.discoveryService = null;
+	}
+	
+	public void addPersistenceService(PersistenceService service) {
+		if (service instanceof QueryablePersistenceService)
+			persistenceServices.put(service.getName(),
+					(QueryablePersistenceService) service);
+	}
+
+	public void removePersistenceService(PersistenceService service) {
+		persistenceServices.remove(service.getName());
+	}
+
+	static public Map<String, QueryablePersistenceService> getPersistenceServices() {
+		return persistenceServices;
 	}
 
 	public void activate() {			    
@@ -196,8 +217,15 @@ public class CVApplication extends PackagesResourceConfig  {
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor.disableDefaults", "true");
         // use the default interceptors without PaddingAtmosphereInterceptor
         // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
-        jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
-        
+        final String[] interceptors = {
+    			"org.atmosphere.interceptor.CacheHeadersInterceptor",
+    			"org.atmosphere.interceptor.AndroidAtmosphereInterceptor",
+    			"org.atmosphere.interceptor.SSEAtmosphereInterceptor",
+    			"org.atmosphere.interceptor.JSONPAtmosphereInterceptor",
+    			"org.atmosphere.interceptor.JavaScriptProtocol",
+    			"org.atmosphere.interceptor.OnDisconnectInterceptor"
+        };
+        jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", StringUtils.join(interceptors, ","));
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -191,7 +191,7 @@ public class BinRpcClient implements RpcClient {
 				logger.trace("Client BinRpcRequest {}", request);
 			}
 			socket = new Socket(context.getConfig().getHost(), hmInterface.getPort());
-			socket.setSoTimeout(5000);
+			socket.setSoTimeout(context.getConfig().getTimeout() * 1000);
 			socket.getOutputStream().write(request.createMessage());
 			BinRpcResponse resp = new BinRpcResponse(socket.getInputStream(), false);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,8 +14,7 @@ public class ParameterDefaults {
 	private String mCommandTransform;
 	private String mFormatted;
 
-	private ParameterDefaults(String formatted, String in, String out,
-			String command) {
+	private ParameterDefaults(String formatted, String in, String out, String command) {
 		mFormatted = formatted;
 		mInTransform = in;
 		mOutTransform = out;

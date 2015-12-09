@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZTS-110</Model>
+	<Label lang="en">Remotec Z-Wave Touchscreen Programmable Thermostat</Label>
+	<CommandClasses>                  <!-- Z-Wave Supported Command Classes: -->
+		<Class><id>0x20</id></Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class><id>0x27</id></Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class><id>0x31</id></Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class><id>0x40</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_MODE -->
+		<Class><id>0x42</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_OPERATING_STATE -->
+		<Class><id>0x43</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETPOINT -->
+		<Class><id>0x44</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_MODE -->
+		<Class><id>0x45</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_STATE -->
+		<Class><id>0x47</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETBACK -->
+		<Class><id>0x72</id></Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class><id>0x80</id></Class>  <!-- COMMAND_CLASS_BATTERY -->
+		<Class><id>0x81</id></Class>  <!-- COMMAND_CLASS_CLOCK -->
+		<Class><id>0x85</id></Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class><id>0x86</id></Class>  <!-- COMMAND_CLASS_VERSION -->
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+			<Default>2</Default>
+			<Minimum>1</Minimum>
+			<Maximum>4</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Swing</Label>
+			<Help lang="en"><![CDATA[Set Swing value from 1F/.5C to 4F/2.0C Available settings: 1 - 4]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>int</Type>
+			<Default>2</Default>
+			<Minimum>1</Minimum>
+			<Maximum>4</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Differntial</Label>
+			<Help lang="en"><![CDATA[Set Differential value from 1F/.5C to 4F/2.0C Available settings: 1 - 4]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>int</Type>
+			<Default>500</Default>
+			<Minimum>500</Minimum>
+			<Maximum>4000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Set Filter Counter</Label>
+			<Help lang="en"><![CDATA[Set filter replacement timer from 500 to 4000 hours.]]> </Help>
+		</Parameter>
+	    <Parameter>
+			<Index>4</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>9999</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Report Filter Counter</Label>
+			<Help lang="en"><![CDATA[READ ONLY: Data in hours]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>List</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Centigrade</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Farhenheit</Label>
+			</Item>
+			<Label lang="en">Scale of Temperature</Label>
+			<Help lang="en"><![CDATA[Set Temperature Scale to Farhenheit or Centigrade. DEFAULT =1 Farhenheit]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>int</Type>
+			<Default>99</Default>
+			<Minimum>37</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Upper Limit of Setpoint A</Label>
+			<Help lang="en"><![CDATA[Determines Upper Limit of set point A. Unit in celsius A=(B+2)min (37.0 C)max, Unit in Fahrenheit A=(B+4)min (99.0 F)max ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>int</Type>
+			<Default>41</Default>
+			<Minimum>5</Minimum>
+			<Maximum>95</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Lower Limit of Setpoint B</Label>
+			<Help lang="en"><![CDATA[Determines Lower Limit of set point B. Unit in celsius (5.0 C to 35.0 C) Unit in Fahrenheit (41.0 F to 95.0  F) ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>List</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Easy Mode Disabled</Label>	
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Easy Mode Enabled</Label>	
+			</Item>
+			<Label lang="en">Easy Mode</Label>
+			<Help lang="en"><![CDATA[Set Easy Mode 0:DISABLE 1:ENABLED DEFAULT:ENABLED ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>List</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">24 Hour Format</Label>	
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">12 Hour Format</Label>	
+			</Item>
+			<Label lang="en">Time Format</Label>
+			<Help lang="en"><![CDATA[Configures for 12 or 24 Hour format. Default is 12 Hours. ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Repeat Basic Set Counter</Label>
+			<Help lang="en"><![CDATA[Thermostat sends "Basic Set" command to its association node repeatedly ever X minutes. 0 = Disabled or Set to Enabled Values available 3 to 255. ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>int</Type>
+			<Default>4</Default>
+			<Minimum>0</Minimum>
+			<Maximum>8</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Trigger AUTO report if room temperature is different from last report.</Label>
+			<Help lang="en"><![CDATA[0 = Disabled or set value from 1 to 8 where each number corresponds to 1 Degree F or .5 Degrees Celsius. ]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Minimum>-10</Minimum>
+			<Maximum>10</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Sensor temperature calibration.</Label>
+			<Help lang="en"><![CDATA[0 = Disabled or set value from 1 to 10 in 1 degree F increments or -1 to -10 in 1 degree F increments .]]> </Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>16</Maximum>
+			<Size>1</Size>
+			<Label lang="en">AUTO report by time interval.</Label>
+			<Help lang="en"><![CDATA[0 = Disabled or set value from 1 to 16 where 1 = .5 hours and each consecutive number increases time by .5 hours.]]> </Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Heat Pump</Label>
+			<Help lang="en"><![CDATA[You can assign up to 4 nodes between groups 1 and 2 but the total of both groups cannot exceed 4. Example (Group 1) 3 Nodes, (Group 2) 1 Nodes. ]]> </Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Compressor</Label>
+			<Help lang="en"><![CDATA[You can assign up to 4 nodes between groups 1 and 2 but the total of both groups cannot exceed 4. Example (Group 1) 3 Nodes, (Group 2) 1 Nodes.  ]]> </Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Update</Label>
+			<SetToController>true</SetToController>
+		</Group>	
+	</Associations>
+</Product>

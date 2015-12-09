@@ -3,12 +3,13 @@ Private-Package: org.openhab.binding.alarmdecoder.internal
 Ignore-Package: org.openhab.binding.alarmdecoder.internal
 Bundle-Name: openHAB AlarmDecoder Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.binding.alarmdecoder.internal.AlarmDecoderActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the alarmdecoder backend for openHAB
 Import-Package: gnu.io,
+ org.apache.commons.lang,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,

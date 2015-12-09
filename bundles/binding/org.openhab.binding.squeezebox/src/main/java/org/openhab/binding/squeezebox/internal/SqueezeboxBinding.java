@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,14 +54,8 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		logger.trace("internalReceiveCommand(itemname = {}, command = {})", itemName, command.toString());
 		for (SqueezeboxBindingProvider provider : providers) {
 			SqueezeboxBindingConfig bindingConfig = provider.getSqueezeboxBindingConfig(itemName);
-
-			String playerId = bindingConfig.getPlayerId();
-			SqueezePlayer player = squeezeServer.getPlayer(playerId);
-			if (player == null) {
-				logger.warn("No Squeezebox player configured with id '{}'. Ignoring.", playerId);
-				continue;
-			}
-		
+			String playerId = bindingConfig.getPlayerId();		
+			
 			try {
 				switch (bindingConfig.getCommandType()) {
 					case POWER:

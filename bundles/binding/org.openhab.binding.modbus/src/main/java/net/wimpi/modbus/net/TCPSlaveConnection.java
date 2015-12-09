@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransport;
 import net.wimpi.modbus.io.ModbusTransport;
@@ -31,6 +34,7 @@ import net.wimpi.modbus.io.ModbusTransport;
  * @version @version@ (@date@)
  */
 public class TCPSlaveConnection {
+  private static final Logger logger = LoggerFactory.getLogger(TCPSlaveConnection.class);
 
   //instance attributes
   private Socket m_Socket;
@@ -48,9 +52,10 @@ public class TCPSlaveConnection {
     try {
       setSocket(socket);
     } catch (IOException ex) {
-       if(Modbus.debug) System.out.println("TCPSlaveConnection::Socket invalid.");
+      final String errMsg = "Socket invalid";
+      logger.debug(errMsg);
       //@commentstart@
-      throw new IllegalStateException("Socket invalid.");
+      throw new IllegalStateException(errMsg);
       //@commentend@
     }
   }//constructor

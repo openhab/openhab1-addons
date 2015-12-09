@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,9 +57,6 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 	private static final int DEFAULT_SOCKET_TIMEOUT_MS = 1000;
 	private static final int DEFAULT_MAX_RETRIES = 3;
 	
-	// error code
-	private static final byte ERROR_RESPONSE = -1;
-		
 	// list of Piface nodes loaded from the binding configuration
 	private final Map<String, PifaceNode> pifaceNodes = new HashMap<String, PifaceNode>();
 	
@@ -217,42 +214,68 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 				logger.warn("No Piface node for id " + pifaceId);
 				continue;
 			}
-			
-			if (command.equals(OnOffType.ON) || command.equals(OpenClosedType.CLOSED)) {
-				sendDigitalWrite(node, pinNumber, 1);
-			} else {
-				sendDigitalWrite(node, pinNumber, 0);
+
+			try {
+				if (command.equals(OnOffType.ON) || command.equals(OpenClosedType.CLOSED)) {
+					sendDigitalWrite(node, pinNumber, 1);
+				} else {
+					sendDigitalWrite(node, pinNumber, 0);
+				}
+			} catch (ErrorResponseException e) {
+				logger.error("Failed to send digital write to "+node+" pin "+pinNumber);
 			}
+
 		}
 	}
 
 	private int sendWatchdog(PifaceNode node) {
-		byte response = sendCommand(node, PifaceCommand.WATCHDOG_CMD.toByte(), PifaceCommand.WATCHDOG_ACK.toByte(), 0, 0);
-		return response == ERROR_RESPONSE ? 0 : 1;
+		try {
+			sendCommand(node, PifaceCommand.WATCHDOG_CMD.toByte(), PifaceCommand.WATCHDOG_ACK.toByte(), 0, 0);
+			return 1;
+		} catch (ErrorResponseException e) {
+			return 0;
+		}
 	}
 	
-	private void sendDigitalWrite(PifaceNode node, int pinNumber, int pinValue) {
+	private void sendDigitalWrite(PifaceNode node, int pinNumber, int pinValue) throws ErrorResponseException {
 	    sendCommand(node, PifaceCommand.DIGITAL_WRITE_CMD.toByte(), PifaceCommand.DIGITAL_WRITE_ACK.toByte(), pinNumber, pinValue);
 	}
-	
-	private int sendDigitalRead(PifaceNode node, int pinNumber) {
-	    byte response = sendCommand(node, PifaceCommand.DIGITAL_READ_CMD.toByte(), PifaceCommand.DIGITAL_READ_ACK.toByte(), pinNumber, 0);
-	    return response == ERROR_RESPONSE ? -1 : (int)response;
+
+	/**
+	 * Request read state of output pins
+	 *
+	 * @param node The node to read pins on
+	 * @return Each bit represents the state of one output pin
+	 * @throws ErrorResponseException
+	 */
+	private byte sendReadOutputPins(PifaceNode node) throws ErrorResponseException {
+		return sendCommand(node, PifaceCommand.READ_OUT_CMD.toByte(), PifaceCommand.READ_OUT_ACK.toByte(), 0, 0);
 	}
 
-	private byte sendCommand(PifaceNode node, byte command, byte commandAck, int pinNumber, int pinValue) {
+	private int sendDigitalRead(PifaceNode node, int pinNumber) {
+	    try {
+			byte response = sendCommand(node, PifaceCommand.DIGITAL_READ_CMD.toByte(), PifaceCommand.DIGITAL_READ_ACK.toByte(), pinNumber, 0);
+			return (int)response;
+		} catch (ErrorResponseException e) {
+			return -1;
+		}
+	}
+
+	private byte sendCommand(PifaceNode node, byte command, byte commandAck, int pinNumber, int pinValue) throws ErrorResponseException {
 		int attempt = 1;
 		while (attempt <= node.maxRetries) {
-			byte response = sendCommand(node, command, commandAck, pinNumber, pinValue, attempt);
-			if (response != ERROR_RESPONSE)
-				return response;
-			attempt++;
+			try {
+				return sendCommand(node, command, commandAck, pinNumber, pinValue, attempt);
+			} catch (ErrorResponseException e) {
+				attempt++;
+			}
 		}
-		logger.warn("Command failed " + node.maxRetries + " times. Stopping.");
-		return ERROR_RESPONSE;
+		String msg = "Command failed " + node.maxRetries + " times. Stopping.";
+		logger.warn(msg);
+		throw new ErrorResponseException(msg);
 	}
 	
-	private byte sendCommand(PifaceNode node, byte command, byte commandAck, int pinNumber, int pinValue, int attempt) {
+	private byte sendCommand(PifaceNode node, byte command, byte commandAck, int pinNumber, int pinValue, int attempt) throws ErrorResponseException {
 	    logger.debug("Sending command (" + command + ") to " + node.host + ":" 
 	    		+ node.listenerPort + " for pin " + pinNumber + " (value=" + pinValue + ")");
 	    logger.debug("Attempt " + attempt + "...");
@@ -276,24 +299,28 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		    
 		    // check the response is valid
 		    if (receiveData[0] == PifaceCommand.ERROR_ACK.toByte()) {
-			    logger.error("Error 'ack' received");
-		    	return ERROR_RESPONSE;
+				String msg = "Error 'ack' received";
+				logger.error(msg);
+		    	throw new ErrorResponseException(msg);
 		    }
 		    if (receiveData[0] != commandAck) {
-			    logger.error("Unexpected 'ack' code received - expecting " + commandAck + " but got " + receiveData[0]);
-		    	return ERROR_RESPONSE;
+				String msg = "Unexpected 'ack' code received - expecting " + commandAck + " but got " + receiveData[0];
+				logger.error(msg);
+				throw new ErrorResponseException(msg);
 		    }
 		    if (receiveData[1] != pinNumber) {
-			    logger.error("Invalid pin received - expecting " + pinNumber + " but got " + receiveData[1]);
-		    	return ERROR_RESPONSE;
+				String msg = "Invalid pin received - expecting " + pinNumber + " but got " + receiveData[1];
+				logger.error(msg);
+				throw new ErrorResponseException(msg);
 		    }
 		    
 		    // return the data value
 		    logger.debug("Command successfully sent and acknowledged (returned " + receiveData[2] + ")");
 		    return receiveData[2];
 		} catch (IOException e) {
-			logger.error("Failed to send command (" + command + ") to " + node.host + ":" + node.listenerPort + " (attempt " + attempt + ")", e);
-			return ERROR_RESPONSE;
+			String msg = "Failed to send command (" + command + ") to " + node.host + ":" + node.listenerPort + " (attempt " + attempt + ")";
+			logger.error(msg, e);
+			throw new ErrorResponseException(msg);
 		} finally {
 			if (socket != null) {
 				socket.close();
@@ -405,6 +432,25 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		void stopMonitor() {
 			monitor.setInterrupted(true);
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			PifaceNode that = (PifaceNode) o;
+
+			if (listenerPort != that.listenerPort) return false;
+			return !(host != null ? !host.equals(that.host) : that.host != null);
+
+		}
+
+		@Override
+		public int hashCode() {
+			int result = host != null ? host.hashCode() : 0;
+			result = 31 * result + listenerPort;
+			return result;
+		}
 	}
 	
 	private class PifaceNodeMonitor extends Thread {
@@ -499,6 +545,10 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 		}
 
 		private void initialiseBindingConfigs(ArrayList<PifaceBindingConfig> clonedList) {
+
+			// Read output pins state only once pr node
+			Map<PifaceNode, Byte> outputPinsOnNode = new HashMap<PifaceNode, Byte>();
+
 			for (PifaceBindingConfig bindingConfig : clonedList) {
 				try {
 					// the Piface node might not have been read from the binding config yet so just skip
@@ -507,14 +557,37 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider> 
 					if (node == null)
 						continue;
 
-					int value = sendDigitalRead(node, bindingConfig.getPinNumber());
-					for (String itemName : getItemNamesForPin(bindingConfig.getPifaceId(), bindingConfig.getBindingType(), bindingConfig.getPinNumber()))
-						updateItemState(itemName, value);
+					// Handling IN pin
+					if (bindingConfig.getBindingType()==BindingType.IN) {
+						int value = sendDigitalRead(node, bindingConfig.getPinNumber());
+						updateItemStates(bindingConfig, value);
+					}
+
+					// Handling OUT pin
+					if (bindingConfig.getBindingType()==BindingType.OUT) {
+						Byte value = outputPinsOnNode.get(node);
+						if (value==null) {
+							value = sendReadOutputPins(node);
+							outputPinsOnNode.put(node, value);
+						}
+						byte onOffValueForPin = (byte)((value >>> bindingConfig.getPinNumber()) & 1);
+						logger.debug("State of output pin "+bindingConfig.getPinNumber()+" is "+onOffValueForPin);
+						updateItemStates(bindingConfig, onOffValueForPin);
+					}
+
 					bindingConfigsToInitialise.remove(bindingConfig);
+
 				} catch (Exception e) {
 					logger.warn("Failed to initialise value for Piface pin {} ({}): {}", new Object[] { bindingConfig.getPinNumber(), bindingConfig.getPifaceId(), e.getMessage() });
 				}
 			}
 		}
+
+		private void updateItemStates(PifaceBindingConfig bindingConfig, int value) {
+			for (String itemName : getItemNamesForPin(bindingConfig.getPifaceId(), bindingConfig.getBindingType(), bindingConfig.getPinNumber()))
+                updateItemState(itemName, value);
+		}
+
+
 	}
 }

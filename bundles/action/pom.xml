@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -28,7 +28,14 @@
     <module>org.openhab.action.homematic</module>
     <module>org.openhab.action.openwebif</module>
     <module>org.openhab.action.weather</module>
+    <module>org.openhab.action.mios</module>
+    <module>org.openhab.action.astro</module>
+    <module>org.openhab.action.tinkerforge</module>
+    <module>org.openhab.action.harmonyhub</module>
+    <module>org.openhab.action.ecobee</module>
+    <module>org.openhab.action.mqtt</module>
+    <module>org.openhab.action.dscalarm</module>
+    <module>org.openhab.action.telegram</module>
   </modules>
 
 </project>
-

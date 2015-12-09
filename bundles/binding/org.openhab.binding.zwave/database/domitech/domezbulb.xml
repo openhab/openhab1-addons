@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZB22UK</Model>
+	<Label lang="en">Domitech Smart LED Light Bulb</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Full brightness</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last setting</Label>
+			</Item>
+			<Label lang="en">Dim level when the light bulb is turned On</Label>
+            <Help lang="en"><![CDATA[
+                Full brightness: The brightness level will be resume to full brightness when the Smart Bulb is turned ON every time.<br />
+                Last setting: The brightness level will maintain same dim level as the last setting when the Smart Bulb is turned ON again.
+                ]]>
+            </Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Dimming/Brightening Step Level</Label>
+			<Help lang="en">A low value provides gradual dimming and brightening, a high value makes it change rapidly.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>1</Minimum>
+			<Maximum>10</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Dimming/Brightening Step Timing</Label>
+			<Help lang="en">When the value is low, the step timing is quick. When the value is high, the step timing is slow.</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">ZB22UK supports Group 1 with up to ﬁve devices for lifeline communication. Group 1 must be assigned the Node ID of the controller to which unsolicited notiﬁcations will be sent. The Z-Wave controller should set this association automatically after inclusion. Lifeline association only supports the “manual reset” event. Please refer to the instructions manual of your remote controller or gateway for detail procedures on how these function can be set.</Label>
+		</Group>
+	</Associations>
+</Product>

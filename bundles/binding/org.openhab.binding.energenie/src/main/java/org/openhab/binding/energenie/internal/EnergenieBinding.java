@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -112,9 +112,9 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 					try {
 						loginResponseString = HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
 						
-						String stateResponseSearch = "var sockstates = ";
+						String stateResponseSearch = "var sockstates =";
 						int findState=loginResponseString.lastIndexOf(stateResponseSearch);
-						if (findState !=0) {
+						if (findState > 0) {
 							logger.trace("searchstring sockstates found at position {}", findState);
 							
 							String slicedResponse = loginResponseString.substring(findState+18, findState+25);

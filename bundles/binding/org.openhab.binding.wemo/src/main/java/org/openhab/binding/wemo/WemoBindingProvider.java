@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.wemo;
 
+import org.openhab.binding.wemo.internal.WemoGenericBindingProvider.WemoChannelType;
 import org.openhab.core.binding.BindingProvider;
 
 
@@ -18,14 +19,23 @@ import org.openhab.core.binding.BindingProvider;
 public interface WemoBindingProvider extends BindingProvider {
 
 	/**
-	 * Get the friendly name for the specified item
+	 * Returns the friendlyName for the item with the given name.
 	 * 
 	 * @param itemName
-	 *            The item whose friendly name is required
-	 * @return The openHAB class type
+	 * @return The friendlyName if there is an item with the given name, null
+	 *         otherwise.
 	 */
-	public String getWemoFriendlyName(String itemName);
+	public String getUDN(String itemName);
 	
+	/**
+	 * Returns the channelType for the item with the given name.
+	 * 
+	 * @param itemName
+	 * @return The channelType if there is an item with the given name, null
+	 *         otherwise.
+	 */
+	public WemoChannelType getChannelType(String itemName);
+
 
 }
 

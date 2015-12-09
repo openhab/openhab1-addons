@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,7 +29,7 @@ public class AnelConfigReader {
 	/**
 	 * Refresh rate with which the state is regularly updated.
 	 */
-	private final static long DEFAULT_REFRESH_INTERVAL = 60000;
+	final static long DEFAULT_REFRESH_INTERVAL = 60000;
 
 	/**
 	 * If cache period is set to a positive integer, then this specifies the
@@ -68,7 +68,7 @@ public class AnelConfigReader {
 	static long readConfig(Dictionary<String, ?> config, Map<String, AnelConnectorThread> threads,
 			IInternalAnelBinding bindingFacade) throws ConfigurationException {
 		if (config == null || config.isEmpty())
-			return 0;
+			return DEFAULT_REFRESH_INTERVAL;
 
 		long cachePeriod = DEFAULT_CACHE_PERIOD;
 		long refresh = DEFAULT_REFRESH_INTERVAL;
@@ -135,7 +135,7 @@ public class AnelConfigReader {
 		// we collected all configs, now let's create the actual threads
 		for (String device : anelConfigs.keySet()) {
 			final AnelConfig anelConfig = anelConfigs.get(device);
-			final AnelConnectorThread thread = new AnelConnectorThread(anelConfig.host, anelConfig.receivePort,
+			final AnelConnectorThread thread = new AnelConnectorThread(device, anelConfig.host, anelConfig.receivePort,
 					anelConfig.sendPort, anelConfig.user, anelConfig.password, bindingFacade, cachePeriod);
 			threads.put(device, thread);
 		}

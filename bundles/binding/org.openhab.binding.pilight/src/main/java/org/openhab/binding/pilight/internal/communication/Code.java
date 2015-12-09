@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
 package org.openhab.binding.pilight.internal.communication;
 
 /**
- * Part of the {@link Update} message that is sent to pilight.  
+ * Part of the {@link Action} message that is sent to pilight.  
  * This contains the desired state for a single device. 
  * 
  * {@link http://www.pilight.org/development/api/#sender}
@@ -23,21 +23,11 @@ public class Code {
 	
 	public static String STATE_OFF = "off";
 	
-	private String location;
-	
 	private String device;
 	
 	private String state;
 	
 	private Values values;
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
 
 	public String getDevice() {
 		return device;

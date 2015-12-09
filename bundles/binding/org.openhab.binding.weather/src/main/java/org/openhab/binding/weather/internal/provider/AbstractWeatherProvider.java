@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,9 @@ import java.util.Calendar;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.HttpVersion;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.lang.StringUtils;
@@ -46,9 +48,11 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 	static {
 		httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 		HttpClientParams params = httpClient.getParams();
-		params.setConnectionManagerTimeout(5000);
+		params.setConnectionManagerTimeout(15000);
 		params.setSoTimeout(30000);
 		params.setContentCharset("UTF-8");
+		params.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+		params.setVersion(HttpVersion.HTTP_1_0);
 	}
 
 	public AbstractWeatherProvider(WeatherParser parser) {
@@ -59,7 +63,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Weather getWeather(LocationConfig locationConfig) {
+	public Weather getWeather(LocationConfig locationConfig) throws Exception {
 		Weather weather = new Weather(getProviderName());
 		executeRequest(weather, prepareUrl(getWeatherUrl(), locationConfig), locationConfig);
 
@@ -95,7 +99,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 	/**
 	 * Executes the http request and parses the returned stream.
 	 */
-	private void executeRequest(Weather weather, String url, LocationConfig locationConfig) {
+	private void executeRequest(Weather weather, String url, LocationConfig locationConfig) throws Exception {
 		GetMethod get = null;
 		try {
 			logger.trace("{}[{}]: request : {}", getProviderName(), locationConfig.getLocationId(), url);
@@ -133,10 +137,10 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 			} else {
 				setLastUpdate(weather);
 			}
-
 		} catch (Exception ex) {
-			logger.error(getProviderName() + ": " + ex.getMessage(), ex);
+			logger.error(getProviderName() + ": " + ex.getMessage());
 			weather.setError(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+			throw ex;
 		} finally {
 			if (get != null) {
 				get.releaseConnection();

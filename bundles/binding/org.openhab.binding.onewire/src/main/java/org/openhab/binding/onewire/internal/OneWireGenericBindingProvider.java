@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,176 +8,93 @@
  */
 package org.openhab.binding.onewire.internal;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>This class can parse information from the generic binding format and 
- * provides OneWire binding information from it. It registers as a 
- * {@link OneWireBindingProvider} service as well.</p>
+ * <p>
+ * This class handles Binding configurations
+ * It registers as a {@link OneWireBindingProvider} service as well.
+ * </p>
  * 
- * <p>The syntax of the binding configuration strings accepted is the following:<p>
- * <p><code>
- * 	onewire="&lt;familyCode&gt;.&lt;serialId&gt;#temperature|humidity"
- * </code></p>
- * where 'temperature' or 'humidity' classifies whether the sensor's value should be 
- * interpreted as temperature (unit '°C') or as humidity (unit '%') value.
+ * <p>
+ * The syntax of the binding configuration is listed in each available OneWireDevicePropertyBindingConfig class
+ * <p>
  * 
- * <p>Here are some examples for valid binding configuration strings:
- * <ul>
- * 	<li><code>onewire="26.AF9C32000000#temperature"</code></li>
- * 	<li><code>onewire="26.AF9C32000000#humidity"</code></li>
- * </ul>
- * 
- * @author Thomas.Eichstaedt-Engelen
+ * @author Thomas.Eichstaedt-Engelen, Dennis Riegelbauer
  * @since 0.6.0
  */
 public class OneWireGenericBindingProvider extends AbstractGenericBindingProvider implements OneWireBindingProvider {
-	private static final TreeSet<String> filterTypes = new TreeSet<String>(Arrays.asList("tukey"));
-	/**
-	 * {@inheritDoc}
+
+	private static final Logger logger = LoggerFactory.getLogger(OneWireGenericBindingProvider.class);
+
+	/* (non-Javadoc)
+	 * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
 	 */
 	public String getBindingType() {
 		return "onewire";
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.model.item.binding.BindingConfigReader#validateItemType(org.openhab.core.items.Item, java.lang.String)
 	 */
-	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if ((item instanceof NumberItem) || (item instanceof ContactItem) || (item instanceof SwitchItem)) {
+	public void validateItemType(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
+		logger.debug("validateItemType: " + pvItem.getName() + " - bindingConfig:" + pvBindingConfig);
+
+		if (OneWireBindingConfigFactory.isValidItemType(pvItem, pvBindingConfig)) {
 			return;
 		}
-		throw new BindingConfigParseException("item '" + item.getName()
-			+ "' is of type '" + item.getClass().getSimpleName()
-			+ "', only Number- Contact- and Switch type is allowed - please check your *.items configuration");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		String[] configParts = bindingConfig.trim().split("#");
-		if (configParts.length != 2) {
-			throw new BindingConfigParseException("Onewire sensor configuration must contain of two parts separated by a '#'");
-		}
-		
-		OneWireBindingConfig config = new OneWireBindingConfig();
-		
-		config.sensorId = configParts[0];
-		parseParameters(config, configParts[1]); // extract unit and parameters
-		addBindingConfig(item, config);
-		
-		Set<Item> items = contextMap.get(context);
-		if (items == null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-		items.add(item);
-	}
-	/**
-	 * Parses everything after the # separator. Parameters such as filters are
-	 * separated by the pipe '|' character.
-	 * @param config reference to configuration to be set
-	 * @param unitString binding configuration text after the '#' separator
-	 * @throws BindingConfigParseException thrown if parameters are not of the form key=value
-	 */
-	private void parseParameters(OneWireBindingConfig config, String unitString) throws BindingConfigParseException {
-		String[] unitParts = unitString.split("\\|");
-		if (unitParts.length > 1) {
-			// parameters are present, parse them
-			config.unit = unitParts[0]; // first token is just the unit 
-			for (int i = 1; i < unitParts.length; i++) {
-				String[] keyValue = unitParts[i].trim().split("=");
-				if (keyValue.length != 2) {
-					throw new BindingConfigParseException("Onewire sensor parameters " +
-							"must be of form parameter=value, you have: " + unitParts[i].trim());
-				}
-				if (keyValue[0].equals("filter")) {
-					if (filterTypes.contains(keyValue[1])) {
-						config.filter = keyValue[1];
-					} else {
-						throw new BindingConfigParseException("Onewire sensor unknown filter type: " + keyValue[1]);
-					}
-				} else {
-					throw new BindingConfigParseException("Onewire sensor unknown parameter: " + keyValue[0]);
-				}
-			}
-		} else {
-			// unit string has no parameters
-			config.unit = unitString;
-		}
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getSensorId(String itemName) {
-		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.sensorId : null;
+		throw new BindingConfigParseException("item '" + pvItem.getName() + "' is of type '" + pvItem.getClass().getSimpleName()
+				+ "', only Number- Contact- and Switch type is allowed - please check your *.items configuration");
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.model.item.binding.AbstractGenericBindingProvider#processBindingConfiguration(java.lang.String, org.openhab.core.items.Item, java.lang.String)
 	 */
 	@Override
-	public String getUnitId(String itemName) {
-		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.unit : null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getFilter(String itemName) {
-		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
-		return config != null ? config.filter : null;
-	}
-	
-	/**
-	 * This is an internal data structure to store information from the binding
-	 * config strings and use it to answer the requests to the OneWire binding 
-	 * provider.
-	 * 
-	 * @author Thomas.Eichstaedt-Engelen
-	 */
-	static private class OneWireBindingConfig implements BindingConfig {
-		public String sensorId;
-		public String unit;
-		public String filter = null;
+	public void processBindingConfiguration(String pvContext, Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
+		OneWireBindingConfig pvDevicePropertyBindingConfig = OneWireBindingConfigFactory.createOneWireDeviceProperty(pvItem, pvBindingConfig);
+
+		addBindingConfig(pvItem, pvDevicePropertyBindingConfig);
+
+		super.processBindingConfiguration(pvContext, pvItem, pvBindingConfig);
 	}
 
-
-	@Override
-	public Item getItem(String itemName) {
-		for (Set<Item> items : contextMap.values()) {
-			if (items != null) {
-				for (Item item : items) {
-					if (itemName.equals(item.getName())) {
-						return item;
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.onewire.OneWireBindingProvider#getItem(java.lang.String)
+	 */
+	public Item getItem(String pvItemName) {
+		for (Set<Item> lvItems : contextMap.values()) {
+			if (lvItems != null) {
+				for (Item lvItem : lvItems) {
+					if (pvItemName.equals(lvItem.getName())) {
+						return lvItem;
 					}
 				}
 			}
 		}
 		return null;
-	}	
-	
+	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.onewire.OneWireBindingProvider#getBindingConfig(java.lang.String)
+	 */
+	public OneWireBindingConfig getBindingConfig(String pvItemName) {
+		return (OneWireBindingConfig) bindingConfigs.get(pvItemName);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.onewire.OneWireBindingProvider#getBindingConfigs()
+	 */
+	public Map<String, BindingConfig> getBindingConfigs() {
+		return bindingConfigs;
+	}
 }

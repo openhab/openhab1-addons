@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,6 +50,7 @@ import org.openhab.binding.digitalstrom.internal.client.events.EventPropertyEnum
 import org.openhab.binding.digitalstrom.internal.client.impl.DigitalSTROMJSONImpl;
 import org.openhab.binding.digitalstrom.internal.client.job.DeviceConsumptionSensorJob;
 import org.openhab.binding.digitalstrom.internal.client.job.DeviceOutputValueSensorJob;
+import org.openhab.binding.digitalstrom.internal.client.job.DeviceSensorValueJob;
 import org.openhab.binding.digitalstrom.internal.client.job.SceneOutputValueSensorJob;
 import org.openhab.binding.digitalstrom.internal.client.job.SensorJob;
 import org.openhab.binding.digitalstrom.internal.config.ConnectionConfig;
@@ -343,16 +344,33 @@ public class DigitalSTROMBinding extends
 					Device device = getDsidToDeviceMap().get(
 							itemConf.dsid.getValue());
 					if (device != null) {
-						SensorIndexEnum sensorIndex = null;
-						try {
-							sensorIndex = SensorIndexEnum
-									.valueOf(itemConf.consumption.name());
-						} catch (Exception e) {
-							sensorIndex = SensorIndexEnum.ACTIVE_POWER;
+						
+						if (itemConf.sensor == null)
+						{
+							SensorIndexEnum sensorIndex = null;
+							try {
+								sensorIndex = SensorIndexEnum
+										.valueOf(itemConf.consumption.name());
+							} catch (Exception e) {
+								sensorIndex = SensorIndexEnum.ACTIVE_POWER;
+							}
+							addLowPriorityJob(new DeviceConsumptionSensorJob(
+									device, sensorIndex));
+							lastUpdateMap.put(itemName, System.currentTimeMillis());
 						}
-						addLowPriorityJob(new DeviceConsumptionSensorJob(
-								device, sensorIndex));
-						lastUpdateMap.put(itemName, System.currentTimeMillis());
+						else
+						{
+							SensorIndexEnum sensorIndex = null;
+							try {
+								sensorIndex = SensorIndexEnum
+										.valueOf(itemConf.sensor.name());
+							} catch (Exception e) {
+								
+							}
+							addHighPriorityJob(new DeviceSensorValueJob(
+									device, sensorIndex));
+						}	
+						
 					}
 				}
 			}
@@ -1572,6 +1590,15 @@ public class DigitalSTROMBinding extends
 			}
 		}
 	}
+	
+	private void addHighPriorityJob(
+			DeviceSensorValueJob deviceSensorValueJob) {
+		synchronized (highPrioritySensorJobs) {
+			if (!highPrioritySensorJobs.contains(deviceSensorValueJob)) {
+				highPrioritySensorJobs.add(deviceSensorValueJob);
+			}
+		}
+	}
 
 	private void addMediumPriorityJob(
 			SceneOutputValueSensorJob sceneOutputValueSensorJob) {
@@ -1921,17 +1948,55 @@ public class DigitalSTROMBinding extends
 					DigitalSTROMBindingConfig confItem = getConfigForItemName(item
 							.getName());
 					if (confItem != null) {
-						if (confItem.consumption != null) {
+	
+						if (confItem.sensor != null)
+						{
+							int value = -1;
+							switch (confItem.sensor) {
+							
+								case TEMPERATURE_INDOORS:
+									value = device.getTemperatureSensorValue();
 
+				 					if (value != -1) {
+										// Celsius 
+										state = new DecimalType((double)(value) /  40 - 43.15); // TODO use resolution from sensor
+									}
+									break;
+								case RELATIVE_HUMIDITY_INDOORS:
+									value = device.getHumiditySensorValue();
+			
+									if (value != -1) {
+										// Percent
+										state = new DecimalType((double)(value) /  40); // TODO use resolution from sensor
+									}
+									break;
+								case TEMPERATURE_OUTDOORS:
+									value = device.getTemperatureSensorValue();
+			
+									if (value != -1) {
+										// Celsius 
+										state = new DecimalType((double)(value) /  40 - 43.15); // TODO use resolution from sensor
+									}
+									break;
+								case RELATIVE_HUMIDITY_OUTDOORS:
+									value = device.getHumiditySensorValue();
+			
+									if (value != -1) {
+										// Percent
+										state = new DecimalType((double)(value) /  40); // TODO use resolution from sensor
+									}
+									break;
+								default:
+									break;
+	
+							}
+						}
+						else if (confItem.consumption != null) {
 							int value = -1;
 							switch (confItem.consumption) {
 
 							case ACTIVE_POWER:
 								value = device.getPowerConsumption();
-
-								if (value != -1) {
-									state = new DecimalType(value);
-								}
 								break;
 							case OUTPUT_CURRENT:
 								value = device.getEnergyMeterValue();
@@ -1980,7 +2045,48 @@ public class DigitalSTROMBinding extends
 							.getName());
 					if (confItem != null) {
 
-						if (confItem.consumption != null) {
+						if (confItem.sensor != null)
+						{
+							int value = -1;
+							switch (confItem.sensor) {
+							
+								case TEMPERATURE_INDOORS:
+									value = device.getTemperatureSensorValue();
+			
+									if (value != -1) {
+										// Celsius 
+										state = new DecimalType((double)(value) /  40 - 43.15); // TODO use resolution from sensor
+									}
+									break;
+								case RELATIVE_HUMIDITY_INDOORS:
+									value = device.getHumiditySensorValue();
+			
+									if (value != -1) {
+										// Percent
+										state = new DecimalType((double)(value) /  40); // TODO use resolution from sensor
+									}
+									break;
+								case TEMPERATURE_OUTDOORS:
+									value = device.getTemperatureSensorValue();
+			
+									if (value != -1) {
+										// Celsius 
+										state = new DecimalType((double)(value) /  40 - 43.15); // TODO use resolution from sensor
+									}
+									break;
+								case RELATIVE_HUMIDITY_OUTDOORS:
+									value = device.getHumiditySensorValue();
+			
+									if (value != -1) {
+										// Percent
+										state = new DecimalType((double)(value) /  40); // TODO use resolution from sensor
+									}
+									break;
+								default:
+									break;
+							}
+						}
+						else if (confItem.consumption != null) {
 							int value = -1;
 
 							switch (confItem.consumption) {
@@ -2006,6 +2112,7 @@ public class DigitalSTROMBinding extends
 						}
 					}
 				}
+
 				eventPublisher.postUpdate(item.getName(), state);
 			} else {
 				logger.error("couldn't update item state, because device is null: "

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -113,9 +113,11 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		if (jsonPayload == null)
 			return;
 
-		// only interested in 'location' publishes
+		// only interested in 'location' or 'transition' publishes
 		String type = jsonPayload.get("_type");
-		if (StringUtils.isEmpty(type) || !type.equals("location"))
+		if (StringUtils.isEmpty(type))
+			return;
+		if (!type.equals("location") && !type.equals("transition"))
 			return;
 
 		// process all items being monitored on this topic
@@ -129,50 +131,65 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 					logger.error("Unable to calculate relative location for {} as there is no lat/lon configured for 'home'", itemConfig.getItemName());
 					continue;
 				}
-				
+
 				// parse the published location
-			    float latitude = Float.parseFloat(jsonPayload.get("lat"));
-			    float longitude = Float.parseFloat(jsonPayload.get("lon"));
-			    Location location = new Location(latitude, longitude);
-		        logger.trace("Location received for {}: {}", itemConfig.getItemName(), location.toString());
-				
-			    // calculate the distance from 'home'
+				Object lat = jsonPayload.get("lat");
+				Object lon = jsonPayload.get("lon");
+
+				float latitude;
+				float longitude;
+				if (lat instanceof Float) {
+					latitude = (Float)lat;
+				} else {
+					latitude = Float.parseFloat(lat.toString());
+				}
+
+				if (lon instanceof Float) {
+					longitude = (Float)lon;
+				} else {
+					longitude = Float.parseFloat(lon.toString());
+				}
+
+				Location location = new Location(latitude, longitude);
+				logger.trace("Location received for {}: {}", itemConfig.getItemName(), location.toString());
+
+				// calculate the distance from 'home'
 				double distance = calculateDistance(location, homeLocation);
-				
-		        // update the item state based on the location relative to the geofence
+
+				// update the item state based on the location relative to the geofence
 				if (distance > geoFence) {
-		            logger.debug("{} is outside the 'home' geofence ({}m)", itemConfig.getItemName(), distance);
+					logger.debug("{} is outside the 'home' geofence ({}m)", itemConfig.getItemName(), distance);
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.OFF);
 				} else {
-		            logger.debug("{} is inside the 'home' geofence ({}m)", itemConfig.getItemName(), distance);
+					logger.debug("{} is inside the 'home' geofence ({}m)", itemConfig.getItemName(), distance);
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.ON);
-				}			    
+				}
 			} else {
 				// we are only interested in location updates with an 'event' (i.e. enter/leave)
 				String event = jsonPayload.get("event");
 				if (StringUtils.isEmpty(event)) {
-			        logger.trace("Not a location enter/leave event, ignoring");
+					logger.trace("Not a location enter/leave event, ignoring");
 					continue;
 				}
-				
+
 				// check this event is for the region we are monitoring
 				String desc = jsonPayload.get("desc");
 				if (StringUtils.isEmpty(desc)) {
-			        logger.trace("Location {} event has no region (missing or empty 'desc'), ignoring", event);
+					logger.trace("Location {} event has no region (missing or empty 'desc'), ignoring", event);
 					continue;
 				}
 				if (!itemConfig.getRegion().equals(desc)) {
-			        logger.trace("Location {} event is for region '{}', ignoring", event, desc);
+					logger.trace("Location {} event is for region '{}', ignoring", event, desc);
 					continue;
 				}
 
 				if (event.equals("leave")) {
-		            logger.debug("{} has left region {}", itemConfig.getItemName(), itemConfig.getRegion());
+					logger.debug("{} has left region {}", itemConfig.getItemName(), itemConfig.getRegion());
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.OFF);
 				} else {
-		            logger.debug("{} has entered region {}", itemConfig.getItemName(), itemConfig.getRegion());
+					logger.debug("{} has entered region {}", itemConfig.getItemName(), itemConfig.getRegion());
 					eventPublisher.postUpdate(itemConfig.getItemName(), OnOffType.ON);
-				}		
+				}
 			}
 		}
 	}

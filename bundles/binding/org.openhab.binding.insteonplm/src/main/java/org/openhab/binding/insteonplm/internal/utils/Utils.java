@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,16 @@ public class Utils {
 		return result;
 	}
 	
+	public static int strToInt(String s) throws NumberFormatException {
+		int ret = -1;
+		if (s.startsWith("0x")) {
+			ret = Integer.parseInt(s.substring(2), 16);
+		} else {
+			ret = Integer.parseInt(s);
+		}
+		return (ret);
+	}
+
 	public static int fromHexString(String string) {
 		return Integer.parseInt(string, 16);
 	}

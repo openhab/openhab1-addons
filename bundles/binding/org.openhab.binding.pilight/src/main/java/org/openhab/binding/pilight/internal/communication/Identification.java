@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,26 +16,30 @@ package org.openhab.binding.pilight.internal.communication;
  */
 public class Identification {
 	
-	public static String CLIENT_GUI = "client gui";
-	public static String REQUEST_CONFIG = "request config";
-	public static String ACCEPTED = "accept client";
-	public static String REJECTED = "reject client";
+	public static String ACTION_IDENTIFY = "identify";
 
-	private String message;
+	private String action;
+	
+	private Options options;
 	
 	public Identification() {
-		
+		this.action = ACTION_IDENTIFY;
 	}
 	
-	public Identification (String message) {
-		this.message = message;
-	}
-	
-	public void setMessage(String message) {
-		this.message = message;
+	public String getAction() {
+		return action;
 	}
 
-	public String getMessage() {
-		return message;
+	public void setAction(String action) {
+		this.action = action;
 	}
+
+	public Options getOptions() {
+		return options;
+	}
+
+	public void setOptions(Options options) {
+		this.options = options;
+	}
+	
 }

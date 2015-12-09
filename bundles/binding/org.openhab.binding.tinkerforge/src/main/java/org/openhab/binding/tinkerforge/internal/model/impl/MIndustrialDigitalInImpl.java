@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,6 +51,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialDigitalInImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -167,6 +168,26 @@ public class MIndustrialDigitalInImpl extends MinimalEObjectImpl.Container imple
    * @ordered
    */
   protected HighLowValue sensorValue;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "digital_4in";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   private short inNum;
 
@@ -379,6 +400,16 @@ private int mask;
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * 
    * @generated NOT
@@ -538,6 +569,8 @@ private int mask;
         return getMbrick();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
         return getSensorValue();
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__DEVICE_TYPE:
+        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -636,6 +669,8 @@ private int mask;
         return getMbrick() != null;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN__SENSOR_VALUE:
         return sensorValue != null;
+      case ModelPackage.MINDUSTRIAL_DIGITAL_IN__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -746,6 +781,8 @@ private int mask;
     result.append(subId);
     result.append(", sensorValue: ");
     result.append(sensorValue);
+    result.append(", deviceType: ");
+    result.append(deviceType);
     result.append(')');
     return result.toString();
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,13 +25,9 @@ public class PilightBindingConfig implements BindingConfig {
 	
 		private String instance;
 		
-		private String location;
-		
 		private String device;
 		
 		private String property; 
-		
-		private Integer scale = 1; 
 		
 		public String getItemName() {
 			return itemName;
@@ -58,14 +54,6 @@ public class PilightBindingConfig implements BindingConfig {
 			this.instance = instance;
 		}
 
-		public String getLocation() {
-			return location;
-		}
-
-		public void setLocation(String location) {
-			this.location = location;
-		}
-
 		public String getDevice() {
 			return device;
 		}
@@ -80,14 +68,6 @@ public class PilightBindingConfig implements BindingConfig {
 		
 		public void setProperty(String value) {
 			this.property = value;
-		}
-		
-		public Integer getScale() {
-			return scale;
-		}
-		
-		public void setScale(Integer scale) {
-			this.scale = scale;
 		}
 		
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ public enum OutputModeEnum {
 	DISABLED	(0),
 	SWITCHED	(16),
 	DIMMED		(22),
+	DIMMED_2	(51),
 	UP_DOWN		(33),
 	SWITCHED_2	(35),
 	SWITCH		(39),

@@ -87,6 +87,13 @@ rule "Initialize contact states"
 		)
 end
 
+rule "Initialize Location"
+	when 
+		System started
+	then
+		DemoLocation.postUpdate(new PointType("52.5200066,13.4049540"))
+end
+
 rule "Set random room temperatures"
 	when 
 		System started or
@@ -105,7 +112,7 @@ when
 then	
 	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
 	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
-	logInfo("Weather","Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
+	logInfo("Weather", "Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)) + " degrees.")
 end
 
 /** shows how to use sensor values from the past */
@@ -114,7 +121,7 @@ when
 	Time cron "0 * * * * ?"
 then	
 	if(Weather_Temperature.changedSince(now.minusMinutes(1))) {
-		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")		
+		logInfo("PersistenceDemo", "2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")
 	}
 end
 
@@ -127,7 +134,7 @@ when
 	Item DemoSwitch received command
 then
 	if(!DemoSwitch.changedSince(now.minusSeconds(5))) {
-		logInfo("Persistence Demo", "You did not press this button during the last 5 seconds!")
+		logInfo("PersistenceDemo2", "You did not press this button during the last 5 seconds!")
 	}
 end
 
@@ -164,13 +171,14 @@ end
 
 // This rule will be used to test Scale transformation service
 rule "Compute humidex"
-when Item Weather_Temperature changed or
-	 Item Weather_Humidity changed 
+when
+        Item Weather_Temperature changed or
+	Item Weather_Humidity changed
 then
 	var Number T = Weather_Temperature.state as DecimalType
 	var Number H = Weather_Humidity.state as DecimalType	
 	var Number x = 7.5 * T/(237.7 + T)
 	var Number e = 6.112 * Math::pow(10, x.doubleValue) * H/100
 	var Number humidex = T + (new Double(5) / new Double(9)) * (e - 10)
-	Weather_Humidex.postUpdate(humidex)
+	postUpdate(Weather_Humidex, humidex)
 end

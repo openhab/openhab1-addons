@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -70,6 +70,24 @@ public abstract class RpcCall {
 			return new HashMap<String, Object>();
 		
 		return (Map<String, Object>)data.get(param);
+	}
+	
+	public static Integer getParamAsInteger(Map<String, Object> data, String param ){
+		Object obj=data.get(param);
+		if(obj!=null && obj instanceof Integer)
+		{
+			return (Integer)obj;
+		}
+		return null;
+	}
+	
+	public static String getParamAsString(Map<String, Object> data, String param ){
+		Object obj=data.get(param);
+		if(obj!=null && obj instanceof String)
+		{
+			return (String)obj;
+		}
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")

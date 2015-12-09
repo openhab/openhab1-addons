@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,8 +50,7 @@ public final class MiosActivator implements BundleActivator {
 	/**
 	 * Returns the OSGi BundleContext of this bundle.
 	 * 
-	 * The OSGi BundleContext is needed to talk with other services running
-	 * under OSGi.
+	 * The OSGi BundleContext is needed to talk with other services running under OSGi.
 	 * <p>
 	 * eg. openHAB's {@code TransformationService}.
 	 * 

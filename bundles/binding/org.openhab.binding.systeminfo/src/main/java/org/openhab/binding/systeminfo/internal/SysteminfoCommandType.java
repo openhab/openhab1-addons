@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -58,6 +58,13 @@ public enum SysteminfoCommandType {
 	DISK_READ_BYTES ("DiskReadBytes", NumberItem.class),
 	DISK_WRITE_BYTES ("DiskWriteBytes", NumberItem.class),
 
+	FS_USED("FileSystemUsed", NumberItem.class),
+	FS_FREE("FileSystemFree", NumberItem.class),
+	FS_TOTAL("FileSystemTotal", NumberItem.class),
+	FS_USE_PERCENT("FileSystemUsagePercent", NumberItem.class),
+	FS_FILES("FileSystemFiles", NumberItem.class),
+	FS_FREE_FILES("FileSystemFreeFiles", NumberItem.class),
+	
 	DIR_USAGE ("DirUsage", NumberItem.class),
 	DIR_FILES ("DirFiles", NumberItem.class),
 

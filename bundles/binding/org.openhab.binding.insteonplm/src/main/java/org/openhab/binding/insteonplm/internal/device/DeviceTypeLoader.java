@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.File;
@@ -20,6 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.openhab.binding.insteonplm.internal.device.DeviceType.FeatureGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -119,15 +119,53 @@ public class DeviceTypeLoader {
 			} else if (subElement.getNodeName().equals("description")) {
 				devType.setDescription(subElement.getTextContent());
 			} else if (subElement.getNodeName().equals("feature")) {
-				String name = subElement.getAttribute("name");
-				if (name.equals("")) {
-					throw new SAXException("device type " + productKey
-								+ " has feature without name!");
-				}
-				devType.addFeature(name, subElement.getTextContent());
+				processFeature(devType, subElement);
+			} else if (subElement.getNodeName().equals("feature_group")) {
+				processFeatureGroup(devType, subElement);
 			}
 			m_deviceTypes.put(productKey, devType);
 		}
+	}
+	
+	private String processFeature(DeviceType devType, Element e) throws SAXException {
+		String name = e.getAttribute("name");
+		if (name.equals("")) {
+			throw new SAXException("feature " + e.getNodeName() +
+					" has feature without name!");
+		}
+		if (!devType.addFeature(name, e.getTextContent())) {
+			throw new SAXException("duplicate feature: " + name);
+		}
+		return (name);
+	}
+	
+	private String processFeatureGroup(DeviceType devType, Element e) throws SAXException {
+		String name = e.getAttribute("name");
+		if (name.equals("")) {
+			throw new SAXException("feature group "+e.getNodeName()+" has no name attr!");
+		}
+		String type = e.getAttribute("type");
+		if (type.equals("")) {
+			throw new SAXException("feature group "+e.getNodeName()+" has no type attr!");
+		}
+		FeatureGroup fg = new FeatureGroup(name, type);
+		NodeList nodes = e.getChildNodes();
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Node node  = nodes.item(i);
+			if (node.getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element subElement = (Element) node;
+		    if (subElement.getNodeName().equals("feature")) {
+				fg.addFeature(processFeature(devType, subElement));
+			} else if (subElement.getNodeName().equals("feature_group")) {
+				fg.addFeature(processFeatureGroup(devType, subElement));
+			}
+		}
+		if (!devType.addFeatureGroup(name, fg)) {
+			throw new SAXException("duplicate feature group " + name);
+		}
+		return (name);
 	}
 	/**
 	 * Helper function for debugging
@@ -137,7 +175,6 @@ public class DeviceTypeLoader {
 			logger.debug(String.format("%-10s->", dt.getKey()) + dt.getValue());
 		}
 	}
-
 	/**
 	 * Singleton instance function, creates DeviceTypeLoader
 	 * @return DeviceTypeLoader singleton reference

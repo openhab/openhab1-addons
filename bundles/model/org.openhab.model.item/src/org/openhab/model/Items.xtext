@@ -19,7 +19,7 @@ ModelGroupItem :
 ;
 
 enum ModelGroupFunction :
-	AND='AND' | OR='OR' | NAND='NAND' | NOR='NOR' | AVG='AVG' | SUM='SUM' | MAX='MAX' | MIN='MIN'
+	AND='AND' | OR='OR' | NAND='NAND' | NOR='NOR' | AVG='AVG' | SUM='SUM' | MAX='MAX' | MIN='MIN' | COUNT='COUNT'
 ;
 
 ModelNormalItem :
@@ -27,7 +27,7 @@ ModelNormalItem :
 ;
 
 ModelItemType :
-	'Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | 'DateTime' | 'Color' | ID
+	'Switch' | 'Rollershutter' | 'Number' | 'String' | 'Dimmer' | 'Contact' | 'DateTime' | 'Color' | 'Location' | ID
 ;
 
 ModelBinding:

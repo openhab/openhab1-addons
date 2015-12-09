@@ -16,6 +16,9 @@
 
 package net.wimpi.modbus.net;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.ModbusIOException;
@@ -30,6 +33,7 @@ import net.wimpi.modbus.msg.ModbusResponse;
  * @version @version@ (@date@)
  */
 public class TCPConnectionHandler implements Runnable {
+  private static final Logger logger = LoggerFactory.getLogger(TCPConnectionHandler.class);
 
   private TCPSlaveConnection m_Connection;
   private ModbusTransport m_Transport;
@@ -59,7 +63,7 @@ public class TCPConnectionHandler implements Runnable {
       do {
         //1. read the request
         ModbusRequest request = m_Transport.readRequest();
-        //System.out.println("Request:" + request.getHexMessage());
+        logger.trace("Request:{}", request.getHexMessage());
         ModbusResponse response = null;
 
         //test if Process image exists
@@ -69,11 +73,9 @@ public class TCPConnectionHandler implements Runnable {
         } else {
           response = request.createResponse();
         }
-        /*DEBUG*/
-        if (Modbus.debug) System.out.println("Request:" + request.getHexMessage());
-        if (Modbus.debug) System.out.println("Response:" + response.getHexMessage());
+        logger.debug("Request:{}", request.getHexMessage());
+        logger.debug("Response:{}", response.getHexMessage());
 
-        //System.out.println("Response:" + response.getHexMessage());
         m_Transport.writeMessage(response);
       } while (true);
     } catch (ModbusIOException ex) {

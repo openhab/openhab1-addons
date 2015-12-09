@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,9 @@ import org.openhab.binding.ecotouch.EcoTouchBindingProvider;
 import org.openhab.binding.ecotouch.EcoTouchTags;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -124,20 +126,48 @@ public class EcoTouchBinding extends
 						continue;
 					}
 					int heatpumpValue = rawvalues.get(item.getTagName());
+					State value;
 					if (item.getType() == EcoTouchTags.Type.Analog) {
 						// analog value encoded as a scaled integer
 						BigDecimal decimal = new BigDecimal(heatpumpValue)
 								.divide(new BigDecimal(10));
-						handleEventType(new DecimalType(decimal), item);
+						value = new DecimalType(decimal);
 					} else if (item.getType() == EcoTouchTags.Type.Word) {
 						// integer
-						handleEventType(new DecimalType(heatpumpValue), item);
+						if (NumberItem.class.equals(item.getItemClass()))
+							value = new DecimalType(heatpumpValue);
+						else {
+							// assume SwitchItem
+							if (heatpumpValue == 0)
+								value = OnOffType.OFF;
+							else
+								value = OnOffType.ON;
+						}
 					} else {
 						// bit field
 						heatpumpValue >>= item.getBitNum();
 						heatpumpValue &= 1;
-						handleEventType(new DecimalType(heatpumpValue), item);
+						if (NumberItem.class.equals(item.getItemClass()))
+							value = new DecimalType(heatpumpValue);
+						else {
+							// assume SwitchItem
+							if (heatpumpValue == 0)
+								value = OnOffType.OFF;
+							else
+								value = OnOffType.ON;
+						}
 					}
+
+					// now consider special cases
+					if (item == EcoTouchTags.TYPE_ADAPT_HEATING) {
+						double adapt = ((DecimalType) value).intValue();
+						adapt = Math.max(0, adapt);
+						adapt = Math.min(8, adapt);
+						adapt = (adapt - 4) / 2.0;
+						value = new DecimalType(adapt);
+					}
+
+					handleEventType(value, item);
 				}
 			}
 
@@ -150,8 +180,7 @@ public class EcoTouchBinding extends
 
 	}
 
-	private void handleEventType(org.openhab.core.types.State state,
-			EcoTouchTags heatpumpCommandType) {
+	private void handleEventType(State state, EcoTouchTags heatpumpCommandType) {
 		for (EcoTouchBindingProvider provider : providers) {
 			for (String itemName : provider
 					.getItemNamesForType(heatpumpCommandType)) {
@@ -163,10 +192,8 @@ public class EcoTouchBinding extends
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
-		// logger.debug("updated() is called!");
 
 		setProperlyConfigured(false);
 
@@ -202,4 +229,68 @@ public class EcoTouchBinding extends
 		}
 	}
 
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command) {
+		// find the EcoTouch binding for the itemName
+		EcoTouchTags tag = null;
+		for (EcoTouchBindingProvider provider : providers) {
+			try {
+				tag = provider.getTypeForItemName(itemName);
+				break;
+			} catch (Exception e) {
+			}
+		}
+
+		// consider special cases
+		if (tag == EcoTouchTags.TYPE_ADAPT_HEATING) {
+			double adapt = Double.parseDouble(command.toString());
+			adapt = (adapt + 2) * 2;
+			adapt = Math.max(0, adapt);
+			adapt = Math.min(8, adapt);
+			command = new DecimalType((int) adapt);
+		}
+
+		EcoTouchConnector connector = new EcoTouchConnector(ip, username,
+				password, cookies);
+		int value = 0;
+		switch (tag.getType()) {
+		case Analog:
+			value = (int) (Double.parseDouble(command.toString()) * 10);
+			break;
+		case Word:
+			if (command == OnOffType.ON)
+				value = 1;
+			else if (command == OnOffType.OFF)
+				value = 0;
+			else
+				value = Integer.parseInt(command.toString());
+			break;
+		case Bitfield:
+			try {
+				// read-modify-write style
+				value = connector.getValue(tag.getTagName());
+				int bitmask = 1 << tag.getBitNum();
+				if (command == OnOffType.OFF
+						|| Integer.parseInt(command.toString()) == 0) {
+					value = value & ~bitmask;
+				} else
+					value = value | bitmask;
+			} catch (Exception e1) {
+				// connector.getValue() already logged a specific debug message
+				logger.warn("cannot send command '" + command + "' to item '" + itemName + "'");
+				return;
+			}
+		}
+
+		try {
+			connector.setValue(tag.getTagName(), value);
+			// It does not make sense to check the returned value from
+			// setValue().
+			// Even if the tag is read only, one would get the newly set value
+			// back.
+		} catch (Exception e) {
+			// connector.setValue() already logged a specific debug message
+			logger.warn("cannot send command '" + command + "' to item '" + itemName + "'");
+		}
+	}
 }

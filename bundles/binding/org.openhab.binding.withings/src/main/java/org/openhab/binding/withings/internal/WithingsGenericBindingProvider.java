@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,15 +41,29 @@ public class WithingsGenericBindingProvider extends
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		MeasureType measureType = MeasureType.valueOf(bindingConfig
-				.toUpperCase());
+		String[] configElements = bindingConfig.split(":");
+		
+		String accountId = null;
+		MeasureType measureType = null;
+		
+		if (configElements.length == 1) {
+			measureType = MeasureType.valueOf(configElements[0].toUpperCase());
+		}
+		else if (configElements.length == 2) {
+			accountId = configElements[0];
+			measureType = MeasureType.valueOf(configElements[1].toUpperCase());
+		}
+		else {
+			throw new BindingConfigParseException("Unknown Binding configuration '{}'. The Binding "
+				+ "configuration should consists of either one or two elements.");
+		}
 
 		if (measureType == null) {
 			throw new BindingConfigParseException("Could not convert string '"
 					+ bindingConfig + "' to according measure type.");
 		}
 
-		WithingsBindingConfig config = new WithingsBindingConfig(measureType);
+		WithingsBindingConfig config = new WithingsBindingConfig(accountId, measureType);
 
 		addBindingConfig(item, config);
 	}

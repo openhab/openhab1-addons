@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -82,8 +82,9 @@ public class CcuClient extends BaseHomematicClient {
 
 		httpClient = new HttpClient(new SimpleHttpConnectionManager(true));
 		HttpClientParams params = httpClient.getParams();
-		params.setConnectionManagerTimeout(5000);
-		params.setSoTimeout(30000);
+		Long timeout = context.getConfig().getTimeout() * 1000L;
+		params.setConnectionManagerTimeout(timeout);
+		params.setSoTimeout(timeout.intValue());
 		params.setContentCharset("ISO-8859-1");
 	}
 

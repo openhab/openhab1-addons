@@ -1,13 +1,15 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
- * 
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.config;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * A Class for storing device options from the items configuration. The <key>=<value> options from
@@ -58,6 +60,18 @@ public class DeviceOptions {
    */
   public HashMap<String, String> getDeviceOptions() {
     return deviceOptions;
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    for (Entry<String, String> opt : deviceOptions.entrySet()){
+      buffer.append(opt.getKey());
+      buffer.append(": ");
+      buffer.append(opt.getValue());
+      buffer.append("\n");
+    }
+    return buffer.toString();
   }
 
 }

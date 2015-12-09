@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,16 +13,19 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TooManyListenersException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -33,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * RFXCOM connector for serial port communication.
  * 
- * @author Pauli Anttila, Evert van Es
+ * @author Pauli Anttila, Evert van Es, Jürgen Richtsfeld
  * @since 1.2.0
  */
 public class RFXComSerialConnector implements RFXComConnectorInterface {
@@ -41,7 +44,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 	private static final Logger logger = LoggerFactory
 			.getLogger(RFXComSerialConnector.class);
 
-	private static List<RFXComEventListener> _listeners = new ArrayList<RFXComEventListener>();
+	private static final List<RFXComEventListener> _listeners = new CopyOnWriteArrayList<RFXComEventListener>();
 
 	InputStream in = null;
 	OutputStream out = null;
@@ -115,15 +118,15 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 		out.flush();
 	}
 
-	public synchronized void addEventListener(RFXComEventListener rfxComEventListener) {
+	public void addEventListener(RFXComEventListener rfxComEventListener) {
 		_listeners.add(rfxComEventListener);
 	}
 
-	public synchronized void removeEventListener(RFXComEventListener listener) {
+	public void removeEventListener(RFXComEventListener listener) {
 		_listeners.remove(listener);
 	}
 
-	public class SerialReader extends Thread {
+	public class SerialReader extends Thread implements SerialPortEventListener {
 		boolean interrupted = false;
 		InputStream in;
 
@@ -151,12 +154,20 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 
 			logger.debug("Data listener started");
 			
+			// RXTX serial port library causes high CPU load
+			// Start event listener, which will just sleep and slow down event loop
+			try {
+				serialPort.addEventListener(this);
+				serialPort.notifyOnDataAvailable(true);
+			} catch (TooManyListenersException e) {
+			}
+			
 			try {
 
 				byte[] tmpData = new byte[20];
 				int len = -1;
 
-				while ((len = in.read(tmpData)) > 0 && interrupted != true) {
+				while ((len = in.read(tmpData)) > 0 && !interrupted) {
 					
 					byte[] logData = Arrays.copyOf(tmpData, len);
 					logger.trace("Received data (len={}): {}",
@@ -194,12 +205,10 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 										this);
 
 								try {
-									Iterator<RFXComEventListener> iterator = _listeners
-											.iterator();
+									Iterator<RFXComEventListener> iterator = _listeners.iterator();
 
 									while (iterator.hasNext()) {
-										((RFXComEventListener) iterator.next())
-												.packetReceived(event, msg);
+										iterator.next().packetReceived(event, msg);
 									}
 
 								} catch (Exception e) {
@@ -219,7 +228,21 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				logger.error("Reading from serial port failed", e);
 			}
 			
+			serialPort.removeEventListener();
 			logger.debug("Data listener stopped");
 		}
+
+		@Override
+		public void serialEvent(SerialPortEvent arg0) {
+			try {
+				logger.trace("RXTX library CPU load workaround, sleep forever");
+				sleep(Long.MAX_VALUE);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
+
+	public boolean isConnected() {
+		return out != null;
 	}
 }

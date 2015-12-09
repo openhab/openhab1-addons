@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -144,7 +144,7 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					 * if there are more associations to come then set up
 					 * iterator and goto state to transmit more associations
 					 */
-					if (associations.isEmpty() == false) {
+					if (associations != null && associations.isEmpty() == false) {
 						assocIter = associations.iterator();
 						state = PairingInitialisationState.SENDING_ASSOCIATIONS;
 					} else {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,7 +28,8 @@ public class Condition {
 			@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.weather"),
 			@Provider(name = ProviderName.WUNDERGROUND, property = "conditions"),
 			@Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.description"),
-			@Provider(name = ProviderName.FORECASTIO, property = "summary"),
+			@Provider(name = ProviderName.FORECASTIO, property = "currently.summary"),
+			@Provider(name = ProviderName.FORECASTIO, property = "daily.data.summary"),
 			@Provider(name = ProviderName.WORLDWEATHERONLINE, property = "weatherDesc.value"),
 			@Provider(name = ProviderName.YAHOO, property = "text"),
 			@Provider(name = ProviderName.HAMWEATHER, property = "weather") 
@@ -60,7 +61,8 @@ public class Condition {
 	private String commonId;
 
 	@ProviderMappings({ 
-			@Provider(name = ProviderName.FORECASTIO, property = "icon"),
+			@Provider(name = ProviderName.FORECASTIO, property = "currently.icon"),
+			@Provider(name = ProviderName.FORECASTIO, property = "daily.data.icon"),
 			@Provider(name = ProviderName.OPENWEATHERMAP, property = "icon"),
 			@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.icon"),
 			@Provider(name = ProviderName.WUNDERGROUND, property = "simpleforecast.forecastday.icon"),

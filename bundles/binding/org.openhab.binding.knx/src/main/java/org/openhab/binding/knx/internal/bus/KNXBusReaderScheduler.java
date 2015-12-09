@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
 package org.openhab.binding.knx.internal.bus;
 
 import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -77,7 +78,8 @@ public class KNXBusReaderScheduler {
 				sLogger.debug("Auto refresh scheduler couldn't be terminated and termination timed out.");
 			}
 		} catch (InterruptedException e) {
-			sLogger.debug("Auto refresh scheduler: interrupted while waiting for termination.");
+			sLogger.warn("Auto refresh scheduler: interrupted while waiting for termination.");
+			Thread.currentThread().interrupt();
 		}
 
 		sLogger.trace("Stopping reader task");
@@ -108,19 +110,21 @@ public class KNXBusReaderScheduler {
 				}
 			} catch (InterruptedException e) {
 				sLogger.debug("Schedule executor restart failed: interrupted while waiting for termination.");
+				Thread.currentThread().interrupt();
 			}
 			mScheduledExecutorService = Executors.newScheduledThreadPool(KNXConnection.getNumberOfThreads());
 			sLogger.debug("Schedule executor restart: started.");
 		}
 
-		for (int autoRefreshTimeInSecs : mScheduleMap.keySet()) {
+		for (Iterator<Integer> iterator = mScheduleMap.keySet().iterator(); iterator.hasNext();) {
+			int autoRefreshTimeInSecs = iterator.next();
 			List<Datapoint> dpList = mScheduleMap.get(autoRefreshTimeInSecs);
 			synchronized(dpList) {
 				sLogger.debug("Clearing list {}", autoRefreshTimeInSecs);
 				dpList.clear();
 			}
 			sLogger.debug("Removing list {} from scheduler", autoRefreshTimeInSecs);
-			mScheduleMap.remove(autoRefreshTimeInSecs);
+			iterator.remove();
 		}
 	}
 
@@ -147,7 +151,8 @@ public class KNXBusReaderScheduler {
 	/**
 	 * Schedules a <code>Datapoint</code> to be cyclicly read. When parameter
 	 * <code>autoRefreshTimeInSecs</code> is 0 then calling ths method is equal
-	 * to calling <link>readOnce</link>.
+	 * to calling <link>readOnce</link>. This function will return true if the <code>Datapoint</code>
+	 * was added or if it was already scheduled with an identical <code>autoRefreshTimeInSecs</code>.
 	 * 
 	 * @param datapoint
 	 *            the <code>Datapoint</code> to be read
@@ -182,7 +187,7 @@ public class KNXBusReaderScheduler {
 		if (oldListNumber > 0) { 
 			if (oldListNumber==autoRefreshTimeInSecs) {
 				sLogger.debug("Datapoint '{}' was already in  auto refresh list {}", datapoint.getName(), autoRefreshTimeInSecs);
-				return false;
+				return true;
 			}
 			List<Datapoint> oldList = mScheduleMap.get(oldListNumber);
 			synchronized(oldList) {
@@ -196,9 +201,10 @@ public class KNXBusReaderScheduler {
 				 * a configuration file is reread.
 				 */
 
-				for (Datapoint dp : oldList) {
+				for (Iterator<Datapoint> iterator = oldList.iterator(); iterator.hasNext();) {
+					Datapoint dp = iterator.next();
 					if (dp.toString().equals(datapoint.toString())) {
-						oldList.remove(dp);
+						iterator.remove();
 					}
 				}
 

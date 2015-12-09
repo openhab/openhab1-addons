@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,14 @@
  */
 package org.openhab.persistence.mqtt.internal;
 
-import java.util.Dictionary;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.io.transport.mqtt.MqttService;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
-public class MqttPersistenceService implements PersistenceService, ManagedService {
+public class MqttPersistenceService implements PersistenceService {
 
 	private static Logger logger = LoggerFactory.getLogger(MqttPersistenceService.class);
 
@@ -70,8 +70,16 @@ public class MqttPersistenceService implements PersistenceService, ManagedServic
 	/**
 	 * Start the persistence service.
 	 */
-	public void activate() {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> properties) {
+		deactivate(0);
 
+		brokerName = getProperty(properties, "broker");
+		topic = getProperty(properties, "topic");
+		messageTemplate = getProperty(properties, "message");
+		configured = true;
+		
+		logger.debug("Configuration updated for MQTT Persistence.");
+		
 		if (StringUtils.isBlank(brokerName)) {
 			logger.debug("Configuration incomplete. Cannot start yet.");
 			return;
@@ -87,33 +95,14 @@ public class MqttPersistenceService implements PersistenceService, ManagedServic
 	/**
 	 * Shut down the persistence service.
 	 */
-	public void deactivate() {
+	public void deactivate(final int reason) {
 
 		logger.debug("Deactivating MQTT Persistence");
 		if (StringUtils.isNotBlank(brokerName) && publisher != null) {
 			mqttService.unregisterMessageProducer(brokerName, publisher);
 		}
 	}
-
-	@Override
-	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-
-		if (properties == null || properties.isEmpty()) {
-			logger.trace("No config properties available.");
-			return;
-		}
-
-		brokerName = getProperty(properties, "broker");
-		topic = getProperty(properties, "topic");
-		messageTemplate = getProperty(properties, "message");
-		configured = true;
-		
-		logger.debug("Configuration updated for MQTT Persistence.");
-		
-		deactivate();
-		activate();
-	}
-
+	
 	/**
 	 * Get a value from the given properties.
 	 * 
@@ -125,13 +114,14 @@ public class MqttPersistenceService implements PersistenceService, ManagedServic
 	 * @throws ConfigurationException
 	 *             if the property is empty
 	 */
-	private String getProperty(Dictionary<String, ?> properties, String name) throws ConfigurationException {
+	private String getProperty(Map<String, Object> properties, String name) {
 
 		String value = (String) properties.get(name);
 		if (StringUtils.isNotBlank(value)) {
 			return value.trim();
 		} else {
-			throw new ConfigurationException("mqtt-persistence:" + name, "Missing or invalid property '" + name + "'");
+			logger.warn("mqtt-persistence:" + name, "Missing or invalid property '" + name + "'");
+			return null;
 		}
 	}
 

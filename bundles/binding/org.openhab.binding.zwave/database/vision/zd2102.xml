@@ -19,6 +19,7 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Control Command</Label>
+			<SetToController>true</SetToController>
 			<Help lang="en"><![CDATA[Control Command when trip]]></Help>
 		</Group>
 	</Associations>

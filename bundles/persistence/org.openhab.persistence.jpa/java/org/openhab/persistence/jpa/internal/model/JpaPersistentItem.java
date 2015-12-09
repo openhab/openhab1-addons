@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.persistence.jpa.internal.model;
 
 import java.text.DateFormat;
@@ -40,12 +39,12 @@ public class JpaPersistentItem implements HistoricItem {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 
-	private String name;
-	private String realName;
+	private String name = "";
+	private String realName = "";
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date timestamp;
+	private Date timestamp = new Date();
 	@Column(length = 32672) // 32k, max varchar for apache derby
-	private String value;
+	private String value = "";
 
 	public Long getId() {
 		return id;

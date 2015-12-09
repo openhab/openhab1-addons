@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,12 +20,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class RoomBindingConfig extends MiosBindingConfig {
 
-	private RoomBindingConfig(String context, String itemName, String unitName,
-			int id, String stuff, Class<? extends Item> itemType,
-			String inTransform, String outTransform)
-			throws BindingConfigParseException {
-		super(context, itemName, unitName, id, stuff, itemType, null,
-				inTransform, outTransform);
+	private RoomBindingConfig(String context, String itemName, String unitName, int id, String stuff,
+			Class<? extends Item> itemType, String inTransform, String outTransform) throws BindingConfigParseException {
+		super(context, itemName, unitName, id, stuff, itemType, null, inTransform, outTransform);
 	}
 
 	/**
@@ -33,12 +30,11 @@ public class RoomBindingConfig extends MiosBindingConfig {
 	 * 
 	 * @return an initialized MiOS Room Binding Configuration object.
 	 */
-	public static final MiosBindingConfig create(String context,
-			String itemName, String unitName, int id, String stuff,
-			Class<? extends Item> itemType, String inTransform,
-			String outTransform) throws BindingConfigParseException {
-		MiosBindingConfig c = new RoomBindingConfig(context, itemName,
-				unitName, id, stuff, itemType, inTransform, outTransform);
+	public static final MiosBindingConfig create(String context, String itemName, String unitName, int id,
+			String stuff, Class<? extends Item> itemType, String inTransform, String outTransform)
+			throws BindingConfigParseException {
+		MiosBindingConfig c = new RoomBindingConfig(context, itemName, unitName, id, stuff, itemType, inTransform,
+				outTransform);
 
 		c.initialize();
 		return c;
@@ -55,15 +51,12 @@ public class RoomBindingConfig extends MiosBindingConfig {
 	}
 
 	/**
-	 * This method throws a {@link TransformationException}, as MiOS Room
-	 * attributes don't support being called.
+	 * This method throws a {@link TransformationException}, as MiOS Room attributes don't support being called.
 	 * 
 	 * @throws TransformationException
 	 */
 	@Override
-	public String transformCommand(Command command)
-			throws TransformationException {
-		throw new TransformationException(
-				"Room attributes don't support Command Transformations");
+	public String transformCommand(Command command) throws TransformationException {
+		throw new TransformationException("Room attributes don't support Command Transformations");
 	}
 }

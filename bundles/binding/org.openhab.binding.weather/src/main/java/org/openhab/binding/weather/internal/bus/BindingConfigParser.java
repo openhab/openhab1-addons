@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * <pre>
  * Number  Temperature    "Temperature [%.2f °C]"        {weather="locationId=home, type=temperature, property=current"} 
  * Number  Temperature_F  "Temperature [%.2f °F]"        {weather="locationId=home, type=temperature, property=current, unit=fahrenheit"} 
- * Number  Humidity       "Humidity [%.0f %]"            {weather="locationId=home, type=athmosphere, property=humidity"}
+ * Number  Humidity       "Humidity [%.0f %]"            {weather="locationId=home, type=atmosphere, property=humidity"}
  * Number  Rain           "Rain [%.2f mm]"               {weather="locationId=home, type=precipitation, property=rain"}
  * 
  * Number  Temperature    "Temperature [%.0f °C]"        {weather="locationId=home, type=precipitation, property=rain, roundingMode=ceiling, scale=0"}
@@ -76,6 +76,8 @@ public class BindingConfigParser {
 			throw new BindingConfigParseException("Invalid binding: " + bindingConfig);
 		}
 
+		helper.type = StringUtils.replace(helper.type, "athmosphere", "atmosphere");
+		
 		WeatherBindingConfig weatherConfig = null;
 		if (helper.isForecast()) {
 			Integer forecast = parseInteger(helper.forecast, bindingConfig);

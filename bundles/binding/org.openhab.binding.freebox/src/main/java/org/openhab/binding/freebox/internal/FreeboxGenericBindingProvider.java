@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,10 +23,13 @@ import org.openhab.binding.freebox.FreeboxBindingConfig;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * The syntax of the binding configuration strings accepted is the following: <br>
+ * The syntax of the binding configuration strings accepted is either: <br>
  * freebox="commandtype" <br>
+ * or <br>
+ * freebox="commandtype/value" <br>
  * where "commandtype" matches one of the enumerated commands present in
  * org.openhab.binding.freebox.internal.CommandType
+ * and "value" is a parameter for the command defined by the user
  * 
  * @author clinique
  * @since 1.5.0
@@ -67,10 +70,14 @@ public class FreeboxGenericBindingProvider extends AbstractGenericBindingProvide
 	
 	private FreeboxBindingConfig parseBindingConfig(String bindingConfig, Item item) throws BindingConfigParseException {
 
-		String command = StringUtils.trim(bindingConfig);
-		CommandType commandType = CommandType.fromString(command);
+		String commandElts[] = StringUtils.split(StringUtils.trim(bindingConfig), '/');
+		CommandType commandType = CommandType.fromString(commandElts[0]);
+		String commandParam = null;
+		if (commandElts.length == 2) {
+			commandParam = commandElts[1];
+		}
 
-		return new FreeboxBindingConfig(commandType, item);
+		return new FreeboxBindingConfig(commandType, commandParam, item);
 	}
 	
 

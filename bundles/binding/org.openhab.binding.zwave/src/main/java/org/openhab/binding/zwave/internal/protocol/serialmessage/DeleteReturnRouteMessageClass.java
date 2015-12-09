@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -45,12 +45,12 @@ public class DeleteReturnRouteMessageClass extends ZWaveCommandProcessor {
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.debug("NODE {}: DeleteReturnRoute command in progress.", nodeId);
 		} else {
-			logger.error("NODE {}: DeleteReturnRoute command failed.");
+			logger.error("NODE {}: DeleteReturnRoute command failed.", nodeId);
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.DeleteReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -69,6 +69,6 @@ public class DeleteReturnRouteMessageClass extends ZWaveCommandProcessor {
 					ZWaveNetworkEvent.State.Success));
 		}
 		
-		return false;
+		return true;
 	}
 }

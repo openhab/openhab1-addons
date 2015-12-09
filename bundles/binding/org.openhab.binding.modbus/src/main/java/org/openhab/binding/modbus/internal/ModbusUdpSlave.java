@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,7 +46,7 @@ public class ModbusUdpSlave extends ModbusIPSlave {
 			if (connection == null)
 				connection = new UDPMasterConnection(InetAddress.getByName(getHost()));
 		} catch (UnknownHostException e) {
-			logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
 			connection = null;
 			return false;
 		}
@@ -56,7 +56,7 @@ public class ModbusUdpSlave extends ModbusIPSlave {
 				connection.connect();
                                 ((ModbusUDPTransaction)transaction).setTerminal(connection.getTerminal());
 			} catch (Exception e) {
-				logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+				logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
 				return false;
 			}
 		return true;

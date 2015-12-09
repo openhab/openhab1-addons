@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,17 +54,14 @@ public class HueBridge {
 	}
 
 	/**
-	 * Checks if the secret is already registered in the Hue bridge. If not it
-	 * pings the bridge for an initial connect. This pinging will take place for
-	 * 100 seconds. In this time the connect button on the Hue bridge has to be
-	 * pressed to enable the pairing.
+	 * Checks if the secret is already registered in the Hue bridge. If not it pings the bridge for an initial connect.
+	 * This pinging will take place for 100 seconds. In this time the connect button on the Hue bridge has to be pressed
+	 * to enable the pairing.
 	 * 
 	 */
 	public void pairBridgeIfNecessary() {
-
-		String output = getSettingsJson();
-
-		if (output!=null && output.contains("error")) {
+		HueSettings settings = getSettings();
+		if (settings != null && !settings.isAuthorized()) {
 			logger.info("Hue bridge not paired.");
 			Thread pairingThread = new Thread(new BridgePairingProcessor());
 			pairingThread.start();
@@ -110,6 +107,7 @@ public class HueBridge {
 			}
 
 			String output = response.getEntity(String.class);
+			logger.debug("Received pairing response: {}", output);
 
 			if (output.contains("success")) {
 				logger.info("Hue bridge successfully paired!");
@@ -143,6 +141,7 @@ public class HueBridge {
 						+ response.getStatus());
 				return null;
 			}
+			logger.trace("Received Hue Bridge Settings: {}", settingsString);
 			return settingsString;
 		} catch(ClientHandlerException e) {
 			logger.warn("Failed to connect to Hue bridge: HTTP request timed out.");

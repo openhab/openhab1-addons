@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,9 +18,6 @@ import org.eclipse.emf.common.util.Enumerator;
  * <!-- begin-user-doc -->
  * A representation of the literals of the enumeration '<em><b>DC Drive Mode</b></em>',
  * and utility methods for working with them.
- * 
- * @author Theo Weiss
- * @since 1.3.0
  * <!-- end-user-doc -->
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDCDriveMode()
  * @model
@@ -29,54 +26,52 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum DCDriveMode implements Enumerator
 {
   /**
-   * The '<em><b>Brake</b></em>' literal object.
+   * The '<em><b>BRAKE</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #BRAKE_VALUE
    * @generated
    * @ordered
    */
-  BRAKE(0, "Brake", "Brake"),
-
-  /**
-   * The '<em><b>Coast</b></em>' literal object.
+  BRAKE(0, "BRAKE", "BRAKE"), /**
+   * The '<em><b>COAST</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #COAST_VALUE
    * @generated
    * @ordered
    */
-  COAST(1, "Coast", "Coast");
+  COAST(0, "COAST", "COAST");
 
   /**
-   * The '<em><b>Brake</b></em>' literal value.
+   * The '<em><b>BRAKE</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>Brake</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>BRAKE</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
    * @see #BRAKE
-   * @model name="Brake"
+   * @model
    * @generated
    * @ordered
    */
   public static final int BRAKE_VALUE = 0;
 
   /**
-   * The '<em><b>Coast</b></em>' literal value.
+   * The '<em><b>COAST</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>Coast</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>COAST</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
    * @see #COAST
-   * @model name="Coast"
+   * @model
    * @generated
    * @ordered
    */
-  public static final int COAST_VALUE = 1;
+  public static final int COAST_VALUE = 0;
 
   /**
    * An array of all the '<em><b>DC Drive Mode</b></em>' enumerators.
@@ -148,7 +143,6 @@ public enum DCDriveMode implements Enumerator
     switch (value)
     {
       case BRAKE_VALUE: return BRAKE;
-      case COAST_VALUE: return COAST;
     }
     return null;
   }

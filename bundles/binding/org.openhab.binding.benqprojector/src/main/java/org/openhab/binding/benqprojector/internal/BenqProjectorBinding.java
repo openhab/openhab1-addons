@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import java.util.Dictionary;
 
 import org.openhab.binding.benqprojector.BenqProjectorBindingProvider;
 import org.openhab.binding.benqprojector.internal.transport.BenqProjectorNetworkTransport;
+import org.openhab.binding.benqprojector.internal.transport.BenqProjectorSerialTransport;
 import org.openhab.binding.benqprojector.internal.transport.BenqProjectorTransport;
 
 import org.apache.commons.lang.StringUtils;
@@ -150,7 +151,7 @@ public class BenqProjectorBinding extends
 			String modeString = (String) config.get("mode");
 			if (StringUtils.isNotBlank(modeString)) {
 				if (modeString.equalsIgnoreCase("serial")) {
-					// TODO assign serial transport when implemented
+					transport = new BenqProjectorSerialTransport();
 				} else {
 					/* default to network */
 					transport = new BenqProjectorNetworkTransport();

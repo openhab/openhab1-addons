@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
 import org.openhab.binding.ntp.NtpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.DateTimeType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -83,18 +84,22 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 		logger.debug("Got time from {}: {}", hostname, SDF.format(new Date(networkTimeInMillis)));
 				
 		for (NtpBindingProvider provider : providers) {
-			for (String itemName : provider.getItemNames()) {
-				
-				TimeZone timeZone = provider.getTimeZone(itemName);				
-				Locale locale = provider.getLocale(itemName);
-				
-				Calendar calendar = Calendar.getInstance(timeZone, locale);
-				calendar.setTimeInMillis(networkTimeInMillis);
-
-				eventPublisher.postUpdate(itemName, new DateTimeType(calendar));
+			for (String itemName : provider.getItemNames()) {			
+				updateTime(provider, itemName, networkTimeInMillis);
 			}
 		}
 		
+	}
+
+	private void updateTime(NtpBindingProvider provider, String itemName,
+			long networkTimeInMillis) {
+		TimeZone timeZone = provider.getTimeZone(itemName);
+		Locale locale = provider.getLocale(itemName);
+		
+		Calendar calendar = Calendar.getInstance(timeZone, locale);
+		calendar.setTimeInMillis(networkTimeInMillis);
+
+		eventPublisher.postUpdate(itemName, new DateTimeType(calendar));
 	}
 	
 	/**
@@ -148,4 +153,18 @@ public class NtpBinding extends AbstractActiveBinding<NtpBindingProvider> implem
 
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		NtpGenericBindingProvider ntpBindingProvider = (NtpGenericBindingProvider)provider;
+		if (ntpBindingProvider.providesBindingFor(itemName))
+		{
+			long networkTimeInMillis = getTime(hostname);
+			updateTime(ntpBindingProvider, itemName, networkTimeInMillis);
+		}
+		super.bindingChanged(provider, itemName);
+	}
+
 }

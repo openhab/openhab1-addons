@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,7 +57,8 @@ public class SerialMessage {
 	private int transmitOptions = 0;
 	private int callbackId = 0;
 	
-	private boolean transActionCanceled = false;
+	private boolean transactionCanceled = false;
+	private boolean ackPending = false;
 
 	/**
 	 * Indicates whether the serial message is valid.
@@ -136,16 +137,16 @@ public class SerialMessage {
 		messageLength = buffer.length - 2; // buffer[1];
 		byte messageCheckSumm = calculateChecksum(buffer);
 		byte messageCheckSummReceived = buffer[messageLength+1];
-		logger.trace(String.format("NODE %d: Message checksum calculated = 0x%02X, received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived));
 		if (messageCheckSumm == messageCheckSummReceived) {
 			logger.trace("NODE {}: Checksum matched", nodeId);
 			isValid = true;
 		} else {
-			logger.trace("NODE {}: Checksum error", nodeId);
+			logger.trace("NODE {}: Checksum error. Calculated = 0x%02X, Received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived);
 			isValid = false;
 			return;
 		}
-		this.messageType = buffer[2] == 0x00 ? SerialMessageType.Request : SerialMessageType.Response;;
+		this.priority = SerialMessagePriority.High;
+		this.messageType = buffer[2] == 0x00 ? SerialMessageType.Request : SerialMessageType.Response;
 		this.messageClass = SerialMessageClass.getMessageClass(buffer[3] & 0xFF);
 		this.messagePayload = ArrayUtils.subarray(buffer, 4, messageLength + 1);
 		this.messageNode = nodeId;
@@ -158,11 +159,11 @@ public class SerialMessage {
      * @return string the string representation
      */
     static public String bb2hex(byte[] bb) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i=0; i<bb.length; i++) {
-			result = result + String.format("%02X ", bb[i]);
+			result.append(String.format("%02X ", bb[i]));
 		}
-		return result;
+		return result.toString();
 	}
 	
 	/**
@@ -210,19 +211,25 @@ public class SerialMessage {
 		try {
 			resultByteBuffer.write(messagePayload);
 		} catch (IOException e) {
-			
+			logger.error("Error getting message buffer: ", e);
 		}
 
-		// callback ID and transmit options for a Send Data message.
+		// Callback ID and transmit options for a Send Data message.
 		if (this.messageClass == SerialMessageClass.SendData && this.messageType == SerialMessageType.Request) {
 			resultByteBuffer.write(transmitOptions);
 			resultByteBuffer.write(callbackId);
 		}
 		
+		// Make space in the array for the checksum
 		resultByteBuffer.write((byte) 0x00);
+		
+		// Convert to a byte array
 		result = resultByteBuffer.toByteArray();
+		
+		// Calculate the checksum
 		result[result.length - 1] = 0x01;
 		result[result.length - 1] = calculateChecksum(result);
+		
 		logger.debug("Assembled message buffer = " + SerialMessage.bb2hex(result));
 		return result;
 	}
@@ -239,22 +246,27 @@ public class SerialMessage {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		
-		if (!obj.getClass().equals(this.getClass()))
-			return false;
-		
-		SerialMessage other = (SerialMessage)obj;
-		
-		if (other.messageClass != this.messageClass)
-			return false;
-		
-		if (other.messageType != this.messageType)
-			return false;
+		}
 
-		if (other.expectedReply != this.expectedReply)
+		if (!obj.getClass().equals(this.getClass())) {
 			return false;
+		}
+
+		SerialMessage other = (SerialMessage)obj;
+
+		if (other.messageClass != this.messageClass) {
+			return false;
+		}
+
+		if (other.messageType != this.messageType) {
+			return false;
+		}
+
+		if (other.expectedReply != this.expectedReply) {
+			return false;
+		}
 
 		return Arrays.equals(other.messagePayload, this.messagePayload);
 	}
@@ -358,19 +370,62 @@ public class SerialMessage {
 	}
 
 	/**
-	 * Indicates that the transaction for the incoming message is canceled by a command class
-	 * @return the transActionCanceled
+	 * Sets the priority of this Serial message.
+	 * @param p the new priority
 	 */
-	public boolean isTransActionCanceled() {
-		return transActionCanceled;
+	public void setPriority(SerialMessagePriority p) {
+		priority = p;
 	}
 
 	/**
-	 * Sets the transaction for the incoming message to canceled.
-	 * @param transActionCanceled the transActionCanceled to set
+	 * Indicates that the transaction for the incoming message is canceled by a command class
 	 */
-	public void setTransActionCanceled(boolean transActionCanceled) {
-		this.transActionCanceled = transActionCanceled;
+	public void setTransactionCanceled() {
+		transactionCanceled = true;
+	}
+
+	/**
+	 * Indicates that the transaction for the incoming message is canceled by a command class
+	 * @return the transactionCanceled
+	 */
+	public boolean isTransactionCanceled() {
+		return transactionCanceled;
+	}
+
+	/**
+	 * Sets the ACK as received.
+	 */
+	public void setAckRecieved() {
+		logger.trace("Ack Pending cleared");
+		this.ackPending = false;
+	}
+
+	/**
+	 * If we require an ACK from the controller, then set true
+	 */
+	public void setAckRequired() {
+		this.ackPending = true;
+	}
+
+	/**
+	 * Returns true is there is an ack pending from the controller
+	 * @return true if still waiting on the ack
+	 */
+	public boolean isAckPending() {
+		return this.ackPending;
+	}
+
+	/**
+	 * Sets the flag to say the ack has been received from the controller.
+	 * This ensures that we don't complete a transaction if we receive the final
+	 * response from the device before the controller acks our request.
+	 * This seems to be possible from some devices, or possibly if the device
+	 * happens to send the data we're about to request at the same time we
+	 * request it (since the data received from a device as part of a
+	 * transaction is NOT linked in any way to the transaction).
+	 */
+	public void setTransactionAcked() {
+		this.ackPending = false;
 	}
 
 	/**
@@ -387,15 +442,37 @@ public class SerialMessage {
 	
 	/**
 	 * Serial message priority enumeration. Indicates the message priority.
+	 * Queue priority concept -:
+	 * Immediate: Messages that must be sent at highest priority.
+	 *            Generally this is reserved for battery devices so we send
+	 *            messages while they are awake. The high priority allows their
+	 *            messages to jump the queue.
+	 * High:      Other high priority messages
+	 * Set:       Messages relating to SET commands.
+	 *            This should only be used for SET type commands that need to
+	 *            be responsive - eg light switches, or things that are expected
+	 *            to occur quickly.
+	 * Get:       Messages relating to GET commands.
+	 *            Most messages relating to reading data use this priority.
+	 * Config:    Messages relating to system configuration.
+	 *            This can be GET or SET type commands, but these are things that
+	 *            don't need to be responsive.
+	 * Poll:      Messages relating to polling.
+	 *            Normally these are GET commands, but the system overrides the
+	 *            priority to the lowest so they don't cause any impact on the
+	 *            system.
 	 * @author Jan-Willem Spuij
+	 * @author Chris Jackson
 	 * @since 1.3.0
 	 */
 	public enum SerialMessagePriority
 	{
-		High,																				// 0x01
-		Set,																				// 0x02
-		Get,																				// 0x03
-		Low 																				// 0x04
+		Immediate,
+		High,
+		Set,
+		Get,
+		Config,
+		Poll
 	}
 	
 	/**
@@ -563,46 +640,52 @@ public class SerialMessage {
 				if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 					arg0Listening = false;
 					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-					
-					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
+
+					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake()) {
 						arg0Awake = true;
+					}
 				}
 			}
-			
+
 			if ((arg1.getMessageClass() == SerialMessageClass.RequestNodeInfo ||
 					arg1.getMessageClass() == SerialMessageClass.SendData)) {
 				ZWaveNode node = this.controller.getNode(arg1.getMessageNode());
-				
+
 				if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 					arg1Listening = false;
 					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-					
-					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
+
+					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake()) {
 						arg1Awake = true;
+					}
 				}
 			}
 			
 			// messages for awake nodes get priority over 
 			// messages for sleeping (or listening) nodes.
-			if (arg0Awake && !arg1Awake)
+			if (arg0Awake && !arg1Awake) {
 				return -1;
-			else if (arg1Awake && !arg0Awake)
+			}
+			else if (arg1Awake && !arg0Awake) {
 				return 1;
+			}
 			
 			// messages for listening nodes get priority over
 			// non listening nodes.
-			if (arg0Listening && !arg1Listening)
+			if (arg0Listening && !arg1Listening) {
 				return -1;
-			else if (arg1Listening && !arg0Listening)
+			}
+			else if (arg1Listening && !arg0Listening) {
 				return 1;
-			
+			}
+
 			int res = arg0.priority.compareTo(arg1.priority);
-			
-			if (res == 0 && arg0 != arg1)
+
+			if (res == 0 && arg0 != arg1) {
 			   res = (arg0.sequenceNumber < arg1.sequenceNumber ? -1 : 1);
-			
+			}
+
 			return res;
 		}
-
 	}
 }

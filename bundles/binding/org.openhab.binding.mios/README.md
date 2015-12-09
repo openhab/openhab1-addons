@@ -1,11 +1,50 @@
+Documentation for the MiOS Bridge Binding.
+
+# Introduction
+This binding exposes read, and read-command, access to Devices controlled by a MiOS Home Automation controller, such as those seen at http://getvera.com.
+
+It exposes the ability to do the following things in the MiOS HA Controller
+
+* `Devices` - Read State Variables & Device Attributes, and invoke (single parameter) UPnP Commands to control the Device.
+* `Scenes` - Read the current execution state of a Scene, and invoke those Scenes within the remote HA Controller
+* `System` - Read System-level Attributes.
+It uses the remote control interfaces (aka "UI Simple" JSON Calls, and HTTP Long-polling) of the MiOS HA Controller to keep the _bound_ openHAB Items in sync with their counterparts in the MiOS HA Controller.
+
+The binding uses the openHAB _Transformation Service_ extensively to "map" the Data & Commands between the two systems. A set of example MAP transform files is provided in the `examples/transform` directory of the Binding, but these can readily be augmented without needing to tweak the code.
+
+Original code was used from the XBMC Binding, and then heavily modified. Snippets included from the HTTP Binding for the various datatype mapping functions.
+
 # Releases
 
-This code is not currently in release-ready form.  Changes are expected, especially as feedback is received.
-
-## 1.6.0
-  * TBD
+* 1.6 - First release
+* 1.6.2 - #1889 Only change Item state during incremental updates from MiOS Unit, use UTF-8 for JSON responses for i18n.
+* 1.6.2 - #1824 datetime handling made more automatic for MiOS style "epoch" dates.
+* 1.6.2 - #1909 Add missing aliases for common UPnP ServiceId's.
+* 1.7.0 - #???? Add MiOS Action Binding support for calling Device Actions and invoking Scenes.
 
 # Configuration
+ * [MiOS Unit configuration](MiOS-Binding#mios-unit-configuration)
+ * [Transformations](MiOS-Binding#mios-transformations)
+ * [Actions](MiOS-Binding#mios-action-addon)
+ * [Logger](MiOS-Binding#mios-logger)
+ * [Item configuration (Reading)](MiOS-Binding#mios-item-configuration)
+    * [MiOS - Device Binding](MiOS-Binding#item--mios-device-binding---values-reading)
+    * [MiOS - Scene Binding](MiOS-Binding#item--mios-scene-binding---values-reading)
+    * [MiOS - System Binding](MiOS-Binding#item--mios-system-binding)
+    * [Transformations (Use)](MiOS-Binding#transformations)
+ * [Item Commands (Reacting)](MiOS-Binding#item-commands-reacting)
+     * [MiOS - Device Binding - Commands (Reacting)] (MiOS-Binding#item--mios-device-binding---commands-reacting)
+        * [Device Command Binding Examples (Parameterless)] (MiOS-Binding#device-command-binding-examples-parameterless)
+            * [A Switch ...](MiOS-Binding#a-switch)
+            * [An Armed Sensor ...](MiOS-Binding#an-armed-sensor)
+            * [A Lock ...] (MiOS-Binding#a-lock)
+        * [Device Command Binding Examples (Parameterized)](MiOS-Binding#device-command-binding-examples-parameterized)
+            * [A Dimmer, Volume Control, Speed controlled Fan ...](MiOS-Binding#a-dimmer-volume-control-speed-controlled-fan)
+            * [A Thermostat ...] (MiOS-Binding#a-thermostat)
+     * [MiOS Scene Binding - Commands (Reacting)] (MiOS-Binding#item--mios-scene-binding---commands-reacting)
+        * [Scene Command Binding Examples] (MiOS-Binding#scene-command-binding-examples)
+
+***
 
 ## MiOS Unit configuration
 
@@ -39,6 +78,8 @@ You can also declare multiple MiOS Units, as illustrated in this example.
 
 **NOTE**: The MiOS Unit name is case-sensitive, and may only contain AlphaNumeric characters.  The leading character must be an [ASCII] alpha.
 
+[Back to Table of Contents](MiOS-Binding#configuration)
+
 ## MiOS Transformations
 
 Internally, the MiOS Binding uses the openHAB _Transformation Service_.  The MiOS Binding supplies a number of pre-configured MAP Transformation for the common use-cases.
@@ -52,6 +93,67 @@ and placed into your openHAB installation under the directory:
     {openHAB Home}/configurations/transform/
 
 **NOTE**: These transformations can be readily extended by the user, for any use-cases that aren't covered by those pre-configured & shipped with the Binding.
+
+[Back to Table of Contents](MiOS-Binding#configuration)
+
+## MiOS Action Addon
+
+The MiOS Binding automatically synchronizes data between openHAB Items, and their bound Device Variables on the MiOS Unit.
+For more advanced integration, the MiOS Action bundle can be installed.  This bundle extends openHAB's Rule language to include support for calling MiOS Device Actions, as well as invoking MiOS Scenes.
+Installation of the MiOS Action bundle is optional and only required if your deployment needs the MiOS Rule language extensions.
+
+[Back to Table of Contents](MiOS-Binding#configuration)
+
+## MiOS Logger
+Especially during setup of the binding the log information can provide you valuable information. Therefore it is recommended to configure logging to use a dedicated file for MiOS logging.
+
+There are two configuration files to configure the log subsystem of openHAB:
+ * {openHAB Home}/configurations/logback.xml
+ * {openHAB Home}/configurations/logback_debug.xml (if you start in debug mode)
+
+To simplify analysis and to keep things structured we'll use a dedicated logfile for this demo configuration.
+
+```xml
+    <!-- log appender to be used for MIOS binding -->
+    <appender 
+       name  = "MIOSFILE" 
+       class = "ch.qos.logback.core.rolling.RollingFileAppender">
+       <!-- target file -->
+        <file>logs/mios.log</file>
+        <!-- settings how to archive old logs and how long to retain them [days] -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/mios-%d{yyyy-ww}.log.zip</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <!-- encoder rule (how to format the messages in the log file ) -->
+        <encoder>
+           <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%-30.30logger{36}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+```
+Next we configure the actual logger:
+```xml
+    <!-- valid log levels: OFF | ERROR | INFO | DEBUG | TRACE -->
+    <logger 
+      name       = "org.openhab.binding.mios"
+      level      = "TRACE" 
+      additivity = "FALSE">
+      <appender-ref ref="MIOSFILE"  />
+    </logger>
+```
+
+Below how it should look if the configuration is correct (TRACE):
+```
+...
+2015-01-18 16:37:18.971 [DEBUG] [.o.b.mios.internal.MiosBinding] - internalPropertyUpdate: BOUND {mios="unit:vera,device:1/service/urn:micasaverde-com:serviceId:ZWaveNetwork1/Role"}, value=Master SIS:NO PRI:YES, bound 1 time(s)
+2015-01-18 16:37:18.971 [TRACE] [.o.b.mios.internal.MiosBinding] - internalPropertyUpdate: NOT BOUND {mios="unit:vera,device:1/service/urn:micasaverde-com:serviceId:ZWaveNetwork1/LastDongleBackup"}, value=2015-01-14T23:30:57
+2015-01-18 16:37:18.971 [TRACE] [.o.b.mios.internal.MiosBinding] - internalPropertyUpdate: NOT BOUND {mios="unit:vera,device:1/service/urn:micasaverde-com:serviceId:ZWaveNetwork1/LastError"}, value=Poll failed
+2015-01-18 16:37:18.971 [TRACE] [.o.b.mios.internal.MiosBinding] - internalPropertyUpdate: NOT BOUND {mios="unit:vera,device:1/service/urn:micasaverde-com:serviceId:ZWaveNetwork1/LastHeal"}, value=2015-01-14T05:16:26
+2015-01-18 16:37:18.971 [TRACE] [.o.b.mios.internal.MiosBinding] - internalPropertyUpdate: NOT BOUND {mios="unit:vera,device:1/service/urn:micasaverde-com:serviceId:ZWaveNetwork1/LastRouteFailure"}, value=2015-01-14T04:11:33
+...
+```
+
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ## MiOS Item configuration
 
@@ -73,6 +175,7 @@ In many cases, only a subset of these parameters need to be specified/used, with
 
 The sections below describe the types of things that can be bound, in addition to the transformations that are permitted, and any default transformations that may be applied for you.
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ### Item : MiOS Device Binding - Values (Reading)
 
@@ -129,6 +232,10 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:upnp-org:serviceId:HouseStatus1`|`HouseStatus1`,`HouseStatus`|
 |`urn:upnp-org:serviceId:ContentDirectory`|`ContentDirectory`|
 |`urn:upnp-org:serviceId:AudioIn`|`AudioIn`|
+|`urn:upnp-org:serviceId:DigitalSecurityCameraSettings1`|`DigitalSecurityCameraSettings1`|
+|`urn:upnp-org:serviceId:DigitalSecurityCameraStillImage1`|`DigitalSecurityCameraStillImage1`|
+|`urn:upnp-org:serviceId:EnergyCalculator1`|`EnergyCalculator1`|
+|`urn:upnp-org:serviceId:FanSpeed1`|`FanSpeed1`|
 
 
 
@@ -157,7 +264,22 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:micasaverde-com:serviceId:IrTransmitter1`|`IrTransmitter1`,`IrTransmitter`|
 |`urn:micasaverde-com:serviceId:IrDevice1`|`IrDevice1`,`IrDevice`|
 |`urn:micasaverde-com:serviceId:GenericIO`|`GenericIO`|
-
+|`urn:micasaverde-com:serviceId:CameraMotionDetection1` |`CameraMotionDetection1`
+|`urn:micasaverde-com:serviceId:DiscretePower1` |`DiscretePower1`
+|`urn:micasaverde-com:serviceId:InputSelection1` |`InputSelection1`
+|`urn:micasaverde-com:serviceId:Keypad1` |`Keypad1`
+|`urn:micasaverde-com:serviceId:MediaNavigation1` |`MediaNavigation1`
+|`urn:micasaverde-com:serviceId:MenuNavigation1` |`MenuNavigation1`
+|`urn:micasaverde-com:serviceId:Misc1` |`Misc1`
+|`urn:micasaverde-com:serviceId:NumericEntry1` |`NumericEntry1`
+|`urn:micasaverde-com:serviceId:PIP1` |`PIP1`
+|`urn:micasaverde-com:serviceId:Scene1` |`Scene1`
+|`urn:micasaverde-com:serviceId:TV1` |`TV1`
+|`urn:micasaverde-com:serviceId:TogglePower1` |`TogglePower1`
+|`urn:micasaverde-com:serviceId:Tuning1` |`Tuning1`
+|`urn:micasaverde-com:serviceId:VideoAdjustment1` |`VideoAdjustment1`
+|`urn:micasaverde-com:serviceId:Volume1` |`Volume1`
+|`urn:micasaverde-com:serviceId:WMC1` |`WMC1`
 
 
 
@@ -174,6 +296,7 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:macrho-com:serviceId:LiftMasterOpener1`|`LiftMasterOpener1`,`LiftMaster`|
 |`urn:directv-com:serviceId:DVR1`|`DirecTVDVR1`,`DirecTV`|
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ### Item : MiOS Scene Binding - Values (Reading)
 
@@ -186,7 +309,9 @@ With examples like:
     Number   SceneGarageOpenId         (GScene) {mios="unit:house,scene:109/id"}
     Number   SceneGarageOpenStatus     (GScene) {mios="unit:house,scene:109/status"}
     String   SceneGarageOpenActive     (GScene) {mios="unit:house,scene:109/active"}
-       
+ 
+[Back to Table of Contents](MiOS-Binding#configuration)
+      
 ### Item : MiOS System Binding
 
 System Bindings are read-only, with data flowing from the MiOS Unit _into_ openHAB.  System Bindings have the form:
@@ -202,6 +327,8 @@ With examples like:
     Number   SystemDataVersion         "[%d]"  (GSystem) {mios="unit:house,system:/DataVersion"} 
     String   SystemLoadTime            "[%s]"  (GSystem) {mios="unit:house,system:/LoadTime"} 
       
+[Back to Table of Contents](MiOS-Binding#configuration)
+
 ### Transformations
 
 Sometimes the value presented by the binding isn't in the format that you require for your Item.  For these cases, the binding provides access to the standard openHAB _Transformation Service_.
@@ -273,6 +400,7 @@ For users wanting more advanced configurations, the openHAB _Transformation Serv
 
 More reading on these is available in the openHAB Wiki.
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ## Item Commands (Reacting)
 
@@ -289,6 +417,7 @@ MiOS Units don't natively handle these Commands so a mapping step must occur bef
 
 The `command:` Binding parameter is used to specify that we want data to flow back to the MiOS unit as well as how to perform the required mapping.  For most Items bound using the MiOS Binding, internal defaults will take care of the correct `command:`, `in:` and `out:` parameters.  These need only be specified if you have something not handled by the internal defaults, or wish to override them with custom behavior.
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ### Item : MiOS Device Binding - Commands (Reacting)
 
@@ -316,9 +445,13 @@ _&lt;openHABTransform>_ is `MAP`, `XSLT`, `EXEC`, `XPATH`, etc<br>
 
 _&lt;BoundValue>_ is `?`, `??`, `?++`, `?--`
 
+[Back to Table of Contents](MiOS-Binding#configuration)
+
 #### Device Command Binding Examples (Parameterless)
 
 In practice, when discrete commands are being sent by openHAB, the map is fairly simple.  In the examples listed below, the `*.map` files are provided in the `examples/transform` directory of the MiOS binding.
+
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ##### A Switch...
 
@@ -334,6 +467,7 @@ or, *more simply*, use the internal defaults altogether:
 
     Switch   FamilyTheatreLightsStatus "Family Theatre Lights" (GSwitch) {mios="unit:house,device:13/service/SwitchPower1/Status"}
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ##### An Armed Sensor...
 
@@ -345,6 +479,7 @@ or the fully spelled out version:
 
     Switch   LivingRoomZoneArmed "Zone Armed [%s]" {mios="unit:house,device:117/service/SecuritySensor1/Armed,command:MAP(miosArmedCommand.map),in:MAP(miosSwitchIn.map)"}
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ##### A Lock...
 
@@ -356,6 +491,7 @@ or the full version:
 
     Switch   GarageDeadboltDStatus "Garage Deadbolt" (GLock,GSwitch) {mios="unit:house,device:189/service/DoorLock1/Status,command:MAP(miosLockCommand.map),in:MAP(miosSwitchIn.map)"}
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 #### Device Command Binding Examples (Parameterized)
 
@@ -370,6 +506,7 @@ To do this, we introduce the _&lt;BoundValue>_ parameter that, when present in t
 
 Additionally, since _&lt;PCTNumber>_ is just a value, it won't match any of the entries in our Mapping file, so we introduce a magic key `_defaultCommand`.  We first attempt to do a literal mapping and, if that doesn't find a match, we go look for this magic key and use it's entry.
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ##### A Dimmer, Volume Control, Speed controlled Fan...
 
@@ -388,6 +525,28 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
 
     INCREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?++)
     DECREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?--)
+    _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
+
+[Back to Table of Contents](MiOS-Binding#configuration)
+
+
+##### A Roller shutter...
+
+The simple version, using internal defaults for the `WindowCovering1` service of the Device:
+
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1"}
+
+or the full version:
+
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1,command:MAP(miosShutterCommand.map)"}
+
+Since Rollershutter Items in openHAB can be sent `UP`, `DOWN`, `STOP` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`UP`, `DOWN`, `STOP`) as well as the possibility of a _Command Value_ being sent.
+
+The `examples/transform/miosShutterCommand.map` file has a definition that handles this situation:
+
+    DOWN=urn:upnp-org:serviceId:WindowCovering1/Down()
+    UP=urn:upnp-org:serviceId:WindowCovering1/Up()
+    STOP=urn:upnp-org:serviceId:WindowCovering1/Stop()
     _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
 
 
@@ -425,6 +584,7 @@ and these need to be paired with similar items in the `*.sitemap` file:
         Text     item=ThermostatUpstairsBatteryDate
     }
 
+[Back to Table of Contents](MiOS-Binding#configuration)
 
 ### Item : MiOS Scene Binding - Commands (Reacting)
 
@@ -443,6 +603,8 @@ _&lt;openHABCommand>_ is `ON`, `OFF`, `INCREASE`, `DECREASE`, `TOGGLE` etc
 
 _&lt;SceneAttribute>_ is `status` | `active`
 
+[Back to Table of Contents](MiOS-Binding#configuration)
+
 #### Scene Command Binding Examples
 
 In general Scenes tend to look like:
@@ -455,3 +617,5 @@ Or if you want the Scene executed upon receipt of `ON` or `TOGGLE` Commands:
 
 
 **NOTE**: Here we've added an additional configuration to the binding declaration, `autoupdate="false"`, to ensure the Switch no longer has the `ON` and `OFF` States automatically managed.  In openHAB, this declaration ensures that the UI rendition appears like a Button.
+
+[Back to Table of Contents](MiOS-Binding#configuration)

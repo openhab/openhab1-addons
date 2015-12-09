@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.framework.FrameworkUtil;
@@ -41,6 +42,7 @@ public class ZWaveProductDatabase {
 	ZWaveDbProduct selProduct = null;
 
 	ZWaveDbProductFile productFile = null;
+	String productVersion;
 
 	public ZWaveProductDatabase() {
 		loadDatabase();
@@ -88,30 +90,39 @@ public class ZWaveProductDatabase {
 			// this.Manufacturer = (ZWaveDbManufacturer)
 			InputStream x = entry.openStream();
 			database = (ZWaveDbRoot) xstream.fromXML(x);
-			if (database == null)
+			if (database == null) {
 				return;
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public ZWaveDbProductFile LoadProductFile() {
+	/**
+	 * Loads the product file relating to the requested version.
+	 * @param version the required device version
+	 * @return filename of the product file
+	 */
+	private ZWaveDbProductFile LoadProductFile() {
 		// If the file is already loaded, then just return the class
-		if (productFile != null)
+		if (productFile != null) {
 			return productFile;
+		}
 
 		// Have we selected a product?
-		if (selProduct == null)
+		if (selProduct == null) {
 			return null;
-		
-		if(selProduct.ConfigFile == null || selProduct.ConfigFile.isEmpty())
-			return null;
+		}
 
-		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/" + selProduct.ConfigFile);
+		String cfgFile = selProduct.getConfigFile(productVersion);
+		if(cfgFile == null || cfgFile.isEmpty()) {
+			return null;
+		}
+
+		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/" + cfgFile);
 		if (entry == null) {
 			database = null;
-			logger.error("Unable to load ZWave product file: '{}'", selProduct.ConfigFile);
+			logger.error("Unable to load ZWave product file: '{}'", cfgFile);
 			return null;
 		}
 
@@ -132,7 +143,7 @@ public class ZWaveProductDatabase {
 			InputStream x = entry.openStream();
 			productFile = (ZWaveDbProductFile) xstream.fromXML(x);
 		} catch (IOException e) {
-			logger.error("Unable to load ZWave product file '{}' : {}", selProduct.ConfigFile, e.toString());
+			logger.error("Unable to load ZWave product file '{}' : {}", cfgFile, e.toString());
 		}
 
 		return productFile;
@@ -143,8 +154,9 @@ public class ZWaveProductDatabase {
 	}
 
 	public List<ZWaveDbProduct> GetProducts() {
-		if (selManufacturer == null)
-			return null;
+		if (selManufacturer == null) {
+			return Collections.emptyList();
+		}
 
 		return selManufacturer.Product;
 	}
@@ -156,8 +168,9 @@ public class ZWaveProductDatabase {
 	 * @return true if the manufacturer was found
 	 */
 	public boolean FindManufacturer(int manufacturerId) {
-		if (database == null)
+		if (database == null) {
 			return false;
+		}
 
 		selManufacturer = null;
 		selProduct = null;
@@ -183,11 +196,12 @@ public class ZWaveProductDatabase {
 	 *            The product ID
 	 * @return true if the product was found
 	 */
-	public boolean FindProduct(int manufacturerId, int productType, int productId) {
-		if (FindManufacturer(manufacturerId) == false)
+	public boolean FindProduct(int manufacturerId, int productType, int productId, String version) {
+		if (FindManufacturer(manufacturerId) == false) {
 			return false;
+		}
 
-		return FindProduct(productType, productId);
+		return FindProduct(productType, productId, version);
 	}
 
 	/**
@@ -200,9 +214,11 @@ public class ZWaveProductDatabase {
 	 *            The product ID
 	 * @return true if the product was found
 	 */
-	public boolean FindProduct(int productType, int productId) {
-		if (selManufacturer == null)
+	public boolean FindProduct(int productType, int productId, String version) {
+		if (selManufacturer == null) {
 			return false;
+		}
+		productVersion = version;
 
 		for (ZWaveDbProduct product : selManufacturer.Product) {
 			for (ZWaveDbProductReference reference : product.Reference) {
@@ -287,11 +303,13 @@ public class ZWaveProductDatabase {
 	 * @return true if the class is supported
 	 */
 	public boolean doesProductImplementCommandClass(Integer classNumber) {
-		if (LoadProductFile() == null)
+		if (LoadProductFile() == null) {
 			return false;
+		}
 
-		if(productFile.CommandClasses == null || productFile.CommandClasses.Class == null)
+		if(productFile.CommandClasses == null || productFile.CommandClasses.Class == null) {
 			return false;
+		}
 
 		for(ZWaveDbCommandClass iClass : productFile.CommandClasses.Class) {
 			if(iClass.Id.equals(classNumber))
@@ -308,11 +326,13 @@ public class ZWaveProductDatabase {
 	 * @return true if the class is supported
 	 */
 	public List<ZWaveDbCommandClass> getProductCommandClasses() {
-		if (LoadProductFile() == null)
+		if (LoadProductFile() == null) {
 			return null;
+		}
 
-		if(productFile.CommandClasses == null)
+		if(productFile.CommandClasses == null) {
 			return null;
+		}
 		
 		return productFile.CommandClasses.Class;
 	}
@@ -324,8 +344,9 @@ public class ZWaveProductDatabase {
 	 * @return List of configuration parameters
 	 */
 	public List<ZWaveDbConfigurationParameter> getProductConfigParameters() {
-		if (LoadProductFile() == null)
-			return null;
+		if (LoadProductFile() == null) {
+			return Collections.emptyList();
+		}
 
 		return productFile.getConfiguration();
 	}
@@ -337,8 +358,9 @@ public class ZWaveProductDatabase {
 	 * @return List of association groups
 	 */
 	public List<ZWaveDbAssociationGroup> getProductAssociationGroups() {
-		if (LoadProductFile() == null)
+		if (LoadProductFile() == null) {
 			return null;
+		}
 
 		return productFile.getAssociations();
 	}
@@ -358,15 +380,18 @@ public class ZWaveProductDatabase {
 	 * @return String of the respective language
 	 */
 	public String getLabel(List<ZWaveDbLabel> labelList) {
-		if (labelList == null)
+		if (labelList == null) {
 			return null;
+		}
 
 		for (ZWaveDbLabel label : labelList) {
-			if (label.Language == null)
+			if (label.Language == null) {
 				return label.Label;
+			}
 
-			if (label.Language.equals(language.toString()))
+			if (label.Language.equals(language.toString())) {
 				return label.Label;
+			}
 		}
 		return null;
 	}

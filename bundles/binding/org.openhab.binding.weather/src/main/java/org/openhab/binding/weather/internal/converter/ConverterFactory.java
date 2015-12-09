@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import org.openhab.binding.weather.internal.converter.property.FullUtcDateConver
 import org.openhab.binding.weather.internal.converter.property.IntegerConverter;
 import org.openhab.binding.weather.internal.converter.property.MultiIdConverter;
 import org.openhab.binding.weather.internal.converter.property.PercentIntegerConverter;
+import org.openhab.binding.weather.internal.converter.property.PressureTrendConverter;
 import org.openhab.binding.weather.internal.converter.property.SimpleDateConverter;
 import org.openhab.binding.weather.internal.converter.property.StringConverter;
 import org.openhab.binding.weather.internal.converter.property.ThreeHoursDoubleConverter;
@@ -48,6 +49,7 @@ public class ConverterFactory {
 		addConverter(new MultiIdConverter());
 		addConverter(new WindMpsConverter());
 		addConverter(new ThreeHoursDoubleConverter());
+		addConverter(new PressureTrendConverter());
 	}
 
 	/**

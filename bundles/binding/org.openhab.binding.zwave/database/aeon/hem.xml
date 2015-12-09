@@ -177,7 +177,7 @@ Bit 3:Clamp 3)</Help>
 8192	  ->  	Meter Report for kWh for clamp 3</Help>
                 </Parameter>
                 <Parameter>
-                        <Index>101</Index>
+                        <Index>103</Index>
                         <Type>int</Type>
                         <Default>8</Default>
                         <Size>4</Size>

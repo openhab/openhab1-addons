@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpConnector;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpSimulator;
+import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser.NibeDataType;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser.VariableInformation;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpSerialConnector;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpUDPConnector;
@@ -50,6 +51,9 @@ public class NibeHeatPumpBinding extends
 	private String serialPort = null;
 	private boolean simulateHeatPump = false;
 
+	/* configuration variables for parsing */
+	private int modelNo = 1145;
+	
 	/** Thread to handle messages from heat pump */
 	private NibeHeatPumpMessageListener messageListener = null;
 
@@ -78,6 +82,11 @@ public class NibeHeatPumpBinding extends
 			if (StringUtils.isNotBlank(PortString)) {
 				udpPort = Integer.parseInt(PortString);
 			}
+			
+			String modelNoString = (String) config.get("modelNo");
+			if (StringUtils.isNotBlank(modelNoString)) {
+				modelNo = Integer.parseInt(modelNoString);
+			}
 
 			serialPort = (String) config.get("serialPort");
 
@@ -101,26 +110,6 @@ public class NibeHeatPumpBinding extends
 			messageListener = new NibeHeatPumpMessageListener();
 			messageListener.start();
 		}
-	}
-
-	private State convertNibeValueToState(NibeHeatPumpDataParser.NibeDataType dataType, double value) {
-		org.openhab.core.types.State state = UnDefType.UNDEF;
-
-		switch (dataType) {
-			case U8:
-			case U16:
-			case U32:
-				state = new DecimalType((long) value);
-				break;
-			case S8:
-			case S16:
-			case S32:
-				BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN);
-				state = new DecimalType(bd);
-				break;
-		}
-
-		return state;
 	}
 
 	/**
@@ -179,15 +168,37 @@ public class NibeHeatPumpBinding extends
 							int key = keys.nextElement();
 							double value = regValues.get(key);
 
-							VariableInformation variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F1145_F1245
-									.get(key);
+							VariableInformation variableInfo;
+							if ( modelNo == 750 )	{
+								variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F750.get(key);
+							} else {
+								variableInfo = NibeHeatPumpDataParser.VARIABLE_INFO_F1145_F1245.get(key);
+							}
 
 							if (variableInfo == null) {
 								logger.debug("Unknown variable {}", key);
 							} else {
+								// 32bit handling:
+								if ( variableInfo.dataType == NibeHeatPumpDataParser.NibeDataType.U32 || variableInfo.dataType == NibeHeatPumpDataParser.NibeDataType.S32 )
+								{
+									logger.debug("{}:32bit dataType", key);
+									int keyValue 		= (int) regValues.get(key) & 0xffff;		// Handling the short-value as unsigned when casting to int
+									int keyPlusOneValue = (int) regValues.get(key + 1) & 0xffff;
+//									if (keys.hasMoreElements())
+									{
+//										if ( regValues.get(key + 1) != null )
+										{
+//											keyPlusOneValue = regValues.get(key + 1);
+										}
+									}
+									logger.debug(key + ":" + Integer.toHexString(keyValue) + " " + Integer.toHexString(keyPlusOneValue));
+									value = (int) keyPlusOneValue << 16 | keyValue;
+								}
+								
 								value = value / variableInfo.factor;
-								org.openhab.core.types.State state = convertNibeValueToState(
-										variableInfo.dataType, value);
+//								org.openhab.core.types.State state = new DecimalType(value);	// Updates the item with unchanged resolution from 'value' (double)
+								BigDecimal bd = new BigDecimal(value).setScale( (int) Math.log10(variableInfo.factor) , RoundingMode.HALF_EVEN );
+								org.openhab.core.types.State state = new DecimalType(bd);	// Updates the item with correct resolution based on 'variableInfo.factor'
 
 								logger.debug("{}={}", key + ":"
 										+ variableInfo.variable, value);

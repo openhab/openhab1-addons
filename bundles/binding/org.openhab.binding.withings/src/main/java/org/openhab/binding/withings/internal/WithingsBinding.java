@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,8 +27,6 @@ import org.openhab.binding.withings.internal.model.MeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -43,11 +41,10 @@ import org.slf4j.LoggerFactory;
  * @since 1.5.0
  */
 public class WithingsBinding extends
-		AbstractActiveBinding<WithingsBindingProvider> implements
-		ManagedService {
+		AbstractActiveBinding<WithingsBindingProvider> implements ManagedService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(WithingsBinding.class);
+	private static final Logger logger = 
+		LoggerFactory.getLogger(WithingsBinding.class);
 
 	/**
 	 * Holds the time of last update.
@@ -61,6 +58,18 @@ public class WithingsBinding extends
 	private long refreshInterval = 3600000;
 
 	private final List<WithingsApiClient> withingsApiClients = new CopyOnWriteArrayList<WithingsApiClient>();
+	
+	
+	@Override
+	protected String getName() {
+		return "Withings Refresh Service";
+	}
+
+	@Override
+	protected long getRefreshInterval() {
+		return refreshInterval;
+	}
+	
 
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
@@ -71,37 +80,7 @@ public class WithingsBinding extends
 	}
 
 	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		if (config != null) {
-			String refreshInterval = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshInterval)) {
-				this.refreshInterval = Long.parseLong(refreshInterval);
-				if (isProperlyConfigured() && activeService.isRunning()) {
-					activeService.shutdown();
-					activeService.interrupt();
-					try {
-						// wait 5 seconds until polling thread is definitely
-						// shutdown
-						Thread.sleep(5000);
-					} catch (InterruptedException unhandled) {
-					}
-					setProperlyConfigured(isProperlyConfigured());
-				}
-			}
-		}
-	}
-
-	protected void addWithingsApiClient(WithingsApiClient withingsApiClient) {
-		this.withingsApiClients.add(withingsApiClient);
-		if (!isProperlyConfigured()) {
-			setProperlyConfigured(true);
-		}
-	}
-
-	@Override
 	protected synchronized void execute() {
-
 		Map<String, WithingsBindingConfig> withingsBindings = getWithingsBindings();
 
 		if (withingsBindings.isEmpty()) {
@@ -117,33 +96,7 @@ public class WithingsBinding extends
 		updateItemStates(withingsBindings);
 	}
 
-	@Override
-	protected String getName() {
-		return "Withings Refresh Service";
-	}
-
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.warn("Withings binding does not support commands");
-	}
-
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// nothing to do
-	}
-
-	protected void removeWithingsApiClient(WithingsApiClient withingsApiClient) {
-		this.withingsApiClients.remove(withingsApiClient);
-		if (withingsApiClients.isEmpty()) {
-			setProperlyConfigured(false);
-		}
-	}
-
+	
 	private Float findLastMeasureValue(List<MeasureGroup> measures,
 			MeasureType measureType) {
 		for (MeasureGroup measureGroup : measures) {
@@ -185,13 +138,11 @@ public class WithingsBinding extends
 		Float lastMeasureValue = findLastMeasureValue(measures, measureType);
 
 		if (lastMeasureValue != null) {
-			eventPublisher.postUpdate(itemName, new DecimalType(
-					lastMeasureValue));
+			eventPublisher.postUpdate(itemName, new DecimalType(lastMeasureValue));
 		}
 	}
 
-	private void updateItemStates(
-			Map<String, WithingsBindingConfig> withingsBindings) {
+	private void updateItemStates(Map<String, WithingsBindingConfig> withingsBindings) {
 		try {
 
 			WithingsApiClient client = this.withingsApiClients.get(0);
@@ -202,13 +153,9 @@ public class WithingsBinding extends
 				return;
 			}
 
-			for (Entry<String, WithingsBindingConfig> withingBinding : withingsBindings
-					.entrySet()) {
-
-				WithingsBindingConfig withingsBindingConfig = withingBinding
-						.getValue();
+			for (Entry<String, WithingsBindingConfig> withingBinding : withingsBindings.entrySet()) {
+				WithingsBindingConfig withingsBindingConfig = withingBinding.getValue();
 				String itemName = withingBinding.getKey();
-
 				updateItemState(itemName, withingsBindingConfig, measures);
 			}
 
@@ -219,5 +166,45 @@ public class WithingsBinding extends
 					"Cannot get Withings measure data: " + ex.getMessage(), ex);
 		}
 	}
+	
+	protected void addWithingsApiClient(WithingsApiClient withingsApiClient) {
+		this.withingsApiClients.add(withingsApiClient);
+		if (!isProperlyConfigured()) {
+			setProperlyConfigured(true);
+		}
+	}
 
+	protected void removeWithingsApiClient(WithingsApiClient withingsApiClient) {
+		this.withingsApiClients.remove(withingsApiClient);
+		if (withingsApiClients.isEmpty()) {
+			setProperlyConfigured(false);
+		}
+	}
+
+	
+	@Override
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		if (config != null) {
+			String refreshInterval = (String) config.get("refresh");
+			if (StringUtils.isNotBlank(refreshInterval)) {
+				this.refreshInterval = Long.parseLong(refreshInterval);
+				restartPollingThread();
+			}
+		}
+	}
+
+	private void restartPollingThread() {
+		if (isProperlyConfigured() && activeService.isRunning()) {
+			activeService.shutdown();
+			activeService.interrupt();
+			try {
+				// wait 5 seconds until polling thread is definitely
+				// shutdown
+				Thread.sleep(5000);
+			} catch (InterruptedException unhandled) {
+			}
+			setProperlyConfigured(isProperlyConfigured());
+		}
+	}
+	
 }

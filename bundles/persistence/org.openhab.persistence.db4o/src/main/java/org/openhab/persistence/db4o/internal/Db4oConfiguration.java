@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,10 @@
  */
 package org.openhab.persistence.db4o.internal;
 
-import java.util.Dictionary;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.osgi.service.cm.ConfigurationException;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class Db4oConfiguration implements ManagedService {
+public class Db4oConfiguration {
 	
 	private static final Logger logger = 
 		LoggerFactory.getLogger(Db4oConfiguration.class);
@@ -43,32 +43,29 @@ public class Db4oConfiguration implements ManagedService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
-		if (config != null) {
-			String backupIntervalString = (String) config.get("backupinterval");
-			if (StringUtils.isNotBlank(backupIntervalString)) {
-				backupInterval = backupIntervalString;
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		String backupIntervalString = (String) config.get("backupinterval");
+		if (StringUtils.isNotBlank(backupIntervalString)) {
+			backupInterval = backupIntervalString;
+		}
+		
+		String commitIntervalString = (String) config.get("commitinterval");
+		if (StringUtils.isNotBlank(commitIntervalString)) {
+			try {
+				commitInterval = Integer.valueOf(commitIntervalString);
 			}
-			
-			String commitIntervalString = (String) config.get("commitinterval");
-			if (StringUtils.isNotBlank(commitIntervalString)) {
-				try {
-					commitInterval = Integer.valueOf(commitIntervalString);
-				}
-				catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
+			catch (IllegalArgumentException iae) {
+				logger.warn("couldn't parse '{}' to an integer");
 			}
+		}
 
-			String maxBackupsString = (String) config.get("maxbackups");
-			if (StringUtils.isNotBlank(maxBackupsString)) {
-				try {
-					maxBackups = Integer.valueOf(maxBackupsString);
-				}
-				catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
+		String maxBackupsString = (String) config.get("maxbackups");
+		if (StringUtils.isNotBlank(maxBackupsString)) {
+			try {
+				maxBackups = Integer.valueOf(maxBackupsString);
+			}
+			catch (IllegalArgumentException iae) {
+				logger.warn("couldn't parse '{}' to an integer");
 			}
 		}
 	}
