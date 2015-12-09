@@ -9,6 +9,7 @@
 package org.openhab.model.script.actions;
 
 import org.joda.time.base.AbstractInstant;
+import org.quartz.Trigger;
 
 /**
  * A timer is a handle for a block of code that is scheduled for future execution. A timer
@@ -47,7 +48,8 @@ public interface Timer {
 	 * @return true, if the scheduled execution has already terminated, false otherwise
 	 */
 	public boolean hasTerminated();
-
+	
+	
 	/**
 	 * Reschedules a timer to a new starting time.
 	 * This can also be called after a timer has terminated, which will result in another
@@ -59,7 +61,7 @@ public interface Timer {
 	public boolean reschedule(AbstractInstant newTime);
 	
 	/**
-	 * Reschedules a timer to a cron schedule.
+	 * Reschedules a timer to a new cron schedule.
 	 * This can also be called after a timer has terminated, which will result in another
 	 * execution of the same code.
 	 * 

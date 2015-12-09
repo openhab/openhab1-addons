@@ -8,8 +8,8 @@
  */
 package org.openhab.model.script.internal.actions;
 
-import static org.quartz.TriggerBuilder.newTrigger;
-
+// import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.TriggerBuilder.*;
 //version 1.0.1: import added to allow construction of cron
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
@@ -21,6 +21,7 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
@@ -56,8 +57,8 @@ public class TimerImpl implements Timer {
 	private JobKey jobKey;
 	private TriggerKey triggerKey;
 	private AbstractInstant startTime;
-	// version 1.0.1 : add also option to use cronExpression instead of time
 	private String cronExpression;
+	private Trigger trigger;
 	
 	private boolean cancelled = false;
 	private boolean terminated = false;
@@ -88,9 +89,9 @@ public class TimerImpl implements Timer {
 		return cancelled;
 	}
 	
-	public boolean reschedule(AbstractInstant newTime) {
+		
+	private boolean update(Trigger trigger) {
 		try {
-	        Trigger trigger = newTrigger().startAt(newTime.toDate()).build();
 			scheduler.rescheduleJob(triggerKey, trigger);
 			this.triggerKey = trigger.getKey();
 			this.cancelled = false;
@@ -102,7 +103,61 @@ public class TimerImpl implements Timer {
 		}
 	}
 	
+	public boolean reschedule(AbstractInstant newTime) {
+		try {
+			Trigger oldTrigger = scheduler.getTrigger(triggerKey);
+			TriggerBuilder tb = oldTrigger.getTriggerBuilder();
+			trigger = tb
+						.withDescription(newTime.toString())
+						.startAt(newTime.toDate())
+						.build();
+			return update(trigger);	
+		} catch (Exception e) {
+			logger.warn("An error occured while creating a new timer for rescheduling the job '{}': {}", new String[] { jobKey.toString(), e.getMessage() });
+			return false;
+		}	
+	}
+	
+	public boolean reschedule(String cronExpression) {
+		try {
+			Trigger oldTrigger = scheduler.getTrigger(triggerKey);
+			TriggerBuilder tb = oldTrigger.getTriggerBuilder();
+			
+	        trigger = tb
+	        		.withDescription("cron " + cronExpression)
+	        		.withSchedule( cronSchedule(cronExpression) )
+			        .build();
+	        return update(trigger);
+		} catch (Exception e) {
+			logger.warn("An error occured while creating a new timer for rescheduling the job '{}': {}", new String[] { jobKey.toString(), e.getMessage() });
+			return false;
+		}	
+	}
+	
+	
+	/*
+	public boolean reschedule(AbstractInstant newTime) {
+		try {
+	        Trigger trigger = newTrigger()
+	        		.startAt(newTime.toDate())
+	        		.build();
+	        
+	        
+			scheduler.rescheduleJob(triggerKey, trigger);
+			this.triggerKey = trigger.getKey();
+			this.cancelled = false;
+			this.terminated = false;
+			return true;
+		} catch (SchedulerException e) {
+			logger.warn("An error occured while rescheduling the job '{}': {}", new String[] { jobKey.toString(), e.getMessage() });
+			return false;
+		}
+	}
+	*/
+	
 	// version 1.0.1 : allow to reschedule the cron timer
+	
+	/*
 	public boolean reschedule(String cronExpression) {
 		try {
 	        Trigger trigger = newTrigger()
@@ -120,7 +175,7 @@ public class TimerImpl implements Timer {
 			return false;
 		}	
 	}
-
+	*/
 	
 	public boolean isRunning() {
 		try {

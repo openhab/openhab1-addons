@@ -23,6 +23,11 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 1.0.0
  *
+ * Log Name of the jobkey instead of jobkey itself to clearly show updated, rescheduled jobs
+ * 
+ * @author Kai Kreuzer
+ * @since 1.0.0
+ *
  */
 public class TimerExecutionJob implements Job {
 
@@ -39,7 +44,9 @@ public class TimerExecutionJob implements Job {
 	 * @param context the execution context of the job
 	 */
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		logger.debug("Executing timer '{}'", context.getJobDetail().getKey().toString());
+		logger.debug("Executing timer '{}'", context.getJobDetail().getKey().getName());
+		logger.debug(" Trigger Key Name '{}'", context.getTrigger().getKey().getName());
+		logger.debug(" Trigger Description '{}'", context.getTrigger().getDescription());
 		if (procedure != null) {
 			procedure.apply();
 		} else if (procedure1 != null) {

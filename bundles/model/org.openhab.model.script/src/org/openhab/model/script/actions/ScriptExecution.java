@@ -101,13 +101,28 @@ public class ScriptExecution {
 	}
 	
 	/**
+	 * Schedules a block of code for later execution.
+	 * 
+	 * @param instant the point in time when the code should be executed
+	 * @param closure the code block to execute
+	 * 
+	 * @return a handle to the created timer, so that it can be canceled or rescheduled
+	 * @throws ScriptExecutionException if an error occurs during the execution
+	 */
+	public static Timer createTimer(String cronExpression, Procedure0 closure) {
+		JobDataMap dataMap = new JobDataMap();
+		dataMap.put("procedure", closure);
+		return makeTimer(instant, closure.toString(), dataMap);
+	}	
+	
+	/**
 	 * Schedules a block of code (with argument) for later execution
 	 * 
 	 * @param instant the point in time when the code should be executed
 	 * @param arg1 the argument to pass to the code block
 	 * @param closure the code block to execute
 	 * 
-	 * @return a handle to the created timer, so that it can be canceled or rescheduled
+	 * @return a handle to the created timer, so that it can be cancelled or rescheduled
 	 * @throws ScriptExecutionException if an error occurs during the execution
 	 */
 	public static Timer createTimerWithArgument(AbstractInstant instant, Object arg1, Procedure1<Object> closure) {
@@ -127,7 +142,10 @@ public class ScriptExecution {
 	
 	private static Timer makeTimer(AbstractInstant instant, String closure, JobDataMap dataMap) {
 		JobKey jobKey = new JobKey(instant.toString() + ": " + closure.toString());
-        Trigger trigger = newTrigger().startAt(instant.toDate()).build();
+        Trigger trigger = newTrigger()
+        		.withDescription(instant.toString())
+        		.startAt(instant.toDate())
+        		.build();
 		Timer timer = new TimerImpl(jobKey, trigger.getKey(), instant);
 		dataMap.put("timer", timer);
 		try {
@@ -143,13 +161,14 @@ public class ScriptExecution {
 			return null;
 		}		
 	}
-	
+	/*
 	public static Timer createTimer(String cronExpression, Procedure0 closure) {
-		JobKey jobKey = new JobKey("CRON" + cronExpression + ": " + closure.toString());
+		JobKey jobKey = new JobKey("cron " + cronExpression + ": " + closure.toString());
 	    //Trigger trigger = newTrigger().startAt(instant.toDate()).build();
 		Trigger trigger = newTrigger()
-			.withSchedule(cronSchedule(cronExpression))
-			.build();
+				.withDescription("cron " + cronExpression)
+				.withSchedule(cronSchedule(cronExpression))
+				.build();
 			        
 			Timer timer = new TimerImpl(jobKey, trigger.getKey(), cronExpression);
 			try {
@@ -168,4 +187,5 @@ public class ScriptExecution {
 				return null;
 			}
 		}
+	*/	
 }
