@@ -67,6 +67,7 @@ public class Telegram {
 		HttpClient client = new HttpClient();
 
 		PostMethod postMethod = new PostMethod(url);
+		postMethod.getParams().setContentCharset("UTF-8");
 		postMethod.getParams().setSoTimeout(HTTP_TIMEOUT);
 		postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
