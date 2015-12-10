@@ -30,6 +30,14 @@ public interface GPIOBindingProvider extends BindingProvider {
 	public int getPinNumber(String itemName);
 
 	/**
+	 * Query for configured pin force.
+	 * 
+	 * @param itemName the name of the item for which we make query
+	 * @return the configured force option
+	 */
+	public boolean getPinForce(String itemName);
+
+	/**
 	 * Query for configured debounce interval.
 	 * 
 	 * @param itemName the name of the item for which we make query

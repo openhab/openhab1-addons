@@ -32,6 +32,19 @@ public interface GPIO {
 	public GPIOPin reservePin(Integer pinNumber) throws IOException;
 
 	/**
+	 * Creates and initializes backend object representing GPIO pin.
+	 * Further pin manipulations are made using methods exposed by
+	 * <code>GPIOPin</code> interface.
+	 * 
+	 * @param pinNumber platform specific pin number
+	 * @param force force reservation of pin
+	 * 
+	 * @return object representing the GPIO pin 
+	 * @throws IOException in case of inability to initialize the pin
+	 */
+	public GPIOPin reservePin(Integer pinNumber, boolean force) throws IOException;
+
+	/**
 	 * Uninitializes backend object and free used resources. Further
 	 * using of this pin object is invalid.
 	 * 

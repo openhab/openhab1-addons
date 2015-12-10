@@ -300,7 +300,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 		try {
 			int direction;
 
-			GPIOPin gpioPin = gpio.reservePin(provider.getPinNumber(itemName));
+			GPIOPin gpioPin = gpio.reservePin(provider.getPinNumber(itemName),provider.getPinForce(itemName));
 
 			gpioPin.setActiveLow(provider.getActiveLow(itemName));
 
