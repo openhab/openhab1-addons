@@ -189,6 +189,8 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		if (dmres.isError()) {
 			logger.error("Error retrieving data model: {}", dmres.getError());
 			return;
+		} else {
+			logger.trace("Retrieved data model: {}", dmres);
 		}
 
 		DataModel newDataModel = dmres;

@@ -120,6 +120,8 @@ public class Enigma2Binding extends
 					case MUTE:
 						value = node.getMuteUnmute();
 						break;
+					case DOWNMIX:
+						value = node.getDownmix();
 					default:
 						break;
 					}
@@ -214,6 +216,9 @@ public class Enigma2Binding extends
 					break;
 				case POWERSTATE:
 					node.sendOnOff(command, Enigma2PowerState.STANDBY);
+					break;
+				case DOWNMIX:
+					node.setDownmix(command);
 					break;
 				default:
 					logger.error("Unknown cmdId \"{}\"",

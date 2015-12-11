@@ -51,7 +51,7 @@ public enum BenqProjectorSourceMapping {
 	 * @return String representation of source
 	 */
 	public static String getStringFromMapping(int idx) {
-		if (idx > 0 && idx < BenqProjectorSourceMapping.values().length)
+		if (idx >= 0 && idx < BenqProjectorSourceMapping.values().length)
 			return BenqProjectorSourceMapping.values()[idx].commandString;
 		else
 			return "";

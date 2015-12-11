@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.dscalarm.DSCAlarmActionProvider;
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.DSCAlarmBindingProvider;
 import org.openhab.binding.dscalarm.internal.connector.DSCAlarmConnectorType;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 
-public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBindingProvider> implements ManagedService, DSCAlarmEventListener {
+public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBindingProvider> implements ManagedService, DSCAlarmEventListener, DSCAlarmActionProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(DSCAlarmActiveBinding.class);
 
@@ -100,14 +101,14 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	 * Activation is done there
 	 */
 	public void activate() {
-		logger.debug("Activate DSC Alarm");
+		logger.debug("DSC Alarm Binding Activated!");
 	}
 	
 	/**
 	 * Deactivates the binding
 	 */
 	public void deactivate() {
-		logger.debug("Deactivate DSC Alarm");
+		logger.debug("DSC Alarm Binding Deactivated!");
 		closeConnection();
 	}
 
@@ -771,6 +772,27 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	}
 	
 	/**
+	 * Method to send a sequence of key presses one at a time using the '070' command.
+	 *  
+	 * @param keySequence
+	 */
+	@SuppressWarnings("unused")
+	private boolean sendKeySequence(String keySequence) {
+		logger.debug("sendKeySequence(): Sending key sequence '{}'.", keySequence);
+		
+		boolean sent = false;
+		
+		for(char key : keySequence.toCharArray()) {
+			sent = api.sendCommand(APICode.KeyStroke, String.valueOf(key));
+			
+			if(!sent)
+				return sent;
+		}
+		
+		return sent;
+	}
+
+	/**
 	 * Method to set the time stamp state
 	 * 
 	 * @param timeStamp
@@ -1170,6 +1192,25 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				if(found)
 					break;
 			}
+		}
+	}
+
+	@Override
+	public boolean sendDSCAlarmCommand(String command, String data) {
+		logger.debug("sendDSCAlarmCommand(): Attempting to send DSC Alarm Command: command - {} - data: {}", command, data);
+		
+		try {
+			APICode apiCode = APICode.getAPICodeValue(command);
+			
+			if(connectorType.equals(DSCAlarmConnectorType.SERIAL) && apiCode.equals(APICode.KeySequence)) {
+				return sendKeySequence(data);
+			}
+			else {
+				return api.sendCommand(apiCode, data);
+			}
+		} catch (Exception e) {
+			logger.error("sendDSCAlarmCommand(): Failed to send DSC Alarm Command! - {}", e);
+			return false;
 		}
 	}
 }

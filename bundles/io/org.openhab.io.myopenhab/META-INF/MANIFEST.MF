@@ -42,8 +42,10 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/myopenhab.xml
 Bundle-ClassPath: .,
- lib/Java-WebSocket-1.3.0.jar,
- lib/socket.io-client-0.4.3-SNAPSHOT.jar,
- lib/engine.io-client-0.4.2-SNAPSHOT.jar,
- lib/json-20140107.jar
+ lib/json-20140107.jar,
+ lib/engine.io-client-0.6.2-SNAPSHOT.jar,
+ lib/socket.io-client-0.6.2-SNAPSHOT.jar,
+ lib/okio-1.6.0.jar,
+ lib/okhttp-2.4.0.jar,
+ lib/okhttp-ws-2.4.0.jar
 Bundle-ActivationPolicy: lazy

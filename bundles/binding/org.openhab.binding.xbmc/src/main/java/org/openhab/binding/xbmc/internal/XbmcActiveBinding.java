@@ -315,6 +315,8 @@ public class XbmcActiveBinding extends
 				connector.playerOpen(command.toString());
 			else if (property.equals("Player.Stop"))
 				connector.playerStop();
+			else if (property.equals("Input.ExecuteAction"))
+				connector.inputExecuteAction(command.toString());
 			else if (property.equals("GUI.ShowNotification"))
 				connector.showNotification("openHAB", command.toString());
 			else if (property.equals("System.Shutdown")

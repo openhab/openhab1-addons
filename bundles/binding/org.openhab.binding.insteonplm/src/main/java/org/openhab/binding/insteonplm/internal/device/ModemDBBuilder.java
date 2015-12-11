@@ -32,7 +32,7 @@ public class ModemDBBuilder implements MsgListener, Runnable {
 	private boolean	m_isComplete 	= false;
 	private Port	m_port 			= null;
 	private	Thread	m_writeThread	= null;
-	private int		m_timeoutMillis = 30000;
+	private int		m_timeoutMillis = 120000;
 
 	public ModemDBBuilder(Port port) {
 		m_port = port;
@@ -106,7 +106,7 @@ public class ModemDBBuilder implements MsgListener, Runnable {
 				}
 			} else if (msg.getByte("Cmd") == 0x57) {
 				// we got the link record response
-				updateModemDB(msg);
+				updateModemDB(msg.getAddress("LinkAddr"), m_port, msg);
 				m_port.writeMessage(Msg.s_makeMessage("GetNextALLLinkRecord"));
 			}
 		} catch (FieldException e) {
@@ -153,21 +153,17 @@ public class ModemDBBuilder implements MsgListener, Runnable {
 		return Utils.getHexString(b);
 	}
 	
-	private void updateModemDB(Msg m) 	{
-		try {
-			HashMap<InsteonAddress, ModemDBEntry> dbes = m_port.getDriver().lockModemDBEntries();
-			InsteonAddress linkAddr = m.getAddress("LinkAddr");
-			ModemDBEntry dbe = dbes.get(linkAddr);
-			if (dbe == null) {
-				dbe = new ModemDBEntry(linkAddr);
-				dbes.put(linkAddr, dbe);
-			}
-			dbe.setPort(m_port);
-			dbe.addLinkRecord(m);
-		} catch (FieldException e) {
-			logger.error("cannot access field:", e);
-		} finally {
-			m_port.getDriver().unlockModemDBEntries();
+	public void updateModemDB(InsteonAddress linkAddr, Port port, Msg m) 	{
+		HashMap<InsteonAddress, ModemDBEntry> dbes = port.getDriver().lockModemDBEntries();
+		ModemDBEntry dbe = dbes.get(linkAddr);
+		if (dbe == null) {
+			dbe = new ModemDBEntry(linkAddr);
+			dbes.put(linkAddr, dbe);
 		}
+		dbe.setPort(port);
+		if (m != null) {
+			dbe.addLinkRecord(m);
+		}
+		port.getDriver().unlockModemDBEntries();
 	}
 }

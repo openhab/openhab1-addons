@@ -67,12 +67,13 @@ public class DeviceFeature {
 	private InsteonDevice				m_device = null;
 	private String						m_name	 = "INVALID_FEATURE_NAME";
 	private boolean						m_isStatus = false;
+	private int							m_directAckTimeout = 6000;
 	private QueryStatus	                m_queryStatus = QueryStatus.NEVER_QUERIED;
 	
 	private MessageHandler				m_defaultMsgHandler = new MessageHandler.DefaultMsgHandler(this);
 	private CommandHandler				m_defaultCommandHandler = new CommandHandler.WarnCommandHandler(this);
 	private PollHandler					m_pollHandler = null;
-	private	 MessageDispatcher			m_dispatcher = null;
+	private	MessageDispatcher			m_dispatcher = null;
 
 	private HashMap<Integer, MessageHandler> m_msgHandlers =
 				new HashMap<Integer, MessageHandler>();
@@ -105,6 +106,7 @@ public class DeviceFeature {
 	public synchronized QueryStatus	getQueryStatus()	{ return m_queryStatus; }
 	public InsteonDevice getDevice() 		{ return m_device; }
 	public boolean		isStatusFeature()	{ return m_isStatus; }
+	public int			getDirectAckTimeout() { return m_directAckTimeout; }
 	public MessageHandler getDefaultMsgHandler() { return m_defaultMsgHandler; }
 	public HashMap<Integer, MessageHandler> getMsgHandlers() {
 		return this.m_msgHandlers;
@@ -123,6 +125,17 @@ public class DeviceFeature {
 	public synchronized void setQueryStatus(QueryStatus status)	{
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
+	}
+	
+	public void setTimeout(String s) {
+		if (s != null && !s.isEmpty()) {
+			try {
+				m_directAckTimeout = Integer.parseInt(s);
+				logger.trace("ack timeout set to {}", m_directAckTimeout);
+			} catch (NumberFormatException e) {
+				logger.error("invalid number for timeout: {}", s);
+			}
+		}
 	}
 
 	/**

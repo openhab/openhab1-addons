@@ -68,6 +68,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfigur
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
@@ -232,7 +233,6 @@ public class ConfigurationHandler {
       fillupConfig(ohtfDevice, deviceConfig);
     } else if (deviceType.equals(TypeKey.bricklet_distance_ir.name())
         || deviceType.equals(TypeKey.bricklet_humidity.name())
-        || deviceType.equals(TypeKey.bricklet_temperature.name())
         || deviceType.equals(TypeKey.bricklet_barometer.name())
         || deviceType.equals(TypeKey.bricklet_ambient_light.name())
         || deviceType.equals(TypeKey.ambient_temperature.name())
@@ -524,6 +524,12 @@ public class ConfigurationHandler {
       logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
       OHTFDevice<?, IndustrialDigitalOutSubIDs> ohtfDevice = modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDigitalOutSubIDs.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_temperature.name())) {
+      TFTemperatureConfiguration configuration = modelFactory.createTFTemperatureConfiguration();
+      OHTFDevice<TFTemperatureConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {
       logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);

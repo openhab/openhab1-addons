@@ -20,6 +20,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.util.EntityUtils;
 import org.openhab.binding.insteonplm.internal.driver.IOStream;
 import org.slf4j.Logger;
@@ -70,7 +71,9 @@ public class HubIOStream extends IOStream implements Runnable {
 		if (m_user != null && m_pass != null) {
 			m_client.getCredentialsProvider().setCredentials(new AuthScope(m_host, m_port),  
 															 new UsernamePasswordCredentials(m_user, m_pass));
-		}	
+		}
+		HttpConnectionParams.setConnectionTimeout(m_client.getParams(), 5000);
+
 		m_in = new HubInputStream();
 
 		m_pollThread = new Thread(this);
@@ -100,7 +103,16 @@ public class HubIOStream extends IOStream implements Runnable {
 	 */
 	private synchronized String bufferStatus() throws IOException {
 		String result = getURL("/buffstatus.xml");
-		result = result.split("<BS>")[1].split("</BS>")[0].trim();
+		String[] parts = result.split("<BS>");
+		if (parts.length > 1) {
+			result = parts[1].split("</BS>")[0].trim();
+		} else if (result.startsWith("401 Unauthorized:")) {
+			logger.error("bad username or password. See bottom label of hub for correct login");
+			throw new IOException("login credentials incorrect");
+		} else {
+			logger.error("got invalid buffer status: {}", result);
+			throw new IOException("malformed bufferstatus.xml");
+		}
 		return result;
 	}
 	/**
@@ -180,7 +192,7 @@ public class HubIOStream extends IOStream implements Runnable {
 	 * @throws IOException
 	 */
 	private String getURL(String resource) throws IOException {
-		synchronized(m_client) {
+		synchronized (m_client) {
 			StringBuilder b = new StringBuilder();
 			b.append("http://");
 			b.append(m_host);
@@ -204,7 +216,7 @@ public class HubIOStream extends IOStream implements Runnable {
 			try {
 				poll();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("got exception while polling: {}", e.toString());
 			}
 			try {
 				Thread.sleep(m_pollTime);
@@ -264,7 +276,7 @@ public class HubIOStream extends IOStream implements Runnable {
 		private ByteArrayOutputStream m_out = new ByteArrayOutputStream();
 		
 		@Override
-		public void write(int b) throws IOException {
+		public void write(int b) {
 			m_out.write(b);
 			flushBuffer();
 		}
@@ -278,9 +290,8 @@ public class HubIOStream extends IOStream implements Runnable {
 			try {
 				HubIOStream.this.write(buffer);
 			} catch (IOException e) {
-				logger.error("failed to write to hub", e);
+				logger.error("failed to write to hub: {}", e.toString());
 			}
-			
 			m_out.reset();
 		}
 	}

@@ -26,10 +26,10 @@ import org.openhab.core.types.State;
 
 /**
  * Serializer to serialize items to and from Mapdb format
- * 
+ *
  * @author Jens Viebig
  * @since 1.7.0
- * 
+ *
  */
 public class MapDBitemSerializer implements Serializer<MapDBItem>, Serializable {
 
@@ -58,11 +58,11 @@ public class MapDBitemSerializer implements Serializer<MapDBItem>, Serializable 
 		State state = null;
 
 		if ("DecimalType".equals(stateType)) {
-			state = new DecimalType(Double.parseDouble(stateStr));
+			state = DecimalType.valueOf(stateStr);
 		} else if ("HSBType".equals(stateType)) {
-			state = new HSBType(stateStr);
+			state = HSBType.valueOf(stateStr);
 		} else if ("PercentType".equals(stateType)) {
-			state = new PercentType(Integer.parseInt(stateStr));
+			state = PercentType.valueOf(stateStr);
 		} else if ("OnOffType".equals(stateType)) {
 			state = OnOffType.valueOf(stateStr);
 		} else if ("OpenClosedType".equals(stateType)) {
@@ -70,7 +70,7 @@ public class MapDBitemSerializer implements Serializer<MapDBItem>, Serializable 
 		} else if ("DateTimeType".equals(stateType)) {
 			state = DateTimeType.valueOf(stateStr);
 		} else
-			state = new StringType(stateStr);
+			state = StringType.valueOf(stateStr);
 
 		item.setState(state);
 		item.setTimestamp(new Date(in.readLong()));

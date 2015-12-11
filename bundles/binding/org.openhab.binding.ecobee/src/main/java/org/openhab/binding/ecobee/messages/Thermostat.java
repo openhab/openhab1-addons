@@ -63,6 +63,8 @@ public class Thermostat extends AbstractMessagePart {
 	private String thermostatRev;
 	private Boolean isRegistered;
 	private String modelNumber;
+	private String brand;
+	private String features;
 	private Date lastModified;
 	private Date thermostatTime;
 	private Date utcTime;
@@ -191,6 +193,34 @@ public class Thermostat extends AbstractMessagePart {
 	@JsonProperty("modelNumber")
 	public String getModelNumber() {
 		return this.modelNumber;
+	}
+
+	/**
+	 * @return the thermostat brand. As of this writing:
+	 *         <ul>
+	 *         <li>ecobee</li>
+	 *         <li>Bryant</li>
+	 *         <li>Daikin</li>
+	 *         <li>ClimateMaster</li>
+	 *         <li>Carrier</li>
+	 *         </ul>
+	 */
+	@JsonProperty("brand")
+	public String getBrand() {
+		return this.brand;
+	}
+
+	/**
+	 * @return the comma-separated list of the thermostat's additional features, if any. As of this writing:
+	 *         <ul>
+	 *         <li>HomeKit</li>
+	 *         <li>ClimateTalk</li>
+	 *         <li>Serial Communicating</li>
+	 *         </ul>
+	 */
+	@JsonProperty("features")
+	public String getFeatures() {
+		return this.features;
 	}
 
 	/**
@@ -456,6 +486,21 @@ public class Thermostat extends AbstractMessagePart {
 	@JsonIgnore
 	public Map<String, RemoteSensor> getRemoteSensors() {
 		return this.remoteSensors;
+	}
+
+	/**
+	 * @return the running event or null if there is none
+	 */
+	@JsonIgnore
+	public Event getRunningEvent() {
+		if (this.events != null) {
+			for (Event event : this.events) {
+				if (event.isRunning()) {
+					return event;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -5014,6 +5059,7 @@ public class Thermostat extends AbstractMessagePart {
 	public static class Event extends AbstractMessagePart {
 		private String type;
 		private String name;
+		@JsonProperty("running")
 		private Boolean running;
 		// TODO Jackson 1.9 dates (@watou)
 		private String startDate;
