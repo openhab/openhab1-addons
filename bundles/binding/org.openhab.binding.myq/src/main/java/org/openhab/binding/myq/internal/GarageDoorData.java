@@ -9,7 +9,7 @@
 package org.openhab.binding.myq.internal;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class GarageDoorData {
 	static final Logger logger = LoggerFactory.getLogger(GarageDoorData.class);
 
-	HashMap<Integer, GarageDoorDevice> devices = new HashMap<Integer, GarageDoorDevice>();
+	LinkedList<GarageDoorDevice> devices = new LinkedList<GarageDoorDevice>();
 
 	/**
 	 * Constructor of the GarageDoorData.
@@ -70,8 +70,7 @@ public class GarageDoorData {
 											deviceId, deviceName, deviceType,
 											doorstate);
 
-									this.devices.put(deviceId,
-											new GarageDoorDevice(deviceId,
+									devices.add(new GarageDoorDevice(deviceId,
 													deviceType, deviceName,
 													doorstate));
 									break;
@@ -83,9 +82,8 @@ public class GarageDoorData {
 			}
 		}
 	}
-
-	public HashMap<Integer, GarageDoorDevice> getDevices() {
-		return this.devices;
+	
+	public GarageDoorDevice getDevice(int index) {
+		return index >= devices.size() ? null : devices.get(index);
 	}
 }
-

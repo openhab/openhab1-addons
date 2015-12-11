@@ -88,7 +88,7 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider
 		} else if (item instanceof StringItem) {
 			config.type = ITEMTYPE.StringStatus;
 		}
-		config.deviceID = Integer.parseInt(bindingConfig);
+		config.deviceIndex = Integer.parseInt(bindingConfig);
 		return config;
 	}
 

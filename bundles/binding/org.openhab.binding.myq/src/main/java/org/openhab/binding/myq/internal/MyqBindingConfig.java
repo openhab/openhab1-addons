@@ -15,7 +15,7 @@ import org.openhab.core.binding.BindingConfig;
  * door opener. It contains the following information:
  *
  * <ul>
- * <li>The DeviceID is the Device ID from the MyQ API</li>
+ * <li>The Device number of the device returned from the MyQ AP (0 would be the first device)</li>
  * <li>The type is how the binding uses the item</li>
  * <ul>
  * <li>Switch</li>
@@ -41,6 +41,6 @@ public class MyqBindingConfig implements BindingConfig {
 		Switch, Rollershutter, StringStatus, ContactStatus
 	};
 
-	int deviceID;
+	int deviceIndex;
 	ITEMTYPE type;
 }
