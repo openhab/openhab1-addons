@@ -50,6 +50,7 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
@@ -1034,6 +1035,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletLoadCell");
               mDevice = factory.createMBrickletLoadCell();
               mDevice.setDeviceIdentifier(BrickletLoadCell.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletColor.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletColor");
+              mDevice = factory.createMBrickletColor();
+              mDevice.setDeviceIdentifier(BrickletColor.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

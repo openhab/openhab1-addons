@@ -17,10 +17,10 @@ import org.openhab.binding.tinkerforge.internal.types.HSBValue;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getColorColor()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.HSBValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.HSBValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface ColorColor extends BrickletColorDevice, MSensor<HSBValue>, MTFConfigConsumer<TFBaseConfiguration>
+public interface ColorColor extends BrickletColorDevice, MSensor<HSBValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

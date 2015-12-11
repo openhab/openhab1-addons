@@ -2,23 +2,20 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ColorColor;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
@@ -26,10 +23,14 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-
 import org.openhab.binding.tinkerforge.internal.types.HSBValue;
-
+import org.openhab.core.library.types.HSBType;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletColor;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -46,6 +47,7 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
@@ -175,6 +177,26 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
   protected TFBaseConfiguration tfConfig;
 
   /**
+   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+
+  /**
+   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -193,6 +215,10 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  private BrickletColor tinkerforgeDevice;
+
+  private ColorListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -451,6 +477,29 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
    * <!-- end-user-doc -->
    * @generated
    */
+  public long getCallbackPeriod()
+  {
+    return callbackPeriod;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setCallbackPeriod(long newCallbackPeriod)
+  {
+    long oldCallbackPeriod = callbackPeriod;
+    callbackPeriod = newCallbackPeriod;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -459,49 +508,79 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void fetchSensorValue()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    try {
+      com.tinkerforge.BrickletColor.Color color = tinkerforgeDevice.getColor();
+      setSensorValue(new HSBValue(new HSBType(new Color(color.r, color.g, color.b))));
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(ColorColorImpl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    if (tfConfig != null) {
+      //threshold is not supported
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
+    tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+    try {
+      tinkerforgeDevice.setColorCallbackPeriod(getCallbackPeriod());
+      listener = new ColorListener();
+      tinkerforgeDevice.addColorListener(listener);
+      fetchSensorValue();
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  private class ColorListener implements BrickletColor.ColorListener {
+
+    @Override
+    public void color(int r, int g, int b, int c) {
+      //threshold is not supported
+      setSensorValue(new HSBValue(new HSBType(new Color(r, g, b))));
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    if (listener != null) {
+      tinkerforgeDevice.removeColorListener(listener);
+    }
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -582,6 +661,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
         return getSensorValue();
       case ModelPackage.COLOR_COLOR__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.COLOR_COLOR__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.COLOR_COLOR__DEVICE_TYPE:
         return getDeviceType();
     }
@@ -622,6 +703,9 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
       case ModelPackage.COLOR_COLOR__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
         return;
+      case ModelPackage.COLOR_COLOR__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -660,6 +744,9 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
       case ModelPackage.COLOR_COLOR__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
         return;
+      case ModelPackage.COLOR_COLOR__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -690,6 +777,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
         return sensorValue != null;
       case ModelPackage.COLOR_COLOR__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.COLOR_COLOR__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.COLOR_COLOR__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
@@ -720,6 +809,14 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.COLOR_COLOR__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -747,6 +844,14 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.COLOR_COLOR__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -767,6 +872,13 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
       }
     }
     if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {
@@ -825,6 +937,8 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     result.append(subId);
     result.append(", sensorValue: ");
     result.append(sensorValue);
+    result.append(", callbackPeriod: ");
+    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(')');

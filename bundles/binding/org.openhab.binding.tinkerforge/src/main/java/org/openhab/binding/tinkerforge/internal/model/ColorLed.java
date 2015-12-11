@@ -5,21 +5,21 @@ package org.openhab.binding.tinkerforge.internal.model;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Bricklet Color Led</b></em>'.
+ * A representation of the model object '<em><b>Color Led</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorLed#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.ColorLed#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorLed()
+ * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getColorLed()
  * @model
  * @generated
  */
-public interface BrickletColorLed extends BrickletColorDevice, DigitalActor
+public interface ColorLed extends BrickletColorDevice, DigitalActor
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -31,10 +31,10 @@ public interface BrickletColorLed extends BrickletColorDevice, DigitalActor
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Device Type</em>' attribute.
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorLed_DeviceType()
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getColorLed_DeviceType()
    * @model default="color_led" unique="false" changeable="false"
    * @generated
    */
   String getDeviceType();
 
-} // BrickletColorLed
+} // ColorLed

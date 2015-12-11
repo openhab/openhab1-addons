@@ -19,6 +19,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
@@ -27,9 +29,15 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletColor;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -46,6 +54,7 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
@@ -175,6 +184,26 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
   protected TFBaseConfiguration tfConfig;
 
   /**
+   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+
+  /**
+   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -193,6 +222,10 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  private BrickletColor tinkerforgeDevice;
+
+  private TemperatureListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -451,6 +484,29 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
+  public long getCallbackPeriod()
+  {
+    return callbackPeriod;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setCallbackPeriod(long newCallbackPeriod)
+  {
+    long oldCallbackPeriod = callbackPeriod;
+    callbackPeriod = newCallbackPeriod;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -459,49 +515,78 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void fetchSensorValue()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    try {
+      setSensorValue(Tools.calculate(tinkerforgeDevice.getColorTemperature()));
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(ColorColorTemperatureImpl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    if (tfConfig != null) {
+      //threshold is not supported
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
+    try {
+      tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+      tinkerforgeDevice.setColorTemperatureCallbackPeriod(getCallbackPeriod());
+      listener = new TemperatureListener();
+      tinkerforgeDevice.addColorTemperatureListener(listener);
+      fetchSensorValue();
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  private class TemperatureListener implements BrickletColor.ColorTemperatureListener {
+
+    @Override
+    public void colorTemperature(int colorTemperature) {
+      setSensorValue(Tools.calculate(colorTemperature));
+    }
+    
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    if (listener != null) {
+      tinkerforgeDevice.removeColorTemperatureListener(listener);
+    }
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -582,6 +667,8 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
         return getSensorValue();
       case ModelPackage.COLOR_COLOR_TEMPERATURE__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.COLOR_COLOR_TEMPERATURE__DEVICE_TYPE:
         return getDeviceType();
     }
@@ -622,6 +709,9 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.COLOR_COLOR_TEMPERATURE__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
         return;
+      case ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -660,6 +750,9 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.COLOR_COLOR_TEMPERATURE__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
         return;
+      case ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -690,6 +783,8 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
         return sensorValue != null;
       case ModelPackage.COLOR_COLOR_TEMPERATURE__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.COLOR_COLOR_TEMPERATURE__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
@@ -720,6 +815,14 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -747,6 +850,14 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -767,6 +878,13 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
       }
     }
     if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {
@@ -825,6 +943,8 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
     result.append(subId);
     result.append(", sensorValue: ");
     result.append(sensorValue);
+    result.append(", callbackPeriod: ");
+    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(')');

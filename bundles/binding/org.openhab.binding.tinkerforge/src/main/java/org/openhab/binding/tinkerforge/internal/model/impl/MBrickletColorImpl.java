@@ -2,40 +2,39 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletColor;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collection;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.ColorColor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
+import org.openhab.binding.tinkerforge.internal.model.ColorLed;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletColor;
+import com.tinkerforge.IPConnection;
 
 /**
  * <!-- begin-user-doc -->
@@ -754,49 +753,73 @@ public class MBrickletColorImpl extends MinimalEObjectImpl.Container implements 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void initSubDevices()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    ModelFactory factory =  ModelFactory.eINSTANCE;
+    ColorColor color = factory.createColorColor();
+    color.setUid(getUid());
+    String subIdColor = "color";
+    color.setSubId(subIdColor);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdColor);
+    color.setMbrick(this);
+    color.init();
+    
+    ColorColorTemperature temperature = factory.createColorColorTemperature();
+    temperature.setUid(getUid());
+    String subIdTemperature = "temperature";
+    temperature.setSubId(subIdTemperature);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdTemperature);
+    temperature.setMbrick(this);
+    temperature.init();
+    
+    ColorIlluminance illuminance = factory.createColorIlluminance();
+    illuminance.setUid(getUid());
+    String subIdIlluminance = "illuminace";
+    illuminance.setSubId(subIdIlluminance);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdIlluminance);
+    illuminance.setMbrick(this);
+    illuminance.init();
+    
+    ColorLed led = factory.createColorLed();
+    led.setUid(getUid());
+    String subIdLed = "led";
+    led.setSubId(subIdLed);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdLed);
+    led.setMbrick(this);
+    led.init();
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletColorImpl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = new BrickletColor(getUid(), getIpConnection());
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = null;
   }
 
   /**

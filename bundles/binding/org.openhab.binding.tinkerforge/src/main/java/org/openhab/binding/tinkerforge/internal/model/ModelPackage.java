@@ -3345,13 +3345,22 @@ public interface ModelPackage extends EPackage
   int COLOR_COLOR__TF_CONFIG = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COLOR_COLOR__CALLBACK_PERIOD = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COLOR_COLOR__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+  int COLOR_COLOR__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Color Color</em>' class.
@@ -3360,7 +3369,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COLOR_COLOR_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 3;
+  int COLOR_COLOR_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 4;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3490,13 +3499,22 @@ public interface ModelPackage extends EPackage
   int COLOR_ILLUMINANCE__TF_CONFIG = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COLOR_ILLUMINANCE__CALLBACK_PERIOD = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COLOR_ILLUMINANCE__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+  int COLOR_ILLUMINANCE__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Color Illuminance</em>' class.
@@ -3505,7 +3523,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COLOR_ILLUMINANCE_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 3;
+  int COLOR_ILLUMINANCE_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 4;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3635,13 +3653,22 @@ public interface ModelPackage extends EPackage
   int COLOR_COLOR_TEMPERATURE__TF_CONFIG = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COLOR_COLOR_TEMPERATURE__CALLBACK_PERIOD = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COLOR_COLOR_TEMPERATURE__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+  int COLOR_COLOR_TEMPERATURE__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Color Color Temperature</em>' class.
@@ -3650,7 +3677,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COLOR_COLOR_TEMPERATURE_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 3;
+  int COLOR_COLOR_TEMPERATURE_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 4;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3698,14 +3725,14 @@ public interface ModelPackage extends EPackage
   int COLOR_COLOR_TEMPERATURE_OPERATION_COUNT = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorLedImpl <em>Bricklet Color Led</em>}' class.
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl <em>Color Led</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorLedImpl
-   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletColorLed()
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorLed()
    * @generated
    */
-  int BRICKLET_COLOR_LED = 39;
+  int COLOR_LED = 39;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3714,7 +3741,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__LOGGER = BRICKLET_COLOR_DEVICE__LOGGER;
+  int COLOR_LED__LOGGER = BRICKLET_COLOR_DEVICE__LOGGER;
 
   /**
    * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -3723,7 +3750,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__UID = BRICKLET_COLOR_DEVICE__UID;
+  int COLOR_LED__UID = BRICKLET_COLOR_DEVICE__UID;
 
   /**
    * The feature id for the '<em><b>Poll</b></em>' attribute.
@@ -3732,7 +3759,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__POLL = BRICKLET_COLOR_DEVICE__POLL;
+  int COLOR_LED__POLL = BRICKLET_COLOR_DEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -3741,7 +3768,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__ENABLED_A = BRICKLET_COLOR_DEVICE__ENABLED_A;
+  int COLOR_LED__ENABLED_A = BRICKLET_COLOR_DEVICE__ENABLED_A;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -3750,7 +3777,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__SUB_ID = BRICKLET_COLOR_DEVICE__SUB_ID;
+  int COLOR_LED__SUB_ID = BRICKLET_COLOR_DEVICE__SUB_ID;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -3759,7 +3786,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__MBRICK = BRICKLET_COLOR_DEVICE__MBRICK;
+  int COLOR_LED__MBRICK = BRICKLET_COLOR_DEVICE__MBRICK;
 
   /**
    * The feature id for the '<em><b>Digital State</b></em>' attribute.
@@ -3768,7 +3795,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__DIGITAL_STATE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 0;
+  int COLOR_LED__DIGITAL_STATE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -3777,16 +3804,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 1;
+  int COLOR_LED__DEVICE_TYPE = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 1;
 
   /**
-   * The number of structural features of the '<em>Bricklet Color Led</em>' class.
+   * The number of structural features of the '<em>Color Led</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
+  int COLOR_LED_FEATURE_COUNT = BRICKLET_COLOR_DEVICE_FEATURE_COUNT + 2;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3795,7 +3822,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED___INIT = BRICKLET_COLOR_DEVICE___INIT;
+  int COLOR_LED___INIT = BRICKLET_COLOR_DEVICE___INIT;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -3804,7 +3831,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED___ENABLE = BRICKLET_COLOR_DEVICE___ENABLE;
+  int COLOR_LED___ENABLE = BRICKLET_COLOR_DEVICE___ENABLE;
 
   /**
    * The operation id for the '<em>Disable</em>' operation.
@@ -3813,7 +3840,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED___DISABLE = BRICKLET_COLOR_DEVICE___DISABLE;
+  int COLOR_LED___DISABLE = BRICKLET_COLOR_DEVICE___DISABLE;
 
   /**
    * The operation id for the '<em>Turn Digital</em>' operation.
@@ -3822,7 +3849,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED___TURN_DIGITAL__HIGHLOWVALUE = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 0;
+  int COLOR_LED___TURN_DIGITAL__HIGHLOWVALUE = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 0;
 
   /**
    * The operation id for the '<em>Fetch Digital Value</em>' operation.
@@ -3831,16 +3858,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED___FETCH_DIGITAL_VALUE = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 1;
+  int COLOR_LED___FETCH_DIGITAL_VALUE = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 1;
 
   /**
-   * The number of operations of the '<em>Bricklet Color Led</em>' class.
+   * The number of operations of the '<em>Color Led</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BRICKLET_COLOR_LED_OPERATION_COUNT = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 2;
+  int COLOR_LED_OPERATION_COUNT = BRICKLET_COLOR_DEVICE_OPERATION_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl <em>Dual Button Led</em>}' class.
@@ -21465,25 +21492,25 @@ public interface ModelPackage extends EPackage
   EAttribute getColorColorTemperature_DeviceType();
 
   /**
-   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorLed <em>Bricklet Color Led</em>}'.
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.ColorLed <em>Color Led</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Bricklet Color Led</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.BrickletColorLed
+   * @return the meta object for class '<em>Color Led</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.ColorLed
    * @generated
    */
-  EClass getBrickletColorLed();
+  EClass getColorLed();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorLed#getDeviceType <em>Device Type</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.ColorLed#getDeviceType <em>Device Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Device Type</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.BrickletColorLed#getDeviceType()
-   * @see #getBrickletColorLed()
+   * @see org.openhab.binding.tinkerforge.internal.model.ColorLed#getDeviceType()
+   * @see #getColorLed()
    * @generated
    */
-  EAttribute getBrickletColorLed_DeviceType();
+  EAttribute getColorLed_DeviceType();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLed <em>Dual Button Led</em>}'.
@@ -27162,14 +27189,14 @@ public interface ModelPackage extends EPackage
     EAttribute COLOR_COLOR_TEMPERATURE__DEVICE_TYPE = eINSTANCE.getColorColorTemperature_DeviceType();
 
     /**
-     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorLedImpl <em>Bricklet Color Led</em>}' class.
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl <em>Color Led</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorLedImpl
-     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletColorLed()
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorLed()
      * @generated
      */
-    EClass BRICKLET_COLOR_LED = eINSTANCE.getBrickletColorLed();
+    EClass COLOR_LED = eINSTANCE.getColorLed();
 
     /**
      * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
@@ -27177,7 +27204,7 @@ public interface ModelPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute BRICKLET_COLOR_LED__DEVICE_TYPE = eINSTANCE.getBrickletColorLed_DeviceType();
+    EAttribute COLOR_LED__DEVICE_TYPE = eINSTANCE.getColorLed_DeviceType();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl <em>Dual Button Led</em>}' class.

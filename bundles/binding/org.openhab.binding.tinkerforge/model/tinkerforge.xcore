@@ -320,21 +320,21 @@ interface BrickletColorDevice extends MSubDevice<MBrickletColor> {
 }
 
 class ColorColor extends BrickletColorDevice, MSensor<HSBValue>,
-	 MTFConfigConsumer<TFBaseConfiguration>{
+	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	 readonly String deviceType = "color_color"
 }
 
 class ColorIlluminance extends BrickletColorDevice, MSensor<MDecimalValue>,
-	 MTFConfigConsumer<TFBaseConfiguration>{
+	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	 readonly String deviceType = "color_illuminance"
 }
 
 class ColorColorTemperature extends BrickletColorDevice, MSensor<MDecimalValue>,
-	 MTFConfigConsumer<TFBaseConfiguration>{
+	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	 readonly String deviceType = "color_color_temperature"
 }
 
-class BrickletColorLed extends BrickletColorDevice, DigitalActor {
+class ColorLed extends BrickletColorDevice, DigitalActor {
 	readonly String deviceType = "color_led"
 }
 

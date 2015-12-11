@@ -135,7 +135,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.COLOR_COLOR: return createColorColor();
       case ModelPackage.COLOR_ILLUMINANCE: return createColorIlluminance();
       case ModelPackage.COLOR_COLOR_TEMPERATURE: return createColorColorTemperature();
-      case ModelPackage.BRICKLET_COLOR_LED: return createBrickletColorLed();
+      case ModelPackage.COLOR_LED: return createColorLed();
       case ModelPackage.DUAL_BUTTON_LED: return createDualButtonLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
       case ModelPackage.MBRICKLET_ROTARY_ENCODER: return createMBrickletRotaryEncoder();
@@ -741,10 +741,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public BrickletColorLed createBrickletColorLed()
+  public ColorLed createColorLed()
   {
-    BrickletColorLedImpl brickletColorLed = new BrickletColorLedImpl();
-    return brickletColorLed;
+    ColorLedImpl colorLed = new ColorLedImpl();
+    return colorLed;
   }
 
   /**

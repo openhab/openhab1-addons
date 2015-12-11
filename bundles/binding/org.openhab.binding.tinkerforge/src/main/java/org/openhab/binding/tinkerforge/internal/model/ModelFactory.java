@@ -143,13 +143,13 @@ public interface ModelFactory extends EFactory
   ColorColorTemperature createColorColorTemperature();
 
   /**
-   * Returns a new object of class '<em>Bricklet Color Led</em>'.
+   * Returns a new object of class '<em>Color Led</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Bricklet Color Led</em>'.
+   * @return a new object of class '<em>Color Led</em>'.
    * @generated
    */
-  BrickletColorLed createBrickletColorLed();
+  ColorLed createColorLed();
 
   /**
    * Returns a new object of class '<em>Dual Button Led</em>'.
