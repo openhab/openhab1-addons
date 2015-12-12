@@ -10,3 +10,4 @@ Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
  lib/slf4j-jdk14-1.6.4.jar,
  .
+Import-Package: org.openhab.core.library.items

@@ -17,6 +17,7 @@ import com.google.common.io.Resources;
 
 /**
  * @author Andreas Brenk
+ * @author Rob Nielsen
  * @since 1.4.0
  */
 public class MeasurementRequestStub extends MeasurementRequest {
@@ -34,7 +35,7 @@ public class MeasurementRequestStub extends MeasurementRequest {
 
 	private final String response;
 
-	private String query;
+	private String content;
 
 	private MeasurementRequestStub(final String response) throws Exception {
 		super(ACCESS_TOKEN, DEVICE_ID, MODULE_ID);
@@ -49,13 +50,13 @@ public class MeasurementRequestStub extends MeasurementRequest {
 
 	}
 
-	public String getQuery() {
-		return this.query;
+	public String getContent() {
+		return this.content;
 	}
 
 	@Override
-	protected String executeQuery(final String query) {
-		this.query = query;
+	protected String executeQuery(final String content) {
+		this.content = content;
 
 		return this.response;
 	}

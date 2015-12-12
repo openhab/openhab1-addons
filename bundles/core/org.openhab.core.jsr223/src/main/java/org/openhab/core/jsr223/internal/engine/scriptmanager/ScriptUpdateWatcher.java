@@ -101,7 +101,12 @@ public class ScriptUpdateWatcher implements Runnable {
 					}
 				}
 
-				scriptManager.scriptsChanged(addedScripts, removedScripts, modifiedScripts);
+				try {
+					scriptManager.scriptsChanged(addedScripts, removedScripts, modifiedScripts);
+				}
+				catch (Exception ex) {
+					logger.error("Error during script change processing", ex);
+				}
 
 				boolean valid = key.reset();
 				if (!valid) {

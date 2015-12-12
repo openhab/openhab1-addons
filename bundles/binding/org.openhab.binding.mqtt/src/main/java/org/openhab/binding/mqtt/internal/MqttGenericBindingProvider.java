@@ -56,7 +56,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					"Missing mqtt binding configuration for item " + itemName);
 		}
 
-		final MqttItemConfig itemConfig = new MqttItemConfig(itemName, bindingConfig);
+		final MqttItemConfig itemConfig = new MqttItemConfig(item, bindingConfig);
 
 		// register all message consumers
 		for (MqttMessageSubscriber subscriber : itemConfig.getMessageSubscribers()) {

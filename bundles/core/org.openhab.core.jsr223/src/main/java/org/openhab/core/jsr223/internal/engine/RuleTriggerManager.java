@@ -183,13 +183,24 @@ public class RuleTriggerManager {
 			return timerEventTriggeredRules;
 		case UPDATE:
 		case CHANGE:
-		case COMMAND:
 			if (newType instanceof State) {
 				for (Rule rule : rules) {
 					for (EventTrigger t : rule.getEventTrigger()) {
 						if (t.evaluate(item, (State) oldType, (State) newType, null, triggerType)) {
 							result.add(rule);
 							break; // break from eventTrigger iteration
+						}
+					}
+				}
+			}
+			break;
+		case COMMAND:
+			if (newType instanceof Command) {
+				for (Rule rule : rules) {
+					for (EventTrigger t : rule.getEventTrigger()) {
+						if (t.evaluate(item, null, null, (Command) newType, triggerType)) {
+							result.add(rule);
+							break;
 						}
 					}
 				}

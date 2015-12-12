@@ -106,6 +106,9 @@ public class HubIOStream extends IOStream implements Runnable {
 		String[] parts = result.split("<BS>");
 		if (parts.length > 1) {
 			result = parts[1].split("</BS>")[0].trim();
+		} else if (result.startsWith("401 Unauthorized:")) {
+			logger.error("bad username or password. See bottom label of hub for correct login");
+			throw new IOException("login credentials incorrect");
 		} else {
 			logger.error("got invalid buffer status: {}", result);
 			throw new IOException("malformed bufferstatus.xml");

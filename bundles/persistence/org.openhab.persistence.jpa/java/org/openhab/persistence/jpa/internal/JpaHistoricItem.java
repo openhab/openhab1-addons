@@ -22,6 +22,8 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.LocationItem;
+import org.openhab.library.tel.items.CallItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
@@ -29,6 +31,8 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.PointType;
+import org.openhab.library.tel.types.CallType;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
 import org.openhab.persistence.jpa.internal.model.JpaPersistentItem;
@@ -77,32 +81,54 @@ public class JpaHistoricItem implements HistoricItem {
 	public static List<HistoricItem> fromResultList(List<JpaPersistentItem> jpaQueryResult, Item item) {
 		List<HistoricItem> ret = new ArrayList<HistoricItem>();
 		for(JpaPersistentItem i : jpaQueryResult) {
-			
-			State state;
-			if (item instanceof NumberItem) {
-				state = new DecimalType(Double.valueOf(i.getValue()));
-			} else if (item instanceof DimmerItem) {
-				state = new PercentType(Integer.valueOf(i.getValue()));
-			} else if (item instanceof SwitchItem) {
-				state = OnOffType.valueOf(i.getValue());
-			} else if (item instanceof ContactItem) {
-				state = OpenClosedType.valueOf(i.getValue());
-			} else if (item instanceof RollershutterItem) {
-				state = new PercentType(Integer.valueOf(i.getValue()));
-			} else if (item instanceof ColorItem) {
-				state = new HSBType(i.getValue());
-			} else if (item instanceof DateTimeItem) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(new Date(Long.valueOf(i.getValue())));
-				state = new DateTimeType(cal);
-			} else {
-				state = new StringType(i.getValue());
-			}
-			
-			JpaHistoricItem hi = new JpaHistoricItem(item.getName(), state, i.getTimestamp());
+			HistoricItem hi = fromPersistedItem(i, item);
 			ret.add(hi);
 		}
-		
 		return ret;
 	}
+    
+    /**
+        Converts the string value of the persisted item to the state of a HistoricItem.
+        @param pItem the persisted JpaPersistentItem
+        @param item the source reference Item
+        @return historic item
+    */
+    public static HistoricItem fromPersistedItem(JpaPersistentItem pItem, Item item) {
+		State state;
+		if (item instanceof NumberItem) {
+			state = new DecimalType(Double.valueOf(pItem.getValue()));
+		} else if (item instanceof DimmerItem) {
+			state = new PercentType(Integer.valueOf(pItem.getValue()));
+		} else if (item instanceof SwitchItem) {
+			state = OnOffType.valueOf(pItem.getValue());
+		} else if (item instanceof ContactItem) {
+			state = OpenClosedType.valueOf(pItem.getValue());
+		} else if (item instanceof RollershutterItem) {
+			state = PercentType.valueOf(pItem.getValue());
+		} else if (item instanceof ColorItem) {
+			state = new HSBType(pItem.getValue());
+		} else if (item instanceof DateTimeItem) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date(Long.valueOf(pItem.getValue())));
+			state = new DateTimeType(cal);
+        } else if (item instanceof LocationItem) {
+            PointType pType = null;
+            String[] comps = pItem.getValue().split(";");
+            if(comps.length >= 2) {
+                pType = new PointType(new DecimalType(comps[0]), new DecimalType(comps[1]));
+
+                if(comps.length == 3) {
+                    pType.setAltitude(new DecimalType(comps[2]));
+                }
+            }
+            state = pType;
+            
+        } else if (item instanceof CallItem) {
+            state = new CallType(pItem.getValue());
+		} else {
+			state = new StringType(pItem.getValue());
+		}
+        
+        return new JpaHistoricItem(item.getName(), state, pItem.getTimestamp());
+    }
 }

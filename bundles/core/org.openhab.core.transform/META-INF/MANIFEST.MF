@@ -43,3 +43,4 @@ Bundle-ClassPath: .,
  lib/json-smart-1.2.jar
 Export-Package: org.openhab.core.transform,org.openhab.core.transform.
  actions
+Bundle-ActivationPolicy: lazy

@@ -191,6 +191,7 @@ public enum EiscpCommandRef {
 	SOURCE_SET(162),
 	ZONE2_SOURCE_SET(163),
 	ZONE3_SOURCE_SET(163),
+	SOURCE_GAME2(164),
 	
 	/**
 	 * NET/USB Play Status QUERY (3 letters - PRS).

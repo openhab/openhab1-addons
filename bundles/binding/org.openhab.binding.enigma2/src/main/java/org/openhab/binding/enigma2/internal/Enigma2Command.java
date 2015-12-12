@@ -16,5 +16,5 @@ package org.openhab.binding.enigma2.internal;
  * 
  */
 public enum Enigma2Command {
-	VOLUME, CHANNEL, PAUSE, MUTE, REMOTECONTROL, POWERSTATE
+	VOLUME, CHANNEL, PAUSE, MUTE, REMOTECONTROL, POWERSTATE, DOWNMIX
 }
