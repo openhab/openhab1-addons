@@ -158,6 +158,5 @@
     <module>org.openhab.binding.lightwaverf</module>
 	<module>org.openhab.binding.souliss</module>
     <module>org.openhab.binding.sagercaster</module>
-    <module>org.openhab.binding.myq</module>
   </modules>
 </project>
