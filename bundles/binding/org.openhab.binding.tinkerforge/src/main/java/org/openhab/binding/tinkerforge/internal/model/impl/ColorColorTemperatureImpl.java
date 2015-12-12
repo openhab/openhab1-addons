@@ -211,7 +211,7 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "color_color_temperature";
+  protected static final String DEVICE_TYPE_EDEFAULT = "color_temperature";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.

@@ -305,6 +305,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createIndustrialDual020mASubIdsFromString(eDataType, initialValue);
       case ModelPackage.ROTARY_ENCODER_SUB_IDS:
         return createRotaryEncoderSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.COLOR_BRICKLET_SUB_IDS:
+        return createColorBrickletSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -486,6 +488,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertIndustrialDual020mASubIdsToString(eDataType, instanceValue);
       case ModelPackage.ROTARY_ENCODER_SUB_IDS:
         return convertRotaryEncoderSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.COLOR_BRICKLET_SUB_IDS:
+        return convertColorBrickletSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -2088,6 +2092,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertRotaryEncoderSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorBrickletSubIds createColorBrickletSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    ColorBrickletSubIds result = ColorBrickletSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertColorBrickletSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

@@ -24,7 +24,7 @@ public interface ColorColorTemperature extends BrickletColorDevice, MSensor<Deci
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
-   * The default value is <code>"color_color_temperature"</code>.
+   * The default value is <code>"color_temperature"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Device Type</em>' attribute isn't clear,
@@ -33,7 +33,7 @@ public interface ColorColorTemperature extends BrickletColorDevice, MSensor<Deci
    * <!-- end-user-doc -->
    * @return the value of the '<em>Device Type</em>' attribute.
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getColorColorTemperature_DeviceType()
-   * @model default="color_color_temperature" unique="false" changeable="false"
+   * @model default="color_temperature" unique="false" changeable="false"
    * @generated
    */
   String getDeviceType();

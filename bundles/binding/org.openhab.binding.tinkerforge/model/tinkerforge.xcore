@@ -312,8 +312,8 @@ class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
 class MBrickletColor extends MDevice<TinkerBrickletColor>,
 	MSubDeviceHolder<BrickletColorDevice>, MTFConfigConsumer<BrickletColorConfiguration>{
 	readonly String deviceType = "bricklet_color"
-	Short gain
-	Short integrationTime
+	Short gain = "3"
+	Short integrationTime = "3"
 }
 
 interface BrickletColorDevice extends MSubDevice<MBrickletColor> {
@@ -327,11 +327,13 @@ class ColorColor extends BrickletColorDevice, MSensor<HSBValue>,
 class ColorIlluminance extends BrickletColorDevice, MSensor<MDecimalValue>,
 	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	 readonly String deviceType = "color_illuminance"
+	Short gain //from MBrickletColor
+	Short integrationTime //from MBrickletColor
 }
 
 class ColorColorTemperature extends BrickletColorDevice, MSensor<MDecimalValue>,
 	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
-	 readonly String deviceType = "color_color_temperature"
+	 readonly String deviceType = "color_temperature"
 }
 
 class ColorLed extends BrickletColorDevice, DigitalActor {
@@ -1004,7 +1006,7 @@ class LEDGroupConfiguration extends TFConfig {
 	String leds
 }
 
-class BrickletColorConfiguration {
+class BrickletColorConfiguration extends TFConfig {
 	Short gain
 	Short integrationTime
 }
@@ -1122,3 +1124,8 @@ enum IndustrialDual020mASubIds {
 enum RotaryEncoderSubIds {
 	encoder, button
 }
+
+enum ColorBrickletSubIds {
+	color, temperature, illuminance, led
+}
+

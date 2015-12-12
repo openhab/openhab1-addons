@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
 import org.openhab.binding.tinkerforge.internal.model.ColorColor;
@@ -35,6 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import com.tinkerforge.BrickletColor;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -304,7 +307,7 @@ public class MBrickletColorImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected static final Short GAIN_EDEFAULT = null;
+  protected static final Short GAIN_EDEFAULT = new Short((short)3);
 
   /**
    * The cached value of the '{@link #getGain() <em>Gain</em>}' attribute.
@@ -324,7 +327,7 @@ public class MBrickletColorImpl extends MinimalEObjectImpl.Container implements 
    * @generated
    * @ordered
    */
-  protected static final Short INTEGRATION_TIME_EDEFAULT = null;
+  protected static final Short INTEGRATION_TIME_EDEFAULT = new Short((short)3);
 
   /**
    * The cached value of the '{@link #getIntegrationTime() <em>Integration Time</em>}' attribute.
@@ -763,32 +766,32 @@ public class MBrickletColorImpl extends MinimalEObjectImpl.Container implements 
     String subIdColor = "color";
     color.setSubId(subIdColor);
     logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdColor);
-    color.setMbrick(this);
     color.init();
+    color.setMbrick(this);
     
     ColorColorTemperature temperature = factory.createColorColorTemperature();
     temperature.setUid(getUid());
     String subIdTemperature = "temperature";
     temperature.setSubId(subIdTemperature);
     logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdTemperature);
-    temperature.setMbrick(this);
     temperature.init();
+    temperature.setMbrick(this);
     
     ColorIlluminance illuminance = factory.createColorIlluminance();
     illuminance.setUid(getUid());
-    String subIdIlluminance = "illuminace";
+    String subIdIlluminance = "illuminance";
     illuminance.setSubId(subIdIlluminance);
     logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdIlluminance);
-    illuminance.setMbrick(this);
     illuminance.init();
+    illuminance.setMbrick(this);
     
     ColorLed led = factory.createColorLed();
     led.setUid(getUid());
     String subIdLed = "led";
     led.setSubId(subIdLed);
     logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdLed);
-    led.setMbrick(this);
     led.init();
+    led.setMbrick(this);
   }
 
   /**
@@ -809,7 +812,47 @@ public class MBrickletColorImpl extends MinimalEObjectImpl.Container implements 
    */
   public void enable()
   {
-    tinkerforgeDevice = new BrickletColor(getUid(), getIpConnection());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("gain"))) {
+        Short gainConfig = tfConfig.getGain();
+        switch (gainConfig){
+          case 0: this.gain = 0;
+                  break;
+          case 1: this.gain = 1;
+                  break;
+          case 2: this.gain = 2;
+                  break;
+          default: logger.error("invalid gain value {}; using default gain", gainConfig);
+                  break;
+        }
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("integrationTime"))) {
+        Short integrationTimeConfig = tfConfig.getIntegrationTime();
+        switch (integrationTimeConfig) {
+          case 0: this.integrationTime = 0;
+                  break;
+          case 1: this.integrationTime = 1;
+                  break;
+          case 2: this.integrationTime = 2;
+                  break;
+          case 3: this.integrationTime = 3;
+                  break;
+          case 4: this.integrationTime = 4;
+                  break;
+          default: logger.error("invalid integrationTime value {}; using default integrationTime", integrationTimeConfig);
+                  break;
+        }
+      }
+    }
+    try {
+      tinkerforgeDevice = new BrickletColor(getUid(), getIpConnection());
+      tinkerforgeDevice.setConfig(gain, integrationTime);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**

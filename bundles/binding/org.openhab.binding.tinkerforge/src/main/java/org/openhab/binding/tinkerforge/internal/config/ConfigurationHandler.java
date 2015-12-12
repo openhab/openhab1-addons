@@ -27,9 +27,11 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
@@ -117,7 +119,8 @@ public class ConfigurationHandler {
     bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
     digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2,
- bricklet_dustdetector, bricklet_loadcell
+    bricklet_dustdetector, bricklet_loadcell, bricklet_color, color_color, color_illuminance,
+    color_temperature, color_led
   }
 
 
@@ -130,6 +133,7 @@ public class ConfigurationHandler {
     Map<String, Map<String, String>> configContainer = createConfigContainer(config);
 
     for (Map<String, String> deviceConfig : configContainer.values()) {
+      logger.debug("deviceConfig {}", deviceConfig);
       createOHTFDeviceConfig(deviceConfig);
     }
     return ohConfig;
@@ -251,7 +255,10 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.ptc_temperature.name())
         || deviceType.equals(TypeKey.industrial020ma_sensor.name())
         || deviceType.equals(TypeKey.rotary_encoder.name())
-        || deviceType.equals(TypeKey.bricklet_dustdetector.name())) {
+        || deviceType.equals(TypeKey.bricklet_dustdetector.name())
+        || deviceType.equals(TypeKey.color_color.name())
+        || deviceType.equals(TypeKey.color_temperature.name())
+        || deviceType.equals(TypeKey.color_illuminance.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -264,6 +271,24 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, TemperatureIRSubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.color_color.name())) {
+        OHTFDevice<TFBaseConfiguration, ColorBrickletSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ColorBrickletSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.color_temperature.name())) {
+        OHTFDevice<TFBaseConfiguration, ColorBrickletSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ColorBrickletSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.color_illuminance.name())) {
+        OHTFDevice<TFBaseConfiguration, ColorBrickletSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ColorBrickletSubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else if (deviceType.equals(TypeKey.voltageCurrent_current.name())
@@ -563,6 +588,12 @@ public class ConfigurationHandler {
       TFTemperatureConfiguration configuration = modelFactory.createTFTemperatureConfiguration();
       OHTFDevice<TFTemperatureConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_color.name())) {
+      BrickletColorConfiguration configuration = modelFactory.createBrickletColorConfiguration();
+      OHTFDevice<BrickletColorConfiguration, ColorBrickletSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ColorBrickletSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {

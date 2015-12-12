@@ -56,6 +56,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getGain <em>Gain</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getIntegrationTime <em>Integration Time</em>}</li>
  * </ul>
  * </p>
  *
@@ -222,6 +224,46 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getGain() <em>Gain</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGain()
+   * @generated
+   * @ordered
+   */
+  protected static final Short GAIN_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getGain() <em>Gain</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getGain()
+   * @generated
+   * @ordered
+   */
+  protected Short gain = GAIN_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getIntegrationTime() <em>Integration Time</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getIntegrationTime()
+   * @generated
+   * @ordered
+   */
+  protected static final Short INTEGRATION_TIME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getIntegrationTime() <em>Integration Time</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getIntegrationTime()
+   * @generated
+   * @ordered
+   */
+  protected Short integrationTime = INTEGRATION_TIME_EDEFAULT;
 
   private BrickletColor tinkerforgeDevice;
 
@@ -515,12 +557,58 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getGain()
+  {
+    return gain;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setGain(Short newGain)
+  {
+    Short oldGain = gain;
+    gain = newGain;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__GAIN, oldGain, gain));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getIntegrationTime()
+  {
+    return integrationTime;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setIntegrationTime(Short newIntegrationTime)
+  {
+    Short oldIntegrationTime = integrationTime;
+    integrationTime = newIntegrationTime;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_ILLUMINANCE__INTEGRATION_TIME, oldIntegrationTime, integrationTime));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void fetchSensorValue()
   {
     try {
-      setSensorValue(Tools.calculate(tinkerforgeDevice.getIlluminance()));
+      setSensorValue(Tools.calculate(getIlluminance(tinkerforgeDevice.getIlluminance())));
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -554,6 +642,8 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
       }
     }
     try {
+      this.gain = getMbrick().getGain();
+      this.integrationTime = getMbrick().getIntegrationTime();
       tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
       tinkerforgeDevice.setIlluminanceCallbackPeriod(getCallbackPeriod());
       listener = new IlluminanceListener();
@@ -567,11 +657,15 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     }
   }
 
+  private long getIlluminance(long value){
+    return value * 700 / getGain() / getIntegrationTime();
+  }
+  
   private class IlluminanceListener implements BrickletColor.IlluminanceListener {
 
     @Override
     public void illuminance(long illuminance) {
-      setSensorValue(Tools.calculate(illuminance));
+      setSensorValue(Tools.calculate(getIlluminance(illuminance)));
     }
     
   }
@@ -671,6 +765,10 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
         return getCallbackPeriod();
       case ModelPackage.COLOR_ILLUMINANCE__DEVICE_TYPE:
         return getDeviceType();
+      case ModelPackage.COLOR_ILLUMINANCE__GAIN:
+        return getGain();
+      case ModelPackage.COLOR_ILLUMINANCE__INTEGRATION_TIME:
+        return getIntegrationTime();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -711,6 +809,12 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
         return;
       case ModelPackage.COLOR_ILLUMINANCE__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
+        return;
+      case ModelPackage.COLOR_ILLUMINANCE__GAIN:
+        setGain((Short)newValue);
+        return;
+      case ModelPackage.COLOR_ILLUMINANCE__INTEGRATION_TIME:
+        setIntegrationTime((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -753,6 +857,12 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
       case ModelPackage.COLOR_ILLUMINANCE__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
+      case ModelPackage.COLOR_ILLUMINANCE__GAIN:
+        setGain(GAIN_EDEFAULT);
+        return;
+      case ModelPackage.COLOR_ILLUMINANCE__INTEGRATION_TIME:
+        setIntegrationTime(INTEGRATION_TIME_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -787,6 +897,10 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.COLOR_ILLUMINANCE__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.COLOR_ILLUMINANCE__GAIN:
+        return GAIN_EDEFAULT == null ? gain != null : !GAIN_EDEFAULT.equals(gain);
+      case ModelPackage.COLOR_ILLUMINANCE__INTEGRATION_TIME:
+        return INTEGRATION_TIME_EDEFAULT == null ? integrationTime != null : !INTEGRATION_TIME_EDEFAULT.equals(integrationTime);
     }
     return super.eIsSet(featureID);
   }
@@ -947,6 +1061,10 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
     result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
+    result.append(", gain: ");
+    result.append(gain);
+    result.append(", integrationTime: ");
+    result.append(integrationTime);
     result.append(')');
     return result.toString();
   }

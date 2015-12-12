@@ -24,6 +24,184 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ColorColor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
+import org.openhab.binding.tinkerforge.internal.model.ColorLed;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
+import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.Electrode;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
+import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
+import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MActor;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
+import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
+import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.Proximity;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
+import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
+import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -1185,6 +1363,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum rotaryEncoderSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum colorBrickletSubIdsEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3178,6 +3363,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getColorIlluminance_DeviceType()
   {
     return (EAttribute)colorIlluminanceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getColorIlluminance_Gain()
+  {
+    return (EAttribute)colorIlluminanceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getColorIlluminance_IntegrationTime()
+  {
+    return (EAttribute)colorIlluminanceEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -6705,6 +6910,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getColorBrickletSubIds()
+  {
+    return colorBrickletSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -7584,6 +7799,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     colorIlluminanceEClass = createEClass(COLOR_ILLUMINANCE);
     createEAttribute(colorIlluminanceEClass, COLOR_ILLUMINANCE__DEVICE_TYPE);
+    createEAttribute(colorIlluminanceEClass, COLOR_ILLUMINANCE__GAIN);
+    createEAttribute(colorIlluminanceEClass, COLOR_ILLUMINANCE__INTEGRATION_TIME);
 
     colorColorTemperatureEClass = createEClass(COLOR_COLOR_TEMPERATURE);
     createEAttribute(colorColorTemperatureEClass, COLOR_COLOR_TEMPERATURE__DEVICE_TYPE);
@@ -8086,6 +8303,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ptcSubIdsEEnum = createEEnum(PTC_SUB_IDS);
     industrialDual020mASubIdsEEnum = createEEnum(INDUSTRIAL_DUAL020M_ASUB_IDS);
     rotaryEncoderSubIdsEEnum = createEEnum(ROTARY_ENCODER_SUB_IDS);
+    colorBrickletSubIdsEEnum = createEEnum(COLOR_BRICKLET_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -9085,6 +9303,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonLEDConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     ledStripConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     ledGroupConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    brickletColorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -9299,8 +9518,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mBrickletColorEClass, MBrickletColor.class, "MBrickletColor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletColor_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_color", 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletColor_Gain(), theEcorePackage.getEShortObject(), "gain", null, 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletColor_IntegrationTime(), theEcorePackage.getEShortObject(), "integrationTime", null, 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletColor_Gain(), theEcorePackage.getEShortObject(), "gain", "3", 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletColor_IntegrationTime(), theEcorePackage.getEShortObject(), "integrationTime", "3", 0, 1, MBrickletColor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(brickletColorDeviceEClass, BrickletColorDevice.class, "BrickletColorDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -9309,9 +9528,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(colorIlluminanceEClass, ColorIlluminance.class, "ColorIlluminance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getColorIlluminance_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_illuminance", 0, 1, ColorIlluminance.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getColorIlluminance_Gain(), theEcorePackage.getEShortObject(), "gain", null, 0, 1, ColorIlluminance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getColorIlluminance_IntegrationTime(), theEcorePackage.getEShortObject(), "integrationTime", null, 0, 1, ColorIlluminance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(colorColorTemperatureEClass, ColorColorTemperature.class, "ColorColorTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getColorColorTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_color_temperature", 0, 1, ColorColorTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getColorColorTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_temperature", 0, 1, ColorColorTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(colorLedEClass, ColorLed.class, "ColorLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getColorLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "color_led", 0, 1, ColorLed.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -10027,6 +10248,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEEnum(rotaryEncoderSubIdsEEnum, RotaryEncoderSubIds.class, "RotaryEncoderSubIds");
     addEEnumLiteral(rotaryEncoderSubIdsEEnum, RotaryEncoderSubIds.ENCODER);
     addEEnumLiteral(rotaryEncoderSubIdsEEnum, RotaryEncoderSubIds.BUTTON);
+
+    initEEnum(colorBrickletSubIdsEEnum, ColorBrickletSubIds.class, "ColorBrickletSubIds");
+    addEEnumLiteral(colorBrickletSubIdsEEnum, ColorBrickletSubIds.COLOR);
+    addEEnumLiteral(colorBrickletSubIdsEEnum, ColorBrickletSubIds.TEMPERATURE);
+    addEEnumLiteral(colorBrickletSubIdsEEnum, ColorBrickletSubIds.ILLUMINANCE);
+    addEEnumLiteral(colorBrickletSubIdsEEnum, ColorBrickletSubIds.LED);
 
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

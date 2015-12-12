@@ -514,7 +514,7 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
   {
     try {
       com.tinkerforge.BrickletColor.Color color = tinkerforgeDevice.getColor();
-      setSensorValue(new HSBValue(new HSBType(new Color(color.r, color.g, color.b))));
+      setSensorValue(new HSBValue(new HSBType(new Color(getRGBValue(color.r), getRGBValue(color.g), getRGBValue(color.b)))));
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -566,8 +566,13 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
     @Override
     public void color(int r, int g, int b, int c) {
       //threshold is not supported
-      setSensorValue(new HSBValue(new HSBType(new Color(r, g, b))));
+      logger.debug("========*** color r {} b {} g {}", getRGBValue(r), getRGBValue(g), getRGBValue(b));
+      setSensorValue(new HSBValue(new HSBType(new Color(getRGBValue(r), getRGBValue(g), getRGBValue(b)))));
     }
+  }
+
+  private int getRGBValue(int value){
+    return value * 255 / 0xFFFF; 
   }
 
   /**

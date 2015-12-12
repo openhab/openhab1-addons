@@ -42,6 +42,7 @@ public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder
 
   /**
    * Returns the value of the '<em><b>Gain</b></em>' attribute.
+   * The default value is <code>"3"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Gain</em>' attribute isn't clear,
@@ -51,7 +52,7 @@ public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder
    * @return the value of the '<em>Gain</em>' attribute.
    * @see #setGain(Short)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletColor_Gain()
-   * @model unique="false"
+   * @model default="3" unique="false"
    * @generated
    */
   Short getGain();
@@ -68,6 +69,7 @@ public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder
 
   /**
    * Returns the value of the '<em><b>Integration Time</b></em>' attribute.
+   * The default value is <code>"3"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Integration Time</em>' attribute isn't clear,
@@ -77,7 +79,7 @@ public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder
    * @return the value of the '<em>Integration Time</em>' attribute.
    * @see #setIntegrationTime(Short)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletColor_IntegrationTime()
-   * @model unique="false"
+   * @model default="3" unique="false"
    * @generated
    */
   Short getIntegrationTime();

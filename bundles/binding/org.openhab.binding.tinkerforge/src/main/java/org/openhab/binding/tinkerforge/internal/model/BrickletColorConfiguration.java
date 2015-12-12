@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface BrickletColorConfiguration extends EObject
+public interface BrickletColorConfiguration extends TFConfig
 {
   /**
    * Returns the value of the '<em><b>Gain</b></em>' attribute.
