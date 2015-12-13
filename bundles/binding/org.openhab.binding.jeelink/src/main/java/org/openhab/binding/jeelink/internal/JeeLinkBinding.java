@@ -84,9 +84,9 @@ public class JeeLinkBinding extends
 	private void getCULHandler() {
 		try {
 			logger.debug("Opening CUL device on " + deviceName);
-			Map<String,Integer> options = new HashMap<String,Integer>();
-			options.put("baudrate", 57600);
-			options.put("parity", 0); //parity none
+			Map<String,String> options = new HashMap<String,String>();
+			options.put("baudrate", "57600");
+			options.put("parity", "0"); //parity none
 			cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF,options);
 			cul.registerListener(this);
 		} catch (CULDeviceException e) {

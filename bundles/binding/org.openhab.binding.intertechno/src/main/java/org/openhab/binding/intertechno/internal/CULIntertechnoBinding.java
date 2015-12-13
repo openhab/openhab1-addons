@@ -103,8 +103,8 @@ public class CULIntertechnoBinding extends
 	private void bindCULHandler() {
 		if (!StringUtils.isEmpty(deviceName)) {
 			try {
-				Map<String,Integer> options = new HashMap<String,Integer>();
-				options.put("parity", 0); //parity none
+				Map<String,String> options = new HashMap<String,String>();
+				options.put("parity", "0"); //parity none
 				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF, options);
 				cul.send("it" + wavelength);
 				cul.send("isr" + repititions);
