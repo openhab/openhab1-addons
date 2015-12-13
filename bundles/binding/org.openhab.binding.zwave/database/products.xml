@@ -2513,11 +2513,15 @@
 		<Name>Wintop</Name>
 		<Product>
 			<Reference>
+				<Type>1182</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Reference>
 				<Type>1188</Type>
 				<Id>4501</Id>
 			</Reference>
 			<Model>ITEMP</Model>
-			<Label lang="en">Contact and temp sensor</Label>
+			<Label lang="en">Contact and temperature sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
 		</Product>
 		<Product>
