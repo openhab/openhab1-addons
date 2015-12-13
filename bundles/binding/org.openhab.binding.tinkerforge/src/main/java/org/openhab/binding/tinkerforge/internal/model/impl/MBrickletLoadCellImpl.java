@@ -3,7 +3,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -13,18 +13,20 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.tools.Tools;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +54,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getCallbackPeriod <em>Callback Period</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getMsubdevices <em>Msubdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getThreshold <em>Threshold</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getMovingAverage <em>Moving Average</em>}</li>
  * </ul>
  * </p>
  *
@@ -256,44 +254,14 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
+   * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getSensorValue()
+   * @see #getMsubdevices()
    * @generated
    * @ordered
    */
-  protected DecimalValue sensorValue;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected LoadCellConfiguration tfConfig;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected EList<LoadCellDevice> msubdevices;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -314,48 +282,6 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getThreshold()
-   * @generated
-   * @ordered
-   */
-  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0");
-
-  /**
-   * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getThreshold()
-   * @generated
-   * @ordered
-   */
-  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getMovingAverage() <em>Moving Average</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getMovingAverage()
-   * @generated
-   * @ordered
-   */
-  protected static final short MOVING_AVERAGE_EDEFAULT = 4;
-
-  /**
-   * The cached value of the '{@link #getMovingAverage() <em>Moving Average</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getMovingAverage()
-   * @generated
-   * @ordered
-   */
-  protected short movingAverage = MOVING_AVERAGE_EDEFAULT;
-
-  private WeightListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -658,93 +584,13 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public DecimalValue getSensorValue()
+  public EList<LoadCellDevice> getMsubdevices()
   {
-    return sensorValue;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setSensorValue(DecimalValue newSensorValue)
-  {
-    DecimalValue oldSensorValue = sensorValue;
-    sensorValue = newSensorValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE, oldSensorValue, sensorValue));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public LoadCellConfiguration getTfConfig()
-  {
-    return tfConfig;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetTfConfig(LoadCellConfiguration newTfConfig, NotificationChain msgs)
-  {
-    LoadCellConfiguration oldTfConfig = tfConfig;
-    tfConfig = newTfConfig;
-    if (eNotificationRequired())
+    if (msubdevices == null)
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG, oldTfConfig, newTfConfig);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
+      msubdevices = new EObjectContainmentWithInverseEList<LoadCellDevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
     }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTfConfig(LoadCellConfiguration newTfConfig)
-  {
-    if (newTfConfig != tfConfig)
-    {
-      NotificationChain msgs = null;
-      if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG, null, msgs);
-      if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG, null, msgs);
-      msgs = basicSetTfConfig(newTfConfig, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG, newTfConfig, newTfConfig));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
+    return msubdevices;
   }
 
   /**
@@ -760,47 +606,26 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
-  public BigDecimal getThreshold()
+  public void initSubDevices()
   {
-    return threshold;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setThreshold(BigDecimal newThreshold)
-  {
-    BigDecimal oldThreshold = threshold;
-    threshold = newThreshold;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__THRESHOLD, oldThreshold, threshold));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public short getMovingAverage()
-  {
-    return movingAverage;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setMovingAverage(short newMovingAverage)
-  {
-    short oldMovingAverage = movingAverage;
-    movingAverage = newMovingAverage;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__MOVING_AVERAGE, oldMovingAverage, movingAverage));
+    ModelFactory factory =  ModelFactory.eINSTANCE;
+    LoadCellWeight weight = factory.createLoadCellWeight();
+    weight.setUid(getUid());
+    String subIdWeight = "weight";
+    weight.setSubId(subIdWeight);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdWeight);
+    weight.init();
+    weight.setMbrick(this);
+    
+    LoadCellLed led = factory.createLoadCellLed();
+    led.setUid(getUid());
+    String subIdLed = "led";
+    led.setSubId(subIdLed);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdLed);
+    led.init();
+    led.setMbrick(this);
   }
 
   /**
@@ -819,111 +644,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * 
    * @generated NOT
    */
-  public void tare()
-  {
-    try {
-      logger.debug("calling tare");
-      tinkerforgeDevice.tare();
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  public void led(OnOffValue state)
-  {
-    try {
-      logger.debug("led got {}", state);
-      if (state == OnOffValue.ON) {
-        logger.debug("switching led on");
-        tinkerforgeDevice.ledOn();
-      } else {
-        logger.debug("switching led off");
-        tinkerforgeDevice.ledOff();
-      }
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  public void fetchSensorValue()
-  {
-    try {
-      int currentValue = tinkerforgeDevice.getWeight();
-      DecimalValue value = Tools.calculate(currentValue);
-      setSensorValue(value);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
   public void enable()
   {
-    if (tfConfig != null) {
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
-        setThreshold(tfConfig.getThreshold());
-      }
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
-        setCallbackPeriod(tfConfig.getCallbackPeriod());
-      }
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("movingAverage"))) {
-        logger.debug("movingAverage configured as {}", tfConfig.getMovingAverage());
-        setMovingAverage(tfConfig.getMovingAverage());
-      }
-    }
-    try {
-      tinkerforgeDevice = new BrickletLoadCell(getUid(), getIpConnection());
-      tinkerforgeDevice.setWeightCallbackPeriod(getCallbackPeriod());
-      tinkerforgeDevice.setMovingAverage(getMovingAverage());
-      listener = new WeightListener();
-      tinkerforgeDevice.addWeightListener(listener);
-      fetchSensorValue();
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
+    tinkerforgeDevice = new BrickletLoadCell(getUid(), getIpConnection());
   }
 
-  private class WeightListener implements BrickletLoadCell.WeightListener {
-
-    @Override
-    public void weight(int newValue) {
-      DecimalValue value = Tools.calculate(newValue);
-      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, value);
-      if (value.compareTo(getSensorValue(), getThreshold()) != 0) {
-        logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, value);
-        setSensorValue(value);
-      } else {
-        logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, value);
-      }
-    }
-
-  }
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * 
@@ -931,9 +656,6 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    */
   public void disable()
   {
-    if (listener != null) {
-      tinkerforgeDevice.removeWeightListener(listener);
-    }
     tinkerforgeDevice = null;
   }
 
@@ -942,6 +664,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -951,6 +674,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
+      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+        return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -967,8 +692,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     {
       case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
         return basicSetBrickd(null, msgs);
-      case ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG:
-        return basicSetTfConfig(null, msgs);
+      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+        return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -1021,18 +746,10 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
         return getName();
       case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
         return getBrickd();
-      case ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE:
-        return getSensorValue();
-      case ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG:
-        return getTfConfig();
-      case ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD:
-        return getCallbackPeriod();
+      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+        return getMsubdevices();
       case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBRICKLET_LOAD_CELL__THRESHOLD:
-        return getThreshold();
-      case ModelPackage.MBRICKLET_LOAD_CELL__MOVING_AVERAGE:
-        return getMovingAverage();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1042,6 +759,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -1080,20 +798,9 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE:
-        setSensorValue((DecimalValue)newValue);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG:
-        setTfConfig((LoadCellConfiguration)newValue);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__THRESHOLD:
-        setThreshold((BigDecimal)newValue);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__MOVING_AVERAGE:
-        setMovingAverage((Short)newValue);
+      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+        getMsubdevices().clear();
+        getMsubdevices().addAll((Collection<? extends LoadCellDevice>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1142,20 +849,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
         setBrickd((MBrickd)null);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE:
-        setSensorValue((DecimalValue)null);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG:
-        setTfConfig((LoadCellConfiguration)null);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__THRESHOLD:
-        setThreshold(THRESHOLD_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__MOVING_AVERAGE:
-        setMovingAverage(MOVING_AVERAGE_EDEFAULT);
+      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+        getMsubdevices().clear();
         return;
     }
     super.eUnset(featureID);
@@ -1193,18 +888,10 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
         return getBrickd() != null;
-      case ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE:
-        return sensorValue != null;
-      case ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG:
-        return tfConfig != null;
-      case ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+        return msubdevices != null && !msubdevices.isEmpty();
       case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBRICKLET_LOAD_CELL__THRESHOLD:
-        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
-      case ModelPackage.MBRICKLET_LOAD_CELL__MOVING_AVERAGE:
-        return movingAverage != MOVING_AVERAGE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -1217,27 +904,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1252,27 +923,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_LOAD_CELL__SENSOR_VALUE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_LOAD_CELL__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_LOAD_CELL__CALLBACK_PERIOD;
+        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1287,25 +942,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.MBRICKLET_LOAD_CELL___FETCH_SENSOR_VALUE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (baseOperationID)
-      {
+        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_LOAD_CELL___INIT_SUB_DEVICES;
         default: return -1;
       }
     }
@@ -1322,17 +963,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (operationID)
     {
+      case ModelPackage.MBRICKLET_LOAD_CELL___INIT_SUB_DEVICES:
+        initSubDevices();
+        return null;
       case ModelPackage.MBRICKLET_LOAD_CELL___INIT:
         init();
-        return null;
-      case ModelPackage.MBRICKLET_LOAD_CELL___TARE:
-        tare();
-        return null;
-      case ModelPackage.MBRICKLET_LOAD_CELL___LED__ONOFFVALUE:
-        led((OnOffValue)arguments.get(0));
-        return null;
-      case ModelPackage.MBRICKLET_LOAD_CELL___FETCH_SENSOR_VALUE:
-        fetchSensorValue();
         return null;
       case ModelPackage.MBRICKLET_LOAD_CELL___ENABLE:
         enable();
@@ -1375,16 +1010,8 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", sensorValue: ");
-    result.append(sensorValue);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", threshold: ");
-    result.append(threshold);
-    result.append(", movingAverage: ");
-    result.append(movingAverage);
     result.append(')');
     return result.toString();
   }

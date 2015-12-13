@@ -66,6 +66,14 @@ public class TinkerForge {
   @ActionDoc(text = "clears the counter of the rotary encoder", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
   public static boolean tfRotaryEncoderClear(
       @ParamDoc(name = "uid", text = "Bricklet Rotary Encoder uid") String uid) {
+    logger.trace("rotary encoder clear action");
     return context.tfRotaryEncoderClear(uid);
   }
+  
+  @ActionDoc(text = "Sets the currently measured weight as tare weight.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+  public static boolean tfLoadCellTare(@ParamDoc(name = "uid", text = "Bricklet Load Cell uid") String uid) {
+    logger.trace("Load Cell tare action");
+    return context.tfLoadCellTare(uid);
+  }
+
 }

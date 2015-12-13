@@ -979,6 +979,24 @@ public interface ModelFactory extends EFactory
   MBrickletLoadCell createMBrickletLoadCell();
 
   /**
+   * Returns a new object of class '<em>Load Cell Weight</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Load Cell Weight</em>'.
+   * @generated
+   */
+  LoadCellWeight createLoadCellWeight();
+
+  /**
+   * Returns a new object of class '<em>Load Cell Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Load Cell Led</em>'.
+   * @generated
+   */
+  LoadCellLed createLoadCellLed();
+
+  /**
    * Returns a new object of class '<em>MBricklet Moisture</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

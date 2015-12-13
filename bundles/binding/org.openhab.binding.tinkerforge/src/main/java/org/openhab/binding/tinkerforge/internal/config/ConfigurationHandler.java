@@ -48,6 +48,7 @@ import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
@@ -119,8 +120,8 @@ public class ConfigurationHandler {
     bricklet_ledstrip, ledgroup, bricklet_ptc, ptc_temperature, ptc_resistance, 
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
     digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2,
-    bricklet_dustdetector, bricklet_loadcell, bricklet_color, color_color, color_illuminance,
-    color_temperature, color_led
+    bricklet_dustdetector, bricklet_loadcell, loadcell_weight, loadcell_led, bricklet_color, 
+    color_color, color_illuminance, color_temperature, color_led
   }
 
 
@@ -579,11 +580,28 @@ public class ConfigurationHandler {
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else if (deviceType.equals(TypeKey.bricklet_loadcell.name())) {
-      logger.trace("{} setting LoadCellConfiguration device_type {}", LoggerConstants.CONFIG,
-          deviceType);
-      logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          LoadCellSubIds.values());
+      OHTFDevice<?, LoadCellSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LoadCellSubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.loadcell_weight.name())) {
+      logger.debug("{} setting LoadCellConfiguration device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          LoadCellSubIds.values());
       LoadCellConfiguration configuration = modelFactory.createLoadCellConfiguration();
-      OHTFDevice<LoadCellConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      OHTFDevice<LoadCellConfiguration, LoadCellSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LoadCellSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.loadcell_led.name())) {
+      logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
+      logger.debug("{} setting subdevice ids to {}", LoggerConstants.CONFIG,
+          LoadCellSubIds.values());
+      OHTFDevice<?, LoadCellSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LoadCellSubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
     } else if (deviceType.equals(TypeKey.bricklet_temperature.name())) {
       TFTemperatureConfiguration configuration = modelFactory.createTFTemperatureConfiguration();
       OHTFDevice<TFTemperatureConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();

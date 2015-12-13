@@ -18,16 +18,14 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell#getThreshold <em>Threshold</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell#getMovingAverage <em>Moving Average</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLoadCell()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLoadCell> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletLoadCell> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.LoadCellDevice>"
  * @generated
  */
-public interface MBrickletLoadCell extends MDevice<BrickletLoadCell>, MSensor<DecimalValue>, MTFConfigConsumer<LoadCellConfiguration>, CallbackListener
+public interface MBrickletLoadCell extends MDevice<BrickletLoadCell>, MSubDeviceHolder<LoadCellDevice>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -44,84 +42,5 @@ public interface MBrickletLoadCell extends MDevice<BrickletLoadCell>, MSensor<De
    * @generated
    */
   String getDeviceType();
-
-  /**
-   * Returns the value of the '<em><b>Threshold</b></em>' attribute.
-   * The default value is <code>"0"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Threshold</em>' attribute.
-   * @see #setThreshold(BigDecimal)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLoadCell_Threshold()
-   * @model default="0" unique="false"
-   * @generated
-   */
-  BigDecimal getThreshold();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell#getThreshold <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Threshold</em>' attribute.
-   * @see #getThreshold()
-   * @generated
-   */
-  void setThreshold(BigDecimal value);
-
-  /**
-   * Returns the value of the '<em><b>Moving Average</b></em>' attribute.
-   * The default value is <code>"4"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Moving Average</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Moving Average</em>' attribute.
-   * @see #setMovingAverage(short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLoadCell_MovingAverage()
-   * @model default="4" unique="false"
-   * @generated
-   */
-  short getMovingAverage();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell#getMovingAverage <em>Moving Average</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Moving Average</em>' attribute.
-   * @see #getMovingAverage()
-   * @generated
-   */
-  void setMovingAverage(short value);
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
-   * @generated
-   */
-  void init();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
-   * @generated
-   */
-  void tare();
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model stateDataType="org.openhab.binding.tinkerforge.internal.model.SwitchState" stateUnique="false"
-   *        annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
-   * @generated
-   */
-  void led(OnOffValue state);
 
 } // MBrickletLoadCell

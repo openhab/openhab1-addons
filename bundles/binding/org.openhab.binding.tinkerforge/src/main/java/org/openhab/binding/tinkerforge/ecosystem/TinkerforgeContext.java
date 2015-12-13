@@ -8,10 +8,6 @@
  */
 package org.openhab.binding.tinkerforge.ecosystem;
 
-import org.openhab.core.library.types.OnOffType;
-
-
-
 
 public interface TinkerforgeContext {
   /**
@@ -72,14 +68,5 @@ public interface TinkerforgeContext {
    * @return true on success otherwise false
    */
   public boolean tfLoadCellTare(String uid);
-
-  /**
-   * Switch the led of the Load Cell Bricklet on or off.
-   * 
-   * @param uid the uid of the Rotary Encoder Bricklet
-   * @param onOff the new state of the led
-   * @return true on success otherwise false
-   */
-  public boolean tfLoadCellLed(String uid, OnOffType onOff);
 
 }

@@ -3,59 +3,51 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.ColorLed;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletColor;
+import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Color Led</b></em>'.
+ * An implementation of the model object '<em><b>Load Cell Led</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getDigitalState <em>Digital State</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDigitalState <em>Digital State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorLed
+public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements LoadCellLed
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -185,7 +177,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "color_led";
+  protected static final String DEVICE_TYPE_EDEFAULT = "loadcell_led";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -197,14 +189,14 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
-  private BrickletColor tinkerforgeDevice;
+  private BrickletLoadCell tinkerforgeDevice;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ColorLedImpl()
+  protected LoadCellLedImpl()
   {
     super();
   }
@@ -217,7 +209,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.COLOR_LED;
+    return ModelPackage.Literals.LOAD_CELL_LED;
   }
 
   /**
@@ -240,7 +232,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -263,7 +255,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__UID, oldUid, uid));
   }
 
   /**
@@ -286,7 +278,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__POLL, oldPoll, poll));
   }
 
   /**
@@ -309,7 +301,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -332,7 +324,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -340,10 +332,10 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    * <!-- end-user-doc -->
    * @generated
    */
-  public MBrickletColor getMbrick()
+  public MBrickletLoadCell getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.COLOR_LED__MBRICK) return null;
-    return (MBrickletColor)eContainer();
+    if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED__MBRICK) return null;
+    return (MBrickletLoadCell)eContainer();
   }
 
   /**
@@ -351,9 +343,9 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetMbrick(MBrickletColor newMbrick, NotificationChain msgs)
+  public NotificationChain basicSetMbrick(MBrickletLoadCell newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.COLOR_LED__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.LOAD_CELL_LED__MBRICK, msgs);
     return msgs;
   }
 
@@ -362,9 +354,9 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setMbrick(MBrickletColor newMbrick)
+  public void setMbrick(MBrickletLoadCell newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.COLOR_LED__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -377,7 +369,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -400,7 +392,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     HighLowValue oldDigitalState = digitalState;
     digitalState = newDigitalState;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.COLOR_LED__DIGITAL_STATE, oldDigitalState, digitalState));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED__DIGITAL_STATE, oldDigitalState, digitalState));
   }
 
   /**
@@ -418,13 +410,16 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void turnDigital(HighLowValue digitalState) {
-    setDigitalState(digitalState);
+  public void turnDigital(HighLowValue state)
+  {
     try {
-      if (digitalState == HighLowValue.LOW) {
-        tinkerforgeDevice.lightOff();
+      logger.debug("led got {}", state);
+      if (state == HighLowValue.HIGH) {
+        logger.debug("switching led on");
+        tinkerforgeDevice.ledOn();
       } else {
-        tinkerforgeDevice.lightOn();
+        logger.debug("switching led off");
+        tinkerforgeDevice.ledOff();
       }
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -440,12 +435,9 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
    * @generated NOT
    */
   public void fetchDigitalValue()
- {
+  {
     try {
-      HighLowValue value =
-          tinkerforgeDevice.isLightOn() == BrickletColor.LIGHT_ON
-              ? HighLowValue.HIGH
-              : HighLowValue.LOW;
+      HighLowValue value = tinkerforgeDevice.isLEDOn() ? HighLowValue.HIGH : HighLowValue.LOW; 
       setDigitalState(value);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -463,7 +455,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(ColorLedImpl.class);
+    logger = LoggerFactory.getLogger(LoadCellLedImpl.class);
   }
 
   /**
@@ -497,10 +489,10 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (featureID)
     {
-      case ModelPackage.COLOR_LED__MBRICK:
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
-        return basicSetMbrick((MBrickletColor)otherEnd, msgs);
+        return basicSetMbrick((MBrickletLoadCell)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -515,7 +507,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (featureID)
     {
-      case ModelPackage.COLOR_LED__MBRICK:
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
         return basicSetMbrick(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -531,7 +523,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.COLOR_LED__MBRICK:
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -547,21 +539,21 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (featureID)
     {
-      case ModelPackage.COLOR_LED__LOGGER:
+      case ModelPackage.LOAD_CELL_LED__LOGGER:
         return getLogger();
-      case ModelPackage.COLOR_LED__UID:
+      case ModelPackage.LOAD_CELL_LED__UID:
         return getUid();
-      case ModelPackage.COLOR_LED__POLL:
+      case ModelPackage.LOAD_CELL_LED__POLL:
         return isPoll();
-      case ModelPackage.COLOR_LED__ENABLED_A:
+      case ModelPackage.LOAD_CELL_LED__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.COLOR_LED__SUB_ID:
+      case ModelPackage.LOAD_CELL_LED__SUB_ID:
         return getSubId();
-      case ModelPackage.COLOR_LED__MBRICK:
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
         return getMbrick();
-      case ModelPackage.COLOR_LED__DIGITAL_STATE:
+      case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE:
         return getDigitalState();
-      case ModelPackage.COLOR_LED__DEVICE_TYPE:
+      case ModelPackage.LOAD_CELL_LED__DEVICE_TYPE:
         return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -577,25 +569,25 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (featureID)
     {
-      case ModelPackage.COLOR_LED__LOGGER:
+      case ModelPackage.LOAD_CELL_LED__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.COLOR_LED__UID:
+      case ModelPackage.LOAD_CELL_LED__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.COLOR_LED__POLL:
+      case ModelPackage.LOAD_CELL_LED__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.COLOR_LED__ENABLED_A:
+      case ModelPackage.LOAD_CELL_LED__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.COLOR_LED__SUB_ID:
+      case ModelPackage.LOAD_CELL_LED__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.COLOR_LED__MBRICK:
-        setMbrick((MBrickletColor)newValue);
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
+        setMbrick((MBrickletLoadCell)newValue);
         return;
-      case ModelPackage.COLOR_LED__DIGITAL_STATE:
+      case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE:
         setDigitalState((HighLowValue)newValue);
         return;
     }
@@ -612,25 +604,25 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (featureID)
     {
-      case ModelPackage.COLOR_LED__LOGGER:
+      case ModelPackage.LOAD_CELL_LED__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.COLOR_LED__UID:
+      case ModelPackage.LOAD_CELL_LED__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.COLOR_LED__POLL:
+      case ModelPackage.LOAD_CELL_LED__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.COLOR_LED__ENABLED_A:
+      case ModelPackage.LOAD_CELL_LED__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.COLOR_LED__SUB_ID:
+      case ModelPackage.LOAD_CELL_LED__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.COLOR_LED__MBRICK:
-        setMbrick((MBrickletColor)null);
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
+        setMbrick((MBrickletLoadCell)null);
         return;
-      case ModelPackage.COLOR_LED__DIGITAL_STATE:
+      case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE:
         setDigitalState(DIGITAL_STATE_EDEFAULT);
         return;
     }
@@ -647,21 +639,21 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (featureID)
     {
-      case ModelPackage.COLOR_LED__LOGGER:
+      case ModelPackage.LOAD_CELL_LED__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.COLOR_LED__UID:
+      case ModelPackage.LOAD_CELL_LED__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.COLOR_LED__POLL:
+      case ModelPackage.LOAD_CELL_LED__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.COLOR_LED__ENABLED_A:
+      case ModelPackage.LOAD_CELL_LED__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.COLOR_LED__SUB_ID:
+      case ModelPackage.LOAD_CELL_LED__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.COLOR_LED__MBRICK:
+      case ModelPackage.LOAD_CELL_LED__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.COLOR_LED__DIGITAL_STATE:
+      case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE:
         return DIGITAL_STATE_EDEFAULT == null ? digitalState != null : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
-      case ModelPackage.COLOR_LED__DEVICE_TYPE:
+      case ModelPackage.LOAD_CELL_LED__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
@@ -679,7 +671,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.COLOR_LED__DIGITAL_STATE: return ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE;
+        case ModelPackage.LOAD_CELL_LED__DIGITAL_STATE: return ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE;
         default: return -1;
       }
     }
@@ -698,7 +690,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE: return ModelPackage.COLOR_LED__DIGITAL_STATE;
+        case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE: return ModelPackage.LOAD_CELL_LED__DIGITAL_STATE;
         default: return -1;
       }
     }
@@ -717,8 +709,8 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     {
       switch (baseOperationID)
       {
-        case ModelPackage.DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE: return ModelPackage.COLOR_LED___TURN_DIGITAL__HIGHLOWVALUE;
-        case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE: return ModelPackage.COLOR_LED___FETCH_DIGITAL_VALUE;
+        case ModelPackage.DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE: return ModelPackage.LOAD_CELL_LED___TURN_DIGITAL__HIGHLOWVALUE;
+        case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE: return ModelPackage.LOAD_CELL_LED___FETCH_DIGITAL_VALUE;
         default: return -1;
       }
     }
@@ -735,19 +727,19 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
   {
     switch (operationID)
     {
-      case ModelPackage.COLOR_LED___TURN_DIGITAL__HIGHLOWVALUE:
+      case ModelPackage.LOAD_CELL_LED___TURN_DIGITAL__HIGHLOWVALUE:
         turnDigital((HighLowValue)arguments.get(0));
         return null;
-      case ModelPackage.COLOR_LED___FETCH_DIGITAL_VALUE:
+      case ModelPackage.LOAD_CELL_LED___FETCH_DIGITAL_VALUE:
         fetchDigitalValue();
         return null;
-      case ModelPackage.COLOR_LED___INIT:
+      case ModelPackage.LOAD_CELL_LED___INIT:
         init();
         return null;
-      case ModelPackage.COLOR_LED___ENABLE:
+      case ModelPackage.LOAD_CELL_LED___ENABLE:
         enable();
         return null;
-      case ModelPackage.COLOR_LED___DISABLE:
+      case ModelPackage.LOAD_CELL_LED___DISABLE:
         disable();
         return null;
     }
@@ -783,4 +775,4 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
     return result.toString();
   }
 
-} //ColorLedImpl
+} //LoadCellLedImpl

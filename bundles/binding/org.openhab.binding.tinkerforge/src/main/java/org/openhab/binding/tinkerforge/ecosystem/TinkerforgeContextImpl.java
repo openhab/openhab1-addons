@@ -9,14 +9,12 @@
 package org.openhab.binding.tinkerforge.ecosystem;
 
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
 import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
-import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
-import org.openhab.core.library.types.OnOffType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,34 +130,10 @@ public class TinkerforgeContextImpl implements TinkerforgeContext {
       logger.error("tfLoadCellTare action failed ecosystem is null");
       return false;
     }
-    MBaseDevice mDevice = ecosystem.getDevice(uid, null);
-    if (mDevice instanceof MBrickletLoadCell) {
+    MBaseDevice mDevice = ecosystem.getDevice(uid, "weight");
+    if (mDevice instanceof LoadCellWeight) {
       logger.trace("load cell tare action");
-      ((MBrickletLoadCell) mDevice).tare();
-      return true;
-    } else {
-      logger.error("no Load Cell Bricklet found for uid {}", uid);
-      return false;
-    }
-  }
-
-  @Override
-  public boolean tfLoadCellLed(String uid, OnOffType onOff) {
-    if (ecosystem == null) {
-      logger.error("tfLoadCellTare action failed ecosystem is null");
-      return false;
-    }
-    MBaseDevice mDevice = ecosystem.getDevice(uid, null);
-    if (mDevice instanceof MBrickletLoadCell) {
-      logger.trace("load cell led action");
-      MBrickletLoadCell bricklet = (MBrickletLoadCell) mDevice;
-      if (onOff == OnOffType.ON) {
-        logger.debug("switching led on");
-        bricklet.led(OnOffValue.ON);
-      } else {
-        logger.debug("switching led off");
-        bricklet.led(OnOffValue.OFF);
-      }
+      ((LoadCellWeight) mDevice).tare();
       return true;
     } else {
       logger.error("no Load Cell Bricklet found for uid {}", uid);

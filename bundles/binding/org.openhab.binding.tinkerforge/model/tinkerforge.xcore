@@ -309,6 +309,27 @@ class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
 	DualButtonDevicePosition position
 }
 
+class MBrickletLoadCell extends MDevice<TinkerBrickletLoadCell>,
+		MSubDeviceHolder<LoadCellDevice> {
+    readonly String deviceType = "bricklet_loadcell"
+}
+
+interface LoadCellDevice extends MSubDevice<MBrickletLoadCell> {
+}
+
+class LoadCellWeight extends LoadCellDevice, MSensor<MDecimalValue>, MTFConfigConsumer<LoadCellConfiguration>,
+        CallbackListener {
+	 readonly String deviceType = "loadcell_weight"
+	BigDecimal threshold = "0"
+	short movingAverage = "4"
+    op void init(){}
+    op void tare(){}
+}
+
+class LoadCellLed extends LoadCellDevice, DigitalActor {
+	readonly String deviceType = "loadcell_led"
+}
+
 class MBrickletColor extends MDevice<TinkerBrickletColor>,
 	MSubDeviceHolder<BrickletColorDevice>, MTFConfigConsumer<BrickletColorConfiguration>{
 	readonly String deviceType = "bricklet_color"
@@ -785,17 +806,6 @@ class MBrickletDustDetector extends MDevice<TinkerBrickletDustDetector>,
     op void init(){}
 }
 
-class MBrickletLoadCell extends MDevice<TinkerBrickletLoadCell>,
-        MSensor<MDecimalValue>, MTFConfigConsumer<LoadCellConfiguration>,
-        CallbackListener {
-    readonly String deviceType = "bricklet_loadcell"
-    BigDecimal threshold = "0"
-	short movingAverage = "4"
-    op void init(){}
-    op void tare(){}
-    op void led(SwitchState state){}
-}
-
 class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFMoistureBrickletConfiguration>,
         CallbackListener {
@@ -1129,3 +1139,6 @@ enum ColorBrickletSubIds {
 	color, temperature, illuminance, led
 }
 
+enum LoadCellSubIds {
+	weight, led
+}

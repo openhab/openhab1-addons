@@ -131,6 +131,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER: return createMBrickletPiezoSpeaker();
       case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
+      case ModelPackage.MBRICKLET_LOAD_CELL: return createMBrickletLoadCell();
+      case ModelPackage.LOAD_CELL_WEIGHT: return createLoadCellWeight();
+      case ModelPackage.LOAD_CELL_LED: return createLoadCellLed();
       case ModelPackage.MBRICKLET_COLOR: return createMBrickletColor();
       case ModelPackage.COLOR_COLOR: return createColorColor();
       case ModelPackage.COLOR_ILLUMINANCE: return createColorIlluminance();
@@ -199,7 +202,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2: return createMBrickletAmbientLightV2();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
       case ModelPackage.MBRICKLET_DUST_DETECTOR: return createMBrickletDustDetector();
-      case ModelPackage.MBRICKLET_LOAD_CELL: return createMBrickletLoadCell();
       case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
       case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
@@ -307,6 +309,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createRotaryEncoderSubIdsFromString(eDataType, initialValue);
       case ModelPackage.COLOR_BRICKLET_SUB_IDS:
         return createColorBrickletSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.LOAD_CELL_SUB_IDS:
+        return createLoadCellSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -490,6 +494,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertRotaryEncoderSubIdsToString(eDataType, instanceValue);
       case ModelPackage.COLOR_BRICKLET_SUB_IDS:
         return convertColorBrickletSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.LOAD_CELL_SUB_IDS:
+        return convertLoadCellSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -1768,6 +1774,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public LoadCellWeight createLoadCellWeight()
+  {
+    LoadCellWeightImpl loadCellWeight = new LoadCellWeightImpl();
+    return loadCellWeight;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LoadCellLed createLoadCellLed()
+  {
+    LoadCellLedImpl loadCellLed = new LoadCellLedImpl();
+    return loadCellLed;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MBrickletMoisture createMBrickletMoisture()
   {
     MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
@@ -2114,6 +2142,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertColorBrickletSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LoadCellSubIds createLoadCellSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    LoadCellSubIds result = LoadCellSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertLoadCellSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
