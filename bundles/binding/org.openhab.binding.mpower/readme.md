@@ -7,9 +7,11 @@ The binding supports
 - Receiving data from the sensors
 - Multiple strips
 
+The binding has only been tested with the EU 6 port version. Please provide feedback to the author in case you are using different devices.
+
 # Setup
 
-This binding requires Firmware version "MF.v2.1.8". installed on your mPower strip(s). In case you need to update, use the url 
+This binding requires Firmware version "MF.v2.1.11". installed on your mPower strip(s). In case you need to update, use the url 
 
 ```
 http://<ip of you mpower>/system.cgi
@@ -34,17 +36,17 @@ mpower:refresh=60000
 mpower:mp1.host=192.168.0.15
 mpower:mp1.user=ubnt
 mpower:mp1.password=secret
-mpower:mp1.refresh=10000
+mpower:mp1.refresh=5000
 
 mpower:mp2.host=192.168.0.27
 mpower:mp2.user=ubnt
 mpower:mp2.password=secret
-mpower:mp2.refresh=60000
+mpower:mp2.refresh=5000
 ```
 
 Remarks:
 - for the option "mpower:refresh": it defines how often the SSH connection will be checked. Best to set this value at 60000.
-- for the option "mpower:<smybolic name>.refresh": it defines how often the items are updated (in ms). In case the data has not changed (same voltage etc) no update will be performed.
+- for the option "mpower:<smybolic name>.refresh": it defines how often the items are updated (in ms). In case the data has not changed (same voltage etc) no update will be performed. A value of 5000 is appropriate.
 
 
 # Item Binding Configuration
@@ -87,8 +89,19 @@ Number mp6Power "mp1-6 power [%.1f W]" {mpower="mp1:6:power"}
 
 # Persistence
 
+In case you want to persist the daily energy consumption I suggest the following approach:
 
+Make sure that the "cf_count" values are reset each night. You can do this by connecting to your mPower device via SSH and adding the following lines to /tmp/system.cfg 
 
+```
+cron.1.job.1.cmd=echo 1 > /proc/power/clear_ae4;echo 1 > /proc/power/clear_ae5;echo 1 > /proc/power/clear_ae6;echo 1 > /proc/power/clear_ae1;echo 1 > /proc/power/clear_ae2;echo 1 > /proc/power/clear_ae3;
+cron.1.job.1.schedule=59 23 * * *
+cron.1.job.1.status=enabled
+cron.1.status=enabled
+cron.1.user=ubnt
+cron.status=enabled
+```
 
-# Warning
-This binding is still under development. Don't use it in production.
+You need to apply your changes with the "save" command.
+
+After some persistence and chart configuration you will be able to closely monitor energy consumption with your mPower device.
