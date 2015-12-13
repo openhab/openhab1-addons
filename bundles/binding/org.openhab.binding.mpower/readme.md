@@ -105,3 +105,4 @@ cron.status=enabled
 You need to apply your changes with the "save" command.
 
 After some persistence and chart configuration you will be able to closely monitor energy consumption with your mPower device.
+![Sample](https://raw.githubusercontent.com/magcode/openhab/master/bundles/binding/org.openhab.binding.mpower/doc/consumption.png)
