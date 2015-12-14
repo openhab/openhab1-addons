@@ -16,42 +16,51 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Implementation of Quartz {@link Job}-Interface.
- * It changes the state of a mystrom device.
+ * Implementation of Quartz {@link Job}-Interface. It changes the state of a
+ * mystrom device.
  * 
  * @author Christophe Jordens
- * @since 1.7.0-SNAPSHOT
+ * @since 1.8.0-SNAPSHOT
  */
 public class ChangeStateJob implements Job {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(ChangeStateJob.class);
-		
+	private static final Logger logger = LoggerFactory
+			.getLogger(ChangeStateJob.class);
+
 	public static final String JOB_DATA_CONTENT_KEY = "deviceId";
 	public static IMystromClient MystromClient;
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
 	 */
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		String content = (String) context.getJobDetail().getJobDataMap().get(JOB_DATA_CONTENT_KEY);
-		
+	public void execute(JobExecutionContext context)
+			throws JobExecutionException {
+		String content = (String) context.getJobDetail().getJobDataMap()
+				.get(JOB_DATA_CONTENT_KEY);
+
 		if (StringUtils.isNotBlank(content)) {
-			String deviceId = content.split(";")[0]; 
-			String state = content.split(";")[1];	
-			
+			String deviceId = content.split(";")[0];
+			String state = content.split(";")[1];
+
 			boolean setToOn = state == "on";
-			
-			logger.debug("About to execute ChangeStateJob with arguments {}", deviceId + " " + state);
+
+			logger.debug(
+					"About to execute ChangeStateJob with arguments {} {}",
+					deviceId, state);
 			try {
 				MystromClient.ChangeState(deviceId, setToOn);
 			} catch (Exception e) {
-				throw new JobExecutionException("Executing command '" + deviceId + " " + state + "' throws an Exception. Job will be refired immediately.", e, true);
+				throw new JobExecutionException(
+						"Executing command '"
+								+ deviceId
+								+ " "
+								+ state
+								+ "' throws an Exception. Job will be refired immediately.",
+						e, true);
 			}
 		}
 	}
 }
-
-

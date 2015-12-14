@@ -13,19 +13,19 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Extension of the default OSGi bundle activator
  * 
  * @author Jordens Christophe
- * @since 1.7.0-SNAPSHOT
+ * @since 1.8.0-SNAPSHOT
  */
 public final class MyStromEcoPowerActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger("org.openhab.binding.mystromecopower"); 
-	
+	private static Logger logger = LoggerFactory
+			.getLogger(MyStromEcoPowerActivator.class);
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
@@ -41,13 +41,14 @@ public final class MyStromEcoPowerActivator implements BundleActivator {
 		context = null;
 		logger.debug("MyStromEcoPower binding has been stopped.");
 	}
-	
+
 	/**
 	 * Returns the bundle context of this bundle
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {
 		return context;
 	}
-	
+
 }

@@ -10,35 +10,34 @@ package org.openhab.binding.mystromecopower.internal.api.model;
 
 /**
  * Class model for a mystrom eco power device.
- * @since 1.7.0-SNAPSHOT
+ * 
+ * @since 1.8.0-SNAPSHOT
  * @author Jordens Christophe
- *
+ * 
  */
 public class MystromDevice {
 	/**
 	 * The id of the device on the mystrom server.
 	 */
 	public String id;
-	
+
 	/**
 	 * The name of the device on the mystrom server.
 	 */
 	public String name;
-	
+
 	/**
-	 * The state of the device, can be:
-	 * on, off or offline.
+	 * The state of the device, can be: on, off or offline.
 	 */
 	public String state;
-	
+
 	/**
 	 * The power the device is consuming in Watt.
 	 */
 	public String power;
-	
+
 	/**
-	 * Device type.
-	 * mst: master, eth: ethernet, sw:switch, mtr:?, swg:?, tph:?
+	 * Device type. mst: master, eth: ethernet, sw:switch, mtr:?, swg:?, tph:?
 	 */
 	public String type;
 }

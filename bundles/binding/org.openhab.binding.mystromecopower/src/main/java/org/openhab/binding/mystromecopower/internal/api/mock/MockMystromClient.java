@@ -17,12 +17,13 @@ import org.openhab.binding.mystromecopower.internal.api.IMystromClient;
 import org.openhab.binding.mystromecopower.internal.api.model.MystromDevice;
 
 /**
- * Mock used to simulate the mystrom SRS server. 
- * @since 1.7.0-SNAPSHOT
+ * Mock used to simulate the mystrom SRS server.
+ * 
+ * @since 1.8.0-SNAPSHOT
  * @author Jordens Christophe
- *
+ * 
  */
-public class MockMystromClient implements IMystromClient{
+public class MockMystromClient implements IMystromClient {
 	private Map<String, MystromDevice> devices = new HashMap<String, MystromDevice>();
 
 	@Override
@@ -34,29 +35,28 @@ public class MockMystromClient implements IMystromClient{
 	public List<MystromDevice> getDevices() {
 		ArrayList<MystromDevice> foundDevices = new ArrayList<MystromDevice>();
 		this.devices.clear();
-		
+
 		MystromDevice device1 = new MystromDevice();
 		device1.name = "Halogène/Multi prises";
 		device1.id = "1";
 		device1.state = "on";
 		devices.put(device1.id, device1);
 		foundDevices.add(device1);
-		
-		
+
 		MystromDevice device2 = new MystromDevice();
 		device2.name = "Tv/HomeCinéma";
 		device2.id = "2";
 		device2.state = "off";
 		devices.put(device2.id, device2);
 		foundDevices.add(device2);
-		
+
 		MystromDevice device3 = new MystromDevice();
 		device3.name = "Chauffe eau";
 		device3.id = "3";
 		device3.state = "offline";
 		devices.put(device3.id, device3);
 		foundDevices.add(device3);
-		
+
 		return foundDevices;
 	}
 
@@ -64,11 +64,11 @@ public class MockMystromClient implements IMystromClient{
 	public MystromDevice getDeviceInfo(String deviceId) {
 		MystromDevice device = this.devices.get(deviceId);
 		device.power = Double.toString(Math.random() * 100);
-		
-		if(device.id == "3"){
+
+		if (device.id == "3") {
 			device.state = "on";
 		}
-		
+
 		return device;
 	}
 

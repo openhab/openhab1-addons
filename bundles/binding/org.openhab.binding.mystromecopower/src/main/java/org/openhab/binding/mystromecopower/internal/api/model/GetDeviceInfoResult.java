@@ -10,9 +10,10 @@ package org.openhab.binding.mystromecopower.internal.api.model;
 
 /**
  * Structure class for Json deserialization.
- * @since 1.7.0-SNAPSHOT
+ * 
+ * @since 1.8.0-SNAPSHOT
  * @author Jordens Christophe
- *
+ * 
  */
 public class GetDeviceInfoResult {
 	/**
