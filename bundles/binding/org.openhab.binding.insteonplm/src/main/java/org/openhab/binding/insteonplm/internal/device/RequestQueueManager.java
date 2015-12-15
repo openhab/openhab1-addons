@@ -73,13 +73,16 @@ public class RequestQueueManager {
 	 * Stops request queue thread
 	 */
 	private void stopThread() {
+		logger.debug("stopping thread");
 		if (m_queueThread != null) {
 			synchronized (m_requestQueues) {
 				m_keepRunning = false;
-				m_requestQueues.notify();
+				m_requestQueues.notifyAll();
 			}
 			try {
+				logger.debug("waiting for thread to join");
 				m_queueThread.join();
+				logger.debug("request queue thread exited!");
 			} catch (InterruptedException e) {
 				logger.error("got interrupted waiting for thread exit ", e);
 			}
@@ -94,7 +97,7 @@ public class RequestQueueManager {
 			synchronized (m_requestQueues) {
 				while (m_keepRunning) {
 					try {
-						while (!m_requestQueues.isEmpty()) {
+						while (m_keepRunning && !m_requestQueues.isEmpty()) {
 							RequestQueue q = m_requestQueues.peek();
 							long now = System.currentTimeMillis();
 							long expTime = q.getExpirationTime();
@@ -132,7 +135,8 @@ public class RequestQueueManager {
 						logger.trace("waiting for request queues to fill");
 						m_requestQueues.wait();
 					} catch (InterruptedException e) {
-						logger.error("request queue thread got interrupted, continuing", e);
+						logger.error("request queue thread got interrupted, breaking..", e);
+						break;
 					}
 				}
 			}

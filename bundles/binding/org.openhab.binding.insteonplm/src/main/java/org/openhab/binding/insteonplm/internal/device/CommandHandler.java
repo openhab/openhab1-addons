@@ -15,10 +15,9 @@ import java.util.TimerTask;
 
 import org.openhab.binding.insteonplm.InsteonPLMBindingConfig;
 import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener.StateChangeType;
-import org.openhab.binding.insteonplm.internal.driver.Driver;
-import org.openhab.binding.insteonplm.internal.driver.ModemDBEntry;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -57,17 +56,27 @@ public abstract class CommandHandler {
 	 * Returns parameter as integer
 	 * @param key key of parameter
 	 * @param def default
-	 * @return integer value of parameter
+	 * @return value of parameter
 	 */
 	protected int getIntParameter(String key, int def) {
+		String val = m_parameters.get(key);
+		if (val == null) return (def); // param not found
+		int ret = def;
 		try {
-			if (m_parameters.get(key) != null) {
-				return Integer.parseInt(m_parameters.get(key));
-			}
+			ret = Utils.strToInt(val);
 		} catch (NumberFormatException e) {
 			logger.error("malformed int parameter in command handler: {}", key);
 		}
-		return def;
+		return ret;
+	}
+	/**
+	 * Returns parameter as String
+	 * @param key key of parameter
+	 * @param def default
+	 * @return value of parameter
+	 */
+	protected String getStringParameter(String key, String def) {
+		return (m_parameters.get(key) == null ? def : m_parameters.get(key));
 	}
 	/**
 	 * Shorthand to return class name for logging purposes
@@ -112,7 +121,7 @@ public abstract class CommandHandler {
 		String v = c.getParameters().get("group");
 		int iv = -1;
 		try {
-			iv = (v == null) ? -1 : Integer.parseInt(v);
+			iv = (v == null) ? -1 : Utils.strToInt(v);
 		} catch (NumberFormatException e) {
 			logger.error("malformed int parameter in for item {}", c.getItemName());
 		}
@@ -161,6 +170,89 @@ public abstract class CommandHandler {
 			}
 		}
 	}
+
+	public static class FastOnOffCommandHandler extends CommandHandler {
+		FastOnOffCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				if (cmd == OnOffType.ON) {
+					int level = getMaxLightLevel(conf, 0xff);
+					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x12, (byte) level,
+								s_getGroup(conf));
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent fast on to switch {} level {}", nm(), dev.getAddress(),
+							level == 0xff ? "on" : level);
+				} else if (cmd == OnOffType.OFF) {
+					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x14, (byte) 0x00,
+									s_getGroup(conf));
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent fast off to switch {}", nm(), dev.getAddress());
+				}
+				// expect to get a direct ack after this!
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+
+	public static class ManualChangeCommandHandler extends CommandHandler {
+		ManualChangeCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				if (cmd instanceof DecimalType) {
+					int v = ((DecimalType)cmd).intValue();
+					int cmd1 = (v != 1) ? 0x17 : 0x18; // start or stop
+					int cmd2 = (v == 2) ? 0x01 : 0; // up or down
+					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) cmd1, (byte) cmd2,
+								s_getGroup(conf));
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: cmd {} sent manual change {} {} to {}", nm(), v,
+								(cmd1 == 0x17) ? "START" : "STOP",
+								(cmd2 == 0x01) ? "UP" : "DOWN",  dev.getAddress());
+				} else {
+					logger.error("{}: invalid command type: {}", nm(), cmd);
+				}
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+
+	/**
+	 * Sends ALLLink broadcast commands to group
+	 */
+	public static class GroupBroadcastCommandHandler extends CommandHandler {
+		GroupBroadcastCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				if (cmd == OnOffType.ON || cmd == OnOffType.OFF) {
+					byte cmd1 = (byte)((cmd == OnOffType.ON) ? 0x11 : 0x13);
+					byte value = (byte)((cmd == OnOffType.ON) ? 0xFF: 0x00);
+					int group = s_getGroup(conf);
+					if (group == -1) {
+						logger.error("no group=xx specified in item {}", conf.getItemName());
+						return;
+					}
+					logger.info("{}: sending {} broadcast to group {}", nm(),
+							(cmd1 == 0x11) ? "ON": "OFF", s_getGroup(conf));
+					Msg m = dev.makeStandardMessage((byte) 0x0f, cmd1, value, group);
+					dev.enqueueMessage(m, m_feature);
+				}
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+
 	/**
 	 * This Handler was supposed to set the LEDs of the 2487S, but it doesn't work.
 	 * The parameters were modeled after the 2486D, it may work for that one,
@@ -187,18 +279,13 @@ public abstract class CommandHandler {
 			try {
 				int button = this.getIntParameter("button", -1);
 				if (cmd == OnOffType.ON) {
-					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
-					m.setByte("userData1", (byte)button);
-					  // set command for 2486D, does not work for 2487S. Putting a 0x00 here will send query
-					m.setByte("userData2", (byte) 0x09);
-					m.setByte("userData3", (byte) 0x01);
+					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00,
+								new byte[] {(byte)button, (byte) 0x09, (byte) 0x01});
 					dev.enqueueMessage(m, m_feature);
 					logger.info("{}: sent msg to switch {} on", nm(), dev.getAddress());
 				} else if (cmd == OnOffType.OFF) {
-					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
-					m.setByte("userData1", (byte)button);
-					m.setByte("userData2", (byte) 0x09);
-					m.setByte("userData3", (byte) 0x00);
+					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00,
+							new byte[] {(byte)button, (byte) 0x09, (byte) 0x00});
 					dev.enqueueMessage(m, m_feature);
 					logger.info("{}: sent msg to switch {} off", nm(), dev.getAddress());
 				}
@@ -412,269 +499,58 @@ public abstract class CommandHandler {
 		}
 	}
 
-	public static class ModemCommandHandler extends CommandHandler {
-		ModemCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice modem) {
-			if (!(cmd instanceof OnOffType) || ((OnOffType) cmd) != OnOffType.ON) return;
-			String removeAddr = conf.getParameters().get("remove_address");
-			if (!InsteonAddress.s_isValid(removeAddr)) {
-				logger.debug("{}: invalid remove address: {}", nm(), removeAddr);
-				return;
-			}
-			InsteonAddress addr = new InsteonAddress(removeAddr);
-			if (removeFromModem(addr)) {
-				logger.debug("{} successfully removed device {} from modem db", nm(), addr);
-			}
-		}
+	/**
+	 * Command handler that sends a command with a numerical value to a device.
+	 * The handler is very parameterizable so it can be reused for different devices.
+	 * First used for setting thermostat parameters.
+	 */
 
-		boolean removeFromModem(InsteonAddress aAddr) {
-			boolean removed = false;
-			Driver driver = m_feature.getDevice().getDriver();
+	public static class NumberCommandHandler extends CommandHandler {
+		NumberCommandHandler(DeviceFeature f) { super(f); }
+		public int transform(int cmd) {
+			return (cmd);
+		}
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
 			try {
-				HashMap<InsteonAddress, ModemDBEntry> dbes = driver.lockModemDBEntries();
-				ModemDBEntry dbe = dbes.get(aAddr);
-				if (dbe != null) {
-					for (Msg lr : dbe.getLinkRecords()) {
-						Msg m = Msg.s_makeMessage("ManageALLLinkRecord");
-						m.setByte("controlCode", (byte)0x80);
-						m.setByte("recordFlags", (byte)0x00);
-						m.setByte("ALLLinkGroup", lr.getByte("ALLLinkGroup"));
-						m.setAddress("linkAddress", aAddr);
-						m.setByte("linkData1", (byte)0x00);
-						m.setByte("linkData2", (byte)0x00);
-						m.setByte("linkData3", (byte)0x00);
-						dbe.getPort().writeMessage(m);
-						removed = true;
-						logger.info("{}: wrote erase message: {}", nm(), m);
-					}
+				int dc = transform(((DecimalType)cmd).intValue());
+				int intFactor = getIntParameter("factor", 1);
+				//
+				// determine what level should be, and what field it should be in
+				//
+				int ilevel = dc * intFactor;
+				byte level = (byte)(ilevel > 255 ? 0xFF : ((ilevel < 0) ? 0 : ilevel));
+				String vfield = getStringParameter("value", "");
+				if (vfield == "") {
+					logger.error("{} has no value field specified", nm());
+				}
+				//
+				// figure out what cmd1, cmd2, d1, d2, d3 are supposed to be
+				// to form a proper message
+				//
+				int cmd1 = getIntParameter("cmd1", -1);
+				if (cmd1 < 0) {
+					logger.error("{} has no cmd1 specified!", nm());
+					return;
+				}
+				int cmd2 = getIntParameter("cmd2", 0);
+				int ext  = getIntParameter("ext", 0);
+				Msg m = null;
+				if (ext == 1 || ext == 2) {
+					byte [] data = new byte[] {
+							(byte)getIntParameter("d1", 0),
+							(byte)getIntParameter("d2", 0),
+							(byte)getIntParameter("d3", 0)};
+					m = dev.makeExtendedMessage((byte) 0x0f, (byte) cmd1, (byte) cmd2, data);
+					m.setByte(vfield,  level);
+					if (ext == 1) m.setCRC();
+					else if (ext == 2) m.setCRC2();
 				} else {
-					logger.warn("{}: address {} not found in modem database!", nm(), aAddr);
+					m = dev.makeStandardMessage((byte) 0x0f, (byte) cmd1, (byte) cmd2);
+					m.setByte(vfield,  level);
 				}
-			} catch (FieldException e) {
-				logger.error("{}: field exception: ", nm(), e);
-			} catch (IOException e) {
-				logger.error("{}: i/o exception: ", nm(), e);
-			} finally {
-				driver.unlockModemDBEntries();
-			}
-			return removed;
-		}
-	}
-
-	/**
-	 * Method for setting Thermostat mode to Heat (Off) or Cool (On)
-	 * @param name the name of the handler to create
-	 * @param params 
-	 * @param f the feature for which to create the handler
-	 * @return the handler which was created
-	 */
-	public static class HeatCoolCommandHandler extends CommandHandler {
-		HeatCoolCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				if (cmd == OnOffType.ON) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x05,
-								s_getGroup(conf));
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to switch {} to COOL", nm(), dev.getAddress());
-				} else if (cmd == OnOffType.OFF) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x04,
-								s_getGroup(conf));
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to switch {} to HEAT", nm(), dev.getAddress());
-				} 
-				// expect to get a direct ack after this!
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
-			}
-		}
-	}	
-	
-	/**
-	 * Method for setting Thermostat mode to Heat, Cool or Auto
-	 */
-	public static class ThermostatModeControlCommandHandler extends CommandHandler {
-		ThermostatModeControlCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				//String test = ((StringType)cmd).toString();
-				int dc = ((DecimalType)cmd).intValue();
-				Msg m = null;
-				switch (dc) {
-				case 1:            //Set AC mode to COOL
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x05);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to turn A/C mode to COOL", nm());
-					m = null;
-					break;
-				case 2:            //Set AC mode to HEAT
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x04);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to turn A/C mode to HEAT", nm());
-					m = null;
-					break;
-				case 3:            //Set AC mode to AUTO MANUAL
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x06);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to turn A/C mode to AUTO MANUAL", nm());
-					m = null;
-					break;
-				default:
-					break;
-				}
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
-			}
-		}
-	}
-	
-	/**
-	 * Method for setting Thermostat fan to ON, AUTO or OFF
-	 */
-	public static class ThermostatFanControlCommandHandler extends CommandHandler {
-		ThermostatFanControlCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				int dc = ((DecimalType)cmd).intValue();
-				Msg m = null;
-				switch (dc) {
-				case 1:            //Turn ALL Off
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x09);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to turn A/C OFF", nm());
-					m = null;
-					break;
-				case 2:            //Turn FAN ON
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x07);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to turn A/C fan ON", nm());
-					m = null;
-					break;
-				case 3:            //Turn fan AUTO
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6b, (byte) 0x08);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to turn A/C fan AUTO", nm());
-					m = null;
-					break;
-				default:
-					break;
-				}
-				// expect to get a direct ack after this!
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
-			}
-		}
-	}
-
-	/**
-	 * Method for setting Thermostat Master controller  -  NOT TESTED
-	 */
-	public static class ThermostatMasterControlCommandHandler extends CommandHandler {
-		ThermostatMasterControlCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				int dc = ((DecimalType)cmd).intValue();
-				Msg m = null;
-				int checksum = 0;
-				switch (dc) {
-				case 1:            //Set primary thermostat to MASTER
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x2e, (byte) 0x00);
-					m.setByte("userData1", (byte) 0x00);
-					m.setByte("userData2", (byte) 0x09);
-					m.setByte("userData3", (byte) 0x00);
-					
-					checksum = (~(0x2e + 0x09) + 1) &0xff;
-					m.setByte("userData14", (byte)checksum);
-
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to switch PRIMARY Thermostat to MASTER", nm());
-					m = null;
-					break;
-				case 2:            //Set 2nd Thermostat to MASTER
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x2e, (byte) 0x00);
-					m.setByte("userData1", (byte) 0x00);
-					m.setByte("userData2", (byte) 0x09);
-					m.setByte("userData3", (byte) 0x01);
-					
-					checksum = (~(0x2e + 0x09 + 0x01) + 1) &0xff;
-					m.setByte("userData14", (byte)checksum);
-
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to switch SECONDARY Thermostat to MASTER", nm());
-					m = null;
-					break;
-				case 3:            //Set 3rd Thermostat to MASTER
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x2e, (byte) 0x00);
-					m.setByte("userData1", (byte) 0x00);
-					m.setByte("userData2", (byte) 0x09);
-					m.setByte("userData3", (byte) 0x02);
-					
-					checksum = (~(0x2e + 0x09 + 0x02) + 1) &0xff;
-					m.setByte("userData14", (byte)checksum);
-
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to switch TERTIARY Thermostat to MASTER", nm());
-					m = null;
-					break;
-				default:
-					break;
-				}
-				// expect to get a direct ack after this!
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
-			}
-		}
-	}
-	
-	/* This Command Handler has been tested but is not implemented.  
-	 * Increments or decrements cool setpoint by 1 
-	 **/
-	public static class ThermostatSetPointCommandHandler extends CommandHandler {
-		ThermostatSetPointCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				if (cmd == IncreaseDecreaseType.INCREASE) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x15, (byte) 0x00);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sending command for {} to INCREASE Setpoint by 1.", nm(), m_feature.getName());
-				} else if (cmd == IncreaseDecreaseType.DECREASE) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x16, (byte) 0x00);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sending command for {} to DECREASE Setpoint by 1.", nm(), m_feature.getName());
-				} else {
-					// DO NOTHING
-				}
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
-			}
-		}
-	}
-	
-	public static class ThermostatCoolSetPointCommandHandler extends CommandHandler {
-		ThermostatCoolSetPointCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				byte level = (byte) (((DecimalType)cmd).intValue() * 2);
-				Msg m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6c, level);
 				dev.enqueueMessage(m, m_feature);
-				logger.info("{}: sent msg to change Cool SetPoint to {}", nm(), ((DecimalType)cmd).intValue());
+				logger.info("{}: sent msg to change level to {}", nm(), ((DecimalType)cmd).intValue());
 				m = null;
 			} catch (IOException e) {
 				logger.error("{}: command send i/o error: ", nm(), e);
@@ -683,75 +559,60 @@ public abstract class CommandHandler {
 			}
 		}
 	}
-	
-	public static class ThermostatHeatSetPointCommandHandler extends CommandHandler {
-		ThermostatHeatSetPointCommandHandler(DeviceFeature f) { super(f); }
-		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				byte level = (byte) (((DecimalType)cmd).intValue() * 2);
-				Msg m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x6d, level);
-				dev.enqueueMessage(m, m_feature);
-				logger.info("{}: sent msg to change Heat SetPoint to {}", nm(), ((DecimalType)cmd).intValue());
-				m = null;
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
-			}
-		}
-	}
-	
+
 	/**
-	 * Method for setting FanLinc fan function to OFF, LOW, MED or HIGH
+	 * Handler to set the thermostat system mode
 	 */
-	public static class FanLincFanControlCommandHandler extends CommandHandler {
-		FanLincFanControlCommandHandler(DeviceFeature f) { super(f); }
+	public static class ThermostatSystemModeCommandHandler extends NumberCommandHandler {
+		ThermostatSystemModeCommandHandler(DeviceFeature f) { super(f); }
 		@Override
-		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
-				int dc = ((DecimalType)cmd).intValue();
-				Msg m = null;
-
-				switch (dc) {
-				case 1:            //Turn fan off
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0x00);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to fan OFF", nm());
-					break;
-				case 2:            //Set fan speed to low
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0x55);
-					
-					logger.info("{}: sent msg to set fan to low speed", nm());
-					break;
-				case 3:            //Set fan speed to medium
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0xAA);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to set fan to medium speed", nm());
-					break;
-				case 4:            //Set fan speed to high
-					m = dev.makeExtendedMessage((byte) 0x0f, (byte) 0x11, (byte) 0xFF);
-					dev.enqueueMessage(m, m_feature);
-					logger.info("{}: sent msg to set fan to high speed", nm());
-					break;
-				default:
-					break;
-				}
-				
-				if (m != null) {
-					m.setByte("userData1", (byte)0x02);
-					dev.enqueueMessage(m, m_feature);
-					m = null;
-				}
-
-			} catch (IOException e) {
-				logger.error("{}: command send i/o error: ", nm(), e);
-			} catch (FieldException e) {
-				logger.error("{}: command send message creation error ", nm(), e);
+		public int transform(int cmd) {
+			switch (cmd) {
+			case 0: return (0x09);	// off
+			case 1: return (0x04);	// heat
+			case 2: return (0x05);	// cool
+			case 3: return (0x06);	// auto (aka manual auto)
+			case 4: return (0x0A);	// program (aka auto)
+			default: break;
 			}
+			return (0x0A);	// when in doubt go to program
 		}
 	}
-	
+
+	/**
+	 * Handler to set the thermostat fan mode
+	 */
+	public static class ThermostatFanModeCommandHandler extends NumberCommandHandler {
+		ThermostatFanModeCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public int transform(int cmd) {
+			switch (cmd) {
+			case 0: return (0x08);	// fan mode auto
+			case 1: return (0x07);	// fan always on
+			default: break;
+			}
+			return (0x08);	// when in doubt go auto mode
+		}
+	}
+
+	/**
+	 * Handler to set the fanlinc fan mode
+	 */
+	public static class FanLincFanCommandHandler extends NumberCommandHandler {
+		FanLincFanCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public int transform(int cmd) {
+			switch (cmd) {
+			case 0: return (0x00);	// fan off
+			case 1: return (0x55);	// fan low
+			case 2: return (0xAA);	// fan medium
+			case 3: return (0xFF);	// fan high
+			default: break;
+			}
+			return (0x00);	// all other modes are "off"
+		}
+	}
+
 	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create

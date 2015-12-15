@@ -183,7 +183,7 @@ public enum APICode {
 	}
 	
    /**
-	 * Lookup function to return the APICode value based on the string code
+	 * Lookup function to return the APICode value based on the string code. 
 	 * Returns null if the string code is not found
 	 * 
 	 * @param code

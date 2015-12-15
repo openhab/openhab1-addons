@@ -1,14 +1,16 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
- * 
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.persistence.influxdb.internal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -23,14 +25,20 @@ import org.influxdb.dto.Serie;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
@@ -56,6 +64,7 @@ import retrofit.RetrofitError;
  * 
  * @author Theo Weiss - Initial Contribution
  * @author Ben Jones - Upgraded influxdb-java version
+ * @author Dan Byers - Allow more item types to be handled
  * @since 1.5.0
  */
 public class InfluxDBPersistenceService implements QueryablePersistenceService {
@@ -77,7 +86,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   private String password;
   private boolean isProperlyConfigured;
   private boolean connected;
-
+  
+  
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
   }
@@ -86,47 +96,52 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     this.itemRegistry = null;
   }
 
-  public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-    logger.debug("influxdb persistence service activated");
-    disconnect();
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		disconnect();
 
-    url = (String) config.get("url");
-    if (StringUtils.isBlank(url)) {
-      url = DEFAULT_URL;
-      logger.debug("using default url {}", DEFAULT_URL);
-    }
+		if (config == null) {
+			logger.warn("The configuration for influxdb is missing fix openhab.cfg");
+		}
 
-    user = (String) config.get("user");
-    if (StringUtils.isBlank(user)) {
-      user = DEFAULT_USER;
-      logger.debug("using default user {}", DEFAULT_USER);
-    }
+		url = (String) config.get("url");
+		if (StringUtils.isBlank(url)) {
+			url = DEFAULT_URL;
+			logger.debug("using default url {}", DEFAULT_URL);
+		}
 
-    password = (String) config.get("password");
-    if (StringUtils.isBlank(password)) {
-      logger.warn("The password is missing. To specify a password configure the password parameter in openhab.cfg.");
-    }
+		user = (String) config.get("user");
+		if (StringUtils.isBlank(user)) {
+			user = DEFAULT_USER;
+			logger.debug("using default user {}", DEFAULT_USER);
+		}
 
-    dbName = (String) config.get("db");
-    if (StringUtils.isBlank(dbName)) {
-      dbName = DEFAULT_DB;
-      logger.debug("using default db name {}", DEFAULT_DB);
-    }
+		password = (String) config.get("password");
+		if (StringUtils.isBlank(password)) {
+			logger.warn("The password is missing. To specify a password configure the password parameter in openhab.cfg.");
+		}
 
-    isProperlyConfigured = true;
+		dbName = (String) config.get("db");
+		if (StringUtils.isBlank(dbName)) {
+			dbName = DEFAULT_DB;
+			logger.debug("using default db name {}", DEFAULT_DB);
+		}
 
-    connect();
+		isProperlyConfigured = true;
 
-    // check connection; errors will only be logged, hoping the connection will work at a later time. 
-    if ( ! checkConnection()){
-      logger.error("database connection does not work for now, will retry to use the database.");
-    }
-  }
+		connect();
+
+		// check connection; errors will only be logged, hoping the connection
+		// will work at a later time.
+		if (!checkConnection()) {
+			logger.error(
+					"database connection does not work for now, will retry to use the database.");
+		}
+	}
 
 	public void deactivate(final int reason) {
-    logger.debug("influxdb persistence service deactivated");
-    disconnect();
-  }
+		logger.debug("influxdb persistence service deactivated");
+		disconnect();
+	}
 
   private void connect() {
     if (influxDB == null) {
@@ -191,25 +206,35 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     }
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return;
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return;
     }
 
     String realName = item.getName();
     String name = (alias != null) ? alias : realName;
-    Object value = stateToObject(item.getState());
+    
+    State state = null;
+    if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+      state = item.getStateAs(PercentType.class);
+    } else if (item instanceof ColorItem) {
+      state = item.getStateAs(HSBType.class);
+    } else {
+        // All other items should return the best format by default
+        state = item.getState();
+    }
+    Object value = stateToObject(state);
     logger.trace("storing {} in influxdb {}", name, value);
 
     // For now time is calculated by influxdb, may be this should be configurable?
     Serie serie = new Serie.Builder(name)
-    		.columns(VALUE_COLUMN_NAME)
-    		.values(value)
-    		.build();
+      .columns(VALUE_COLUMN_NAME)
+      .values(value)
+      .build();
     // serie.setColumns(new String[] {"time", VALUE_COLUMN_NAME});
     // Object[] point = new Object[] {System.currentTimeMillis(), value};
 
@@ -229,24 +254,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       // e.g. raised by authentication errors
       logger
           .error(
-              "database connection error may be wrong password, username or dbname: {}",
-              e);
+              "database error: {}",
+              e.getMessage());
     }
   }
 
   @Override
   public Iterable<HistoricItem> query(FilterCriteria filter) {
-    Integer pageSize = null;
-    Integer pageNumber = null;
     logger.debug("got a query");
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return Collections.emptyList();
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return Collections.emptyList();
     }
 
@@ -266,8 +289,17 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       query.append("/.*/");
     }
 
-    if (filter.getState() != null || filter.getOperator() != null || filter.getBeginDate() != null
-        || filter.getEndDate() != null) {
+    logger.trace("filter itemname: {}", filter.getItemName());
+    logger.trace("filter ordering: {}", filter.getOrdering().toString());
+    logger.trace("filter state: {}", filter.getState());
+    logger.trace("filter operator: {}", filter.getOperator());
+    logger.trace("filter getBeginDate: {}", filter.getBeginDate());
+    logger.trace("filter getEndDate: {}", filter.getEndDate());
+    logger.trace("filter getPageSize: {}", filter.getPageSize());
+    logger.trace("filter getPageNumber: {}", filter.getPageNumber());
+
+    if ((filter.getState() != null && filter.getOperator() != null)
+        || filter.getBeginDate() != null || filter.getEndDate() != null) {
       query.append(" where ");
       boolean foundState = false;
       boolean foundBeginDate = false;
@@ -306,22 +338,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         query.append(" ");
       }
 
-      // InfluxDB returns results in DESCENDING order by default
-      // http://influxdb.com/docs/v0.7/api/query_language.html#select-and-time-ranges
-      if (filter.getOrdering() == Ordering.ASCENDING) {
-        query.append(" order asc");
-      }
-
-      if (filter.getPageSize() != 0) {
-        logger.debug("got page size {}", filter.getPageSize());
-        pageSize = filter.getPageSize();
-      }
-
-      if (filter.getPageNumber() != 0) {
-        logger.debug("got page number {}", filter.getPageNumber());
-        pageNumber = filter.getPageNumber();
-      }
     }
+
+    // InfluxDB returns results in DESCENDING order by default
+    // http://influxdb.com/docs/v0.7/api/query_language.html#select-and-time-ranges
+    if (filter.getOrdering() == Ordering.ASCENDING) {
+      query.append(" order asc");
+    }
+
+    int limit = (filter.getPageNumber() + 1) * filter.getPageSize();
+    query.append(" limit " + limit);
+    logger.trace("appending limit {}", limit);
+
+    int totalEntriesAffected = ((filter.getPageNumber() + 1) * filter.getPageSize());
+    int startEntryNum = totalEntriesAffected - (totalEntriesAffected - (filter.getPageSize() * filter.getPageNumber()));
+    logger.trace("startEntryNum {}", startEntryNum);
+    
     logger.debug("query string: {}", query.toString());
     List<Serie> results = Collections.emptyList();
     try {
@@ -332,27 +364,21 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     }
     for (Serie result : results) {
       String historicItemName = result.getName();
-      logger.trace("item name ", historicItemName);
-
-      int pageCount = 0;
+      logger.trace("item name {}", historicItemName);
+      int entryCount = 0;
       for (Map<String, Object> row : result.getRows()) {
-    	pageCount++;
-        if (pageSize != null && pageNumber == null && pageSize < pageCount) {
-          logger.debug("returning no more points pageSize {} pageCount {}", 
-        		  pageSize, pageCount);
-          break;
+        entryCount++;
+        if (entryCount >= startEntryNum) {
+          Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
+          Object rawValue = row.get(VALUE_COLUMN_NAME);
+          logger.trace("adding historic item {}: time {} value {}", historicItemName, rawTime,
+              rawValue);
+          Date time = new Date(rawTime.longValue());
+          State value = objectToState(rawValue, historicItemName);
+          historicItems.add(new InfluxdbItem(historicItemName, value, time));
+        } else {
+          logger.trace("omitting item value for {}", historicItemName);
         }
-        
-        Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
-        Object rawValue = row.get(VALUE_COLUMN_NAME);
-                
-        logger.trace("adding historic item {}: time {} value {}", 
-        		historicItemName, rawTime, rawValue);
-        
-        Date time = new Date(rawTime.longValue());
-        State value = objectToState(rawValue, historicItemName);
-        
-        historicItems.add(new InfluxdbItem(historicItemName, value, time));
       }
     }
 
@@ -360,13 +386,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   }
 
   private String getTimeFilter(Date time) {
-	  // for some reason we need to query using 'seconds' only
-	  // passing milli seconds causes no results to be returned
-	  long milliSeconds = time.getTime();
-	  long seconds = milliSeconds / 1000;
-	  return seconds + "s";
+    // for some reason we need to query using 'seconds' only
+    // passing milli seconds causes no results to be returned
+    long milliSeconds = time.getTime();
+    long seconds = milliSeconds / 1000;
+    return seconds + "s";
   }
-  
+
   /**
    * This method returns an integer if possible if not a double is returned. This is an optimization
    * for influxdb because integers have less overhead.
@@ -389,22 +415,24 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   /**
    * Converts {@link State} to objects fitting into influxdb values.
    * 
-   * @param state to be converted
-   * @return integer or double value for DecimalType and PercentType, an integer for DateTimeType
-   *         and 0 or 1 for OnOffType and OpenClosedType.
+   * @param     state to be converted
+   * @return    integer or double value for DecimalType, 
+   *            0 or 1 for OnOffType and OpenClosedType,
+   *            integer for DateTimeType,
+   *            String for all others
    */
   private Object stateToObject(State state) {
     Object value;
-    if (state instanceof PercentType) {
-      value = convertBigDecimalToNum(((PercentType) state).toBigDecimal());
-    } else if (state instanceof DecimalType) {
+    if (state instanceof DecimalType) {
       value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
-    } else if (state instanceof DateTimeType) {
-      value = ((DateTimeType) state).getCalendar().getTime().getTime();
     } else if (state instanceof OnOffType) {
       value = (OnOffType) state == OnOffType.ON ? 1 : 0;
     } else if (state instanceof OpenClosedType) {
       value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
+    } else if (state instanceof HSBType) {
+      value = ((HSBType) state).toString();
+    } else if (state instanceof DateTimeType) {
+      value = ((DateTimeType) state).getCalendar().getTime().getTime();
     } else {
       value = state.toString();
     }
@@ -419,14 +447,16 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
    */
   private String stateToString(State state) {
     String value;
-    if (state instanceof PercentType) {
-      value = ((PercentType) state).toBigDecimal().toString();
-    } else if (state instanceof DateTimeType) {
-      value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
-    } else if (state instanceof DecimalType) {
+    if (state instanceof DecimalType) {
       value = ((DecimalType) state).toBigDecimal().toString();
     } else if (state instanceof OnOffType) {
       value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
+    } else if (state instanceof OpenClosedType) {
+      value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;  
+    } else if (state instanceof HSBType) {
+      value = ((HSBType) state).toString();
+    } else if (state instanceof DateTimeType) {
+      value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
     } else {
       value = state.toString();
     }
@@ -439,24 +469,60 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
    * 
    * @param value to be converted to a {@link State}
    * @param itemName name of the {@link Item} to get the {@link State} for
-   * @return
+   * @return the state of the item represented by the itemName parameter, 
+   *         else the string value of the Object parameter
    */
   private State objectToState(Object value, String itemName) {
-	String valueStr = String.valueOf(value);
+    String valueStr = String.valueOf(value);
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
-        if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-          return valueStr.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
+        if (item instanceof NumberItem) {
+          return new DecimalType(valueStr);
+        } else if (item instanceof ColorItem) {
+          return new HSBType(valueStr);
+        } else if (item instanceof DimmerItem) {
+          return new PercentType(valueStr);
+        } else if (item instanceof SwitchItem) {
+          return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
+            ? OnOffType.OFF
+            : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-          return valueStr.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+          return (string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF))
+            ? OpenClosedType.CLOSED
+            : OpenClosedType.OPEN;
+        } else if (item instanceof RollershutterItem) {
+          return new PercentType(valueStr);
+        } else if (item instanceof DateTimeItem) {
+          Calendar calendar = Calendar.getInstance();
+          calendar.setTimeInMillis(new BigDecimal(valueStr).longValue());
+          return new DateTimeType(calendar);
+        } else {
+          return new StringType(valueStr);
         }
       } catch (ItemNotFoundException e) {
-        logger.warn("Could not find item '{}' in registry", itemName);
+          logger.warn("Could not find item '{}' in registry", itemName);
       }
     }
-    // just return a DecimalType as a fallback
-    return new DecimalType(valueStr);
+    // just return a StringType as a fallback
+    return new StringType(valueStr);
   }
 
+  /**
+   * Maps a string value which expresses a {@link BigDecimal.ZERO } to DIGITAL_VALUE_OFF, all others
+   * to DIGITAL_VALUE_ON
+   * 
+   * @param value to be mapped
+   * @return
+   */
+  private String string2DigitalValue(String value) {
+    BigDecimal num = new BigDecimal(value);
+    if (num.compareTo(BigDecimal.ZERO) == 0) {
+      logger.trace("digitalvalue {}", DIGITAL_VALUE_OFF);
+      return DIGITAL_VALUE_OFF;
+    } else {
+      logger.trace("digitalvalue {}", DIGITAL_VALUE_ON);
+      return DIGITAL_VALUE_ON;
+    }
+  }
 }

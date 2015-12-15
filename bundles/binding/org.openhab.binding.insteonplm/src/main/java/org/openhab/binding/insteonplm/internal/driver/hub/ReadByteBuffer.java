@@ -45,7 +45,7 @@ public class ReadByteBuffer {
     		try {
     			wait();
     		} catch (InterruptedException e) {
-    			// do nothin'
+    			return (0);
     		}
     	}
     	return m_buf[m_index++];
@@ -62,7 +62,7 @@ public class ReadByteBuffer {
     		try {
     			wait();
     		} catch (InterruptedException e) {
-    			// do nothing
+    			return 0;
     		}
     	}
     	int b = Math.min(len, remaining());

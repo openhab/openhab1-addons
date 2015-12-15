@@ -483,6 +483,14 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>5246</Type>
+				<Id>3133</Id>
+			</Reference>
+			<Model>LFM-20</Model>
+			<Label lang="en">Isolated Contact Fixture Module</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>4457</Type>
 				<Id>3034</Id>
 			</Reference>
@@ -650,9 +658,9 @@
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
-			<Model>054313</Model>
-			<Label lang="en">Single button wall switch</Label>
-			<Label lang="de">Wandschalter</Label>
+			<Model>ZME_054313Z</Model>
+			<Label lang="en">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Single button wall switch</Label>
+			<Label lang="de">Duewi ZW BJ ES 1000 / Reitz 054313 / ZWave.me 05457 Wandeinbautaster einfach</Label>
 			<ConfigFile>reitz/054313.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
@@ -1855,7 +1863,7 @@
 				<Type>0121</Type>
 				<Id>0133</Id>
 			</Reference>
-			<Model>TZ68</Model>
+			<Model>TZ78</Model>
 			<Label lang="en">In Wall Micro Switch</Label>
 			<ConfigFile>tkb/tz78.xml</ConfigFile>
 		</Product>
@@ -2163,6 +2171,15 @@
             <Label lang="en">PIR Sensor</Label>
             <ConfigFile>enerwave/zwn-bpc.xml</ConfigFile>
         </Product>
+        <Product>
+            <Reference>
+                <Type>0801</Type>
+                <Id>0b03</Id>
+            </Reference>
+            <Model>ZWN-SC7</Model>
+            <Label lang="en">Scene Controller</Label>
+            <ConfigFile>enerwave/zwn-sc7.xml</ConfigFile>
+        </Product>
     </Manufacturer>
 	<Manufacturer>
 		<Id>0001</Id>
@@ -2403,6 +2420,15 @@
 			<Model>ZMNHOD</Model>
 			<Label lang="en">Flush Shutter</Label>
 			<ConfigFile>qubino/zmnhod.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>51</Id>
+			</Reference>
+			<Model>ZMNHBD</Model>
+			<Label lang="en">Flush 2 relays</Label>
+			<ConfigFile>qubino/zmnhbd.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

@@ -239,12 +239,16 @@ public class Port {
 			logger.debug("starting reader...");
 			byte[] buffer = new byte[2 * m_readSize];
 			Random rng	  = new Random();
-			for (int len = -1; (len = m_ioStream.read(buffer, 0, m_readSize)) > 0;) {
-				if (m_dropRandomBytes && rng.nextInt(100) < 20) {
-					len = dropBytes(buffer, len);
+			try {
+				for (int len = -1; (len = m_ioStream.read(buffer, 0, m_readSize)) > 0;) {
+					if (m_dropRandomBytes && rng.nextInt(100) < 20) {
+						len = dropBytes(buffer, len);
+					}
+					m_msgFactory.addData(buffer, len);
+					processMessages();
 				}
-				m_msgFactory.addData(buffer, len);
-				processMessages();
+			} catch (InterruptedException e) {
+				logger.debug("reader thread got interrupted!");
 			}
 			logger.error("reader thread exiting!");
 		}
@@ -350,7 +354,7 @@ public class Port {
 						logger.trace("writer got ack: {}", (m_reply == ReplyType.GOT_ACK));
 					}
 				} catch (InterruptedException e) {
-					// do nothing
+					break; // done for the day...
 				}
 			}
 			return (m_reply == ReplyType.GOT_NACK);
@@ -395,11 +399,13 @@ public class Port {
 						}
 					}
 				} catch (InterruptedException e) {
-					logger.error("got interrupted exception in write thread:", e);
+					logger.error("got interrupted exception in write thread");
+					break;
 				} catch (Exception e) {
 					logger.error("got exception in write thread:", e);
 				}
 			}
+			logger.debug("exiting writer thread!");
 		}
 	}
 	/**
@@ -428,6 +434,7 @@ public class Port {
 						m_device.setIsModem(true);
 						m_device.addPort(fromPort);
 						logger.debug("found modem {} in device_types: {}", a, m_device.toString());
+						m_mdbb.updateModemDB(a, Port.this, null);
 					}
 					// can unsubscribe now
 					removeListener(this);
@@ -436,6 +443,8 @@ public class Port {
 				logger.error("error parsing im info reply field: ", e);
 			}
 		}
+		
+		
 		public void initialize() {
 			try {
 				Msg m = Msg.s_makeMessage("GetIMInfo");

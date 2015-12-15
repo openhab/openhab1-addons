@@ -37,6 +37,8 @@ Example entry:
      <model>2486D</model>
      <description>KeypadLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
@@ -44,13 +46,15 @@ Example entry:
      <model>2484DWH8</model>
      <description>KeypadLinc Countdown Timer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
  <device productKey="0x000045">
      <model>2413U</model>
      <description>PowerLinc 2413U USB modem</description>
-     <feature name="control">GenericModemControl</feature>
+     <feature name="broadcastonoff">GroupBroadcastOnOff</feature>
  </device>
 
  <device productKey="0x000049">
@@ -71,16 +75,32 @@ Example entry:
      <model>2486DWH6</model>
      <description>KeypadLinc Dimmer - 6 Button</description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
-     <feature name="keypadbuttonA">KeyPadButton3</feature>
-     <feature name="keypadbuttonB">KeyPadButton4</feature>
-     <feature name="keypadbuttonC">KeyPadButton5</feature>
-     <feature name="keypadbuttonD">KeyPadButton6</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">LoadDimmerFastOnOff</feature>
+     <feature_group name="button_group" type="KeyPadButtonGroup">
+     	<feature name="keypadbuttonA">KeyPadButton3</feature>
+     	<feature name="keypadbuttonB">KeyPadButton4</feature>
+     	<feature name="keypadbuttonC">KeyPadButton5</feature>
+     	<feature name="keypadbuttonD">KeyPadButton6</feature>
+     </feature_group>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  <device productKey="0x000051">
      <model>2486DWH8</model>
-     <description>KeypadLinc Dimmer</description>
-     <feature name="dimmer">GenericDimmer</feature>
+     <description>KeypadLinc Dimmer - 8 Button</description>
+     <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">LoadDimmerFastOnOff</feature>     
+     <feature_group name="button_group" type="KeyPadButtonGroup">
+     	<feature name="keypadbuttonB">KeyPadButton2</feature>
+     	<feature name="keypadbuttonC">KeyPadButton3</feature>
+     	<feature name="keypadbuttonD">KeyPadButton4</feature>
+     	<feature name="keypadbuttonE">KeyPadButton5</feature>
+     	<feature name="keypadbuttonF">KeyPadButton6</feature>
+     	<feature name="keypadbuttonG">KeyPadButton7</feature>
+     	<feature name="keypadbuttonH">KeyPadButton8</feature>
+     </feature_group>
+     
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -88,6 +108,8 @@ Example entry:
      <model>2472D</model>
      <description>OutletLincDimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -120,6 +142,8 @@ Example entry:
      <model>2477D</model>
      <description>SwitchLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -127,6 +151,7 @@ Example entry:
      <model>2477S</model>
      <description>SwitchLinc Switch</description>
      <feature name="switch">GenericSwitch</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -149,6 +174,8 @@ Example entry:
      <model>2456D3</model>
      <description>LampLinc V2</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -156,6 +183,8 @@ Example entry:
      <model>2442-222</model>
      <description>Micro Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -170,6 +199,8 @@ Example entry:
      <model>2452-222</model>
      <description>DIN Rail Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -190,6 +221,8 @@ Example entry:
      <model>2672-422</model>
      <description>LED Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
@@ -197,6 +230,8 @@ Example entry:
      <model>2476D</model>
      <description>SwitchLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -221,6 +256,8 @@ Example entry:
      <model>2466D</model>
      <description>ToggleLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -235,6 +272,8 @@ Example entry:
      <model>2672-222</model>
      <description>LED Bulb</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -242,12 +281,27 @@ Example entry:
      <model>2487S</model>
      <description>KeypadLinc On/Off 6-Button Scene Control </description>
      <feature name="loadswitch">LoadSwitchButton</feature>
+     <feature name="loadswitchmanualchange">LoadSwitchManualChange</feature>
+     <feature name="loadswitchfastonoff">LoadSwitchFastOnOff</feature>
      <feature_group name="button_group" type="KeyPadButtonGroup">
      	<feature name="keypadbuttonA">KeyPadButton3</feature>
      	<feature name="keypadbuttonB">KeyPadButton4</feature>
      	<feature name="keypadbuttonC">KeyPadButton5</feature>
      	<feature name="keypadbuttonD">KeyPadButton6</feature>
      </feature_group>
+     <feature_group name="fastonoff_button_group" type="FastOnOffButtonGroup">
+        <feature name="fastonoffbuttonA">FastOnOffButton3</feature>
+        <feature name="fastonoffbuttonB">FastOnOffButton4</feature>
+        <feature name="fastonoffbuttonC">FastOnOffButton5</feature>
+        <feature name="fastonoffbuttonD">FastOnOffButton6</feature>
+     </feature_group>
+     <feature_group name="manualchange_button_group" type="ManualChangeButtonGroup">
+        <feature name="manualchangebuttonA">ManualChangeButton3</feature>
+        <feature name="manualchangebuttonB">ManualChangeButton4</feature>
+        <feature name="manualchangebuttonC">ManualChangeButton5</feature>
+        <feature name="manualchangebuttonD">ManualChangeButton6</feature>
+     </feature_group>
+     
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
@@ -255,6 +309,8 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 6-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">LoadDimmerFastOnOff</feature>
      <feature_group name="button_group" type="KeyPadButtonGroup">
      	<feature name="keypadbuttonA">KeyPadButton3</feature>
      	<feature name="keypadbuttonB">KeyPadButton4</feature>
@@ -268,6 +324,8 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 8-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">LoadDimmerFastOnOff</feature>     
      <feature_group name="button_group" type="KeyPadButtonGroup">
      	<feature name="keypadbuttonB">KeyPadButton2</feature>
      	<feature name="keypadbuttonC">KeyPadButton3</feature>
@@ -290,13 +348,26 @@ Example entry:
  <device productKey="F00.00.18">
      <model>2441TH</model>
      <description>Insteon Thermostat</description>
-     <feature name="temperature">ThermostatTemperature</feature>
-     <feature name="coolsetpoint">ThermostatCoolSetPoint</feature>
-     <feature name="heatsetpoint">ThermostatHeatSetPoint</feature>
-     <feature name="humidity">ThermostatHumidity</feature>
-     <feature name="modecontrol">ThermostatModeControl</feature>
-     <feature name="fancontrol">ThermostatFanControl</feature>
-     <feature name="mastercontrol">ThermostatMasterControl</feature>
+     <feature_group name="data1_group" type="ThermostatData1Group">     
+     	<feature name="backlightduration">ThermostatBackLightDuration</feature>
+     	<feature name="acdelay">ThermostatACDelay</feature>
+	 </feature_group>
+     <feature_group name="data1b_group" type="ThermostatData1bGroup">     
+     	<feature name="humidityhigh">ThermostatHumidityHigh</feature>
+     	<feature name="humiditylow">ThermostatHumidityLow</feature>
+     	<feature name="stage1duration">ThermostatStage1Duration</feature>
+	 </feature_group>
+	 <feature_group name="data2_group" type="ThermostatData2Group"> 
+	     <feature name="coolsetpoint">ThermostatCoolSetPoint</feature>
+     	 <feature name="heatsetpoint">ThermostatHeatSetPoint</feature>
+     	 <feature name="systemmode">ThermostatSystemMode</feature>
+     	 <feature name="fanmode">ThermostatFanMode</feature>
+	     <feature name="isheating">ThermostatIsHeating</feature>
+	     <feature name="iscooling">ThermostatIsCooling</feature>
+	     <feature name="tempcelsius">ThermostatTemperatureCelsius</feature>
+	     <feature name="tempfahrenheit">ThermostatTemperatureFahrenheit</feature>
+	     <feature name="humidity">ThermostatHumidity</feature>
+     </feature_group>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
@@ -304,6 +375,8 @@ Example entry:
      <model>2457D2</model>
      <description>LampLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -325,8 +398,22 @@ Example entry:
      <model>2475F</model>
      <description>FanLinc Module</description>
      <feature name="lightdimmer">GenericDimmer</feature>
-     <feature name="fancontrol">FanLincFanControl</feature>
+     <feature name="fan">FanLincFan</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
+ <device productKey="F00.00.1D">
+     <model>2456S3</model>
+     <description>ApplianceLinc</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ <device productKey="F00.00.1E">
+     <model>2674-222</model>
+     <description>LED Bulb (recessed)</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="manualchange">ManualChange</feature>
+     <feature name="fastonoff">FastOnOff</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
 </xml>

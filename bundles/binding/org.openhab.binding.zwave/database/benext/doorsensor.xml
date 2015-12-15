@@ -55,12 +55,10 @@
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Send alarm</Label>
-				<Help lang="en">Send an alarm report with type 2.</Help>				
 			</Item>
 			<Item>
 				<Value>1</Value>
 				<Label lang="en">Send basic frame</Label>
-				<Help lang="en">Send a Basic set frame to all nodes in association group 2.</Help>	
 			</Item>			
 		</Parameter>
 		<Parameter>
@@ -73,17 +71,14 @@
 			<Item>
 				<Value>1</Value>
 				<Label lang="en">Normal</Label>
-				<Help lang="en">Normal operating mode.</Help>
 			</Item>
 			<Item>
 				<Value>2</Value>
 				<Label lang="en">Mode 1 report</Label>
-				<Help lang="en">If any mode other then 3, that value will be reported after a get but will be handled in SW as mode 1.</Help>
 			</Item>
 			<Item>
 				<Value>3</Value>
 				<Label lang="en">Always-on</Label>
-				<Help lang="en">Z-Wave chip is always on to request e.g. version or manufacturer id.</Help>
 			</Item>
 		</Parameter>
 		<Parameter>

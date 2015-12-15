@@ -17,6 +17,6 @@
 		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
-	<property name="service.pid" type="String" value="org.openhab.weather" />
+	<property name="service.pid" type="String" value="org.openhab.weather.action" />
 	
 </scr:component>
