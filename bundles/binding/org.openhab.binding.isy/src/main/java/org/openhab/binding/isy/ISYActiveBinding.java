@@ -345,6 +345,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			break;
 
 		case CLISPH:
+		case CLISPC:
 			for (ISYBindingConfig config : getBindingConfigFromAddress(
 					node.address, control.name)) {
 
@@ -365,6 +366,9 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			break;
 
 		case CLIHUM:
+		case CLIMD:
+		case CLIHCS:
+		case CLIFS:
 			for (ISYBindingConfig config : getBindingConfigFromAddress(
 					node.address, control.name)) {
 
@@ -380,15 +384,6 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 				if (state != null) {
 					this.eventPublisher.postUpdate(config.getItemName(), state);
 				}
-			}
-			break;
-
-		case CLIMD:
-			for (ISYBindingConfig config : getBindingConfigFromAddress(
-					node.address, control.name)) {
-				state = new DecimalType((String) action);
-
-				this.eventPublisher.postUpdate(config.getItemName(), state);
 			}
 			break;
 
@@ -567,13 +562,15 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			case THERMOSTAT:
 				switch (config.getControlCommand()) {
 				case CLISPH:
+				case CLISPC:
 					DecimalType value = new DecimalType(
 							type.doubleValue() * 2.0);
 					this.insteonClient.changeNodeState(
-							ISYControl.CLISPH.name(), value.format("%d"),
+							config.getControlCommand().name(), value.format("%d"),
 							node.address);
 					break;
 				case CLIMD:
+				case CLIFS:
 					this.insteonClient.changeNodeState(ISYControl.CLIMD.name(),
 							type.format("%s"), node.address);
 					break;
