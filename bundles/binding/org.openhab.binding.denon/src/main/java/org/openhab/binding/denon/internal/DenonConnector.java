@@ -540,15 +540,17 @@ public class DenonConnector {
 		try {
 			String result = HttpUtil.executeUrl("GET", uri, REQUEST_TIMEOUT_MS);
 			
-			JAXBContext jc = JAXBContext.newInstance(response);
-			XMLInputFactory xif = XMLInputFactory.newInstance();
-			XMLStreamReader xsr = xif.createXMLStreamReader(IOUtils.toInputStream(result));
-			xsr = new PropertyRenamerDelegate(xsr);
-
-			@SuppressWarnings("unchecked")
-			T obj = (T) jc.createUnmarshaller().unmarshal(xsr);
-			
-			return obj;
+			if (StringUtils.isNotBlank(result)) {
+				JAXBContext jc = JAXBContext.newInstance(response);
+				XMLInputFactory xif = XMLInputFactory.newInstance();
+				XMLStreamReader xsr = xif.createXMLStreamReader(IOUtils.toInputStream(result));
+				xsr = new PropertyRenamerDelegate(xsr);
+	
+				@SuppressWarnings("unchecked")
+				T obj = (T) jc.createUnmarshaller().unmarshal(xsr);
+				
+				return obj;
+			}
 		} catch (JAXBException e) {
 			logger.warn("Encoding error in get", e);
 		} catch (XMLStreamException e) {
@@ -566,13 +568,16 @@ public class DenonConnector {
 			jaxbMarshaller.marshal(request, sw);
 			
 			String result = HttpUtil.executeUrl("POST", uri, IOUtils.toInputStream(sw.toString()), CONTENT_TYPE_XML, REQUEST_TIMEOUT_MS);
-			JAXBContext jcResponse = JAXBContext.newInstance(response);
 			
-			@SuppressWarnings("unchecked")
-			T obj =
-			    (T) jcResponse.createUnmarshaller().unmarshal(IOUtils.toInputStream(result));
-			
-			return obj;
+			if (StringUtils.isNotBlank(result)) {
+				JAXBContext jcResponse = JAXBContext.newInstance(response);
+				
+				@SuppressWarnings("unchecked")
+				T obj =
+				    (T) jcResponse.createUnmarshaller().unmarshal(IOUtils.toInputStream(result));
+				
+				return obj;
+			}
 		} catch (JAXBException e) {
 			logger.warn("Encoding error in post", e);
 		}
