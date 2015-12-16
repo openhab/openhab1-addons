@@ -213,7 +213,7 @@ If the current battery gap is larger than this value, sensor will send out a bat
 			<Maximum>100</Maximum>
 			<Default>2</Default>
 			<Label lang="en">Ultraviolet Threshold</Label>
-			<Help lang="en"><![CDATA[ Threshold change in ultraviolet light to induce an automatic report.<br>
+			<Help lang="en"><![CDATA[Threshold change in ultraviolet light to induce an automatic report.<br>
 The unit is UV index scale.]]></Help>
 		</Parameter>
 		<Parameter>
@@ -221,19 +221,15 @@ The unit is UV index scale.]]></Help>
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Send Alarm Report if low temperature
-			</Label>
-			<Help lang="en">Send an alarm report if temperature is less than -15 °C
-			</Help>
+			<Label lang="en">Send Alarm Report if low temperature</Label>
+			<Help lang="en">Send an alarm report if temperature is less than -15 °C</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable
-				</Label>
+				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable
-				</Label>
+				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
