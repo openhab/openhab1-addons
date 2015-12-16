@@ -1201,14 +1201,6 @@
 				<Type>2002</Type>
 				<Id>0100</Id>
 			</Reference>
-			<Reference>
-				<Type>2002</Type>
-				<Id>0101</Id>
-			</Reference>
-			<Reference>
-				<Type>0002</Type>
-				<Id>0100</Id>
-			</Reference>
 			<Model>CT32</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct32.xml</ConfigFile>

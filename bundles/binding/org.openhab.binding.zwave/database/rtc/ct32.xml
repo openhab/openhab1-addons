@@ -216,6 +216,7 @@
 			<Maximum>2</Maximum>
 			<Label lang="en">Group 1</Label>
 			<Help lang="en">Send report about Thermostat Mode, Thermostat Operating State, Fan Mode, Fan State, Setpoint, Sensor Multilevel</Help>
-		</Group>
+			<SetToController>true</SetToController>
+			</Group>
 	</Associations>
 </Product>
