@@ -221,19 +221,15 @@ The unit is UV index scale.]]></Help>
 			<Type>list</Type>
 			<Size>1</Size>
 			<Default>0</Default>
-			<Label lang="en">Send Alarm Report if low temperature
-			</Label>
-			<Help lang="en">Send an alarm report if temperature is less than -15 °C
-			</Help>
+			<Label lang="en">Send Alarm Report if low temperature</Label>
+			<Help lang="en">Send an alarm report if temperature is less than -15 °C</Help>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable
-				</Label>
+				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Enable
-				</Label>
+				<Label lang="en">Enable</Label>
 			</Item>
 		</Parameter>
 		<Parameter>
