@@ -67,9 +67,11 @@ Formula to calculate the number of pulses: pulses = (value + 1)]]>
 			<Maximum>3</Maximum>
 			<Size>1</Size>
 			<Label lang="en">PIR Sensor Window Time</Label>
-			<Help lang="en"><![CDATA[Sets the number of moves required for the PIR sensor to report motion. The lower the value, the less sensitive the PIR sensor. It’s not recommended to modify this parameter settings.
+			<Help lang="en"><![CDATA[Period of time during which the number of moves set in parameter 3 
+must be detected in order for the PIR sensor to report motion. The 
+higher the value, the more sensitive the PIR sensor. It’s not recommended to modify this parameter setting.
 Available settings: 0 - 3
-Formula to calculate the number of pulses: pulses = (value + 1)]]>
+Formula to calculate the time: time[s] = 4 x (value + 1)]]>
 			</Help>
 		</Parameter>
 		<Parameter>
