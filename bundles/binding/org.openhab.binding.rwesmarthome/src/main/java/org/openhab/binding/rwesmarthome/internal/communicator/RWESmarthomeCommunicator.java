@@ -248,16 +248,10 @@ public class RWESmarthomeCommunicator {
 			start();
 			
 		} catch (RWESmarthomeSessionExpiredException e) {
+			// restart communicator to get back a valid session
 			logger.info("Session expired!" + e.getMessage());
-
-			try {
-				rweSmarthomeSession.logon(context.getConfig().getUsername(), context.getConfig().getPassword(), context.getConfig().getHost());
-			} catch (LoginFailedException e1) {
-				logger.error("Error logging in with user'" + context.getConfig().getUsername()+ "' to host '" + context.getConfig().getHost() + "': " + e1.getMessage());
-			} catch (SHTechnicalException e1) {
-				logger.error("Error logging in with user'" + context.getConfig().getUsername()+ "' to host '" + context.getConfig().getHost() + "': " + e1.getMessage());
-			}
-			logger.info("Login successful.");
+			stop();
+			start();
 			
 		} catch (ConfigurationChangedException e) {
 			// restart communicator to rebuild everything
