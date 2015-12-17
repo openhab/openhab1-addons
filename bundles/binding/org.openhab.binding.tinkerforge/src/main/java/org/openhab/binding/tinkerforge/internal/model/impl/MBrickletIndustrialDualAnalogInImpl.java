@@ -17,47 +17,52 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletLoadCell;
+import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBricklet Load Cell</b></em>'.
+ * An implementation of the model object '<em><b>MBricklet Industrial Dual Analog In</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getIpConnection <em>Ip Connection</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getConnectedUid <em>Connected Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getPosition <em>Position</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getMsubdevices <em>Msubdevices</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getIpConnection <em>Ip Connection</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getConnectedUid <em>Connected Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getPosition <em>Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getBrickd <em>Brickd</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDualAnalogInImpl#getSampleRate <em>Sample Rate</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implements MBrickletLoadCell
+public class MBrickletIndustrialDualAnalogInImpl extends MinimalEObjectImpl.Container implements MBrickletIndustrialDualAnalogIn
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -147,7 +152,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected BrickletLoadCell tinkerforgeDevice;
+  protected BrickletIndustrialDualAnalogIn tinkerforgeDevice;
 
   /**
    * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
@@ -250,6 +255,16 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   protected String name = NAME_EDEFAULT;
 
   /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected BrickletIndustrialDualAnalogInConfiguration tfConfig;
+
+  /**
    * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -257,7 +272,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected EList<LoadCellDevice> msubdevices;
+  protected EList<IndustrialDualAnalogInChannel> msubdevices;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -267,7 +282,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_loadcell";
+  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_industrial_dual_analogin";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -280,11 +295,31 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getSampleRate() <em>Sample Rate</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSampleRate()
+   * @generated
+   * @ordered
+   */
+  protected static final short SAMPLE_RATE_EDEFAULT = 6;
+
+  /**
+   * The cached value of the '{@link #getSampleRate() <em>Sample Rate</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSampleRate()
+   * @generated
+   * @ordered
+   */
+  protected short sampleRate = SAMPLE_RATE_EDEFAULT;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected MBrickletLoadCellImpl()
+  protected MBrickletIndustrialDualAnalogInImpl()
   {
     super();
   }
@@ -297,7 +332,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.MBRICKLET_LOAD_CELL;
+    return ModelPackage.Literals.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN;
   }
 
   /**
@@ -320,7 +355,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -343,7 +378,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__UID, oldUid, uid));
   }
 
   /**
@@ -366,7 +401,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POLL, oldPoll, poll));
   }
 
   /**
@@ -389,7 +424,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -397,7 +432,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public BrickletLoadCell getTinkerforgeDevice()
+  public BrickletIndustrialDualAnalogIn getTinkerforgeDevice()
   {
     return tinkerforgeDevice;
   }
@@ -407,12 +442,12 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTinkerforgeDevice(BrickletLoadCell newTinkerforgeDevice)
+  public void setTinkerforgeDevice(BrickletIndustrialDualAnalogIn newTinkerforgeDevice)
   {
-    BrickletLoadCell oldTinkerforgeDevice = tinkerforgeDevice;
+    BrickletIndustrialDualAnalogIn oldTinkerforgeDevice = tinkerforgeDevice;
     tinkerforgeDevice = newTinkerforgeDevice;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
   }
 
   /**
@@ -435,7 +470,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     IPConnection oldIpConnection = ipConnection;
     ipConnection = newIpConnection;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__IP_CONNECTION, oldIpConnection, ipConnection));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__IP_CONNECTION, oldIpConnection, ipConnection));
   }
 
   /**
@@ -458,7 +493,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     String oldConnectedUid = connectedUid;
     connectedUid = newConnectedUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__CONNECTED_UID, oldConnectedUid, connectedUid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__CONNECTED_UID, oldConnectedUid, connectedUid));
   }
 
   /**
@@ -481,7 +516,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     char oldPosition = position;
     position = newPosition;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__POSITION, oldPosition, position));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POSITION, oldPosition, position));
   }
 
   /**
@@ -504,7 +539,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     int oldDeviceIdentifier = deviceIdentifier;
     deviceIdentifier = newDeviceIdentifier;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
   }
 
   /**
@@ -527,7 +562,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__NAME, oldName, name));
   }
 
   /**
@@ -537,7 +572,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    */
   public MBrickd getBrickd()
   {
-    if (eContainerFeatureID() != ModelPackage.MBRICKLET_LOAD_CELL__BRICKD) return null;
+    if (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD) return null;
     return (MBrickd)eContainer();
   }
 
@@ -548,7 +583,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    */
   public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_LOAD_CELL__BRICKD, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD, msgs);
     return msgs;
   }
 
@@ -559,7 +594,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    */
   public void setBrickd(MBrickd newBrickd)
   {
-    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_LOAD_CELL__BRICKD && newBrickd != null))
+    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD && newBrickd != null))
     {
       if (EcoreUtil.isAncestor(this, newBrickd))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -572,7 +607,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LOAD_CELL__BRICKD, newBrickd, newBrickd));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD, newBrickd, newBrickd));
   }
 
   /**
@@ -580,11 +615,59 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<LoadCellDevice> getMsubdevices()
+  public BrickletIndustrialDualAnalogInConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(BrickletIndustrialDualAnalogInConfiguration newTfConfig, NotificationChain msgs)
+  {
+    BrickletIndustrialDualAnalogInConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(BrickletIndustrialDualAnalogInConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<IndustrialDualAnalogInChannel> getMsubdevices()
   {
     if (msubdevices == null)
     {
-      msubdevices = new EObjectContainmentWithInverseEList<LoadCellDevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+      msubdevices = new EObjectContainmentWithInverseEList<IndustrialDualAnalogInChannel>(MSubDevice.class, this, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
     }
     return msubdevices;
   }
@@ -602,52 +685,92 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public short getSampleRate()
+  {
+    return sampleRate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSampleRate(short newSampleRate)
+  {
+    short oldSampleRate = sampleRate;
+    sampleRate = newSampleRate;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__SAMPLE_RATE, oldSampleRate, sampleRate));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void initSubDevices()
   {
-    ModelFactory factory =  ModelFactory.eINSTANCE;
-    LoadCellWeight weight = factory.createLoadCellWeight();
-    weight.setUid(getUid());
-    String subIdWeight = "weight";
-    weight.setSubId(subIdWeight);
-    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdWeight);
-    weight.init();
-    weight.setMbrick(this);
+    ModelFactory factory = ModelFactory.eINSTANCE;
+    IndustrialDualAnalogInChannel channel0 = factory.createIndustrialDualAnalogInChannel();
+    channel0.setChannelNum((short) 0);
+    channel0.setUid(getUid());
+    String subIdChannel0 = "channel0";
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdChannel0);
+    channel0.setSubId(subIdChannel0);
+    channel0.init();
+    channel0.setMbrick(this);
     
-    LoadCellLed led = factory.createLoadCellLed();
-    led.setUid(getUid());
-    String subIdLed = "led";
-    led.setSubId(subIdLed);
-    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdLed);
-    led.init();
-    led.setMbrick(this);
+    IndustrialDualAnalogInChannel channel1 = factory.createIndustrialDualAnalogInChannel();
+    channel1.setChannelNum((short) 1);
+    channel1.setUid(getUid());
+    String subIdChannel1 = "channel1";
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdChannel1);
+    channel1.setSubId(subIdChannel1);
+    channel1.init();
+    channel1.setMbrick(this);
   }
 
   /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(MBrickletLoadCellImpl.class);
+    logger = LoggerFactory.getLogger(MBrickletIndustrialDualAnalogInImpl.class);
   }
 
   /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void enable()
   {
-    tinkerforgeDevice = new BrickletLoadCell(getUid(), getIpConnection());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("sampeRate"))) {
+        Short sampleRate = tfConfig.getSampleRate();
+        logger.debug("sampleRate {}", sampleRate);
+        setSampleRate(sampleRate);
+      }
+    }
+    try {
+      tinkerforgeDevice = new BrickletIndustrialDualAnalogIn(getUid(), getIpConnection());
+      tinkerforgeDevice.setSampleRate(getSampleRate());
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void disable()
@@ -666,11 +789,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
-      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES:
         return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -686,9 +809,11 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         return basicSetBrickd(null, msgs);
-      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES:
         return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -704,7 +829,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -720,32 +845,36 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__LOGGER:
         return getLogger();
-      case ModelPackage.MBRICKLET_LOAD_CELL__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__UID:
         return getUid();
-      case ModelPackage.MBRICKLET_LOAD_CELL__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POLL:
         return isPoll();
-      case ModelPackage.MBRICKLET_LOAD_CELL__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.MBRICKLET_LOAD_CELL__TINKERFORGE_DEVICE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TINKERFORGE_DEVICE:
         return getTinkerforgeDevice();
-      case ModelPackage.MBRICKLET_LOAD_CELL__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__IP_CONNECTION:
         return getIpConnection();
-      case ModelPackage.MBRICKLET_LOAD_CELL__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__CONNECTED_UID:
         return getConnectedUid();
-      case ModelPackage.MBRICKLET_LOAD_CELL__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POSITION:
         return getPosition();
-      case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_IDENTIFIER:
         return getDeviceIdentifier();
-      case ModelPackage.MBRICKLET_LOAD_CELL__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__NAME:
         return getName();
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         return getBrickd();
-      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG:
+        return getTfConfig();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES:
         return getMsubdevices();
-      case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_TYPE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_TYPE:
         return getDeviceType();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__SAMPLE_RATE:
+        return getSampleRate();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -761,42 +890,48 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletLoadCell)newValue);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletIndustrialDualAnalogIn)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__IP_CONNECTION:
         setIpConnection((IPConnection)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__CONNECTED_UID:
         setConnectedUid((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POSITION:
         setPosition((Character)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_IDENTIFIER:
         setDeviceIdentifier((Integer)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__NAME:
         setName((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG:
+        setTfConfig((BrickletIndustrialDualAnalogInConfiguration)newValue);
+        return;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES:
         getMsubdevices().clear();
-        getMsubdevices().addAll((Collection<? extends LoadCellDevice>)newValue);
+        getMsubdevices().addAll((Collection<? extends IndustrialDualAnalogInChannel>)newValue);
+        return;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__SAMPLE_RATE:
+        setSampleRate((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -812,41 +947,47 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletLoadCell)null);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletIndustrialDualAnalogIn)null);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__IP_CONNECTION:
         setIpConnection(IP_CONNECTION_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__CONNECTED_UID:
         setConnectedUid(CONNECTED_UID_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POSITION:
         setPosition(POSITION_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_IDENTIFIER:
         setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         setBrickd((MBrickd)null);
         return;
-      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG:
+        setTfConfig((BrickletIndustrialDualAnalogInConfiguration)null);
+        return;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES:
         getMsubdevices().clear();
+        return;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__SAMPLE_RATE:
+        setSampleRate(SAMPLE_RATE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -862,32 +1003,36 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.MBRICKLET_LOAD_CELL__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.MBRICKLET_LOAD_CELL__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.MBRICKLET_LOAD_CELL__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.MBRICKLET_LOAD_CELL__TINKERFORGE_DEVICE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TINKERFORGE_DEVICE:
         return tinkerforgeDevice != null;
-      case ModelPackage.MBRICKLET_LOAD_CELL__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__IP_CONNECTION:
         return IP_CONNECTION_EDEFAULT == null ? ipConnection != null : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-      case ModelPackage.MBRICKLET_LOAD_CELL__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__CONNECTED_UID:
         return CONNECTED_UID_EDEFAULT == null ? connectedUid != null : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-      case ModelPackage.MBRICKLET_LOAD_CELL__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__POSITION:
         return position != POSITION_EDEFAULT;
-      case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_IDENTIFIER:
         return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-      case ModelPackage.MBRICKLET_LOAD_CELL__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ModelPackage.MBRICKLET_LOAD_CELL__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__BRICKD:
         return getBrickd() != null;
-      case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG:
+        return tfConfig != null;
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
-      case ModelPackage.MBRICKLET_LOAD_CELL__DEVICE_TYPE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__SAMPLE_RATE:
+        return sampleRate != SAMPLE_RATE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -900,11 +1045,19 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
     if (baseClass == MSubDeviceHolder.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -919,11 +1072,19 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__TF_CONFIG;
+        default: return -1;
+      }
+    }
     if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_LOAD_CELL__MSUBDEVICES;
+        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -938,11 +1099,18 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
     if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_LOAD_CELL___INIT_SUB_DEVICES;
+        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN___INIT_SUB_DEVICES;
         default: return -1;
       }
     }
@@ -959,16 +1127,16 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
   {
     switch (operationID)
     {
-      case ModelPackage.MBRICKLET_LOAD_CELL___INIT_SUB_DEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN___INIT_SUB_DEVICES:
         initSubDevices();
         return null;
-      case ModelPackage.MBRICKLET_LOAD_CELL___INIT:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN___INIT:
         init();
         return null;
-      case ModelPackage.MBRICKLET_LOAD_CELL___ENABLE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN___ENABLE:
         enable();
         return null;
-      case ModelPackage.MBRICKLET_LOAD_CELL___DISABLE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN___DISABLE:
         disable();
         return null;
     }
@@ -1008,8 +1176,10 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
     result.append(name);
     result.append(", deviceType: ");
     result.append(deviceType);
+    result.append(", sampleRate: ");
+    result.append(sampleRate);
     result.append(')');
     return result.toString();
   }
 
-} //MBrickletLoadCellImpl
+} //MBrickletIndustrialDualAnalogInImpl

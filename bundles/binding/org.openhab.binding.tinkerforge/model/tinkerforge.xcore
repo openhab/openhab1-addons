@@ -58,6 +58,10 @@ import com.tinkerforge.BrickletAmbientLightV2
 import com.tinkerforge.BrickletDustDetector
 import com.tinkerforge.BrickletLoadCell
 import com.tinkerforge.BrickletColor
+import com.tinkerforge.BrickletIndustrialDualAnalogIn
+import com.tinkerforge.BrickletAnalogIn
+import com.tinkerforge.BrickletAnalogInV2
+import com.tinkerforge.BrickletLaserRangeFinder
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -118,6 +122,10 @@ type TinkerBrickletAmbientLightV2 wraps BrickletAmbientLightV2
 type TinkerBrickletDustDetector wraps BrickletDustDetector
 type TinkerBrickletLoadCell wraps BrickletLoadCell
 type TinkerBrickletColor wraps BrickletColor
+type TinkerBrickletIndustrialDualAnalogIn wraps BrickletIndustrialDualAnalogIn
+type TinkerBrickletAnalogInV2 wraps BrickletAnalogInV2
+type TinkerBrickletAnalogIn wraps BrickletAnalogIn
+type TinkerBrickletLaserRangeFinder wraps BrickletLaserRangeFinder
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -307,6 +315,30 @@ class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
 	MTFConfigConsumer<ButtonConfiguration> {
 	String deviceType = "dualbutton_button"
 	DualButtonDevicePosition position
+}
+
+class MBrickletLaserRangeFinder extends MDevice<TinkerBrickletLaserRangeFinder>,
+	MSubDeviceHolder<LaserRangeFinderDevice>, MTFConfigConsumer<LaserRangeFinderConfiguration> {
+    readonly String deviceType = "bricklet_laser_range_finder"
+	short distanceAverageLength = "10"
+	short velocityAverageLength = "10"
+	short mode = "0"
+}
+
+interface LaserRangeFinderDevice extends MSubDevice<MBrickletLaserRangeFinder>,
+			MSensor<MDecimalValue> {
+}
+
+class LaserRangeFinderDistance extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
+	CallbackListener {
+	readonly String deviceType = "laser_range_finder_distance"
+	BigDecimal threshold = "0"
+}
+
+class LaserRangeFinderVelocity extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
+	CallbackListener {
+	readonly String deviceType = "laser_range_finder_velocity"
+	BigDecimal threshold = "0"
 }
 
 class MBrickletLoadCell extends MDevice<TinkerBrickletLoadCell>,
@@ -790,6 +822,20 @@ class MBrickletAmbientLightV2 extends MDevice<TinkerBrickletAmbientLightV2>,
 	op void init(){}
 }
 
+class MBrickletIndustrialDualAnalogIn extends MDevice<TinkerBrickletIndustrialDualAnalogIn>,
+		MTFConfigConsumer<BrickletIndustrialDualAnalogInConfiguration>, MSubDeviceHolder<IndustrialDualAnalogInChannel> {
+	readonly String deviceType = "bricklet_industrial_dual_analogin"
+	short sampleRate = "6"
+}
+
+class IndustrialDualAnalogInChannel extends MSensor<MDecimalValue>, 
+        MSubDevice<MBrickletIndustrialDualAnalogIn>, MTFConfigConsumer<TFBaseConfiguration>, 
+		CallbackListener {
+	readonly String deviceType = "industrial_dual_analogin_channel"
+	BigDecimal threshold = "0"
+	Short channelNum
+}
+
 class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
         CallbackListener {
@@ -813,6 +859,23 @@ class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
     BigDecimal threshold = "0"
     Short movingAverage = "100"
     op void init(){}
+}
+
+class MBrickletAnalogInV2 extends MDevice<TinkerBrickletAnalogInV2>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFAnalogInV2Configuration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_analoginv2"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+}
+
+class MBrickletAnalogIn extends MDevice<TinkerBrickletAnalogIn>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFAnalogInConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_analogin"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+	Short range = "0"
 }
 
 class MBrickletDistanceUS extends MDevice<TinkerBrickletDistanceUS>,
@@ -898,9 +961,19 @@ class LoadCellConfiguration extends TFBaseConfiguration {
 	short movingAverage
 }
 
+class LaserRangeFinderConfiguration extends TFConfig {
+	short distanceAverageLength
+	short velocityAverageLength
+	short mode
+}
+
 class AmbientLightV2Configuration extends TFBaseConfiguration {
 	short illuminanceRange
 	short integrationTime
+}
+
+class BrickletIndustrialDualAnalogInConfiguration extends TFBaseConfiguration {
+	Short sampleRate
 }
 
 class TFTemperatureConfiguration extends TFBaseConfiguration {
@@ -912,6 +985,14 @@ class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
 }
 
 class TFMoistureBrickletConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+}
+
+class TFAnalogInConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+	Short range
+}
+class TFAnalogInV2Configuration extends TFBaseConfiguration {
     Short movingAverage
 }
 
@@ -1141,4 +1222,12 @@ enum ColorBrickletSubIds {
 
 enum LoadCellSubIds {
 	weight, led
+}
+
+enum IndustrialDualAnalogInSubIds {
+	channel0, channel1
+}
+
+enum LaserRangeFinderSubIds {
+	distance, velocity
 }

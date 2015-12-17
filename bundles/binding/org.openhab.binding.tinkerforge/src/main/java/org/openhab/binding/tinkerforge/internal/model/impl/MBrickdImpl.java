@@ -49,6 +49,8 @@ import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
+import com.tinkerforge.BrickletAnalogIn;
+import com.tinkerforge.BrickletAnalogInV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
@@ -63,10 +65,12 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialDual020mA;
+import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
@@ -1039,6 +1043,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletColor");
               mDevice = factory.createMBrickletColor();
               mDevice.setDeviceIdentifier(BrickletColor.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDualAnalogIn.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrialDualAnalogIn");
+              mDevice = factory.createMBrickletIndustrialDualAnalogIn();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDualAnalogIn.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAnalogIn.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletAnalogIn");
+              mDevice = factory.createMBrickletAnalogIn();
+              mDevice.setDeviceIdentifier(BrickletAnalogIn.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAnalogInV2.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletAnalogInV2");
+              mDevice = factory.createMBrickletAnalogInV2();
+              mDevice.setDeviceIdentifier(BrickletAnalogInV2.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLaserRangeFinder.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletLaserRangeFinder");
+              mDevice = factory.createMBrickletLaserRangeFinder();
+              mDevice.setDeviceIdentifier(BrickletLaserRangeFinder.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

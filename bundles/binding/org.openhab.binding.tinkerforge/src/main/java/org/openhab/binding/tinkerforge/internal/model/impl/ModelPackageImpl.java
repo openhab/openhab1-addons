@@ -29,6 +29,7 @@ import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
@@ -72,6 +73,9 @@ import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInDevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
@@ -84,6 +88,11 @@ import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
@@ -97,6 +106,8 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
@@ -110,9 +121,11 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
@@ -185,6 +198,8 @@ import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
 import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -224,6 +239,8 @@ import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
+import com.tinkerforge.BrickletAnalogIn;
+import com.tinkerforge.BrickletAnalogInV2;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
@@ -238,10 +255,12 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialDual020mA;
+import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
@@ -506,6 +525,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dualButtonButtonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletLaserRangeFinderEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass laserRangeFinderDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass laserRangeFinderDistanceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass laserRangeFinderVelocityEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1170,7 +1217,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass laserRangeFinderConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass ambientLightV2ConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletIndustrialDualAnalogInConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1192,6 +1253,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass tfMoistureBrickletConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfAnalogInConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfAnalogInV2ConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1234,6 +1309,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletAmbientLightV2EClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletIndustrialDualAnalogInEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass industrialDualAnalogInChannelEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1283,6 +1372,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mBrickletMoistureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletAnalogInV2EClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletAnalogInEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1402,6 +1505,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum loadCellSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum industrialDualAnalogInSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum laserRangeFinderSubIdsEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1808,6 +1925,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletColorEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletIndustrialDualAnalogInEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletAnalogInV2EDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletAnalogInEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletLaserRangeFinderEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3305,6 +3450,126 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getDualButtonButton_Position()
   {
     return (EAttribute)dualButtonButtonEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletLaserRangeFinder()
+  {
+    return mBrickletLaserRangeFinderEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLaserRangeFinder_DeviceType()
+  {
+    return (EAttribute)mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLaserRangeFinder_DistanceAverageLength()
+  {
+    return (EAttribute)mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLaserRangeFinder_VelocityAverageLength()
+  {
+    return (EAttribute)mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletLaserRangeFinder_Mode()
+  {
+    return (EAttribute)mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLaserRangeFinderDevice()
+  {
+    return laserRangeFinderDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLaserRangeFinderDistance()
+  {
+    return laserRangeFinderDistanceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderDistance_DeviceType()
+  {
+    return (EAttribute)laserRangeFinderDistanceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderDistance_Threshold()
+  {
+    return (EAttribute)laserRangeFinderDistanceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLaserRangeFinderVelocity()
+  {
+    return laserRangeFinderVelocityEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderVelocity_DeviceType()
+  {
+    return (EAttribute)laserRangeFinderVelocityEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderVelocity_Threshold()
+  {
+    return (EAttribute)laserRangeFinderVelocityEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -6082,6 +6347,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getLaserRangeFinderConfiguration()
+  {
+    return laserRangeFinderConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderConfiguration_DistanceAverageLength()
+  {
+    return (EAttribute)laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderConfiguration_VelocityAverageLength()
+  {
+    return (EAttribute)laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderConfiguration_Mode()
+  {
+    return (EAttribute)laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getAmbientLightV2Configuration()
   {
     return ambientLightV2ConfigurationEClass;
@@ -6105,6 +6410,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getAmbientLightV2Configuration_IntegrationTime()
   {
     return (EAttribute)ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletIndustrialDualAnalogInConfiguration()
+  {
+    return brickletIndustrialDualAnalogInConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletIndustrialDualAnalogInConfiguration_SampleRate()
+  {
+    return (EAttribute)brickletIndustrialDualAnalogInConfigurationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -6165,6 +6490,56 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getTFMoistureBrickletConfiguration_MovingAverage()
   {
     return (EAttribute)tfMoistureBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFAnalogInConfiguration()
+  {
+    return tfAnalogInConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFAnalogInConfiguration_MovingAverage()
+  {
+    return (EAttribute)tfAnalogInConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFAnalogInConfiguration_Range()
+  {
+    return (EAttribute)tfAnalogInConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFAnalogInV2Configuration()
+  {
+    return tfAnalogInV2ConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFAnalogInV2Configuration_MovingAverage()
+  {
+    return (EAttribute)tfAnalogInV2ConfigurationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -6395,6 +6770,76 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletAmbientLightV2__Init()
   {
     return mBrickletAmbientLightV2EClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletIndustrialDualAnalogIn()
+  {
+    return mBrickletIndustrialDualAnalogInEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletIndustrialDualAnalogIn_DeviceType()
+  {
+    return (EAttribute)mBrickletIndustrialDualAnalogInEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletIndustrialDualAnalogIn_SampleRate()
+  {
+    return (EAttribute)mBrickletIndustrialDualAnalogInEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getIndustrialDualAnalogInChannel()
+  {
+    return industrialDualAnalogInChannelEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getIndustrialDualAnalogInChannel_DeviceType()
+  {
+    return (EAttribute)industrialDualAnalogInChannelEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getIndustrialDualAnalogInChannel_Threshold()
+  {
+    return (EAttribute)industrialDualAnalogInChannelEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getIndustrialDualAnalogInChannel_ChannelNum()
+  {
+    return (EAttribute)industrialDualAnalogInChannelEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -6635,6 +7080,96 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickletMoisture__Init()
   {
     return mBrickletMoistureEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletAnalogInV2()
+  {
+    return mBrickletAnalogInV2EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogInV2_DeviceType()
+  {
+    return (EAttribute)mBrickletAnalogInV2EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogInV2_Threshold()
+  {
+    return (EAttribute)mBrickletAnalogInV2EClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogInV2_MovingAverage()
+  {
+    return (EAttribute)mBrickletAnalogInV2EClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletAnalogIn()
+  {
+    return mBrickletAnalogInEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogIn_DeviceType()
+  {
+    return (EAttribute)mBrickletAnalogInEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogIn_Threshold()
+  {
+    return (EAttribute)mBrickletAnalogInEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogIn_MovingAverage()
+  {
+    return (EAttribute)mBrickletAnalogInEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAnalogIn_Range()
+  {
+    return (EAttribute)mBrickletAnalogInEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -6995,6 +7530,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EEnum getLoadCellSubIds()
   {
     return loadCellSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getIndustrialDualAnalogInSubIds()
+  {
+    return industrialDualAnalogInSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getLaserRangeFinderSubIds()
+  {
+    return laserRangeFinderSubIdsEEnum;
   }
 
   /**
@@ -7582,6 +8137,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletIndustrialDualAnalogIn()
+  {
+    return tinkerBrickletIndustrialDualAnalogInEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletAnalogInV2()
+  {
+    return tinkerBrickletAnalogInV2EDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletAnalogIn()
+  {
+    return tinkerBrickletAnalogInEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletLaserRangeFinder()
+  {
+    return tinkerBrickletLaserRangeFinderEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -7868,6 +8463,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonButtonEClass = createEClass(DUAL_BUTTON_BUTTON);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__DEVICE_TYPE);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__POSITION);
+
+    mBrickletLaserRangeFinderEClass = createEClass(MBRICKLET_LASER_RANGE_FINDER);
+    createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__DEVICE_TYPE);
+    createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__DISTANCE_AVERAGE_LENGTH);
+    createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__VELOCITY_AVERAGE_LENGTH);
+    createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__MODE);
+
+    laserRangeFinderDeviceEClass = createEClass(LASER_RANGE_FINDER_DEVICE);
+
+    laserRangeFinderDistanceEClass = createEClass(LASER_RANGE_FINDER_DISTANCE);
+    createEAttribute(laserRangeFinderDistanceEClass, LASER_RANGE_FINDER_DISTANCE__DEVICE_TYPE);
+    createEAttribute(laserRangeFinderDistanceEClass, LASER_RANGE_FINDER_DISTANCE__THRESHOLD);
+
+    laserRangeFinderVelocityEClass = createEClass(LASER_RANGE_FINDER_VELOCITY);
+    createEAttribute(laserRangeFinderVelocityEClass, LASER_RANGE_FINDER_VELOCITY__DEVICE_TYPE);
+    createEAttribute(laserRangeFinderVelocityEClass, LASER_RANGE_FINDER_VELOCITY__THRESHOLD);
 
     mBrickletLoadCellEClass = createEClass(MBRICKLET_LOAD_CELL);
     createEAttribute(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL__DEVICE_TYPE);
@@ -8194,6 +8805,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2__INTEGRATION_TIME);
     createEOperation(mBrickletAmbientLightV2EClass, MBRICKLET_AMBIENT_LIGHT_V2___INIT);
 
+    mBrickletIndustrialDualAnalogInEClass = createEClass(MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN);
+    createEAttribute(mBrickletIndustrialDualAnalogInEClass, MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__DEVICE_TYPE);
+    createEAttribute(mBrickletIndustrialDualAnalogInEClass, MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN__SAMPLE_RATE);
+
+    industrialDualAnalogInChannelEClass = createEClass(INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL);
+    createEAttribute(industrialDualAnalogInChannelEClass, INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL__DEVICE_TYPE);
+    createEAttribute(industrialDualAnalogInChannelEClass, INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL__THRESHOLD);
+    createEAttribute(industrialDualAnalogInChannelEClass, INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL__CHANNEL_NUM);
+
     mBrickletSoundIntensityEClass = createEClass(MBRICKLET_SOUND_INTENSITY);
     createEAttribute(mBrickletSoundIntensityEClass, MBRICKLET_SOUND_INTENSITY__DEVICE_TYPE);
     createEAttribute(mBrickletSoundIntensityEClass, MBRICKLET_SOUND_INTENSITY__THRESHOLD);
@@ -8209,6 +8829,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__THRESHOLD);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__MOVING_AVERAGE);
     createEOperation(mBrickletMoistureEClass, MBRICKLET_MOISTURE___INIT);
+
+    mBrickletAnalogInV2EClass = createEClass(MBRICKLET_ANALOG_IN_V2);
+    createEAttribute(mBrickletAnalogInV2EClass, MBRICKLET_ANALOG_IN_V2__DEVICE_TYPE);
+    createEAttribute(mBrickletAnalogInV2EClass, MBRICKLET_ANALOG_IN_V2__THRESHOLD);
+    createEAttribute(mBrickletAnalogInV2EClass, MBRICKLET_ANALOG_IN_V2__MOVING_AVERAGE);
+
+    mBrickletAnalogInEClass = createEClass(MBRICKLET_ANALOG_IN);
+    createEAttribute(mBrickletAnalogInEClass, MBRICKLET_ANALOG_IN__DEVICE_TYPE);
+    createEAttribute(mBrickletAnalogInEClass, MBRICKLET_ANALOG_IN__THRESHOLD);
+    createEAttribute(mBrickletAnalogInEClass, MBRICKLET_ANALOG_IN__MOVING_AVERAGE);
+    createEAttribute(mBrickletAnalogInEClass, MBRICKLET_ANALOG_IN__RANGE);
 
     mBrickletDistanceUSEClass = createEClass(MBRICKLET_DISTANCE_US);
     createEAttribute(mBrickletDistanceUSEClass, MBRICKLET_DISTANCE_US__DEVICE_TYPE);
@@ -8267,9 +8898,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     loadCellConfigurationEClass = createEClass(LOAD_CELL_CONFIGURATION);
     createEAttribute(loadCellConfigurationEClass, LOAD_CELL_CONFIGURATION__MOVING_AVERAGE);
 
+    laserRangeFinderConfigurationEClass = createEClass(LASER_RANGE_FINDER_CONFIGURATION);
+    createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__DISTANCE_AVERAGE_LENGTH);
+    createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__VELOCITY_AVERAGE_LENGTH);
+    createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__MODE);
+
     ambientLightV2ConfigurationEClass = createEClass(AMBIENT_LIGHT_V2_CONFIGURATION);
     createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__ILLUMINANCE_RANGE);
     createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__INTEGRATION_TIME);
+
+    brickletIndustrialDualAnalogInConfigurationEClass = createEClass(BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION);
+    createEAttribute(brickletIndustrialDualAnalogInConfigurationEClass, BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION__SAMPLE_RATE);
 
     tfTemperatureConfigurationEClass = createEClass(TF_TEMPERATURE_CONFIGURATION);
     createEAttribute(tfTemperatureConfigurationEClass, TF_TEMPERATURE_CONFIGURATION__SLOW_I2C);
@@ -8279,6 +8918,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     tfMoistureBrickletConfigurationEClass = createEClass(TF_MOISTURE_BRICKLET_CONFIGURATION);
     createEAttribute(tfMoistureBrickletConfigurationEClass, TF_MOISTURE_BRICKLET_CONFIGURATION__MOVING_AVERAGE);
+
+    tfAnalogInConfigurationEClass = createEClass(TF_ANALOG_IN_CONFIGURATION);
+    createEAttribute(tfAnalogInConfigurationEClass, TF_ANALOG_IN_CONFIGURATION__MOVING_AVERAGE);
+    createEAttribute(tfAnalogInConfigurationEClass, TF_ANALOG_IN_CONFIGURATION__RANGE);
+
+    tfAnalogInV2ConfigurationEClass = createEClass(TF_ANALOG_IN_V2_CONFIGURATION);
+    createEAttribute(tfAnalogInV2ConfigurationEClass, TF_ANALOG_IN_V2_CONFIGURATION__MOVING_AVERAGE);
 
     tfDistanceUSBrickletConfigurationEClass = createEClass(TF_DISTANCE_US_BRICKLET_CONFIGURATION);
     createEAttribute(tfDistanceUSBrickletConfigurationEClass, TF_DISTANCE_US_BRICKLET_CONFIGURATION__MOVING_AVERAGE);
@@ -8394,6 +9040,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     rotaryEncoderSubIdsEEnum = createEEnum(ROTARY_ENCODER_SUB_IDS);
     colorBrickletSubIdsEEnum = createEEnum(COLOR_BRICKLET_SUB_IDS);
     loadCellSubIdsEEnum = createEEnum(LOAD_CELL_SUB_IDS);
+    industrialDualAnalogInSubIdsEEnum = createEEnum(INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS);
+    laserRangeFinderSubIdsEEnum = createEEnum(LASER_RANGE_FINDER_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -8444,6 +9092,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletDustDetectorEDataType = createEDataType(TINKER_BRICKLET_DUST_DETECTOR);
     tinkerBrickletLoadCellEDataType = createEDataType(TINKER_BRICKLET_LOAD_CELL);
     tinkerBrickletColorEDataType = createEDataType(TINKER_BRICKLET_COLOR);
+    tinkerBrickletIndustrialDualAnalogInEDataType = createEDataType(TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN);
+    tinkerBrickletAnalogInV2EDataType = createEDataType(TINKER_BRICKLET_ANALOG_IN_V2);
+    tinkerBrickletAnalogInEDataType = createEDataType(TINKER_BRICKLET_ANALOG_IN);
+    tinkerBrickletLaserRangeFinderEDataType = createEDataType(TINKER_BRICKLET_LASER_RANGE_FINDER);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -8576,6 +9228,42 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getButtonConfiguration());
     g1.getETypeArguments().add(g2);
     dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletLaserRangeFinder());
+    g1.getETypeArguments().add(g2);
+    mBrickletLaserRangeFinderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getLaserRangeFinderDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletLaserRangeFinderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getLaserRangeFinderConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletLaserRangeFinderEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletLaserRangeFinder());
+    g1.getETypeArguments().add(g2);
+    laserRangeFinderDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    laserRangeFinderDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getLaserRangeFinderDevice());
+    laserRangeFinderDistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    laserRangeFinderDistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    laserRangeFinderDistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getLaserRangeFinderDevice());
+    laserRangeFinderVelocityEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    laserRangeFinderVelocityEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    laserRangeFinderVelocityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLoadCell());
     g1.getETypeArguments().add(g2);
@@ -9294,6 +9982,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletAmbientLightV2EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletIndustrialDualAnalogIn());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDualAnalogInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getBrickletIndustrialDualAnalogInConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDualAnalogInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getIndustrialDualAnalogInChannel());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDualAnalogInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    industrialDualAnalogInChannelEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletIndustrialDualAnalogIn());
+    g1.getETypeArguments().add(g2);
+    industrialDualAnalogInChannelEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    industrialDualAnalogInChannelEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    industrialDualAnalogInChannelEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletSoundIntensity());
     g1.getETypeArguments().add(g2);
     mBrickletSoundIntensityEClass.getEGenericSuperTypes().add(g1);
@@ -9335,6 +10049,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletMoistureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletMoistureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletAnalogInV2());
+    g1.getETypeArguments().add(g2);
+    mBrickletAnalogInV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickletAnalogInV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFAnalogInV2Configuration());
+    g1.getETypeArguments().add(g2);
+    mBrickletAnalogInV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletAnalogInV2EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletAnalogIn());
+    g1.getETypeArguments().add(g2);
+    mBrickletAnalogInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickletAnalogInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFAnalogInConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletAnalogInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletAnalogInEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletDistanceUS());
     g1.getETypeArguments().add(g2);
@@ -9382,10 +10124,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfIndustrialDual020mAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     loadCellConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    laserRangeFinderConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     ambientLightV2ConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    brickletIndustrialDualAnalogInConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    tfAnalogInConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    tfAnalogInV2ConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfVoltageCurrentConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBrickDCConfigurationEClass.getESuperTypes().add(this.getDimmableConfiguration());
@@ -9617,6 +10363,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(dualButtonButtonEClass, DualButtonButton.class, "DualButtonButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDualButtonButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_button", 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDualButtonButton_Position(), this.getDualButtonDevicePosition(), "position", null, 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mBrickletLaserRangeFinderEClass, MBrickletLaserRangeFinder.class, "MBrickletLaserRangeFinder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletLaserRangeFinder_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_laser_range_finder", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLaserRangeFinder_DistanceAverageLength(), theEcorePackage.getEShort(), "distanceAverageLength", "10", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLaserRangeFinder_VelocityAverageLength(), theEcorePackage.getEShort(), "velocityAverageLength", "10", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLaserRangeFinder_Mode(), theEcorePackage.getEShort(), "mode", "0", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(laserRangeFinderDeviceEClass, LaserRangeFinderDevice.class, "LaserRangeFinderDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(laserRangeFinderDistanceEClass, LaserRangeFinderDistance.class, "LaserRangeFinderDistance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLaserRangeFinderDistance_DeviceType(), theEcorePackage.getEString(), "deviceType", "laser_range_finder_distance", 0, 1, LaserRangeFinderDistance.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLaserRangeFinderDistance_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, LaserRangeFinderDistance.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(laserRangeFinderVelocityEClass, LaserRangeFinderVelocity.class, "LaserRangeFinderVelocity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLaserRangeFinderVelocity_DeviceType(), theEcorePackage.getEString(), "deviceType", "laser_range_finder_velocity", 0, 1, LaserRangeFinderVelocity.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLaserRangeFinderVelocity_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, LaserRangeFinderVelocity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletLoadCellEClass, MBrickletLoadCell.class, "MBrickletLoadCell", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletLoadCell_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_loadcell", 0, 1, MBrickletLoadCell.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9975,6 +10737,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletAmbientLightV2__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletIndustrialDualAnalogInEClass, MBrickletIndustrialDualAnalogIn.class, "MBrickletIndustrialDualAnalogIn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletIndustrialDualAnalogIn_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_industrial_dual_analogin", 0, 1, MBrickletIndustrialDualAnalogIn.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletIndustrialDualAnalogIn_SampleRate(), theEcorePackage.getEShort(), "sampleRate", "6", 0, 1, MBrickletIndustrialDualAnalogIn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(industrialDualAnalogInChannelEClass, IndustrialDualAnalogInChannel.class, "IndustrialDualAnalogInChannel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getIndustrialDualAnalogInChannel_DeviceType(), theEcorePackage.getEString(), "deviceType", "industrial_dual_analogin_channel", 0, 1, IndustrialDualAnalogInChannel.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getIndustrialDualAnalogInChannel_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, IndustrialDualAnalogInChannel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getIndustrialDualAnalogInChannel_ChannelNum(), theEcorePackage.getEShortObject(), "channelNum", null, 0, 1, IndustrialDualAnalogInChannel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletSoundIntensityEClass, MBrickletSoundIntensity.class, "MBrickletSoundIntensity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletSoundIntensity_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_soundintensity", 0, 1, MBrickletSoundIntensity.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletSoundIntensity_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletSoundIntensity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -9993,6 +10764,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickletMoisture_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", "100", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletMoisture__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletAnalogInV2EClass, MBrickletAnalogInV2.class, "MBrickletAnalogInV2", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletAnalogInV2_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_analoginv2", 0, 1, MBrickletAnalogInV2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAnalogInV2_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletAnalogInV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAnalogInV2_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", "100", 0, 1, MBrickletAnalogInV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mBrickletAnalogInEClass, MBrickletAnalogIn.class, "MBrickletAnalogIn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletAnalogIn_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_analogin", 0, 1, MBrickletAnalogIn.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAnalogIn_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletAnalogIn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAnalogIn_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", "100", 0, 1, MBrickletAnalogIn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAnalogIn_Range(), theEcorePackage.getEShortObject(), "range", "0", 0, 1, MBrickletAnalogIn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletDistanceUSEClass, MBrickletDistanceUS.class, "MBrickletDistanceUS", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletDistanceUS_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_distanceUS", 0, 1, MBrickletDistanceUS.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -10082,9 +10864,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(loadCellConfigurationEClass, LoadCellConfiguration.class, "LoadCellConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLoadCellConfiguration_MovingAverage(), theEcorePackage.getEShort(), "movingAverage", null, 0, 1, LoadCellConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(laserRangeFinderConfigurationEClass, LaserRangeFinderConfiguration.class, "LaserRangeFinderConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLaserRangeFinderConfiguration_DistanceAverageLength(), theEcorePackage.getEShort(), "distanceAverageLength", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLaserRangeFinderConfiguration_VelocityAverageLength(), theEcorePackage.getEShort(), "velocityAverageLength", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLaserRangeFinderConfiguration_Mode(), theEcorePackage.getEShort(), "mode", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(ambientLightV2ConfigurationEClass, AmbientLightV2Configuration.class, "AmbientLightV2Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAmbientLightV2Configuration_IlluminanceRange(), theEcorePackage.getEShort(), "illuminanceRange", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAmbientLightV2Configuration_IntegrationTime(), theEcorePackage.getEShort(), "integrationTime", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(brickletIndustrialDualAnalogInConfigurationEClass, BrickletIndustrialDualAnalogInConfiguration.class, "BrickletIndustrialDualAnalogInConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBrickletIndustrialDualAnalogInConfiguration_SampleRate(), theEcorePackage.getEShortObject(), "sampleRate", null, 0, 1, BrickletIndustrialDualAnalogInConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfTemperatureConfigurationEClass, TFTemperatureConfiguration.class, "TFTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFTemperatureConfiguration_SlowI2C(), theEcorePackage.getEBoolean(), "slowI2C", null, 0, 1, TFTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -10094,6 +10884,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(tfMoistureBrickletConfigurationEClass, TFMoistureBrickletConfiguration.class, "TFMoistureBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFMoistureBrickletConfiguration_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", null, 0, 1, TFMoistureBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfAnalogInConfigurationEClass, TFAnalogInConfiguration.class, "TFAnalogInConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFAnalogInConfiguration_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", null, 0, 1, TFAnalogInConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFAnalogInConfiguration_Range(), theEcorePackage.getEShortObject(), "range", null, 0, 1, TFAnalogInConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfAnalogInV2ConfigurationEClass, TFAnalogInV2Configuration.class, "TFAnalogInV2Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFAnalogInV2Configuration_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", null, 0, 1, TFAnalogInV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfDistanceUSBrickletConfigurationEClass, TFDistanceUSBrickletConfiguration.class, "TFDistanceUSBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFDistanceUSBrickletConfiguration_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", null, 0, 1, TFDistanceUSBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -10366,6 +11163,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(loadCellSubIdsEEnum, LoadCellSubIds.WEIGHT);
     addEEnumLiteral(loadCellSubIdsEEnum, LoadCellSubIds.LED);
 
+    initEEnum(industrialDualAnalogInSubIdsEEnum, IndustrialDualAnalogInSubIds.class, "IndustrialDualAnalogInSubIds");
+    addEEnumLiteral(industrialDualAnalogInSubIdsEEnum, IndustrialDualAnalogInSubIds.CHANNEL0);
+    addEEnumLiteral(industrialDualAnalogInSubIdsEEnum, IndustrialDualAnalogInSubIds.CHANNEL1);
+
+    initEEnum(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.class, "LaserRangeFinderSubIds");
+    addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.DISTANCE);
+    addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.VELOCITY);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -10415,6 +11220,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletDustDetectorEDataType, BrickletDustDetector.class, "TinkerBrickletDustDetector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLoadCellEDataType, BrickletLoadCell.class, "TinkerBrickletLoadCell", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletColorEDataType, BrickletColor.class, "TinkerBrickletColor", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletIndustrialDualAnalogInEDataType, BrickletIndustrialDualAnalogIn.class, "TinkerBrickletIndustrialDualAnalogIn", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletAnalogInV2EDataType, BrickletAnalogInV2.class, "TinkerBrickletAnalogInV2", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletAnalogInEDataType, BrickletAnalogIn.class, "TinkerBrickletAnalogIn", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletLaserRangeFinderEDataType, BrickletLaserRangeFinder.class, "TinkerBrickletLaserRangeFinder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

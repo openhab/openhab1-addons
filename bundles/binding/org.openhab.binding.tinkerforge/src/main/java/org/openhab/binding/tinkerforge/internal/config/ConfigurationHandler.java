@@ -28,6 +28,7 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
@@ -42,6 +43,7 @@ import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
@@ -63,6 +65,8 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
@@ -121,7 +125,9 @@ public class ConfigurationHandler {
     industrial020ma_sensor, bricklet_industrialdual020ma, dual_relay, quad_relay,
     digital_4in, digital_4out, rotary_encoder, rotary_encoder_button, bricklet_ambient_lightv2,
     bricklet_dustdetector, bricklet_loadcell, loadcell_weight, loadcell_led, bricklet_color, 
-    color_color, color_illuminance, color_temperature, color_led
+    color_color, color_illuminance, color_temperature, color_led, bricklet_industrial_dual_analogin,
+    industrial_dual_analogin_channel, bricklet_analogin, bricklet_analoginv2, bricklet_laser_range_finder,
+    laser_range_finder_distance, laser_range_finder_velocity
   }
 
 
@@ -259,13 +265,20 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.bricklet_dustdetector.name())
         || deviceType.equals(TypeKey.color_color.name())
         || deviceType.equals(TypeKey.color_temperature.name())
-        || deviceType.equals(TypeKey.color_illuminance.name())) {
+        || deviceType.equals(TypeKey.color_illuminance.name())
+        || deviceType.endsWith(TypeKey.industrial_dual_analogin_channel.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
         OHTFDevice<TFBaseConfiguration, BarometerSubIDs> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(BarometerSubIDs.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.industrial_dual_analogin_channel.name())){
+        OHTFDevice<TFBaseConfiguration, IndustrialDualAnalogInSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDualAnalogInSubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else if (deviceType.equals(TypeKey.ambient_temperature.name())) {
@@ -612,6 +625,27 @@ public class ConfigurationHandler {
       BrickletColorConfiguration configuration = modelFactory.createBrickletColorConfiguration();
       OHTFDevice<BrickletColorConfiguration, ColorBrickletSubIds> ohtfDevice = modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ColorBrickletSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_industrial_dual_analogin.name())){
+      BrickletIndustrialDualAnalogInConfiguration configuration =
+          modelFactory.createBrickletIndustrialDualAnalogInConfiguration();
+      OHTFDevice<BrickletIndustrialDualAnalogInConfiguration, IndustrialDualAnalogInSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(IndustrialDualAnalogInSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_analogin.name())) {
+      TFAnalogInConfiguration configuration = modelFactory.createTFAnalogInConfiguration();
+      OHTFDevice<TFAnalogInConfiguration, NoSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_analoginv2.name())) {
+      TFAnalogInV2Configuration configuration = modelFactory.createTFAnalogInV2Configuration();
+      OHTFDevice<TFAnalogInV2Configuration, NoSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {
