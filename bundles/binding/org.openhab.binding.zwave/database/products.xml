@@ -1519,18 +1519,20 @@
 				<Type>0200</Type>
 				<Id>300A</Id>
 			</Reference>
+			<Reference>
+				<Type>0202</Type>
+				<Id>3002</Id>
+			</Reference>
 			<Model>FGS221</Model>
 			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
-			<ConfigFile>fibaro/fgs221.xml</ConfigFile>
+			<ConfigFile VersionMax="1.8">fibaro/fgs221-14.xml</ConfigFile><!-- VersionMin="1.4" -->
+			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgs221-19.xml</ConfigFile>
+			<ConfigFile VersionMin="2.1">fibaro/fgs221-21.xml</ConfigFile><!-- VersionMax="2.3" -->
 		</Product>
 		<Product>
 			<Reference>
 				<Type>0202</Type>
 				<Id>1002</Id>
-			</Reference>
-			<Reference>
-				<Type>0202</Type>
-				<Id>3002</Id>
 			</Reference>
 			<Model>FGS222</Model>
 			<Label lang="en">Double Relay Switch 2x1.5kW</Label>
