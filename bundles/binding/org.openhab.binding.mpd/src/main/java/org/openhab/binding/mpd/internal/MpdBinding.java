@@ -394,19 +394,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 				
 				// get the song object here
 				MPDSong curSong = player.getCurrentSong();				
-				
+
 				MPDSong curSongCache = songInfoCache.get(playerId);
-				if (curSongCache != null) {
-					// we have some info
-					if (curSong.getId() != curSongCache.getId()) {
-						songInfoCache.put(playerId, curSong);
-						songChanged(playerId, curSong);
-					} else {
-						// nothing, same song
-						// detect play state						
-					}
-				} else {
-					// no info about player's playback state					
+				if (!songsEqual(curSong, curSongCache)) {
+					// song is different (or not in cache), update cache
 					songInfoCache.put(playerId, curSong);
 					// action the song change&notification 
 					songChanged(playerId, curSong);
@@ -423,26 +414,49 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		}
 	}
 	
+	private boolean songsEqual(MPDSong song1, MPDSong song2) {
+		if (!StringUtils.equals(getTitle(song1), getTitle(song2))) {
+			return false;
+		}
 
-	
-	private void songChanged(String playerId, MPDSong newSong) {
+		return StringUtils.equals(getArtist(song1), getArtist(song2));
+        }
+
+	private String getTitle(MPDSong song) {
+		if (song == null || song.getTitle() == null) {
+			return "";
+		}
 		
-		logger.debug("Current song {}: {}", playerId, newSong.getTitle().toString());
+		return song.getTitle().toString();
+	}
+
+	private String getArtist(MPDSong song) {
+		if (song == null || song.getArtist() == null) {
+			return "";
+		}
+
+		return song.getArtist().toString();
+	}
+
+	private void songChanged(String playerId, MPDSong newSong) {
+                String title = getTitle(newSong);
+		logger.debug("Current song {}: {}", playerId, title);
 		
 		String[] itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKINFO);
 		//move to utilities?
 		for (String itemName : itemNames) {
 			if (StringUtils.isNotBlank(itemName)) {
-				eventPublisher.postUpdate(itemName, new StringType(newSong.getTitle().toString()));		
-				logger.debug("Updated title: {} {}", itemName, newSong.getTitle().toString());
+				eventPublisher.postUpdate(itemName, new StringType(title));
+				logger.debug("Updated title: {} {}", itemName, title);
 			}
 		}
 		
+                String artist = getArtist(newSong);
 		itemNames = getItemNamesByPlayerAndPlayerCommand(playerId, PlayerCommandTypeMapping.TRACKARTIST);
 		for (String itemName : itemNames) {
 			if (StringUtils.isNotBlank(itemName)) {
-				eventPublisher.postUpdate(itemName, new StringType(newSong.getArtist().toString()));		
-				logger.debug("Updated artist: {}, {}", itemName, newSong.getArtist().toString());
+				eventPublisher.postUpdate(itemName, new StringType(artist));
+				logger.debug("Updated artist: {}, {}", itemName, artist);
 			}
 		}
 	}

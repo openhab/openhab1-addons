@@ -12,6 +12,7 @@ Bundle-Description: This is the Telegram action of the open Home Automation Bus 
 Import-Package: org.apache.commons.httpclient,
  org.apache.commons.httpclient.auth,
  org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.methods.multipart,
  org.apache.commons.httpclient.params,
  org.apache.commons.io,
  org.apache.commons.lang,

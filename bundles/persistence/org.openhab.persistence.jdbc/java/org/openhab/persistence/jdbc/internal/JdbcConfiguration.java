@@ -166,7 +166,8 @@ public class JdbcConfiguration {
 
         String np = (String) configuration.get("tableNamePrefix");
         if (StringUtils.isNotBlank(np)) {
-            dBDAO.databaseProps.setProperty("tableNamePrefix", np);
+	    tableNamePrefix = np;
+	    logger.debug("JDBC::updateConfig: tableNamePrefix={}", tableNamePrefix);
         }
 
         String dd = (String) configuration.get("numberDecimalcount");

@@ -98,35 +98,36 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Map OFF status to all devices in group 1, Double click on key 1 will send ON to all devices in group 1, all dimmers set to prev.value</Label>
+				<Label lang="en">Map OFF status to all devices in group 1, double click on key 1 will send ON to all devices in group 1, all dimmers set to prev.value</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">Map OFF status to all devices in group 1, Double click on key 1 will send ON to all devices in group 1, all dimmers set to 100%</Label>
+				<Label lang="en">Map OFF status to all devices in group 1, double click on key 1 will send ON to all devices in group 1, all dimmers set to 100%</Label>
 			</Item>
 			<Help lang="en">Activate/Deactivate association sending for group
-				1 - Also see param #16</Help>
+				1 - activate param #15 for this to work</Help>
 		</Parameter>
 		
 		<Parameter>
 			<Index>7</Index>
 			<Type>list</Type>
-			<Default>1</Default>
+			<Default>0</Default>
 			<Size>1</Size>
-			<Label lang="en">Control key #2 behaviour</Label>			
+			<Label lang="en">Separation of association sending (key 2)</Label>			
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Device status is not checked</Label>
+				<Label lang="en">Map status to all devices in group 2</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Device status is checked</Label>
+				<Label lang="en"><Label lang="en">Map OFF status to all devices in group 2, double click on key 2 will send ON to all devices in group 2, all dimmers set to prev.value</Label>
 			</Item>
-			<Help lang="en">Key no.2 is not represented by any physical device - only
-				devices in the association list.
-				This functionality prevents of lack of reaction on pressing key no.2
-				through polling devices
-				from association list one by one and checking their actual statuses.</Help>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Map OFF status to all devices in group 2, double click on key 2 will send ON to all devices in group 2, all dimmers set to 100%</Label>
+			</Item>
+			<Help lang="en">Activate/Deactivate association sending for group
+				2 - activate param #15 for this to work</Help>
 		</Parameter>
 		
 		<Parameter>

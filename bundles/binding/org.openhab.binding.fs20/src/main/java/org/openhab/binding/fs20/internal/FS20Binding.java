@@ -85,8 +85,10 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 
 	public void deactivate() {
 		logger.debug("Deactivating FS20 binding");
-		cul.unregisterListener(this);
-		CULManager.close(cul);
+		if(cul!=null) {
+    		cul.unregisterListener(this);
+    		CULManager.close(cul);
+		}
 	}
 
 	/**
