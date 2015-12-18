@@ -75,6 +75,7 @@ public class Constants {
 	public static final short Souliss_T55_VoltageSensor = 0x55;
 	public static final short Souliss_T56_CurrentSensor = 0x56;
 	public static final short Souliss_T57_PowerSensor = 0x57;
+	public static final short Souliss_T58_PressureSensor = 0x58;
 
 	// customized (remote) AirCon commands
 	public static final int Souliss_T_IrCom_AirCon_Pow_On = 0x8FFE;
