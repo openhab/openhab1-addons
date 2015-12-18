@@ -542,6 +542,12 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.mqtt</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
@@ -1337,7 +1343,19 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.sapp</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.rwesmarthome</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.ucprelayboard</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

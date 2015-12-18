@@ -11,6 +11,8 @@ package org.openhab.binding.mqtt.internal;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
@@ -22,7 +24,7 @@ public class MqttItemConfigTest {
 	@Test
 	public void canParseInboundConfig() throws BindingConfigParseException {
 
-		MqttItemConfig c = new MqttItemConfig("myItem",
+		MqttItemConfig c = new MqttItemConfig(new NumberItem("myItem"),
 				"<[publicweatherservice:/london-city/temperature:state:default]");
 		assertEquals(0, c.getMessagePublishers().size());
 		assertEquals(1, c.getMessageSubscribers().size());
@@ -30,7 +32,7 @@ public class MqttItemConfigTest {
 
 	@Test
 	public void canParseOutboundConfig() throws BindingConfigParseException {
-		MqttItemConfig c = new MqttItemConfig("myItem",
+		MqttItemConfig c = new MqttItemConfig(new SwitchItem("myItem"),
 				">[mybroker:/mytopic:command:ON:1]");
 		assertEquals(1, c.getMessagePublishers().size());
 		assertEquals(0, c.getMessageSubscribers().size());
@@ -40,7 +42,7 @@ public class MqttItemConfigTest {
 	public void canParseMultipleInboundConfigs()
 			throws BindingConfigParseException {
 		MqttItemConfig c = new MqttItemConfig(
-				"myItem",
+				new SwitchItem("myItem"),
 				"<[mybroker:/myHome/doorbell:state:XSLT(doorbell.xslt)], <[mybroker:/myHome/doorbell:command:ON], <[mybroker:/myHome/doorbell:state:XSLT(doorbell.xslt)]");
 		assertEquals(0, c.getMessagePublishers().size());
 		assertEquals(3, c.getMessageSubscribers().size());
@@ -49,7 +51,7 @@ public class MqttItemConfigTest {
 	@Test
 	public void canParseMultipleOutboundConfigs()
 			throws BindingConfigParseException {
-		MqttItemConfig c = new MqttItemConfig("myItem",
+		MqttItemConfig c = new MqttItemConfig(new SwitchItem("myItem"),
 				">[mybroker:/mytopic:command:ON:1],>[mybroker:/mytopic:command:OFF:0]");
 		assertEquals(2, c.getMessagePublishers().size());
 		assertEquals(0, c.getMessageSubscribers().size());
@@ -58,7 +60,7 @@ public class MqttItemConfigTest {
 	@Test
 	public void canParseMultipleConfigs() throws BindingConfigParseException {
 		MqttItemConfig c = new MqttItemConfig(
-				"myItem",
+				new SwitchItem("myItem"),
 				">[mybroker:/mytopic:command:ON:1],>[mybroker:/mytopic:command:OFF:0],<[mybroker:/myHome/doorbell:state:XSLT(doorbell.xslt)], <[mybroker:/myHome/doorbell:command:ON], <[mybroker:/myHome/doorbell:state:XSLT(doorbell.xslt)]");
 		assertEquals(2, c.getMessagePublishers().size());
 		assertEquals(3, c.getMessageSubscribers().size());

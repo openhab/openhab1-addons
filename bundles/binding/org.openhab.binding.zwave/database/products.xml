@@ -1196,6 +1196,15 @@
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct100.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>CT32</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct32.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
@@ -2513,11 +2522,15 @@
 		<Name>Wintop</Name>
 		<Product>
 			<Reference>
+				<Type>1182</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Reference>
 				<Type>1188</Type>
 				<Id>4501</Id>
 			</Reference>
 			<Model>ITEMP</Model>
-			<Label lang="en">Contact and temp sensor</Label>
+			<Label lang="en">Contact and temperature sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -2945,8 +2958,8 @@
 				<Id>000e</Id>
 			</Reference>
 			<Model>DCH-Z110</Model>
-			<Label lang="en">Remote Control</Label>
-			<ConfigFile>nodon/crc3100.xml</ConfigFile>
+			<Label lang="en">Door &amp; Window Sensor</Label>
+			<ConfigFile>dlink/dch-z110.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2960,6 +2973,19 @@
 			<Model>ZB22UK</Model>
 			<Label lang="en">Smart LED Light Bulb</Label>
 			<ConfigFile>domitech/domezbulb.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0214</Id>
+		<Name>Unknown (0x0214)</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>IM-20</Model>
+			<Label lang="en">Door Sensor</Label>
+			<ConfigFile>unknown/im-20.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

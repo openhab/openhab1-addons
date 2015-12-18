@@ -105,6 +105,7 @@ public class DeviceFeature {
 	public String	 	getName()			{ return m_name; }
 	public synchronized QueryStatus	getQueryStatus()	{ return m_queryStatus; }
 	public InsteonDevice getDevice() 		{ return m_device; }
+	public boolean      isFeatureGroup()    { return !m_connectedFeatures.isEmpty(); }
 	public boolean		isStatusFeature()	{ return m_isStatus; }
 	public int			getDirectAckTimeout() { return m_directAckTimeout; }
 	public MessageHandler getDefaultMsgHandler() { return m_defaultMsgHandler; }
