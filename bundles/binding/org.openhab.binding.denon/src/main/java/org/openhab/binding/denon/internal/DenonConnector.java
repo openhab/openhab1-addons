@@ -136,10 +136,20 @@ public class DenonConnector {
 	 */
 	public void connect() {
 		if (connection.isTelnet()) {
-			listener = new DenonListener(connection,  new DenonUpdateReceivedCallback() {
+			listener = new DenonListener(connection, new DenonUpdateReceivedCallback() {
 				@Override
 				public void updateReceived(String command) {
 					processUpdate(command);
+				}
+
+				@Override
+				public void listenerConnected() {
+					getInitialState();
+				}
+
+				@Override
+				public void listenerDisconnected() {
+					sendUpdate(DenonProperty.POWER.getCode(), OnOffType.OFF);
 				}
 			});
 			listener.start();
@@ -552,9 +562,9 @@ public class DenonConnector {
 				return obj;
 			}
 		} catch (JAXBException e) {
-			logger.warn("Encoding error in get", e);
+			logger.debug("Encoding error in get", e);
 		} catch (XMLStreamException e) {
-			logger.warn("Communication error in get", e);
+			logger.debug("Communication error in get", e);
 		}
 		
 		return null;
@@ -579,7 +589,7 @@ public class DenonConnector {
 				return obj;
 			}
 		} catch (JAXBException e) {
-			logger.warn("Encoding error in post", e);
+			logger.debug("Encoding error in post", e);
 		}
 		
 		return null;
