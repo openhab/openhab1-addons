@@ -15,7 +15,7 @@ import org.openhab.binding.lcn.common.LcnDefs;
 /**
  * Settings for a connection to LCN-PCHK.
  * 
- * @author Tobias Jüttner
+ * @author Tobias JÃ¼ttner
  */
 public class ConnectionSettings {
 	
@@ -150,6 +150,7 @@ public class ConnectionSettings {
 	 * @return the connection settings on success or null
 	 */
 	public static ConnectionSettings tryParse(Dictionary<String, ?> config, int counter) {
+	    if(config==null) return null;
 		String id = (String)config.get("id" + (counter + 1));
 		id = id == null ? "" : id.trim();
 		String addressWithOptPort = (String)config.get("address" + (counter + 1));
