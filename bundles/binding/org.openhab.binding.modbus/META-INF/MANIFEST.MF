@@ -28,8 +28,7 @@ Import-Package: org.apache.commons.collections,
  org.quartz.utils,
  org.slf4j
 Export-Package: org.openhab.binding.modbus
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/modbusbinding.xml, OSGI-INF/modbuspoll.xml,
- OSGI-INF/modbusconfiguration.xml
+Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.2.0"
 Bundle-ActivationPolicy: lazy
