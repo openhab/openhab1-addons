@@ -12,8 +12,8 @@ package org.openhab.binding.souliss.internal.network.typicals;
  * Typical T56 Current Sensor Derived from T51 Analog input, half-precision
  * floating point
  * 
- * @author Tonino Fazio
- * @since 1.7.0o
+ * @author Stephen Olesen
+ * @since 1.8.0
  */
 public class SoulissT56 extends SoulissT51 {
 

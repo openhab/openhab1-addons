@@ -12,8 +12,8 @@ package org.openhab.binding.souliss.internal.network.typicals;
  * Typical T58 Pressure Sensor Derived from T51 Analog input, half-precision
  * floating point
  * 
- * @author Tonino Fazio
- * @since 1.7.0o
+ * @author Stephen Olesen
+ * @since 1.8.0
  */
 public class SoulissT58 extends SoulissT51 {
 

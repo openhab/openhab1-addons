@@ -12,8 +12,8 @@ package org.openhab.binding.souliss.internal.network.typicals;
  * Typical T55 Voltage Sensor Derived from T51 Analog input, half-precision
  * floating point
  * 
- * @author Tonino Fazio
- * @since 1.7.0o
+ * @author Stephen Olesen
+ * @since 1.8.0
  */
 public class SoulissT55 extends SoulissT51 {
 
