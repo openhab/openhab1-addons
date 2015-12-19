@@ -1347,7 +1347,11 @@
 		<Product>
 			<Reference>
 				<Type>2016</Type>
-				<Id>01616</Id>
+				<Id>1616</Id>
+			</Reference>
+			<Reference>
+				<Type>200C</Type>
+				<Id>0C02</Id>
 			</Reference>
 			<Model>ZL7431</Model>
 			<Label lang="en">In Wall Relay Switch</Label>
@@ -1356,7 +1360,7 @@
 		<Product>
 			<Reference>
 				<Type>2017</Type>
-				<Id>01717</Id>
+				<Id>1717</Id>
 			</Reference>
 			<Model>ZL7432</Model>
 			<Label lang="en">In Wall Dual Relay Switch</Label>
