@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
@@ -135,6 +136,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
       case ModelPackage.MBRICKLET_PIEZO_SPEAKER: return createMBrickletPiezoSpeaker();
       case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
+      case ModelPackage.MBRICKLET_ACCELEROMETER: return createMBrickletAccelerometer();
+      case ModelPackage.ACCELEROMETER_DIRECTION: return createAccelerometerDirection();
+      case ModelPackage.ACCELEROMETER_TEMPERATURE: return createAccelerometerTemperature();
+      case ModelPackage.ACCELEROMETER_LED: return createAccelerometerLed();
       case ModelPackage.MBRICKLET_LASER_RANGE_FINDER: return createMBrickletLaserRangeFinder();
       case ModelPackage.LASER_RANGE_FINDER_DISTANCE: return createLaserRangeFinderDistance();
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY: return createLaserRangeFinderVelocity();
@@ -253,6 +258,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.LED_STRIP_CONFIGURATION: return createLEDStripConfiguration();
       case ModelPackage.LED_GROUP_CONFIGURATION: return createLEDGroupConfiguration();
       case ModelPackage.BRICKLET_COLOR_CONFIGURATION: return createBrickletColorConfiguration();
+      case ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION: return createBrickletAccelerometerConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -268,6 +274,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case ModelPackage.ACCELEROMETER_COORDINATE:
+        return createAccelerometerCoordinateFromString(eDataType, initialValue);
       case ModelPackage.NO_SUB_IDS:
         return createNoSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -330,6 +338,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createIndustrialDualAnalogInSubIdsFromString(eDataType, initialValue);
       case ModelPackage.LASER_RANGE_FINDER_SUB_IDS:
         return createLaserRangeFinderSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.ACCELEROMETER_SUB_IDS:
+        return createAccelerometerSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -434,6 +444,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletAnalogInFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_LASER_RANGE_FINDER:
         return createTinkerBrickletLaserRangeFinderFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
+        return createTinkerBrickletAccelerometerFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -465,6 +477,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case ModelPackage.ACCELEROMETER_COORDINATE:
+        return convertAccelerometerCoordinateToString(eDataType, instanceValue);
       case ModelPackage.NO_SUB_IDS:
         return convertNoSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -527,6 +541,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertIndustrialDualAnalogInSubIdsToString(eDataType, instanceValue);
       case ModelPackage.LASER_RANGE_FINDER_SUB_IDS:
         return convertLaserRangeFinderSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.ACCELEROMETER_SUB_IDS:
+        return convertAccelerometerSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -631,6 +647,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletAnalogInToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_LASER_RANGE_FINDER:
         return convertTinkerBrickletLaserRangeFinderToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
+        return convertTinkerBrickletAccelerometerToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -739,6 +757,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DualButtonButtonImpl dualButtonButton = new DualButtonButtonImpl();
     return dualButtonButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletAccelerometer createMBrickletAccelerometer()
+  {
+    MBrickletAccelerometerImpl mBrickletAccelerometer = new MBrickletAccelerometerImpl();
+    return mBrickletAccelerometer;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerDirection createAccelerometerDirection()
+  {
+    AccelerometerDirectionImpl accelerometerDirection = new AccelerometerDirectionImpl();
+    return accelerometerDirection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerTemperature createAccelerometerTemperature()
+  {
+    AccelerometerTemperatureImpl accelerometerTemperature = new AccelerometerTemperatureImpl();
+    return accelerometerTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerLed createAccelerometerLed()
+  {
+    AccelerometerLedImpl accelerometerLed = new AccelerometerLedImpl();
+    return accelerometerLed;
   }
 
   /**
@@ -1465,6 +1527,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     BrickletColorConfigurationImpl brickletColorConfiguration = new BrickletColorConfigurationImpl();
     return brickletColorConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration()
+  {
+    BrickletAccelerometerConfigurationImpl brickletAccelerometerConfiguration = new BrickletAccelerometerConfigurationImpl();
+    return brickletAccelerometerConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerCoordinate createAccelerometerCoordinateFromString(EDataType eDataType, String initialValue)
+  {
+    AccelerometerCoordinate result = AccelerometerCoordinate.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAccelerometerCoordinateToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
   }
 
   /**
@@ -2368,6 +2463,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertLaserRangeFinderSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerSubIds createAccelerometerSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    AccelerometerSubIds result = AccelerometerSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAccelerometerSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -3644,6 +3761,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletLaserRangeFinderToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAccelerometer createTinkerBrickletAccelerometerFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletAccelerometer)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletAccelerometerToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

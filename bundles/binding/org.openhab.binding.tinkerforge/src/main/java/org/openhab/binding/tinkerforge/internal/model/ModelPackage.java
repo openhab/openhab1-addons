@@ -88,7 +88,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFConfig()
    * @generated
    */
-  int TF_CONFIG = 127;
+  int TF_CONFIG = 132;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl <em>OHTF Device</em>}' class.
@@ -98,7 +98,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFDevice()
    * @generated
    */
-  int OHTF_DEVICE = 128;
+  int OHTF_DEVICE = 133;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl <em>OH Config</em>}' class.
@@ -108,7 +108,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHConfig()
    * @generated
    */
-  int OH_CONFIG = 130;
+  int OH_CONFIG = 135;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl <em>Ecosystem</em>}' class.
@@ -178,7 +178,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickServo()
    * @generated
    */
-  int MBRICK_SERVO = 59;
+  int MBRICK_SERVO = 64;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl <em>TF Brick DC Configuration</em>}' class.
@@ -188,7 +188,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBrickDCConfiguration()
    * @generated
    */
-  int TF_BRICK_DC_CONFIGURATION = 146;
+  int TF_BRICK_DC_CONFIGURATION = 151;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl <em>MDual Relay Bricklet</em>}' class.
@@ -198,7 +198,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDualRelayBricklet()
    * @generated
    */
-  int MDUAL_RELAY_BRICKLET = 62;
+  int MDUAL_RELAY_BRICKLET = 67;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MActor <em>MActor</em>}' class.
@@ -238,7 +238,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickDC()
    * @generated
    */
-  int MBRICK_DC = 61;
+  int MBRICK_DC = 66;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayBrickletImpl <em>MIndustrial Quad Relay Bricklet</em>}' class.
@@ -248,7 +248,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIndustrialQuadRelayBricklet()
    * @generated
    */
-  int MINDUSTRIAL_QUAD_RELAY_BRICKLET = 63;
+  int MINDUSTRIAL_QUAD_RELAY_BRICKLET = 68;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl <em>MIndustrial Quad Relay</em>}' class.
@@ -258,7 +258,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIndustrialQuadRelay()
    * @generated
    */
-  int MINDUSTRIAL_QUAD_RELAY = 64;
+  int MINDUSTRIAL_QUAD_RELAY = 69;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalIn4Impl <em>MBricklet Industrial Digital In4</em>}' class.
@@ -268,7 +268,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4 = 65;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4 = 70;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MSubDevice <em>MSub Device</em>}' class.
@@ -288,7 +288,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIndustrialDigitalIn()
    * @generated
    */
-  int MINDUSTRIAL_DIGITAL_IN = 66;
+  int MINDUSTRIAL_DIGITAL_IN = 71;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOActorConfigurationImpl <em>TFIO Actor Configuration</em>}' class.
@@ -298,7 +298,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIOActorConfiguration()
    * @generated
    */
-  int TFIO_ACTOR_CONFIGURATION = 147;
+  int TFIO_ACTOR_CONFIGURATION = 152;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl <em>MBricklet IO16</em>}' class.
@@ -308,7 +308,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIO16()
    * @generated
    */
-  int MBRICKLET_IO16 = 73;
+  int MBRICKLET_IO16 = 78;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorImpl <em>Digital Sensor</em>}' class.
@@ -318,7 +318,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalSensor()
    * @generated
    */
-  int DIGITAL_SENSOR = 74;
+  int DIGITAL_SENSOR = 79;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IODevice <em>IO Device</em>}' class.
@@ -338,7 +338,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFInterruptListenerConfiguration()
    * @generated
    */
-  int TF_INTERRUPT_LISTENER_CONFIGURATION = 148;
+  int TF_INTERRUPT_LISTENER_CONFIGURATION = 153;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOSensorConfigurationImpl <em>TFIO Sensor Configuration</em>}' class.
@@ -348,7 +348,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIOSensorConfiguration()
    * @generated
    */
-  int TFIO_SENSOR_CONFIGURATION = 149;
+  int TFIO_SENSOR_CONFIGURATION = 154;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl <em>MDual Relay</em>}' class.
@@ -358,7 +358,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDualRelay()
    * @generated
    */
-  int MDUAL_RELAY = 85;
+  int MDUAL_RELAY = 90;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFNullConfigurationImpl <em>TF Null Configuration</em>}' class.
@@ -368,7 +368,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFNullConfiguration()
    * @generated
    */
-  int TF_NULL_CONFIGURATION = 131;
+  int TF_NULL_CONFIGURATION = 136;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFServoConfigurationImpl <em>TF Servo Configuration</em>}' class.
@@ -378,7 +378,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFServoConfiguration()
    * @generated
    */
-  int TF_SERVO_CONFIGURATION = 150;
+  int TF_SERVO_CONFIGURATION = 155;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl <em>MServo</em>}' class.
@@ -388,7 +388,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMServo()
    * @generated
    */
-  int MSERVO = 60;
+  int MSERVO = 65;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}' class.
@@ -428,7 +428,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletHumidity()
    * @generated
    */
-  int MBRICKLET_HUMIDITY = 91;
+  int MBRICKLET_HUMIDITY = 96;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDistanceIRImpl <em>MBricklet Distance IR</em>}' class.
@@ -438,7 +438,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletDistanceIR()
    * @generated
    */
-  int MBRICKLET_DISTANCE_IR = 92;
+  int MBRICKLET_DISTANCE_IR = 97;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl <em>MBricklet Temperature</em>}' class.
@@ -448,7 +448,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletTemperature()
    * @generated
    */
-  int MBRICKLET_TEMPERATURE = 101;
+  int MBRICKLET_TEMPERATURE = 106;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBaseConfigurationImpl <em>TF Base Configuration</em>}' class.
@@ -458,7 +458,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBaseConfiguration()
    * @generated
    */
-  int TF_BASE_CONFIGURATION = 134;
+  int TF_BASE_CONFIGURATION = 139;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -1607,7 +1607,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletBarometer()
    * @generated
    */
-  int MBRICKLET_BAROMETER = 112;
+  int MBRICKLET_BAROMETER = 117;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl <em>MBarometer Temperature</em>}' class.
@@ -1617,7 +1617,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBarometerTemperature()
    * @generated
    */
-  int MBAROMETER_TEMPERATURE = 113;
+  int MBAROMETER_TEMPERATURE = 118;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl <em>MBricklet Ambient Light</em>}' class.
@@ -1627,7 +1627,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAmbientLight()
    * @generated
    */
-  int MBRICKLET_AMBIENT_LIGHT = 114;
+  int MBRICKLET_AMBIENT_LIGHT = 119;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl <em>MBricklet LCD2 0x4</em>}' class.
@@ -1637,7 +1637,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLCD20x4()
    * @generated
    */
-  int MBRICKLET_LCD2_0X4 = 124;
+  int MBRICKLET_LCD2_0X4 = 129;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MTextActor <em>MText Actor</em>}' class.
@@ -1793,7 +1793,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIndustrialDigitalOut4()
    * @generated
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 67;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 72;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}' class.
@@ -1858,7 +1858,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActorDigitalOut4()
    * @generated
    */
-  int DIGITAL_ACTOR_DIGITAL_OUT4 = 68;
+  int DIGITAL_ACTOR_DIGITAL_OUT4 = 73;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NumberActor <em>Number Actor</em>}' class.
@@ -1924,7 +1924,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLEDStrip()
    * @generated
    */
-  int MBRICKLET_LED_STRIP = 70;
+  int MBRICKLET_LED_STRIP = 75;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl <em>MBricklet Segment Display4x7</em>}' class.
@@ -1934,7 +1934,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletSegmentDisplay4x7()
    * @generated
    */
-  int MBRICKLET_SEGMENT_DISPLAY4X7 = 69;
+  int MBRICKLET_SEGMENT_DISPLAY4X7 = 74;
 
   /**
    * The number of structural features of the '<em>Color Actor</em>' class.
@@ -2946,6 +2946,785 @@ public interface ModelPackage extends EPackage
   int DUAL_BUTTON_BUTTON_OPERATION_COUNT = DUAL_BUTTON_DEVICE_OPERATION_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl <em>MBricklet Accelerometer</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAccelerometer()
+   * @generated
+   */
+  int MBRICKLET_ACCELEROMETER = 34;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__LOGGER = MDEVICE__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__POLL = MDEVICE__POLL;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__ENABLED_A = MDEVICE__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__TINKERFORGE_DEVICE = MDEVICE__TINKERFORGE_DEVICE;
+
+  /**
+   * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__IP_CONNECTION = MDEVICE__IP_CONNECTION;
+
+  /**
+   * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__CONNECTED_UID = MDEVICE__CONNECTED_UID;
+
+  /**
+   * The feature id for the '<em><b>Position</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__POSITION = MDEVICE__POSITION;
+
+  /**
+   * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__DEVICE_IDENTIFIER = MDEVICE__DEVICE_IDENTIFIER;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__NAME = MDEVICE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Brickd</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__BRICKD = MDEVICE__BRICKD;
+
+  /**
+   * The feature id for the '<em><b>Msubdevices</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__MSUBDEVICES = MDEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Data Rate</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__DATA_RATE = MDEVICE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Full Scale</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__FULL_SCALE = MDEVICE_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Filter Bandwidth</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER__FILTER_BANDWIDTH = MDEVICE_FEATURE_COUNT + 5;
+
+  /**
+   * The number of structural features of the '<em>MBricklet Accelerometer</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 6;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER___INIT = MDEVICE___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER___ENABLE = MDEVICE___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER___DISABLE = MDEVICE___DISABLE;
+
+  /**
+   * The operation id for the '<em>Init Sub Devices</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER___INIT_SUB_DEVICES = MDEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The number of operations of the '<em>MBricklet Accelerometer</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_ACCELEROMETER_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice <em>Accelerometer Device</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerDevice()
+   * @generated
+   */
+  int ACCELEROMETER_DEVICE = 35;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE__LOGGER = MSUB_DEVICE__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE__UID = MSUB_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE__POLL = MSUB_DEVICE__POLL;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE__ENABLED_A = MSUB_DEVICE__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE__SUB_ID = MSUB_DEVICE__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE__MBRICK = MSUB_DEVICE__MBRICK;
+
+  /**
+   * The number of structural features of the '<em>Accelerometer Device</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE_FEATURE_COUNT = MSUB_DEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE___INIT = MSUB_DEVICE___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE___ENABLE = MSUB_DEVICE___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE___DISABLE = MSUB_DEVICE___DISABLE;
+
+  /**
+   * The number of operations of the '<em>Accelerometer Device</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DEVICE_OPERATION_COUNT = MSUB_DEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl <em>Accelerometer Direction</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerDirection()
+   * @generated
+   */
+  int ACCELEROMETER_DIRECTION = 36;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__LOGGER = ACCELEROMETER_DEVICE__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__UID = ACCELEROMETER_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__POLL = ACCELEROMETER_DEVICE__POLL;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__ENABLED_A = ACCELEROMETER_DEVICE__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__SUB_ID = ACCELEROMETER_DEVICE__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__MBRICK = ACCELEROMETER_DEVICE__MBRICK;
+
+  /**
+   * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__SENSOR_VALUE = ACCELEROMETER_DEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__TF_CONFIG = ACCELEROMETER_DEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__CALLBACK_PERIOD = ACCELEROMETER_DEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__DEVICE_TYPE = ACCELEROMETER_DEVICE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Threshold</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__THRESHOLD = ACCELEROMETER_DEVICE_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Direction</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION__DIRECTION = ACCELEROMETER_DEVICE_FEATURE_COUNT + 5;
+
+  /**
+   * The number of structural features of the '<em>Accelerometer Direction</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION_FEATURE_COUNT = ACCELEROMETER_DEVICE_FEATURE_COUNT + 6;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION___INIT = ACCELEROMETER_DEVICE___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION___ENABLE = ACCELEROMETER_DEVICE___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION___DISABLE = ACCELEROMETER_DEVICE___DISABLE;
+
+  /**
+   * The operation id for the '<em>Fetch Sensor Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION___FETCH_SENSOR_VALUE = ACCELEROMETER_DEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The number of operations of the '<em>Accelerometer Direction</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_DIRECTION_OPERATION_COUNT = ACCELEROMETER_DEVICE_OPERATION_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl <em>Accelerometer Temperature</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerTemperature()
+   * @generated
+   */
+  int ACCELEROMETER_TEMPERATURE = 37;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__LOGGER = ACCELEROMETER_DEVICE__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__UID = ACCELEROMETER_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__POLL = ACCELEROMETER_DEVICE__POLL;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__ENABLED_A = ACCELEROMETER_DEVICE__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__SUB_ID = ACCELEROMETER_DEVICE__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__MBRICK = ACCELEROMETER_DEVICE__MBRICK;
+
+  /**
+   * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__SENSOR_VALUE = ACCELEROMETER_DEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE__DEVICE_TYPE = ACCELEROMETER_DEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Accelerometer Temperature</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE_FEATURE_COUNT = ACCELEROMETER_DEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE___INIT = ACCELEROMETER_DEVICE___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE___ENABLE = ACCELEROMETER_DEVICE___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE___DISABLE = ACCELEROMETER_DEVICE___DISABLE;
+
+  /**
+   * The operation id for the '<em>Fetch Sensor Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE___FETCH_SENSOR_VALUE = ACCELEROMETER_DEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The number of operations of the '<em>Accelerometer Temperature</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_TEMPERATURE_OPERATION_COUNT = ACCELEROMETER_DEVICE_OPERATION_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl <em>Accelerometer Led</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerLed()
+   * @generated
+   */
+  int ACCELEROMETER_LED = 38;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__LOGGER = ACCELEROMETER_DEVICE__LOGGER;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__UID = ACCELEROMETER_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__POLL = ACCELEROMETER_DEVICE__POLL;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__ENABLED_A = ACCELEROMETER_DEVICE__ENABLED_A;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__SUB_ID = ACCELEROMETER_DEVICE__SUB_ID;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__MBRICK = ACCELEROMETER_DEVICE__MBRICK;
+
+  /**
+   * The feature id for the '<em><b>Digital State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__DIGITAL_STATE = ACCELEROMETER_DEVICE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Device Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED__DEVICE_TYPE = ACCELEROMETER_DEVICE_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Accelerometer Led</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED_FEATURE_COUNT = ACCELEROMETER_DEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED___INIT = ACCELEROMETER_DEVICE___INIT;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED___ENABLE = ACCELEROMETER_DEVICE___ENABLE;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED___DISABLE = ACCELEROMETER_DEVICE___DISABLE;
+
+  /**
+   * The operation id for the '<em>Turn Digital</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED___TURN_DIGITAL__HIGHLOWVALUE = ACCELEROMETER_DEVICE_OPERATION_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Fetch Digital Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED___FETCH_DIGITAL_VALUE = ACCELEROMETER_DEVICE_OPERATION_COUNT + 1;
+
+  /**
+   * The number of operations of the '<em>Accelerometer Led</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACCELEROMETER_LED_OPERATION_COUNT = ACCELEROMETER_DEVICE_OPERATION_COUNT + 2;
+
+  /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl <em>MBricklet Laser Range Finder</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2953,7 +3732,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLaserRangeFinder()
    * @generated
    */
-  int MBRICKLET_LASER_RANGE_FINDER = 34;
+  int MBRICKLET_LASER_RANGE_FINDER = 39;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3170,7 +3949,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderDevice()
    * @generated
    */
-  int LASER_RANGE_FINDER_DEVICE = 35;
+  int LASER_RANGE_FINDER_DEVICE = 40;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3297,7 +4076,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderDistance()
    * @generated
    */
-  int LASER_RANGE_FINDER_DISTANCE = 36;
+  int LASER_RANGE_FINDER_DISTANCE = 41;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3460,7 +4239,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderVelocity()
    * @generated
    */
-  int LASER_RANGE_FINDER_VELOCITY = 37;
+  int LASER_RANGE_FINDER_VELOCITY = 42;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -3623,7 +4402,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletColor()
    * @generated
    */
-  int MBRICKLET_COLOR = 42;
+  int MBRICKLET_COLOR = 47;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice <em>Bricklet Color Device</em>}' class.
@@ -3633,7 +4412,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletColorDevice()
    * @generated
    */
-  int BRICKLET_COLOR_DEVICE = 43;
+  int BRICKLET_COLOR_DEVICE = 48;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl <em>Color Color</em>}' class.
@@ -3643,7 +4422,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorColor()
    * @generated
    */
-  int COLOR_COLOR = 44;
+  int COLOR_COLOR = 49;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl <em>Color Illuminance</em>}' class.
@@ -3653,7 +4432,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorIlluminance()
    * @generated
    */
-  int COLOR_ILLUMINANCE = 45;
+  int COLOR_ILLUMINANCE = 50;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl <em>Color Color Temperature</em>}' class.
@@ -3663,7 +4442,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorColorTemperature()
    * @generated
    */
-  int COLOR_COLOR_TEMPERATURE = 46;
+  int COLOR_COLOR_TEMPERATURE = 51;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl <em>Color Led</em>}' class.
@@ -3673,7 +4452,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorLed()
    * @generated
    */
-  int COLOR_LED = 47;
+  int COLOR_LED = 52;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl <em>Dual Button Led</em>}' class.
@@ -3683,7 +4462,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonLed()
    * @generated
    */
-  int DUAL_BUTTON_LED = 48;
+  int DUAL_BUTTON_LED = 53;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl <em>MBricklet Linear Poti</em>}' class.
@@ -3693,7 +4472,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLinearPoti()
    * @generated
    */
-  int MBRICKLET_LINEAR_POTI = 49;
+  int MBRICKLET_LINEAR_POTI = 54;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl <em>MBricklet Rotary Encoder</em>}' class.
@@ -3703,7 +4482,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletRotaryEncoder()
    * @generated
    */
-  int MBRICKLET_ROTARY_ENCODER = 50;
+  int MBRICKLET_ROTARY_ENCODER = 55;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice <em>Rotary Encoder Device</em>}' class.
@@ -3713,7 +4492,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRotaryEncoderDevice()
    * @generated
    */
-  int ROTARY_ENCODER_DEVICE = 51;
+  int ROTARY_ENCODER_DEVICE = 56;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl <em>Rotary Encoder</em>}' class.
@@ -3723,7 +4502,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRotaryEncoder()
    * @generated
    */
-  int ROTARY_ENCODER = 52;
+  int ROTARY_ENCODER = 57;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl <em>Rotary Encoder Button</em>}' class.
@@ -3733,7 +4512,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRotaryEncoderButton()
    * @generated
    */
-  int ROTARY_ENCODER_BUTTON = 53;
+  int ROTARY_ENCODER_BUTTON = 58;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl <em>MBricklet Joystick</em>}' class.
@@ -3743,7 +4522,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletJoystick()
    * @generated
    */
-  int MBRICKLET_JOYSTICK = 54;
+  int MBRICKLET_JOYSTICK = 59;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.JoystickDevice <em>Joystick Device</em>}' class.
@@ -3753,7 +4532,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getJoystickDevice()
    * @generated
    */
-  int JOYSTICK_DEVICE = 55;
+  int JOYSTICK_DEVICE = 60;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickXPositionImpl <em>Joystick XPosition</em>}' class.
@@ -3763,7 +4542,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getJoystickXPosition()
    * @generated
    */
-  int JOYSTICK_XPOSITION = 56;
+  int JOYSTICK_XPOSITION = 61;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl <em>Joystick YPosition</em>}' class.
@@ -3773,7 +4552,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getJoystickYPosition()
    * @generated
    */
-  int JOYSTICK_YPOSITION = 57;
+  int JOYSTICK_YPOSITION = 62;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl <em>Joystick Button</em>}' class.
@@ -3783,7 +4562,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getJoystickButton()
    * @generated
    */
-  int JOYSTICK_BUTTON = 58;
+  int JOYSTICK_BUTTON = 63;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.LEDGroupImpl <em>LED Group</em>}' class.
@@ -3793,7 +4572,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLEDGroup()
    * @generated
    */
-  int LED_GROUP = 71;
+  int LED_GROUP = 76;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl <em>Digital Actor IO16</em>}' class.
@@ -3803,7 +4582,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActorIO16()
    * @generated
    */
-  int DIGITAL_ACTOR_IO16 = 72;
+  int DIGITAL_ACTOR_IO16 = 77;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO4Impl <em>MBricklet IO4</em>}' class.
@@ -3813,7 +4592,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIO4()
    * @generated
    */
-  int MBRICKLET_IO4 = 75;
+  int MBRICKLET_IO4 = 80;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO4Device <em>IO4 Device</em>}' class.
@@ -3823,7 +4602,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO4Device()
    * @generated
    */
-  int IO4_DEVICE = 76;
+  int IO4_DEVICE = 81;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalSensorIO4Impl <em>Digital Sensor IO4</em>}' class.
@@ -3833,7 +4612,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalSensorIO4()
    * @generated
    */
-  int DIGITAL_SENSOR_IO4 = 77;
+  int DIGITAL_SENSOR_IO4 = 82;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl <em>Digital Actor IO4</em>}' class.
@@ -3843,7 +4622,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActorIO4()
    * @generated
    */
-  int DIGITAL_ACTOR_IO4 = 78;
+  int DIGITAL_ACTOR_IO4 = 83;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl <em>MBricklet Multi Touch</em>}' class.
@@ -3853,7 +4632,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletMultiTouch()
    * @generated
    */
-  int MBRICKLET_MULTI_TOUCH = 79;
+  int MBRICKLET_MULTI_TOUCH = 84;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl <em>Multi Touch Device</em>}' class.
@@ -3863,7 +4642,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchDevice()
    * @generated
    */
-  int MULTI_TOUCH_DEVICE = 80;
+  int MULTI_TOUCH_DEVICE = 85;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ElectrodeImpl <em>Electrode</em>}' class.
@@ -3873,7 +4652,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getElectrode()
    * @generated
    */
-  int ELECTRODE = 81;
+  int ELECTRODE = 86;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ProximityImpl <em>Proximity</em>}' class.
@@ -3883,7 +4662,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getProximity()
    * @generated
    */
-  int PROXIMITY = 82;
+  int PROXIMITY = 87;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl <em>MBricklet Motion Detector</em>}' class.
@@ -3893,7 +4672,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletMotionDetector()
    * @generated
    */
-  int MBRICKLET_MOTION_DETECTOR = 83;
+  int MBRICKLET_MOTION_DETECTOR = 88;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHallEffectImpl <em>MBricklet Hall Effect</em>}' class.
@@ -3903,7 +4682,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletHallEffect()
    * @generated
    */
-  int MBRICKLET_HALL_EFFECT = 84;
+  int MBRICKLET_HALL_EFFECT = 89;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl <em>MBricklet Remote Switch</em>}' class.
@@ -3913,7 +4692,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletRemoteSwitch()
    * @generated
    */
-  int MBRICKLET_REMOTE_SWITCH = 86;
+  int MBRICKLET_REMOTE_SWITCH = 91;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitch <em>Remote Switch</em>}' class.
@@ -3923,7 +4702,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitch()
    * @generated
    */
-  int REMOTE_SWITCH = 87;
+  int REMOTE_SWITCH = 92;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAImpl <em>Remote Switch A</em>}' class.
@@ -3933,7 +4712,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchA()
    * @generated
    */
-  int REMOTE_SWITCH_A = 88;
+  int REMOTE_SWITCH_A = 93;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl <em>Remote Switch B</em>}' class.
@@ -3943,7 +4722,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchB()
    * @generated
    */
-  int REMOTE_SWITCH_B = 89;
+  int REMOTE_SWITCH_B = 94;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl <em>Remote Switch C</em>}' class.
@@ -3953,7 +4732,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchC()
    * @generated
    */
-  int REMOTE_SWITCH_C = 90;
+  int REMOTE_SWITCH_C = 95;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl <em>MBricklet Solid State Relay</em>}' class.
@@ -3963,7 +4742,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletSolidStateRelay()
    * @generated
    */
-  int MBRICKLET_SOLID_STATE_RELAY = 93;
+  int MBRICKLET_SOLID_STATE_RELAY = 98;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl <em>MBricklet Industrial Dual020m A</em>}' class.
@@ -3973,7 +4752,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIndustrialDual020mA()
    * @generated
    */
-  int MBRICKLET_INDUSTRIAL_DUAL020M_A = 94;
+  int MBRICKLET_INDUSTRIAL_DUAL020M_A = 99;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl <em>Dual020m ADevice</em>}' class.
@@ -3983,7 +4762,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDual020mADevice()
    * @generated
    */
-  int DUAL020M_ADEVICE = 95;
+  int DUAL020M_ADEVICE = 100;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl <em>MBricklet PTC</em>}' class.
@@ -3993,7 +4772,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletPTC()
    * @generated
    */
-  int MBRICKLET_PTC = 96;
+  int MBRICKLET_PTC = 101;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.PTCDevice <em>PTC Device</em>}' class.
@@ -4003,7 +4782,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPTCDevice()
    * @generated
    */
-  int PTC_DEVICE = 97;
+  int PTC_DEVICE = 102;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl <em>PTC Temperature</em>}' class.
@@ -4013,7 +4792,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPTCTemperature()
    * @generated
    */
-  int PTC_TEMPERATURE = 98;
+  int PTC_TEMPERATURE = 103;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCResistanceImpl <em>PTC Resistance</em>}' class.
@@ -4023,7 +4802,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPTCResistance()
    * @generated
    */
-  int PTC_RESISTANCE = 99;
+  int PTC_RESISTANCE = 104;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl <em>PTC Connected</em>}' class.
@@ -4033,7 +4812,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPTCConnected()
    * @generated
    */
-  int PTC_CONNECTED = 100;
+  int PTC_CONNECTED = 105;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureIRImpl <em>MBricklet Temperature IR</em>}' class.
@@ -4043,7 +4822,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletTemperatureIR()
    * @generated
    */
-  int MBRICKLET_TEMPERATURE_IR = 102;
+  int MBRICKLET_TEMPERATURE_IR = 107;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice <em>MTemperature IR Device</em>}' class.
@@ -4053,7 +4832,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTemperatureIRDevice()
    * @generated
    */
-  int MTEMPERATURE_IR_DEVICE = 103;
+  int MTEMPERATURE_IR_DEVICE = 108;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ObjectTemperatureImpl <em>Object Temperature</em>}' class.
@@ -4063,7 +4842,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getObjectTemperature()
    * @generated
    */
-  int OBJECT_TEMPERATURE = 104;
+  int OBJECT_TEMPERATURE = 109;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AmbientTemperatureImpl <em>Ambient Temperature</em>}' class.
@@ -4073,7 +4852,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAmbientTemperature()
    * @generated
    */
-  int AMBIENT_TEMPERATURE = 105;
+  int AMBIENT_TEMPERATURE = 110;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl <em>MBricklet Tilt</em>}' class.
@@ -4083,7 +4862,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletTilt()
    * @generated
    */
-  int MBRICKLET_TILT = 106;
+  int MBRICKLET_TILT = 111;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl <em>MBricklet Voltage Current</em>}' class.
@@ -4093,7 +4872,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletVoltageCurrent()
    * @generated
    */
-  int MBRICKLET_VOLTAGE_CURRENT = 107;
+  int MBRICKLET_VOLTAGE_CURRENT = 112;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice <em>Voltage Current Device</em>}' class.
@@ -4103,7 +4882,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getVoltageCurrentDevice()
    * @generated
    */
-  int VOLTAGE_CURRENT_DEVICE = 108;
+  int VOLTAGE_CURRENT_DEVICE = 113;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDeviceVoltageImpl <em>VC Device Voltage</em>}' class.
@@ -4113,7 +4892,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getVCDeviceVoltage()
    * @generated
    */
-  int VC_DEVICE_VOLTAGE = 109;
+  int VC_DEVICE_VOLTAGE = 114;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDeviceCurrentImpl <em>VC Device Current</em>}' class.
@@ -4123,7 +4902,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getVCDeviceCurrent()
    * @generated
    */
-  int VC_DEVICE_CURRENT = 110;
+  int VC_DEVICE_CURRENT = 115;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.VCDevicePowerImpl <em>VC Device Power</em>}' class.
@@ -4133,7 +4912,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getVCDevicePower()
    * @generated
    */
-  int VC_DEVICE_POWER = 111;
+  int VC_DEVICE_POWER = 116;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl <em>MBricklet Ambient Light V2</em>}' class.
@@ -4143,7 +4922,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAmbientLightV2()
    * @generated
    */
-  int MBRICKLET_AMBIENT_LIGHT_V2 = 115;
+  int MBRICKLET_AMBIENT_LIGHT_V2 = 120;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSoundIntensityImpl <em>MBricklet Sound Intensity</em>}' class.
@@ -4153,7 +4932,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletSoundIntensity()
    * @generated
    */
-  int MBRICKLET_SOUND_INTENSITY = 118;
+  int MBRICKLET_SOUND_INTENSITY = 123;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDustDetectorImpl <em>MBricklet Dust Detector</em>}' class.
@@ -4163,7 +4942,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletDustDetector()
    * @generated
    */
-  int MBRICKLET_DUST_DETECTOR = 119;
+  int MBRICKLET_DUST_DETECTOR = 124;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl <em>MBricklet Load Cell</em>}' class.
@@ -4173,7 +4952,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletLoadCell()
    * @generated
    */
-  int MBRICKLET_LOAD_CELL = 38;
+  int MBRICKLET_LOAD_CELL = 43;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4354,7 +5133,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellDevice()
    * @generated
    */
-  int LOAD_CELL_DEVICE = 39;
+  int LOAD_CELL_DEVICE = 44;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4463,7 +5242,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellWeight()
    * @generated
    */
-  int LOAD_CELL_WEIGHT = 40;
+  int LOAD_CELL_WEIGHT = 45;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -4644,7 +5423,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellLed()
    * @generated
    */
-  int LOAD_CELL_LED = 41;
+  int LOAD_CELL_LED = 46;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -17236,7 +18015,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletIndustrialDualAnalogIn()
    * @generated
    */
-  int MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN = 116;
+  int MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN = 121;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -17435,7 +18214,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDualAnalogInChannel()
    * @generated
    */
-  int INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL = 117;
+  int INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL = 122;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -18003,7 +18782,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletMoisture()
    * @generated
    */
-  int MBRICKLET_MOISTURE = 120;
+  int MBRICKLET_MOISTURE = 125;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -18220,7 +18999,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAnalogInV2()
    * @generated
    */
-  int MBRICKLET_ANALOG_IN_V2 = 121;
+  int MBRICKLET_ANALOG_IN_V2 = 126;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -18437,7 +19216,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAnalogIn()
    * @generated
    */
-  int MBRICKLET_ANALOG_IN = 122;
+  int MBRICKLET_ANALOG_IN = 127;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -18663,7 +19442,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletDistanceUS()
    * @generated
    */
-  int MBRICKLET_DISTANCE_US = 123;
+  int MBRICKLET_DISTANCE_US = 128;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -19105,7 +19884,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Backlight()
    * @generated
    */
-  int MLCD2_0X4_BACKLIGHT = 125;
+  int MLCD2_0X4_BACKLIGHT = 130;
 
   /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -19250,7 +20029,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Button()
    * @generated
    */
-  int MLCD2_0X4_BUTTON = 126;
+  int MLCD2_0X4_BUTTON = 131;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -19503,7 +20282,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFSubDeviceAdminDevice()
    * @generated
    */
-  int OHTF_SUB_DEVICE_ADMIN_DEVICE = 129;
+  int OHTF_SUB_DEVICE_ADMIN_DEVICE = 134;
 
   /**
    * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -19657,7 +20436,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFPTCBrickletConfiguration()
    * @generated
    */
-  int TFPTC_BRICKLET_CONFIGURATION = 132;
+  int TFPTC_BRICKLET_CONFIGURATION = 137;
 
   /**
    * The feature id for the '<em><b>Noise Rejection Filter</b></em>' attribute.
@@ -19703,7 +20482,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIndustrialDual020mAConfiguration()
    * @generated
    */
-  int TF_INDUSTRIAL_DUAL020M_ACONFIGURATION = 133;
+  int TF_INDUSTRIAL_DUAL020M_ACONFIGURATION = 138;
 
   /**
    * The feature id for the '<em><b>Sample Rate</b></em>' attribute.
@@ -19776,7 +20555,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellConfiguration()
    * @generated
    */
-  int LOAD_CELL_CONFIGURATION = 135;
+  int LOAD_CELL_CONFIGURATION = 140;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -19831,7 +20610,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderConfiguration()
    * @generated
    */
-  int LASER_RANGE_FINDER_CONFIGURATION = 136;
+  int LASER_RANGE_FINDER_CONFIGURATION = 141;
 
   /**
    * The feature id for the '<em><b>Distance Average Length</b></em>' attribute.
@@ -19886,7 +20665,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAmbientLightV2Configuration()
    * @generated
    */
-  int AMBIENT_LIGHT_V2_CONFIGURATION = 137;
+  int AMBIENT_LIGHT_V2_CONFIGURATION = 142;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -19950,7 +20729,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletIndustrialDualAnalogInConfiguration()
    * @generated
    */
-  int BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION = 138;
+  int BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION = 143;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20005,7 +20784,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFTemperatureConfiguration()
    * @generated
    */
-  int TF_TEMPERATURE_CONFIGURATION = 139;
+  int TF_TEMPERATURE_CONFIGURATION = 144;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20060,7 +20839,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFObjectTemperatureConfiguration()
    * @generated
    */
-  int TF_OBJECT_TEMPERATURE_CONFIGURATION = 140;
+  int TF_OBJECT_TEMPERATURE_CONFIGURATION = 145;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20115,7 +20894,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFMoistureBrickletConfiguration()
    * @generated
    */
-  int TF_MOISTURE_BRICKLET_CONFIGURATION = 141;
+  int TF_MOISTURE_BRICKLET_CONFIGURATION = 146;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20170,7 +20949,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFAnalogInConfiguration()
    * @generated
    */
-  int TF_ANALOG_IN_CONFIGURATION = 142;
+  int TF_ANALOG_IN_CONFIGURATION = 147;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20234,7 +21013,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFAnalogInV2Configuration()
    * @generated
    */
-  int TF_ANALOG_IN_V2_CONFIGURATION = 143;
+  int TF_ANALOG_IN_V2_CONFIGURATION = 148;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20289,7 +21068,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFDistanceUSBrickletConfiguration()
    * @generated
    */
-  int TF_DISTANCE_US_BRICKLET_CONFIGURATION = 144;
+  int TF_DISTANCE_US_BRICKLET_CONFIGURATION = 149;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -20344,7 +21123,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFVoltageCurrentConfiguration()
    * @generated
    */
-  int TF_VOLTAGE_CURRENT_CONFIGURATION = 145;
+  int TF_VOLTAGE_CURRENT_CONFIGURATION = 150;
 
   /**
    * The feature id for the '<em><b>Averaging</b></em>' attribute.
@@ -20399,7 +21178,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletRemoteSwitchConfiguration()
    * @generated
    */
-  int BRICKLET_REMOTE_SWITCH_CONFIGURATION = 151;
+  int BRICKLET_REMOTE_SWITCH_CONFIGURATION = 156;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchAConfigurationImpl <em>Remote Switch AConfiguration</em>}' class.
@@ -20409,7 +21188,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchAConfiguration()
    * @generated
    */
-  int REMOTE_SWITCH_ACONFIGURATION = 152;
+  int REMOTE_SWITCH_ACONFIGURATION = 157;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBConfigurationImpl <em>Remote Switch BConfiguration</em>}' class.
@@ -20419,7 +21198,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchBConfiguration()
    * @generated
    */
-  int REMOTE_SWITCH_BCONFIGURATION = 153;
+  int REMOTE_SWITCH_BCONFIGURATION = 158;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl <em>Remote Switch CConfiguration</em>}' class.
@@ -20429,7 +21208,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchCConfiguration()
    * @generated
    */
-  int REMOTE_SWITCH_CCONFIGURATION = 154;
+  int REMOTE_SWITCH_CCONFIGURATION = 159;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl <em>Multi Touch Device Configuration</em>}' class.
@@ -20439,7 +21218,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchDeviceConfiguration()
    * @generated
    */
-  int MULTI_TOUCH_DEVICE_CONFIGURATION = 155;
+  int MULTI_TOUCH_DEVICE_CONFIGURATION = 160;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl <em>Bricklet Multi Touch Configuration</em>}' class.
@@ -20449,7 +21228,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletMultiTouchConfiguration()
    * @generated
    */
-  int BRICKLET_MULTI_TOUCH_CONFIGURATION = 156;
+  int BRICKLET_MULTI_TOUCH_CONFIGURATION = 161;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DimmableConfigurationImpl <em>Dimmable Configuration</em>}' class.
@@ -20459,7 +21238,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDimmableConfiguration()
    * @generated
    */
-  int DIMMABLE_CONFIGURATION = 157;
+  int DIMMABLE_CONFIGURATION = 162;
 
   /**
    * The feature id for the '<em><b>Min Value</b></em>' attribute.
@@ -21045,7 +21824,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getButtonConfiguration()
    * @generated
    */
-  int BUTTON_CONFIGURATION = 158;
+  int BUTTON_CONFIGURATION = 163;
 
   /**
    * The feature id for the '<em><b>Tactile</b></em>' attribute.
@@ -21082,7 +21861,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonLEDConfiguration()
    * @generated
    */
-  int DUAL_BUTTON_LED_CONFIGURATION = 159;
+  int DUAL_BUTTON_LED_CONFIGURATION = 164;
 
   /**
    * The feature id for the '<em><b>Autotoggle</b></em>' attribute.
@@ -21119,7 +21898,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLEDStripConfiguration()
    * @generated
    */
-  int LED_STRIP_CONFIGURATION = 160;
+  int LED_STRIP_CONFIGURATION = 165;
 
   /**
    * The feature id for the '<em><b>Chiptype</b></em>' attribute.
@@ -21192,7 +21971,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLEDGroupConfiguration()
    * @generated
    */
-  int LED_GROUP_CONFIGURATION = 161;
+  int LED_GROUP_CONFIGURATION = 166;
 
   /**
    * The feature id for the '<em><b>Leds</b></em>' attribute.
@@ -21229,7 +22008,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletColorConfiguration()
    * @generated
    */
-  int BRICKLET_COLOR_CONFIGURATION = 162;
+  int BRICKLET_COLOR_CONFIGURATION = 167;
 
   /**
    * The feature id for the '<em><b>Gain</b></em>' attribute.
@@ -21268,6 +22047,71 @@ public interface ModelPackage extends EPackage
   int BRICKLET_COLOR_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl <em>Bricklet Accelerometer Configuration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletAccelerometerConfiguration()
+   * @generated
+   */
+  int BRICKLET_ACCELEROMETER_CONFIGURATION = 168;
+
+  /**
+   * The feature id for the '<em><b>Data Rate</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_ACCELEROMETER_CONFIGURATION__DATA_RATE = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Full Scale</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_ACCELEROMETER_CONFIGURATION__FULL_SCALE = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Filter Bandwidth</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_ACCELEROMETER_CONFIGURATION__FILTER_BANDWIDTH = TF_CONFIG_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Bricklet Accelerometer Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_ACCELEROMETER_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+
+  /**
+   * The number of operations of the '<em>Bricklet Accelerometer Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_ACCELEROMETER_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate <em>Accelerometer Coordinate</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerCoordinate()
+   * @generated
+   */
+  int ACCELEROMETER_COORDINATE = 169;
+
+  /**
    * The meta object id for the '<em>Switch State</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -21275,7 +22119,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 204;
+  int SWITCH_STATE = 212;
 
   /**
    * The meta object id for the '<em>Digital Value</em>' data type.
@@ -21285,7 +22129,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
    * @generated
    */
-  int DIGITAL_VALUE = 205;
+  int DIGITAL_VALUE = 213;
 
   /**
    * The meta object id for the '<em>HSB Value</em>' data type.
@@ -21295,7 +22139,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBValue()
    * @generated
    */
-  int HSB_VALUE = 206;
+  int HSB_VALUE = 214;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -21305,7 +22149,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
    * @generated
    */
-  int TINKER_BRICKLET_IO16 = 207;
+  int TINKER_BRICKLET_IO16 = 215;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -21315,7 +22159,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
    * @generated
    */
-  int DC_DRIVE_MODE = 181;
+  int DC_DRIVE_MODE = 188;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo <em>Config Opts Servo</em>}' enum.
@@ -21325,7 +22169,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsServo()
    * @generated
    */
-  int CONFIG_OPTS_SERVO = 182;
+  int CONFIG_OPTS_SERVO = 189;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition <em>Dual Button Device Position</em>}' enum.
@@ -21335,7 +22179,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonDevicePosition()
    * @generated
    */
-  int DUAL_BUTTON_DEVICE_POSITION = 183;
+  int DUAL_BUTTON_DEVICE_POSITION = 190;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds <em>Dual Button Led Sub Ids</em>}' enum.
@@ -21345,7 +22189,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonLedSubIds()
    * @generated
    */
-  int DUAL_BUTTON_LED_SUB_IDS = 184;
+  int DUAL_BUTTON_LED_SUB_IDS = 191;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds <em>Dual Button Button Sub Ids</em>}' enum.
@@ -21355,7 +22199,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonButtonSubIds()
    * @generated
    */
-  int DUAL_BUTTON_BUTTON_SUB_IDS = 185;
+  int DUAL_BUTTON_BUTTON_SUB_IDS = 192;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.JoystickSubIds <em>Joystick Sub Ids</em>}' enum.
@@ -21365,7 +22209,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getJoystickSubIds()
    * @generated
    */
-  int JOYSTICK_SUB_IDS = 186;
+  int JOYSTICK_SUB_IDS = 193;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.PTCSubIds <em>PTC Sub Ids</em>}' enum.
@@ -21375,7 +22219,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPTCSubIds()
    * @generated
    */
-  int PTC_SUB_IDS = 187;
+  int PTC_SUB_IDS = 194;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds <em>Industrial Dual020m ASub Ids</em>}' enum.
@@ -21385,7 +22229,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDual020mASubIds()
    * @generated
    */
-  int INDUSTRIAL_DUAL020M_ASUB_IDS = 188;
+  int INDUSTRIAL_DUAL020M_ASUB_IDS = 195;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds <em>Rotary Encoder Sub Ids</em>}' enum.
@@ -21395,7 +22239,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRotaryEncoderSubIds()
    * @generated
    */
-  int ROTARY_ENCODER_SUB_IDS = 189;
+  int ROTARY_ENCODER_SUB_IDS = 196;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds <em>Color Bricklet Sub Ids</em>}' enum.
@@ -21405,7 +22249,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorBrickletSubIds()
    * @generated
    */
-  int COLOR_BRICKLET_SUB_IDS = 190;
+  int COLOR_BRICKLET_SUB_IDS = 197;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds <em>Load Cell Sub Ids</em>}' enum.
@@ -21415,7 +22259,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellSubIds()
    * @generated
    */
-  int LOAD_CELL_SUB_IDS = 191;
+  int LOAD_CELL_SUB_IDS = 198;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds <em>Industrial Dual Analog In Sub Ids</em>}' enum.
@@ -21425,7 +22269,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDualAnalogInSubIds()
    * @generated
    */
-  int INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS = 192;
+  int INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS = 199;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds <em>Laser Range Finder Sub Ids</em>}' enum.
@@ -21435,7 +22279,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderSubIds()
    * @generated
    */
-  int LASER_RANGE_FINDER_SUB_IDS = 193;
+  int LASER_RANGE_FINDER_SUB_IDS = 200;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds <em>Accelerometer Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerSubIds()
+   * @generated
+   */
+  int ACCELEROMETER_SUB_IDS = 201;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
@@ -21445,7 +22299,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getNoSubIds()
    * @generated
    */
-  int NO_SUB_IDS = 163;
+  int NO_SUB_IDS = 170;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs <em>Industrial Digital In Sub IDs</em>}' enum.
@@ -21455,7 +22309,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalInSubIDs()
    * @generated
    */
-  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 164;
+  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 171;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs <em>Industrial Digital Out Sub IDs</em>}' enum.
@@ -21465,7 +22319,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalOutSubIDs()
    * @generated
    */
-  int INDUSTRIAL_DIGITAL_OUT_SUB_IDS = 165;
+  int INDUSTRIAL_DIGITAL_OUT_SUB_IDS = 172;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs <em>Industrial Quad Relay IDs</em>}' enum.
@@ -21475,7 +22329,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialQuadRelayIDs()
    * @generated
    */
-  int INDUSTRIAL_QUAD_RELAY_IDS = 166;
+  int INDUSTRIAL_QUAD_RELAY_IDS = 173;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs <em>Servo Sub IDs</em>}' enum.
@@ -21485,7 +22339,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getServoSubIDs()
    * @generated
    */
-  int SERVO_SUB_IDS = 167;
+  int SERVO_SUB_IDS = 174;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs <em>Barometer Sub IDs</em>}' enum.
@@ -21495,7 +22349,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBarometerSubIDs()
    * @generated
    */
-  int BAROMETER_SUB_IDS = 168;
+  int BAROMETER_SUB_IDS = 175;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds <em>IO16 Sub Ids</em>}' enum.
@@ -21505,7 +22359,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO16SubIds()
    * @generated
    */
-  int IO16_SUB_IDS = 169;
+  int IO16_SUB_IDS = 176;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO4SubIds <em>IO4 Sub Ids</em>}' enum.
@@ -21515,7 +22369,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO4SubIds()
    * @generated
    */
-  int IO4_SUB_IDS = 170;
+  int IO4_SUB_IDS = 177;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds <em>Dual Relay Sub Ids</em>}' enum.
@@ -21525,7 +22379,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualRelaySubIds()
    * @generated
    */
-  int DUAL_RELAY_SUB_IDS = 171;
+  int DUAL_RELAY_SUB_IDS = 178;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds <em>LCD Button Sub Ids</em>}' enum.
@@ -21535,7 +22389,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDButtonSubIds()
    * @generated
    */
-  int LCD_BUTTON_SUB_IDS = 172;
+  int LCD_BUTTON_SUB_IDS = 179;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds <em>LCD Backlight Sub Ids</em>}' enum.
@@ -21545,7 +22399,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDBacklightSubIds()
    * @generated
    */
-  int LCD_BACKLIGHT_SUB_IDS = 173;
+  int LCD_BACKLIGHT_SUB_IDS = 180;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds <em>Multi Touch Sub Ids</em>}' enum.
@@ -21555,7 +22409,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchSubIds()
    * @generated
    */
-  int MULTI_TOUCH_SUB_IDS = 174;
+  int MULTI_TOUCH_SUB_IDS = 181;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds <em>Temperature IR Sub Ids</em>}' enum.
@@ -21565,7 +22419,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTemperatureIRSubIds()
    * @generated
    */
-  int TEMPERATURE_IR_SUB_IDS = 175;
+  int TEMPERATURE_IR_SUB_IDS = 182;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds <em>Voltage Current Sub Ids</em>}' enum.
@@ -21575,7 +22429,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getVoltageCurrentSubIds()
    * @generated
    */
-  int VOLTAGE_CURRENT_SUB_IDS = 176;
+  int VOLTAGE_CURRENT_SUB_IDS = 183;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove <em>Config Opts Move</em>}' enum.
@@ -21585,7 +22439,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsMove()
    * @generated
    */
-  int CONFIG_OPTS_MOVE = 177;
+  int CONFIG_OPTS_MOVE = 184;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable <em>Config Opts Dimmable</em>}' enum.
@@ -21595,7 +22449,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsDimmable()
    * @generated
    */
-  int CONFIG_OPTS_DIMMABLE = 178;
+  int CONFIG_OPTS_DIMMABLE = 185;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint <em>Config Opts Set Point</em>}' enum.
@@ -21605,7 +22459,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsSetPoint()
    * @generated
    */
-  int CONFIG_OPTS_SET_POINT = 179;
+  int CONFIG_OPTS_SET_POINT = 186;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed <em>Config Opts Switch Speed</em>}' enum.
@@ -21615,7 +22469,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsSwitchSpeed()
    * @generated
    */
-  int CONFIG_OPTS_SWITCH_SPEED = 180;
+  int CONFIG_OPTS_SWITCH_SPEED = 187;
 
   /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -21625,7 +22479,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 194;
+  int MIP_CONNECTION = 202;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -21635,7 +22489,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 195;
+  int MTINKER_DEVICE = 203;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -21645,7 +22499,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 196;
+  int MLOGGER = 204;
 
 
   /**
@@ -21656,7 +22510,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 197;
+  int MATOMIC_BOOLEAN = 205;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -21666,7 +22520,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 198;
+  int MTINKERFORGE_DEVICE = 206;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -21676,7 +22530,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 199;
+  int MTINKER_BRICK_DC = 207;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -21686,7 +22540,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 208;
+  int MTINKER_BRICK_SERVO = 216;
 
 
   /**
@@ -21697,7 +22551,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 209;
+  int MTINKERFORGE_VALUE = 217;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -21707,7 +22561,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 210;
+  int MDECIMAL_VALUE = 218;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -21717,7 +22571,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 211;
+  int MTINKER_BRICKLET_HUMIDITY = 219;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -21727,7 +22581,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 212;
+  int MTINKER_BRICKLET_DISTANCE_IR = 220;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -21737,7 +22591,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 213;
+  int MTINKER_BRICKLET_TEMPERATURE = 221;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -21747,7 +22601,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 214;
+  int MTINKER_BRICKLET_BAROMETER = 222;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -21757,7 +22611,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 215;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 223;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -21767,7 +22621,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 216;
+  int MTINKER_BRICKLET_LCD2_0X4 = 224;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Remote Switch</em>' data type.
@@ -21777,7 +22631,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
    * @generated
    */
-  int TINKER_BRICKLET_REMOTE_SWITCH = 217;
+  int TINKER_BRICKLET_REMOTE_SWITCH = 225;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Motion Detector</em>' data type.
@@ -21787,7 +22641,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMotionDetector()
    * @generated
    */
-  int TINKER_BRICKLET_MOTION_DETECTOR = 218;
+  int TINKER_BRICKLET_MOTION_DETECTOR = 226;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Multi Touch</em>' data type.
@@ -21797,7 +22651,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMultiTouch()
    * @generated
    */
-  int TINKER_BRICKLET_MULTI_TOUCH = 219;
+  int TINKER_BRICKLET_MULTI_TOUCH = 227;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Temperature IR</em>' data type.
@@ -21807,7 +22661,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTemperatureIR()
    * @generated
    */
-  int TINKER_BRICKLET_TEMPERATURE_IR = 220;
+  int TINKER_BRICKLET_TEMPERATURE_IR = 228;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Sound Intensity</em>' data type.
@@ -21817,7 +22671,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSoundIntensity()
    * @generated
    */
-  int TINKER_BRICKLET_SOUND_INTENSITY = 221;
+  int TINKER_BRICKLET_SOUND_INTENSITY = 229;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Moisture</em>' data type.
@@ -21827,7 +22681,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMoisture()
    * @generated
    */
-  int TINKER_BRICKLET_MOISTURE = 222;
+  int TINKER_BRICKLET_MOISTURE = 230;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Distance US</em>' data type.
@@ -21837,7 +22691,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDistanceUS()
    * @generated
    */
-  int TINKER_BRICKLET_DISTANCE_US = 223;
+  int TINKER_BRICKLET_DISTANCE_US = 231;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Voltage Current</em>' data type.
@@ -21847,7 +22701,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletVoltageCurrent()
    * @generated
    */
-  int TINKER_BRICKLET_VOLTAGE_CURRENT = 224;
+  int TINKER_BRICKLET_VOLTAGE_CURRENT = 232;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Tilt</em>' data type.
@@ -21857,7 +22711,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTilt()
    * @generated
    */
-  int TINKER_BRICKLET_TILT = 225;
+  int TINKER_BRICKLET_TILT = 233;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO4</em>' data type.
@@ -21867,7 +22721,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO4()
    * @generated
    */
-  int TINKER_BRICKLET_IO4 = 226;
+  int TINKER_BRICKLET_IO4 = 234;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Hall Effect</em>' data type.
@@ -21877,7 +22731,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletHallEffect()
    * @generated
    */
-  int TINKER_BRICKLET_HALL_EFFECT = 227;
+  int TINKER_BRICKLET_HALL_EFFECT = 235;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Segment Display4x7</em>' data type.
@@ -21887,7 +22741,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSegmentDisplay4x7()
    * @generated
    */
-  int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 228;
+  int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 236;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet LED Strip</em>' data type.
@@ -21897,7 +22751,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLEDStrip()
    * @generated
    */
-  int TINKER_BRICKLET_LED_STRIP = 229;
+  int TINKER_BRICKLET_LED_STRIP = 237;
 
   /**
    * The meta object id for the '<em>Bricklet Joystick</em>' data type.
@@ -21907,7 +22761,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletJoystick()
    * @generated
    */
-  int BRICKLET_JOYSTICK = 230;
+  int BRICKLET_JOYSTICK = 238;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Linear Poti</em>' data type.
@@ -21917,7 +22771,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLinearPoti()
    * @generated
    */
-  int TINKER_BRICKLET_LINEAR_POTI = 231;
+  int TINKER_BRICKLET_LINEAR_POTI = 239;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Dual Button</em>' data type.
@@ -21927,7 +22781,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDualButton()
    * @generated
    */
-  int TINKER_BRICKLET_DUAL_BUTTON = 232;
+  int TINKER_BRICKLET_DUAL_BUTTON = 240;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet PTC</em>' data type.
@@ -21937,7 +22791,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletPTC()
    * @generated
    */
-  int TINKER_BRICKLET_PTC = 233;
+  int TINKER_BRICKLET_PTC = 241;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Industrial Dual020m A</em>' data type.
@@ -21947,7 +22801,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIndustrialDual020mA()
    * @generated
    */
-  int TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A = 234;
+  int TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A = 242;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Solid State Relay</em>' data type.
@@ -21957,7 +22811,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSolidStateRelay()
    * @generated
    */
-  int TINKER_BRICKLET_SOLID_STATE_RELAY = 235;
+  int TINKER_BRICKLET_SOLID_STATE_RELAY = 243;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Piezo Speaker</em>' data type.
@@ -21967,7 +22821,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletPiezoSpeaker()
    * @generated
    */
-  int TINKER_BRICKLET_PIEZO_SPEAKER = 236;
+  int TINKER_BRICKLET_PIEZO_SPEAKER = 244;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Rotary Encoder</em>' data type.
@@ -21977,7 +22831,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRotaryEncoder()
    * @generated
    */
-  int TINKER_BRICKLET_ROTARY_ENCODER = 237;
+  int TINKER_BRICKLET_ROTARY_ENCODER = 245;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Ambient Light V2</em>' data type.
@@ -21987,7 +22841,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAmbientLightV2()
    * @generated
    */
-  int TINKER_BRICKLET_AMBIENT_LIGHT_V2 = 238;
+  int TINKER_BRICKLET_AMBIENT_LIGHT_V2 = 246;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Dust Detector</em>' data type.
@@ -21997,7 +22851,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDustDetector()
    * @generated
    */
-  int TINKER_BRICKLET_DUST_DETECTOR = 239;
+  int TINKER_BRICKLET_DUST_DETECTOR = 247;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Load Cell</em>' data type.
@@ -22007,7 +22861,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLoadCell()
    * @generated
    */
-  int TINKER_BRICKLET_LOAD_CELL = 240;
+  int TINKER_BRICKLET_LOAD_CELL = 248;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Color</em>' data type.
@@ -22017,7 +22871,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletColor()
    * @generated
    */
-  int TINKER_BRICKLET_COLOR = 241;
+  int TINKER_BRICKLET_COLOR = 249;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Industrial Dual Analog In</em>' data type.
@@ -22027,7 +22881,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIndustrialDualAnalogIn()
    * @generated
    */
-  int TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN = 242;
+  int TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN = 250;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Analog In V2</em>' data type.
@@ -22037,7 +22891,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAnalogInV2()
    * @generated
    */
-  int TINKER_BRICKLET_ANALOG_IN_V2 = 243;
+  int TINKER_BRICKLET_ANALOG_IN_V2 = 251;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Analog In</em>' data type.
@@ -22047,7 +22901,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAnalogIn()
    * @generated
    */
-  int TINKER_BRICKLET_ANALOG_IN = 244;
+  int TINKER_BRICKLET_ANALOG_IN = 252;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Laser Range Finder</em>' data type.
@@ -22057,7 +22911,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLaserRangeFinder()
    * @generated
    */
-  int TINKER_BRICKLET_LASER_RANGE_FINDER = 245;
+  int TINKER_BRICKLET_LASER_RANGE_FINDER = 253;
+
+  /**
+   * The meta object id for the '<em>Tinker Bricklet Accelerometer</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see com.tinkerforge.BrickletAccelerometer
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAccelerometer()
+   * @generated
+   */
+  int TINKER_BRICKLET_ACCELEROMETER = 254;
 
   /**
    * The meta object id for the '<em>HSB Type</em>' data type.
@@ -22067,7 +22931,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBType()
    * @generated
    */
-  int HSB_TYPE = 246;
+  int HSB_TYPE = 255;
 
   /**
    * The meta object id for the '<em>Up Down Type</em>' data type.
@@ -22077,7 +22941,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getUpDownType()
    * @generated
    */
-  int UP_DOWN_TYPE = 247;
+  int UP_DOWN_TYPE = 256;
 
   /**
    * The meta object id for the '<em>Percent Value</em>' data type.
@@ -22087,7 +22951,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentValue()
    * @generated
    */
-  int PERCENT_VALUE = 248;
+  int PERCENT_VALUE = 257;
 
   /**
    * The meta object id for the '<em>Device Options</em>' data type.
@@ -22097,7 +22961,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
    * @generated
    */
-  int DEVICE_OPTIONS = 249;
+  int DEVICE_OPTIONS = 258;
 
   /**
    * The meta object id for the '<em>Percent Type</em>' data type.
@@ -22107,7 +22971,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentType()
    * @generated
    */
-  int PERCENT_TYPE = 250;
+  int PERCENT_TYPE = 259;
 
   /**
    * The meta object id for the '<em>Increase Decrease Type</em>' data type.
@@ -22117,7 +22981,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIncreaseDecreaseType()
    * @generated
    */
-  int INCREASE_DECREASE_TYPE = 251;
+  int INCREASE_DECREASE_TYPE = 260;
 
   /**
    * The meta object id for the '<em>Direction Value</em>' data type.
@@ -22127,7 +22991,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDirectionValue()
    * @generated
    */
-  int DIRECTION_VALUE = 252;
+  int DIRECTION_VALUE = 261;
 
   /**
    * The meta object id for the '<em>Enum</em>' data type.
@@ -22137,7 +23001,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 253;
+  int ENUM = 262;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -22304,7 +23168,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 200;
+  int MTINKER_BRICKLET_DUAL_RELAY = 208;
 
 
   /**
@@ -22315,7 +23179,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 201;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 209;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -22325,7 +23189,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 202;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 210;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital Out4</em>' data type.
@@ -22335,7 +23199,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalOut4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 203;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 211;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -23566,6 +24430,155 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getDualButtonButton_Position();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer <em>MBricklet Accelerometer</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>MBricklet Accelerometer</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer
+   * @generated
+   */
+  EClass getMBrickletAccelerometer();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDeviceType()
+   * @see #getMBrickletAccelerometer()
+   * @generated
+   */
+  EAttribute getMBrickletAccelerometer_DeviceType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDataRate <em>Data Rate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Data Rate</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDataRate()
+   * @see #getMBrickletAccelerometer()
+   * @generated
+   */
+  EAttribute getMBrickletAccelerometer_DataRate();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFullScale <em>Full Scale</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Full Scale</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFullScale()
+   * @see #getMBrickletAccelerometer()
+   * @generated
+   */
+  EAttribute getMBrickletAccelerometer_FullScale();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFilterBandwidth <em>Filter Bandwidth</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Filter Bandwidth</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFilterBandwidth()
+   * @see #getMBrickletAccelerometer()
+   * @generated
+   */
+  EAttribute getMBrickletAccelerometer_FilterBandwidth();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice <em>Accelerometer Device</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Accelerometer Device</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice
+   * @generated
+   */
+  EClass getAccelerometerDevice();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection <em>Accelerometer Direction</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Accelerometer Direction</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection
+   * @generated
+   */
+  EClass getAccelerometerDirection();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDeviceType()
+   * @see #getAccelerometerDirection()
+   * @generated
+   */
+  EAttribute getAccelerometerDirection_DeviceType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getThreshold <em>Threshold</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Threshold</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getThreshold()
+   * @see #getAccelerometerDirection()
+   * @generated
+   */
+  EAttribute getAccelerometerDirection_Threshold();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDirection <em>Direction</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Direction</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDirection()
+   * @see #getAccelerometerDirection()
+   * @generated
+   */
+  EAttribute getAccelerometerDirection_Direction();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature <em>Accelerometer Temperature</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Accelerometer Temperature</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature
+   * @generated
+   */
+  EClass getAccelerometerTemperature();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature#getDeviceType()
+   * @see #getAccelerometerTemperature()
+   * @generated
+   */
+  EAttribute getAccelerometerTemperature_DeviceType();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerLed <em>Accelerometer Led</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Accelerometer Led</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerLed
+   * @generated
+   */
+  EClass getAccelerometerLed();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerLed#getDeviceType <em>Device Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Device Type</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerLed#getDeviceType()
+   * @see #getAccelerometerLed()
+   * @generated
+   */
+  EAttribute getAccelerometerLed_DeviceType();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder <em>MBricklet Laser Range Finder</em>}'.
@@ -25697,6 +26710,59 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getBrickletColorConfiguration_IntegrationTime();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration <em>Bricklet Accelerometer Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Bricklet Accelerometer Configuration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration
+   * @generated
+   */
+  EClass getBrickletAccelerometerConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getDataRate <em>Data Rate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Data Rate</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getDataRate()
+   * @see #getBrickletAccelerometerConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletAccelerometerConfiguration_DataRate();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getFullScale <em>Full Scale</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Full Scale</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getFullScale()
+   * @see #getBrickletAccelerometerConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletAccelerometerConfiguration_FullScale();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getFilterBandwidth <em>Filter Bandwidth</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Filter Bandwidth</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getFilterBandwidth()
+   * @see #getBrickletAccelerometerConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletAccelerometerConfiguration_FilterBandwidth();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate <em>Accelerometer Coordinate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Accelerometer Coordinate</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate
+   * @generated
+   */
+  EEnum getAccelerometerCoordinate();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MServo <em>MServo</em>}'.
@@ -27904,6 +28970,16 @@ public interface ModelPackage extends EPackage
   EEnum getLaserRangeFinderSubIds();
 
   /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds <em>Accelerometer Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Accelerometer Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds
+   * @generated
+   */
+  EEnum getAccelerometerSubIds();
+
+  /**
    * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -28566,6 +29642,17 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EDataType getTinkerBrickletLaserRangeFinder();
+
+  /**
+   * Returns the meta object for data type '{@link com.tinkerforge.BrickletAccelerometer <em>Tinker Bricklet Accelerometer</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Tinker Bricklet Accelerometer</em>'.
+   * @see com.tinkerforge.BrickletAccelerometer
+   * @model instanceClass="com.tinkerforge.BrickletAccelerometer"
+   * @generated
+   */
+  EDataType getTinkerBrickletAccelerometer();
 
   /**
    * Returns the meta object for data type '{@link org.openhab.core.library.types.HSBType <em>HSB Type</em>}'.
@@ -29846,6 +30933,128 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute DUAL_BUTTON_BUTTON__POSITION = eINSTANCE.getDualButtonButton_Position();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl <em>MBricklet Accelerometer</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAccelerometerImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletAccelerometer()
+     * @generated
+     */
+    EClass MBRICKLET_ACCELEROMETER = eINSTANCE.getMBrickletAccelerometer();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_ACCELEROMETER__DEVICE_TYPE = eINSTANCE.getMBrickletAccelerometer_DeviceType();
+
+    /**
+     * The meta object literal for the '<em><b>Data Rate</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_ACCELEROMETER__DATA_RATE = eINSTANCE.getMBrickletAccelerometer_DataRate();
+
+    /**
+     * The meta object literal for the '<em><b>Full Scale</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_ACCELEROMETER__FULL_SCALE = eINSTANCE.getMBrickletAccelerometer_FullScale();
+
+    /**
+     * The meta object literal for the '<em><b>Filter Bandwidth</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_ACCELEROMETER__FILTER_BANDWIDTH = eINSTANCE.getMBrickletAccelerometer_FilterBandwidth();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice <em>Accelerometer Device</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerDevice()
+     * @generated
+     */
+    EClass ACCELEROMETER_DEVICE = eINSTANCE.getAccelerometerDevice();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl <em>Accelerometer Direction</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerDirection()
+     * @generated
+     */
+    EClass ACCELEROMETER_DIRECTION = eINSTANCE.getAccelerometerDirection();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACCELEROMETER_DIRECTION__DEVICE_TYPE = eINSTANCE.getAccelerometerDirection_DeviceType();
+
+    /**
+     * The meta object literal for the '<em><b>Threshold</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACCELEROMETER_DIRECTION__THRESHOLD = eINSTANCE.getAccelerometerDirection_Threshold();
+
+    /**
+     * The meta object literal for the '<em><b>Direction</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACCELEROMETER_DIRECTION__DIRECTION = eINSTANCE.getAccelerometerDirection_Direction();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl <em>Accelerometer Temperature</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerTemperature()
+     * @generated
+     */
+    EClass ACCELEROMETER_TEMPERATURE = eINSTANCE.getAccelerometerTemperature();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACCELEROMETER_TEMPERATURE__DEVICE_TYPE = eINSTANCE.getAccelerometerTemperature_DeviceType();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl <em>Accelerometer Led</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerLedImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerLed()
+     * @generated
+     */
+    EClass ACCELEROMETER_LED = eINSTANCE.getAccelerometerLed();
+
+    /**
+     * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACCELEROMETER_LED__DEVICE_TYPE = eINSTANCE.getAccelerometerLed_DeviceType();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl <em>MBricklet Laser Range Finder</em>}' class.
@@ -31594,6 +32803,50 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute BRICKLET_COLOR_CONFIGURATION__INTEGRATION_TIME = eINSTANCE.getBrickletColorConfiguration_IntegrationTime();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl <em>Bricklet Accelerometer Configuration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletAccelerometerConfiguration()
+     * @generated
+     */
+    EClass BRICKLET_ACCELEROMETER_CONFIGURATION = eINSTANCE.getBrickletAccelerometerConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>Data Rate</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_ACCELEROMETER_CONFIGURATION__DATA_RATE = eINSTANCE.getBrickletAccelerometerConfiguration_DataRate();
+
+    /**
+     * The meta object literal for the '<em><b>Full Scale</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_ACCELEROMETER_CONFIGURATION__FULL_SCALE = eINSTANCE.getBrickletAccelerometerConfiguration_FullScale();
+
+    /**
+     * The meta object literal for the '<em><b>Filter Bandwidth</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_ACCELEROMETER_CONFIGURATION__FILTER_BANDWIDTH = eINSTANCE.getBrickletAccelerometerConfiguration_FilterBandwidth();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate <em>Accelerometer Coordinate</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerCoordinate()
+     * @generated
+     */
+    EEnum ACCELEROMETER_COORDINATE = eINSTANCE.getAccelerometerCoordinate();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl <em>MServo</em>}' class.
@@ -33420,6 +34673,16 @@ public interface ModelPackage extends EPackage
     EEnum LASER_RANGE_FINDER_SUB_IDS = eINSTANCE.getLaserRangeFinderSubIds();
 
     /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds <em>Accelerometer Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerSubIds()
+     * @generated
+     */
+    EEnum ACCELEROMETER_SUB_IDS = eINSTANCE.getAccelerometerSubIds();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -34038,6 +35301,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType TINKER_BRICKLET_LASER_RANGE_FINDER = eINSTANCE.getTinkerBrickletLaserRangeFinder();
+
+    /**
+     * The meta object literal for the '<em>Tinker Bricklet Accelerometer</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.tinkerforge.BrickletAccelerometer
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAccelerometer()
+     * @generated
+     */
+    EDataType TINKER_BRICKLET_ACCELEROMETER = eINSTANCE.getTinkerBrickletAccelerometer();
 
     /**
      * The meta object literal for the '<em>HSB Type</em>' data type.

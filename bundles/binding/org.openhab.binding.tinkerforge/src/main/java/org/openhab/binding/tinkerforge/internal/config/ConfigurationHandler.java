@@ -25,8 +25,10 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds;
 import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
@@ -127,7 +129,8 @@ public class ConfigurationHandler {
     bricklet_dustdetector, bricklet_loadcell, loadcell_weight, loadcell_led, bricklet_color, 
     color_color, color_illuminance, color_temperature, color_led, bricklet_industrial_dual_analogin,
     industrial_dual_analogin_channel, bricklet_analogin, bricklet_analoginv2, bricklet_laser_range_finder,
-    laser_range_finder_distance, laser_range_finder_velocity
+    laser_range_finder_distance, laser_range_finder_velocity, bricklet_accelerometer, 
+    accelerometer_direction, accelerometer_temperature, accelerometer_led
   }
 
 
@@ -266,7 +269,8 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.color_color.name())
         || deviceType.equals(TypeKey.color_temperature.name())
         || deviceType.equals(TypeKey.color_illuminance.name())
-        || deviceType.endsWith(TypeKey.industrial_dual_analogin_channel.name())) {
+        || deviceType.equals(TypeKey.industrial_dual_analogin_channel.name())
+        || deviceType.equals(TypeKey.accelerometer_direction.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -330,6 +334,12 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, RotaryEncoderSubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(RotaryEncoderSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.accelerometer_direction.name())) {
+        OHTFDevice<TFBaseConfiguration, AccelerometerSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(AccelerometerSubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else {
@@ -646,6 +656,21 @@ public class ConfigurationHandler {
       OHTFDevice<TFAnalogInV2Configuration, NoSubIds> ohtfDevice =
           modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.accelerometer_led.name())) {
+      OHTFDevice<?, AccelerometerSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(AccelerometerSubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.accelerometer_temperature.name())) {
+      OHTFDevice<?, AccelerometerSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(AccelerometerSubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_accelerometer.name())) {
+      BrickletAccelerometerConfiguration configuration = modelFactory.createBrickletAccelerometerConfiguration();
+      OHTFDevice<BrickletAccelerometerConfiguration, AccelerometerSubIds> ohtfDevice =
+          modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(AccelerometerSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {

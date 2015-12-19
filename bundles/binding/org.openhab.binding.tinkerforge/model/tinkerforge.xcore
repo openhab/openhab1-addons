@@ -62,6 +62,7 @@ import com.tinkerforge.BrickletIndustrialDualAnalogIn
 import com.tinkerforge.BrickletAnalogIn
 import com.tinkerforge.BrickletAnalogInV2
 import com.tinkerforge.BrickletLaserRangeFinder
+import com.tinkerforge.BrickletAccelerometer
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -126,6 +127,7 @@ type TinkerBrickletIndustrialDualAnalogIn wraps BrickletIndustrialDualAnalogIn
 type TinkerBrickletAnalogInV2 wraps BrickletAnalogInV2
 type TinkerBrickletAnalogIn wraps BrickletAnalogIn
 type TinkerBrickletLaserRangeFinder wraps BrickletLaserRangeFinder
+type TinkerBrickletAccelerometer wraps BrickletAccelerometer
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -315,6 +317,37 @@ class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
 	MTFConfigConsumer<ButtonConfiguration> {
 	String deviceType = "dualbutton_button"
 	DualButtonDevicePosition position
+}
+
+class MBrickletAccelerometer extends MDevice<TinkerBrickletAccelerometer>,
+	MSubDeviceHolder<AccelerometerDevice>, MTFConfigConsumer<BrickletAccelerometerConfiguration> {
+	readonly String deviceType = "bricklet_accelerometer"
+	Short dataRate = "6"
+	Short fullScale = "1"
+	Short filterBandwidth = "2"
+}
+
+interface AccelerometerDevice extends MSubDevice<MBrickletAccelerometer> {
+}
+
+enum AccelerometerCoordinate {
+	x, y, z
+}
+
+class AccelerometerDirection extends AccelerometerDevice, MSensor<MDecimalValue>, 
+	MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	readonly String deviceType = "accelerometer_direction"
+	BigDecimal threshold = "0"
+	AccelerometerCoordinate direction
+}
+
+class AccelerometerTemperature extends AccelerometerDevice,
+	MSensor<MDecimalValue> {
+	readonly String deviceType = "accelerometer_temperature"
+}
+
+class AccelerometerLed extends AccelerometerDevice, DigitalActor {
+	readonly String deviceType = "accelerometer_led"
 }
 
 class MBrickletLaserRangeFinder extends MDevice<TinkerBrickletLaserRangeFinder>,
@@ -1102,6 +1135,12 @@ class BrickletColorConfiguration extends TFConfig {
 	Short integrationTime
 }
 
+class BrickletAccelerometerConfiguration extends TFConfig {
+	Short dataRate
+	Short fullScale
+	Short filterBandwidth
+}
+
 enum NoSubIds {
 	
 }
@@ -1230,4 +1269,8 @@ enum IndustrialDualAnalogInSubIds {
 
 enum LaserRangeFinderSubIds {
 	distance, velocity
+}
+
+enum AccelerometerSubIds {
+	x, y, z, temperature, led
 }

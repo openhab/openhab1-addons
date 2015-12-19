@@ -2,8 +2,6 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
-import org.eclipse.emf.ecore.EObject;
-
 
 /**
  * <!-- begin-user-doc -->

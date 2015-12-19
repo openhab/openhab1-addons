@@ -24,203 +24,6 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
-import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
-import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
-import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
-import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
-import org.openhab.binding.tinkerforge.internal.model.ColorActor;
-import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
-import org.openhab.binding.tinkerforge.internal.model.ColorColor;
-import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
-import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
-import org.openhab.binding.tinkerforge.internal.model.ColorLed;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
-import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
-import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
-import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
-import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
-import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
-import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
-import org.openhab.binding.tinkerforge.internal.model.Electrode;
-import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
-import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IO4Device;
-import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
-import org.openhab.binding.tinkerforge.internal.model.IODevice;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInDevice;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
-import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
-import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
-import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
-import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
-import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
-import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
-import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
-import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
-import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
-import org.openhab.binding.tinkerforge.internal.model.MActor;
-import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
-import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
-import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
-import org.openhab.binding.tinkerforge.internal.model.MDevice;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
-import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
-import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
-import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
-import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
-import org.openhab.binding.tinkerforge.internal.model.MServo;
-import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
-import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
-import org.openhab.binding.tinkerforge.internal.model.MTextActor;
-import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
-import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.MoveActor;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
-import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
-import org.openhab.binding.tinkerforge.internal.model.NumberActor;
-import org.openhab.binding.tinkerforge.internal.model.OHConfig;
-import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
-import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
-import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
-import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
-import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
-import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
-import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
-import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
-import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
-import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.Proximity;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
-import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
-import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
-import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
-import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
-import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
-import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
-import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFConfig;
-import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
-import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
-import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
-import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
-import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
-import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
-import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -237,6 +40,7 @@ import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
@@ -525,6 +329,41 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dualButtonButtonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletAccelerometerEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass accelerometerDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass accelerometerDirectionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass accelerometerTemperatureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass accelerometerLedEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1015,6 +854,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass brickletColorConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletAccelerometerConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum accelerometerCoordinateEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1525,6 +1378,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum accelerometerSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EEnum noSubIdsEEnum = null;
 
   /**
@@ -1953,6 +1813,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletLaserRangeFinderEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletAccelerometerEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3450,6 +3317,146 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getDualButtonButton_Position()
   {
     return (EAttribute)dualButtonButtonEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletAccelerometer()
+  {
+    return mBrickletAccelerometerEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAccelerometer_DeviceType()
+  {
+    return (EAttribute)mBrickletAccelerometerEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAccelerometer_DataRate()
+  {
+    return (EAttribute)mBrickletAccelerometerEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAccelerometer_FullScale()
+  {
+    return (EAttribute)mBrickletAccelerometerEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletAccelerometer_FilterBandwidth()
+  {
+    return (EAttribute)mBrickletAccelerometerEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAccelerometerDevice()
+  {
+    return accelerometerDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAccelerometerDirection()
+  {
+    return accelerometerDirectionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAccelerometerDirection_DeviceType()
+  {
+    return (EAttribute)accelerometerDirectionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAccelerometerDirection_Threshold()
+  {
+    return (EAttribute)accelerometerDirectionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAccelerometerDirection_Direction()
+  {
+    return (EAttribute)accelerometerDirectionEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAccelerometerTemperature()
+  {
+    return accelerometerTemperatureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAccelerometerTemperature_DeviceType()
+  {
+    return (EAttribute)accelerometerTemperatureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAccelerometerLed()
+  {
+    return accelerometerLedEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAccelerometerLed_DeviceType()
+  {
+    return (EAttribute)accelerometerLedEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -5460,6 +5467,56 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getBrickletColorConfiguration_IntegrationTime()
   {
     return (EAttribute)brickletColorConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletAccelerometerConfiguration()
+  {
+    return brickletAccelerometerConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletAccelerometerConfiguration_DataRate()
+  {
+    return (EAttribute)brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletAccelerometerConfiguration_FullScale()
+  {
+    return (EAttribute)brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletAccelerometerConfiguration_FilterBandwidth()
+  {
+    return (EAttribute)brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getAccelerometerCoordinate()
+  {
+    return accelerometerCoordinateEEnum;
   }
 
   /**
@@ -7557,6 +7614,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getAccelerometerSubIds()
+  {
+    return accelerometerSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getNoSubIds()
   {
     return noSubIdsEEnum;
@@ -8177,6 +8244,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletAccelerometer()
+  {
+    return tinkerBrickletAccelerometerEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -8463,6 +8540,25 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualButtonButtonEClass = createEClass(DUAL_BUTTON_BUTTON);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__DEVICE_TYPE);
     createEAttribute(dualButtonButtonEClass, DUAL_BUTTON_BUTTON__POSITION);
+
+    mBrickletAccelerometerEClass = createEClass(MBRICKLET_ACCELEROMETER);
+    createEAttribute(mBrickletAccelerometerEClass, MBRICKLET_ACCELEROMETER__DEVICE_TYPE);
+    createEAttribute(mBrickletAccelerometerEClass, MBRICKLET_ACCELEROMETER__DATA_RATE);
+    createEAttribute(mBrickletAccelerometerEClass, MBRICKLET_ACCELEROMETER__FULL_SCALE);
+    createEAttribute(mBrickletAccelerometerEClass, MBRICKLET_ACCELEROMETER__FILTER_BANDWIDTH);
+
+    accelerometerDeviceEClass = createEClass(ACCELEROMETER_DEVICE);
+
+    accelerometerDirectionEClass = createEClass(ACCELEROMETER_DIRECTION);
+    createEAttribute(accelerometerDirectionEClass, ACCELEROMETER_DIRECTION__DEVICE_TYPE);
+    createEAttribute(accelerometerDirectionEClass, ACCELEROMETER_DIRECTION__THRESHOLD);
+    createEAttribute(accelerometerDirectionEClass, ACCELEROMETER_DIRECTION__DIRECTION);
+
+    accelerometerTemperatureEClass = createEClass(ACCELEROMETER_TEMPERATURE);
+    createEAttribute(accelerometerTemperatureEClass, ACCELEROMETER_TEMPERATURE__DEVICE_TYPE);
+
+    accelerometerLedEClass = createEClass(ACCELEROMETER_LED);
+    createEAttribute(accelerometerLedEClass, ACCELEROMETER_LED__DEVICE_TYPE);
 
     mBrickletLaserRangeFinderEClass = createEClass(MBRICKLET_LASER_RANGE_FINDER);
     createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__DEVICE_TYPE);
@@ -9010,7 +9106,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(brickletColorConfigurationEClass, BRICKLET_COLOR_CONFIGURATION__GAIN);
     createEAttribute(brickletColorConfigurationEClass, BRICKLET_COLOR_CONFIGURATION__INTEGRATION_TIME);
 
+    brickletAccelerometerConfigurationEClass = createEClass(BRICKLET_ACCELEROMETER_CONFIGURATION);
+    createEAttribute(brickletAccelerometerConfigurationEClass, BRICKLET_ACCELEROMETER_CONFIGURATION__DATA_RATE);
+    createEAttribute(brickletAccelerometerConfigurationEClass, BRICKLET_ACCELEROMETER_CONFIGURATION__FULL_SCALE);
+    createEAttribute(brickletAccelerometerConfigurationEClass, BRICKLET_ACCELEROMETER_CONFIGURATION__FILTER_BANDWIDTH);
+
     // Create enums
+    accelerometerCoordinateEEnum = createEEnum(ACCELEROMETER_COORDINATE);
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
     industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
     industrialDigitalOutSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_OUT_SUB_IDS);
@@ -9042,6 +9144,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     loadCellSubIdsEEnum = createEEnum(LOAD_CELL_SUB_IDS);
     industrialDualAnalogInSubIdsEEnum = createEEnum(INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS);
     laserRangeFinderSubIdsEEnum = createEEnum(LASER_RANGE_FINDER_SUB_IDS);
+    accelerometerSubIdsEEnum = createEEnum(ACCELEROMETER_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -9096,6 +9199,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletAnalogInV2EDataType = createEDataType(TINKER_BRICKLET_ANALOG_IN_V2);
     tinkerBrickletAnalogInEDataType = createEDataType(TINKER_BRICKLET_ANALOG_IN);
     tinkerBrickletLaserRangeFinderEDataType = createEDataType(TINKER_BRICKLET_LASER_RANGE_FINDER);
+    tinkerBrickletAccelerometerEDataType = createEDataType(TINKER_BRICKLET_ACCELEROMETER);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -9228,6 +9332,42 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getButtonConfiguration());
     g1.getETypeArguments().add(g2);
     dualButtonButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletAccelerometer());
+    g1.getETypeArguments().add(g2);
+    mBrickletAccelerometerEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getAccelerometerDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletAccelerometerEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getBrickletAccelerometerConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletAccelerometerEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletAccelerometer());
+    g1.getETypeArguments().add(g2);
+    accelerometerDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getAccelerometerDevice());
+    accelerometerDirectionEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    accelerometerDirectionEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    accelerometerDirectionEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    accelerometerDirectionEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getAccelerometerDevice());
+    accelerometerTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    accelerometerTemperatureEClass.getEGenericSuperTypes().add(g1);
+    accelerometerLedEClass.getESuperTypes().add(this.getAccelerometerDevice());
+    accelerometerLedEClass.getESuperTypes().add(this.getDigitalActor());
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLaserRangeFinder());
     g1.getETypeArguments().add(g2);
@@ -10152,6 +10292,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ledStripConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     ledGroupConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     brickletColorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    brickletAccelerometerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -10363,6 +10504,25 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(dualButtonButtonEClass, DualButtonButton.class, "DualButtonButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDualButtonButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "dualbutton_button", 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDualButtonButton_Position(), this.getDualButtonDevicePosition(), "position", null, 0, 1, DualButtonButton.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mBrickletAccelerometerEClass, MBrickletAccelerometer.class, "MBrickletAccelerometer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletAccelerometer_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_accelerometer", 0, 1, MBrickletAccelerometer.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAccelerometer_DataRate(), theEcorePackage.getEShortObject(), "dataRate", "6", 0, 1, MBrickletAccelerometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAccelerometer_FullScale(), theEcorePackage.getEShortObject(), "fullScale", "1", 0, 1, MBrickletAccelerometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAccelerometer_FilterBandwidth(), theEcorePackage.getEShortObject(), "filterBandwidth", "2", 0, 1, MBrickletAccelerometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(accelerometerDeviceEClass, AccelerometerDevice.class, "AccelerometerDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(accelerometerDirectionEClass, AccelerometerDirection.class, "AccelerometerDirection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAccelerometerDirection_DeviceType(), theEcorePackage.getEString(), "deviceType", "accelerometer_direction", 0, 1, AccelerometerDirection.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAccelerometerDirection_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, AccelerometerDirection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAccelerometerDirection_Direction(), this.getAccelerometerCoordinate(), "direction", null, 0, 1, AccelerometerDirection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(accelerometerTemperatureEClass, AccelerometerTemperature.class, "AccelerometerTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAccelerometerTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "accelerometer_temperature", 0, 1, AccelerometerTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(accelerometerLedEClass, AccelerometerLed.class, "AccelerometerLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAccelerometerLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "accelerometer_led", 0, 1, AccelerometerLed.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletLaserRangeFinderEClass, MBrickletLaserRangeFinder.class, "MBrickletLaserRangeFinder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletLaserRangeFinder_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_laser_range_finder", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -10976,7 +11136,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getBrickletColorConfiguration_Gain(), theEcorePackage.getEShortObject(), "gain", null, 0, 1, BrickletColorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getBrickletColorConfiguration_IntegrationTime(), theEcorePackage.getEShortObject(), "integrationTime", null, 0, 1, BrickletColorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(brickletAccelerometerConfigurationEClass, BrickletAccelerometerConfiguration.class, "BrickletAccelerometerConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBrickletAccelerometerConfiguration_DataRate(), theEcorePackage.getEShortObject(), "dataRate", null, 0, 1, BrickletAccelerometerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBrickletAccelerometerConfiguration_FullScale(), theEcorePackage.getEShortObject(), "fullScale", null, 0, 1, BrickletAccelerometerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBrickletAccelerometerConfiguration_FilterBandwidth(), theEcorePackage.getEShortObject(), "filterBandwidth", null, 0, 1, BrickletAccelerometerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     // Initialize enums and add enum literals
+    initEEnum(accelerometerCoordinateEEnum, AccelerometerCoordinate.class, "AccelerometerCoordinate");
+    addEEnumLiteral(accelerometerCoordinateEEnum, AccelerometerCoordinate.X);
+    addEEnumLiteral(accelerometerCoordinateEEnum, AccelerometerCoordinate.Y);
+    addEEnumLiteral(accelerometerCoordinateEEnum, AccelerometerCoordinate.Z);
+
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
 
     initEEnum(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.class, "IndustrialDigitalInSubIDs");
@@ -11171,6 +11341,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.DISTANCE);
     addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.VELOCITY);
 
+    initEEnum(accelerometerSubIdsEEnum, AccelerometerSubIds.class, "AccelerometerSubIds");
+    addEEnumLiteral(accelerometerSubIdsEEnum, AccelerometerSubIds.X);
+    addEEnumLiteral(accelerometerSubIdsEEnum, AccelerometerSubIds.Y);
+    addEEnumLiteral(accelerometerSubIdsEEnum, AccelerometerSubIds.Z);
+    addEEnumLiteral(accelerometerSubIdsEEnum, AccelerometerSubIds.TEMPERATURE);
+    addEEnumLiteral(accelerometerSubIdsEEnum, AccelerometerSubIds.LED);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -11224,6 +11401,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletAnalogInV2EDataType, BrickletAnalogInV2.class, "TinkerBrickletAnalogInV2", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletAnalogInEDataType, BrickletAnalogIn.class, "TinkerBrickletAnalogIn", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLaserRangeFinderEDataType, BrickletLaserRangeFinder.class, "TinkerBrickletLaserRangeFinder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletAccelerometerEDataType, BrickletAccelerometer.class, "TinkerBrickletAccelerometer", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

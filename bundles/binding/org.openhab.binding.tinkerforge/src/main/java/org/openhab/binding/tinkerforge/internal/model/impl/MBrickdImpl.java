@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletAmbientLightV2;
 import com.tinkerforge.BrickletAnalogIn;
@@ -1059,6 +1060,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletLaserRangeFinder");
               mDevice = factory.createMBrickletLaserRangeFinder();
               mDevice.setDeviceIdentifier(BrickletLaserRangeFinder.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAccelerometer.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletAccelerometer");
+              mDevice = factory.createMBrickletAccelerometer();
+              mDevice.setDeviceIdentifier(BrickletAccelerometer.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

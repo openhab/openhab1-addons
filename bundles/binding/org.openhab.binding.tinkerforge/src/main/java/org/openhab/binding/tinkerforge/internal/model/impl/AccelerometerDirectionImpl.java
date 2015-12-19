@@ -3,60 +3,72 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+
 import java.math.BigDecimal;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
-import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletLaserRangeFinder;
+import com.tinkerforge.BrickletAccelerometer;
+import com.tinkerforge.BrickletAccelerometer.Acceleration;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Laser Range Finder Distance</b></em>'.
+ * An implementation of the model object '<em><b>Accelerometer Direction</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getCallbackPeriod <em>Callback Period</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderDistanceImpl#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getCallbackPeriod <em>Callback Period</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getDirection <em>Direction</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container implements LaserRangeFinderDistance
+public class AccelerometerDirectionImpl extends MinimalEObjectImpl.Container implements AccelerometerDirection
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -206,7 +218,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
    * @generated
    * @ordered
    */
-  protected static final String DEVICE_TYPE_EDEFAULT = "laser_range_finder_distance";
+  protected static final String DEVICE_TYPE_EDEFAULT = "accelerometer_direction";
 
   /**
    * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -238,16 +250,36 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
    */
   protected BigDecimal threshold = THRESHOLD_EDEFAULT;
 
-  private BrickletLaserRangeFinder tinkerforgeDevice;
+  /**
+   * The default value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected static final AccelerometerCoordinate DIRECTION_EDEFAULT = AccelerometerCoordinate.X;
 
-  private DistanceListener listener;
+  /**
+   * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected AccelerometerCoordinate direction = DIRECTION_EDEFAULT;
+
+  private BrickletAccelerometer tinkerforgeDevice;
+
+  private AccelerationListener listener;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected LaserRangeFinderDistanceImpl()
+  protected AccelerometerDirectionImpl()
   {
     super();
   }
@@ -260,7 +292,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.LASER_RANGE_FINDER_DISTANCE;
+    return ModelPackage.Literals.ACCELEROMETER_DIRECTION;
   }
 
   /**
@@ -283,7 +315,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -306,7 +338,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__UID, oldUid, uid));
   }
 
   /**
@@ -329,7 +361,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__POLL, oldPoll, poll));
   }
 
   /**
@@ -352,7 +384,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -375,7 +407,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -383,10 +415,10 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
    * <!-- end-user-doc -->
    * @generated
    */
-  public MBrickletLaserRangeFinder getMbrick()
+  public MBrickletAccelerometer getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK) return null;
-    return (MBrickletLaserRangeFinder)eContainer();
+    if (eContainerFeatureID() != ModelPackage.ACCELEROMETER_DIRECTION__MBRICK) return null;
+    return (MBrickletAccelerometer)eContainer();
   }
 
   /**
@@ -394,9 +426,9 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetMbrick(MBrickletLaserRangeFinder newMbrick, NotificationChain msgs)
+  public NotificationChain basicSetMbrick(MBrickletAccelerometer newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.ACCELEROMETER_DIRECTION__MBRICK, msgs);
     return msgs;
   }
 
@@ -405,9 +437,9 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setMbrick(MBrickletLaserRangeFinder newMbrick)
+  public void setMbrick(MBrickletAccelerometer newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.ACCELEROMETER_DIRECTION__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -420,7 +452,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -443,7 +475,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE, oldSensorValue, sensorValue));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -467,7 +499,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     tfConfig = newTfConfig;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG, oldTfConfig, newTfConfig);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG, oldTfConfig, newTfConfig);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -484,14 +516,14 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       NotificationChain msgs = null;
       if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG, null, msgs);
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG, null, msgs);
       if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG, null, msgs);
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG, null, msgs);
       msgs = basicSetTfConfig(newTfConfig, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG, newTfConfig, newTfConfig));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG, newTfConfig, newTfConfig));
   }
 
   /**
@@ -514,7 +546,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     long oldCallbackPeriod = callbackPeriod;
     callbackPeriod = newCallbackPeriod;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
   }
 
   /**
@@ -547,7 +579,30 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     BigDecimal oldThreshold = threshold;
     threshold = newThreshold;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_DISTANCE__THRESHOLD, oldThreshold, threshold));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__THRESHOLD, oldThreshold, threshold));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerCoordinate getDirection()
+  {
+    return direction;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDirection(AccelerometerCoordinate newDirection)
+  {
+    AccelerometerCoordinate oldDirection = direction;
+    direction = newDirection == null ? DIRECTION_EDEFAULT : newDirection;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.ACCELEROMETER_DIRECTION__DIRECTION, oldDirection, direction));
   }
 
   /**
@@ -557,9 +612,18 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
    */
   public void fetchSensorValue()
   {
+    Short currAcceleration;
+    Acceleration acceleration;
     try {
-      int distance = tinkerforgeDevice.getDistance();
-      DecimalValue value = Tools.calculate(distance);
+      acceleration = tinkerforgeDevice.getAcceleration();
+      if (getDirection() == AccelerometerCoordinate.X) {
+        currAcceleration = acceleration.x;
+      } else if (getDirection() == AccelerometerCoordinate.Y) {
+        currAcceleration = acceleration.y;
+      } else {
+        currAcceleration = acceleration.z;
+      }
+      DecimalValue value = Tools.calculate(currAcceleration);
       setSensorValue(value);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -577,7 +641,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(LaserRangeFinderDistanceImpl.class);
+    logger = LoggerFactory.getLogger(AccelerometerDirectionImpl.class);
   }
 
   /**
@@ -597,9 +661,9 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     }
     try {
       tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
-      tinkerforgeDevice.setVelocityCallbackPeriod(getCallbackPeriod());
-      listener = new DistanceListener();
-      tinkerforgeDevice.addDistanceListener(listener);
+      tinkerforgeDevice.setAccelerationCallbackPeriod(getCallbackPeriod());
+      listener = new AccelerationListener();
+      tinkerforgeDevice.addAccelerationListener(listener);
       fetchSensorValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -609,21 +673,30 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     }
   }
 
-  private class DistanceListener implements BrickletLaserRangeFinder.DistanceListener {
+  private class AccelerationListener implements BrickletAccelerometer.AccelerationListener {
 
     @Override
-    public void distance(int distance) {
-      DecimalValue value = Tools.calculate(distance);
+    public void acceleration(short x, short y, short z) {
+      Short acceleration;
+      if (getDirection() == AccelerometerCoordinate.X) {
+        acceleration = x;
+      } else if (getDirection() == AccelerometerCoordinate.Y) {
+        acceleration = y;
+      } else {
+        acceleration = z;
+      }
+      DecimalValue value = Tools.calculate(acceleration);
       logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, value);
-      if (value.compareTo(getSensorValue(), getThreshold()) != 0 ) {
+      if (value.compareTo(getSensorValue(), getThreshold()) != 0) {
         logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, value);
         setSensorValue(value);
       } else {
         logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, value);
       }
     }
-    
+
   }
+ 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -632,7 +705,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   public void disable()
   {
     if (listener != null) {
-      tinkerforgeDevice.removeDistanceListener(listener);
+      tinkerforgeDevice.removeAccelerationListener(listener);
     }
     tinkerforgeDevice = null;
   }
@@ -647,10 +720,10 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (featureID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
-        return basicSetMbrick((MBrickletLaserRangeFinder)otherEnd, msgs);
+        return basicSetMbrick((MBrickletAccelerometer)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -665,9 +738,9 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (featureID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
         return basicSetMbrick(null, msgs);
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG:
+      case ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG:
         return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -683,7 +756,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -699,28 +772,30 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (featureID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__LOGGER:
+      case ModelPackage.ACCELEROMETER_DIRECTION__LOGGER:
         return getLogger();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__UID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__UID:
         return getUid();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__POLL:
+      case ModelPackage.ACCELEROMETER_DIRECTION__POLL:
         return isPoll();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__ENABLED_A:
+      case ModelPackage.ACCELEROMETER_DIRECTION__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SUB_ID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SUB_ID:
         return getSubId();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
         return getMbrick();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG:
+      case ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG:
         return getTfConfig();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD:
         return getCallbackPeriod();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__DEVICE_TYPE:
+      case ModelPackage.ACCELEROMETER_DIRECTION__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__THRESHOLD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__THRESHOLD:
         return getThreshold();
+      case ModelPackage.ACCELEROMETER_DIRECTION__DIRECTION:
+        return getDirection();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -735,35 +810,38 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (featureID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__LOGGER:
+      case ModelPackage.ACCELEROMETER_DIRECTION__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__UID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__POLL:
+      case ModelPackage.ACCELEROMETER_DIRECTION__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__ENABLED_A:
+      case ModelPackage.ACCELEROMETER_DIRECTION__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SUB_ID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
-        setMbrick((MBrickletLaserRangeFinder)newValue);
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
+        setMbrick((MBrickletAccelerometer)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE:
         setSensorValue((DecimalValue)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG:
+      case ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__THRESHOLD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__THRESHOLD:
         setThreshold((BigDecimal)newValue);
+        return;
+      case ModelPackage.ACCELEROMETER_DIRECTION__DIRECTION:
+        setDirection((AccelerometerCoordinate)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -779,35 +857,38 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (featureID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__LOGGER:
+      case ModelPackage.ACCELEROMETER_DIRECTION__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__UID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__POLL:
+      case ModelPackage.ACCELEROMETER_DIRECTION__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__ENABLED_A:
+      case ModelPackage.ACCELEROMETER_DIRECTION__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SUB_ID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
-        setMbrick((MBrickletLaserRangeFinder)null);
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
+        setMbrick((MBrickletAccelerometer)null);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE:
         setSensorValue((DecimalValue)null);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG:
+      case ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__THRESHOLD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
+        return;
+      case ModelPackage.ACCELEROMETER_DIRECTION__DIRECTION:
+        setDirection(DIRECTION_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -823,28 +904,30 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (featureID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__LOGGER:
+      case ModelPackage.ACCELEROMETER_DIRECTION__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__UID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__POLL:
+      case ModelPackage.ACCELEROMETER_DIRECTION__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__ENABLED_A:
+      case ModelPackage.ACCELEROMETER_DIRECTION__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SUB_ID:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__MBRICK:
+      case ModelPackage.ACCELEROMETER_DIRECTION__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE:
+      case ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE:
         return sensorValue != null;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG:
+      case ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG:
         return tfConfig != null;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD:
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__DEVICE_TYPE:
+      case ModelPackage.ACCELEROMETER_DIRECTION__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE__THRESHOLD:
+      case ModelPackage.ACCELEROMETER_DIRECTION__THRESHOLD:
         return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
+      case ModelPackage.ACCELEROMETER_DIRECTION__DIRECTION:
+        return direction != DIRECTION_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -861,7 +944,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        case ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -869,7 +952,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        case ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -877,7 +960,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        case ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -896,7 +979,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.LASER_RANGE_FINDER_DISTANCE__SENSOR_VALUE;
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.ACCELEROMETER_DIRECTION__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -904,7 +987,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.LASER_RANGE_FINDER_DISTANCE__TF_CONFIG;
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.ACCELEROMETER_DIRECTION__TF_CONFIG;
         default: return -1;
       }
     }
@@ -912,7 +995,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.LASER_RANGE_FINDER_DISTANCE__CALLBACK_PERIOD;
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.ACCELEROMETER_DIRECTION__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -931,7 +1014,7 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.LASER_RANGE_FINDER_DISTANCE___FETCH_SENSOR_VALUE;
+        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.ACCELEROMETER_DIRECTION___FETCH_SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -962,16 +1045,16 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
   {
     switch (operationID)
     {
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE___FETCH_SENSOR_VALUE:
+      case ModelPackage.ACCELEROMETER_DIRECTION___FETCH_SENSOR_VALUE:
         fetchSensorValue();
         return null;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE___INIT:
+      case ModelPackage.ACCELEROMETER_DIRECTION___INIT:
         init();
         return null;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE___ENABLE:
+      case ModelPackage.ACCELEROMETER_DIRECTION___ENABLE:
         enable();
         return null;
-      case ModelPackage.LASER_RANGE_FINDER_DISTANCE___DISABLE:
+      case ModelPackage.ACCELEROMETER_DIRECTION___DISABLE:
         disable();
         return null;
     }
@@ -1007,8 +1090,10 @@ public class LaserRangeFinderDistanceImpl extends MinimalEObjectImpl.Container i
     result.append(deviceType);
     result.append(", threshold: ");
     result.append(threshold);
+    result.append(", direction: ");
+    result.append(direction);
     result.append(')');
     return result.toString();
   }
 
-} //LaserRangeFinderDistanceImpl
+} //AccelerometerDirectionImpl

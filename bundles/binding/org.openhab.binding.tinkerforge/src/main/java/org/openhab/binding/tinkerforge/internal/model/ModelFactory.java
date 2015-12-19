@@ -107,6 +107,42 @@ public interface ModelFactory extends EFactory
   DualButtonButton createDualButtonButton();
 
   /**
+   * Returns a new object of class '<em>MBricklet Accelerometer</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Accelerometer</em>'.
+   * @generated
+   */
+  MBrickletAccelerometer createMBrickletAccelerometer();
+
+  /**
+   * Returns a new object of class '<em>Accelerometer Direction</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Accelerometer Direction</em>'.
+   * @generated
+   */
+  AccelerometerDirection createAccelerometerDirection();
+
+  /**
+   * Returns a new object of class '<em>Accelerometer Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Accelerometer Temperature</em>'.
+   * @generated
+   */
+  AccelerometerTemperature createAccelerometerTemperature();
+
+  /**
+   * Returns a new object of class '<em>Accelerometer Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Accelerometer Led</em>'.
+   * @generated
+   */
+  AccelerometerLed createAccelerometerLed();
+
+  /**
    * Returns a new object of class '<em>MBricklet Laser Range Finder</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -699,6 +735,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   BrickletColorConfiguration createBrickletColorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
+   * @generated
+   */
+  BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.
