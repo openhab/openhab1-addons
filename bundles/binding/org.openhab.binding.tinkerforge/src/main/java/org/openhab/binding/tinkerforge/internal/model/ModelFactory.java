@@ -152,6 +152,15 @@ public interface ModelFactory extends EFactory
   MBrickletLaserRangeFinder createMBrickletLaserRangeFinder();
 
   /**
+   * Returns a new object of class '<em>Laser Range Finder Laser</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Laser Range Finder Laser</em>'.
+   * @generated
+   */
+  LaserRangeFinderLaser createLaserRangeFinderLaser();
+
+  /**
    * Returns a new object of class '<em>Laser Range Finder Distance</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

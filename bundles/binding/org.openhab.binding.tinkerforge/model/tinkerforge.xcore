@@ -356,20 +356,24 @@ class MBrickletLaserRangeFinder extends MDevice<TinkerBrickletLaserRangeFinder>,
 	short distanceAverageLength = "10"
 	short velocityAverageLength = "10"
 	short mode = "0"
+	Boolean enableLaserOnStartup = "true"
 }
 
-interface LaserRangeFinderDevice extends MSubDevice<MBrickletLaserRangeFinder>,
-			MSensor<MDecimalValue> {
+interface LaserRangeFinderDevice extends MSubDevice<MBrickletLaserRangeFinder> {
+}
+
+class LaserRangeFinderLaser extends LaserRangeFinderDevice, DigitalActor {
+	readonly String deviceType = "laser_range_finder_laser"
 }
 
 class LaserRangeFinderDistance extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
-	CallbackListener {
+	MSensor<MDecimalValue>, CallbackListener {
 	readonly String deviceType = "laser_range_finder_distance"
 	BigDecimal threshold = "0"
 }
 
 class LaserRangeFinderVelocity extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
-	CallbackListener {
+	MSensor<MDecimalValue>, CallbackListener {
 	readonly String deviceType = "laser_range_finder_velocity"
 	BigDecimal threshold = "0"
 }
@@ -998,6 +1002,7 @@ class LaserRangeFinderConfiguration extends TFConfig {
 	short distanceAverageLength
 	short velocityAverageLength
 	short mode
+	Boolean enableLaserOnStartup
 }
 
 class AmbientLightV2Configuration extends TFBaseConfiguration {
@@ -1268,7 +1273,7 @@ enum IndustrialDualAnalogInSubIds {
 }
 
 enum LaserRangeFinderSubIds {
-	distance, velocity
+	distance, velocity, laser
 }
 
 enum AccelerometerSubIds {

@@ -37,7 +37,15 @@ public enum LaserRangeFinderSubIds implements Enumerator
    * @generated
    * @ordered
    */
-  VELOCITY(0, "velocity", "velocity");
+  VELOCITY(0, "velocity", "velocity"), /**
+   * The '<em><b>Laser</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #LASER_VALUE
+   * @generated
+   * @ordered
+   */
+  LASER(0, "laser", "laser");
 
   /**
    * The '<em><b>Distance</b></em>' literal value.
@@ -70,6 +78,21 @@ public enum LaserRangeFinderSubIds implements Enumerator
   public static final int VELOCITY_VALUE = 0;
 
   /**
+   * The '<em><b>Laser</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>Laser</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #LASER
+   * @model name="laser"
+   * @generated
+   * @ordered
+   */
+  public static final int LASER_VALUE = 0;
+
+  /**
    * An array of all the '<em><b>Laser Range Finder Sub Ids</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -80,6 +103,7 @@ public enum LaserRangeFinderSubIds implements Enumerator
     {
       DISTANCE,
       VELOCITY,
+      LASER,
     };
 
   /**

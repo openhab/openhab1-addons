@@ -141,6 +141,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.ACCELEROMETER_TEMPERATURE: return createAccelerometerTemperature();
       case ModelPackage.ACCELEROMETER_LED: return createAccelerometerLed();
       case ModelPackage.MBRICKLET_LASER_RANGE_FINDER: return createMBrickletLaserRangeFinder();
+      case ModelPackage.LASER_RANGE_FINDER_LASER: return createLaserRangeFinderLaser();
       case ModelPackage.LASER_RANGE_FINDER_DISTANCE: return createLaserRangeFinderDistance();
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY: return createLaserRangeFinderVelocity();
       case ModelPackage.MBRICKLET_LOAD_CELL: return createMBrickletLoadCell();
@@ -812,6 +813,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletLaserRangeFinderImpl mBrickletLaserRangeFinder = new MBrickletLaserRangeFinderImpl();
     return mBrickletLaserRangeFinder;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LaserRangeFinderLaser createLaserRangeFinderLaser()
+  {
+    LaserRangeFinderLaserImpl laserRangeFinderLaser = new LaserRangeFinderLaserImpl();
+    return laserRangeFinderLaser;
   }
 
   /**

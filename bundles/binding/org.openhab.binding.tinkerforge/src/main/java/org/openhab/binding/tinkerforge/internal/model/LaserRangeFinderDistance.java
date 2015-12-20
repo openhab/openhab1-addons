@@ -3,6 +3,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import java.math.BigDecimal;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,10 +19,10 @@ import java.math.BigDecimal;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLaserRangeFinderDistance()
- * @model
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface LaserRangeFinderDistance extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
+public interface LaserRangeFinderDistance extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>, MSensor<DecimalValue>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

@@ -46,8 +46,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderVelocityImpl#getThreshold <em>Threshold</em>}</li>
@@ -159,16 +159,6 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected DecimalValue sensorValue;
-
-  /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -177,6 +167,16 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
    * @ordered
    */
   protected TFBaseConfiguration tfConfig;
+
+  /**
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSensorValue()
+   * @generated
+   * @ordered
+   */
+  protected DecimalValue sensorValue;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -558,7 +558,7 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
   public void fetchSensorValue() {
     try {
       int velocity = tinkerforgeDevice.getVelocity();
-      DecimalValue value = Tools.calculate(velocity);
+      DecimalValue value = Tools.calculate100(velocity);
       setSensorValue(value);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -586,13 +586,15 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
    */
   public void enable()
   {
-    if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
-      logger.debug("threshold {}", tfConfig.getThreshold());
-      setThreshold(tfConfig.getThreshold());
-    }
-    if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
-      logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
-      setCallbackPeriod(tfConfig.getCallbackPeriod());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        logger.debug("threshold {}", tfConfig.getThreshold());
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
     }
     try {
       tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
@@ -612,7 +614,7 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
 
     @Override
     public void velocity(short velocity) {
-      DecimalValue value = Tools.calculate(velocity);
+      DecimalValue value = Tools.calculate100(velocity);
       logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, value);
       if (value.compareTo(getSensorValue(), getThreshold()) != 0 ) {
         logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, value);
@@ -711,10 +713,10 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
         return getSubId();
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
         return getMbrick();
-      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
-        return getSensorValue();
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
+        return getSensorValue();
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__CALLBACK_PERIOD:
         return getCallbackPeriod();
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__DEVICE_TYPE:
@@ -753,11 +755,11 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
         setMbrick((MBrickletLaserRangeFinder)newValue);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
-        setSensorValue((DecimalValue)newValue);
-        return;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
+        return;
+      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
@@ -797,11 +799,11 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
         setMbrick((MBrickletLaserRangeFinder)null);
         return;
-      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
-        setSensorValue((DecimalValue)null);
-        return;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
+        return;
+      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
@@ -835,10 +837,10 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
-        return sensorValue != null;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE:
+        return sensorValue != null;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__CALLBACK_PERIOD:
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.LASER_RANGE_FINDER_VELOCITY__DEVICE_TYPE:
@@ -857,19 +859,19 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
-        default: return -1;
-      }
-    }
     if (baseClass == MTFConfigConsumer.class)
     {
       switch (derivedFeatureID)
       {
         case ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSensor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -892,19 +894,19 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSensor.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE;
-        default: return -1;
-      }
-    }
     if (baseClass == MTFConfigConsumer.class)
     {
       switch (baseFeatureID)
       {
         case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.LASER_RANGE_FINDER_VELOCITY__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSensor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.LASER_RANGE_FINDER_VELOCITY__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -927,18 +929,18 @@ public class LaserRangeFinderVelocityImpl extends MinimalEObjectImpl.Container i
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
     if (baseClass == MSensor.class)
     {
       switch (baseOperationID)
       {
         case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.LASER_RANGE_FINDER_VELOCITY___FETCH_SENSOR_VALUE;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
         default: return -1;
       }
     }

@@ -24,6 +24,211 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerLed;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ColorColor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
+import org.openhab.binding.tinkerforge.internal.model.ColorLed;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
+import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.Electrode;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
+import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
+import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderLaser;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
+import org.openhab.binding.tinkerforge.internal.model.MActor;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
+import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
+import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.Proximity;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
+import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
+import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -378,6 +583,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass laserRangeFinderDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass laserRangeFinderLaserEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3514,9 +3726,39 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickletLaserRangeFinder_EnableLaserOnStartup()
+  {
+    return (EAttribute)mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getLaserRangeFinderDevice()
   {
     return laserRangeFinderDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getLaserRangeFinderLaser()
+  {
+    return laserRangeFinderLaserEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLaserRangeFinderLaser_DeviceType()
+  {
+    return (EAttribute)laserRangeFinderLaserEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -6444,6 +6686,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getLaserRangeFinderConfiguration_EnableLaserOnStartup()
+  {
+    return (EAttribute)laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getAmbientLightV2Configuration()
   {
     return ambientLightV2ConfigurationEClass;
@@ -8565,8 +8817,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__DISTANCE_AVERAGE_LENGTH);
     createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__VELOCITY_AVERAGE_LENGTH);
     createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__MODE);
+    createEAttribute(mBrickletLaserRangeFinderEClass, MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP);
 
     laserRangeFinderDeviceEClass = createEClass(LASER_RANGE_FINDER_DEVICE);
+
+    laserRangeFinderLaserEClass = createEClass(LASER_RANGE_FINDER_LASER);
+    createEAttribute(laserRangeFinderLaserEClass, LASER_RANGE_FINDER_LASER__DEVICE_TYPE);
 
     laserRangeFinderDistanceEClass = createEClass(LASER_RANGE_FINDER_DISTANCE);
     createEAttribute(laserRangeFinderDistanceEClass, LASER_RANGE_FINDER_DISTANCE__DEVICE_TYPE);
@@ -8998,6 +9254,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__DISTANCE_AVERAGE_LENGTH);
     createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__VELOCITY_AVERAGE_LENGTH);
     createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__MODE);
+    createEAttribute(laserRangeFinderConfigurationEClass, LASER_RANGE_FINDER_CONFIGURATION__ENABLE_LASER_ON_STARTUP);
 
     ambientLightV2ConfigurationEClass = createEClass(AMBIENT_LIGHT_V2_CONFIGURATION);
     createEAttribute(ambientLightV2ConfigurationEClass, AMBIENT_LIGHT_V2_CONFIGURATION__ILLUMINANCE_RANGE);
@@ -9384,14 +9641,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletLaserRangeFinder());
     g1.getETypeArguments().add(g2);
     laserRangeFinderDeviceEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMSensor());
-    g2 = createEGenericType(this.getMDecimalValue());
-    g1.getETypeArguments().add(g2);
-    laserRangeFinderDeviceEClass.getEGenericSuperTypes().add(g1);
+    laserRangeFinderLaserEClass.getESuperTypes().add(this.getLaserRangeFinderDevice());
+    laserRangeFinderLaserEClass.getESuperTypes().add(this.getDigitalActor());
     g1 = createEGenericType(this.getLaserRangeFinderDevice());
     laserRangeFinderDistanceEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    laserRangeFinderDistanceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     laserRangeFinderDistanceEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
@@ -9400,6 +9659,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     laserRangeFinderVelocityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    laserRangeFinderVelocityEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     laserRangeFinderVelocityEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
@@ -10529,8 +10792,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickletLaserRangeFinder_DistanceAverageLength(), theEcorePackage.getEShort(), "distanceAverageLength", "10", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletLaserRangeFinder_VelocityAverageLength(), theEcorePackage.getEShort(), "velocityAverageLength", "10", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletLaserRangeFinder_Mode(), theEcorePackage.getEShort(), "mode", "0", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletLaserRangeFinder_EnableLaserOnStartup(), theEcorePackage.getEBooleanObject(), "enableLaserOnStartup", "true", 0, 1, MBrickletLaserRangeFinder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(laserRangeFinderDeviceEClass, LaserRangeFinderDevice.class, "LaserRangeFinderDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(laserRangeFinderLaserEClass, LaserRangeFinderLaser.class, "LaserRangeFinderLaser", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLaserRangeFinderLaser_DeviceType(), theEcorePackage.getEString(), "deviceType", "laser_range_finder_laser", 0, 1, LaserRangeFinderLaser.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(laserRangeFinderDistanceEClass, LaserRangeFinderDistance.class, "LaserRangeFinderDistance", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLaserRangeFinderDistance_DeviceType(), theEcorePackage.getEString(), "deviceType", "laser_range_finder_distance", 0, 1, LaserRangeFinderDistance.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -11028,6 +11295,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getLaserRangeFinderConfiguration_DistanceAverageLength(), theEcorePackage.getEShort(), "distanceAverageLength", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLaserRangeFinderConfiguration_VelocityAverageLength(), theEcorePackage.getEShort(), "velocityAverageLength", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLaserRangeFinderConfiguration_Mode(), theEcorePackage.getEShort(), "mode", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLaserRangeFinderConfiguration_EnableLaserOnStartup(), theEcorePackage.getEBooleanObject(), "enableLaserOnStartup", null, 0, 1, LaserRangeFinderConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(ambientLightV2ConfigurationEClass, AmbientLightV2Configuration.class, "AmbientLightV2Configuration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAmbientLightV2Configuration_IlluminanceRange(), theEcorePackage.getEShort(), "illuminanceRange", null, 0, 1, AmbientLightV2Configuration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -11340,6 +11608,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEEnum(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.class, "LaserRangeFinderSubIds");
     addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.DISTANCE);
     addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.VELOCITY);
+    addEEnumLiteral(laserRangeFinderSubIdsEEnum, LaserRangeFinderSubIds.LASER);
 
     initEEnum(accelerometerSubIdsEEnum, AccelerometerSubIds.class, "AccelerometerSubIds");
     addEEnumLiteral(accelerometerSubIdsEEnum, AccelerometerSubIds.X);

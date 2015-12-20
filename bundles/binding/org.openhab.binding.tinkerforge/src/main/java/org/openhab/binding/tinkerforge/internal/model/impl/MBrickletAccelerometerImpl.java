@@ -817,7 +817,7 @@ public class MBrickletAccelerometerImpl extends MinimalEObjectImpl.Container imp
     AccelerometerDirection y = factory.createAccelerometerDirection();
     y.setDirection(AccelerometerCoordinate.Y);
     y.setUid(getUid());
-    String subIdY = "Y";
+    String subIdY = "y";
     logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdY);
     y.setSubId(subIdY);
     y.init();

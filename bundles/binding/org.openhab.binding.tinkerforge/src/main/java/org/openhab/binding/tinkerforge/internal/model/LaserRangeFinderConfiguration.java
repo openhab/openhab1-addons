@@ -14,6 +14,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getDistanceAverageLength <em>Distance Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getVelocityAverageLength <em>Velocity Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getMode <em>Mode</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getEnableLaserOnStartup <em>Enable Laser On Startup</em>}</li>
  * </ul>
  * </p>
  *
@@ -100,5 +101,31 @@ public interface LaserRangeFinderConfiguration extends TFConfig
    * @generated
    */
   void setMode(short value);
+
+  /**
+   * Returns the value of the '<em><b>Enable Laser On Startup</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Enable Laser On Startup</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Enable Laser On Startup</em>' attribute.
+   * @see #setEnableLaserOnStartup(Boolean)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLaserRangeFinderConfiguration_EnableLaserOnStartup()
+   * @model unique="false"
+   * @generated
+   */
+  Boolean getEnableLaserOnStartup();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getEnableLaserOnStartup <em>Enable Laser On Startup</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Enable Laser On Startup</em>' attribute.
+   * @see #getEnableLaserOnStartup()
+   * @generated
+   */
+  void setEnableLaserOnStartup(Boolean value);
 
 } // LaserRangeFinderConfiguration

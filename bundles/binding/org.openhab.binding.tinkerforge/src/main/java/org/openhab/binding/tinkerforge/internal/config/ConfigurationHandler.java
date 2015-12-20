@@ -51,6 +51,8 @@ import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
@@ -129,8 +131,8 @@ public class ConfigurationHandler {
     bricklet_dustdetector, bricklet_loadcell, loadcell_weight, loadcell_led, bricklet_color, 
     color_color, color_illuminance, color_temperature, color_led, bricklet_industrial_dual_analogin,
     industrial_dual_analogin_channel, bricklet_analogin, bricklet_analoginv2, bricklet_laser_range_finder,
-    laser_range_finder_distance, laser_range_finder_velocity, bricklet_accelerometer, 
-    accelerometer_direction, accelerometer_temperature, accelerometer_led
+    laser_range_finder_distance, laser_range_finder_velocity, laser_range_finder_laser, 
+    bricklet_accelerometer, accelerometer_direction, accelerometer_temperature, accelerometer_led
   }
 
 
@@ -270,7 +272,10 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.color_temperature.name())
         || deviceType.equals(TypeKey.color_illuminance.name())
         || deviceType.equals(TypeKey.industrial_dual_analogin_channel.name())
-        || deviceType.equals(TypeKey.accelerometer_direction.name())) {
+        || deviceType.equals(TypeKey.accelerometer_direction.name())
+        || deviceType.equals(TypeKey.laser_range_finder_distance.name())
+        || deviceType.equals(TypeKey.laser_range_finder_velocity.name())
+        ) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {
@@ -340,6 +345,13 @@ public class ConfigurationHandler {
         OHTFDevice<TFBaseConfiguration, AccelerometerSubIds> ohtfDevice =
             modelFactory.createOHTFDevice();
         ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(AccelerometerSubIds.values()));
+        ohtfDevice.setTfConfig(tfBaseConfiguration);
+        fillupConfig(ohtfDevice, deviceConfig);
+      } else if (deviceType.equals(TypeKey.laser_range_finder_distance.name())
+          || deviceType.equals(TypeKey.laser_range_finder_velocity.name())) {
+        OHTFDevice<TFBaseConfiguration, LaserRangeFinderSubIds> ohtfDevice =
+            modelFactory.createOHTFDevice();
+        ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LaserRangeFinderSubIds.values()));
         ohtfDevice.setTfConfig(tfBaseConfiguration);
         fillupConfig(ohtfDevice, deviceConfig);
       } else {
@@ -671,6 +683,16 @@ public class ConfigurationHandler {
       OHTFDevice<BrickletAccelerometerConfiguration, AccelerometerSubIds> ohtfDevice =
           modelFactory.createOHTFDevice();
       ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(AccelerometerSubIds.values()));
+      ohtfDevice.setTfConfig(configuration);
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.laser_range_finder_laser.name())) {
+      OHTFDevice<?, LaserRangeFinderSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LaserRangeFinderSubIds.values()));
+      fillupConfig(ohtfDevice, deviceConfig);
+    } else if (deviceType.equals(TypeKey.bricklet_laser_range_finder.name())) {
+      LaserRangeFinderConfiguration configuration = modelFactory.createLaserRangeFinderConfiguration();
+      OHTFDevice<LaserRangeFinderConfiguration, LaserRangeFinderSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+      ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(LaserRangeFinderSubIds.values()));
       ohtfDevice.setTfConfig(configuration);
       fillupConfig(ohtfDevice, deviceConfig);
     } else {

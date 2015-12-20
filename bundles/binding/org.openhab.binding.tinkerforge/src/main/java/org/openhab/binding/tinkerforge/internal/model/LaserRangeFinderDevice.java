@@ -12,9 +12,9 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLaserRangeFinderDevice()
- * @model interface="true" abstract="true" superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ * @model interface="true" abstract="true"
  * @generated
  */
-public interface LaserRangeFinderDevice extends MSubDevice<MBrickletLaserRangeFinder>, MSensor<DecimalValue>
+public interface LaserRangeFinderDevice extends MSubDevice<MBrickletLaserRangeFinder>
 {
 } // LaserRangeFinderDevice

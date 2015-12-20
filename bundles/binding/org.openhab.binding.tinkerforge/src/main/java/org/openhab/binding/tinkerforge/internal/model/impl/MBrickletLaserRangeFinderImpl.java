@@ -33,6 +33,7 @@ import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
 import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderLaser;
 import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
@@ -69,6 +70,7 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getDistanceAverageLength <em>Distance Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getVelocityAverageLength <em>Velocity Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getMode <em>Mode</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getEnableLaserOnStartup <em>Enable Laser On Startup</em>}</li>
  * </ul>
  * </p>
  *
@@ -365,6 +367,26 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
    * @ordered
    */
   protected short mode = MODE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getEnableLaserOnStartup() <em>Enable Laser On Startup</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getEnableLaserOnStartup()
+   * @generated
+   * @ordered
+   */
+  protected static final Boolean ENABLE_LASER_ON_STARTUP_EDEFAULT = Boolean.TRUE;
+
+  /**
+   * The cached value of the '{@link #getEnableLaserOnStartup() <em>Enable Laser On Startup</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getEnableLaserOnStartup()
+   * @generated
+   * @ordered
+   */
+  protected Boolean enableLaserOnStartup = ENABLE_LASER_ON_STARTUP_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -806,6 +828,29 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public Boolean getEnableLaserOnStartup()
+  {
+    return enableLaserOnStartup;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setEnableLaserOnStartup(Boolean newEnableLaserOnStartup)
+  {
+    Boolean oldEnableLaserOnStartup = enableLaserOnStartup;
+    enableLaserOnStartup = newEnableLaserOnStartup;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP, oldEnableLaserOnStartup, enableLaserOnStartup));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void initSubDevices()
@@ -826,6 +871,14 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     velocity.setSubId(subIdVelocity);
     velocity.init();
     velocity.setMbrick(this);
+    
+    LaserRangeFinderLaser laser = factory.createLaserRangeFinderLaser();
+    laser.setUid(getUid());
+    String subIdLaser = "laser";
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdLaser);
+    laser.setSubId(subIdLaser);
+    laser.init();
+    laser.setMbrick(this);
   }
 
   /**
@@ -859,14 +912,26 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
       }
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("mode"))) {
         Short mode = tfConfig.getMode();
-        logger.debug("velocityAverageLength {}", mode);
+        logger.debug("mode {}", mode);
         setMode(mode);
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("enableLaserOnStartup"))) {
+        boolean enableLaser = tfConfig.getEnableLaserOnStartup();
+        logger.debug("enable laser on startup {}", enableLaser);
+        setEnableLaserOnStartup(enableLaser);
+      } else {
+        boolean enableLaser = tfConfig.getEnableLaserOnStartup();
+        logger.debug("enable laser on startup {}", enableLaser);
       }
     }
     try {
       tinkerforgeDevice = new BrickletLaserRangeFinder(getUid(), getIpConnection());
       tinkerforgeDevice.setMode(getMode());
       tinkerforgeDevice.setMovingAverage(getDistanceAverageLength(), getVelocityAverageLength());
+      if (getEnableLaserOnStartup()){
+        logger.debug("enabling laser");
+        tinkerforgeDevice.enableLaser();
+      }
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -986,6 +1051,8 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
         return getVelocityAverageLength();
       case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MODE:
         return getMode();
+      case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP:
+        return getEnableLaserOnStartup();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1050,6 +1117,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
       case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MODE:
         setMode((Short)newValue);
         return;
+      case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP:
+        setEnableLaserOnStartup((Boolean)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -1112,6 +1182,9 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
       case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MODE:
         setMode(MODE_EDEFAULT);
         return;
+      case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP:
+        setEnableLaserOnStartup(ENABLE_LASER_ON_STARTUP_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -1160,6 +1233,8 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
         return velocityAverageLength != VELOCITY_AVERAGE_LENGTH_EDEFAULT;
       case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__MODE:
         return mode != MODE_EDEFAULT;
+      case ModelPackage.MBRICKLET_LASER_RANGE_FINDER__ENABLE_LASER_ON_STARTUP:
+        return ENABLE_LASER_ON_STARTUP_EDEFAULT == null ? enableLaserOnStartup != null : !ENABLE_LASER_ON_STARTUP_EDEFAULT.equals(enableLaserOnStartup);
     }
     return super.eIsSet(featureID);
   }
@@ -1309,6 +1384,8 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
     result.append(velocityAverageLength);
     result.append(", mode: ");
     result.append(mode);
+    result.append(", enableLaserOnStartup: ");
+    result.append(enableLaserOnStartup);
     result.append(')');
     return result.toString();
   }

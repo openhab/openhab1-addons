@@ -623,7 +623,7 @@ public class AccelerometerDirectionImpl extends MinimalEObjectImpl.Container imp
       } else {
         currAcceleration = acceleration.z;
       }
-      DecimalValue value = Tools.calculate(currAcceleration);
+      DecimalValue value = Tools.calculate1000(currAcceleration);
       setSensorValue(value);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -651,13 +651,15 @@ public class AccelerometerDirectionImpl extends MinimalEObjectImpl.Container imp
    */
   public void enable()
   {
-    if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
-      logger.debug("threshold {}", tfConfig.getThreshold());
-      setThreshold(tfConfig.getThreshold());
-    }
-    if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
-      logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
-      setCallbackPeriod(tfConfig.getCallbackPeriod());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        logger.debug("threshold {}", tfConfig.getThreshold());
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
     }
     try {
       tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
@@ -685,7 +687,7 @@ public class AccelerometerDirectionImpl extends MinimalEObjectImpl.Container imp
       } else {
         acceleration = z;
       }
-      DecimalValue value = Tools.calculate(acceleration);
+      DecimalValue value = Tools.calculate1000(acceleration);
       logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, value);
       if (value.compareTo(getSensorValue(), getThreshold()) != 0) {
         logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, value);

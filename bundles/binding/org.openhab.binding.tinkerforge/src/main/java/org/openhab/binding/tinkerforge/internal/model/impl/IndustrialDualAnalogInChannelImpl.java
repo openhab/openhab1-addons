@@ -621,13 +621,15 @@ public class IndustrialDualAnalogInChannelImpl extends MinimalEObjectImpl.Contai
    * @generated NOT
    */
   public void enable() {
-    if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
-      logger.debug("threshold {}", tfConfig.getThreshold());
-      setThreshold(tfConfig.getThreshold());
-    }
-    if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
-      logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
-      setCallbackPeriod(tfConfig.getCallbackPeriod());
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        logger.debug("threshold {}", tfConfig.getThreshold());
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        logger.debug("callbackPeriod {}", tfConfig.getCallbackPeriod());
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
     }
     try {
       tinkerforgeDevice = getMbrick().getTinkerforgeDevice();

@@ -22,6 +22,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getDistanceAverageLength <em>Distance Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getVelocityAverageLength <em>Velocity Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getMode <em>Mode</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getEnableLaserOnStartup <em>Enable Laser On Startup</em>}</li>
  * </ul>
  * </p>
  *
@@ -88,6 +89,26 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
    * @ordered
    */
   protected short mode = MODE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getEnableLaserOnStartup() <em>Enable Laser On Startup</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getEnableLaserOnStartup()
+   * @generated
+   * @ordered
+   */
+  protected static final Boolean ENABLE_LASER_ON_STARTUP_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getEnableLaserOnStartup() <em>Enable Laser On Startup</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getEnableLaserOnStartup()
+   * @generated
+   * @ordered
+   */
+  protected Boolean enableLaserOnStartup = ENABLE_LASER_ON_STARTUP_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -184,6 +205,29 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
    * <!-- end-user-doc -->
    * @generated
    */
+  public Boolean getEnableLaserOnStartup()
+  {
+    return enableLaserOnStartup;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setEnableLaserOnStartup(Boolean newEnableLaserOnStartup)
+  {
+    Boolean oldEnableLaserOnStartup = enableLaserOnStartup;
+    enableLaserOnStartup = newEnableLaserOnStartup;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__ENABLE_LASER_ON_STARTUP, oldEnableLaserOnStartup, enableLaserOnStartup));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -195,6 +239,8 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
         return getVelocityAverageLength();
       case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__MODE:
         return getMode();
+      case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__ENABLE_LASER_ON_STARTUP:
+        return getEnableLaserOnStartup();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -217,6 +263,9 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
         return;
       case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__MODE:
         setMode((Short)newValue);
+        return;
+      case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__ENABLE_LASER_ON_STARTUP:
+        setEnableLaserOnStartup((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -241,6 +290,9 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
       case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__MODE:
         setMode(MODE_EDEFAULT);
         return;
+      case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__ENABLE_LASER_ON_STARTUP:
+        setEnableLaserOnStartup(ENABLE_LASER_ON_STARTUP_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -261,6 +313,8 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
         return velocityAverageLength != VELOCITY_AVERAGE_LENGTH_EDEFAULT;
       case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__MODE:
         return mode != MODE_EDEFAULT;
+      case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION__ENABLE_LASER_ON_STARTUP:
+        return ENABLE_LASER_ON_STARTUP_EDEFAULT == null ? enableLaserOnStartup != null : !ENABLE_LASER_ON_STARTUP_EDEFAULT.equals(enableLaserOnStartup);
     }
     return super.eIsSet(featureID);
   }
@@ -282,6 +336,8 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
     result.append(velocityAverageLength);
     result.append(", mode: ");
     result.append(mode);
+    result.append(", enableLaserOnStartup: ");
+    result.append(enableLaserOnStartup);
     result.append(')');
     return result.toString();
   }

@@ -16,6 +16,7 @@ import com.tinkerforge.BrickletLaserRangeFinder;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDistanceAverageLength <em>Distance Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getVelocityAverageLength <em>Velocity Average Length</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getMode <em>Mode</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getEnableLaserOnStartup <em>Enable Laser On Startup</em>}</li>
  * </ul>
  * </p>
  *
@@ -121,5 +122,32 @@ public interface MBrickletLaserRangeFinder extends MDevice<BrickletLaserRangeFin
    * @generated
    */
   void setMode(short value);
+
+  /**
+   * Returns the value of the '<em><b>Enable Laser On Startup</b></em>' attribute.
+   * The default value is <code>"true"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Enable Laser On Startup</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Enable Laser On Startup</em>' attribute.
+   * @see #setEnableLaserOnStartup(Boolean)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLaserRangeFinder_EnableLaserOnStartup()
+   * @model default="true" unique="false"
+   * @generated
+   */
+  Boolean getEnableLaserOnStartup();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getEnableLaserOnStartup <em>Enable Laser On Startup</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Enable Laser On Startup</em>' attribute.
+   * @see #getEnableLaserOnStartup()
+   * @generated
+   */
+  void setEnableLaserOnStartup(Boolean value);
 
 } // MBrickletLaserRangeFinder
