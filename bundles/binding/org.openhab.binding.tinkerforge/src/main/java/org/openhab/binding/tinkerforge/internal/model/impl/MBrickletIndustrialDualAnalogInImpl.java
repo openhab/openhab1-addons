@@ -751,7 +751,7 @@ public class MBrickletIndustrialDualAnalogInImpl extends MinimalEObjectImpl.Cont
   public void enable()
   {
     if (tfConfig != null) {
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("sampeRate"))) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("sampleRate"))) {
         Short sampleRate = tfConfig.getSampleRate();
         logger.debug("sampleRate {}", sampleRate);
         setSampleRate(sampleRate);
