@@ -153,6 +153,7 @@ public class Script{
 				+"Rule 					= Java.type('org.openhab.core.jsr223.internal.shared.Rule'),\n"
 				+"ChangedEventTrigger 	= Java.type('org.openhab.core.jsr223.internal.shared.ChangedEventTrigger'),\n"
 				+"CommandEventTrigger 	= Java.type('org.openhab.core.jsr223.internal.shared.CommandEventTrigger'),\n"
+				+"UpdatedEventTrigger 	= Java.type('org.openhab.core.jsr223.internal.shared.UpdatedEventTrigger'),\n"
 				+"Event 				= Java.type('org.openhab.core.jsr223.internal.shared.Event'),\n"
 				+"EventTrigger			= Java.type('org.openhab.core.jsr223.internal.shared.EventTrigger'),\n"
 				+"ShutdownTrigger 		= Java.type('org.openhab.core.jsr223.internal.shared.ShutdownTrigger'),\n"
