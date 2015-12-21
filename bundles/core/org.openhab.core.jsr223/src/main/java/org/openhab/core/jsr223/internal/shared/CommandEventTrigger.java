@@ -22,6 +22,10 @@ public class CommandEventTrigger implements EventTrigger {
 	private String itemName;
 	private Command command;
 
+	public CommandEventTrigger(String itemName) {
+		this(itemName, null);
+	}
+
 	public CommandEventTrigger(String itemName, Command command) {
 		this.itemName = itemName;
 		this.command = command;
