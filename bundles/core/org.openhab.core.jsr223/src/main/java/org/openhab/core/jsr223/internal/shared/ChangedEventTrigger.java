@@ -23,16 +23,18 @@ public class ChangedEventTrigger implements EventTrigger {
 	private State fromState;
 	private State toState;
 
+	public ChangedEventTrigger(String itemName) {
+		this(itemName, null, null);
+	}
+
+	public ChangedEventTrigger(String itemName, State toState) {
+		this(itemName, null, toState);
+	}
+
 	public ChangedEventTrigger(String itemName, State fromState, State toState) {
 		this.itemName = itemName;
 		this.fromState = fromState;
 		this.toState = toState;
-	}
-
-	public ChangedEventTrigger(String itemName) {
-		this.itemName = itemName;
-		this.fromState = null;
-		this.toState = null;
 	}
 
 	@Override
