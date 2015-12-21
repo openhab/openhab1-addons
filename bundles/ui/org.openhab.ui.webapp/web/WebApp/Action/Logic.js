@@ -1,6 +1,6 @@
 var WebApp = (function() {
 	var _def, _headView, _head, _header;
-	var _webapp, _group, _bdo, _bdy, _file;
+	var _webapp, _group, _bdo, _bdy;
 	var _maxw, _maxh;
 	var _scrID, _scrolling, _scrAmount;
 	var _opener, _radio;
@@ -9,7 +9,6 @@ var WebApp = (function() {
 	var _historyPos	= -1;	// warning: must order properly var names for reduction script
 	var _history	= [];
 	var _loader		= [];
-	var _fading		= [];
 	var _ajax		= [];
 	var _initialNav	= history.length;
 	var _sliding	= 0;
@@ -24,7 +23,6 @@ var WebApp = (function() {
 	var _proxy		= "";
 	var _pil		= 0;
 	var _tmp		= setInterval(InitBlocks, 250);
-	var _locker		= null;
 	var _win		= window;
 
 	// RFC 2397 (http://www.scalora.org/projects/uriencoder/)
@@ -32,7 +30,6 @@ var WebApp = (function() {
 
 	var _wkt;
 	var _v2			= !!document.getElementsByClassName && UA("WebKit");	// FIXME: no UA?
-	var _fullscreen	= !!navigator.standalone;
 	var _touch		= IsDefined(_win.ontouchstart) && !UA("Android");	// FIXME: null on android???
 	var _translator	= _touch ? tr_iphone : tr_others;					// FIXME: added for WKT bug on Iphone 3
 
@@ -45,6 +42,7 @@ var WebApp = (function() {
 	_handler.endasync			= [];
 	_handler.orientationchange	= [];
 	_handler.tabchange			= [];
+	_handler.sliderchange		= [];
 
 /* Public */
 	var _o_acl = false;
@@ -279,7 +277,7 @@ var WebApp = (function() {
 				return;
 			}
 
-			var r, a = [url, prms];
+			var a = [url, prms];
 			if (!CallListeners("beginasync", a)) {
 				if (loader) {
 					setTimeout(DelClass, 100, loader, "__sel");	// TO have feedback - will be removed if touchstart is added
@@ -308,10 +306,20 @@ var WebApp = (function() {
 				if (prms) { o.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); }
 				CallListeners("willasync", a, o);
 				o.onreadystatechange = (async) ? c : null;
+				o.onabort = function() { __abort_callback(o, cb, loader) };
 				o.send(prms);
 
 				if (!async) { c(); }
+				
+				return [o, a];
 			}
+		},
+		
+		CancelRequest: function(pair) {
+			var request = pair[0];
+
+			request.onreadystatechange = undefined;
+			request.abort();
 		},
 
 		Loader: function(obj, show) {
@@ -558,6 +566,7 @@ var WebApp = (function() {
 		return h;
 	}
 	function DelClass(o) {
+		if (!o) return;
 		var c = GetClass(o);
 		var a = arguments;
 		for (var i = 1; i < a.length; i++) {
@@ -661,7 +670,7 @@ var WebApp = (function() {
 	}
 
 	function Cleanup() {
-		var s, i, c;
+		var s, i;
 
 // FIXME: may cancel some unwanted visual loaders
 
@@ -774,7 +783,7 @@ var WebApp = (function() {
 
 		var k = true;
 		for (var i = 0; i < l; i++) {
-			k = k && (_handler[evt][i](e) == false ? false : true);
+			k = k && _handler[evt][i](e);
 		}
 		return k;
 	}
@@ -1027,7 +1036,7 @@ var WebApp = (function() {
 	}
 
 	function startsWith(s1) {
-		var r, i, a = arguments;
+		var i, a = arguments;
 		for (i = 1; i < a.length; i++) {
 			if (s1.toLowerCase().indexOf(a[i]) == 0) {
 				return 1;
@@ -1359,7 +1368,7 @@ var WebApp = (function() {
 	}
 
 	function BasicAsync(item, cb, q) {
-		var h, o, u, i;
+		var o, u, i;
 
 		i = (typeof item == "object");
 		u = (i ? item.href : item);
@@ -1525,7 +1534,14 @@ var WebApp = (function() {
 			}
 		}
 	}
-
+	
+	function __abort_callback(o) {
+		var ob;
+		if (ob = _ajax.filter(function(a) { return o == a[0] })[0]) {
+			Remove(_ajax, ob);
+		}
+	}
+	
 	function __callback(o, cb, lr) {
 		if (o.readyState != 4) {
 			return;
@@ -1538,8 +1554,17 @@ var WebApp = (function() {
 		}
 
 		er = (o.status != 200 && o.status != 0); // 0 for file based requests
-		try { if (cb) { ld = cb(o, lr, DefaultCallback()); } }
-		catch (ex) { er = ex; console.error(er); }
+		try { 
+			if (cb) { 
+				ld = cb(o, lr, DefaultCallback()); 
+			} 
+		}
+		catch (ex) { 
+			er = ex;
+			if (console && console.error) {
+				console.error(er);
+			}
+		}
 
 		if (lr) {
 			$pc.Loader(lr, 0);
@@ -1706,7 +1731,153 @@ var WebApp = (function() {
 			}
 		}
 	}
-
+	
+	function Slider(item) {
+		var that = this;
+		var _style = document.defaultView.getComputedStyle(item, null);
+		
+		that.el = item;
+		that.opt = item.parentNode;
+		that.progress = item.querySelector(".iSliderProgress");
+		that.handle = item.querySelector(".iSlider");
+		that.valueEl = that.opt.parentNode.querySelectorAll("span")[4];
+		that.max = 100;
+		that.min = 0;
+		that.dragState = undefined;
+		that.interval = undefined;
+		that.computedOffset = 
+			parseInt(_style.getPropertyValue("border-top-left-radius"), 10) * 2 +
+			parseInt(_style.getPropertyValue("border-top-width"), 10) * 2;
+		
+		that.el.setAttribute("data-slider", "true");
+		
+		// Read data-attributes
+		(function(attributes) {
+			for (var i = 0; i < attributes.length; i++) {
+				that[attributes[i]] = $A(that.el, "data-" + attributes[i]);
+			}
+		})([
+		    "state",
+		    "item",
+		    "freq",
+		    "switch"
+		]);
+		
+		that.state = that.state == "Uninitialized" ? 0 : that.state;
+		
+		that.getPosition = function(event) {
+			if (-1 == event.type.indexOf("touch")) {
+				return event.clientX - that.el.offsetLeft - that.computedOffset;
+			} else {
+				return event.touches[0].clientX - that.el.offsetLeft - that.computedOffset;
+			}
+		}
+		
+		that.startDrag = function(event) {
+			var width = that.el.offsetWidth;
+			var pos = that.getPosition(event);
+			var val = that.getValue(pos / width);
+			
+			that.dragState = true;
+			that.displayValue(val);
+			
+			CallListeners("sliderchange", { 
+				item: that.item,
+				value: that.state,
+				type: "start"
+			});
+			
+			that.interval = setInterval(that.sendValue, that.freq);
+			
+			that.opt.addEventListener("touchmove", that.drag);
+			that.opt.addEventListener("mousemove", that.drag);
+		}
+		
+		that.stopDrag = function() {
+			if (!that.dragState) {
+				return;
+			}
+			
+			that.dragState = false;
+			
+			clearInterval(that.interval);
+			
+			CallListeners("sliderchange", { 
+				item: that.item,
+				value: that.state,
+				type: "end"
+			});
+			
+			that.opt.removeEventListener("touchmove", that.drag);
+			that.opt.removeEventListener("mousemove", that.drag);
+		}
+		
+		that.drag = function(event) {
+			var width = that.el.offsetWidth;
+			var pos = that.getPosition(event);
+			var val = that.getValue(pos / width);
+			
+			that.displayValue(val);
+		}
+		
+		that.sendValue = function() {
+			if (!that.dragState) {
+				clearInterval(that.interval);
+				return;
+			}
+			
+			CallListeners("sliderchange", { 
+				item: that.item,
+				value: that.state,
+				type: "move"
+			});
+		}
+		
+		that.getValue = function(value) {
+			value = value > 1 ? 1 : value;
+			value = value < 0 ? 0 : value;
+			value = that.min + ((that.max - that.min) * value);
+			value = Math.round(value);
+			
+			that.state = value;
+			
+			return value;
+		}
+		
+		that.displayValue = function (value) {
+			that.handle.style.left = value + '%';
+			that.progress.style.width = value + '%';
+			that.valueEl.innerHTML = value + '&nbsp;' + '%';
+		}
+		
+		// Display value specified in data-attribute
+		that.displayValue(that.state);
+		
+		that.opt.addEventListener("touchstart", that.startDrag);
+		that.opt.addEventListener("mousedown", that.startDrag);
+		
+		that.opt.addEventListener("mouseup", that.stopDrag);
+		that.opt.addEventListener("mouseleave", that.stopDrag);
+		
+		that.opt.addEventListener("touchend", that.stopDrag);
+		that.opt.addEventListener("touchcancel", that.stopDrag);
+		that.opt.addEventListener("touchleave", that.stopDrag);
+		
+		return that;
+	}
+	
+	function InitSlider(parent) {
+		var items = (parent || document).querySelectorAll(".iSliderContainer");
+		var data;
+		
+		for (var i = 0; i < items.length; i++) {
+			data = $A(items[i], "data-slider"); 
+			if (data != "true") {
+				new Slider(items[i]);
+			}
+		}
+	}
+	
 	function IsViewable(o) {
 		var x11, x12, y11, y12;
 		var x21, x22, y21, y22;
@@ -1730,6 +1901,7 @@ var WebApp = (function() {
 /* Form custom elements */
 	function InitForms(l) {
 		l = $(l) || GetActive();
+		InitSlider(l);
 		InitCheck(l);
 		InitRadio(l);
 	}

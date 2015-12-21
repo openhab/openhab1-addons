@@ -15,14 +15,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.openhab.binding.weather.internal.common.LocationConfig;
+import org.openhab.binding.weather.internal.common.Unit;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.binding.weather.internal.utils.PropertyUtils;
-import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemNotFoundException;
-import org.openhab.model.sitemap.SitemapFactory;
-import org.openhab.model.sitemap.Widget;
-import org.openhab.ui.items.ItemUIRegistry;
+import org.openhab.binding.weather.internal.utils.UnitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,26 +30,19 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 public class WeatherTokenResolver implements TokenResolver {
-	private static final Logger logger = LoggerFactory.getLogger(WeatherTokenResolver.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(WeatherTokenResolver.class);
 
 	private static final String PREFIX_TOKEN_WEATHER = "weather";
 	private static final String PREFIX_TOKEN_FORECAST = "forecast";
-	private static final String PREFIX_TOKEN_ITEM = "item";
 	private static final String PREFIX_TOKEN_CONFIG = "config";
 	private static final String PREFIX_TOKEN_PARAM = "param";
 
-	private static final String SUFFIX_ITEM_LABEL = "label";
-	private static final String SUFFIX_ITEM_FULL = "full";
-	private static final String SUFFIX_ITEM_STATE = "state";
-	private static final String SUFFIX_ITEM_VALUE = "value";
-
-	private ItemUIRegistry itemUIRegistry;
 	private Weather weather;
 	private String locationId;
 	private Map<String, String> params = new HashMap<String, String>();
 
-	public WeatherTokenResolver(ItemUIRegistry itemUIRegistry, Weather weather, String locationId) {
-		this.itemUIRegistry = itemUIRegistry;
+	public WeatherTokenResolver(Weather weather, String locationId) {
 		this.weather = weather;
 		this.locationId = locationId;
 	}
@@ -76,14 +66,13 @@ public class WeatherTokenResolver implements TokenResolver {
 				return replaceWeather(token, weather);
 			} else if (PREFIX_TOKEN_FORECAST.equals(token.prefix)) {
 				return replaceForecast(token);
-			} else if (PREFIX_TOKEN_ITEM.equals(token.prefix)) {
-				return replaceItem(token);
 			} else if (PREFIX_TOKEN_CONFIG.equals(token.prefix)) {
 				return replaceConfig(token);
 			} else if (PREFIX_TOKEN_PARAM.equals(token.prefix)) {
 				return replaceParameter(token);
 			} else {
-				throw new RuntimeException("Invalid weather token: " + tokenName);
+				throw new RuntimeException("Invalid weather token: "
+						+ tokenName);
 			}
 		} catch (Exception ex) {
 			logger.error(ex.getMessage(), ex);
@@ -94,11 +83,20 @@ public class WeatherTokenResolver implements TokenResolver {
 	/**
 	 * Replaces the token with a property of the weather object.
 	 */
-	private String replaceWeather(Token token, Weather instance) throws Exception {
+	private String replaceWeather(Token token, Weather instance)
+			throws Exception {
 		if (!PropertyUtils.hasProperty(instance, token.name)) {
 			throw new RuntimeException("Invalid weather token: " + token.full);
 		}
-		return ObjectUtils.toString(PropertyUtils.getPropertyValue(instance, token.name));
+		Object propertyValue = PropertyUtils.getPropertyValue(instance,
+				token.name);
+		if (token.unit != null && propertyValue instanceof Double) {
+			propertyValue = UnitUtils.convertUnit((Double) propertyValue, token.unit, token.name);
+		}
+		if (token.formatter != null) {
+			return String.format(token.formatter, propertyValue);
+		}
+		return ObjectUtils.toString(propertyValue);
 	}
 
 	/**
@@ -110,8 +108,10 @@ public class WeatherTokenResolver implements TokenResolver {
 			Weather forecast = weather.getForecast().get(day);
 			return replaceWeather(token, forecast);
 		} else {
-			throw new RuntimeException("Weather forecast day " + day + " not available, only "
-					+ Math.max(weather.getForecast().size() - 1, 0) + " available");
+			throw new RuntimeException("Weather forecast day " + day
+					+ " not available, only "
+					+ Math.max(weather.getForecast().size() - 1, 0)
+					+ " available");
 		}
 	}
 
@@ -119,9 +119,11 @@ public class WeatherTokenResolver implements TokenResolver {
 	 * Replaces the token with properties of the weather LocationConfig object.
 	 */
 	private String replaceConfig(Token token) {
-		LocationConfig locationConfig = WeatherContext.getInstance().getConfig().getLocationConfig(locationId);
+		LocationConfig locationConfig = WeatherContext.getInstance()
+				.getConfig().getLocationConfig(locationId);
 		if (locationConfig == null) {
-			throw new RuntimeException("Weather locationId '" + locationId + "' does not exist");
+			throw new RuntimeException("Weather locationId '" + locationId
+					+ "' does not exist");
 		}
 
 		if ("latitude".equals(token.name)) {
@@ -144,31 +146,6 @@ public class WeatherTokenResolver implements TokenResolver {
 	}
 
 	/**
-	 * Replaces the token with a item label or state.
-	 */
-	private String replaceItem(Token token) throws ItemNotFoundException {
-		Item item = itemUIRegistry.getItem(token.itemName);
-		if (SUFFIX_ITEM_VALUE.equals(token.itemSuffix)) {
-			return item.getState().toString();
-		}
-
-		Widget w = SitemapFactory.eINSTANCE.createText();
-		w.setLabel(itemUIRegistry.getLabel(token.itemName));
-		w.setItem(token.itemName);
-		String label = itemUIRegistry.getLabel(w);
-
-		if (SUFFIX_ITEM_STATE.equals(token.itemSuffix)) {
-			return StringUtils.substringBetween(label, "[", "]");
-		} else if (SUFFIX_ITEM_FULL.equals(token.itemSuffix)) {
-			return StringUtils.remove(StringUtils.remove(label, "["), "]");
-		} else if (SUFFIX_ITEM_LABEL.equals(token.itemSuffix)) {
-			return StringUtils.substringBefore(label, "[");
-		} else {
-			throw new RuntimeException("Invalid weather token: " + token.itemName);
-		}
-	}
-
-	/**
 	 * Replaces the token with a HTTP request parameter.
 	 */
 	private String replaceParameter(Token token) {
@@ -181,24 +158,27 @@ public class WeatherTokenResolver implements TokenResolver {
 	private Token parseTokenName(String tokenName) {
 		Token token = new Token();
 		token.full = tokenName;
-		if (StringUtils.contains(token.full, "(")) {
-			token.prefix = StringUtils.substringBefore(token.full, "(");
-			token.qualifier = StringUtils.substringBetween(token.full, "(", ")");
-		} else {
-			token.prefix = StringUtils.substringBefore(token.full, ":");
+		token.prefix = StringUtils.substringBefore(token.full, ":");
+		if (StringUtils.contains(token.prefix, "(")) {
+			token.qualifier = StringUtils.substringBetween(token.prefix, "(",
+					")");
+			token.prefix = StringUtils.substringBefore(token.prefix, "(");
 		}
 		token.name = StringUtils.substringAfter(token.full, ":");
+		if (StringUtils.contains(token.name, "(")) {
+			token.formatter = StringUtils
+					.substringBetween(token.name, "(", ")");
+			token.name = StringUtils.substringBefore(token.name, "(");
+		}
+		if (StringUtils.contains(token.full, "[")) {
+			token.unit = Unit.parse(StringUtils.substringBetween(token.full, "[","]"));
+			token.name = StringUtils.substringBefore(token.name, "[");
+		}
+		
 		if (!token.isValid()) {
 			throw new RuntimeException("Invalid weather token: " + token.full);
 		}
 
-		if (PREFIX_TOKEN_ITEM.equals(token.prefix)) {
-			token.itemName = StringUtils.substringBefore(token.name, ".");
-			token.itemSuffix = StringUtils.substringAfter(token.name, ".");
-			if (StringUtils.isBlank(token.itemSuffix)) {
-				token.itemSuffix = SUFFIX_ITEM_STATE;
-			}
-		}
 		return token;
 	}
 
@@ -213,14 +193,15 @@ public class WeatherTokenResolver implements TokenResolver {
 		public String prefix;
 		public String qualifier;
 		public String name;
-		public String itemName;
-		public String itemSuffix;
+		public String formatter;
+		public Unit unit;
 
 		/**
 		 * Returns true, if a token contains a prefix and a name.
 		 */
 		public boolean isValid() {
-			return StringUtils.isNotBlank(prefix) && StringUtils.isNotBlank(name);
+			return StringUtils.isNotBlank(prefix)
+					&& StringUtils.isNotBlank(name);
 		}
 
 	}

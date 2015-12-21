@@ -20,6 +20,7 @@ public enum OutputModeEnum {
 	DISABLED	(0),
 	SWITCHED	(16),
 	DIMMED		(22),
+	DIMMED_2	(51),
 	UP_DOWN		(33),
 	SWITCHED_2	(35),
 	SWITCH		(39),

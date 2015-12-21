@@ -9,11 +9,17 @@
 package org.openhab.binding.tinkerforge.internal.tools;
 
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Tools {
+  private static Pattern rangePattern = Pattern.compile("(.+)-(.+)");
+  private static Logger logger = LoggerFactory.getLogger(Tools.class);
 
   public static DecimalValue calculate(int value){
     BigDecimal bvalue = new BigDecimal(String.valueOf(value));
@@ -36,6 +42,14 @@ public class Tools {
 
   public static DecimalValue calculate1000(int value){
     return calculate(value, new BigDecimal("1000"));
+  }
+
+  public static DecimalValue calculate1000000(int value) {
+    return calculate(value, new BigDecimal("1000000"));
+  }
+
+  public static DecimalValue calculate100(int value) {
+    return calculate(value, new BigDecimal("100"));
   }
 
   public static DecimalValue calculate100(short value){
@@ -114,5 +128,53 @@ public class Tools {
       return opts.getOption(key.toLowerCase());
     }
     return stringdefault;
+  }
+
+  public static LedList parseLedString(String leds) {
+    // parse leds variable to get the led numbers / range which should be switched.
+    // the config looks like this:
+    // 1. pipe separated list of led numbers, e.g. "1|2|4|5"
+    // 2. a range of leds: e.g. "1-5"
+    // 3. combination of 1. and 2., e.g. "0|1|4-6|8-9"
+    LedList ledlist = new LedList();
+    String[] tokens = leds.split("\\|");
+    for (int i = 0; i < tokens.length; i++) {
+      String token = tokens[i].trim();
+      logger.trace("led token {}", token);
+      if (token.length() == 0) {
+        logger.trace("ignoring empty token");
+        continue;
+      }
+      Matcher matcher = rangePattern.matcher(token);
+      if (matcher.find()) {
+        logger.trace("found range");
+        int startLed = Integer.parseInt(matcher.group(1).trim());
+        logger.debug("found startLed {}", startLed);
+        short range = (short) (Short.parseShort(matcher.group(2).trim()) - startLed + 1);
+        logger.debug("found range {}", range);
+        // the tinkerforge api can only handle 16 leds at the same time
+        short maxRange = 16;
+        while (range > maxRange) {
+          if (!ledlist.hasTrackingled()) {
+            ledlist.setTrackingled(startLed);
+          }
+          ledlist.addLedRange(startLed, maxRange);
+          startLed = startLed + maxRange;
+          logger.trace("new startled {} range {}", startLed, range);
+          range = (short) (range - maxRange);
+          logger.trace("cutting down range: {}", range);
+        }
+        logger.trace("new startled {} range {}", startLed, range);
+        ledlist.addLedRange(startLed, range);
+      } else {
+        int led = (int) Integer.parseInt(token.trim());
+        logger.trace("found led {}", led);
+        if (!ledlist.hasTrackingled()) {
+          ledlist.setTrackingled(led);
+        }
+        ledlist.addLed(led);
+      }
+    }
+    return ledlist;
   }
 }

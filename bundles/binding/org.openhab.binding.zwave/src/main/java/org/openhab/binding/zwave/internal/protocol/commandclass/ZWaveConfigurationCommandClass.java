@@ -107,6 +107,12 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		// Extract the parameter index and value
 		int parameter = serialMessage.getMessagePayloadByte(offset + 1);
 		int size = serialMessage.getMessagePayloadByte(offset + 2);
+		
+		// ZWave plus devices seem to return 0 if we request a parameter that doesn't exist
+		if (size == 0) {
+			logger.warn("NODE {}: Parameter {} response has 0 length", this.getNode().getNodeId(), parameter);
+			return;
+		}
 
 		// Recover the data
 		try {

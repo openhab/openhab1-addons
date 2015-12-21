@@ -434,8 +434,8 @@ public class PulseaudioClient {
 					}
 				} while (ret_read > 0);
 			} catch (SocketTimeoutException e) {
-				// Timeout -> no response
-				return "";
+				// Timeout -> send was has been received so far
+				return result;
 			} catch (IOException e) {
 				System.err.println("Exception while reading socket:"
 						+ e.getMessage());

@@ -68,7 +68,9 @@ public class OpenEnergyMonitorBinding extends
 
 	public void deactivate() {
 		logger.debug("Deactivate");
-		messageListener.setInterrupted(true);
+		if(messageListener!=null) {
+		    messageListener.setInterrupted(true);
+		}
 	}
 
 	/**

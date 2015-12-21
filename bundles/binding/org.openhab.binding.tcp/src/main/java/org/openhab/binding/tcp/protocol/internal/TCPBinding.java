@@ -14,6 +14,8 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.tcp.AbstractSocketChannelBinding;
 import org.openhab.binding.tcp.Direction;
@@ -55,7 +57,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 	// string to prepend to data being sent
 	private static String preAmble = "";
 	// string to append to data being sent
-	private static String postAmble = "\r\n";
+	private static String postAmble = "";
 	// flag to use the reply of the remote end to update the status of the Item receving the data
 	private static boolean updateWithResponse = true;
 	// used character set
@@ -180,28 +182,18 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 
 			String preambleString = (String) config.get("preamble");
 			if (StringUtils.isNotBlank(preambleString)) {
-				try {
-					preAmble = preambleString.replaceAll("\\\\", "\\");
-				}
-				catch(Exception e) {
-					preAmble = preambleString;
-				}
+				preAmble = StringEscapeUtils.unescapeJava(preambleString);
 			} else {
-				logger.info("The preamble for all write operations will be set to the default vaulue of {}",preAmble);
+				logger.info("The preamble for all write operations will be set to the default vaulue of \"{}\"",preAmble);
 			}
 
 			String postambleString = (String) config.get("postamble");
 			if (StringUtils.isNotBlank(postambleString)) {
-				try {
-					postAmble = postambleString.replaceAll("\\\\", "\\");
-				}
-				catch(Exception e) {
-					postAmble = postambleString;
-				}
+				postAmble = StringEscapeUtils.unescapeJava(postambleString);
 			} else {
-				logger.info("The postamble for all write operations will be set to the default vaulue of {}",postAmble);
+				logger.info("The postamble for all write operations will be set to the default vaulue of \"{}\"",postAmble);
 			}
-			
+
 			String updatewithresponseString = (String) config.get("updatewithresponse");
 			if (StringUtils.isNotBlank(updatewithresponseString)) {
 				updateWithResponse = Boolean.parseBoolean((updatewithresponseString));

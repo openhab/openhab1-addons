@@ -12,13 +12,14 @@
 		<Class><id>0x85</id></Class>
 		<Class><id>0x86</id></Class>
 	</CommandClasses>
-
 	<Configuration>
 		<Parameter>
 			<Index>241</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 1 (upper left)</Label>
+			<Help lang="en">Defines the switching mode of Button 1</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -43,14 +44,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 1 (upper left)</Label>
-			<Help lang="en">Defines the switching mode of Button 1</Help>
 		</Parameter>
 		<Parameter>
 			<Index>242</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 2 (upper right)</Label>
+			<Help lang="en">Defines the switching mode of Button 2</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -75,14 +76,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 2 (upper right)</Label>
-			<Help lang="en">Defines the switching mode of Button 2</Help>
 		</Parameter>
 		<Parameter>
 			<Index>243</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 3 (lower left)</Label>
+			<Help lang="en">Defines the switching mode of Button 3</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -107,14 +108,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 3 (lower left)</Label>
-			<Help lang="en">Defines the switching mode of Button 3</Help>
 		</Parameter>
 		<Parameter>
 			<Index>244</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 4 (lower right)</Label>
+			<Help lang="en">Defines the switching mode of Button 4</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -139,14 +140,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 4 (lower right)</Label>
-			<Help lang="en">Defines the switching mode of Button 4</Help>
 		</Parameter>
 		<Parameter>
 			<Index>245</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 5 (Include)</Label>
+			<Help lang="en">Defines the switching mode of Button 5</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -171,14 +172,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 5 (Include)</Label>
-			<Help lang="en">Defines the switching mode of Button 5</Help>
 		</Parameter>
 		<Parameter>
 			<Index>246</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 6 (Exclude)</Label>
+			<Help lang="en">Defines the switching mode of Button 6</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -203,14 +204,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 6 (Exclude)</Label>
-			<Help lang="en">Defines the switching mode of Button 6</Help>
 		</Parameter>
 		<Parameter>
 			<Index>247</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 7 (Association)</Label>
+			<Help lang="en">Defines the switching mode of Button 7</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -235,14 +236,14 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 7 (Association)</Label>
-			<Help lang="en">Defines the switching mode of Button 7</Help>
 		</Parameter>
 		<Parameter>
 			<Index>248</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<Label lang="en">Mode of Button 8 (Learn)</Label>
+			<Help lang="en">Defines the switching mode of Button 8</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Factory Default</Label>
@@ -267,11 +268,24 @@
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
 			</Item>
-			<Label lang="en">Mode of Button 8 (Learn)</Label>
-			<Help lang="en">Defines the switching mode of Button 8</Help>
+		</Parameter>
+		<Parameter>
+			<Index>250</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Secondary Controller Mode</Label>
+			<Help lang="en">When in Group Mode, the minimote is paired directly to devices.  When in Scene Mode, minimote button presses will send SCENE_ACTIVATION commands.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Group Mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
 		</Parameter>
 	</Configuration>
-
 	<Associations>
 		<Group>
 			<Index>1</Index>

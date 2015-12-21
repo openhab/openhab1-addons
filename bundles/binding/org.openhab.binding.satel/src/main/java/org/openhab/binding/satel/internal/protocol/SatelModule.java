@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.openhab.binding.satel.internal.event.ConnectionStatusEvent;
 import org.openhab.binding.satel.internal.event.EventDispatcher;
 import org.openhab.binding.satel.internal.event.SatelEventListener;
 import org.openhab.binding.satel.internal.event.IntegraVersionEvent;
@@ -230,7 +231,13 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 			int syncBytes = 0;
 
 			while (true) {
-				byte b = (byte) is.read();
+				// if timed out, exit
+				int c = is.read();
+				if (c < 0) {
+					return null;
+				}
+
+				byte b = (byte) c;
 
 				if (b == FRAME_SYNC) {
 					if (inMessage) {
@@ -286,7 +293,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 			return SatelMessage.fromBytes(baos.toByteArray());
 
 		} catch (IOException e) {
-			if (! Thread.interrupted()) {
+			if (!Thread.interrupted()) {
 				logger.error("Unexpected exception occurred during reading a message", e);
 			}
 		}
@@ -310,7 +317,7 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 			return true;
 
 		} catch (IOException e) {
-			if (! Thread.interrupted()) {
+			if (!Thread.interrupted()) {
 				logger.error("Unexpected exception occurred during writing a message", e);
 			}
 		}
@@ -323,14 +330,34 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 		if (this.channel != null) {
 			this.channel.disconnect();
 			this.channel = null;
+			// notify about connection status change
+			this.dispatchEvent(new ConnectionStatusEvent(false));
 		}
 	}
 
 	private void communicationLoop(TimeoutTimer timeoutTimer) {
 		long reconnectionTime = 10 * 1000;
+		boolean receivedResponse = false;
 
 		try {
 			while (!Thread.interrupted()) {
+				// connect, if not connected yet
+				if (this.channel == null) {
+					long connectStartTime = System.currentTimeMillis();
+					synchronized (this) {
+						this.channel = connect();
+					}
+
+					if (this.channel == null) {
+						// notify about connection failure
+						this.dispatchEvent(new ConnectionStatusEvent(false));
+						// try to reconnect after a while, if connection hasn't
+						// been established
+						Thread.sleep(reconnectionTime - System.currentTimeMillis() + connectStartTime);
+						continue;
+					}
+				}
+
 				SatelMessage message = this.sendQueue.take(), response = null;
 				SatelCommand command = this.supportedCommands.get(message.getCommand());
 
@@ -339,20 +366,9 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 					continue;
 				}
 
-				if (this.channel == null) {
-					long connectStartTime = System.currentTimeMillis();
-					synchronized (this) {
-						this.channel = connect();
-					}
-					if (!this.isConnected()) {
-						Thread.sleep(reconnectionTime - System.currentTimeMillis() + connectStartTime);
-						continue;
-					}
-				}
-
 				logger.debug("Sending message: {}", message);
 				timeoutTimer.start();
-				boolean sent = writeMessage(message);
+				boolean sent = this.writeMessage(message);
 				timeoutTimer.stop();
 
 				if (sent) {
@@ -362,6 +378,13 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 					timeoutTimer.stop();
 					if (response != null) {
 						logger.debug("Got response: {}", response);
+
+						if (!receivedResponse) {
+							receivedResponse = true;
+							// notify about connection success after first response from the module
+							this.dispatchEvent(new ConnectionStatusEvent(true));
+						}
+
 						command.handleResponse(response);
 					}
 				}
@@ -451,6 +474,8 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 		}
 
 		private void checkThread() {
+			logger.trace("Checking communication thread: {}, {}", this.thread != null,
+					Boolean.toString(this.thread != null && this.thread.isAlive()));
 			if (this.thread != null && this.thread.isAlive()) {
 				long timePassed = (this.lastActivity == 0) ? 0 : System.currentTimeMillis() - this.lastActivity;
 
@@ -458,6 +483,12 @@ public abstract class SatelModule extends EventDispatcher implements SatelEventL
 					logger.error("Send/receive timeout, disconnecting module.");
 					stop();
 					this.thread.interrupt();
+					try {
+						// wait for the thread to terminate
+						this.thread.join(100);
+					} catch (InterruptedException e) {
+						// ignore
+					}
 					SatelModule.this.disconnect();
 				}
 			} else {

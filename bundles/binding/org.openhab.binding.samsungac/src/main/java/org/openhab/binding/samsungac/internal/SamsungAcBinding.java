@@ -58,14 +58,16 @@ public class SamsungAcBinding extends
 	}
 
 	public void activate() {
-		logger.info("active");
+		logger.debug("Started Samsung AC Binding");
 	}
 
 	public void deactivate() {
 		logger.info("deactive");
 		// close any open connections
-		for (AirConditioner connector : nameHostMapper.values()) {
-			connector.disconnect();
+		if(nameHostMapper!=null) {
+    		for (AirConditioner connector : nameHostMapper.values()) {
+    			connector.disconnect();
+    		}
 		}
 	}
 
@@ -76,11 +78,12 @@ public class SamsungAcBinding extends
 	protected void internalReceiveCommand(String itemName, Command command) {
 
 		if (itemName != null && command != null) {
-			logger.debug("InternalReceiveCommand +'" + itemName + "':'"
-					+ command + "'");
+			logger.debug("InternalReceiveCommand [" + itemName + ":"
+					+ command + "]");
 			String hostName = getAirConditionerInstance(itemName);
 			AirConditioner host = nameHostMapper.get(hostName);
 			if (host == null) {
+				logger.debug("Host with hostname:" +hostName + " not found...");
 				return;
 			}
 			CommandEnum property = getProperty(itemName);
@@ -90,7 +93,7 @@ public class SamsungAcBinding extends
 			if (cmd != null) {
 				sendCommand(host, property, cmd);
 			} else
-				logger.debug("Not sending for itemName: '" + itemName
+				logger.warn("Not sending for itemName: '" + itemName
 						+ "' because property not implemented: '" + property
 						+ "'");
 		}
@@ -128,13 +131,23 @@ public class SamsungAcBinding extends
 
 	private void sendCommand(AirConditioner aircon, CommandEnum property,
 			String value) {
-		try {
-			logger.debug("Sending command: " + value + " to property:"
-					+ property + " with ip:" + aircon.getIpAddress());
-			aircon.sendCommand(property, value);
-		} catch (Exception e) {
-			logger.warn("Could not send value: '" + value + "' to property:'"
-					+ property + "'");
+		int i = 1;
+		boolean commandSent = false;
+		while (i < 5 && !commandSent) {
+			try {
+				logger.debug("[" + i + "/5] Sending command: " + value + " to property:"
+						+ property + " with ip:" + aircon.getIpAddress());
+				if (aircon.sendCommand(property, value) != null) {
+					commandSent = true;
+					logger.debug("Command["+ value +"] sent on try number " + i);
+				}
+			} catch (Exception e) {
+				logger.warn("Could not send value: '" + value
+						+ "' to property:'" + property + "', try " + i + "/5");
+				e.printStackTrace();
+			} finally {
+				i++;
+			}
 		}
 	}
 
@@ -220,11 +233,14 @@ public class SamsungAcBinding extends
 		
 		if (nameHostMapper == null || nameHostMapper.size() == 0) {
 			setProperlyConfigured(false);
-			Map<String, String> discovered = SsdpDiscovery.discover();
+			Map<String, Map<String, String>> discovered = SsdpDiscovery.discover();
 			if (discovered != null && discovered.size() > 0) {
-				logger.warn("We found an air conditioner. Please put the following in your configuration file: " +
-						"\r\n samsungac:Livingroom.host=" + discovered.get("IP") +
-						"\r\n samsungac:Livingroom.mac=" + discovered.get("MAC_ADDR"));
+				for (Map<String, String> ac : discovered.values()) {
+					if (ac.get("IP") != null && ac.get("MAC_ADDR") != null)
+						logger.warn("We found air conditioner. Please put the following in your configuration file: " +
+								"\r\n samsungac:<ACNAME>.host=" + ac.get("IP") +
+								"\r\n samsungac:<ACNAME>.mac=" + ac.get("MAC_ADDR"));
+				}
 			} else {
 				logger.warn("No Samsung Air Conditioner has been configured, and we could not find one either");
 			}
@@ -263,8 +279,12 @@ public class SamsungAcBinding extends
 				key);
 		try {
 			host.login();
+			logger.info("Connection to {} has succeeded", host.toString());
 		} catch (Exception e) {
-			logger.debug(e.toString() + " : " + e.getCause().toString());
+			if (e == null || e.toString() == null || e.getCause() == null) {
+				logger.info("Returned null-exception...");
+			} else 
+				logger.debug(e.toString() + " : " + e.getCause().toString());
 			logger.info(
 					"Reconnect failed for '{}', will retry in {}s",
 					key, refreshInterval / 1000);
@@ -274,10 +294,10 @@ public class SamsungAcBinding extends
 	private void getAndUpdateStatusForAirConditioner(String acName, AirConditioner host) {
 		Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
 		try {
-			logger.debug("Getting status for ac: '" + acName + "'");
+			logger.info("Getting status for ac: '" + acName + "'");
 			status = host.getStatus();
 		} catch (Exception e) {
-			logger.debug("Could not get status.. returning..");
+			logger.info("Could not get status.. returning.., got exception: " + e.toString());
 			return;
 		}
 		

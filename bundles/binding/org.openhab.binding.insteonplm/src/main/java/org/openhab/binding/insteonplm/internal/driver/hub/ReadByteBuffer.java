@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -45,7 +45,7 @@ public class ReadByteBuffer {
     		try {
     			wait();
     		} catch (InterruptedException e) {
-    			// do nothin'
+    			return (0);
     		}
     	}
     	return m_buf[m_index++];
@@ -62,7 +62,7 @@ public class ReadByteBuffer {
     		try {
     			wait();
     		} catch (InterruptedException e) {
-    			// do nothing
+    			return 0;
     		}
     	}
     	int b = Math.min(len, remaining());

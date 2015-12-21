@@ -9,7 +9,9 @@
 package org.openhab.binding.insteonplm;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.binding.insteonplm.internal.device.DeviceFeature;
 import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener;
@@ -90,12 +93,12 @@ public class InsteonPLMActiveBinding
 	private static final Logger logger = LoggerFactory.getLogger(InsteonPLMActiveBinding.class);
 
 	private Driver					m_driver			= null;
-	private HashMap<InsteonAddress, InsteonDevice>  m_devices = null; // list of all configured devices
+	private ConcurrentHashMap<InsteonAddress, InsteonDevice>  m_devices = null; // list of all configured devices
 	private HashMap<String, String> m_config			= new HashMap<String, String>();
 	private PortListener			m_portListener 		= new PortListener();
-	private long					m_devicePollInterval 	= 300000L;
+	private long					m_devicePollInterval 	= 300000L;	// in milliseconds
 	private long					m_deadDeviceTimeout 	= -1L;
-	private long					m_refreshInterval		= 600000L;
+	private long					m_refreshInterval		= 600000L;	// in milliseconds
 	private int						m_messagesReceived		= 0;
 	private boolean					m_isActive		  		= false; // state of binding
 	private boolean					m_hasInitialItemConfig	= false;
@@ -106,7 +109,7 @@ public class InsteonPLMActiveBinding
 	 */
 	public InsteonPLMActiveBinding() {
 		m_driver	= new Driver();
-		m_devices 	= new HashMap<InsteonAddress, InsteonDevice>();
+		m_devices 	= new ConcurrentHashMap<InsteonAddress, InsteonDevice>();
 	}
 
 	/**
@@ -261,11 +264,22 @@ public class InsteonPLMActiveBinding
 				logger.debug("global binding config has arrived.");
 			}
 		}
-		long deadDeviceCount = 10;
+		processBindingConfiguration();
+		logger.debug("configuration update complete!");
+		setProperlyConfigured(true);
+		if (m_isActive) {
+			initialize();
+		}
+		if (!m_hasInitialItemConfig) triggerBindingChangedCalls();
+		return;
+	}
+
+	private void processBindingConfiguration() {
 		if (m_config.containsKey("refresh")) {
 			m_refreshInterval = Integer.parseInt(m_config.get("refresh"));
 			logger.info("refresh interval set to {}s", m_refreshInterval / 1000);
 		}
+		long deadDeviceCount = 10;
 		if (m_config.containsKey("device_dead_count")) {
 			deadDeviceCount = s_parseLong(m_config.get("device_dead_count"), 2L, 100000L);
 			logger.info("device_dead_count set to {} per config file", deadDeviceCount);
@@ -283,22 +297,32 @@ public class InsteonPLMActiveBinding
 				logger.error("error reading additional devices from {}", fileName, e);
 			}
 		}
+		if (m_config.containsKey("modem_db_retry_timeout")) {
+			int timeout = Integer.parseInt(m_config.get("modem_db_retry_timeout"));
+			m_driver.setModemDBRetryTimeout(timeout);
+			logger.info("setting modem db retry timeout to {}s", timeout / 1000);
+		}
+
 		if (m_config.containsKey("more_features")) {
 			String fileName = m_config.get("more_features");
 			logger.info("reading additional feature templates from {}", fileName);
 			DeviceFeature.s_readFeatureTemplates(fileName);
 		}
- 		
 		m_deadDeviceTimeout = m_devicePollInterval * deadDeviceCount;
 		logger.info("dead device timeout set to {}s", m_deadDeviceTimeout / 1000);
-		logger.debug("configuration update complete!");
-		setProperlyConfigured(true);
-		if (m_isActive) {
-			initialize();
-		}
-		if (!m_hasInitialItemConfig) triggerBindingChangedCalls();
-		return;
+ 		
 	}
+	
+	/**
+	 * Method to find a device by address
+	 * @param aAddr the insteon address to search for
+	 * @return reference to the device, or null if not found
+	 */
+	public InsteonDevice getDevice(InsteonAddress aAddr) {
+		InsteonDevice dev = (aAddr == null) ? null : m_devices.get(aAddr);
+		return (dev);
+	}
+	
 
 	/**
 	 * HACK around openHAB synchronization issues that don't show
@@ -387,36 +411,24 @@ public class InsteonPLMActiveBinding
 	}
 
 	/**
-	 * Helper method to find a device by address
-	 * @param aAddr the insteon address to search for
-	 * @return reference to the device, or null if not found
-	 */
-	private InsteonDevice getDevice(InsteonAddress aAddr) {
-		if (aAddr == null) return null;
-		return m_devices.get(aAddr);
-	}
-	
-	/**
 	 * Finds the device that a particular item was bound to, and removes the
 	 * item as a listener
 	 * @param aItem The item (FeatureListener) to remove from all devices
 	 */
 	private void removeFeatureListener(String aItem) {
-		synchronized (m_devices) {
-			for (Iterator<Entry<InsteonAddress, InsteonDevice>> it = m_devices.entrySet().iterator();
-					it.hasNext(); ) {
-				InsteonDevice dev = it.next().getValue();
-				boolean removedListener = dev.removeFeatureListener(aItem);
-				if (removedListener) {
-					logger.trace("removed feature listener {} from dev {}", aItem, dev);
-				}
-				if (!dev.hasAnyListeners()) {
-					Poller.s_instance().stopPolling(dev);
-					it.remove();
-					logger.trace("removing unreferenced {}", dev);
-					if (m_devices.isEmpty()) {
-						logger.debug("all devices removed!", dev);
-					}
+		for (Iterator<Entry<InsteonAddress, InsteonDevice>> it = m_devices.entrySet().iterator();
+				it.hasNext(); ) {
+			InsteonDevice dev = it.next().getValue();
+			boolean removedListener = dev.removeFeatureListener(aItem);
+			if (removedListener) {
+				logger.trace("removed feature listener {} from dev {}", aItem, dev);
+			}
+			if (!dev.hasAnyListeners()) {
+				Poller.s_instance().stopPolling(dev);
+				it.remove();
+				logger.trace("removing unreferenced {}", dev);
+				if (m_devices.isEmpty()) {
+					logger.debug("all devices removed!", dev);
 				}
 			}
 		}
@@ -449,9 +461,7 @@ public class InsteonPLMActiveBinding
 				Poller.s_instance().startPolling(dev, ndev);
 			}
 		}
-		synchronized (m_devices) {
-			m_devices.put(aConfig.getAddress(), dev);
-		}
+		m_devices.put(aConfig.getAddress(), dev);
 		return (dev);
 	}
 	
@@ -490,11 +500,25 @@ public class InsteonPLMActiveBinding
 			return;
 		}
 		DeviceFeature f = aDev.getFeature(aConfig.getFeature());
-		if (f == null) {
-			logger.error("item {} references unknown feature: {}, item disabled!", aItemName, aConfig.getFeature());
+		if (f == null || f.isFeatureGroup()) {
+			StringBuffer buf = new StringBuffer();
+			ArrayList<String> names = new ArrayList<String>(aDev.getFeatures().keySet());
+			Collections.sort(names);
+			for (String name : names) {
+				DeviceFeature feature = aDev.getFeature(name);
+				if (!feature.isFeatureGroup()) {
+					if (buf.length() > 0) {
+						buf.append(", ");
+					}
+					buf.append(name);
+				}
+			}
+
+			logger.error("item {} references unknown feature: {}, item disabled! Known features for {} are: {}.",
+					aItemName, aConfig.getFeature(), aConfig.getProductKey(), buf.toString());
 			return;
 		}
-		DeviceFeatureListener fl = new DeviceFeatureListener(aItemName, eventPublisher);
+		DeviceFeatureListener fl = new DeviceFeatureListener(this, aItemName, eventPublisher);
 		fl.setParameters(aConfig.getParameters());
 		f.addListener(fl);	
 	}
@@ -532,20 +556,18 @@ public class InsteonPLMActiveBinding
 			for (InsteonAddress k : dbes.keySet()) {
 				logger.debug("modem db entry: {}", k);
 			}
-			synchronized (m_devices) {
-				for (InsteonDevice dev : m_devices.values()) {
-					InsteonAddress a = dev.getAddress();
-					if (!dbes.containsKey(a)) {
-						if (!a.isX10())
-							logger.warn("device {} not found in the modem database. Did you forget to link?", a);
-					} else {
-						if (!dev.hasModemDBEntry()) {
-							logger.info("device {}     found in the modem database!", a);
-							dev.setHasModemDBEntry(true);
-						}
-						if (dev.getStatus() != DeviceStatus.POLLING) {
-							Poller.s_instance().startPolling(dev, dbes.size());
-						}
+			for (InsteonDevice dev : m_devices.values()) {
+				InsteonAddress a = dev.getAddress();
+				if (!dbes.containsKey(a)) {
+					if (!a.isX10())
+						logger.warn("device {} not found in the modem database. Did you forget to link?", a);
+				} else {
+					if (!dev.hasModemDBEntry()) {
+						logger.info("device {}     found in the modem database!", a);
+						dev.setHasModemDBEntry(true);
+					}
+					if (dev.getStatus() != DeviceStatus.POLLING) {
+						Poller.s_instance().startPolling(dev, dbes.size());
 					}
 				}
 			}
@@ -584,29 +606,25 @@ public class InsteonPLMActiveBinding
 			}
 		}
 		private void handleMessage(String fromPort, InsteonAddress fromAddr, Msg msg) {
-			synchronized (m_devices) {
-				InsteonDevice  dev = getDevice(fromAddr);
-				if (dev == null) {
-					logger.debug("dropping message from unknown device with address {}", fromAddr);
-				} else {
-					dev.handleMessage(fromPort, msg);
-				}
+			InsteonDevice  dev = getDevice(fromAddr);
+			if (dev == null) {
+				logger.debug("dropping message from unknown device with address {}", fromAddr);
+			} else {
+				dev.handleMessage(fromPort, msg);
 			}
 		}
 	}
 	
 	private void logDeviceStatistics() {
 		logger.info(String.format("devices: %3d configured, %3d polling, msgs received: %5d",
-					m_devices.size(), Poller.s_instance().getSizeOfQueue(), m_messagesReceived));
+				m_devices.size(), Poller.s_instance().getSizeOfQueue(), m_messagesReceived));
 		m_messagesReceived = 0;
-		synchronized (m_devices) {
-			for (InsteonDevice dev : m_devices.values()) {
-				if (dev.isModem()) continue;
-				if (m_deadDeviceTimeout > 0 &&
-						dev.getPollOverDueTime() > m_deadDeviceTimeout) {
-					logger.info("device {} has not responded to polls for {} sec", dev.toString(),
-							dev.getPollOverDueTime() / 3600);
-				}
+		for (InsteonDevice dev : m_devices.values()) {
+			if (dev.isModem()) continue;
+			if (m_deadDeviceTimeout > 0 &&
+					dev.getPollOverDueTime() > m_deadDeviceTimeout) {
+				logger.info("device {} has not responded to polls for {} sec", dev.toString(),
+						dev.getPollOverDueTime() / 3600);
 			}
 		}
 	}

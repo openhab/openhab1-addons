@@ -28,6 +28,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Enumeration;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -37,6 +38,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSwitchAllCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
@@ -46,6 +48,7 @@ import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSeria
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.ControllerSetDefaultMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetControllerCapabilitiesMessageClass;
@@ -122,15 +125,13 @@ public class ZWaveController {
 	private int sucID = 0;
 	private boolean softReset = false;
 	private boolean masterController = false;
-	
+
 	private int SOFCount = 0;
 	private int CANCount = 0;
 	private int NAKCount = 0;
 	private int ACKCount = 0;
 	private int OOFCount = 0;
 	private AtomicInteger timeOutCount = new AtomicInteger(0);
-
-//	private boolean initializationComplete = false;
 
 	private boolean isConnected;
 
@@ -272,94 +273,7 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-	//				if(nodeId != 35)
-		//				continue;
-					
-					
-					
-					ZWaveNode node = null;
-					try {
-						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-						node = nodeSerializer.DeserializeNode(nodeId);
-					}
-					catch (Exception e) {
-						logger.error("NODE {}: Error deserialising XML file. {}", nodeId, e.toString());
-						node = null;
-					}
-					String name = null;
-					String location = null;
-
-					// Did the node deserialise ok?
-					if (node != null) {
-						// Remember the name and location - in case we decide the file was invalid
-						name = node.getName();
-						location = node.getLocation();
-
-						// Sanity check the data from the file
-						if (node.getManufacturer() == Integer.MAX_VALUE ||
-								node.getHomeId() != this.homeId ||
-								node.getNodeId() != nodeId) {
-							logger.warn("NODE {}: Config file data is invalid, ignoring config.", nodeId);
-							node = null;
-						}
-						else {
-							// The restore was ok, but we have some work to set up the links that aren't
-							// made as the deserialiser doesn't call the constructor
-							logger.debug("NODE {}: Restored from config.", nodeId);
-							node.setRestoredFromConfigfile(this);
-
-							// Set the controller and node references for all command classes
-							for (ZWaveCommandClass commandClass : node.getCommandClasses()) {
-								commandClass.setController(this);
-								commandClass.setNode(node);
-
-								// Handle event handlers
-								if (commandClass instanceof ZWaveEventListener) {
-									this.addEventListener((ZWaveEventListener)commandClass);
-								}
-								
-								// If this is the multi-instance class, add all command classes for the endpoints
-								if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
-									for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass) commandClass)
-											.getEndpoints()) {
-										for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
-											endpointCommandClass.setController(this);
-											endpointCommandClass.setNode(node);
-											endpointCommandClass.setEndpoint(endPoint);
-
-											// Handle event handlers
-											if (endpointCommandClass instanceof ZWaveEventListener) {
-												this.addEventListener((ZWaveEventListener)endpointCommandClass);
-											}
-										}
-									}
-								}	
-							}							
-						}
-					}
-
-					// Create a new node if it wasn't deserialised ok
-					if(node == null) {
-						node = new ZWaveNode(this.homeId, nodeId, this);
-						
-						// Try to maintain the name and location (user supplied data)
-						// even if the XML file was considered corrupt and we reload data from the device.
-						node.setName(name);
-						node.setLocation(location);
-					}
-
-					if(nodeId == this.ownNodeId) {
-						// This is the controller node.
-						// We already know the device type, id, manufacturer so set it here
-						// It won't be set later as we probably won't request the manufacturer specific data
-						node.setDeviceId(this.getDeviceId());
-						node.setDeviceType(this.getDeviceType());
-						node.setManufacturer(this.getManufactureId());
-					}
-
-					// Place nodes in the local ZWave Controller
-					this.zwaveNodes.put(nodeId, node);
-					node.initialiseNode();
+					addNode(nodeId);
 				}
 				break;
 			case GetSucNodeId:
@@ -385,7 +299,7 @@ public class ZWaveController {
 				this.manufactureId = ((SerialApiGetCapabilitiesMessageClass)processor).getManufactureId();
 				this.deviceId = ((SerialApiGetCapabilitiesMessageClass)processor).getDeviceId();
 				this.deviceType = ((SerialApiGetCapabilitiesMessageClass)processor).getDeviceType();
-				
+
 				this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
 				break;
 			case GetControllerCapabilities:
@@ -509,7 +423,16 @@ public class ZWaveController {
 		}
 		logger.info("Disconnected from serial port");
 	}
-	
+
+	/**
+	 * Removes the node, and restarts the initialisation sequence
+	 * @param nodeId
+	 */
+	public void reinitialiseNode(int nodeId) {
+		this.zwaveNodes.remove(nodeId);
+		addNode(nodeId);
+	}
+
 	/**
 	 * Add a node to the controller
 	 * @param nodeId the node number to add
@@ -517,6 +440,44 @@ public class ZWaveController {
 	private void addNode(int nodeId) {
 		new ZWaveInitNodeThread(this, nodeId).start();
 	}
+	
+	/**
+	 * Send All On message to all devices that support the Switch All command class
+	 */
+	public void allOn() {
+        Enumeration<Integer> nodeIds = this.zwaveNodes.keys();
+        while (nodeIds.hasMoreElements()) {
+            Integer nodeId = nodeIds.nextElement();
+            ZWaveNode node = this.getNode(nodeId);
+            ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
+            if (switchAllCommandClass != null) {
+                logger.debug("NODE {}: Supports Switch All Command Class Sending AllOn Message", (Object)nodeId);
+                switchAllCommandClass.setNode(node);
+                switchAllCommandClass.setController(this);
+                this.enqueue(switchAllCommandClass.allOnMessage());
+                continue;
+            }
+        }
+    }
+
+	/**
+	 * Send All Off message to all devices that support the Switch All command class
+	 */
+    public void allOff() {
+        Enumeration<Integer> nodeIds = this.zwaveNodes.keys();
+        while (nodeIds.hasMoreElements()) {
+            Integer nodeId = nodeIds.nextElement();
+            ZWaveNode node = this.getNode(nodeId);
+            ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
+            if (switchAllCommandClass != null) {
+                logger.debug("NODE {}: Supports Switch All Command Class Sending AllOff Message", (Object)nodeId);
+                switchAllCommandClass.setNode(node);
+                switchAllCommandClass.setController(this);
+                this.enqueue(switchAllCommandClass.allOffMessage());
+                continue;
+            }
+        }
+    }
 
 	private class ZWaveInitNodeThread extends Thread {
 		int nodeId;
@@ -890,6 +851,27 @@ public class ZWaveController {
 		SerialMessage msg = new SerialApiSoftResetMessageClass().doRequest();
 		msg.attempts = 1;
 		this.enqueue(msg);
+	}
+
+	/**
+	 * Sends a request to perform a hard reset on the controller.
+	 * This will reset the controller to its default, resetting the network completely
+	 */
+	public void requestHardReset()
+	{
+		// Clear the queues
+		// If we're resetting, there's no point in queuing messages!
+		sendQueue.clear();
+		recvQueue.clear();
+		
+		// Hard reset the stick - everything will be reset to factory default
+		SerialMessage msg = new ControllerSetDefaultMessageClass().doRequest();
+		msg.attempts = 1;
+		this.enqueue(msg);
+		
+		// Clear all the nodes and we'll reinitialise
+		this.zwaveNodes.clear();
+		this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
 	}
 
 	/**

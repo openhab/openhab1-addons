@@ -1240,6 +1240,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     {
       switch (derivedFeatureID)
       {
+        case ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE: return ModelPackage.SWITCH_SENSOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -1247,7 +1248,6 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE: return ModelPackage.MSWITCH_ACTOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -1317,6 +1317,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     {
       switch (baseFeatureID)
       {
+        case ModelPackage.SWITCH_SENSOR__SWITCH_STATE: return ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -1324,7 +1325,6 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSWITCH_ACTOR__SWITCH_STATE: return ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE;
         default: return -1;
       }
     }

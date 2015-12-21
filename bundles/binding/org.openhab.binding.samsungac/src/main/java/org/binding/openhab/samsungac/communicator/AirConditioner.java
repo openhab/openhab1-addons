@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -72,7 +72,7 @@ public class AirConditioner {
 			getToken();
 			loginWithToken();
 		} catch (Exception e) {
-			logger.debug("Disconneting...", e);
+			logger.info("Disconneting...", e);
 			disconnect();
 			throw e;
 		}
@@ -86,15 +86,17 @@ public class AirConditioner {
 	 * Will only disconnect if we are already connected.
 	 */
 	public void disconnect() {
-		if (isConnected()) {
-			try {
+		try {
+			if (socket != null)
 				socket.close();
-				socket = null;
-			} catch (IOException e) {
-				logger.warn(
-						"Could not disconnect from Air Conditioner with IP: "
-								+ IP, e);
-			}
+			socket = null;
+			logger.info("Disconnected from AC: " + IP);
+		} catch (IOException e) {
+			logger.warn(
+					"Could not disconnect from Air Conditioner with IP: "
+							+ IP, e);
+		} finally {
+			socket = null;
 		}
 	}
 
@@ -122,7 +124,7 @@ public class AirConditioner {
 			handleResponse();
 			Thread.sleep(2000);
 		}
-		logger.debug("Token has been acquired: " + TOKEN_STRING);
+		logger.info("Token has been acquired: " + TOKEN_STRING);
 	}
 
 	/**
@@ -146,7 +148,7 @@ public class AirConditioner {
 	private void handleResponse(String commandId) throws Exception {
 		String line;
 		while ((line = readLine(socket)) != null) {
-			logger.info("Got response:'" + line + "'");
+			logger.debug("Got response:'" + line + "'");
 
 			if (line == null || ResponseParser.isFirstLine(line)) {
 				continue;
@@ -216,7 +218,8 @@ public class AirConditioner {
 
 	private void writeLine(String line) throws Exception {
 		logger.debug("Sending request:'" + line + "'");
-		connect();
+		if (!isConnected())
+			login();
 		BufferedWriter writer;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(
@@ -225,13 +228,15 @@ public class AirConditioner {
 			writer.newLine();
 			writer.flush();
 		} catch (Exception e) {
-			logger.warn("Could not write line. Disconnecting...");
+			logger.info("Could not write line. Disconnecting..., exception was: " + e);
 			disconnect();
+			throw(e);
 		}
 	}
 
 	String readLine(SSLSocket socket) throws Exception {
-		connect();
+		if (!isConnected())
+			login();
 		BufferedReader r = new BufferedReader(new InputStreamReader(
 				socket.getInputStream()));
 		try {
@@ -248,8 +253,11 @@ public class AirConditioner {
 	private void connect() throws Exception {
 		if (isConnected())
 			return;
-		else
+		else {
+			logger.info("Disconnected so we'll try again");
 			disconnect();
+		}
+			
 		try {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -270,6 +278,7 @@ public class AirConditioner {
 			socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
 			socket.setSoTimeout(10000);
 			socket.startHandshake();
+			logger.debug("Connected again...");
 		} catch (Exception e) {
 			throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
 		}
@@ -286,7 +295,7 @@ public class AirConditioner {
 	 * @throws Exception If we cannot write to the air conditioner or if we cannot handle the response
 	 */
 	public String sendCommand(CommandEnum command, String value) throws Exception {
-		logger.debug("Sending command: '" + command.toString() + "' with value: '" + value + "'");
+		logger.info("Sending command: '" + command.toString() + "' with value: '" + value + "'");
 		String id = "cmd" + Math.round(Math.random() * 10000);
 		writeLine("<Request Type=\"DeviceControl\"><Control CommandID=\"" + id
 				+ "\" DUID=\"" + MAC + "\"><Attr ID=\"" + command
@@ -342,5 +351,10 @@ public class AirConditioner {
 	 */
 	public void setToken(String token) {
 		TOKEN_STRING = token;
+	}
+	
+	public String toString() {
+		return "Samsung AC: [" + (IP != null ? IP : "") + ":" + (PORT != null ? PORT : "") + ", MAC: " + (MAC != null ? MAC : "") + ", TOKEN: " + (TOKEN_STRING != null ? TOKEN_STRING : "") + "]";
+		
 	}
 }

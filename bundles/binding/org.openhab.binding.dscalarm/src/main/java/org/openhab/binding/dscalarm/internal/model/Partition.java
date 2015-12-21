@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class Partition extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Partition.class);
 
-	DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
+	public DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
 
 	/**
 	 * Constructor
@@ -91,6 +91,16 @@ public class Partition extends DSCAlarmDevice{
 						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
 						publisher.postUpdate(item.getName(), onOffType);
 						break;
+					case PARTITION_OPENING_CLOSING_MODE:
+						state = partitionProperties.getState(StateType.OPENING_CLOSING_STATE);
+						strStatus = partitionProperties.getStateDescription(StateType.OPENING_CLOSING_STATE);
+						if(item instanceof NumberItem) {
+							publisher.postUpdate(item.getName(), new DecimalType(state));
+						}
+						if(item instanceof StringItem) {
+							publisher.postUpdate(item.getName(), new StringType(strStatus));
+						}
+						break;
 					default:
 						logger.debug("refreshItem(): Partition item not updated.");
 						break;
@@ -123,13 +133,11 @@ public class Partition extends DSCAlarmDevice{
 								case 650:
 								case 653:
 									state = 1;
-									partitionProperties.setState(StateType.GENERAL_STATE, state, strStatus);
 									break;
 								case 651:
 								case 672:
 								case 673:
 									state = 0;
-									partitionProperties.setState(StateType.GENERAL_STATE, 0, strStatus);
 									break;
 								case 654:
 									partitionProperties.setState(StateType.ALARM_STATE, 1, strStatus);
@@ -146,6 +154,37 @@ public class Partition extends DSCAlarmDevice{
 								state = Integer.parseInt(apiMessage.getMode()) + 1;
 							partitionProperties.setState(StateType.ARM_STATE, state, strStatus);
 							strStatus = partitionProperties.getStateDescription(StateType.ARM_STATE);
+							if(item instanceof NumberItem) {
+								publisher.postUpdate(item.getName(), new DecimalType(state));
+							}
+							if(item instanceof StringItem) {
+								publisher.postUpdate(item.getName(), new StringType(strStatus));
+							}
+							break;
+						case PARTITION_OPENING_CLOSING_MODE:
+							switch(apiCode) {
+								case 700:
+									state=1;
+									break;
+								case 701:
+									state=2;
+									break;
+								case 702:
+									state=3;
+									break;
+								case 750:
+									state=4;
+									break;
+								case 751:
+									state=5;
+									break;
+								default:
+									state=0;
+									strStatus = "";
+									break;
+							}							
+							partitionProperties.setState(StateType.OPENING_CLOSING_STATE, state, strStatus);
+							strStatus = partitionProperties.getStateDescription(StateType.OPENING_CLOSING_STATE);
 							if(item instanceof NumberItem) {
 								publisher.postUpdate(item.getName(), new DecimalType(state));
 							}
@@ -190,6 +229,9 @@ public class Partition extends DSCAlarmDevice{
 						break;
 					case PARTITION_IN_ALARM:
 						partitionProperties.setTrigger(TriggerType.ALARMED, trigger);
+						break;
+					case PARTITION_OPENING_CLOSING_MODE:
+						partitionProperties.setState(StateType.OPENING_CLOSING_STATE, state, description);
 						break;
 					default: 
 						logger.debug("updateProperties(): Partition property not updated.");

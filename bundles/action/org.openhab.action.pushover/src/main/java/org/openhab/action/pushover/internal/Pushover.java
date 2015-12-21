@@ -315,6 +315,10 @@ public class Pushover {
 			logger.debug("Raw response: " + response);
 			
 			try {
+				if (StringUtils.isEmpty(response)) {
+					logger.error("Received an empty response from our Pushover API call. This can mean either we are having trouble connecting to the Pushover API or the Pushover API is actively enforcing rate limits with a connection time-out.");
+					return false;
+				}
 				String responseMessage = parseResponse(response);
 				if (StringUtils.isEmpty(responseMessage)) {
 					return true;
@@ -327,7 +331,7 @@ public class Pushover {
 				return false;
 			}
 		} catch (Exception e) {
-			logger.error("An error occured while notifying your mobile device.", e);
+			logger.error("An error occurred while notifying your mobile device.", e);
 			return false;
 		}
 	}
