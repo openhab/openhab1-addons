@@ -34,4 +34,20 @@ public enum UnDefType implements PrimitiveType, State {
 		return String.format(pattern, this.toString());
 	}
 
+	/**
+	 * Returns the enum constant with the specified name.
+	 */
+	public static UnDefType parse(String name) {
+		if (name == null) {
+			throw new NullPointerException("Name is null");
+		}
+		if (UNDEF.toString().equals(name)) {
+			return UNDEF;
+		} else if (NULL.toString().equals(name)) {
+			return NULL;
+		}
+		throw new IllegalArgumentException("No enum constant "
+				+ UnDefType.class.getCanonicalName() + "." + name);
+	}
+
 }

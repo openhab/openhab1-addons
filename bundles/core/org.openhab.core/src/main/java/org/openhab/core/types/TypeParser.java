@@ -35,7 +35,11 @@ public class TypeParser {
 	 */
 	public static State parseState(List<Class<? extends State>> types, String s) {
 		for(Class<? extends Type> type : types) {
-			try {									
+			try {
+				// special UnDefType handling, valueOf does not work because of the toString method.
+				if (type.getName().equals(UnDefType.class.getName())) {
+					return UnDefType.parse(s);
+				}
 				Method valueOf = type.getMethod("valueOf", String.class);
 				State state = (State) valueOf.invoke(type, s);
 				if(state!=null) return state;
