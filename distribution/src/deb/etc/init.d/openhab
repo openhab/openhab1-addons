@@ -151,7 +151,7 @@ case "$1" in
 		fi
         ;;
   status)
-        status_of_proc "$JAVA" "$NAME" && exit 0 || exit $?
+        status_of_proc -p "$PIDFILE" "$JAVA" "$NAME" && exit 0 || exit $?
         ;;
   restart|force-reload)
         log_daemon_msg "Restarting $DESC" "$NAME"
