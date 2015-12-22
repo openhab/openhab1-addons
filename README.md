@@ -1,4 +1,3 @@
-[![Build Status](https://openhab-ci.innoq.io/jenkins/job/openhab-1/badge/icon)](https://openhab-ci.innoq.io/jenkins/job/openhab-1)
 
 ## Introduction
 
