@@ -120,7 +120,7 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en"><Label lang="en">Map OFF status to all devices in group 2, double click on key 2 will send ON to all devices in group 2, all dimmers set to prev.value</Label>
+				<Label lang="en">Map OFF status to all devices in group 2, double click on key 2 will send ON to all devices in group 2, all dimmers set to prev.value</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
