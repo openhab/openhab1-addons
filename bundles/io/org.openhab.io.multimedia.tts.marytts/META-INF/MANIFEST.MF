@@ -25,6 +25,7 @@ Bundle-ClassPath: .,
  lib/opennlp-maxent-3.0.1-incubating.jar,
  lib/opennlp-tools-1.5.1-incubating.jar
 Import-Package: javax.sound.sampled,
+ javax.xml,
  org.apache.commons.collections.map,
  org.apache.commons.io,
  org.apache.commons.lang,
