@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>Soft Remote</Model>
+	<Label lang="en">Remote Control</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5b</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x22</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x26</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Buttons 1 and 3 profile</Label>
+			<Help lang="en"><![CDATA[To set-up the profile of buttons 1 and 3]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Mono</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Duo</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Buttons 2 and 4 profile</Label>
+			<Help lang="en"><![CDATA[To set-up the profile of buttons 2 and 4]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Scene</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Mono</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Duo</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Scene Type</Label>
+			<Help lang="en"><![CDATA[To choose the way of sending Scene to the gateway]]></Help>	
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Central Scene</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Activation</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 1 configuration</Label>
+			<Help lang="en"><![CDATA[To set-up the how button 1 behaves, when set in MONO Profile]]></Help>		
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Control group 2</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">All switches ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">All switches OFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 2 configuration</Label>
+			<Help lang="en"><![CDATA[To set-up the how button 2 behaves, when set in MONO Profile]]></Help>		
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Control group 3</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">All switches ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">All switches OFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 3 configuration</Label>
+			<Help lang="en"><![CDATA[To set-up the how button 3 behaves, when set in MONO Profile]]></Help>		
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Control group 4</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">All switches ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">All switches OFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 4 configuration</Label>
+			<Help lang="en"><![CDATA[To set-up the how button 4 behaves, when set in MONO Profile]]></Help>		
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Control group 5</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">All switches ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">All switches OFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Management</Label>
+			<Help lang="en"><![CDATA[How to set up LED behaviour]]></Help>		
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No LED</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flash Blue after button press</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Blink to confirm command</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Flash Blue after button press and blink to confirm command</Label>
+			</Item>
+		</Parameter>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Lifeline</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Button 1 - Mono - Controlled nodes</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Button 2 - Mono - Controlled nodes</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Button 3 - Mono - Controlled nodes</Label>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Button 4 - Mono - Controlled nodes</Label>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Button 1 and 3 - Duo - Controlled nodes</Label>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Button 2 and 4 - Duo - Controlled nodes</Label>
+		</Group>
+	</Associations>
+</Product>
