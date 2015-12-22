@@ -122,6 +122,15 @@
 			<Label lang="en">Garage Door Controller</Label>
 			<ConfigFile>linear/ngd00z.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5252</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>WO15Z-1</Model>
+			<Label lang="en">Single Wall Outlet</Label>
+			<ConfigFile>linear/wo15z-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
