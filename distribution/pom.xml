@@ -1526,6 +1526,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.persistence</groupId>
+			<artifactId>org.openhab.persistence.influxdb1</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.persistence</groupId>
 			<artifactId>org.openhab.persistence.jpa</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
