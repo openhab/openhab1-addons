@@ -109,11 +109,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   public void activate() {
-    logger.debug("influxdb persistence service activated");
+    logger.debug("influxdb08 persistence service activated");
   }
 
   public void deactivate() {
-    logger.debug("influxdb persistence service deactivated");
+    logger.debug("influxdb08 persistence service deactivated");
     disconnect();
   }
 
@@ -162,7 +162,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
   @Override
   public String getName() {
-    return "influxdb";
+    return "influxdb08";
   }
 
   @Override
@@ -180,7 +180,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isProperlyConfigured) {
-      logger.warn("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb08 not yet loaded or broken.");
       return;
     }
 
@@ -202,7 +202,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         state = item.getState();
     }
     Object value = stateToObject(state);
-    logger.trace("storing {} in influxdb {}", name, value);
+    logger.trace("storing {} in influxdb08 {}", name, value);
 
     // For now time is calculated by influxdb, may be this should be configurable?
     Serie serie = new Serie.Builder(name)
@@ -222,7 +222,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
   private void handleDatabaseException(Exception e) {
     if (e instanceof RetrofitError) {
-      // e.g. raised if influxdb is not running
+      // e.g. raised if influxdb08 is not running
       logger.error("database connection error {}", e.getMessage());
     } else if (e instanceof RuntimeException) {
       // e.g. raised by authentication errors
@@ -238,8 +238,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     disconnect();
 
     if (config == null) {
-      throw new ConfigurationException("influxdb",
-          "The configuration for influxdb is missing fix openhab.cfg");
+      throw new ConfigurationException("influxdb08",
+          "The configuration for influxdb08 is missing fix openhab.cfg");
     }
 
     url = (String) config.get("url");
@@ -256,7 +256,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     password = (String) config.get("password");
     if (StringUtils.isBlank(password)) {
-      throw new ConfigurationException("influxdb:password",
+      throw new ConfigurationException("influxdb08:password",
           "The password is missing. To specify a password configure the password parameter in openhab.cfg.");
     }
 
@@ -282,12 +282,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     logger.debug("got a query");
 
     if (!isProperlyConfigured) {
-      logger.warn("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb08 not yet loaded or broken.");
       return Collections.emptyList();
     }
 
     if (!isConnected()) {
-      logger.warn("InfluxDB is not yet connected");
+      logger.warn("influxdb08 is not yet connected");
       return Collections.emptyList();
     }
 

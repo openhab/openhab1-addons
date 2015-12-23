@@ -24,12 +24,12 @@ public class InfluxDBPersistenceServiceActivator implements BundleActivator {
 
   @Override
   public void start(BundleContext context) throws Exception {
-    logger.debug("InfluxDB persistence bundle has been started.");
+    logger.debug("InfluxDB 0.8 persistence bundle has been started.");
   }
 
   @Override
   public void stop(BundleContext context) throws Exception {
-    logger.debug("InfluxDB persistence bundle has been stopped.");
+    logger.debug("InfluxDB 0.8 persistence bundle has been stopped.");
   }
 
 }
