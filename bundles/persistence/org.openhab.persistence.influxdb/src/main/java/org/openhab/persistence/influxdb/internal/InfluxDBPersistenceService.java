@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.persistence.influxdb1.internal;
+package org.openhab.persistence.influxdb.internal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -100,13 +100,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   }
 
   public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
-    logger.debug("influxdb1 persistence service activated");
+    logger.debug("influxdb persistence service activated");
     disconnect();
     password = (String) config.get("password");
     if (StringUtils.isBlank(password)) {
       isProperlyConfigured = false;
       logger
-          .error("influxdb1:password",
+          .error("influxdb:password",
               "The password is missing. To specify a password configure the password parameter in openhab.cfg.");
       return;
     }
@@ -141,7 +141,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
   }
 
   public void deactivate() {
-    logger.debug("influxdb1 persistence service deactivated");
+    logger.debug("influxdb persistence service deactivated");
     disconnect();
   }
 
@@ -193,7 +193,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
   @Override
   public String getName() {
-    return "influxdb1";
+    return "influxdb";
   }
 
   @Override
@@ -211,7 +211,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     }
 
     if (!isProperlyConfigured) {
-      logger.warn("Configuration for influxdb1 not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return;
     }
 
@@ -236,7 +236,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       state = item.getState();
     }
     Object value = stateToObject(state);
-    logger.trace("storing {} in influxdb1 value {}, {}", name, value, item);
+    logger.trace("storing {} in influxdb value {}, {}", name, value, item);
     Point point =
         Point.measurement(name).field(VALUE_COLUMN_NAME, value)
             .time(System.currentTimeMillis(), timeUnit).build();

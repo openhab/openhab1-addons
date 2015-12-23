@@ -9,18 +9,18 @@
 		<version>1.8.0-SNAPSHOT</version>
 	</parent>
 
-	<name>openHAB InfluxDB1 Persistence</name>
+	<name>openHAB InfluxDB Persistence</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.persistence.influxdb1</bundle.symbolicName>
-		<bundle.namespace>org.openhab.persistence.influxdb1</bundle.namespace>
-		<deb.name>openhab-addon-persistence-influxdb1</deb.name>
+		<bundle.namespace>org.openhab.persistence.influxdb</bundle.namespace>
+		<deb.name>openhab-addon-persistence-influxdb</deb.name>
 		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.persistence</groupId>
-	<artifactId>org.openhab.persistence.influxdb1</artifactId>
+	<artifactId>org.openhab.persistence.influxdb</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
 

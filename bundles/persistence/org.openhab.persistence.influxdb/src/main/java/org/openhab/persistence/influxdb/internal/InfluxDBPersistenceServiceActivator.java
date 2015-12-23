@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.persistence.influxdb1.internal;
+package org.openhab.persistence.influxdb.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

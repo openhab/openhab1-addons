@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: openHAB InfluxDB1 Persistence bundle
-Bundle-SymbolicName: org.openhab.persistence.influxdb1;singleton:=true
+Bundle-Name: openHAB InfluxDB Persistence bundle
+Bundle-SymbolicName: org.openhab.persistence.influxdb;singleton:=true
 Bundle-Version: 1.8.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -23,4 +23,4 @@ Bundle-ClassPath: .,
  lib/retrofit-1.9.0.jar,
  lib/influxdb-java-2.1.jar
 Service-Component: OSGI-INF/influxdb.xml
-Bundle-Activator: org.openhab.persistence.influxdb1.internal.InfluxDBPersistenceServiceActivator
+Bundle-Activator: org.openhab.persistence.influxdb.internal.InfluxDBPersistenceServiceActivator
