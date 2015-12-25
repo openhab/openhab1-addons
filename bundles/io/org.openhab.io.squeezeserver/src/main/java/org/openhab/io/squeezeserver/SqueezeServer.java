@@ -36,14 +36,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Handles connection and event handling for all Squeezebox devices.
- * 
+ *
  * @author Markus Wolters
  * @author Ben Jones
  * @since 1.4.0
  */
 public class SqueezeServer implements ManagedService {
 	// TODO: should probably add some sort of watchdog timer to check the
-	// 'listener' thread periodically so we can re-connect without having 
+	// 'listener' thread periodically so we can re-connect without having
 	// to wait for a sendCommand()
 
 	private static final Logger logger = LoggerFactory
@@ -52,7 +52,9 @@ public class SqueezeServer implements ManagedService {
 	// configuration defaults for optional properties
 	private static final int DEFAULT_CLI_PORT = 9090;
 	private static final int DEFAULT_WEB_PORT = 9000;
-	private static final String DEFAULT_LANGUAGE = "en";
+
+	private static final String DEFAULT_TTS_URL = "http://translate.google.com/translate_tts?tl=en&ie=UTF-8&client=openhab&q=%s";
+	private static final int DEFAULT_TTS_MAX_SENTENCE_LENGTH = 100;
 
 	// / regEx to validate SqueezeServer config
 	// <code>'^(squeeze:)(host|cliport|webport)=.+$'</code>
@@ -63,11 +65,16 @@ public class SqueezeServer implements ManagedService {
 	private static final Pattern PLAYER_CONFIG_PATTERN = Pattern
 			.compile("^(.*?)\\.(id)$");
 
-	// / regEx to select the googleSpeak Language
-	// <code>'^(language)$'</code>
-	private static final Pattern LANGUAGE_CONFIG_PATTERN = Pattern
-			.compile("^(language)$");
-	
+	// regEx to select the tts url
+	// <code>'^(ttsurl)$'</code>
+	private static final Pattern TTS_URL_CONFIG_PATTERN = Pattern
+			.compile("^(ttsurl)$");
+
+	// regEx to select the tts max sentence length
+	// <code>'^(ttsmaxsentencelength)$'</code>
+	private static final Pattern TTS_MAX_SENTENCE_LENGTH_CONFIG_PATTERN = Pattern
+			.compile("^(ttsmaxsentencelength)$");
+
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	// the value by which the volume is changed by each INCREASE or
@@ -85,14 +92,15 @@ public class SqueezeServer implements ManagedService {
 
 	// player listeners
 	private final List<SqueezePlayerEventListener> playerEventListeners = Collections.synchronizedList(new ArrayList<SqueezePlayerEventListener>());
-	
+
 	// configured players - keyed by playerId and MAC address
 	private final Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
 	private final Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
 
-	// language properties
-	private String language;
-	
+	// tts properties
+	private String ttsUrl;
+	private int ttsMaxSentenceLength;
+
 	public synchronized boolean isConnected() {
 		if (clientSocket == null)
 			return false;
@@ -107,11 +115,11 @@ public class SqueezeServer implements ManagedService {
 		if (!playerEventListeners.contains(playerEventListener))
 			playerEventListeners.add(playerEventListener);
 	}
-		
+
 	public synchronized void removePlayerEventListener(SqueezePlayerEventListener playerEventListener) {
 		playerEventListeners.remove(playerEventListener);
 	}
-		
+
 	public synchronized List<SqueezePlayerEventListener> getPlayerEventListeners() {
 		return new ArrayList<SqueezePlayerEventListener>(playerEventListeners);
 	}
@@ -243,42 +251,42 @@ public class SqueezeServer implements ManagedService {
 			return false;
 		return sendCommand(player.getMacAddress() + " playlist clear");
 	}
-	
+
 	public boolean deletePlaylistItem(String playerId, int playlistIndex) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
 			return false;
 		return sendCommand(player.getMacAddress() + " playlist delete " + playlistIndex);
 	}
-	
+
 	public boolean playPlaylistItem(String playerId, int playlistIndex) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
 			return false;
 		return sendCommand(player.getMacAddress() + " playlist index " + playlistIndex);
 	}
-	
+
 	public boolean addPlaylistItem(String playerId, String url) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
 			return false;
 		return sendCommand(player.getMacAddress() + " playlist add " + url);
 	}
-	
+
 	public boolean setPlayingTime(String playerId, int time) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
 			return false;
 		return sendCommand(player.getMacAddress() + " time " + time);
 	}
-	
+
 	public boolean setRepeatMode(String playerId, int repeatMode) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
 			return false;
 		return sendCommand(player.getMacAddress() + " playlist repeat " + repeatMode);
 	}
-	
+
 	public boolean setShuffleMode(String playerId, int shuffleMode) {
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null)
@@ -349,7 +357,7 @@ public class SqueezeServer implements ManagedService {
 		return sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:"
 				+ line2 + " duration:" + String.valueOf(duration));
 	}
-	
+
 	/**
 	 * Send a generic command to a given player
 	 * @param playerId
@@ -361,9 +369,13 @@ public class SqueezeServer implements ManagedService {
 			return false;
 		return sendCommand(player.getMacAddress() + " " + command);
 	}
-	
-	public String language() {
-		return language;
+
+	public String getTtsUrl() {
+		return ttsUrl;
+	}
+
+	public int getTtsMaxSentenceLength() {
+		return ttsMaxSentenceLength;
 	}
 
 	/**
@@ -404,7 +416,9 @@ public class SqueezeServer implements ManagedService {
 		host = null;
 		cliPort = DEFAULT_CLI_PORT;
 		webPort = DEFAULT_WEB_PORT;
-		language = DEFAULT_LANGUAGE;
+
+		ttsUrl = DEFAULT_TTS_URL;
+		ttsMaxSentenceLength = DEFAULT_TTS_MAX_SENTENCE_LENGTH;
 
 		playersById.clear();
 		playersByMacAddress.clear();
@@ -427,7 +441,8 @@ public class SqueezeServer implements ManagedService {
 
 			Matcher serverMatcher = SERVER_CONFIG_PATTERN.matcher(key);
 			Matcher playerMatcher = PLAYER_CONFIG_PATTERN.matcher(key);
-			Matcher languageMatcher = LANGUAGE_CONFIG_PATTERN.matcher(key);
+			Matcher ttsUrlMatcher = TTS_URL_CONFIG_PATTERN.matcher(key);
+			Matcher ttsMaxSentenceLengthMatcher = TTS_MAX_SENTENCE_LENGTH_CONFIG_PATTERN.matcher(key);
 
 			String value = (String) config.get(key);
 
@@ -443,12 +458,14 @@ public class SqueezeServer implements ManagedService {
 			} else if (playerMatcher.matches()) {
 				String playerId = playerMatcher.group(1);
 				String macAddress = value;
-				
+
 				SqueezePlayer player = new SqueezePlayer(this, playerId, macAddress);
 				playersById.put(playerId.toLowerCase(), player);
 				playersByMacAddress.put(macAddress.toLowerCase(), player);
-			} else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
-				language=value;
+			} else if (ttsUrlMatcher.matches() && StringUtils.isNotBlank(value)) {
+				ttsUrl = value;
+			} else if (ttsMaxSentenceLengthMatcher.matches() && StringUtils.isNotBlank(value)) {
+				ttsMaxSentenceLength = Integer.valueOf(value);
 			} else {
 				logger.warn("Unexpected or unsupported configuration: " + key
 						+ ". Ignoring.");
