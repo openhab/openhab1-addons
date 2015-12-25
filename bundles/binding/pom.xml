@@ -166,5 +166,6 @@
     <module>org.openhab.binding.lcn</module>
     <module>org.openhab.binding.sapp</module>
     <module>org.openhab.binding.ucprelayboard</module>
+    <module>org.openhab.binding.rpircswitch</module>
   </modules>
 </project>
