@@ -132,6 +132,9 @@ public class UnitUtils {
 	 * Returns the wind direction based on degree.
 	 */
 	public static String getWindDirection(Integer degree) {
+		if (degree < 0 || degree > 360) {
+			return null;
+		}
 		String[] directions = new String[] { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW",
 				"W", "WNW", "NW", "NNW" };
 
