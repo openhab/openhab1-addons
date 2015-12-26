@@ -167,5 +167,6 @@
     <module>org.openhab.binding.sapp</module>
     <module>org.openhab.binding.ucprelayboard</module>
     <module>org.openhab.binding.rpircswitch</module>
+    <module>org.openhab.binding.myq</module>
   </modules>
 </project>
