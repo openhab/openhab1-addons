@@ -12,6 +12,7 @@ import org.openhab.binding.wemo.WemoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -43,10 +44,11 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof ContactItem || item instanceof NumberItem || item instanceof SwitchItem)) {
+		if (!(item instanceof ContactItem || item instanceof NumberItem || 
+				item instanceof SwitchItem || item instanceof DateTimeItem )) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Contact-, Number- and SwitchItems are allowed - please check your *.items configuration");
+					+ "', only DateTime-, Contact-, Number- and SwitchItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -136,7 +138,8 @@ public class WemoGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * </ul>
 	 */
 	public enum WemoChannelType {
-		state, currentPower, lastOnFor, onToday, onTotal
+		state, lastChangedAt, lastOnFor, onToday, onTotal, timespan, 
+		averagePower, currentPower, energyToday, energyTotal, standbyLimit		
 	}
 
 	
