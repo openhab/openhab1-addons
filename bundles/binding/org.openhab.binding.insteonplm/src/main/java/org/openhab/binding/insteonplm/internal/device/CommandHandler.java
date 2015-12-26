@@ -148,20 +148,35 @@ public abstract class CommandHandler {
 		LightOnOffCommandHandler(DeviceFeature f) { super(f); }
 		@Override
 		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			try {
+			try {				
+				int ext  = getIntParameter("ext", 0);
+				int direc = 0x00;
+				int level = 0x00;
+				Msg m = null;
 				if (cmd == OnOffType.ON) {
-					int level = getMaxLightLevel(conf, 0xff);
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) level,
-								s_getGroup(conf));
-					dev.enqueueMessage(m, m_feature);
+					level = getMaxLightLevel(conf, 0xff);
+					direc = 0x11;
 					logger.info("{}: sent msg to switch {} to {}", nm(), dev.getAddress(),
 							level == 0xff ? "on" : level);
 				} else if (cmd == OnOffType.OFF) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x13, (byte) 0x00,
-									s_getGroup(conf));
-					dev.enqueueMessage(m, m_feature);
+					direc = 0x13;
 					logger.info("{}: sent msg to switch {} off", nm(), dev.getAddress());
 				}
+				if (ext == 1 || ext == 2) {
+					byte [] data = new byte[] {
+							(byte)getIntParameter("d1", 0),
+							(byte)getIntParameter("d2", 0),
+							(byte)getIntParameter("d3", 0)};
+					m = dev.makeExtendedMessage((byte) 0x0f, (byte) direc, (byte) level, data);
+					logger.info("{}: was an extended message for device {}", nm(), dev.getAddress());
+					if (ext == 1) m.setCRC();
+					else if (ext == 2) m.setCRC2();	
+				} else {
+					m = dev.makeStandardMessage((byte) 0x0f, (byte) direc, (byte) level,
+							s_getGroup(conf));
+				}
+				logger.info("Sending message to {}", dev.getAddress());
+				dev.enqueueMessage(m, m_feature);
 				// expect to get a direct ack after this!
 			} catch (IOException e) {
 				logger.error("{}: command send i/o error: ", nm(), e);

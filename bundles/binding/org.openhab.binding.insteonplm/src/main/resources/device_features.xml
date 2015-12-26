@@ -605,4 +605,10 @@
 	<command-handler command="DecimalType" ext="1" cmd1="0x11" d1="0x02" value="command2">FanLincFanCommandHandler</command-handler>
 	<poll-handler ext="0" cmd1="0x19" cmd2="0x03" >FlexPollHandler</poll-handler>
 </feature>     
+<feature name="BottomOutlet">
+        <message-dispatcher>DefaultDispatcher</message-dispatcher>
+        <message-handler cmd="0x19" button="2" group="1">SwitchRequestReplyHandler</message-handler>
+        <command-handler d1="0x02" ext="1" command="OnOffType">LightOnOffCommandHandler</command-handler>
+        <poll-handler ext="0" cmd1="0x19" cmd2="0x01">FlexPollHandler</poll-handler>
+</feature>
 </xml>
