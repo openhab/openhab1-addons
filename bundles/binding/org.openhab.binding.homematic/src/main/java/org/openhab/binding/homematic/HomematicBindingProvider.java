@@ -11,7 +11,7 @@ package org.openhab.binding.homematic;
 import java.util.List;
 
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.items.Item;
 
 /**
@@ -20,7 +20,7 @@ import org.openhab.core.items.Item;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public interface HomematicBindingProvider extends BindingProvider {
+public interface HomematicBindingProvider extends AutoUpdateBindingProvider {
 
 	/**
 	 * Returns a list of items for the specified bindingConfig.
