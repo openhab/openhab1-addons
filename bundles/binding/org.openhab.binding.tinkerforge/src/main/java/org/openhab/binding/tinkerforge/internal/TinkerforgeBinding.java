@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tinkerforge.internal;
 
+import java.math.BigDecimal;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
-import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContext;
+import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContextImpl;
 import org.openhab.binding.tinkerforge.internal.config.ConfigurationHandler;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
@@ -44,6 +45,7 @@ import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
@@ -154,7 +156,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
   private ModelFactory modelFactory;
   private OHConfig ohConfig;
   private boolean isConnected;
-  private TinkerforgeContext context = TinkerforgeContext.getInstance();
+  private TinkerforgeContextImpl context = (TinkerforgeContextImpl) TinkerforgeContextImpl
+      .getInstance();
 
   public TinkerforgeBinding() {
     modelFactory = ModelFactory.eINSTANCE;
@@ -413,42 +416,55 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         processValue((MBaseDevice) sensor, notification);
       }
     }
-    if (notification.getNotifier() instanceof SetPointActor<?>) {
+ else if (notification.getNotifier() instanceof SetPointActor<?>) {
       SetPointActor<?> actor = (SetPointActor<?>) notification.getNotifier();
       int setpointFeatureID = notification.getFeatureID(SetPointActor.class);
       if (setpointFeatureID == ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof MoveActor) {
+ else if (notification.getNotifier() instanceof MoveActor) {
       MoveActor actor = (MoveActor) notification.getNotifier();
       int moveFeatureID = notification.getFeatureID(MoveActor.class);
       if (moveFeatureID == ModelPackage.MOVE_ACTOR__DIRECTION) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof MSwitchActor) {
+ else if (notification.getNotifier() instanceof MSwitchActor) {
       MSwitchActor switchActor = (MSwitchActor) notification.getNotifier();
       int featureID = notification.getFeatureID(MSwitchActor.class);
       if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
         processValue((MBaseDevice) switchActor, notification);
       }
     }
-    if (notification.getNotifier() instanceof DigitalActor) {
+ else if (notification.getNotifier() instanceof ProgrammableSwitchActor) {
+      logger.trace("notification {}", notification);
+      logger.trace("notifier {}", notification.getNotifier());
+      ProgrammableSwitchActor switchActor = (ProgrammableSwitchActor) notification.getNotifier();
+      // use the super type class for getting the featureID. Should not be necessary according to
+      // the docs or I misunderstand it. But this approach works.
+      int featureID = notification.getFeatureID(SwitchSensor.class);
+      logger.trace("notification ProgrammableSwitchActor id {}", featureID);
+      if (featureID == ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE) {
+        logger.trace("ProgrammableSwitchActor switch state changed sending notification");
+        processValue((MBaseDevice) switchActor, notification);
+      }
+    }
+ else if (notification.getNotifier() instanceof DigitalActor) {
       DigitalActor actor = (DigitalActor) notification.getNotifier();
       int featureID = notification.getFeatureID(DigitalActor.class);
       if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof ColorActor) {
+ else if (notification.getNotifier() instanceof ColorActor) {
       ColorActor actor = (ColorActor) notification.getNotifier();
       int featureID = notification.getFeatureID(ColorActor.class);
       if (featureID == ModelPackage.COLOR_ACTOR__COLOR) {
         processValue((MBaseDevice) actor, notification);
       }
     }
-    if (notification.getNotifier() instanceof MBrickd) {
+ else if (notification.getNotifier() instanceof MBrickd) {
       MBrickd brickd = (MBrickd) notification.getNotifier();
       int featureID = notification.getFeatureID(MBrickd.class);
       if (featureID == ModelPackage.MBRICKD__CONNECTED_COUNTER) {
@@ -644,7 +660,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
   private void postUpdate(String uid, String subId, TinkerforgeValue sensorValue) {
     // TODO undef handling
-    logger.trace("postUpdate for uid {} subid {}", uid, subId);
+    logger.trace("postUpdate called for uid {} subid {}", uid, subId);
     Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(uid, subId);
     if (providerMap.size() == 0) {
       logger.debug("{} found no item for uid {}, subid {}", LoggerConstants.TFMODELUPDATE, uid,
@@ -695,9 +711,24 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
           continue;
         }
       } else if (sensorValue instanceof PercentValue) {
-        if (itemType.isAssignableFrom(RollershutterItem.class)
+         if (itemType.isAssignableFrom(SwitchItem.class)) {
+          value =
+              ((PercentValue) sensorValue).toBigDecimal().compareTo(BigDecimal.ZERO) == 1
+                  ? OnOffType.ON
+                  : OnOffType.OFF;
+          logger.debug("switch found {}", itemName);
+        } 
+         else if (itemType.isAssignableFrom(RollershutterItem.class)
             || itemType.isAssignableFrom(DimmerItem.class)) {
           value = new PercentType(((PercentValue) sensorValue).toBigDecimal());
+          logger.debug("Rollershutter or dimmer found {} {}", itemName);
+        } 
+        else if (itemType.isAssignableFrom(ContactItem.class)) {
+          value =
+              ((PercentValue) sensorValue).toBigDecimal().compareTo(BigDecimal.ZERO) == -1
+                  ? OpenClosedType.OPEN
+                  : OpenClosedType.CLOSED;
+          logger.debug("contact found {}", itemName);
         } else {
           continue;
         }
@@ -803,6 +834,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                 if (mDevice instanceof SetPointActor) {
                   ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
                       provider.getDeviceOptions(itemName));
+                  logger.debug("found SetpointActor");
+                } else if (mDevice instanceof PercentTypeActor) {
+                  ((PercentTypeActor) mDevice).setValue(((PercentType) command),
+                      provider.getDeviceOptions(itemName));
+                  logger.debug("found PercentType actor");
                 } else {
                   logger.error("found no percenttype actor");
                 }

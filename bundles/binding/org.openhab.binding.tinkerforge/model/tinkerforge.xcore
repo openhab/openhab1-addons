@@ -52,6 +52,17 @@ import com.tinkerforge.BrickletDualButton
 import com.tinkerforge.BrickletPTC
 import com.tinkerforge.BrickletIndustrialDual020mA
 import com.tinkerforge.BrickletSolidStateRelay
+import com.tinkerforge.BrickletPiezoSpeaker
+import com.tinkerforge.BrickletRotaryEncoder
+import com.tinkerforge.BrickletAmbientLightV2
+import com.tinkerforge.BrickletDustDetector
+import com.tinkerforge.BrickletLoadCell
+import com.tinkerforge.BrickletColor
+import com.tinkerforge.BrickletIndustrialDualAnalogIn
+import com.tinkerforge.BrickletAnalogIn
+import com.tinkerforge.BrickletAnalogInV2
+import com.tinkerforge.BrickletLaserRangeFinder
+import com.tinkerforge.BrickletAccelerometer
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -106,6 +117,17 @@ type TinkerBrickletDualButton wraps BrickletDualButton
 type TinkerBrickletPTC wraps BrickletPTC
 type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
 type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
+type TinkerBrickletPiezoSpeaker wraps BrickletPiezoSpeaker
+type TinkerBrickletRotaryEncoder wraps BrickletRotaryEncoder
+type TinkerBrickletAmbientLightV2 wraps BrickletAmbientLightV2
+type TinkerBrickletDustDetector wraps BrickletDustDetector
+type TinkerBrickletLoadCell wraps BrickletLoadCell
+type TinkerBrickletColor wraps BrickletColor
+type TinkerBrickletIndustrialDualAnalogIn wraps BrickletIndustrialDualAnalogIn
+type TinkerBrickletAnalogInV2 wraps BrickletAnalogInV2
+type TinkerBrickletAnalogIn wraps BrickletAnalogIn
+type TinkerBrickletLaserRangeFinder wraps BrickletLaserRangeFinder
+type TinkerBrickletAccelerometer wraps BrickletAccelerometer
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -223,6 +245,10 @@ interface MSensor<DeviceValue extends MTinkerforgeValue> {
 	op void fetchSensorValue()
 }
 
+interface ProgrammableActor {
+	op void action(DeviceOptions opts)
+}
+
 interface MTextActor{
 	String text   
 }
@@ -264,10 +290,14 @@ interface DimmableActor<TC extends DimmableConfiguration>   extends MTFConfigCon
     op void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts)
 }
 
-interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C> {
+interface PercentTypeActor {
     PercentValue percentValue
+	op void setValue(PercentType newValue, DeviceOptions opts)
+}
+
+interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C>,
+	PercentTypeActor {
     op void setValue(BigDecimal newValue, DeviceOptions opts)
-    op void setValue(PercentType newValue, DeviceOptions opts)
 }
 
 class MBrickletDualButton extends MDevice<TinkerBrickletDualButton>,
@@ -279,10 +309,125 @@ interface DualButtonDevice extends MSubDevice<MBrickletDualButton>{
 
 }
 
+class MBrickletPiezoSpeaker extends MDevice<TinkerBrickletPiezoSpeaker>, ProgrammableSwitchActor{
+	readonly String deviceType = "bricklet_piezo_speaker"
+}
+
 class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
 	MTFConfigConsumer<ButtonConfiguration> {
 	String deviceType = "dualbutton_button"
 	DualButtonDevicePosition position
+}
+
+class MBrickletAccelerometer extends MDevice<TinkerBrickletAccelerometer>,
+	MSubDeviceHolder<AccelerometerDevice>, MTFConfigConsumer<BrickletAccelerometerConfiguration> {
+	readonly String deviceType = "bricklet_accelerometer"
+	Short dataRate = "6"
+	Short fullScale = "1"
+	Short filterBandwidth = "2"
+}
+
+interface AccelerometerDevice extends MSubDevice<MBrickletAccelerometer> {
+}
+
+enum AccelerometerCoordinate {
+	x, y, z
+}
+
+class AccelerometerDirection extends AccelerometerDevice, MSensor<MDecimalValue>, 
+	MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	readonly String deviceType = "accelerometer_direction"
+	BigDecimal threshold = "0"
+	AccelerometerCoordinate direction
+}
+
+class AccelerometerTemperature extends AccelerometerDevice,
+	MSensor<MDecimalValue> {
+	readonly String deviceType = "accelerometer_temperature"
+}
+
+class AccelerometerLed extends AccelerometerDevice, DigitalActor {
+	readonly String deviceType = "accelerometer_led"
+}
+
+class MBrickletLaserRangeFinder extends MDevice<TinkerBrickletLaserRangeFinder>,
+	MSubDeviceHolder<LaserRangeFinderDevice>, MTFConfigConsumer<LaserRangeFinderConfiguration> {
+    readonly String deviceType = "bricklet_laser_range_finder"
+	short distanceAverageLength = "10"
+	short velocityAverageLength = "10"
+	short mode = "0"
+	Boolean enableLaserOnStartup = "true"
+}
+
+interface LaserRangeFinderDevice extends MSubDevice<MBrickletLaserRangeFinder> {
+}
+
+class LaserRangeFinderLaser extends LaserRangeFinderDevice, DigitalActor {
+	readonly String deviceType = "laser_range_finder_laser"
+}
+
+class LaserRangeFinderDistance extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
+	MSensor<MDecimalValue>, CallbackListener {
+	readonly String deviceType = "laser_range_finder_distance"
+	BigDecimal threshold = "0"
+}
+
+class LaserRangeFinderVelocity extends LaserRangeFinderDevice, MTFConfigConsumer<TFBaseConfiguration>,
+	MSensor<MDecimalValue>, CallbackListener {
+	readonly String deviceType = "laser_range_finder_velocity"
+	BigDecimal threshold = "0"
+}
+
+class MBrickletLoadCell extends MDevice<TinkerBrickletLoadCell>,
+		MSubDeviceHolder<LoadCellDevice> {
+    readonly String deviceType = "bricklet_loadcell"
+}
+
+interface LoadCellDevice extends MSubDevice<MBrickletLoadCell> {
+}
+
+class LoadCellWeight extends LoadCellDevice, MSensor<MDecimalValue>, MTFConfigConsumer<LoadCellConfiguration>,
+        CallbackListener {
+	 readonly String deviceType = "loadcell_weight"
+	BigDecimal threshold = "0"
+	short movingAverage = "4"
+    op void init(){}
+    op void tare(){}
+}
+
+class LoadCellLed extends LoadCellDevice, DigitalActor {
+	readonly String deviceType = "loadcell_led"
+}
+
+class MBrickletColor extends MDevice<TinkerBrickletColor>,
+	MSubDeviceHolder<BrickletColorDevice>, MTFConfigConsumer<BrickletColorConfiguration>{
+	readonly String deviceType = "bricklet_color"
+	Short gain = "3"
+	Short integrationTime = "3"
+}
+
+interface BrickletColorDevice extends MSubDevice<MBrickletColor> {
+}
+
+class ColorColor extends BrickletColorDevice, MSensor<HSBValue>,
+	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	 readonly String deviceType = "color_color"
+}
+
+class ColorIlluminance extends BrickletColorDevice, MSensor<MDecimalValue>,
+	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	 readonly String deviceType = "color_illuminance"
+	Short gain //from MBrickletColor
+	Short integrationTime //from MBrickletColor
+}
+
+class ColorColorTemperature extends BrickletColorDevice, MSensor<MDecimalValue>,
+	 MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
+	 readonly String deviceType = "color_temperature"
+}
+
+class ColorLed extends BrickletColorDevice, DigitalActor {
+	readonly String deviceType = "color_led"
 }
 
 class DualButtonLed extends DualButtonDevice, DigitalActor,
@@ -294,6 +439,26 @@ class DualButtonLed extends DualButtonDevice, DigitalActor,
 class MBrickletLinearPoti extends MDevice<TinkerBrickletLinearPoti>, CallbackListener,
 	MTFConfigConsumer<TFBaseConfiguration>, MSensor<MDecimalValue> {
 		readonly String deviceType = "bricklet_linear_poti"
+}
+
+class MBrickletRotaryEncoder extends MDevice<TinkerBrickletRotaryEncoder>, MSubDeviceHolder<RotaryEncoderDevice> {
+	readonly String deviceType = "bricklet_rotaryencoder"
+
+}
+
+interface RotaryEncoderDevice extends MSubDevice<MBrickletRotaryEncoder> {
+	
+}
+
+class RotaryEncoder extends RotaryEncoderDevice, MSensor<MDecimalValue>,
+	CallbackListener, MTFConfigConsumer<TFBaseConfiguration> {
+		readonly String deviceType = "rotary_encoder"
+	op void clear(){}
+}
+
+class RotaryEncoderButton extends RotaryEncoderDevice, MSensor<SwitchState>,
+	MTFConfigConsumer<ButtonConfiguration> {
+		readonly String deviceType = "rotary_encoder_button"
 }
 
 class MBrickletJoystick extends MDevice<BrickletJoystick>, MSubDeviceHolder<JoystickDevice>,
@@ -519,12 +684,15 @@ class RemoteSwitchA extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchAConfigu
     Short repeats
 }
 
-class RemoteSwitchB extends MSensor<MDecimalValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>{
+class RemoteSwitchB extends MSensor<PercentValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>,
+      PercentTypeActor {
     readonly String deviceType = "remote_switch_b"
     Long address
     Short unit
     Short repeats
-    Short targetDimmvalue = "0"
+    Short absDimmValue
+    //minValue = "0" is not configurable is hard coded in the binding
+    //maxValue = "15" is not configurable is hard coded in the binding
 }
 
 class RemoteSwitchC extends RemoteSwitch, MTFConfigConsumer<RemoteSwitchCConfiguration>{
@@ -680,10 +848,43 @@ class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>,
 	op void init(){}
 }
 
+class MBrickletAmbientLightV2 extends MDevice<TinkerBrickletAmbientLightV2>, 
+		MSensor<MDecimalValue>, MTFConfigConsumer<AmbientLightV2Configuration>, 
+		CallbackListener {
+	readonly String deviceType = "bricklet_ambient_lightv2"
+	BigDecimal threshold = "1"
+	short illuminanceRange = "3"
+	short integrationTime = "3"
+	
+	op void init(){}
+}
+
+class MBrickletIndustrialDualAnalogIn extends MDevice<TinkerBrickletIndustrialDualAnalogIn>,
+		MTFConfigConsumer<BrickletIndustrialDualAnalogInConfiguration>, MSubDeviceHolder<IndustrialDualAnalogInChannel> {
+	readonly String deviceType = "bricklet_industrial_dual_analogin"
+	short sampleRate = "6"
+}
+
+class IndustrialDualAnalogInChannel extends MSensor<MDecimalValue>, 
+        MSubDevice<MBrickletIndustrialDualAnalogIn>, MTFConfigConsumer<TFBaseConfiguration>, 
+		CallbackListener {
+	readonly String deviceType = "industrial_dual_analogin_channel"
+	BigDecimal threshold = "0"
+	Short channelNum
+}
+
 class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
         CallbackListener {
     readonly String deviceType = "bricklet_soundintensity"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
+class MBrickletDustDetector extends MDevice<TinkerBrickletDustDetector>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_dustdetector"
     BigDecimal threshold = "0"
     op void init(){}
 }
@@ -695,6 +896,23 @@ class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
     BigDecimal threshold = "0"
     Short movingAverage = "100"
     op void init(){}
+}
+
+class MBrickletAnalogInV2 extends MDevice<TinkerBrickletAnalogInV2>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFAnalogInV2Configuration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_analoginv2"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+}
+
+class MBrickletAnalogIn extends MDevice<TinkerBrickletAnalogIn>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFAnalogInConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_analogin"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+	Short range = "0"
 }
 
 class MBrickletDistanceUS extends MDevice<TinkerBrickletDistanceUS>,
@@ -776,14 +994,43 @@ class TFBaseConfiguration extends TFConfig {
 	int callbackPeriod
 }
 
+class LoadCellConfiguration extends TFBaseConfiguration {
+	short movingAverage
+}
+
+class LaserRangeFinderConfiguration extends TFConfig {
+	short distanceAverageLength
+	short velocityAverageLength
+	short mode
+	Boolean enableLaserOnStartup
+}
+
+class AmbientLightV2Configuration extends TFBaseConfiguration {
+	short illuminanceRange
+	short integrationTime
+}
+
+class BrickletIndustrialDualAnalogInConfiguration extends TFBaseConfiguration {
+	Short sampleRate
+}
+
 class TFTemperatureConfiguration extends TFBaseConfiguration {
 	boolean slowI2C
 }
+
 class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
     int emissivity
 }
 
 class TFMoistureBrickletConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+}
+
+class TFAnalogInConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+	Short range
+}
+class TFAnalogInV2Configuration extends TFBaseConfiguration {
     Short movingAverage
 }
 
@@ -886,6 +1133,17 @@ class LEDStripConfiguration extends TFConfig {
 
 class LEDGroupConfiguration extends TFConfig {
 	String leds
+}
+
+class BrickletColorConfiguration extends TFConfig {
+	Short gain
+	Short integrationTime
+}
+
+class BrickletAccelerometerConfiguration extends TFConfig {
+	Short dataRate
+	Short fullScale
+	Short filterBandwidth
 }
 
 enum NoSubIds {
@@ -996,4 +1254,28 @@ enum PTCSubIds {
 
 enum IndustrialDual020mASubIds {
 	sensor0, sensor1
+}
+
+enum RotaryEncoderSubIds {
+	encoder, button
+}
+
+enum ColorBrickletSubIds {
+	color, temperature, illuminance, led
+}
+
+enum LoadCellSubIds {
+	weight, led
+}
+
+enum IndustrialDualAnalogInSubIds {
+	channel0, channel1
+}
+
+enum LaserRangeFinderSubIds {
+	distance, velocity, laser
+}
+
+enum AccelerometerSubIds {
+	x, y, z, temperature, led
 }

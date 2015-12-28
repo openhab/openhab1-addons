@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 
 
 /**
@@ -26,15 +27,15 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAddress <em>Address</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getUnit <em>Unit</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getRepeats <em>Repeats</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getTargetDimmvalue <em>Target Dimmvalue</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAbsDimmValue <em>Abs Dimm Value</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.RemoteSwitch org.openhab.binding.tinkerforge.internal.model.DimmableActor<org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.PercentValue> org.openhab.binding.tinkerforge.internal.model.RemoteSwitch org.openhab.binding.tinkerforge.internal.model.DimmableActor<org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration> org.openhab.binding.tinkerforge.internal.model.PercentTypeActor"
  * @generated
  */
-public interface RemoteSwitchB extends MSensor<DecimalValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>
+public interface RemoteSwitchB extends MSensor<PercentValue>, RemoteSwitch, DimmableActor<RemoteSwitchBConfiguration>, PercentTypeActor
 {
 
   /**
@@ -132,29 +133,28 @@ public interface RemoteSwitchB extends MSensor<DecimalValue>, RemoteSwitch, Dimm
   void setRepeats(Short value);
 
   /**
-   * Returns the value of the '<em><b>Target Dimmvalue</b></em>' attribute.
-   * The default value is <code>"0"</code>.
+   * Returns the value of the '<em><b>Abs Dimm Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Target Dimmvalue</em>' attribute isn't clear,
+   * If the meaning of the '<em>Abs Dimm Value</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Target Dimmvalue</em>' attribute.
-   * @see #setTargetDimmvalue(Short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB_TargetDimmvalue()
-   * @model default="0" unique="false"
+   * @return the value of the '<em>Abs Dimm Value</em>' attribute.
+   * @see #setAbsDimmValue(Short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB_AbsDimmValue()
+   * @model unique="false"
    * @generated
    */
-  Short getTargetDimmvalue();
+  Short getAbsDimmValue();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getTargetDimmvalue <em>Target Dimmvalue</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAbsDimmValue <em>Abs Dimm Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target Dimmvalue</em>' attribute.
-   * @see #getTargetDimmvalue()
+   * @param value the new value of the '<em>Abs Dimm Value</em>' attribute.
+   * @see #getAbsDimmValue()
    * @generated
    */
-  void setTargetDimmvalue(Short value);
+  void setAbsDimmValue(Short value);
 } // RemoteSwitchB
