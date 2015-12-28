@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>NS310</Model>
+	<Label lang="en">Smart PowerNode</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x56</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+	
+	<Configuration>
+		<Parameter>
+			<Index>0</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Min. variation of load current</Label>
+			<Help lang="en">Minimum variation in load current before a message is sent. Value in percent (30 => 30%)</Help>
+		</Parameter>
+	
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+			<Default>2</Default>
+			<Minimum>-1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">No communication light</Label>
+			<Help lang="en">After how many minutes the GreenWave device should start flashing if the controller didn't communicate with this device</Help>
+		</Parameter>
+	
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<ReadOnly>true</ReadOnly>
+			<Item>
+				<Value>-128</Value>
+				<Label lang="en">Black</Label>
+			</Item>
+			<Item>
+				<Value>-127</Value>
+				<Label lang="en">Green (1)</Label>
+			</Item>
+			<Item>
+				<Value>-126</Value>
+				<Label lang="en">Dark Blue (2)</Label>
+			</Item>
+			<Item>
+				<Value>-125</Value>
+				<Label lang="en">Red (3)</Label>
+			</Item>
+			<Item>
+				<Value>-124</Value>
+				<Label lang="en">Yellow (4)</Label>
+			</Item>
+			<Item>
+				<Value>-123</Value>
+				<Label lang="en">Purple (5)</Label>
+			</Item>
+			<Item>
+				<Value>-122</Value>
+				<Label lang="en">Orange (6)</Label>
+			</Item>
+			<Item>
+				<Value>-121</Value>
+				<Label lang="en">Light Blue (7)</Label>
+			</Item>
+			<Item>
+				<Value>-120</Value>
+				<Label lang="en">Pink (8)</Label>
+			</Item>
+			<Item>
+				<Value>-119</Value>
+				<Label lang="en">Locked</Label>
+			</Item>
+		
+			<Label lang="en">Wheel position</Label>
+			<Help lang="en">Wheel position on the GreenWave device (read-only)</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">On</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Power-on state</Label>
+			<Help lang="en">Default state after power loss</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED flash on</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED flash off</Label>
+			</Item>
+			<Label lang="en">Network error</Label>
+			<Help lang="en">If the LED should indicate a network error by flashing or not</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Wheel position change</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Current leakage on relay</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Power level change</Label>
+			<Help lang="en">The new power reading is sent if the delta of the change is greater than the defined minimum variation</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Over-current detection</Label>
+		</Group>
+	</Associations>
+
+</Product>
+
