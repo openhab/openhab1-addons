@@ -37,7 +37,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * 
 	 * @param provider the new {@link BindingProvider} to add
 	 */
-	public void addBindingProvider(P provider) {
+	public void addBindingProvider(BindingProvider provider) {
 		super.addBindingProvider(provider);
 		activeService.activate();
 	}
@@ -48,7 +48,7 @@ public abstract class AbstractActiveBinding<P extends BindingProvider> extends A
 	 * 
 	 * @param provider the {@link BindingProvider} to remove
 	 */
-	public void removeBindingProvider(P provider) {
+	public void removeBindingProvider(BindingProvider provider) {
 		super.removeBindingProvider(provider);
 		
 		// if there are no binding providers there is no need to run this 

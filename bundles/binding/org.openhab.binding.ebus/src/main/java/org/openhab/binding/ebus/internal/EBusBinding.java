@@ -27,6 +27,7 @@ import org.openhab.binding.ebus.internal.parser.EBusTelegramParser;
 import org.openhab.binding.ebus.internal.utils.EBusUtils;
 import org.openhab.binding.ebus.internal.utils.StateUtils;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.Configuration;
@@ -202,7 +203,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 	 * @see org.openhab.core.binding.AbstractBinding#addBindingProvider(org.openhab.core.binding.BindingProvider)
 	 */
 	@Override
-	public void addBindingProvider(EBusBindingProvider provider) {
+	public void addBindingProvider(BindingProvider provider) {
 		super.addBindingProvider(provider);
 
 		if(commandProcessor == null) {
@@ -222,7 +223,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 	 * @see org.openhab.core.binding.AbstractBinding#removeBindingProvider(org.openhab.core.binding.BindingProvider)
 	 */
 	@Override
-	public void removeBindingProvider(EBusBindingProvider provider) {
+	public void removeBindingProvider(BindingProvider provider) {
 		super.removeBindingProvider(provider);
 		provider.removeBindingChangeListener(commandProcessor);
 	}
