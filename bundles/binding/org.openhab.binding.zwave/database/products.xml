@@ -1238,7 +1238,8 @@
 			</Reference>
 			<Model>NS210</Model>
 			<Label lang="en">Smart PowerNode</Label>
-			<ConfigFile>greenwave/ns210.xml</ConfigFile>
+			<ConfigFile VersionMax="3">greenwave/ns210.xml</ConfigFile>
+			<ConfigFile VersionMin="4">greenwave/ns310.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
