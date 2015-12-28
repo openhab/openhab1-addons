@@ -44,6 +44,7 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Tamper Event Report (Alarm Report)</Label>
+			<SetToController>true</SetToController>
 		</Group>
 		<Group>
 			<Index>2</Index>
@@ -51,6 +52,7 @@
 			<Label lang="en">Control other Z-Wave Devices</Label>
 			<Help lang="en">Target nodes who receive BASIC_SET command</Help>
 			<Help lang="de">Ziele für BASIC_SET Befehle</Help>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>
