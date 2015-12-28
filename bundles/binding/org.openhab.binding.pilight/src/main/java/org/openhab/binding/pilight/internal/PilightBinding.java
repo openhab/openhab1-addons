@@ -63,6 +63,12 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 	
 	private Map<String, PilightConnection> connections = new HashMap<String, PilightConnection>();
 	
+	@Override
+	public void deactivate() {
+		logger.debug("pilight binding deactivated");
+		closeConnections();
+	}
+	
 	/**
 	 * Processes a status update received from pilight and changes the state of the
 	 * corresponding openHAB item (if item config is found)
@@ -235,6 +241,8 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		closeConnections();
+		
 		if (config != null) {			
 			this.connections = parseConfig(config);
 			
@@ -243,6 +251,15 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 					PilightConnection connection = entry.getValue();
 					startConnector(connection);
 				}
+			}
+		}
+	}
+
+	private void closeConnections() {
+		for (Entry<String, PilightConnection> entry : connections.entrySet()) {
+			PilightConnection connection = entry.getValue();
+			if (connection.getConnector() != null) {
+				connection.getConnector().close();
 			}
 		}
 	}
