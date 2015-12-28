@@ -30,13 +30,22 @@ public class Tools {
   public static DecimalValue calculate(short value) {
     BigDecimal bvalue = new BigDecimal(String.valueOf(value));
     return new DecimalValue(bvalue);
-
   }
+
+  public static DecimalValue calculate(long value) {
+    BigDecimal bvalue = new BigDecimal(String.valueOf(value));
+    return new DecimalValue(bvalue);
+  }
+
   public static DecimalValue calculate10(short value){
     return calculate(value, BigDecimal.TEN);
   }
 
   public static DecimalValue calculate10(int value){
+    return calculate(value, BigDecimal.TEN);
+  }
+
+  public static DecimalValue calculate10(long value) {
     return calculate(value, BigDecimal.TEN);
   }
 
@@ -66,6 +75,11 @@ public class Tools {
     return new DecimalValue(bvalue);
   }
   
+  public static DecimalValue calculate(long value, BigDecimal devider) {
+    BigDecimal bvalue = new BigDecimal(String.valueOf(value)).divide(devider);
+    return new DecimalValue(bvalue);
+  }
+
   public static BigDecimal getBigDecimalOpt(String key, DeviceOptions opts){
     return getBigDecimalOpt(key, opts, null);
   }

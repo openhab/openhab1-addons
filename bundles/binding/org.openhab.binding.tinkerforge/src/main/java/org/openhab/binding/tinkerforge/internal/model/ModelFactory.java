@@ -89,6 +89,15 @@ public interface ModelFactory extends EFactory
   MBrickletDualButton createMBrickletDualButton();
 
   /**
+   * Returns a new object of class '<em>MBricklet Piezo Speaker</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Piezo Speaker</em>'.
+   * @generated
+   */
+  MBrickletPiezoSpeaker createMBrickletPiezoSpeaker();
+
+  /**
    * Returns a new object of class '<em>Dual Button Button</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -96,6 +105,123 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   DualButtonButton createDualButtonButton();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Accelerometer</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Accelerometer</em>'.
+   * @generated
+   */
+  MBrickletAccelerometer createMBrickletAccelerometer();
+
+  /**
+   * Returns a new object of class '<em>Accelerometer Direction</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Accelerometer Direction</em>'.
+   * @generated
+   */
+  AccelerometerDirection createAccelerometerDirection();
+
+  /**
+   * Returns a new object of class '<em>Accelerometer Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Accelerometer Temperature</em>'.
+   * @generated
+   */
+  AccelerometerTemperature createAccelerometerTemperature();
+
+  /**
+   * Returns a new object of class '<em>Accelerometer Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Accelerometer Led</em>'.
+   * @generated
+   */
+  AccelerometerLed createAccelerometerLed();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Laser Range Finder</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Laser Range Finder</em>'.
+   * @generated
+   */
+  MBrickletLaserRangeFinder createMBrickletLaserRangeFinder();
+
+  /**
+   * Returns a new object of class '<em>Laser Range Finder Laser</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Laser Range Finder Laser</em>'.
+   * @generated
+   */
+  LaserRangeFinderLaser createLaserRangeFinderLaser();
+
+  /**
+   * Returns a new object of class '<em>Laser Range Finder Distance</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Laser Range Finder Distance</em>'.
+   * @generated
+   */
+  LaserRangeFinderDistance createLaserRangeFinderDistance();
+
+  /**
+   * Returns a new object of class '<em>Laser Range Finder Velocity</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Laser Range Finder Velocity</em>'.
+   * @generated
+   */
+  LaserRangeFinderVelocity createLaserRangeFinderVelocity();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Color</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Color</em>'.
+   * @generated
+   */
+  MBrickletColor createMBrickletColor();
+
+  /**
+   * Returns a new object of class '<em>Color Color</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Color</em>'.
+   * @generated
+   */
+  ColorColor createColorColor();
+
+  /**
+   * Returns a new object of class '<em>Color Illuminance</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Illuminance</em>'.
+   * @generated
+   */
+  ColorIlluminance createColorIlluminance();
+
+  /**
+   * Returns a new object of class '<em>Color Color Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Color Temperature</em>'.
+   * @generated
+   */
+  ColorColorTemperature createColorColorTemperature();
+
+  /**
+   * Returns a new object of class '<em>Color Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Color Led</em>'.
+   * @generated
+   */
+  ColorLed createColorLed();
 
   /**
    * Returns a new object of class '<em>Dual Button Led</em>'.
@@ -114,6 +240,33 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletLinearPoti createMBrickletLinearPoti();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Rotary Encoder</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Rotary Encoder</em>'.
+   * @generated
+   */
+  MBrickletRotaryEncoder createMBrickletRotaryEncoder();
+
+  /**
+   * Returns a new object of class '<em>Rotary Encoder</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rotary Encoder</em>'.
+   * @generated
+   */
+  RotaryEncoder createRotaryEncoder();
+
+  /**
+   * Returns a new object of class '<em>Rotary Encoder Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rotary Encoder Button</em>'.
+   * @generated
+   */
+  RotaryEncoderButton createRotaryEncoderButton();
 
   /**
    * Returns a new object of class '<em>MBricklet Joystick</em>'.
@@ -584,6 +737,24 @@ public interface ModelFactory extends EFactory
   LEDGroupConfiguration createLEDGroupConfiguration();
 
   /**
+   * Returns a new object of class '<em>Bricklet Color Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Color Configuration</em>'.
+   * @generated
+   */
+  BrickletColorConfiguration createBrickletColorConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
+   * @generated
+   */
+  BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration();
+
+  /**
    * Returns a new object of class '<em>MServo</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -764,6 +935,41 @@ public interface ModelFactory extends EFactory
   TFBaseConfiguration createTFBaseConfiguration();
 
   /**
+   * Returns a new object of class '<em>Load Cell Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Load Cell Configuration</em>'.
+   * @generated
+   */
+  LoadCellConfiguration createLoadCellConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Laser Range Finder Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Laser Range Finder Configuration</em>'.
+   * @generated
+   */
+  LaserRangeFinderConfiguration createLaserRangeFinderConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Ambient Light V2 Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Ambient Light V2 Configuration</em>'.
+   * @generated
+   */
+  AmbientLightV2Configuration createAmbientLightV2Configuration();
+  /**
+   * Returns a new object of class '<em>Bricklet Industrial Dual Analog In Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Industrial Dual Analog In Configuration</em>'.
+   * @generated
+   */
+  BrickletIndustrialDualAnalogInConfiguration createBrickletIndustrialDualAnalogInConfiguration();
+
+  /**
    * Returns a new object of class '<em>TF Temperature Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -789,6 +995,24 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Analog In Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Analog In Configuration</em>'.
+   * @generated
+   */
+  TFAnalogInConfiguration createTFAnalogInConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Analog In V2 Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Analog In V2 Configuration</em>'.
+   * @generated
+   */
+  TFAnalogInV2Configuration createTFAnalogInV2Configuration();
 
   /**
    * Returns a new object of class '<em>TF Distance US Bricklet Configuration</em>'.
@@ -836,6 +1060,33 @@ public interface ModelFactory extends EFactory
   MBrickletAmbientLight createMBrickletAmbientLight();
 
   /**
+   * Returns a new object of class '<em>MBricklet Ambient Light V2</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Ambient Light V2</em>'.
+   * @generated
+   */
+  MBrickletAmbientLightV2 createMBrickletAmbientLightV2();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Industrial Dual Analog In</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Dual Analog In</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDualAnalogIn createMBrickletIndustrialDualAnalogIn();
+
+  /**
+   * Returns a new object of class '<em>Industrial Dual Analog In Channel</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Industrial Dual Analog In Channel</em>'.
+   * @generated
+   */
+  IndustrialDualAnalogInChannel createIndustrialDualAnalogInChannel();
+
+  /**
    * Returns a new object of class '<em>MBricklet Sound Intensity</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -845,6 +1096,42 @@ public interface ModelFactory extends EFactory
   MBrickletSoundIntensity createMBrickletSoundIntensity();
 
   /**
+   * Returns a new object of class '<em>MBricklet Dust Detector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Dust Detector</em>'.
+   * @generated
+   */
+  MBrickletDustDetector createMBrickletDustDetector();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Load Cell</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Load Cell</em>'.
+   * @generated
+   */
+  MBrickletLoadCell createMBrickletLoadCell();
+
+  /**
+   * Returns a new object of class '<em>Load Cell Weight</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Load Cell Weight</em>'.
+   * @generated
+   */
+  LoadCellWeight createLoadCellWeight();
+
+  /**
+   * Returns a new object of class '<em>Load Cell Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Load Cell Led</em>'.
+   * @generated
+   */
+  LoadCellLed createLoadCellLed();
+
+  /**
    * Returns a new object of class '<em>MBricklet Moisture</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -852,6 +1139,24 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletMoisture createMBrickletMoisture();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Analog In V2</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Analog In V2</em>'.
+   * @generated
+   */
+  MBrickletAnalogInV2 createMBrickletAnalogInV2();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Analog In</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Analog In</em>'.
+   * @generated
+   */
+  MBrickletAnalogIn createMBrickletAnalogIn();
 
   /**
    * Returns a new object of class '<em>MBricklet Distance US</em>'.

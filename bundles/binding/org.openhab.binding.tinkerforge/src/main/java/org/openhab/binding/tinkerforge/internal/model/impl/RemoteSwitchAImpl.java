@@ -276,6 +276,8 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
    */
   protected Short repeats = REPEATS_EDEFAULT;
 
+  private BrickletRemoteSwitch tinkerforgeDevice;
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -650,6 +652,7 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
       logger.error("{} missing configuration for subid {} device will not work",
           LoggerConstants.TFINITSUB, getSubId());
     }
+    tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
   }
 
   /**
@@ -675,10 +678,24 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
               ? BrickletRemoteSwitch.SWITCH_TO_ON
               : BrickletRemoteSwitch.SWITCH_TO_OFF;
       try {
-        if (getRepeats() != null){
-          getMbrick().getTinkerforgeDevice().setRepeats(getRepeats());
+        int maxRetries = 20;
+        int trial = 0;
+        while (tinkerforgeDevice.getSwitchingState() == BrickletRemoteSwitch.SWITCHING_STATE_BUSY
+            && trial < maxRetries) {
+          trial++;
+          logger.trace("waiting for ready state {}", trial);
+          Thread.sleep(50);
         }
-        getMbrick().getTinkerforgeDevice().switchSocketA(getHouseCode(), getReceiverCode(),
+        if (trial == maxRetries) {
+          logger.error("remote switch doesn't go to ready state in spite of {} retries.", trial);
+          return;
+        }
+        if (getRepeats() != null){
+          tinkerforgeDevice.setRepeats(getRepeats());
+        }
+        logger.debug("switching socket A with housCode {}, receiverCode {} to {}", getHouseCode(),
+            getReceiverCode(), switchTo);
+        tinkerforgeDevice.switchSocketA(getHouseCode(), getReceiverCode(),
             switchTo);
         setSwitchState(state);
       } catch (TimeoutException e) {
@@ -686,6 +703,8 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
       } catch (NotConnectedException e) {
         TinkerforgeErrorHandler.handleError(this,
             TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      } catch (InterruptedException e) {
+        logger.warn("retry was interrupted");
       }
     } else {
       logger.error("{} missing configuration for subid {} device will not switch",
@@ -698,7 +717,9 @@ public class RemoteSwitchAImpl extends MinimalEObjectImpl.Container implements R
    * 
    * @generated NOT
    */
-  public void fetchSwitchState() {}
+  public void fetchSwitchState() {
+    setSwitchState(getSwitchState()); // trigger a value update to the eventbus
+  }
 
   /**
    * <!-- begin-user-doc -->
