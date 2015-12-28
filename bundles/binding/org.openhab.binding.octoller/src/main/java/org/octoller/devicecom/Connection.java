@@ -7,13 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-/**
- ********************************************************************************************************
- * openHAB binding for octoller (www.octoller.com)
- * For use with octoller-Gateway
- ********************************************************************************************************
- */
-
 package org.octoller.devicecom;
 
 import java.io.*;
@@ -21,71 +14,67 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.openhab.binding.octoller.internal.octollerBindingConfig;
+import org.openhab.binding.octoller.internal.OctollerBindingConfig;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
 /**
+ * openHAB binding for octoller (www.octoller.com) For use with octoller-Gateway
+ * 
  * @author JPlenert
- * @since 1.5.1
- * openHAB binding for octoller (www.octoller.com)
- * For use with octoller-Gateway
+ * @since 1.8.0
  */
-public class Connection
-{
-	
-	Socket 			socket;
-	InetAddress		address;
-	OutputStream 	outStream;
-	InputStream 	inStream;
-	
-	public Connection(String nameOrAddress) throws IOException
-	{
+public class Connection {
+
+	Socket socket;
+	InetAddress address;
+	OutputStream outStream;
+	InputStream inStream;
+
+	public Connection(String nameOrAddress) throws IOException {
 		address = InetAddress.getByName(nameOrAddress);
-		socket = new Socket(address, 2300);	
+		socket = new Socket(address, 2300);
 		outStream = socket.getOutputStream();
 		inStream = socket.getInputStream();
 	}
-	
-	public String DoCommand(String command) throws IOException
-	{
+
+	public String doCommand(String command) throws IOException {
 		ByteBuffer b = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
 		b.putInt(command.length());
-		outStream.write(b.array(), 0, 4);		// length	
-		outStream.write(command.getBytes());	// data
-		
-		byte[] buffer = new byte[4];		
+		outStream.write(b.array(), 0, 4); // length
+		outStream.write(command.getBytes()); // data
+
+		byte[] buffer = new byte[4];
 		inStream.read(buffer, 0, 4);
 		b = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN);
 		int len = b.getInt();
 		buffer = new byte[len];
 		inStream.read(buffer, 0, len);
-		return new String(buffer, "UTF-8");	
+		return new String(buffer, "UTF-8");
 	}
-	
-	public void Close() throws IOException
-	{
+
+	public void close() throws IOException {
 		socket.close();
 	}
-	
-	public void ProcessResultToPublisher(EventPublisher eventPublisher, String itemName, String result)
-	{
+
+	public void processResultToPublisher(EventPublisher eventPublisher,
+			String itemName, String result) {
 		if (result.equals("Up"))
-			eventPublisher.postUpdate(itemName, (State)new PercentType(0));
+			eventPublisher.postUpdate(itemName, (State) new PercentType(0));
 		else if (result.equals("Down"))
-			eventPublisher.postUpdate(itemName, (State)new PercentType(100));
+			eventPublisher.postUpdate(itemName, (State) new PercentType(100));
 		else if (result.equals("Unknown"))
-			eventPublisher.postUpdate(itemName, (State)new PercentType(50));
+			eventPublisher.postUpdate(itemName, (State) new PercentType(50));
 		else if (result.equals("On"))
-			eventPublisher.postUpdate(itemName, (State)OnOffType.ON);
+			eventPublisher.postUpdate(itemName, (State) OnOffType.ON);
 		else if (result.equals("Off"))
-			eventPublisher.postUpdate(itemName, (State)OnOffType.OFF);		
+			eventPublisher.postUpdate(itemName, (State) OnOffType.OFF);
 	}
-	
-	public String BuildCommandString(octollerBindingConfig config, String commandType, String command)
-	{		
+
+	public String buildCommandString(OctollerBindingConfig config,
+			String commandType, String command) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DeviceHost=");
 		sb.append(config.DeviceHost);
@@ -96,20 +85,20 @@ public class Connection
 		sb.append("Command=");
 		sb.append(command);
 		sb.append("|");
-		if (config.BlockID != 0)
-		{
+
+		if (config.BlockID != 0) {
 			sb.append("BlockID=");
 			sb.append(config.BlockID);
 			sb.append("|");
 		}
-		if (config.BlockName != null)
-		{
+
+		if (config.BlockName != null) {
 			sb.append("BlockName=");
 			sb.append(config.BlockName);
 			sb.append("|");
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 }

@@ -13,10 +13,9 @@ import org.openhab.binding.octoller.internal.*;
 
 /**
  * @author JPlenert
- * @since 1.5.1
+ * @since 1.8.0
  */
-public interface octollerBindingProvider extends BindingProvider 
-{
-	public octollerBindingConfig getConfig(String itemName);
-	
+public interface OctollerBindingProvider extends BindingProvider {
+	public OctollerBindingConfig getConfig(String itemName);
+
 }

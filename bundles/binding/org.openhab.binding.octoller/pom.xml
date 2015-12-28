@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<version>1.8.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -32,11 +32,4 @@
 		</plugins>
 	</build>
 
-	<url>www.octoller.com</url>
-	<description>openHAP bnding for octoller (www.octoller.com).
-For use with octoller-Gateway</description>
-	<organization>
-		<name>Joerg Plenert</name>
-	</organization>
-	<version>1.0</version>
 </project>
