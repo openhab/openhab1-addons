@@ -382,6 +382,74 @@ public abstract class MessageHandler {
 	}
 
 	/**
+	 * This message handler processes replies to Ramp ON/OFF commands.
+	 * Currently, it's been tested for the 2672-222 LED Bulb. Other
+	 * devices may use a different pair of commands (0x2E, 0x2F). This
+	 * handler and the command handler will need to be extended to support
+	 * those devices.
+	 */
+	public static class RampDimmerHandler extends MessageHandler {
+		private int onCmd;
+		private int offCmd;
+		
+		RampDimmerHandler(DeviceFeature p) { 
+			super(p);
+			// Can't process parameters here because they are set after constructor is invoked.
+			// Unfortunately, this means we can't declare the onCmd, offCmd to be final.
+		}
+		
+		@Override
+		public void setParameters(HashMap<String, String> params)
+		{
+			super.setParameters(params);
+			onCmd = getIntParameter("on", 0x2E);
+			offCmd = getIntParameter("off", 0x2F);
+		}
+		
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (isMybutton(msg, f)) {
+				if (cmd1 == onCmd) {
+					int level = getLevel(msg);
+					logger.info("{}: device {} was switched on using ramp to level {}.", 
+							nm(), f.getDevice().getAddress(), level);
+					if (level == 100) {
+						f.publish(OnOffType.ON, StateChangeType.ALWAYS);						
+					}
+					else {
+						// The publisher will convert an ON at level==0 to an OFF.
+						// However, this is not completely accurate since a ramp
+						// off at level == 0 may not turn off the dimmer completely
+						// (if I understand the Insteon docs correctly). In any case,
+						// it would be an odd scenario to turn ON a light at level == 0
+						// rather than turn if OFF.
+						f.publish(new PercentType(level), StateChangeType.ALWAYS);
+					}
+				}
+				else if (cmd1 == offCmd) {
+					logger.info("{}: device {} was switched off using ramp.", nm(),
+							f.getDevice().getAddress());
+					f.publish(new PercentType(0), StateChangeType.ALWAYS);
+				}
+			} else {
+				logger.debug("ignored message: {}", isMybutton(msg,f));
+			}
+		}
+
+		private int getLevel(Msg msg) {
+			try {
+				byte cmd2 = msg.getByte("command2");
+				return (int) Math.round(((cmd2 >> 4) & 0x0f) * (100/15d));
+			}
+			catch (FieldException e) {
+				logger.error("Can't access command2 byte", e);
+				return 0;
+			}
+		}
+	}
+
+	/**
 	 * A message handler that processes replies to queries.
 	 * If command2 == 0xFF then the light has been turned on
 	 * else if command2 == 0x00 then the light has been turned off

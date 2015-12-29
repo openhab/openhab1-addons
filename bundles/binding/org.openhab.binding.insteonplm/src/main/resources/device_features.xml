@@ -18,6 +18,23 @@
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 
+<feature name="RampDimmer">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- cmd1 defaults to 0x2E, 0x2F -->
+	<!-- default dispatcher uses 0x19 for lookup key instead of cmd1 -->
+	<message-handler cmd="0x19">RampDimmerHandler</message-handler>
+	<command-handler command="PercentType">RampPercentHandler</command-handler>
+	<command-handler command="OnOffType">RampOnOffCommandHandler</command-handler>
+</feature>
+
+<feature name="RampDimmer_3435">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- default dispatcher uses 0x19 for lookup key instead of cmd1 -->
+	<message-handler cmd="0x19" on="0x34" off="0x35">RampDimmerHandler</message-handler>
+	<command-handler command="PercentType"  on="0x34" off="0x35">RampPercentHandler</command-handler>
+	<command-handler command="OnOffType" on="0x34" off="0x35">RampOnOffCommandHandler</command-handler>
+</feature>
+
 <feature name="ManualChange">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x17">StartManualChangeHandler</message-handler>
