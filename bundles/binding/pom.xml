@@ -170,5 +170,6 @@
     <module>org.openhab.binding.rpircswitch</module>
     <module>org.openhab.binding.myq</module>
     <module>org.openhab.binding.panstamp</module>
+    <module>org.openhab.binding.octoller</module>
   </modules>
 </project>
