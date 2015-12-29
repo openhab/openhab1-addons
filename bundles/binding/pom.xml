@@ -169,5 +169,6 @@
     <module>org.openhab.binding.ucprelayboard</module>
     <module>org.openhab.binding.rpircswitch</module>
     <module>org.openhab.binding.myq</module>
+    <module>org.openhab.binding.panstamp</module>
   </modules>
 </project>
