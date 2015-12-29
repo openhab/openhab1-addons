@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
  * With the heatpump connector the internal state of a  Novelan (Siemens) Heatpump can be read. 
  * 
  * @author Jan-Philipp Bolle
+ * @author John Cocula -- made port configurable
  * @since 1.0.0
  */
 public class HeatpumpConnector {
@@ -32,12 +33,13 @@ public class HeatpumpConnector {
 	
 	private DataInputStream datain = null;
 	private DataOutputStream dataout = null;
-	private String serverIp = "";
-	private int serverPort = 8888;
+	private String serverIp;
+	private int serverPort;
 	
 	
-	public HeatpumpConnector(String serverIp){
+	public HeatpumpConnector(String serverIp, int serverPort) {
 		this.serverIp = serverIp;
+		this.serverPort = serverPort;
 	}
 
 	/**
