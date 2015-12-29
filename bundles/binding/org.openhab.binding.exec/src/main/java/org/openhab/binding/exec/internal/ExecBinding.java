@@ -28,6 +28,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
@@ -411,9 +412,8 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 	}
 
 	@Override
-	public void addBindingProvider(ExecBindingProvider provider) {
+	public void addBindingProvider(BindingProvider provider) {
 		super.addBindingProvider(provider);
-		
 		
 		setProperlyConfigured(true);
 	}
