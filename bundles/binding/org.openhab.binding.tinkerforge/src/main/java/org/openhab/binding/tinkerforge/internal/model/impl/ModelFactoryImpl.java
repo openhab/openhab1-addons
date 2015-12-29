@@ -35,12 +35,18 @@ import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.BrickletAmbientLightV2;
+import com.tinkerforge.BrickletAnalogIn;
+import com.tinkerforge.BrickletAnalogInV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
@@ -48,16 +54,21 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialDual020mA;
+import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
+import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
+import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletRotaryEncoder;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
@@ -123,9 +134,29 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
       case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
+      case ModelPackage.MBRICKLET_PIEZO_SPEAKER: return createMBrickletPiezoSpeaker();
       case ModelPackage.DUAL_BUTTON_BUTTON: return createDualButtonButton();
+      case ModelPackage.MBRICKLET_ACCELEROMETER: return createMBrickletAccelerometer();
+      case ModelPackage.ACCELEROMETER_DIRECTION: return createAccelerometerDirection();
+      case ModelPackage.ACCELEROMETER_TEMPERATURE: return createAccelerometerTemperature();
+      case ModelPackage.ACCELEROMETER_LED: return createAccelerometerLed();
+      case ModelPackage.MBRICKLET_LASER_RANGE_FINDER: return createMBrickletLaserRangeFinder();
+      case ModelPackage.LASER_RANGE_FINDER_LASER: return createLaserRangeFinderLaser();
+      case ModelPackage.LASER_RANGE_FINDER_DISTANCE: return createLaserRangeFinderDistance();
+      case ModelPackage.LASER_RANGE_FINDER_VELOCITY: return createLaserRangeFinderVelocity();
+      case ModelPackage.MBRICKLET_LOAD_CELL: return createMBrickletLoadCell();
+      case ModelPackage.LOAD_CELL_WEIGHT: return createLoadCellWeight();
+      case ModelPackage.LOAD_CELL_LED: return createLoadCellLed();
+      case ModelPackage.MBRICKLET_COLOR: return createMBrickletColor();
+      case ModelPackage.COLOR_COLOR: return createColorColor();
+      case ModelPackage.COLOR_ILLUMINANCE: return createColorIlluminance();
+      case ModelPackage.COLOR_COLOR_TEMPERATURE: return createColorColorTemperature();
+      case ModelPackage.COLOR_LED: return createColorLed();
       case ModelPackage.DUAL_BUTTON_LED: return createDualButtonLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
+      case ModelPackage.MBRICKLET_ROTARY_ENCODER: return createMBrickletRotaryEncoder();
+      case ModelPackage.ROTARY_ENCODER: return createRotaryEncoder();
+      case ModelPackage.ROTARY_ENCODER_BUTTON: return createRotaryEncoderButton();
       case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
       case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
       case ModelPackage.JOYSTICK_YPOSITION: return createJoystickYPosition();
@@ -181,8 +212,14 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_BAROMETER: return createMBrickletBarometer();
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
+      case ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2: return createMBrickletAmbientLightV2();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DUAL_ANALOG_IN: return createMBrickletIndustrialDualAnalogIn();
+      case ModelPackage.INDUSTRIAL_DUAL_ANALOG_IN_CHANNEL: return createIndustrialDualAnalogInChannel();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
+      case ModelPackage.MBRICKLET_DUST_DETECTOR: return createMBrickletDustDetector();
       case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
+      case ModelPackage.MBRICKLET_ANALOG_IN_V2: return createMBrickletAnalogInV2();
+      case ModelPackage.MBRICKLET_ANALOG_IN: return createMBrickletAnalogIn();
       case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
@@ -194,9 +231,15 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TFPTC_BRICKLET_CONFIGURATION: return createTFPTCBrickletConfiguration();
       case ModelPackage.TF_INDUSTRIAL_DUAL020M_ACONFIGURATION: return createTFIndustrialDual020mAConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
+      case ModelPackage.LOAD_CELL_CONFIGURATION: return createLoadCellConfiguration();
+      case ModelPackage.LASER_RANGE_FINDER_CONFIGURATION: return createLaserRangeFinderConfiguration();
+      case ModelPackage.AMBIENT_LIGHT_V2_CONFIGURATION: return createAmbientLightV2Configuration();
+      case ModelPackage.BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION: return createBrickletIndustrialDualAnalogInConfiguration();
       case ModelPackage.TF_TEMPERATURE_CONFIGURATION: return createTFTemperatureConfiguration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
+      case ModelPackage.TF_ANALOG_IN_CONFIGURATION: return createTFAnalogInConfiguration();
+      case ModelPackage.TF_ANALOG_IN_V2_CONFIGURATION: return createTFAnalogInV2Configuration();
       case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION: return createTFDistanceUSBrickletConfiguration();
       case ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION: return createTFVoltageCurrentConfiguration();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
@@ -215,6 +258,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DUAL_BUTTON_LED_CONFIGURATION: return createDualButtonLEDConfiguration();
       case ModelPackage.LED_STRIP_CONFIGURATION: return createLEDStripConfiguration();
       case ModelPackage.LED_GROUP_CONFIGURATION: return createLEDGroupConfiguration();
+      case ModelPackage.BRICKLET_COLOR_CONFIGURATION: return createBrickletColorConfiguration();
+      case ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION: return createBrickletAccelerometerConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -230,6 +275,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case ModelPackage.ACCELEROMETER_COORDINATE:
+        return createAccelerometerCoordinateFromString(eDataType, initialValue);
       case ModelPackage.NO_SUB_IDS:
         return createNoSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -282,6 +329,18 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createPTCSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DUAL020M_ASUB_IDS:
         return createIndustrialDual020mASubIdsFromString(eDataType, initialValue);
+      case ModelPackage.ROTARY_ENCODER_SUB_IDS:
+        return createRotaryEncoderSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.COLOR_BRICKLET_SUB_IDS:
+        return createColorBrickletSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.LOAD_CELL_SUB_IDS:
+        return createLoadCellSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS:
+        return createIndustrialDualAnalogInSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.LASER_RANGE_FINDER_SUB_IDS:
+        return createLaserRangeFinderSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.ACCELEROMETER_SUB_IDS:
+        return createAccelerometerSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -366,6 +425,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletIndustrialDual020mAFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_SOLID_STATE_RELAY:
         return createTinkerBrickletSolidStateRelayFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_PIEZO_SPEAKER:
+        return createTinkerBrickletPiezoSpeakerFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_ROTARY_ENCODER:
+        return createTinkerBrickletRotaryEncoderFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_AMBIENT_LIGHT_V2:
+        return createTinkerBrickletAmbientLightV2FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_DUST_DETECTOR:
+        return createTinkerBrickletDustDetectorFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
+        return createTinkerBrickletLoadCellFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_COLOR:
+        return createTinkerBrickletColorFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN:
+        return createTinkerBrickletIndustrialDualAnalogInFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_ANALOG_IN_V2:
+        return createTinkerBrickletAnalogInV2FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_ANALOG_IN:
+        return createTinkerBrickletAnalogInFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_LASER_RANGE_FINDER:
+        return createTinkerBrickletLaserRangeFinderFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
+        return createTinkerBrickletAccelerometerFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -397,6 +478,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case ModelPackage.ACCELEROMETER_COORDINATE:
+        return convertAccelerometerCoordinateToString(eDataType, instanceValue);
       case ModelPackage.NO_SUB_IDS:
         return convertNoSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -449,6 +532,18 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertPTCSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DUAL020M_ASUB_IDS:
         return convertIndustrialDual020mASubIdsToString(eDataType, instanceValue);
+      case ModelPackage.ROTARY_ENCODER_SUB_IDS:
+        return convertRotaryEncoderSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.COLOR_BRICKLET_SUB_IDS:
+        return convertColorBrickletSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.LOAD_CELL_SUB_IDS:
+        return convertLoadCellSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS:
+        return convertIndustrialDualAnalogInSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.LASER_RANGE_FINDER_SUB_IDS:
+        return convertLaserRangeFinderSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.ACCELEROMETER_SUB_IDS:
+        return convertAccelerometerSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -533,6 +628,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletIndustrialDual020mAToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_SOLID_STATE_RELAY:
         return convertTinkerBrickletSolidStateRelayToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_PIEZO_SPEAKER:
+        return convertTinkerBrickletPiezoSpeakerToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_ROTARY_ENCODER:
+        return convertTinkerBrickletRotaryEncoderToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_AMBIENT_LIGHT_V2:
+        return convertTinkerBrickletAmbientLightV2ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_DUST_DETECTOR:
+        return convertTinkerBrickletDustDetectorToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
+        return convertTinkerBrickletLoadCellToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_COLOR:
+        return convertTinkerBrickletColorToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN:
+        return convertTinkerBrickletIndustrialDualAnalogInToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_ANALOG_IN_V2:
+        return convertTinkerBrickletAnalogInV2ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_ANALOG_IN:
+        return convertTinkerBrickletAnalogInToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_LASER_RANGE_FINDER:
+        return convertTinkerBrickletLaserRangeFinderToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
+        return convertTinkerBrickletAccelerometerToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -626,10 +743,164 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletPiezoSpeaker createMBrickletPiezoSpeaker()
+  {
+    MBrickletPiezoSpeakerImpl mBrickletPiezoSpeaker = new MBrickletPiezoSpeakerImpl();
+    return mBrickletPiezoSpeaker;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public DualButtonButton createDualButtonButton()
   {
     DualButtonButtonImpl dualButtonButton = new DualButtonButtonImpl();
     return dualButtonButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletAccelerometer createMBrickletAccelerometer()
+  {
+    MBrickletAccelerometerImpl mBrickletAccelerometer = new MBrickletAccelerometerImpl();
+    return mBrickletAccelerometer;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerDirection createAccelerometerDirection()
+  {
+    AccelerometerDirectionImpl accelerometerDirection = new AccelerometerDirectionImpl();
+    return accelerometerDirection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerTemperature createAccelerometerTemperature()
+  {
+    AccelerometerTemperatureImpl accelerometerTemperature = new AccelerometerTemperatureImpl();
+    return accelerometerTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerLed createAccelerometerLed()
+  {
+    AccelerometerLedImpl accelerometerLed = new AccelerometerLedImpl();
+    return accelerometerLed;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletLaserRangeFinder createMBrickletLaserRangeFinder()
+  {
+    MBrickletLaserRangeFinderImpl mBrickletLaserRangeFinder = new MBrickletLaserRangeFinderImpl();
+    return mBrickletLaserRangeFinder;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LaserRangeFinderLaser createLaserRangeFinderLaser()
+  {
+    LaserRangeFinderLaserImpl laserRangeFinderLaser = new LaserRangeFinderLaserImpl();
+    return laserRangeFinderLaser;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LaserRangeFinderDistance createLaserRangeFinderDistance()
+  {
+    LaserRangeFinderDistanceImpl laserRangeFinderDistance = new LaserRangeFinderDistanceImpl();
+    return laserRangeFinderDistance;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LaserRangeFinderVelocity createLaserRangeFinderVelocity()
+  {
+    LaserRangeFinderVelocityImpl laserRangeFinderVelocity = new LaserRangeFinderVelocityImpl();
+    return laserRangeFinderVelocity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletColor createMBrickletColor()
+  {
+    MBrickletColorImpl mBrickletColor = new MBrickletColorImpl();
+    return mBrickletColor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorColor createColorColor()
+  {
+    ColorColorImpl colorColor = new ColorColorImpl();
+    return colorColor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorIlluminance createColorIlluminance()
+  {
+    ColorIlluminanceImpl colorIlluminance = new ColorIlluminanceImpl();
+    return colorIlluminance;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorColorTemperature createColorColorTemperature()
+  {
+    ColorColorTemperatureImpl colorColorTemperature = new ColorColorTemperatureImpl();
+    return colorColorTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorLed createColorLed()
+  {
+    ColorLedImpl colorLed = new ColorLedImpl();
+    return colorLed;
   }
 
   /**
@@ -652,6 +923,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletLinearPotiImpl mBrickletLinearPoti = new MBrickletLinearPotiImpl();
     return mBrickletLinearPoti;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletRotaryEncoder createMBrickletRotaryEncoder()
+  {
+    MBrickletRotaryEncoderImpl mBrickletRotaryEncoder = new MBrickletRotaryEncoderImpl();
+    return mBrickletRotaryEncoder;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RotaryEncoder createRotaryEncoder()
+  {
+    RotaryEncoderImpl rotaryEncoder = new RotaryEncoderImpl();
+    return rotaryEncoder;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RotaryEncoderButton createRotaryEncoderButton()
+  {
+    RotaryEncoderButtonImpl rotaryEncoderButton = new RotaryEncoderButtonImpl();
+    return rotaryEncoderButton;
   }
 
   /**
@@ -1231,6 +1535,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public BrickletColorConfiguration createBrickletColorConfiguration()
+  {
+    BrickletColorConfigurationImpl brickletColorConfiguration = new BrickletColorConfigurationImpl();
+    return brickletColorConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration()
+  {
+    BrickletAccelerometerConfigurationImpl brickletAccelerometerConfiguration = new BrickletAccelerometerConfigurationImpl();
+    return brickletAccelerometerConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerCoordinate createAccelerometerCoordinateFromString(EDataType eDataType, String initialValue)
+  {
+    AccelerometerCoordinate result = AccelerometerCoordinate.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAccelerometerCoordinateToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MServo createMServo()
   {
     MServoImpl mServo = new MServoImpl();
@@ -1451,6 +1799,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public LoadCellConfiguration createLoadCellConfiguration()
+  {
+    LoadCellConfigurationImpl loadCellConfiguration = new LoadCellConfigurationImpl();
+    return loadCellConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LaserRangeFinderConfiguration createLaserRangeFinderConfiguration()
+  {
+    LaserRangeFinderConfigurationImpl laserRangeFinderConfiguration = new LaserRangeFinderConfigurationImpl();
+    return laserRangeFinderConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AmbientLightV2Configuration createAmbientLightV2Configuration()
+  {
+    AmbientLightV2ConfigurationImpl ambientLightV2Configuration = new AmbientLightV2ConfigurationImpl();
+    return ambientLightV2Configuration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIndustrialDualAnalogInConfiguration createBrickletIndustrialDualAnalogInConfiguration()
+  {
+    BrickletIndustrialDualAnalogInConfigurationImpl brickletIndustrialDualAnalogInConfiguration = new BrickletIndustrialDualAnalogInConfigurationImpl();
+    return brickletIndustrialDualAnalogInConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFTemperatureConfiguration createTFTemperatureConfiguration()
   {
     TFTemperatureConfigurationImpl tfTemperatureConfiguration = new TFTemperatureConfigurationImpl();
@@ -1477,6 +1869,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TFMoistureBrickletConfigurationImpl tfMoistureBrickletConfiguration = new TFMoistureBrickletConfigurationImpl();
     return tfMoistureBrickletConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFAnalogInConfiguration createTFAnalogInConfiguration()
+  {
+    TFAnalogInConfigurationImpl tfAnalogInConfiguration = new TFAnalogInConfigurationImpl();
+    return tfAnalogInConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFAnalogInV2Configuration createTFAnalogInV2Configuration()
+  {
+    TFAnalogInV2ConfigurationImpl tfAnalogInV2Configuration = new TFAnalogInV2ConfigurationImpl();
+    return tfAnalogInV2Configuration;
   }
 
   /**
@@ -1539,6 +1953,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletAmbientLightV2 createMBrickletAmbientLightV2()
+  {
+    MBrickletAmbientLightV2Impl mBrickletAmbientLightV2 = new MBrickletAmbientLightV2Impl();
+    return mBrickletAmbientLightV2;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIndustrialDualAnalogIn createMBrickletIndustrialDualAnalogIn()
+  {
+    MBrickletIndustrialDualAnalogInImpl mBrickletIndustrialDualAnalogIn = new MBrickletIndustrialDualAnalogInImpl();
+    return mBrickletIndustrialDualAnalogIn;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialDualAnalogInChannel createIndustrialDualAnalogInChannel()
+  {
+    IndustrialDualAnalogInChannelImpl industrialDualAnalogInChannel = new IndustrialDualAnalogInChannelImpl();
+    return industrialDualAnalogInChannel;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MBrickletSoundIntensity createMBrickletSoundIntensity()
   {
     MBrickletSoundIntensityImpl mBrickletSoundIntensity = new MBrickletSoundIntensityImpl();
@@ -1550,10 +1997,76 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletDustDetector createMBrickletDustDetector()
+  {
+    MBrickletDustDetectorImpl mBrickletDustDetector = new MBrickletDustDetectorImpl();
+    return mBrickletDustDetector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletLoadCell createMBrickletLoadCell()
+  {
+    MBrickletLoadCellImpl mBrickletLoadCell = new MBrickletLoadCellImpl();
+    return mBrickletLoadCell;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LoadCellWeight createLoadCellWeight()
+  {
+    LoadCellWeightImpl loadCellWeight = new LoadCellWeightImpl();
+    return loadCellWeight;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LoadCellLed createLoadCellLed()
+  {
+    LoadCellLedImpl loadCellLed = new LoadCellLedImpl();
+    return loadCellLed;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MBrickletMoisture createMBrickletMoisture()
   {
     MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
     return mBrickletMoisture;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletAnalogInV2 createMBrickletAnalogInV2()
+  {
+    MBrickletAnalogInV2Impl mBrickletAnalogInV2 = new MBrickletAnalogInV2Impl();
+    return mBrickletAnalogInV2;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletAnalogIn createMBrickletAnalogIn()
+  {
+    MBrickletAnalogInImpl mBrickletAnalogIn = new MBrickletAnalogInImpl();
+    return mBrickletAnalogIn;
   }
 
   /**
@@ -1852,6 +2365,138 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertIndustrialDual020mASubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RotaryEncoderSubIds createRotaryEncoderSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    RotaryEncoderSubIds result = RotaryEncoderSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertRotaryEncoderSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ColorBrickletSubIds createColorBrickletSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    ColorBrickletSubIds result = ColorBrickletSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertColorBrickletSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LoadCellSubIds createLoadCellSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    LoadCellSubIds result = LoadCellSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertLoadCellSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialDualAnalogInSubIds createIndustrialDualAnalogInSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    IndustrialDualAnalogInSubIds result = IndustrialDualAnalogInSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIndustrialDualAnalogInSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public LaserRangeFinderSubIds createLaserRangeFinderSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    LaserRangeFinderSubIds result = LaserRangeFinderSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertLaserRangeFinderSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AccelerometerSubIds createAccelerometerSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    AccelerometerSubIds result = AccelerometerSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertAccelerometerSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -2928,6 +3573,226 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletSolidStateRelayToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletPiezoSpeaker createTinkerBrickletPiezoSpeakerFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletPiezoSpeaker)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletPiezoSpeakerToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRotaryEncoder createTinkerBrickletRotaryEncoderFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletRotaryEncoder)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletRotaryEncoderToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAmbientLightV2 createTinkerBrickletAmbientLightV2FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletAmbientLightV2)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletAmbientLightV2ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletDustDetector createTinkerBrickletDustDetectorFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletDustDetector)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletDustDetectorToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletLoadCell createTinkerBrickletLoadCellFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletLoadCell)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletLoadCellToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletColor createTinkerBrickletColorFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletColor)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletColorToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIndustrialDualAnalogIn createTinkerBrickletIndustrialDualAnalogInFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIndustrialDualAnalogIn)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletIndustrialDualAnalogInToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAnalogInV2 createTinkerBrickletAnalogInV2FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletAnalogInV2)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletAnalogInV2ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAnalogIn createTinkerBrickletAnalogInFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletAnalogIn)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletAnalogInToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletLaserRangeFinder createTinkerBrickletLaserRangeFinderFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletLaserRangeFinder)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletLaserRangeFinderToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletAccelerometer createTinkerBrickletAccelerometerFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletAccelerometer)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletAccelerometerToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
