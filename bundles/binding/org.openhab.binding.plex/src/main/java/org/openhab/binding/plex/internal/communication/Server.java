@@ -33,7 +33,7 @@ public class Server {
 	private String address;
 	
 	@XmlAttribute
-	private String port;
+	private String port = "80";
 	
 	@XmlAttribute
 	private String machineIdentifier;

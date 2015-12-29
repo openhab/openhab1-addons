@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.plex.internal.communication;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,7 +31,10 @@ public class MediaContainer {
 	private List<Server> servers;
 	
 	@XmlElement(name="Video")
-	private List<Video> videos;
+	private List<Video> videos = new ArrayList<Video>();
+
+	@XmlElement(name="Track")
+	private List<Track> tracks = new ArrayList<Track>();
 	
 	@XmlAttribute
 	private String size;
@@ -49,6 +53,14 @@ public class MediaContainer {
 
 	public void setVideos(List<Video> videos) {
 		this.videos = videos;
+	}
+
+	public List<Track> getTracks() {
+		return tracks;
+	}
+
+	public void setTracks(List<Track> tracks) {
+		this.tracks = tracks;
 	}
 
 	public String getSize() {
