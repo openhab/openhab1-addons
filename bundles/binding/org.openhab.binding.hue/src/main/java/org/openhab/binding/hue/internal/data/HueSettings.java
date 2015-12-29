@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Roman Hartmann
  * @author Jos Schering
+ * @author Markus Mazurczak - Added function to retrieve the model ID of a bulb
  * @since 1.2.0
  */
 public class HueSettings {
@@ -78,6 +79,21 @@ public class HueSettings {
 			}
 		}
 		return isAuthorizationError;
+	}
+	
+	/**
+	 * Returns the model-ID of the bulb
+	 * 
+	 * @param deviceId The bulb id the bridge has filed the bulb under.
+	 * @return The model-ID. Null if Hue bridge is not initialized correctly or if the ID was not parsed correctly
+	 */
+	public String getModelId(String deviceId) {
+		if (settingsData == null) {
+			logger.error("Hue bridge settings not initialized correctly.");
+			return null;
+		}
+		Object modelId = settingsData.node("lights").node(deviceId).value("modelid");
+		return modelId != null ? modelId.toString() : null;
 	}
 	
 	/**

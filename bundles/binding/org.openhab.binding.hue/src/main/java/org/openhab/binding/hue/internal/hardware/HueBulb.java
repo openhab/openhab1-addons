@@ -23,6 +23,7 @@ import com.sun.jersey.api.client.WebResource;
  * @author Roman Hartmann
  * @author Kai Kreuzer
  * @author Jos Schering
+ * @author Markus Mazurczak - Added workaround code to correctly manage On/Off switching of Osram Par16 50 TW bulbs
  * @since 1.2.0
  * 
  */
@@ -45,6 +46,10 @@ public class HueBulb {
 	private int colorTemperature = 154; // possible values are 154 - 500
 	private int hue = 0; // 0 - 65535
 	private int saturation = 0; // 0 - 254
+	private boolean isOsramPar16 = false; //to indicate if the bulb must use the workaround code for on/off switching
+	
+	//name of the model ID for which the workaround code will be executed
+	private static final String OSRAM_PAR16_MODELID = "PAR16 50 TW";
 	
 	/** The maximum brightness value of the Hue bulb */
 	public static final int MAX_BRIGHTNESS = 254;
@@ -86,7 +91,11 @@ public class HueBulb {
 			this.colorTemperature = settings.getColorTemperature(this.deviceId);
 			this.brightness = settings.getBrightness(this.deviceId);
 			this.hue = settings.getHue(this.deviceId);
-			this.saturation = settings.getSaturation(this.deviceId);			
+			this.saturation = settings.getSaturation(this.deviceId);
+			//set isOsram16 to true if the bulb is of that special type
+			if(settings.getModelId(this.deviceId).equalsIgnoreCase(OSRAM_PAR16_MODELID)) {
+				this.isOsramPar16 = true;
+			}
 		}else{
 			logger.warn("Not a valid id on the bridge: " + deviceId);
 		}
@@ -158,8 +167,8 @@ public class HueBulb {
 			this.isOn = true;
 			executeMessage("{\"bri\":" + this.brightness + ",\"on\":true}");
 		} else {
-			this.isOn = false;
-			executeMessage("{\"on\":false}");
+			//Call the switchOn method to take care of Osram bulb while dimming
+			this.switchOn(false);
 		}
 
 		return (int) Math.round((100.0 / MAX_BRIGHTNESS) * this.brightness);
@@ -167,7 +176,8 @@ public class HueBulb {
 	}
 	
 	/**
-	 * Set bulb ON/OFF without changing the brightness
+	 * Set bulb ON/OFF without changing the brightness.
+	 * Takes care in case of an Osram Par 16 50 TW bulb. Some workaround message will be send to bridge
 	 * @param on
 	 * 			true	turn bulb on
 	 * 			false	turn bulb off
@@ -176,9 +186,17 @@ public class HueBulb {
 	public boolean switchOn(boolean powerOn) {
 		this.isOn = powerOn;
 		if(powerOn) {
-			executeMessage("{\"on\":true}");
+			if(this.isOsramPar16) {
+				executeMessage("{\"on\":true,\"bri\":254}");
+			} else {
+				executeMessage("{\"on\":true}");
+			}
 		} else {
-			executeMessage("{\"on\":false}");
+			if(this.isOsramPar16) {
+				executeMessage("{\"on\":false,\"transitiontime\":0}");
+			} else {
+				executeMessage("{\"on\":false}");
+			}
 		}
 		return true;
 	}
