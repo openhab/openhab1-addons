@@ -8,86 +8,15 @@
  */
 package org.openhab.binding.plex.internal.communication;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Part of {@link MediaContainer}.
+ * Part of {@link MediaContainer}, holds information about a video item. 
  * 
  * @author Jeroen Idserda
  * @since 1.7.0
  */
 @XmlRootElement(name = "Video")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Video {
-	
-	@XmlAttribute
-	private String sessionKey;
-	
-	@XmlAttribute
-	private String type;
-	
-	@XmlAttribute
-	private String title;
-	
-	@XmlAttribute
-	private String grandparentTitle;
-
-	@XmlAttribute
-	private String duration;
-
-	@XmlElement(name = "Player")
-	private Player player;
-	
-	public String getSessionKey() {
-		return sessionKey;
-	}
-
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getGrandparentTitle() {
-		return grandparentTitle;
-	}
-
-	public void setGrandparentTitle(String grandparentTitle) {
-		this.grandparentTitle = grandparentTitle;
-	}
-
-	public String getDuration() {
-		return duration;
-	}
-
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
+public class Video extends AbstractSessionItem {
 	
 }
