@@ -17,18 +17,12 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * This class represents the response to the <code>/authorize</code> endpoint. Upon success, the PIN, authorization
- * token, scope, the PIN expiration and minimum polling interval for PINs is returned.
- * 
- * <p>
- * At this point, the application should display the PIN to the user and request that they log into their web portal and
- * register the application using the PIN in their My Apps widget.
+ * This class represents the response to the <code>/authorize</code> endpoint. Upon success, the authorization
+ * token and the token expiration time is returned.
  * 
  * @see AuthorizeRequest
- * @see <a href="https://www.mojio.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN
- *      Authorization Strategy</a>
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthorizeResponse extends GenericMojioResponse {

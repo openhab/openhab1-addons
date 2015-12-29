@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.mojio.messages;
 
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
@@ -9,6 +17,12 @@ import org.openhab.binding.mojio.messages.GetMojioData;
 import org.openhab.binding.mojio.messages.MojioStatusResponse;
 import org.openhab.binding.mojio.messages.MojioType;
 
+/**
+ * GetVehicleData function implements Vehicles request and returns all registered vehicles.
+ *
+ * @author Vladimir Pavluk
+ * @since 1.0
+ */
 public class GetVehicleData extends AbstractFunction {
 	private static final String RESOURCE_URL = API_BASE_URL + "v1/Vehicles";
 

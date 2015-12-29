@@ -11,8 +11,8 @@ package org.openhab.binding.mojio.messages;
 /**
  * Base interface for all Mojio API responses.
  * 
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 public interface Response {
 }

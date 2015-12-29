@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.mojio.messages;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -16,6 +24,12 @@ import org.codehaus.jackson.annotate.JsonProperty;
     @Type(value = MojioType.class, name = "Mojio"),  
     @Type(value = VehicleType.class, name = "Vehicle") })
 @JsonIgnoreProperties(ignoreUnknown = false)
+/**
+ * The GenericMojioResponse class is the base class for all mojio response types.
+ *
+ * @author Vladimir Pavluk
+ * @since 1.0
+ */
 public abstract class GenericMojioResponse extends AbstractMessage implements Response {
 
   @JsonProperty("_id")

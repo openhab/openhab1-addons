@@ -10,7 +10,6 @@ package org.openhab.binding.mojio.messages;
 
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -19,8 +18,8 @@ import org.openhab.binding.mojio.internal.MojioException;
 /**
  * Base class for all Mojio API requests.
  * 
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 public abstract class AbstractRequest extends AbstractMessage implements Request {
 

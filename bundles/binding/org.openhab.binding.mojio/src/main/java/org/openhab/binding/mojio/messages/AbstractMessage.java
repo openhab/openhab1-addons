@@ -9,14 +9,13 @@
 package org.openhab.binding.mojio.messages;
 
 import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Base class for all messages.
  * 
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 public class AbstractMessage {
 

@@ -15,17 +15,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.mojio.internal.MojioException;
 
 /**
- * The mojio PIN authorization method is designed to support any 3rd party device, be it a mobile phone, tablet,
- * desktop widget or remote server. This authorization method allows a 3rd party application to obtain an authorization
- * code and a 4 byte alphabetic string which can be displayed to the user. The user then logs into the mojio Portal and
- * registers the application using the PIN provided. Once this step is completed, the 3rd party application is able to
- * request the access and refresh tokens.
- * 
+ * The AuthorizeRequest class implements authorization request using MojIO RESTful interface.
+ * Takes application key, application secret and the username with the password.
+ * So you should create an application in mojio web interface and use the generated key/id.
+ *
  * @see AuthorizeResponse
- * @see <a href="https://www.mojio.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN
- *      Authorization Strategy</a>
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 public class AuthorizeRequest extends AbstractRequest {
 

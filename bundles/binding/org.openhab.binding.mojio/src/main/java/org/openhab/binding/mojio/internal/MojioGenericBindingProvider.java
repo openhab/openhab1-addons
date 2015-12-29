@@ -50,6 +50,8 @@ public class MojioGenericBindingProvider extends AbstractGenericBindingProvider 
 		MojioBindingConfig config = new MojioBindingConfig();
 		
 		//parse bindingconfig here ...
+    // <mojioIMEI>/path-to-the-value/
+    // Examples:
 		// 352648063154983/LastLocation/Lat
 		// 352648063154983/LastLocation/Lng
 		// 352648063154983/FuelLevel

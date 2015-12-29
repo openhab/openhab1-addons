@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.mojio.messages;
 
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
@@ -6,6 +14,12 @@ import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.mojio.internal.MojioException;
 
+/**
+ * GetMojioData function implements Mojio request and returns all registered mojios.
+ *
+ * @author Vladimir Pavluk
+ * @since 1.0
+ */
 public class GetMojioData extends AbstractFunction {
 	private static final String RESOURCE_URL = API_BASE_URL + "v1/Mojios";
 

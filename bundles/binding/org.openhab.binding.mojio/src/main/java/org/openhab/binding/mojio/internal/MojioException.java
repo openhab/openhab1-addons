@@ -9,8 +9,8 @@
 package org.openhab.binding.mojio.internal;
 
 /**
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 public class MojioException extends RuntimeException {
 

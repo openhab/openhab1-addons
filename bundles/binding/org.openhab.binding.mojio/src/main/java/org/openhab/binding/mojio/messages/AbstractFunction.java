@@ -21,19 +21,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.mojio.internal.MojioException;
 
 /**
- * The function object is defined by its functionType and one or more additional properties. The property list is
- * variable depending on the type of function.
- * 
+ * This is the base class for all MojIO requests.
+ *
  * <p>
- * Functions are used to perform more complex operations on a thermostat or user which are too complex with simple
- * property modifications. Functions are used to modify read-only objects where appropriate.
+ * Each function takes different request parameters.
  * 
- * <p>
- * Each function takes different parameters.
- * 
- * @see <a href="https://www.mojio.com/home/developer/api/documentation/v1/objects/Function.shtml">Function</a>
- * @author John Cocula
- * @since 1.7.0
+ * @author Vladimir Pavluk
+ * @since 1.0
  */
 public abstract class AbstractFunction extends AbstractRequest {
 

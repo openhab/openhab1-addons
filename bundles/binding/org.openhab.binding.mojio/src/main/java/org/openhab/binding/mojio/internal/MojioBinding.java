@@ -40,8 +40,7 @@ import org.openhab.binding.mojio.messages.MojioType;
 	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * MojioBinding class polls MojIO site for item updates.
  * 
  * @author Vladimir Pavluk
  * @since 1.0
