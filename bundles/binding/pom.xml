@@ -149,6 +149,12 @@
     <module>org.openhab.binding.autelis</module>
     <module>org.openhab.binding.nest</module>
     <module>org.openhab.binding.satel</module>
+<<<<<<< HEAD
+    <module>org.openhab.binding.akm868</module>
+  </modules>
+
+</project>
+=======
     <module>org.openhab.binding.harmonyhub</module>
     <module>org.openhab.binding.plex</module>
     <module>org.openhab.binding.mochadx10</module>
@@ -172,3 +178,4 @@
     <module>org.openhab.binding.panstamp</module>
   </modules>
 </project>
+>>>>>>> 7e84654820d9fffacaed3bb7f1b3a9585b00f43a
