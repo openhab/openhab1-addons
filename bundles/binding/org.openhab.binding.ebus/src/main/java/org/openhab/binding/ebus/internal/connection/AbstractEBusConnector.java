@@ -9,14 +9,17 @@
 package org.openhab.binding.ebus.internal.connection;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.openhab.binding.ebus.internal.EBusTelegram;
 import org.openhab.binding.ebus.internal.utils.EBusUtils;
@@ -32,27 +35,62 @@ public abstract class AbstractEBusConnector extends Thread {
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractEBusConnector.class);
 
+	/** the send output queue */
+	private final Queue<byte[]> outputQueue = new LinkedBlockingQueue<byte[]>(20);
+
 	/** the list for listeners */
-	private final List<EBusConnectorEventListener> listeners = 
-			new ArrayList<EBusConnectorEventListener>();
+	private final List<EBusConnectorEventListener> listeners = new ArrayList<EBusConnectorEventListener>();
 
 	/** serial receive buffer */
-	protected final ByteBuffer inputBuffer = ByteBuffer.allocate(100);
+	private final ByteBuffer inputBuffer = ByteBuffer.allocate(100);
 
-	/** counts the re-connection tries */
-	protected int reConnectCounter = 0;
+	/** input stream for eBus communication*/
+	protected InputStream inputStream;
+
+	/** output stream for eBus communication*/
+	protected OutputStream outputStream;
+
+	/** current lockout counter */
+	private int lockCounter = 0;
+
+	/** next send try is blocked */
+	private boolean blockNextSend;
+
+	/** last send try caused a collision */
+	private boolean lastSendCollisionDetected = false;
+
+	/** eBus lockout */
+	private static int LOCKOUT_COUNTER_MAX = 3;
+
+	private int reConnectCounter = 0;
+	
+	/** default sender id */
+	private byte senderId = (byte)0xFF;
 
 	/** The thread pool to execute events without blocking  */
-	protected ExecutorService threadPool;
+	private ExecutorService threadPool;
+	
+	/**
+	 * Returns the eBus binding used sender Id
+	 * @return
+	 */
+	public byte getSenderId() {
+		return senderId;
+	}
 
-	/** The nano time for the last received byte from inputStream */
-	//protected long lastReceiveTime = 0;
+	/**
+	 * Set the eBus binding sender Id
+	 * @param senderId The new id, default is 0xFF
+	 */
+	public void setSenderId(byte senderId) {
+		this.senderId = senderId;
+	}
 
 	/**
 	 * Constructor
 	 */
 	public AbstractEBusConnector() {
-		super("eBUS Connection Thread");
+		super("eBus Connection Thread");
 		this.setDaemon(true);
 	}
 
@@ -62,8 +100,20 @@ public abstract class AbstractEBusConnector extends Thread {
 	 * @return
 	 * @throws IOException
 	 */
-	protected boolean connect() throws IOException {
+	public boolean connect() throws IOException {
+		
+
+
+		// reset ebus counter
+		lockCounter = LOCKOUT_COUNTER_MAX;
+
+		// reset global variables
+		lastSendCollisionDetected = false;
+		blockNextSend = false;
+		
+		outputQueue.clear();
 		inputBuffer.clear();
+		
 		return true;
 	}
 
@@ -72,8 +122,14 @@ public abstract class AbstractEBusConnector extends Thread {
 	 * @return
 	 * @throws IOException
 	 */
-	protected boolean disconnect() throws IOException {
-		// nothing
+	public boolean disconnect() throws IOException {
+
+		if(inputStream != null)
+			inputStream.close();
+		
+		if(outputStream != null)
+			outputStream.close();
+		
 		return true;
 	}
 
@@ -133,27 +189,24 @@ public abstract class AbstractEBusConnector extends Thread {
 		// create new thread pool to send received telegrams
 		threadPool = Executors.newCachedThreadPool();
 		
-		int read = -1;
-		
 		// loop until interrupt or reconnector count is -1 (to many retries)
 		while (!isInterrupted() || reConnectCounter == -1) {
 			try {
 
-				if(!isConnected()) {
+				if(inputStream == null) {
 					reconnect();
 
 				} else {
-					
-					// read byte from connector
-					read = readByte(false);
-					
-					//lastReceiveTime = System.nanoTime();
-					
+					int read = inputStream.read();
 					if(read == -1) {
-						logger.debug("eBUS read timeout occured, no data on bus ...");
+						logger.error("eBus read timeout occured, ignore it currently!");
+
+						// currently disabled because of file handler issues!
+						// reconnect
+						//reconnect();
 
 					} else {
-
+						
 						byte receivedByte = (byte)(read & 0xFF);
 
 						// write received byte to input buffer
@@ -161,14 +214,7 @@ public abstract class AbstractEBusConnector extends Thread {
 
 						// the 0xAA byte is a end of a packet
 						if(receivedByte == EBusTelegram.SYN) {
-
-							// check if the buffer is empty and ready for
-							// sending data
-							try {
-								onEBusSyncReceived(isReceiveBufferEmpty());
-							} catch (Exception e) {
-								logger.error("Error while processing event sync received!", e);
-							}
+							onEBusSyncReceived();
 						}
 					}
 				}
@@ -179,18 +225,13 @@ public abstract class AbstractEBusConnector extends Thread {
 				try {
 					reconnect();
 				} catch (IOException e1) {
-					logger.error(e.toString(), e1);
+					logger.error(e.toString(), e);
 				} catch (InterruptedException e1) {
-					logger.error(e.toString(), e1);
+					logger.error(e.toString(), e);
 				}
 
 			} catch (BufferOverflowException e) {
-				logger.error("eBUS telegram buffer overflow - not enough sync bytes received! Try to adjust eBus adapter.");
-				inputBuffer.clear();
-				
-			} catch (InterruptedException e) {
-				logger.error(e.toString(), e);
-				Thread.currentThread().interrupt();
+				logger.error("eBus telegram buffer overflow - not enough sync bytes received! Try to adjust eBus adapter.");
 				inputBuffer.clear();
 				
 			} catch (Exception e) {
@@ -199,47 +240,62 @@ public abstract class AbstractEBusConnector extends Thread {
 			}
 		}
 
-		// *******************************
-		// **       end of thread       **
-		// *******************************
-		
-		// shutdown threadpool
-		if(threadPool != null && !threadPool.isShutdown()) {
-			threadPool.shutdownNow();
-			try {
-				// wait up to 10sec. for the thread pool
-				threadPool.awaitTermination(10, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {}
-		}
-		
 		// disconnect the connector e.g. close serial port
 		try {
 			disconnect();
 		} catch (IOException e) {
 			logger.error(e.toString(), e);
 		}
+		
+		// shutdown threadpool
+		if(threadPool != null && !threadPool.isShutdown())
+			threadPool.shutdown();
 	}
 
 	/**
 	 * Called event if a SYN packet has been received
 	 * @throws IOException
 	 */
-	protected void onEBusSyncReceived(boolean allowSend) throws IOException {
+	protected void onEBusSyncReceived() throws IOException {
 
 		if(inputBuffer.position() == 1 && inputBuffer.get(0) == EBusTelegram.SYN) {
+			if(lockCounter > 0) lockCounter--;
 			logger.trace("Auto-SYN byte received");
 
+			// send a telegram from queue if available
+			send(false);
+
 		} else if(inputBuffer.position() == 2 && inputBuffer.get(0) == EBusTelegram.SYN) {
-			logger.warn("Collision on eBUS detected (SYN DATA SYNC Sequence) ...");
+			logger.warn("Collision on eBus detected (SYN DATA SYNC Sequence) ...");
+			blockNextSend = true;
+
+			// send a telegram from queue if available
+			send(false);
 
 		}else if(inputBuffer.position() < 5) {
-			logger.trace("Telegram to small, skip! Buffer: {}", 
-					EBusUtils.toHexDumpString(inputBuffer));
+			if(lockCounter > 0) lockCounter--;
+			logger.trace("Telegram to small, skip!");
+
+			// send a telegram from queue if available
+			send(false);
 
 		} else {
+			if(lockCounter > 0) lockCounter--;
 			byte[] receivedTelegram = Arrays.copyOf(inputBuffer.array(), inputBuffer.position());
-			// execute event
-			onEBusTelegramReceived(receivedTelegram);
+
+			// send a telegram from queue if available, time critical!
+			send(false);
+
+			// After senden we can process the last received telegram
+			final EBusTelegram telegram = EBusUtils.processEBusData(receivedTelegram);
+			if(telegram != null) {
+
+				// execute event
+				onEBusTelegramReceived(telegram);
+
+			} else {
+				logger.debug("Received telegram was invalid, skip!");
+			}
 		}
 
 		// reset receive buffer
@@ -251,7 +307,7 @@ public abstract class AbstractEBusConnector extends Thread {
 	 * listeners via thread pool to prevent blocking.
 	 * @param telegram
 	 */
-	protected void onEBusTelegramReceived(final byte[] receivedTelegram) {
+	protected void onEBusTelegramReceived(final EBusTelegram telegram) {
 		
 		if(threadPool == null) {
 			logger.warn("ThreadPool not ready!");
@@ -261,37 +317,265 @@ public abstract class AbstractEBusConnector extends Thread {
 		threadPool.execute(new Runnable() {
 			@Override
 			public void run() {
-				
-				final EBusTelegram telegram = EBusUtils.processEBusData(receivedTelegram);
-				if(telegram != null) {
-					for (EBusConnectorEventListener listener : listeners) {
-						listener.onTelegramReceived(telegram);
-					}
-				} else {
-					logger.debug("Received telegram was invalid, skip!");
+				for (EBusConnectorEventListener listener : listeners) {
+					listener.onTelegramReceived(telegram);
 				}
-				
 			}
 		});
 	}
 
 	/**
-	 * Reads one byte from backend
+	 * Add a byte array to send queue.
+	 * @param data
+	 * @return
+	 */
+	public boolean send(byte[] data) {
+		
+		if(data == null || data.length == 0) {
+			logger.debug("Send data is empty, skip");
+			return false;
+		}
+		
+		byte crc = 0;
+		for (int i = 0; i < data.length-1; i++) {
+			byte b = data[i];
+			crc = EBusUtils.crc8_tab(b, crc);
+		}
+
+		// replace crc with calculated value
+		data[data.length-1] = crc;
+
+		return outputQueue.add(data);
+	}
+
+	/**
+	 * Internal send function. Send and read to detect byte collisions.
+	 * @param secondTry
+	 * @throws IOException
+	 */
+	protected void send(boolean secondTry) throws IOException {
+
+		// blocked for this send slot because a collision
+		if(blockNextSend) {
+			logger.trace("Sender was blocked for this SYN ...");
+			blockNextSend = false;
+			return;
+		}
+
+		// currently no data to send
+		if(outputQueue.isEmpty()) {
+			logger.trace("Send buffer is empty, nothing to send...");
+			return;
+		}
+
+		// counter not zero, it's not allowed to send yet
+		if(lockCounter > 0) {
+			logger.trace("No access to ebus because the lock counter ...");
+			return;
+		}
+
+		byte[] dataOutputBuffer = outputQueue.peek();
+		logger.debug("EBusSerialPortEvent.send() data: {}", EBusUtils.toHexDumpString(dataOutputBuffer));
+
+		// clear first
+		inputBuffer.clear();
+
+		boolean isMasterAddr = EBusUtils.isMasterAddress(dataOutputBuffer[1]);
+
+		// send command
+		for (int i = 0; i < dataOutputBuffer.length; i++) {
+			byte b = dataOutputBuffer[i];
+			outputStream.write(b);
+
+			// directly read the current wrote byte from bus
+			int read = inputStream.read();
+			if(read != -1) {
+
+				byte r = (byte) (read & 0xFF);
+				inputBuffer.put(r);
+
+				// do arbitation on on first byte only
+				if(i == 0 && b != r) {
+
+					// written and read byte not identical, that's
+					// a collision
+					logger.warn("eBus collision detected!");
+
+					// last send try was a collision
+					if(lastSendCollisionDetected) {
+						logger.warn("A second collision occured!");
+						resetSend();
+						return;
+					}
+					// priority class identical
+					else if((byte) (r & 0x0F) == (byte) (b & 0x0F)) {
+						logger.trace("Priority class match, restart after next SYN ...");
+						lastSendCollisionDetected = true;
+
+					} else {
+						logger.trace("Priority class doesn't match, blocked for next SYN ...");
+						blockNextSend = true;
+					}
+
+					// stop after a collision
+					return;
+				}
+			}
+		}
+
+		// sending master data finish
+
+		// reset global variables
+		lastSendCollisionDetected = false;
+		blockNextSend = false;
+
+
+		// if this telegram a broadcast?
+		if(dataOutputBuffer[1] == (byte)0xFE) {
+			logger.warn("Broadcast send ..............");
+
+			// sende master sync
+			outputStream.write(EBusTelegram.SYN);
+			inputBuffer.put(EBusTelegram.SYN);
+
+		} else {
+
+			int read = inputStream.read();
+			if(read != -1) {
+				byte ack = (byte) (read & 0xFF);
+				inputBuffer.put(ack);
+
+				if(ack == EBusTelegram.ACK_OK) {
+
+					// if the telegram is a slave telegram we will
+					// get data from slave
+					if(!isMasterAddr) {
+
+						// len of answer
+						byte nn2 = (byte) (inputStream.read() & 0xFF);
+						inputBuffer.put(nn2);
+
+						byte crc = EBusUtils.crc8_tab(nn2, (byte) 0);
+
+						if(nn2 > 16) {
+							logger.warn("slave data to lang, invalid!");
+
+							// resend telegram (max. once)
+							if(!resend(secondTry))
+								return;
+						}
+
+						// read slave data, be aware of 0x0A bytes
+						while(nn2 > 0) {
+							byte d = (byte) (inputStream.read() & 0xFF);
+							inputBuffer.put(d);
+							crc = EBusUtils.crc8_tab(d, crc);
+
+							if(d != (byte)0xA) {
+								nn2--;
+							}
+						}
+
+						// read slave crc
+						byte crc2 = (byte) (inputStream.read() & 0xFF);
+						inputBuffer.put(crc2);
+
+						// check slave crc
+						if(crc2 != crc) {
+							logger.warn("Slave CRC wrong, resend!");
+
+							// Resend telegram (max. once)
+							if(!resend(secondTry))
+								return;
+						}
+
+						// sende master sync
+						outputStream.write(EBusTelegram.ACK_OK);
+						inputBuffer.put(EBusTelegram.ACK_OK);
+					} // isMasterAddr check
+
+					// send SYN byte
+					outputStream.write(EBusTelegram.SYN);
+					inputBuffer.put(EBusTelegram.SYN);
+
+				} else if(ack == EBusTelegram.ACK_FAIL) {
+					
+					// clear uncompleted telegram
+					inputBuffer.clear();
+					
+					// resend telegram (max. once)
+					if(!resend(secondTry))
+						return;
+
+				} else if(ack == EBusTelegram.SYN) {
+					logger.warn("No answer from slave, skip ...");
+					
+					// clear uncompleted telegram or it will result
+					// in uncomplete but valid telegram!
+					inputBuffer.clear();
+					
+					resetSend();
+					return;
+
+				} else {
+					// Wow, wrong answer, and now?
+					logger.warn("Received wrong telegram: {}", EBusUtils.toHexDumpString(inputBuffer));
+
+					// clear uncompleted telegram
+					inputBuffer.clear();
+					
+					// resend telegram (max. once)
+					if(!resend(secondTry))
+						return;
+				}
+			}
+		}
+
+		// after send process the received telegram
+		byte[] buffer = Arrays.copyOf(inputBuffer.array(), inputBuffer.position());
+		final EBusTelegram telegram = EBusUtils.processEBusData(buffer);
+		if(telegram != null) {
+			onEBusTelegramReceived(telegram);
+
+		} else {
+			logger.debug("Received telegram was invalid, skip!");
+		}
+
+		// reset send module
+		resetSend();
+	}
+
+	/**
+	 * Resend data if it's the first try or call resetSend()
+	 * @param secondTry
 	 * @return
 	 * @throws IOException
 	 */
-	protected abstract int readByte(boolean lowLatency) throws IOException;
-	
+	private boolean resend(boolean secondTry) throws IOException {
+		if(!secondTry) {
+			send(true);
+			return true;
+
+		} else {
+			logger.warn("Resend failed, remove data from sending queue ...");
+			resetSend();
+			return false;
+		}
+	}
+
 	/**
-	 * Returns true if the receive buffer is empty, in this case the line is free to send
-	 * @return
-	 * @throws IOException
+	 * Reset the send routine
 	 */
-	protected abstract boolean isReceiveBufferEmpty() throws IOException;
-	
-	/**
-	 * Returns if the connection is already connected to the backend
-	 * @return
-	 */
-	protected abstract boolean isConnected();
+	private void resetSend() {
+
+		// reset ebus counter
+		lockCounter = LOCKOUT_COUNTER_MAX;
+
+		// reset global variables
+		lastSendCollisionDetected = false;
+		blockNextSend = false;
+
+		// remove entry from sending queue
+		outputQueue.poll();
+	}
 }
