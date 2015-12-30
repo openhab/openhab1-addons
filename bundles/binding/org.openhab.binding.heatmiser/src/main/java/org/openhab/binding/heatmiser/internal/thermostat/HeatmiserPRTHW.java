@@ -32,10 +32,9 @@ public class HeatmiserPRTHW extends HeatmiserThermostat {
 		dcbFrostTemperature = data[26];
 		dcbRoomTemperature = getTemp(41);
 		dcbSetTemperature = data[27];
-
+		dcbRemoteRoomTemperature = getTemp(37);
 		dcbHolidayTime = (data[34] & 0xFF) + ((data[33] & 0xFF) * 256);
 		dcbHoldTime = (data[36] & 0xFF) + ((data[35] & 0xFF) * 256);
-
 		dcbWaterState = data[45];
 
 		return true;
