@@ -10,6 +10,7 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -33,14 +34,16 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.PercentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,11 +72,12 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMinValue <em>Min Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getMaxValue <em>Max Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getPercentValue <em>Percent Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAddress <em>Address</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getUnit <em>Unit</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getRepeats <em>Repeats</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getTargetDimmvalue <em>Target Dimmvalue</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchBImpl#getAbsDimmValue <em>Abs Dimm Value</em>}</li>
  * </ul>
  * </p>
  *
@@ -89,7 +93,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * @generated
    * @ordered
    */
-  protected DecimalValue sensorValue;
+  protected PercentValue sensorValue;
 
   /**
    * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
@@ -262,6 +266,26 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
   protected BigDecimal maxValue = MAX_VALUE_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPercentValue()
+   * @generated
+   * @ordered
+   */
+  protected static final PercentValue PERCENT_VALUE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPercentValue()
+   * @generated
+   * @ordered
+   */
+  protected PercentValue percentValue = PERCENT_VALUE_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -342,24 +366,26 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
   protected Short repeats = REPEATS_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getTargetDimmvalue() <em>Target Dimmvalue</em>}' attribute.
+   * The default value of the '{@link #getAbsDimmValue() <em>Abs Dimm Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTargetDimmvalue()
+   * @see #getAbsDimmValue()
    * @generated
    * @ordered
    */
-  protected static final Short TARGET_DIMMVALUE_EDEFAULT = new Short((short)0);
+  protected static final Short ABS_DIMM_VALUE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getTargetDimmvalue() <em>Target Dimmvalue</em>}' attribute.
+   * The cached value of the '{@link #getAbsDimmValue() <em>Abs Dimm Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTargetDimmvalue()
+   * @see #getAbsDimmValue()
    * @generated
    * @ordered
    */
-  protected Short targetDimmvalue = TARGET_DIMMVALUE_EDEFAULT;
+  protected Short absDimmValue = ABS_DIMM_VALUE_EDEFAULT;
+
+  private BrickletRemoteSwitch tinkerforgeDevice;
 
   /**
    * <!-- begin-user-doc -->
@@ -387,7 +413,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * <!-- end-user-doc -->
    * @generated
    */
-  public DecimalValue getSensorValue()
+  public PercentValue getSensorValue()
   {
     return sensorValue;
   }
@@ -397,9 +423,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(DecimalValue newSensorValue)
+  public void setSensorValue(PercentValue newSensorValue)
   {
-    DecimalValue oldSensorValue = sensorValue;
+    PercentValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -672,9 +698,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * <!-- end-user-doc -->
    * @generated
    */
-  public Short getTargetDimmvalue()
+  public Short getAbsDimmValue()
   {
-    return targetDimmvalue;
+    return absDimmValue;
   }
 
   /**
@@ -682,14 +708,13 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTargetDimmvalue(Short newTargetDimmvalue)
+  public void setAbsDimmValue(Short newAbsDimmValue)
   {
-    Short oldTargetDimmvalue = targetDimmvalue;
-    targetDimmvalue = newTargetDimmvalue;
+    Short oldAbsDimmValue = absDimmValue;
+    absDimmValue = newAbsDimmValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__TARGET_DIMMVALUE, oldTargetDimmvalue, targetDimmvalue));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__ABS_DIMM_VALUE, oldAbsDimmValue, absDimmValue));
   }
-
 
   /**
    * <!-- begin-user-doc -->
@@ -788,6 +813,29 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public PercentValue getPercentValue()
+  {
+    return percentValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPercentValue(PercentValue newPercentValue)
+  {
+    PercentValue oldPercentValue = percentValue;
+    percentValue = newPercentValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE, oldPercentValue, percentValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void init()
@@ -801,32 +849,38 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
- {
+  public void enable() {
     logger.debug("{} enable called on RemoteSwitchB", LoggerConstants.TFINIT);
-    boolean addressFound = false;
-    boolean unitFound = false;
+    minValue = BigDecimal.ZERO;
+    maxValue = new BigDecimal("15");
     if (tfConfig != null) {
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("address"))) {
         setAddress(tfConfig.getAddress());
-        addressFound = true;
       } else {
         logger.error("{} address not configured for subid {}", LoggerConstants.TFINITSUB,
             getSubId());
+        throw new RuntimeException("address not configured for subid " + getSubId());
       }
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("unit"))) {
         setUnit(tfConfig.getUnit());
-        unitFound = true;
       } else {
         logger.error("{} unit not configured for subid {}", LoggerConstants.TFINITSUB, getSubId());
+        throw new RuntimeException("unit not configured for subid " + getSubId());
       }
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("repeats"))) {
         setRepeats(tfConfig.getRepeats());
       }
     }
-    if (tfConfig == null || !addressFound || !unitFound) {
-      logger.error("{} missing configuration for subid {} device will not work",
-          LoggerConstants.TFINITSUB, getSubId());
+    tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
+    if (getRepeats() != null) {
+      try {
+        tinkerforgeDevice.setRepeats(getRepeats());
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
     }
   }
 
@@ -850,28 +904,25 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
       logger.warn("got undef state, nothing to be done");
       return;
     }
-    if (getAddress() != null && getUnit() != null) {
-      short switchTo =
-          state == OnOffValue.ON
-              ? BrickletRemoteSwitch.SWITCH_TO_ON
-              : BrickletRemoteSwitch.SWITCH_TO_OFF;
-      try {
-        if (getRepeats() != null){
-          getMbrick().getTinkerforgeDevice().setRepeats(getRepeats());
-        }
-        getMbrick().getTinkerforgeDevice().switchSocketB(getAddress(), getUnit(),
-            switchTo);
-        setSwitchState(state);
-      } catch (TimeoutException e) {
-        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-      } catch (NotConnectedException e) {
-        TinkerforgeErrorHandler.handleError(this,
-            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-      }
+    logger.debug("turnSwitch called for {}/{}", getUid(), getSubId());
+    if (state == OnOffValue.OFF){
+      dimm(minValue.shortValue());
     } else {
-      logger.error("{} missing configuration for subid {} device will not switch",
-          LoggerConstants.TFINITSUB, getSubId());
+      dimm(maxValue.shortValue());
     }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void setValue(PercentType newValue, DeviceOptions opts) {
+    logger.debug("setValue percentType called {}", newValue);
+    short value =
+        getMaxValue().multiply(newValue.toBigDecimal())
+            .divide(new BigDecimal("100"), RoundingMode.HALF_UP).shortValue();
+    dimm(value);
   }
 
   /**
@@ -881,71 +932,109 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    */
   public void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts) {
     logger.trace("dimmer increase increaseDecrease {} opts {}", increaseDecrease, opts);
+    short defaultStep = 1;
     if (opts == null) {
-      logger.error("options are missing");
-      return;
+      logger.debug("no step option, defaulting step to {}", defaultStep);
     }
+    Short  step = Tools.getShortOpt(ConfigOptsDimmable.STEP.toString(), opts, defaultStep);
     if (increaseDecrease == null) {
       logger.error("increaseDecrease may not be null!");
       return;
     }
-    Short step = Tools.getShortOpt(ConfigOptsDimmable.STEP.toString(), opts);
-    if (step == null) {
-      logger.error("dimmer option step is missing, items configuration has to be fixed!");
-      return;
-    }
-    Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts);
-    if (max == null) {
-      max = 15;
-    }
-    logger.debug("max {}", max);
-
-    Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts);
-    if (min == null) {
-      min = 0;
-    }
-    logger.debug("min {}", min);
     Short newDimmValue = null;
     if (increaseDecrease.equals(IncreaseDecreaseType.INCREASE)) {
-      newDimmValue = (short) (this.targetDimmvalue + step);
+      if (absDimmValue == null){
+        newDimmValue = step;
+      } else {
+        newDimmValue = (short) (getSensorValue().shortValue() + step);
+      }
     } else if (increaseDecrease.equals(IncreaseDecreaseType.DECREASE)) {
-      newDimmValue = (short) (this.targetDimmvalue - step);
+      if (absDimmValue == null){
+        newDimmValue = 0;
+      }
+      else {
+        newDimmValue = (short) (absDimmValue - step);
+      }
     }
-    if (newDimmValue > max) {
-      if (targetDimmvalue < max) {
-        newDimmValue = max;
+    dimm(newDimmValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * wait for device ready
+   * if dimm value is 0% call switch off
+   * if dimm value is 100% call switch on
+   * <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private void dimm(Short newDimmValue) {
+    if (newDimmValue == null) {
+      logger.error("newDimmValue must not be null");
+      return;
+    }
+    logger.trace("new dimm value {}", newDimmValue);
+    if (newDimmValue > getMaxValue().shortValue()) {
+      if (absDimmValue != null && absDimmValue < getMaxValue().shortValue()) {
+        newDimmValue = getMaxValue().shortValue();
       } else {
         logger.trace("max dim value already reached");
         return;
       }
-    } else if (newDimmValue < min) {
-      if (targetDimmvalue > min) {
-        newDimmValue = min;
+    } else if (newDimmValue < getMinValue().shortValue()) {
+      if (absDimmValue != null && absDimmValue > getMinValue().shortValue()) {
+        newDimmValue = getMinValue().shortValue();
       } else {
         logger.trace("min dim value already reached");
         return;
       }
     }
-    OnOffValue state = newDimmValue == 0 ? OnOffValue.OFF : OnOffValue.ON;
     logger.debug("newDimmValue {}", newDimmValue);
-    if (getAddress() != null && getUnit() != null) {
-      try {
-        if (getRepeats() != null) {
-          getMbrick().getTinkerforgeDevice().setRepeats(getRepeats());
-        }
-        getMbrick().getTinkerforgeDevice().dimSocketB(getAddress(), getUnit(), newDimmValue);
-        setSwitchState(state);
-        setSensorValue(new DecimalValue(newDimmValue));
-        targetDimmvalue = newDimmValue;
-      } catch (TimeoutException e) {
-        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-      } catch (NotConnectedException e) {
-        TinkerforgeErrorHandler.handleError(this,
-            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    int maxRetries = 20;
+    int trial = 0;
+    try {
+      while (tinkerforgeDevice.getSwitchingState() == BrickletRemoteSwitch.SWITCHING_STATE_BUSY
+          && trial < maxRetries) {
+        trial++;
+        logger.trace("waiting for ready state {}", trial);
+        Thread.sleep(50);
       }
-    } else {
-      logger.error("{} missing configuration for subid {} device will not switch",
-          LoggerConstants.TFINITSUB, getSubId());
+      if (trial == maxRetries) {
+        logger.error("remote switch doesn't go to ready state in spite of {} retries.", trial);
+        return;
+      }
+      PercentValue dimmState;
+      if (newDimmValue == getMinValue().shortValue()) {
+        // switch off
+        dimmState = new PercentValue(BigDecimal.ZERO);
+        logger.debug("switching socket B with address {}, unit {} to {}", getAddress(), getUnit(),
+            BrickletRemoteSwitch.SWITCH_TO_OFF);
+        tinkerforgeDevice
+            .switchSocketB(getAddress(), getUnit(), BrickletRemoteSwitch.SWITCH_TO_OFF);
+      } else if (newDimmValue == getMaxValue().shortValue()) {
+        // switch on
+        dimmState = new PercentValue(new BigDecimal(100));
+        logger.debug("switching socket B with address {}, unit {} to {}", getAddress(), getUnit(),
+            BrickletRemoteSwitch.SWITCH_TO_ON);
+        tinkerforgeDevice.switchSocketB(getAddress(), getUnit(), BrickletRemoteSwitch.SWITCH_TO_ON);
+      } else {
+        logger.debug("*** newValue {}", (new BigDecimal(newDimmValue).divide(getMaxValue(), 2,
+            RoundingMode.HALF_UP).multiply(new BigDecimal(100))));
+        dimmState =
+            new PercentValue(new BigDecimal(newDimmValue).divide(getMaxValue(), 2,
+                RoundingMode.HALF_UP).multiply(new BigDecimal(100)));
+        getMbrick().getTinkerforgeDevice().dimSocketB(getAddress(), getUnit(), newDimmValue);
+      }
+      logger.debug("new dimmState is {}", dimmState);
+      absDimmValue = newDimmValue; // do not notify listeners
+      setSensorValue(dimmState);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    } catch (InterruptedException e) {
+      logger.warn("retry was interrupted");
     }
   }
 
@@ -954,7 +1043,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    * 
    * @generated NOT
    */
-  public void fetchSwitchState() {}
+  public void fetchSwitchState() {
+    setSensorValue(getSensorValue()); // trigger a value update to the eventbus
+  }
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -963,7 +1054,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
    */
   public void fetchSensorValue()
   {
-    setSensorValue(new DecimalValue(this.targetDimmvalue));
+    setSensorValue(getSensorValue()); // trigger a value update to the eventbus
   }
 
   /**
@@ -1050,6 +1141,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         return getMinValue();
       case ModelPackage.REMOTE_SWITCH_B__MAX_VALUE:
         return getMaxValue();
+      case ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE:
+        return getPercentValue();
       case ModelPackage.REMOTE_SWITCH_B__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.REMOTE_SWITCH_B__ADDRESS:
@@ -1058,8 +1151,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         return getUnit();
       case ModelPackage.REMOTE_SWITCH_B__REPEATS:
         return getRepeats();
-      case ModelPackage.REMOTE_SWITCH_B__TARGET_DIMMVALUE:
-        return getTargetDimmvalue();
+      case ModelPackage.REMOTE_SWITCH_B__ABS_DIMM_VALUE:
+        return getAbsDimmValue();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1075,7 +1168,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     switch (featureID)
     {
       case ModelPackage.REMOTE_SWITCH_B__SENSOR_VALUE:
-        setSensorValue((DecimalValue)newValue);
+        setSensorValue((PercentValue)newValue);
         return;
       case ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE:
         setSwitchState((OnOffValue)newValue);
@@ -1107,6 +1200,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
       case ModelPackage.REMOTE_SWITCH_B__MAX_VALUE:
         setMaxValue((BigDecimal)newValue);
         return;
+      case ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE:
+        setPercentValue((PercentValue)newValue);
+        return;
       case ModelPackage.REMOTE_SWITCH_B__ADDRESS:
         setAddress((Long)newValue);
         return;
@@ -1116,8 +1212,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
       case ModelPackage.REMOTE_SWITCH_B__REPEATS:
         setRepeats((Short)newValue);
         return;
-      case ModelPackage.REMOTE_SWITCH_B__TARGET_DIMMVALUE:
-        setTargetDimmvalue((Short)newValue);
+      case ModelPackage.REMOTE_SWITCH_B__ABS_DIMM_VALUE:
+        setAbsDimmValue((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1134,7 +1230,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     switch (featureID)
     {
       case ModelPackage.REMOTE_SWITCH_B__SENSOR_VALUE:
-        setSensorValue((DecimalValue)null);
+        setSensorValue((PercentValue)null);
         return;
       case ModelPackage.REMOTE_SWITCH_B__SWITCH_STATE:
         setSwitchState(SWITCH_STATE_EDEFAULT);
@@ -1166,6 +1262,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
       case ModelPackage.REMOTE_SWITCH_B__MAX_VALUE:
         setMaxValue(MAX_VALUE_EDEFAULT);
         return;
+      case ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE:
+        setPercentValue(PERCENT_VALUE_EDEFAULT);
+        return;
       case ModelPackage.REMOTE_SWITCH_B__ADDRESS:
         setAddress(ADDRESS_EDEFAULT);
         return;
@@ -1175,8 +1274,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
       case ModelPackage.REMOTE_SWITCH_B__REPEATS:
         setRepeats(REPEATS_EDEFAULT);
         return;
-      case ModelPackage.REMOTE_SWITCH_B__TARGET_DIMMVALUE:
-        setTargetDimmvalue(TARGET_DIMMVALUE_EDEFAULT);
+      case ModelPackage.REMOTE_SWITCH_B__ABS_DIMM_VALUE:
+        setAbsDimmValue(ABS_DIMM_VALUE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -1214,6 +1313,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         return MIN_VALUE_EDEFAULT == null ? minValue != null : !MIN_VALUE_EDEFAULT.equals(minValue);
       case ModelPackage.REMOTE_SWITCH_B__MAX_VALUE:
         return MAX_VALUE_EDEFAULT == null ? maxValue != null : !MAX_VALUE_EDEFAULT.equals(maxValue);
+      case ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE:
+        return PERCENT_VALUE_EDEFAULT == null ? percentValue != null : !PERCENT_VALUE_EDEFAULT.equals(percentValue);
       case ModelPackage.REMOTE_SWITCH_B__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.REMOTE_SWITCH_B__ADDRESS:
@@ -1222,8 +1323,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         return UNIT_EDEFAULT == null ? unit != null : !UNIT_EDEFAULT.equals(unit);
       case ModelPackage.REMOTE_SWITCH_B__REPEATS:
         return REPEATS_EDEFAULT == null ? repeats != null : !REPEATS_EDEFAULT.equals(repeats);
-      case ModelPackage.REMOTE_SWITCH_B__TARGET_DIMMVALUE:
-        return TARGET_DIMMVALUE_EDEFAULT == null ? targetDimmvalue != null : !TARGET_DIMMVALUE_EDEFAULT.equals(targetDimmvalue);
+      case ModelPackage.REMOTE_SWITCH_B__ABS_DIMM_VALUE:
+        return ABS_DIMM_VALUE_EDEFAULT == null ? absDimmValue != null : !ABS_DIMM_VALUE_EDEFAULT.equals(absDimmValue);
     }
     return super.eIsSet(featureID);
   }
@@ -1299,6 +1400,14 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
       {
         case ModelPackage.REMOTE_SWITCH_B__MIN_VALUE: return ModelPackage.DIMMABLE_ACTOR__MIN_VALUE;
         case ModelPackage.REMOTE_SWITCH_B__MAX_VALUE: return ModelPackage.DIMMABLE_ACTOR__MAX_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == PercentTypeActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE: return ModelPackage.PERCENT_TYPE_ACTOR__PERCENT_VALUE;
         default: return -1;
       }
     }
@@ -1379,6 +1488,14 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         default: return -1;
       }
     }
+    if (baseClass == PercentTypeActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.PERCENT_TYPE_ACTOR__PERCENT_VALUE: return ModelPackage.REMOTE_SWITCH_B__PERCENT_VALUE;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1452,6 +1569,14 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         default: return -1;
       }
     }
+    if (baseClass == PercentTypeActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.PERCENT_TYPE_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS: return ModelPackage.REMOTE_SWITCH_B___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS;
+        default: return -1;
+      }
+    }
     return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
@@ -1465,6 +1590,9 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
   {
     switch (operationID)
     {
+      case ModelPackage.REMOTE_SWITCH_B___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS:
+        setValue((PercentType)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
       case ModelPackage.REMOTE_SWITCH_B___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS:
         dimm((IncreaseDecreaseType)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
@@ -1519,6 +1647,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     result.append(minValue);
     result.append(", maxValue: ");
     result.append(maxValue);
+    result.append(", percentValue: ");
+    result.append(percentValue);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", address: ");
@@ -1527,8 +1657,8 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
     result.append(unit);
     result.append(", repeats: ");
     result.append(repeats);
-    result.append(", targetDimmvalue: ");
-    result.append(targetDimmvalue);
+    result.append(", absDimmValue: ");
+    result.append(absDimmValue);
     result.append(')');
     return result.toString();
   }

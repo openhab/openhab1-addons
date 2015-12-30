@@ -500,12 +500,12 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-        <dependency>
+		<dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.mios</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.astro</artifactId>
@@ -605,6 +605,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.mystromecopower</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.networkhealth</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
@@ -648,6 +654,12 @@
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.asterisk</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.octoller</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1371,7 +1383,19 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.panstamp</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.octoller</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
 		<dependency>
 			<groupId>org.openhab.io</groupId>
 			<artifactId>org.openhab.io.caldav</artifactId>

@@ -22,6 +22,8 @@ public class Child {
 	
 	@JsonProperty(value = "_elementType")
 	private String elementType;
+	
+	private String key;
 
 	private String sessionKey;
 	
@@ -35,6 +37,14 @@ public class Child {
 
 	public void setElementType(String elementType) {
 		this.elementType = elementType;
+	}
+	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getSessionKey() {

@@ -32,6 +32,7 @@
     <module>org.openhab.binding.fritzbox</module>
     <module>org.openhab.binding.ntp</module>
     <module>org.openhab.binding.mpd</module>
+    <module>org.openhab.binding.mystromecopower</module>
     <module>org.openhab.binding.vdr</module>
     <module>org.openhab.binding.asterisk</module>
     <module>org.openhab.binding.snmp</module>
@@ -168,5 +169,7 @@
     <module>org.openhab.binding.ucprelayboard</module>
     <module>org.openhab.binding.rpircswitch</module>
     <module>org.openhab.binding.myq</module>
+    <module>org.openhab.binding.panstamp</module>
+    <module>org.openhab.binding.octoller</module>
   </modules>
 </project>

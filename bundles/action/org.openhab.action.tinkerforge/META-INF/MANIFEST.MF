@@ -12,7 +12,6 @@ Bundle-Description: This is the TinkerForge action of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
  org.openhab.binding.tinkerforge.ecosystem,
- org.openhab.binding.tinkerforge.internal.model,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
@@ -23,8 +22,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.slf4j
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.emf.ecore

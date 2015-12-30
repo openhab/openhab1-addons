@@ -9,16 +9,14 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.plex.binding">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" modified="modified" deactivate="deactivate" name="org.openhab.binding.plex.binding" immediate="true" configuration-pid="org.openhab.plex" configuration-policy="require">
 	<implementation class="org.openhab.binding.plex.internal.PlexBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
-		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
 	<property name="event.topics" type="String" value="openhab/command/*" />
-	<property name="service.pid" type="String" value="org.openhab.plex" />
 
 	<reference bind="setEventPublisher" cardinality="1..1"
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"

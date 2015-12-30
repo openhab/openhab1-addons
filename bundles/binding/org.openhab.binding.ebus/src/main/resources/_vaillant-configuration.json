@@ -1,0 +1,238 @@
+[
+	{
+		"comment":	"<> Vaillant: NTC Sensor 1",
+		"id":		"temp_ntc1",
+		"class":	"water_v",
+		"command":	"B5 09",
+		"data":		"0D 00 00",
+		"dst":		"0A",
+		
+		"values": {
+			"temp_ntc1":		{"type": "data2c", "pos": 12, "label": "NTC Sensor 1", "min": 1, "max": 100},
+			"status_ntc1":		{"type": "byte", "pos":14, "label": "NTC Status 1"}
+		}
+	},
+
+	{
+		"comment":	"<> Vaillant: NTC Sensor 2",
+		"id":		"temp_ntc2",
+		"class":	"water_v",
+		"command":	"B5 09",
+		"data":		"0D 01 00",
+		"dst":		"0A",
+		
+		"values": {
+			"temp_ntc2":		{"type": "data2c", "pos": 12, "label": "NTC Sensor 2", "min": 1, "max": 100},
+			"status_ntc2":		{"type": "byte", "pos":14, "label": "NTC Status 2"}
+		}
+	},
+
+	{
+		"comment":	"<> Vaillant: NTC Sensor 3",
+		"id":		"temp_ntc3",
+		"class":	"water_v",
+		"command":	"B5 09",
+		"data":		"0D 02 00",
+		"dst":		"0A",
+		
+		"values": {
+			"temp_ntc3":		{"type": "data2c", "pos": 12, "label": "NTC Sensor 3", "min": 1, "max": 100},
+			"status_ntc3":		{"type": "byte", "pos":14, "label": "NTC Status 3"}
+		}
+	},
+
+	{
+		"comment":	"<> Vaillant: WW - Pufferkreislauf Volumenstrom",
+		"id":		"volume_flow",
+		"class":	"water_v",
+		"command":	"B5 09",
+		"data":		"0D 03 00",
+		"dst":		"0A",
+		
+		"values": {
+			"volume_flow":			{"type": "word", "pos":13, "label": "WW - Pufferkreislauf Volumenstrom"}
+		}
+	},
+
+	{
+		"comment":	"<> Vaillant: WW - Zirkulationspumpe Leistung (%)",
+		"id":		"performance_circulation_pump",
+		"class":	"water_v",
+		"command":	"B5 09",
+		"data":		"0D 04 00",
+		"dst":		"0A",
+		
+		"values": {
+			"performance_circulation_pump":	{"type": "word", "pos":13, "label": "WW - Zirkulationspumpe Leistung (%)", "min": 0, "max": 100}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Vaillant: Kollektor Vorlauf Temp.",
+		"id":		"temp_flow",
+		"class":	"solar_v",
+		"command":	"B5 09",
+		"data":		"0D 05 00",
+		"dst":		"ED",
+
+		"values": {
+			"temp_flow":		{"type": "data2c", "pos": 12, "label": "Kollektor Vorlauf", "min": -30, "max": 130},
+			"status_flow":		{"type": "byte", "pos":14, "label": "Sensor vorhanden"}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Vaillant: Kollektor Rücklauf Temp.",
+		"id":		"temp_return",
+		"class":	"solar_v",
+		"command":	"B5 09",
+		"data":		"0D 06 00",
+		"dst":		"ED",
+
+		"values": {
+			"temp_return":		{"type": "data2c", "pos": 12, "label": "Kollektor Rücklauf", "min": -30, "max": 130},
+			"status_return":	{"type": "byte", "pos":14, "label": "Sensor vorhanden"}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Vaillant: Get Data Block Solar1",
+		"id":		"solar_data1",
+		"class":	"solar_v",
+		"command":	"B5 04",
+		"data":		"12",
+
+		"values": {
+			"temp_flow":				{"type": "data2c", "pos": 6, "label": "Kollektor KOL1"},
+			"solar_pump":				{"type": "byte", "pos":8, "label": "Solarpumpe"},
+			"op_hrs_pump":				{"type": "word", "pos": 9, "label": "Pumpe Laufzeit"},
+			"temp_flow2":				{"type": "data2c", "pos": 11, "label": "Kollektor KOL2"},
+			"solar_pump2":				{"type": "byte", "pos":12, "label": "Solarpumpe"},
+			"op_hrs_pump2":				{"type": "word", "pos": 13, "label": "Pumpe Laufzeit"}
+		}
+	},
+
+	{
+		"comment":		"<Control> Vaillant: Aussentemperatur Broadcast",
+		"class":		"control_v",
+		"filter":		"?? FE B5 16 03 01 .*",
+
+		"values": {
+			"temp_outdoor":				{"type": "data2b", "pos": 7, "label": "Aussentemperatur Istwert", "min": -50, "max": 50}
+		}
+	},
+
+	{
+		"comment":		"<Control> Vaillant: Zeit Broadcast",
+		"class":		"control_v",
+		"filter":		"?? FE B5 16 08 00 .*",
+
+		"values": {
+			"time_sec":				{"type": "bcd", "pos":7, "label": "Zeit Sek."},
+			"time_min":				{"type": "bcd", "pos":8, "label": "Zeit Min"},
+			"time_hour":			{"type": "bcd", "pos":9, "label": "Zeit Stunde"},
+			"date_day":				{"type": "bcd", "pos":10, "label": "Datum Tag"},
+			"date_month":			{"type": "bcd", "pos":11, "label": "Datum Monat"},
+			"date_weekday":			{"type": "bcd", "pos":12, "label": "Datum Wochentag"},
+			"date_year":			{"type": "bcd", "pos":13, "label": "Datum Jahr"}
+		},
+
+		"computed_values": {
+			"time":					{"type": "script", "script": "time_hour + ':' + time_min + ':' + time_sec", "label": "Aktuelle Zeit"},
+			"date":					{"type": "script", "script": "'20' + date_year + '-' + date_month + '-' + date_day", "label": "Aktuelles Datum"},
+			"date_time":			{"type": "script", "script": "'20' + date_year + '-' + date_month + '-' + date_day + ' ' + time_hour + ':' + time_min + ':' + time_sec", "label": "Aktuelles Datum und Zeit"} 
+		}
+	},
+
+	{
+		"comment":	"[OK] <Master> Vaillant: DCF77 Zeit und Aussentemperatur",
+		"id":		"dcf77data",
+		"class":	"control_v",
+		"command":	"B5 04",
+		"data":		"00",
+		
+		"values": {
+			"state_dcf":				{"type": "bcd", "pos": 10, "label": "DCF77 Status - 00 kein Empfang, 01 Empfang, 02 Sync, 03 Valid"},
+			"time_sec":					{"type": "bcd", "pos": 11, "label": "Zeit Sekunden"},
+			"time_min":					{"type": "bcd", "pos": 12, "label": "Zeit Minuten"},
+			"time_hour":				{"type": "bcd", "pos": 13, "label": "Zeit Stunden"},
+			"date_day":					{"type": "bcd", "pos": 14, "label": "Datum Tag"},
+			"date_month":				{"type": "bcd", "pos": 15, "label": "Datum Monat"},
+			"date_weekday":				{"type": "bcd", "pos": 16, "label": "Datum Wochentag"},
+			"date_year":				{"type": "bcd", "pos": 17, "label": "Datum Jahr"},
+			"temp_outside":				{"type": "data2b", "pos": 18, "label": "Aussentemperatur"}
+		},
+		"computed_values": {
+			"time":						{"type": "script", "script": "time_hour + ':' + time_min + ':' + time_sec", "label": "Aktuelle Zeit"},
+			"date":						{"type": "script", "script": "'20' + date_year + '-' + date_month + '-' + date_day", "label": "Aktuelles Datum"},
+			"date_time":				{"type": "script", "script": "'20' + date_year + '-' + date_month + '-' + date_day + ' ' + time_hour + ':' + time_min + ':' + time_sec", "label": "Aktuelles Datum und Zeit"} 
+		}
+	},
+
+	{
+		"comment":	"[OK] <Regler> Vaillant: Regler zu Brenner",
+		"class":	"burner_v",
+		"filter":	"?? ?? B5 10 09 .*",
+		
+		"values": {
+			"temp_t_flow":				{"type": "data1c", "pos": 8, "label": "Sollwert Vorlauftemperatur vom Regler"},
+			"temp_t_water":				{"type": "data1c", "pos": 9, "label": "Sollwert Brauchwasser vom Regler"},
+			"bit_heating_off":			{"type": "bit", "pos": 12, "bit": 1, "label": "Heizen aus, vom Regler"},
+			"bit_brw_off":				{"type": "bit", "pos": 12, "bit": 3, "label": "Brauchwasser aus, vom Regler"}
+		}
+	},
+
+	{
+		"comment":	"[OK] <Burner> Vaillant: Brenner zu Regler",
+		"class":	"burner_v",
+		"command":	"B5 11",
+		"data":		"01",
+		
+		"values": {
+			"temp_vessel":	{"type": "data1c", "pos": 10, "label": "Vorlauftemperatur"},
+			"temp_return":	{"type": "data1c", "pos": 11, "label": "Rücklauftemperatur"},
+			"temp_outside": {"type": "data2b", "pos": 12, "label": "Aussentemperatur"},
+			"temp_water":	{"type": "data1c", "pos": 14, "label": "Brauchwasser Auslauftemperatur"},
+			"temp_boiler":	{"type": "data1c", "pos": 15, "label": "Brauchwasser Speichertemperatur", "debug": 1},
+			"heating_on":	{"type": "bit", "pos": 16, "bit": 0, "label": "Heizen Ein"},
+			"service_water_on":	{"type": "bit", "pos": 16, "bit": 1, "label": "Brauchwasser Ein"},
+			"unknown_00":	{"type": "byte", "pos": 17, "label": "Unbekannt immer 00"},
+			"unknown_ff":	{"type": "byte", "pos": 18, "label": "Unbekannt immer FF"}
+		}
+	},
+
+	{
+		"comment":	"[Analyse] <Burner> Vaillant: Brenner zu Regler",
+		"class":	"burner_v",
+		"command":	"B5 11",
+		"data":		"02",
+		
+		"values": {
+			"unknown_03":	{"type": "byte", "pos": 10, "label": "Unbekannt immer 3d"},
+			"unknown_3c":	{"type": "byte", "pos": 11, "label": "Unbekannt immer 60d"},
+			"unknown_6e":	{"type": "byte", "pos": 12, "label": "Unbekannt immer 110d"},
+			"unknown_50":	{"type": "byte", "pos": 13, "label": "Unbekannt immer 80d"},
+			"temp_t_boiler":{"type": "data1c", "pos": 14, "label": "Brauchwasser Sollwert", "debug": 1}
+		}
+	},
+
+	{
+		"comment":	"[Analyse] <Master> Vaillant: Pumpenstatus????",
+		"class":	"burner_v",
+		"filter":	"?? ?? B5 12 02 02 .*",
+
+		"values": {
+			"internal_pump":	{"type": "bit", "pos": 7, "bit": 6, "label": "Interne Pumpe"}
+		}
+	},
+
+	{
+		"comment":	"[Analyse] <Master> Vaillant: Pumpenstatus 2????",
+		"class":	"burner_v",
+		"filter":	"?? ?? B5 12 02 00 .*",
+
+		"values": {
+			"circulating_pump":	{"type": "bit", "pos": 7, "bit": 6, "label": "Zirkulations Pumpe"}
+		}
+	}
+]
