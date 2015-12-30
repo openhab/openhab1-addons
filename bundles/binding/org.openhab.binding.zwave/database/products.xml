@@ -1128,6 +1128,15 @@
 			<Label lang="en">Water Sensor</Label>
 			<ConfigFile>aeon/dsb45-zwus.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0202</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>ZW089B</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>aeon/zw089.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -1681,6 +1690,15 @@
 			<Model>FGD212</Model>
 			<Label lang="en">Fibaro Dimmer 2</Label>
 			<ConfigFile>fibaro/fgd212.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0C00</Type>
+				<Id>3000</Id>
+			</Reference>
+			<Model>FGSS001</Model>
+			<Label lang="en">Smoke Sensor</Label>
+			<ConfigFile>fibaro/fgss101.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
