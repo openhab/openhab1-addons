@@ -11,7 +11,7 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.mystromecopower</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.mystromecopower</bundle.namespace>
-		<deb.name>openhab-addon-binding-MyStromEcoPower</deb.name>
+		<deb.name>openhab-addon-binding-mystromecopower</deb.name>
 		<deb.description>openhab addon binding MyStromEcoPower</deb.description>
 	</properties>
 

@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
 * Default OSGi bundle activator
 * 
 * @author Christian Sowada
-* @since 1.7.0
+* @since 1.8.0
 */
 public class Activator implements BundleActivator {
 
