@@ -968,6 +968,15 @@
 			<Label lang="en">Siren</Label>
 			<ConfigFile>aeon/siren.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0202</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>ZW089B</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>aeon/zw089b.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
