@@ -249,7 +249,7 @@ public class MyStromEcoPowerBinding extends
 										.startAt(dateTrigger).build();
 								this.scheduler.scheduleJob(job, trigger);
 							} else {
-								if (deviceId != this.masterDevice.id) {
+								if (this.masterDevice == null || (this.masterDevice != null && deviceId != this.masterDevice.id)) {
 									// This is not the master device.
 									if (!this.mystromClient.ChangeState(
 											deviceId, onOff)) {
@@ -262,7 +262,7 @@ public class MyStromEcoPowerBinding extends
 									}
 								} else {
 									// This is the mater device.
-									if (OnOffType.OFF.equals(command)) {
+									if (this.masterDevice != null && OnOffType.OFF.equals(command)) {
 										// Do a reset if try to set OFF the
 										// master device.
 										logger.debug("Restart master device");
