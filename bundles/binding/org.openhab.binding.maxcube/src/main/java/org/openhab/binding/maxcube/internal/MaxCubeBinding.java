@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcube.MaxCubeBindingProvider;
@@ -83,7 +84,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/**
 	 * The available memory slots of the cube
 	 */
-
 	private int freeMemorySlots;
 
 	/** The refresh interval which is used to poll given MAX!Cube */
@@ -115,8 +115,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 * Configuration and device lists, kept during the overall lifetime of the
 	 * binding
 	 */
-	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();
-	private ArrayList<Device> devices = new ArrayList<Device>();
+	private List<Configuration> configurations = new ArrayList<Configuration>();
+	private List<Device> devices = new ArrayList<Device>();
 	
 	/**
 	 * connection socket and reader/writer for execute method
@@ -298,23 +298,21 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 					if (device == null) {
 						logger.info("Cannot find MAX!cube device with serial number '{}'", serialNumber);
-
-						if (logger.isDebugEnabled()) {
-							StringBuilder sb = new StringBuilder();
-							sb.append("Available MAX! devices are:");
-							for (Device d : devices) {
-								sb.append("\n\t");
-								sb.append(d.getSerialNumber());
-							}
-							logger.debug(sb.toString());
-						}
+						logAvailableMaxDevices();
 						continue;
 					}
-					//all devices have a battery state, so this is type-independent
-					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.battery().isChargeUpdated()) {
-						eventPublisher.postUpdate(itemName, device.battery().getCharge());
-					} else if  (provider.getBindingType(itemName) != BindingType.BATTERY) {
-					switch (device.getType()) {
+					// all devices have a battery state, so this is type-independent
+					if (provider.getBindingType(itemName) == BindingType.BATTERY) {
+						if (device.battery().isChargeUpdated()){
+							eventPublisher.postUpdate(itemName, device.battery().getCharge());
+						}
+					} else if (provider.getBindingType(itemName) == BindingType.CONNECTION_ERROR){
+						if (device.isErrorUpdated()){
+							OnOffType connectionError = device.isError() ? OnOffType.ON : OnOffType.OFF;
+							eventPublisher.postUpdate(itemName, connectionError);
+						}
+					} else {
+						switch (device.getType()) {
 						case HeatingThermostatPlus:
 						case HeatingThermostat:
 							if (provider.getBindingType(itemName) == BindingType.VALVE
@@ -322,26 +320,29 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
 								break;
 							}
-							//omitted break, fall through
+							// omitted break, fall through
 						case WallMountedThermostat: // and also HeatingThermostat
 							if (provider.getBindingType(itemName) == BindingType.MODE
 									&& ((HeatingThermostat) device).isModeUpdated()) {
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
 							} else if (provider.getBindingType(itemName) == BindingType.ACTUAL
 									&& ((HeatingThermostat) device).isTemperatureActualUpdated()) {
-								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
-							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated() && provider.getBindingType(itemName) == null){
-								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
+								eventPublisher
+										.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
+							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated()
+									&& provider.getBindingType(itemName) == null) {
+								eventPublisher.postUpdate(itemName,
+										((HeatingThermostat) device).getTemperatureSetpoint());
 							}
 							break;
 						case ShutterContact:
-							if(((ShutterContact) device).isShutterStateUpdated()){
+							if (((ShutterContact) device).isShutterStateUpdated()) {
 								eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
 							}
 							break;
 						default:
 							// no further devices supported yet
-					}
+						}
 					}
 				}
 			}
@@ -355,6 +356,18 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			logger.info("Error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
 			logger.info(Utils.getStackTrace(e));
 			socketClose(); //reconnect on next execution
+		}
+	}
+	
+	private void logAvailableMaxDevices() {
+		if (logger.isDebugEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Available MAX! devices are:");
+			for (Device d : devices) {
+				sb.append("\n\t");
+				sb.append(d.getSerialNumber());
+			}
+			logger.debug(sb.toString());
 		}
 	}
 
@@ -425,10 +438,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					if(socket == null) {
 						this.socketConnect();
 					}
-					/*DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
-
-					byte[] b = commandString.getBytes();
-					stream.write(b);*/
 					writer.write(commandString);
 					logger.debug(commandString);
 					writer.flush();
@@ -490,7 +499,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	private boolean socketConnect() throws UnknownHostException, IOException {
 		socket = new Socket(ip, port);
 		socket.setSoTimeout(2000);
-		logger.debug("open new connection... to "+ip+" port "+port);
+		logger.debug("open new connection... to " + ip + " port " + port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new OutputStreamWriter(socket.getOutputStream());
 		requestCount = 0;
@@ -498,7 +507,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	}
 
 	private void socketClose() {
-		if(socket!=null) {
+		if (socket != null) {
 			try {
 				socket.close();
 			} catch (IOException e) {
@@ -508,7 +517,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		}
 	}
 
-	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
+	private Device findDevice(String serialNumber, List<Device> devices) {
 		for (Device device : devices) {
 			if (device.getSerialNumber().toUpperCase().equals(serialNumber)) {
 				return device;
