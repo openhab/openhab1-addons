@@ -218,7 +218,7 @@ public class MyStromEcoPowerBinding extends
 									command, onOff ? "on" : "off");
 
 							boolean actualState = this.mystromClient
-									.getDeviceInfo(deviceId).state == "on";
+									.getDeviceInfo(deviceId).state.equals("on");
 							if (onOff == actualState) {
 								// mystrom state is the same, may be due to
 								// change state on/off too
@@ -374,7 +374,7 @@ public class MyStromEcoPowerBinding extends
 		for (MystromDevice mystromDevice : devices) {
 			this.devicesMap.put(mystromDevice.name, mystromDevice.id);
 
-			if (mystromDevice.type == "mst") {
+			if (mystromDevice.type.equals("mst")) {
 				this.masterDevice = mystromDevice;
 			}
 
