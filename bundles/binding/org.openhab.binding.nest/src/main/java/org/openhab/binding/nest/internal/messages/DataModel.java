@@ -170,6 +170,9 @@ public class DataModel extends AbstractMessagePart {
 		private Map<String, SmokeCOAlarm> smoke_co_alarms_by_id;
 		@JsonIgnore
 		private Map<String, SmokeCOAlarm> smoke_co_alarms_by_name;
+		private Map<String, Camera> cameras_by_id;
+		@JsonIgnore
+		private Map<String, Camera> cameras_by_name;
 
 		/**
 		 * @return the thermostats_by_id
@@ -224,6 +227,31 @@ public class DataModel extends AbstractMessagePart {
 		}
 
 		/**
+		 * @return the cameras_by_id
+		 */
+		@JsonProperty("cameras")
+		public Map<String, Camera> getCameras_by_id() {
+			return this.cameras_by_id;
+		}
+
+		/**
+		 * @param cameras_by_id
+		 *            the cameras to set (mapped by ID)
+		 */
+		@JsonProperty("cameras")
+		public void setCameras_by_id(Map<String, Camera> cameras_by_id) {
+			this.cameras_by_id = cameras_by_id;
+		}
+
+		/**
+		 * @return the cameras_by_name
+		 */
+		@JsonIgnore
+		public Map<String, Camera> getCameras() {
+			return this.cameras_by_name;
+		}
+
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
@@ -244,6 +272,14 @@ public class DataModel extends AbstractMessagePart {
 					this.smoke_co_alarms_by_name.put(smoke_co_alarm.getName(), smoke_co_alarm);
 				}
 			}
+			// Create our map of Camera names to objects
+			this.cameras_by_name = new HashMap<String, Camera>();
+			if (this.cameras_by_id != null) {
+				for (Camera camera : this.cameras_by_id.values()) {
+					camera.sync(dataModel);
+					this.cameras_by_name.put(camera.getName(), camera);
+				}
+			}
 		}
 
 		@Override
@@ -252,6 +288,7 @@ public class DataModel extends AbstractMessagePart {
 			builder.appendSuper(super.toString());
 			builder.append("thermostats", this.thermostats_by_id);
 			builder.append("smoke_co_alarms", this.smoke_co_alarms_by_id);
+			builder.append("cameras", this.cameras_by_id);
 
 			return builder.toString();
 		}
@@ -358,6 +395,16 @@ public class DataModel extends AbstractMessagePart {
 	}
 
 	/**
+	 * Convenience method so property specs don't have to include "devices." in each one.
+	 * 
+	 * @return name-based map of cameras
+	 */
+	@JsonIgnore
+	public Map<String, Camera> getCameras() {
+		return (devices == null) ? null : devices.getCameras();
+	}
+
+	/**
 	 * @return the structures
 	 */
 	@JsonProperty("structures")
@@ -422,9 +469,9 @@ public class DataModel extends AbstractMessagePart {
 	}
 
 	/**
-	 * This method returns a new data model containing only the affected Structure, Thermostat or SmokeCOAlarm, and only
-	 * the property of the bean that was changed. This new DataModel object can be sent to the Nest API in order to
-	 * perform an update via HTTP PUT.
+	 * This method returns a new data model containing only the affected Structure, Thermostat, SmokeCOAlarm or Camera,
+	 * and only the property of the bean that was changed. This new DataModel object can be sent to the Nest API in
+	 * order to perform an update via HTTP PUT.
 	 * 
 	 * @param property
 	 *            the property to change
@@ -439,13 +486,14 @@ public class DataModel extends AbstractMessagePart {
 			InvocationTargetException, NoSuchMethodException {
 
 		/**
-		 * Find the Structure, Thermostat or SmokeCOAlarm that the given property is trying to update.
+		 * Find the Structure, Thermostat, SmokeCOAlarm or Camera that the given property is trying to update.
 		 */
 		Object oldObject = null;
 		String beanProperty = property;
 		do {
 			Object obj = this.getProperty(beanProperty);
-			if (obj instanceof Structure || obj instanceof Thermostat || obj instanceof SmokeCOAlarm) {
+			if (obj instanceof Structure || obj instanceof Thermostat || obj instanceof SmokeCOAlarm
+					|| obj instanceof Camera) {
 				oldObject = obj;
 				break;
 			}
@@ -495,6 +543,17 @@ public class DataModel extends AbstractMessagePart {
 				updateDataModel.devices.smoke_co_alarms_by_id.put(deviceId, smokeCOAlarm);
 				updateDataModel.devices.smoke_co_alarms_by_name = new HashMap<String, SmokeCOAlarm>();
 				updateDataModel.devices.smoke_co_alarms_by_name.put(deviceName, smokeCOAlarm);
+			} else if (oldObject instanceof Camera) {
+				String deviceId = ((Camera) oldObject).getDevice_id();
+				String deviceName = ((Camera) oldObject).getName();
+
+				updateDataModel = new DataModel();
+				updateDataModel.devices = new Devices();
+				Camera camera = new Camera(null);
+				updateDataModel.devices.cameras_by_id = new HashMap<String, Camera>();
+				updateDataModel.devices.cameras_by_id.put(deviceId, camera);
+				updateDataModel.devices.cameras_by_name = new HashMap<String, Camera>();
+				updateDataModel.devices.cameras_by_name.put(deviceName, camera);
 			}
 		}
 
@@ -511,6 +570,7 @@ public class DataModel extends AbstractMessagePart {
 			if (updateDataModel.devices != null) {
 				updateDataModel.devices.smoke_co_alarms_by_name = null;
 				updateDataModel.devices.thermostats_by_name = null;
+				updateDataModel.devices.cameras_by_name = null;
 			}
 		}
 

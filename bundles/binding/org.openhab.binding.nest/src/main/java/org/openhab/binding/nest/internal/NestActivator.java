@@ -10,6 +10,7 @@ package org.openhab.binding.nest.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ public final class NestActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("Nest binding has been started.");
+		logger.debug("Nest binding has been started. Version {}", NestActivator.getVersion());
 	}
 
 	/**
@@ -48,5 +49,13 @@ public final class NestActivator implements BundleActivator {
 	 */
 	public static BundleContext getContext() {
 		return context;
+	}
+
+	/**
+	 * Returns the current version of the bundle.
+	 * @return the current version of the bundle.
+	 */
+	public static Version getVersion() {
+		return context.getBundle().getVersion();
 	}
 }

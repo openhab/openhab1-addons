@@ -17,7 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,8 +36,7 @@ import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -60,8 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author Jens Viebig
  * @since 1.7.0
  */
-public class MapDBPersistenceService implements QueryablePersistenceService,
-		ManagedService {
+public class MapDBPersistenceService implements QueryablePersistenceService {
 
 	private static final String SERVICE_NAME = "mapdb";
 
@@ -85,9 +82,27 @@ public class MapDBPersistenceService implements QueryablePersistenceService,
 	private static DB db;
 	private static Map<String, MapDBItem> map;
 
-	public void activate() {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
 		logger.debug("mapdb persistence service activated");
 
+		String commitIntervalString = (String) config.get("commitinterval");
+		if (StringUtils.isNotBlank(commitIntervalString)) {
+			try {
+				commitInterval = Integer.valueOf(commitIntervalString);
+			} catch (IllegalArgumentException iae) {
+				logger.warn("couldn't parse '{}' to an integer");
+			}
+		}
+		String commitSameStateString = (String) config
+				.get("commitsamestate");
+		if (StringUtils.isNotBlank(commitSameStateString)) {
+			try {
+				commitSameState = Boolean.valueOf(commitSameStateString);
+			} catch (IllegalArgumentException iae) {
+				logger.warn("couldn't parse '{}' to an integer");
+			}
+		}		
+		
 		File folder = new File(DB_FOLDER_NAME);
 		if (!folder.exists()) {
 			folder.mkdir();
@@ -101,7 +116,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService,
 		scheduleJob();
 	}
 
-	public void deactivate() {
+	public void deactivate(final int reason) {
 		logger.debug("mapdb persistence service deactivated");
 		if (db != null) {
 			db.close();
@@ -242,32 +257,6 @@ public class MapDBPersistenceService implements QueryablePersistenceService,
 			}
 		}
 
-	}
-
-	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		if (config != null) {
-
-			String commitIntervalString = (String) config.get("commitinterval");
-			if (StringUtils.isNotBlank(commitIntervalString)) {
-				try {
-					commitInterval = Integer.valueOf(commitIntervalString);
-				} catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
-			}
-			String commitSameStateString = (String) config
-					.get("commitsamestate");
-			if (StringUtils.isNotBlank(commitSameStateString)) {
-				try {
-					commitSameState = Boolean.valueOf(commitSameStateString);
-				} catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
-			}
-
-		}
 	}
 
 	private static String getUserDataFolder() {

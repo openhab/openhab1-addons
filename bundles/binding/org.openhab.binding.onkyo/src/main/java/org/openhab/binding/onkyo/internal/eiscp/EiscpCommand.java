@@ -40,6 +40,7 @@ public enum EiscpCommand {
     SOURCE_SATELLITE("SLI01", EiscpCommandRef.SOURCE_SATELLITE),
     SOURCE_CABLE("SLI01", EiscpCommandRef.SOURCE_SATELLITE),
     SOURCE_GAME("SLI02", EiscpCommandRef.SOURCE_GAME),
+    SOURCE_GAME2("SLI04", EiscpCommandRef.SOURCE_GAME2),
     SOURCE_AUXILIARY("SLI03", EiscpCommandRef.SOURCE_AUX),
     SOURCE_AUX("SLI03", EiscpCommandRef.SOURCE_AUX),
     SOURCE_VIDEO5("SLI04", EiscpCommandRef.SOURCE_VIDEO5),

@@ -58,9 +58,8 @@ public class TwitterActionService implements ActionService, ManagedService {
 	/** the configured ConsumerSecret (optional, defaults to official Twitter-App secret '2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM') */
 	static String consumerSecret = "2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM";
 
-	private static final String TOKEN_PATH = "etc";
 	private static final String TOKEN_FILE = "twitter.token";
-	private static final File tokenFile = new File(TOKEN_PATH + File.separator + TOKEN_FILE);
+	private static File tokenFile;
 
 	public TwitterActionService() {
 	}
@@ -113,8 +112,8 @@ public class TwitterActionService implements ActionService, ManagedService {
 
 	private static AccessToken getAccessToken() {
 		try {
-			String accessToken = loadToken(tokenFile, "accesstoken");
-			String accessTokenSecret = loadToken(tokenFile, "accesstokensecret");
+			String accessToken = loadToken(getTokenFile(), "accesstoken");
+			String accessTokenSecret = loadToken(getTokenFile(), "accesstokensecret");
 
 			if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(accessTokenSecret)) {
 				RequestToken requestToken = Twitter.client.getOAuthRequestToken();
@@ -166,8 +165,8 @@ public class TwitterActionService implements ActionService, ManagedService {
 				accessTokenSecret = token.getTokenSecret();
 
 				// save the access token details
-				saveToken(tokenFile, "accesstoken", accessToken);
-				saveToken(tokenFile, "accesstokensecret", accessTokenSecret);
+				saveToken(getTokenFile(), "accesstoken", accessToken);
+				saveToken(getTokenFile(), "accesstokensecret", accessTokenSecret);
 			}
 			
 			// generate an access token from the token details
@@ -179,6 +178,22 @@ public class TwitterActionService implements ActionService, ManagedService {
 	}
 	
 	// Helpers for storing/retrieving tokens from a flat file
+
+	private static File getTokenFile() {
+		if (tokenFile == null) {
+			File tokenPath = null;
+			String userdata = System.getProperty("smarthome.userdata");
+			if (StringUtils.isEmpty(userdata)) {
+				tokenPath = new File("etc");
+			} else {
+				tokenPath = new File(userdata);
+			}
+
+			tokenFile = new File(tokenPath, TOKEN_FILE);
+		}
+
+		return tokenFile;
+	}
 
 	private static String loadToken(File file, String key) throws IOException {
 		Properties properties = loadProperties(file);

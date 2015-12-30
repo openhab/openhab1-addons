@@ -9,8 +9,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Mochad X10 binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: com.sun.jersey.api.client,
- org.apache.commons.io,
+Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
  org.codehaus.jackson.map,
  org.openhab.core.binding,

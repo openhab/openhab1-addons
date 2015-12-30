@@ -221,8 +221,13 @@ public class OneWireConnection {
 					logger.info("there is no device for path {}, read attempt={}", new Object[] { lvDevicePropertyPath, lvAttempt });
 				}
 			} catch (OwfsException oe) {
-				logger.error("reading from path " + lvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
-				reconnect();
+				String lvLogText = "reading from path " + lvDevicePropertyPath + " attempt " + lvAttempt + " throws exception";
+				if (pvBindingConfig.isIgnoreReadErrors()) {
+					logger.debug(lvLogText, oe);
+				} else {
+					logger.error(lvLogText, oe);
+					reconnect();
+				}
 			} catch (IOException ioe) {
 				logger.error("couldn't establish network connection while read attempt " + lvAttempt + " '" + lvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
 				reconnect();

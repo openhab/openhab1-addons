@@ -53,7 +53,7 @@ public class TTSServiceGoogleTTS implements TTSService, ManagedService {
 	private static final String TRANSLATE_URL_PROPERTY = "translateUrl";
 
 	private String ttsLanguage = "en";
-	private String translateUrl = "http://translate.google.com/translate_tts?tl=%s&q=%s";
+	private String translateUrl = "http://translate.google.com/translate_tts?tl=%s&q=%s&client=t";
 
 	private final GoogleTTSTextProcessor textProcessor = new GoogleTTSTextProcessor(MAX_SENTENCE_LENGTH);
 

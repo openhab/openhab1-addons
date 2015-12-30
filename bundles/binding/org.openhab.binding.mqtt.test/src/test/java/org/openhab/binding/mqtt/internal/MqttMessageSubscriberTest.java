@@ -16,10 +16,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openhab.binding.mqtt.internal.AbstractMqttMessagePubSub.MessageType;
+import org.openhab.core.library.items.ColorItem;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.LocationItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationService;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -118,33 +126,47 @@ public class MqttMessageSubscriberTest {
 	@Test
 	public void canParseCommand() throws Exception {
 
+		ColorItem colorItem = new ColorItem("ColorItem");
+		DimmerItem dimmerItem = new DimmerItem("DimmerItem");
+		LocationItem locationItem = new LocationItem("LocationItem");
+		NumberItem numberItem = new NumberItem("NumberItem");
+		RollershutterItem rollershutterItem = new RollershutterItem("SetpointItem");
+		StringItem stringItem = new StringItem("StringItem");
+		SwitchItem switchItem = new SwitchItem("SwitchItem");
 		MqttMessageSubscriber subscriber = new MqttMessageSubscriber(
 				"mybroker:/mytopic:command:default");
-		assertEquals(StringType.valueOf("test"), subscriber.getCommand("test"));
+		assertEquals(StringType.valueOf("test"), subscriber.getCommand("test", stringItem.getAcceptedCommandTypes()));
 		assertEquals(StringType.valueOf("{\"person\"{\"name\":\"me\"}}"),
-				subscriber.getCommand("{\"person\"{\"name\":\"me\"}}"));
-		assertEquals(StringType.valueOf(""), subscriber.getCommand(""));
-		assertEquals(OnOffType.ON, subscriber.getCommand("ON"));
-		assertEquals(HSBType.valueOf("5,6,5"), subscriber.getCommand("5,6,5"));
+				subscriber.getCommand("{\"person\"{\"name\":\"me\"}}", stringItem.getAcceptedCommandTypes()));
+		assertEquals(StringType.valueOf(""), subscriber.getCommand("", stringItem.getAcceptedCommandTypes()));
+		assertEquals(OnOffType.ON, subscriber.getCommand("ON", switchItem.getAcceptedCommandTypes()));
+		assertEquals(HSBType.valueOf("5,6,5"), subscriber.getCommand("5,6,5", colorItem.getAcceptedCommandTypes()));
 		assertEquals(DecimalType.ZERO,
-				subscriber.getCommand(DecimalType.ZERO.toString()));
+				subscriber.getCommand(DecimalType.ZERO.toString(), numberItem.getAcceptedCommandTypes()));
 		assertEquals(PercentType.HUNDRED,
-				subscriber.getCommand(PercentType.HUNDRED.toString()));
+				subscriber.getCommand(PercentType.HUNDRED.toString(), dimmerItem.getAcceptedCommandTypes()));
 		assertEquals(PercentType.valueOf("80"),
-				subscriber.getCommand(PercentType.valueOf("80").toString()));
+				subscriber.getCommand(PercentType.valueOf("80").toString(), rollershutterItem.getAcceptedCommandTypes()));
+		assertEquals(PointType.valueOf("53.3239919,-6.5258807"),
+				subscriber.getCommand(PointType.valueOf("53.3239919,-6.5258807").toString(), locationItem.getAcceptedCommandTypes()));
 
 	}
 
 	@Test
 	public void canParseState() throws Exception {
 
+		LocationItem locationItem = new LocationItem("LocationItem");
+		StringItem stringItem = new StringItem("StringItem");
+		SwitchItem switchItem = new SwitchItem("SwitchItem");
 		MqttMessageSubscriber subscriber = new MqttMessageSubscriber(
 				"mybroker:/mytopic:state:default");
-		assertEquals(OnOffType.ON, subscriber.getState("ON"));
-		assertEquals(StringType.valueOf(""), subscriber.getState(""));
-		assertEquals(StringType.valueOf("test"), subscriber.getState("test"));
+		assertEquals(OnOffType.ON, subscriber.getState("ON", switchItem.getAcceptedDataTypes()));
+		assertEquals(StringType.valueOf(""), subscriber.getState("", stringItem.getAcceptedDataTypes()));
+		assertEquals(StringType.valueOf("test"), subscriber.getState("test", stringItem.getAcceptedDataTypes()));
 		assertEquals(StringType.valueOf("{\"person\"{\"name\":\"me\"}}"),
-				subscriber.getState("{\"person\"{\"name\":\"me\"}}"));
+				subscriber.getState("{\"person\"{\"name\":\"me\"}}", stringItem.getAcceptedDataTypes()));
+		assertEquals(PointType.valueOf("53.3239919,-6.5258807"),
+				subscriber.getState(PointType.valueOf("53.3239919,-6.5258807").toString(), locationItem.getAcceptedDataTypes()));
 	}
 
 }

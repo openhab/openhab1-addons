@@ -10,27 +10,32 @@ package org.openhab.binding.netatmo.internal.messages;
 
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.openhab.binding.netatmo.internal.NetatmoException;
 import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
+import org.openhab.binding.netatmo.internal.NetatmoScale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Queries the Netatmo API for the measures of a single device or module.
  * 
  * @author Andreas Brenk
  * @author Gaël L'hopital
+ * @author Rob Nielsen
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/getmeasure">getmeasure</a>
  */
 public class MeasurementRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = API_BASE_URL + "getmeasure";
+	private static final String URL = API_BASE_URL + "getmeasure";
+
+	private static final Logger logger = LoggerFactory.getLogger(MeasurementRequest.class);
 
 	/**
 	 * @param deviceId
@@ -39,12 +44,13 @@ public class MeasurementRequest extends AbstractRequest {
 	 *            optional, may be <code>null</code>
 	 * @return a unique key suitable to store a request in a map
 	 */
-	public static String createKey(final String deviceId, final String moduleId) {
+	public static String createKey(final String deviceId, final String moduleId, final NetatmoScale scale) {
+		final String s =  ":" + scale.getScale();
 		if (moduleId == null) {
-			return "device:" + deviceId;
+			return "device:" + deviceId + s;
 
 		} else {
-			return "module:" + moduleId;
+			return "module:" + moduleId + s;
 		}
 	}
 
@@ -54,10 +60,13 @@ public class MeasurementRequest extends AbstractRequest {
 
 	private final String moduleId;
 
+	private final NetatmoScale scale;
+
 	private final SortedSet<String> measures = new TreeSet<String>();
 
 	/**
-	 * Creates a request for the measurements of a device or module.
+	 * Creates a request for the measurements of a device or module
+	 * using the default scale.
 	 * 
 	 * If you don't specify a moduleId you will retrieve the device's
 	 * measurements. If you do specify a moduleId you will retrieve the module's
@@ -70,12 +79,33 @@ public class MeasurementRequest extends AbstractRequest {
 	 */
 	public MeasurementRequest(final String accessToken, final String deviceId,
 			final String moduleId) {
+		this(accessToken, deviceId, moduleId, NetatmoScale.MAX);
+	}
+
+	/**
+	 * Creates a request for the measurements of a device or module
+	 * using the scale specified.
+	 *
+	 * If you don't specify a moduleId you will retrieve the device's
+	 * measurements. If you do specify a moduleId you will retrieve the module's
+	 * measurements.
+	 *
+	 * @param accessToken
+	 * @param deviceId
+	 * @param moduleId
+	 *            optional, may be <code>null</code>
+	 * @param scale
+	 */
+	public MeasurementRequest(final String accessToken, final String deviceId,
+			final String moduleId, final NetatmoScale scale) {
 		assert accessToken != null : "accessToken must not be null!";
 		assert deviceId != null : "deviceId must not be null!";
+		assert scale != null : "scale must not be null!";
 
 		this.accessToken = accessToken;
 		this.deviceId = deviceId;
 		this.moduleId = moduleId;
+		this.scale = scale;
 	}
 
 	/**
@@ -89,19 +119,15 @@ public class MeasurementRequest extends AbstractRequest {
 
 	@Override
 	public MeasurementResponse execute() {
-		final String url = buildQueryString();
+		final String content = buildContentString();
+
 		String json = null;
-
 		try {
+			json = executeQuery(content);
 			
-			json = executeQuery(url);
-			
-			final MeasurementResponse response = JSON.readValue(json,
-					MeasurementResponse.class);
-
-			return response;
+			return JSON.readValue(json, MeasurementResponse.class);
 		} catch (final Exception e) {
-			throw newException("Could not get measurements!", e, url, json);
+			throw newException("Could not get measurements!", e, URL, content, json);
 		}
 	}
 
@@ -109,7 +135,7 @@ public class MeasurementRequest extends AbstractRequest {
 	 * @see #createKey(String, String)
 	 */
 	public String getKey() {
-		return createKey(this.deviceId, this.moduleId);
+		return createKey(this.deviceId, this.moduleId, this.scale);
 	}
 
 	public SortedSet<String> getMeasures() {
@@ -130,35 +156,36 @@ public class MeasurementRequest extends AbstractRequest {
 		return builder.toString();
 	}
 
-	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_GET, url, HTTP_HEADERS, null, null,
-				HTTP_REQUEST_TIMEOUT);
+	protected String executeQuery(final String content) throws Exception {
+		final InputStream stream = new ByteArrayInputStream(
+				content.getBytes(CHARSET));
+
+		logger.debug("HTTP Post url='{}' content='{}'", URL, content);
+
+		return executeUrl(HTTP_POST, URL, HTTP_HEADERS, stream,
+				HTTP_CONTENT_TYPE, HTTP_REQUEST_TIMEOUT);
 	}
 
-	private String buildQueryString() {
-		final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
-		urlBuilder.append("?access_token=");
-		urlBuilder.append(this.accessToken);
-		urlBuilder.append("&scale=max");
-		urlBuilder.append("&date_end=last");
-		urlBuilder.append("&device_id=");
-		urlBuilder.append(this.deviceId);
+	private String buildContentString() {
+		final StringBuilder contentBuilder = new StringBuilder();
+		contentBuilder.append("access_token=");
+		contentBuilder.append(this.accessToken);
+		contentBuilder.append("&scale=" + scale.getScale());
+		contentBuilder.append("&date_end=last");
+		contentBuilder.append("&device_id=");
+		contentBuilder.append(this.deviceId);
 		if (this.moduleId != null) {
-			urlBuilder.append("&module_id=");
-			urlBuilder.append(this.moduleId);
+			contentBuilder.append("&module_id=");
+			contentBuilder.append(this.moduleId);
 		}
-		urlBuilder.append("&type=");
+		contentBuilder.append("&type=");
 		for (final Iterator<String> i = this.measures.iterator(); i.hasNext();) {
-			urlBuilder.append(i.next());
+			contentBuilder.append(i.next());
 			if (i.hasNext()) {
-				urlBuilder.append(",");
+				contentBuilder.append(",");
 			}
 		}
 
-		try {
-			return URIUtil.encodeQuery(urlBuilder.toString());
-		} catch (final URIException e) {
-			throw new NetatmoException(e);
-		}
+		return contentBuilder.toString();
 	}
 }

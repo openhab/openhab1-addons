@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -44,12 +43,10 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +67,7 @@ import retrofit.RetrofitError;
  * @author Dan Byers - Allow more item types to be handled
  * @since 1.5.0
  */
-public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
+public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
   private static final String DEFAULT_URL = "http://127.0.0.1:8086";
   private static final String DEFAULT_DB = "openhab";
@@ -90,16 +87,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private boolean isProperlyConfigured;
   private boolean connected;
   
-  private PersistentStateRestorer persistentStateRestorer;
-
-  public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-    this.persistentStateRestorer = persistentStateRestorer;
-  }
-
-  public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-    this.persistentStateRestorer = null;
-  }
-
+  
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
   }
@@ -108,14 +96,52 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     this.itemRegistry = null;
   }
 
-  public void activate() {
-    logger.debug("influxdb persistence service activated");
-  }
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+		disconnect();
 
-  public void deactivate() {
-    logger.debug("influxdb persistence service deactivated");
-    disconnect();
-  }
+		if (config == null) {
+			logger.warn("The configuration for influxdb is missing fix openhab.cfg");
+		}
+
+		url = (String) config.get("url");
+		if (StringUtils.isBlank(url)) {
+			url = DEFAULT_URL;
+			logger.debug("using default url {}", DEFAULT_URL);
+		}
+
+		user = (String) config.get("user");
+		if (StringUtils.isBlank(user)) {
+			user = DEFAULT_USER;
+			logger.debug("using default user {}", DEFAULT_USER);
+		}
+
+		password = (String) config.get("password");
+		if (StringUtils.isBlank(password)) {
+			logger.warn("The password is missing. To specify a password configure the password parameter in openhab.cfg.");
+		}
+
+		dbName = (String) config.get("db");
+		if (StringUtils.isBlank(dbName)) {
+			dbName = DEFAULT_DB;
+			logger.debug("using default db name {}", DEFAULT_DB);
+		}
+
+		isProperlyConfigured = true;
+
+		connect();
+
+		// check connection; errors will only be logged, hoping the connection
+		// will work at a later time.
+		if (!checkConnection()) {
+			logger.error(
+					"database connection does not work for now, will retry to use the database.");
+		}
+	}
+
+	public void deactivate(final int reason) {
+		logger.debug("influxdb persistence service deactivated");
+		disconnect();
+	}
 
   private void connect() {
     if (influxDB == null) {
@@ -231,50 +257,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
               "database error: {}",
               e.getMessage());
     }
-  }
-
-  @Override
-  public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-    disconnect();
-
-    if (config == null) {
-      throw new ConfigurationException("influxdb",
-          "The configuration for influxdb is missing fix openhab.cfg");
-    }
-
-    url = (String) config.get("url");
-    if (StringUtils.isBlank(url)) {
-      url = DEFAULT_URL;
-      logger.debug("using default url {}", DEFAULT_URL);
-    }
-
-    user = (String) config.get("user");
-    if (StringUtils.isBlank(user)) {
-      user = DEFAULT_USER;
-      logger.debug("using default user {}", DEFAULT_USER);
-    }
-
-    password = (String) config.get("password");
-    if (StringUtils.isBlank(password)) {
-      throw new ConfigurationException("influxdb:password",
-          "The password is missing. To specify a password configure the password parameter in openhab.cfg.");
-    }
-
-    dbName = (String) config.get("db");
-    if (StringUtils.isBlank(dbName)) {
-      dbName = DEFAULT_DB;
-      logger.debug("using default db name {}", DEFAULT_DB);
-    }
-
-    isProperlyConfigured = true;
-
-    connect();
-
-    // check connection; errors will only be logged, hoping the connection will work at a later time. 
-    if ( ! checkConnection()){
-      logger.error("database connection does not work for now, will retry to use the database.");
-    }
-    persistentStateRestorer.initializeItems(getName());
   }
 
   @Override

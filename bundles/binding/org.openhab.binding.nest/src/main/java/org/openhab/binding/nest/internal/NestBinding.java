@@ -166,7 +166,11 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 				readNest(oauthCredentials);
 			}
 		} catch (Exception e) {
-			logger.error("Error reading from Nest:", e);
+			if (logger.isDebugEnabled()) {
+				logger.warn("Exception reading from Nest.", e);
+			} else {
+				logger.warn("Exception reading from Nest: {}", e.getMessage());
+			}
 		}
 	}
 
@@ -185,6 +189,8 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		if (dmres.isError()) {
 			logger.error("Error retrieving data model: {}", dmres.getError());
 			return;
+		} else {
+			logger.trace("Retrieved data model: {}", dmres);
 		}
 
 		DataModel newDataModel = dmres;

@@ -8,9 +8,11 @@
  */
 package org.openhab.binding.hue.internal.data;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,25 +37,54 @@ public class HueSettings {
 	static final Logger logger = LoggerFactory.getLogger(HueSettings.class);
 
 	private SettingsTree settingsData = null;
+	private static final int ERROR_TYPE_UNAUTHORIZED_USER = 1;
+	private boolean isAuthorized = false;
 
 	/**
-	 * Constructor of HueSettings. It takes the settings of the Hue bridge to
-	 * enable the HueSettings to determine the needed information about the
-	 * bulbs.
+	 * Constructor of HueSettings. It takes the settings of the Hue bridge to enable the HueSettings to determine the
+	 * needed information about the bulbs.
 	 * 
 	 * @param settings
-	 *            This is the settings string in Json format returned by the Hue
-	 *            bridge.
+	 *            This is the settings string in Json format returned by the Hue bridge.
 	 */
 	@SuppressWarnings("unchecked")
 	public HueSettings(String settings) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			settingsData = new SettingsTree(mapper.readValue(settings,
-					Map.class));
-		} catch (Exception e) {
-			logger.error("Could not read Settings-Json from Hue Bridge.");
+			JsonNode rootNode = mapper.readTree(settings);
+			if (!isAuthorizationError(rootNode)) {
+				settingsData = new SettingsTree(mapper.readValue(rootNode, Map.class));
+				isAuthorized = true;
+			}
+		} catch (IOException e) {
+			logger.error("Could not read Settings-Json from Hue Bridge.", e);
 		}
+	}
+	
+	/**
+	 * Determines if the Hue Bridge reported an authorization error.
+	 * 
+	 * @return true if an authorization error occurred, else false
+	 */
+	private boolean isAuthorizationError(JsonNode rootNode) {
+		boolean isAuthorizationError = false;
+		// While normal answers from the bridge are of type object, the error message is of type array
+		if (rootNode.isArray()) {
+			JsonNode node = rootNode.get(0);
+			if (node.has("error")) {
+				if (node.get("error").get("type").getIntValue() == ERROR_TYPE_UNAUTHORIZED_USER) {
+					isAuthorizationError = true;
+				}
+			}
+		}
+		return isAuthorizationError;
+	}
+	
+	/**
+	 * @return True if openHAB is authorized on the Hue bridge, else false
+	 */
+	public boolean isAuthorized(){
+		return isAuthorized;
 	}
 
 	/**
@@ -151,9 +182,13 @@ public class HueSettings {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return 0;
 		}
-		return (Integer) settingsData.node("lights")
-				.node(deviceId).node("state")
-				.value("bri");
+		Object bri = settingsData.node("lights").node(deviceId).node("state").value("bri");
+		if(bri instanceof Integer) {
+			return (Integer) bri;
+		} else {
+			//probably not dimmable, return on state
+			return isBulbOn(deviceId)?254:0;
+		}
 	}
 
 	/**

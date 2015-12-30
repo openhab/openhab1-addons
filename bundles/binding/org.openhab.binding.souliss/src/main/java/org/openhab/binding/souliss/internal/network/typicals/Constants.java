@@ -75,6 +75,7 @@ public class Constants {
 	public static final short Souliss_T55_VoltageSensor = 0x55;
 	public static final short Souliss_T56_CurrentSensor = 0x56;
 	public static final short Souliss_T57_PowerSensor = 0x57;
+	public static final short Souliss_T58_PressureSensor = 0x58;
 
 	// customized (remote) AirCon commands
 	public static final int Souliss_T_IrCom_AirCon_Pow_On = 0x8FFE;
@@ -143,7 +144,9 @@ public class Constants {
 
 	public static final short Souliss_T1n_OnFeedback = 0x23;
 	public static final short Souliss_T1n_OffFeedback = 0x24;
-
+	public static final String Souliss_T12_Use_Of_Slot_AUTOMODE  = "automode";
+	public static final String Souliss_T12_Use_Of_Slot_SWITCH  = "switch";
+			
 	public static final long Souliss_T16_Red = 0x22FF0000; // Set a state
 	public static final long Souliss_T16_Green = 0x2200FF00;
 	public static final long Souliss_T16_Blue = 0x220000FF;

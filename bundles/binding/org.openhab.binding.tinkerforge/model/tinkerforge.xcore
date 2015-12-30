@@ -595,10 +595,11 @@ class PTCConnected extends PTCDevice, MSensor<DigitalValue> {
 }
 
 class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>, 
-		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
+		MSensor<MDecimalValue>, MTFConfigConsumer<TFTemperatureConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_temperature"
 	BigDecimal threshold = "0.1"
+	boolean slowI2C = "false"
 	op void init(){}
 }
 
@@ -775,6 +776,9 @@ class TFBaseConfiguration extends TFConfig {
 	int callbackPeriod
 }
 
+class TFTemperatureConfiguration extends TFBaseConfiguration {
+	boolean slowI2C
+}
 class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
     int emissivity
 }

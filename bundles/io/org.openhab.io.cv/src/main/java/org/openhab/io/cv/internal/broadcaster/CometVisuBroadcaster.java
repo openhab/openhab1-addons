@@ -41,12 +41,10 @@ public class CometVisuBroadcaster extends JerseyBroadcaster implements ModelRepo
 			
 			@Override
 			public void onIdle() {
-				logger.debug("broadcaster '{}' is idle", this.toString());
 			}
 			
 			@Override
 			public void onEmpty() {
-				logger.debug("broadcaster '{}' is empty", this.toString());
 			}
 			
 			@Override
@@ -78,6 +76,7 @@ public class CometVisuBroadcaster extends JerseyBroadcaster implements ModelRepo
 		for (ResourceStateChangeListener l : listeners) {
 			// Item Model has changed so the listener listen to non existent items and need to be registered again
 			l.setBroadcaster(this);
+			l.refreshRelevantItems();
 			l.registerItems();
 		}
 	}

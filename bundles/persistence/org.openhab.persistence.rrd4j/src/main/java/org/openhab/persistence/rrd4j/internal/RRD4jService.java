@@ -12,17 +12,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.RejectedExecutionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -39,8 +39,7 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.rrd4j.ConsolFun;
 import org.rrd4j.DsType;
 import org.rrd4j.core.FetchData;
@@ -50,7 +49,6 @@ import org.rrd4j.core.RrdDef;
 import org.rrd4j.core.Sample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This is the implementation of the RRD4j {@link PersistenceService}. To learn
@@ -60,7 +58,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Jan N. Klug
  * @since 1.0.0
  */
-public class RRD4jService implements QueryablePersistenceService, ManagedService {
+public class RRD4jService implements QueryablePersistenceService {
 
 	private ConcurrentHashMap<String, RrdDefConfig> rrdDefs = new ConcurrentHashMap<String, RrdDefConfig>();
 
@@ -328,7 +326,7 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 	/**
 	 * @{inheritDoc
 	 */
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
 
 		// add default configurations
 		RrdDefConfig defaultNumeric = new RrdDefConfig("default_numeric");
@@ -346,10 +344,10 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 			return;
 		}
 
-		Enumeration<String> keys = config.keys();
-		while (keys.hasMoreElements()) {
+		Iterator<String> keys = config.keySet().iterator();
+		while (keys.hasNext()) {
 
-			String key = keys.nextElement();
+			String key = keys.next();
 
 			if (key.equals("service.pid")) {	// ignore servioce.pid
 				continue;
@@ -361,43 +359,49 @@ public class RRD4jService implements QueryablePersistenceService, ManagedService
 				continue;
 			}
 
-			String value = (String) config.get(key);
-			String name = subkeys[0].toLowerCase();
-			String property = subkeys[1].toLowerCase();
+            Object v = config.get(key);
+            if (v instanceof String) {
+                String value = (String) v;
+                String name = subkeys[0].toLowerCase();
+                String property = subkeys[1].toLowerCase();
 
-			if (StringUtils.isBlank(value)) {
-				logger.trace("Config is empty: {}", property);
-				continue;
-			} else {
-				logger.trace("Processing config: {} = {}", property, value);
-			}
+                if (StringUtils.isBlank(value)) {
+                    logger.trace("Config is empty: {}", property);
+                    continue;
+                } else {
+                    logger.trace("Processing config: {} = {}", property, value);
+                }
 
-			RrdDefConfig rrdDef = rrdDefs.get(name);
-			if (rrdDef == null) {
-				rrdDef = new RrdDefConfig(name);
-				rrdDefs.put(name, rrdDef);
-			}
+                RrdDefConfig rrdDef = rrdDefs.get(name);
+                if (rrdDef == null) {
+                    rrdDef = new RrdDefConfig(name);
+                    rrdDefs.put(name, rrdDef);
+                }
 
-			if (property.equals("def")) {
-				rrdDef.setDef(value);
-			} else if (property.equals("archives")) {
-				rrdDef.addArchives(value);
-			} else if (property.equals("items")) {
-				rrdDef.addItems(value);
-			} else {
-				logger.warn("Unknown property {} : {}", property, value);
-			}
+                try {
+                    if (property.equals("def")) {
+                        rrdDef.setDef(value);
+                    } else if (property.equals("archives")) {
+                        rrdDef.addArchives(value);
+                    } else if (property.equals("items")) {
+                        rrdDef.addItems(value);
+                    } else {
+                        logger.warn("Unknown property {} : {}", property, value);
+                    }
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Ignoring illegal configuration: {}", e.getMessage());
+                }
+            }
+        }
 
-		}
-
-		for (RrdDefConfig rrdDef : rrdDefs.values()) {
-			if (rrdDef.isValid()) {
-				logger.debug("Created {}", rrdDef.toString());
-			} else {
-				logger.info("Removing invalid defintion {}", rrdDef.toString());
-				rrdDefs.remove(rrdDef.name);
-			}
-		}
+        for (RrdDefConfig rrdDef : rrdDefs.values()) {
+            if (rrdDef.isValid()) {
+                logger.debug("Created {}", rrdDef.toString());
+            } else {
+                logger.info("Removing invalid defintion {}", rrdDef.toString());
+                rrdDefs.remove(rrdDef.name);
+            }
+        }
 	}
 
 	private class RrdArchiveDef {

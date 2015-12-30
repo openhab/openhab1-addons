@@ -138,11 +138,6 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 		}
 
 		Wind wind = weather.getWind();
-		if (wind.getSpeed() == null || wind.getSpeed() == 0.0) {
-			wind.setSpeed(null);
-			wind.setDegree(null);
-		}
-
 		if (wind.getDirection() == null && wind.getDegree() != null) {
 			String direction = UnitUtils.getWindDirection(wind.getDegree());
 			wind.setDirection(direction);

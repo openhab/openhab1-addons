@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Brenk
  * @author Thomas.Eichstaedt-Engelen
  * @author Gaël L'hopital
+ * @author Rob Nielsen
  * @since 1.4.0
  */
 public class NetatmoGenericBindingProvider extends
@@ -137,6 +138,16 @@ public class NetatmoGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
+	public NetatmoScale getNetatmoScale(String itemName) {
+		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
+				.get(itemName);
+		return config != null ? config.netatmoScale : null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void processBindingConfiguration(final String context,
 			final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
@@ -147,25 +158,46 @@ public class NetatmoGenericBindingProvider extends
 		final NetatmoBindingConfig config = new NetatmoBindingConfig();
 
 		final String[] configParts = bindingConfig.split("#");
+		String measureTypeString;
 		switch (configParts.length) {
 		case 2:
 			config.deviceId = configParts[0];
-			config.measureType = NetatmoMeasureType.fromString(configParts[1]);
+			measureTypeString = configParts[1];
 			break;
 		case 3:
 			config.deviceId = configParts[0];
 			config.moduleId = configParts[1];
-			config.measureType = NetatmoMeasureType.fromString(configParts[2]);
+			measureTypeString = configParts[2];
 			break;
 		case 4:
 			config.userid = configParts[0];
 			config.deviceId = configParts[1];
 			config.moduleId = configParts[2];
-			config.measureType = NetatmoMeasureType.fromString(configParts[3]);
+			measureTypeString = configParts[3];
 			break;
 		default:
 			throw new BindingConfigParseException(
 					"A Netatmo binding configuration must consist of two, three or four parts - please verify your *.items file");
+		}
+
+		/*
+		 * use a ',' when including scale so that it does not break backwards
+		 * compatibility with case 4 above.
+		 */
+		final String[] measureTypeParts = measureTypeString.split(",");
+		switch (measureTypeParts.length) {
+		case 1:
+			config.measureType = NetatmoMeasureType.fromString(measureTypeParts[0]);
+			config.netatmoScale = config.measureType.getDefaultScale();
+			break;
+		case 2:
+			config.measureType = NetatmoMeasureType.fromString(measureTypeParts[0]);
+			config.netatmoScale = NetatmoScale.fromString(measureTypeParts[1]);
+			break;
+		default:
+			throw new BindingConfigParseException(
+					"The last part of the Netatmo binding configuration must be 'type' or 'type,scale'"
+							+ " - please verify your *.items file");
 		}
 
 		logger.debug("Adding binding: {}", config);
@@ -179,6 +211,7 @@ public class NetatmoGenericBindingProvider extends
 		String deviceId;
 		String moduleId;
 		NetatmoMeasureType measureType;
+		NetatmoScale netatmoScale;
 
 		@Override
 		public String toString() {

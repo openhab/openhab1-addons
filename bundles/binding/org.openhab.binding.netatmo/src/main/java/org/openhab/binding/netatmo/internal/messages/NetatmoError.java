@@ -56,6 +56,10 @@ public class NetatmoError extends AbstractMessagePart {
 		return this.message;
 	}
 
+	public boolean isTokenNotVaid() {
+		return this.code == 2;
+	}
+
 	public boolean isAccessTokenExpired() {
 		return this.code == 3;
 	}

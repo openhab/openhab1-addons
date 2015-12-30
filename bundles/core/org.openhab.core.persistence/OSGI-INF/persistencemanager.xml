@@ -14,7 +14,6 @@
    <reference bind="setModelRepository" cardinality="0..1" interface="org.openhab.model.core.ModelRepository" name="ModelRepository" policy="dynamic" unbind="unsetModelRepository"/>
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
-      <provide interface="org.openhab.core.persistence.PersistentStateRestorer"/>
    </service>
    <reference bind="addPersistenceService" cardinality="0..n" interface="org.openhab.core.persistence.PersistenceService" name="PersistenceService" policy="dynamic" unbind="removePersistenceService"/>
    <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>

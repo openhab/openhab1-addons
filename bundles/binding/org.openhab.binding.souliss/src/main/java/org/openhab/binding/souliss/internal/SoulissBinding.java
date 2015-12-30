@@ -21,7 +21,9 @@ import org.openhab.binding.souliss.internal.network.typicals.RefreshSUBSCRIPTION
 import org.openhab.binding.souliss.internal.network.typicals.SoulissGenericTypical;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT11;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT12;
+import org.openhab.binding.souliss.internal.network.typicals.SoulissT14;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT16;
+import org.openhab.binding.souliss.internal.network.typicals.SoulissT18;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT19;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT21;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissT22;
@@ -34,6 +36,7 @@ import org.openhab.binding.souliss.internal.network.udp.SendDispatcher;
 import org.openhab.binding.souliss.internal.network.udp.UDPServerThread;
 
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -146,7 +149,22 @@ public class SoulissBinding<E> extends
 			break;
 		case Constants.Souliss_T12:
 			SoulissT12 T12 = (SoulissT12) T;
-			T12.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),
+			
+			if(itemName.equals(T12.getsItemNameAutoModeValue())){
+				T12.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T12_Use_Of_Slot_AUTOMODE + "_" + command.toString()));
+			} else if(itemName.equals(T12.getsItemNameSwitchValue())){
+				T12.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T12_Use_Of_Slot_SWITCH + "_" + command.toString()));
+			}
+				
+			break;
+		case Constants.Souliss_T14:
+			SoulissT14 T14 = (SoulissT14) T;
+			T14.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),
+					command.toString()));
+			break;
+		case Constants.Souliss_T18:
+			SoulissT18 T18 = (SoulissT18) T;
+			T18.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),
 					command.toString()));
 			break;
 		case Constants.Souliss_T16:
@@ -168,11 +186,14 @@ public class SoulissBinding<E> extends
 		case Constants.Souliss_T19:
 			SoulissT19 T19 = (SoulissT19) T;
 			if (command instanceof PercentType) {
-				int percentToShort = (((PercentType) command).shortValue() * 255 / 100);
+				int percentToShort = (((PercentType) command).shortValue() * 254 / 100);
 				T19.commandSEND(Constants.Souliss_T1n_Set,
 						Short.parseShort(String.valueOf(percentToShort)));
-			} else
-				T19.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),
+			} else if (command instanceof DecimalType){
+				int decimalToShort = (((DecimalType) command).shortValue() * 254 / 100);
+				T19.commandSEND(Constants.Souliss_T1n_Set,
+						Short.parseShort(String.valueOf(decimalToShort)));
+			}else T19.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),
 						command.toString()));
 			break;
 		case Constants.Souliss_T21:
@@ -200,21 +221,21 @@ public class SoulissBinding<E> extends
 			}
 			// Set As Measured 
 			else if(itemName.equals(T31.setAsMeasured.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_SETASMEASURED + "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_SETASMEASURED + "_" + command.toString()));
 				} else if(itemName.equals(T31.heatingCoolingModeValue.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_HEATING_COOLING+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_HEATING_COOLING+ "_" + command.toString()));
 				} else if(itemName.equals(T31.fanAutoMode.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANAUTOMODE+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANAUTOMODE+ "_" + command.toString()));
 				} else if(itemName.equals(T31.fanOff.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANOFF+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANOFF+ "_" + command.toString()));
 				} else if(itemName.equals(T31.fanLow.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANLOW+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANLOW+ "_" + command.toString()));
 				} else if(itemName.equals(T31.fanMed.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANMED+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANMED+ "_" + command.toString()));
 				} else if(itemName.equals(T31.fanHigh.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANHIGH+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_FANHIGH+ "_" + command.toString()));
 				} else if(itemName.equals(T31.power.getName())){
-					T31.CommandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_POWER+ "_" + command.toString()));
+					T31.commandSEND(StateTraslator.commandsOHtoSOULISS(T.getType(),	Constants.Souliss_T31_Use_Of_Slot_POWER+ "_" + command.toString()));
 				} 
 			break;
 			
@@ -333,11 +354,6 @@ public class SoulissBinding<E> extends
 
 	@Override
 	protected void execute() {
-
-		//if (!bindingsExist()) {
-		//	logger.debug("There is no existing Souliss binding configuration => refresh cycle aborted!");
-	//		return;
-	//	}
 		
 		if(timers.checkTime(0,SoulissNetworkParameter.REFRESH_MONITOR_TIME)){
 			mon.tick();
@@ -386,14 +402,14 @@ public class SoulissBinding<E> extends
 
 	@Override
 	protected String getName() {
-		return "Souliss Refresh Service";	}
-
-	@Override
-	public void addBindingProvider(SoulissBindingProvider provider) {
-		super.addBindingProvider(provider);
-		setProperlyConfigured(true);
+		return "Souliss Refresh Service";
 	}
 
-
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		// TODO Auto-generated method stub
+		super.bindingChanged(provider, itemName);
+		this.addBindingProvider((SoulissBindingProvider) provider);
+	}
 
 }

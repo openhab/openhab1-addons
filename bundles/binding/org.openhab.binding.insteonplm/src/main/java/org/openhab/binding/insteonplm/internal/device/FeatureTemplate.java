@@ -23,8 +23,9 @@ import org.openhab.core.types.Command;
  */
 public class FeatureTemplate {
 	private String	m_name				= null;
+	private String	m_timeout			= null;
 	private boolean m_isStatus			= false;
-	private String	m_dispatcher		= null;
+	private HandlerEntry	m_dispatcher		= null;
 	private HandlerEntry	m_pollHandler		= null;
 	private HandlerEntry	m_defaultMsgHandler	= null;
 	private HandlerEntry	m_defaultCmdHandler	= null;
@@ -35,9 +36,10 @@ public class FeatureTemplate {
 	
 	// simple getters
 	public String getName() { return m_name; }
+	public String getTimeout() { return m_timeout; }
 	public boolean isStatusFeature() { return m_isStatus; }
 	public HandlerEntry getPollHandler() { return m_pollHandler; }
-	public String getDispatcher() { return m_dispatcher; }
+	public HandlerEntry getDispatcher() { return m_dispatcher; }
 	public HandlerEntry getDefaultCommandHandler() { return m_defaultCmdHandler; }
 	public HandlerEntry getDefaultMessageHandler() { return m_defaultMsgHandler; }
 	
@@ -57,7 +59,8 @@ public class FeatureTemplate {
 	// simple setters
 	public void setName(String name) { m_name = name; }
 	public void setStatusFeature(boolean status) { m_isStatus = status; }
-	public void setMessageDispatcher(String dispatcher) { m_dispatcher = dispatcher; }
+	public void setTimeout(String s) { m_timeout = s; }
+	public void setMessageDispatcher(HandlerEntry he) { m_dispatcher = he; }
 	public void setPollHandler(HandlerEntry he) { m_pollHandler = he; }
 	public void setDefaultCommandHandler(HandlerEntry cmd) { m_defaultCmdHandler = cmd; }
 	public void setDefaultMessageHandler(HandlerEntry he) {	m_defaultMsgHandler = he; }
@@ -84,8 +87,9 @@ public class FeatureTemplate {
 	public DeviceFeature build() {
 		DeviceFeature f = new DeviceFeature(m_name);
 		f.setStatusFeature(m_isStatus);
-		
-		if (m_dispatcher != null) f.setMessageDispatcher(MessageDispatcher.s_makeMessageDispatcher(m_dispatcher, f));
+		f.setTimeout(m_timeout);
+		if (m_dispatcher != null) f.setMessageDispatcher(MessageDispatcher.s_makeHandler(m_dispatcher.getName(),
+								m_dispatcher.getParams(), f));
 		if (m_pollHandler != null) f.setPollHandler(PollHandler.s_makeHandler(m_pollHandler, f));
 		if (m_defaultCmdHandler != null) f.setDefaultCommandHandler(CommandHandler.s_makeHandler(m_defaultCmdHandler.getName(),
 								m_defaultCmdHandler.getParams(), f));

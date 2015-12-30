@@ -30,7 +30,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
@@ -67,6 +67,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#isSlowI2C <em>Slow I2C</em>}</li>
  * </ul>
  * </p>
  *
@@ -282,7 +283,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected TFBaseConfiguration tfConfig;
+  protected TFTemperatureConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -343,6 +344,26 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @ordered
    */
   protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isSlowI2C() <em>Slow I2C</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSlowI2C()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean SLOW_I2C_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isSlowI2C() <em>Slow I2C</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isSlowI2C()
+   * @generated
+   * @ordered
+   */
+  protected boolean slowI2C = SLOW_I2C_EDEFAULT;
 
   private TemperatureListener listener;
 
@@ -693,7 +714,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public TFBaseConfiguration getTfConfig()
+  public TFTemperatureConfiguration getTfConfig()
   {
     return tfConfig;
   }
@@ -703,9 +724,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetTfConfig(TFBaseConfiguration newTfConfig, NotificationChain msgs)
+  public NotificationChain basicSetTfConfig(TFTemperatureConfiguration newTfConfig, NotificationChain msgs)
   {
-    TFBaseConfiguration oldTfConfig = tfConfig;
+    TFTemperatureConfiguration oldTfConfig = tfConfig;
     tfConfig = newTfConfig;
     if (eNotificationRequired())
     {
@@ -720,7 +741,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTfConfig(TFBaseConfiguration newTfConfig)
+  public void setTfConfig(TFTemperatureConfiguration newTfConfig)
   {
     if (newTfConfig != tfConfig)
     {
@@ -772,6 +793,29 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isSlowI2C()
+  {
+    return slowI2C;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSlowI2C(boolean newSlowI2C)
+  {
+    boolean oldSlowI2C = slowI2C;
+    slowI2C = newSlowI2C;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__SLOW_I2C, oldSlowI2C, slowI2C));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void init() {
@@ -813,9 +857,18 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
         setCallbackPeriod(tfConfig.getCallbackPeriod());
       }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("slowI2C"))) {
+        setSlowI2C(true);
+      }
     }
     try {
       tinkerforgeDevice = new BrickletTemperature(uid, getIpConnection());
+      if (isSlowI2C()) {
+        logger.debug("setting I2C slow mode");
+        tinkerforgeDevice.setI2CMode(BrickletTemperature.I2C_MODE_SLOW);
+      } else {
+        logger.debug("working with I2C fast mode");
+      }
       tinkerforgeDevice.setResponseExpected(
           BrickletTemperature.FUNCTION_SET_TEMPERATURE_CALLBACK_PERIOD, false);
       tinkerforgeDevice.setTemperatureCallbackPeriod(callbackPeriod);
@@ -958,6 +1011,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return getDeviceType();
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
         return getThreshold();
+      case ModelPackage.MBRICKLET_TEMPERATURE__SLOW_I2C:
+        return isSlowI2C();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1009,13 +1064,16 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)newValue);
+        setTfConfig((TFTemperatureConfiguration)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
         setThreshold((BigDecimal)newValue);
+        return;
+      case ModelPackage.MBRICKLET_TEMPERATURE__SLOW_I2C:
+        setSlowI2C((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1068,13 +1126,16 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)null);
+        setTfConfig((TFTemperatureConfiguration)null);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_TEMPERATURE__SLOW_I2C:
+        setSlowI2C(SLOW_I2C_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -1122,6 +1183,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
         return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
+      case ModelPackage.MBRICKLET_TEMPERATURE__SLOW_I2C:
+        return slowI2C != SLOW_I2C_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -1294,6 +1357,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
     result.append(deviceType);
     result.append(", threshold: ");
     result.append(threshold);
+    result.append(", slowI2C: ");
+    result.append(slowI2C);
     result.append(')');
     return result.toString();
   }

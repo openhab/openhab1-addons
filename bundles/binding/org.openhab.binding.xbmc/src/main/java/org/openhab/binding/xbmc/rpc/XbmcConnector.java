@@ -28,6 +28,7 @@ import org.openhab.binding.xbmc.rpc.calls.ApplicationGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationSetVolume;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
 import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
+import org.openhab.binding.xbmc.rpc.calls.InputExecuteAction;
 import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
 import org.openhab.binding.xbmc.rpc.calls.PVRGetChannels;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
@@ -396,6 +397,12 @@ public class XbmcConnector {
 		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
 		playeropen.setFile(file);
 		playeropen.execute();
+	}
+	
+	public void inputExecuteAction(String action) {
+		final InputExecuteAction executeAction = new InputExecuteAction(client, httpUri);
+		executeAction.setAction(action);
+		executeAction.execute();
 	}
 
 	public void applicationSetVolume(String volume) {

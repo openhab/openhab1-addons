@@ -8,6 +8,8 @@
  */
 package org.openhab.core.transform.actions;
 
+import org.openhab.core.scriptengine.action.ActionDoc;
+import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
@@ -37,7 +39,11 @@ public class Transformation {
 	 * 		the transformed value or the original one, if there was no service registered for the
 	 * 		given type or a transformation exception occurred.
 	 */
-	public static String transform(String type, String function, String value) {
+	@ActionDoc(text = "Applies a transformation of a given type with some function to a value.")
+	public static String transform(
+			@ParamDoc(name = "type", text = "the transformation type, e.g. REGEX or MAP") String type,
+			@ParamDoc(name = "function", text = "the function to call, this value depends on the transformation type") String function,
+			@ParamDoc(name = "value", text = "the value to apply the transformation to") String value) {
 		String result;
 		TransformationService service = TransformationHelper.getTransformationService(TransformationActivator.getContext(), type);
 		if(service!=null) {

@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.io.net.http.SecureHttpContext;
-import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
@@ -46,7 +45,6 @@ public class WeatherServlet extends HttpServlet {
 	private static final String LAYOUTS_LOCATION = WEBAPP_LOCATION + "/layouts";
 
 	private HttpService httpService;
-	protected ItemUIRegistry itemUIRegistry;
 
 	public void setHttpService(HttpService httpService) {
 		this.httpService = httpService;
@@ -54,14 +52,6 @@ public class WeatherServlet extends HttpServlet {
 
 	public void unsetHttpService(HttpService httpService) {
 		this.httpService = null;
-	}
-
-	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = itemUIRegistry;
-	}
-
-	public void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = null;
 	}
 
 	/**
@@ -124,7 +114,7 @@ public class WeatherServlet extends HttpServlet {
 					+ "' does not exist, make sure it is in the layouts folder " + LAYOUTS_LOCATION);
 		}
 
-		WeatherTokenResolver tokenResolver = new WeatherTokenResolver(itemUIRegistry, weather, locationId);
+		WeatherTokenResolver tokenResolver = new WeatherTokenResolver(weather, locationId);
 		Enumeration<String> parameter = request.getParameterNames();
 		while (parameter.hasMoreElements()) {
 			String parameterName = parameter.nextElement();

@@ -99,6 +99,9 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			if (settings == null) {
 				logger.warn("Hue settings were null, maybe misconfigured bridge IP.");
 				return;
+			} else if (!settings.isAuthorized()){
+				logger.warn("openHAB not authorized to access Hue bridge");
+				return;
 			}
 			Set<String> keys = settings.getKeys();
 			for(String key: keys){				

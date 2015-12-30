@@ -28,6 +28,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Enumeration;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -37,6 +38,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSwitchAllCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
@@ -438,6 +440,44 @@ public class ZWaveController {
 	private void addNode(int nodeId) {
 		new ZWaveInitNodeThread(this, nodeId).start();
 	}
+	
+	/**
+	 * Send All On message to all devices that support the Switch All command class
+	 */
+	public void allOn() {
+        Enumeration<Integer> nodeIds = this.zwaveNodes.keys();
+        while (nodeIds.hasMoreElements()) {
+            Integer nodeId = nodeIds.nextElement();
+            ZWaveNode node = this.getNode(nodeId);
+            ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
+            if (switchAllCommandClass != null) {
+                logger.debug("NODE {}: Supports Switch All Command Class Sending AllOn Message", (Object)nodeId);
+                switchAllCommandClass.setNode(node);
+                switchAllCommandClass.setController(this);
+                this.enqueue(switchAllCommandClass.allOnMessage());
+                continue;
+            }
+        }
+    }
+
+	/**
+	 * Send All Off message to all devices that support the Switch All command class
+	 */
+    public void allOff() {
+        Enumeration<Integer> nodeIds = this.zwaveNodes.keys();
+        while (nodeIds.hasMoreElements()) {
+            Integer nodeId = nodeIds.nextElement();
+            ZWaveNode node = this.getNode(nodeId);
+            ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
+            if (switchAllCommandClass != null) {
+                logger.debug("NODE {}: Supports Switch All Command Class Sending AllOff Message", (Object)nodeId);
+                switchAllCommandClass.setNode(node);
+                switchAllCommandClass.setController(this);
+                this.enqueue(switchAllCommandClass.allOffMessage());
+                continue;
+            }
+        }
+    }
 
 	private class ZWaveInitNodeThread extends Thread {
 		int nodeId;

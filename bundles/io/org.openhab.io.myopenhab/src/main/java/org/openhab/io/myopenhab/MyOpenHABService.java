@@ -27,6 +27,24 @@ public interface MyOpenHABService {
 	 * @param severity the {@link String} containing severity (good, info, warning, error) of notification
 	 */
 	public void sendNotification(String userId, String message, String icon, String severity);
+	
+	/**
+	 * This method sends notification message to mobile apps of all account users through my.openHAB service
+	 * 
+	 * @param message the {@link String} containing a message to send to specified user id
+	 * @param icon the {@link String} containing a name of the icon to be used with this notification
+	 * @param severity the {@link String} containing severity (good, info, warning, error) of notification
+	 */
+	public void sendBroadcastNotification(String message, String icon, String severity);
+	
+	/**
+	 * This method sends notification message to notification log of all account users through my.openHAB service
+	 * 
+	 * @param message the {@link String} containing a message to send to specified user id
+	 * @param icon the {@link String} containing a name of the icon to be used with this notification
+	 * @param severity the {@link String} containing severity (good, info, warning, error) of notification
+	 */
+	public void sendLogNotification(String message, String icon, String severity);
 
 	/**
 	 * This method sends SMS message to mobile phones through my.openHAB service

@@ -52,7 +52,7 @@ public class SoulissTypicals {
 			}
 			typical.setName(sItem);
 			// Index is : node + slot + iBit + sUseOfSlot
-			logger.info("hashTableItemToAddress <-- [key: {} - value: {} - iBit {}]", sItem, String.valueOf(typical.getSoulissNodeID()),String.valueOf(typical.getSlot())); 
+			logger.info("hashTableItemToAddress <-- [key: {} - value: {} - Slot {}]", sItem, String.valueOf(typical.getSoulissNodeID()),String.valueOf(typical.getSlot())); 
 			hashTableItemToAddress.put(
 					sItem,
 					String.valueOf(typical.getSoulissNodeID())

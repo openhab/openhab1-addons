@@ -76,7 +76,8 @@ public class FeatureTemplateLoader {
 		FeatureTemplate feature = new FeatureTemplate();
 		feature.setName(name);
 		feature.setStatusFeature(statusFeature);
-		
+		feature.setTimeout(e.getAttribute("timeout"));
+
 		NodeList nodes = e.getChildNodes();
 		
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -130,10 +131,13 @@ public class FeatureTemplateLoader {
 		}
 	}
 	private static void s_parseMessageDispatcher(Element e, FeatureTemplate f) throws DOMException, ParsingException {
-		String dispatcher = e.getTextContent();
-		if (dispatcher == null) throw new ParsingException("Could not find MessageDispatcher for: " + e.getTextContent());
-		f.setMessageDispatcher(dispatcher);
+		HandlerEntry he = s_makeHandlerEntry(e);
+		f.setMessageDispatcher(he);
+		if (he.getName() == null) throw new ParsingException("Could not find MessageDispatcher for: " + e.getTextContent());
 	}
+		
+
+		
 	private static void s_parsePollHandler(Element e, FeatureTemplate f) throws ParsingException {
 		HandlerEntry he = s_makeHandlerEntry(e);
 		f.setPollHandler(he);
@@ -154,7 +158,7 @@ public class FeatureTemplateLoader {
 		ArrayList<FeatureTemplate> features = s_readTemplates(s);
 		for (FeatureTemplate feature : features) {
 			System.out.println(feature);
-			System.out.println("\tPOLL: " + feature.getPollHandler() + "\n\tDISPATCH: " + feature.getDispatcher());
+			System.out.println("\tPOLL: " + feature.getPollHandler() + "\n\tDISPATCH: " + feature.getDispatcher().getName());
 			System.out.println("\tDCH: " + feature.getDefaultCommandHandler() + "\n\tDMH: " + feature.getDefaultMessageHandler());
 			System.out.println("\tMSG HANDLERS: " + feature.getMessageHandlers().size());
 			System.out.println("\tCMD HANDLERS: " + feature.getCommandHandlers());

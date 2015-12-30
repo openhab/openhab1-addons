@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>009303</Model>
+	<Label lang="en">Wall Controller</Label>
+	<CommandClasses>
+		<Class>	<id>0x20</id></Class>
+		<Class>	<id>0x26</id></Class>
+		<Class>	<id>0x2b</id></Class>
+		<Class>	<id>0x2d</id></Class>
+		<Class>	<id>0x5b</id></Class>
+		<Class>	<id>0x62</id></Class>
+		<Class>	<id>0x70</id></Class>
+		<Class>	<id>0x80</id></Class>
+		<Class>	<id>0x84</id></Class>
+		<Class>	<id>0x85</id></Class>
+		<Class>	<id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 1 and 3 pair mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Separately</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">In pair without double clicks (Default)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">In pair with double clicks</Label>
+			</Item>
+			<Help lang="en">In separate mode button 1 works with Group A, button
+				3 with Group C. Click is ON, Hold is dimming UP, Double click is
+				OFF, Click-Hold is dimming DOWN. In pair button 1/3 are UP/DOWN
+				correspondingly. Click is ON/OFF, Hold is dimming UP/DOWN. Single
+				clicks works with Group A, double click with Group C.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Button 2 and 4 pair mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Separately</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">In pair without double clicks (Default)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">In pair with double clicks</Label>
+			</Item>
+			<Help lang="en">In separate mode button 2 works with control group B,
+				button 4 with control group D. Click is ON, Hold is dimming UP,
+				Double click is OFF, Click-Hold is dimming DOWN. In pair button B/D
+				are UP/DOWN correspondingly. Click is ON/OFF, Hold is dimming
+				UP/DOWN. Single clicks works with Group B, double click with Group
+				D.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">Command to control Group A</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch on/off and Dim (send Basic Set and Switch
+					Multilevel)
+				</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on/off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send preconfigured scenes</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Control devices in proximity</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control door lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central scene to gateway (default)</Label>
+			</Item>
+			<Help lang="en">defines the command to be sent to devices of control
+				group A when the related button is pressed
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">Command to control Group B</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch on/off and Dim (send Basic Set and Switch
+					Multilevel)
+				</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on/off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send preconfigured scenes</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Control devices in proximity</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control door lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central scene to gateway (default)</Label>
+			</Item>
+			<Help lang="en">defines the command to be sent to devices of control
+				group B when the related button is pressed
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">Command to control Group C</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch on/off and Dim (send Basic Set and Switch
+					Multilevel)
+				</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on/off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send preconfigured scenes</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Control devices in proximity</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control door lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central scene to gateway (default)</Label>
+			</Item>
+			<Help lang="en">defines the command to be sent to devices of control
+				group C when the related button is pressed
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">Command to control Group D</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch on/off and Dim (send Basic Set and Switch
+					Multilevel)
+				</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on/off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send preconfigured scenes</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Control devices in proximity</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control door lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central scene to gateway (default)</Label>
+			</Item>
+			<Help lang="en">defines the command to be sent to devices of control
+				group D when the related button is pressed
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label>Send the following switch all commands</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch off only (default)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on only</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Help lang="en" />
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>Invert buttons</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No (default)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>25</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>Block wake up even when Wake Up Interval is set</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Wake up is blocked (default)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Wake up is possible if configured accordingly
+				</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>end unsolicited battery report on Wake Up</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">To same node as Wake Up Notification (default)
+				</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Broadcast to neighbors</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Lifeline</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Control Group A</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Control Group B</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Control Group C</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Control Group D</Label>
+			<SetToController>false</SetToController>
+		</Group>
+	</Associations>
+</Product>

@@ -13,12 +13,12 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-import static org.apache.commons.httpclient.util.URIUtil.encodeQuery;
+import static org.openhab.binding.netatmo.internal.NetatmoMeasureType.HUMIDITY;
+import static org.openhab.binding.netatmo.internal.NetatmoMeasureType.TEMPERATURE;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.ACCESS_TOKEN;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.DEVICE_ID;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.MODULE_ID;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.createRequest;
-import static org.openhab.binding.netatmo.internal.NetatmoMeasureType.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +28,7 @@ import org.openhab.binding.netatmo.internal.messages.MeasurementResponse.Body;
 
 /**
  * @author Andreas Brenk
+ * @author Rob Nielsen
  * @since 1.4.0
  */
 public class MeasurementTest {
@@ -57,11 +58,10 @@ public class MeasurementTest {
 		assertFalse(response.isError());
 		assertNull(response.getError());
 
-		assertEquals("https://api.netatmo.net/api/getmeasure?access_token="
-				+ encodeQuery(ACCESS_TOKEN)
+		assertEquals("access_token=" + ACCESS_TOKEN
 				+ "&scale=max&date_end=last&device_id=" + DEVICE_ID
 				+ "&module_id=" + MODULE_ID + "&type=Humidity,Temperature",
-				request.getQuery());
+				request.getContent());
 
 		final List<Body> bodyList = response.getBody();
 

@@ -32,6 +32,22 @@
                 </Group>
         </Associations>
         <Configuration>
+        		<Parameter>
+					<Index>2</Index>
+					<Type>list</Type>
+					<Default>0</Default>
+					<Size>1</Size>
+					<Item>
+						<Value>0</Value>
+						<Label lang="en">Disabled</Label>
+					</Item>
+					<Item>
+						<Value>1</Value>
+						<Label lang="en">Enabled</Label>
+					</Item>
+					<Label lang="en">Reverse clamping</Label>
+					<Help lang="en">If the reverse clamping pliers, negative power is detected.</Help>
+				</Parameter>
                 <Parameter>
                         <Index>3</Index>
                         <Type>byte</Type>

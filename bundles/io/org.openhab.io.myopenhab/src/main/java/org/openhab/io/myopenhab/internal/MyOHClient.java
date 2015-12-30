@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jetty.client.ContentExchange;
@@ -27,11 +29,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.engineio.client.Transport;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Manager;
-import com.github.nkzawa.socketio.client.Socket;
+import io.socket.emitter.Emitter;
+import io.socket.engineio.client.Transport;
+import io.socket.client.IO;
+import io.socket.client.Manager;
+import io.socket.client.Socket;
 
 /** 
  * This class provides communication between openHAB and my.openHAB service.
@@ -117,15 +119,6 @@ public class MyOHClient {
 		mUUID = uuid;
 		mSecret = secret;
 		mRunningRequests = new HashMap<Integer, MyOHExchange>();
-		mJettyClient = new HttpClient();
-		mJettyClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
-		mJettyClient.setMaxConnectionsPerAddress(HTTP_CLIENT_MAX_CONNECTOPNS_PER_ADDRESS);
-		mJettyClient.setTimeout(HTTP_CLIENT_TIMEOUT);
-		try {
-			mJettyClient.start();
-		} catch (Exception e) {
-			logger.error("Error starting JettyClient: {}", e.getMessage());
-		}
 	}
 	
 	/**
@@ -148,11 +141,11 @@ public class MyOHClient {
 						@Override
 						public void call(Object... args) {
 							logger.debug("Transport.EVENT_REQUEST_HEADERS");
-							Map<String, String> headers = (Map<String, String>) args[0];
-							headers.put("uuid", mUUID);
-							headers.put("secret", mSecret);
-							headers.put("openhabversion", mOpenHABVersion);
-							headers.put("myohversion", MyOpenHABServiceImpl.myohVersion);
+							Map<String, List<String>> headers = (Map<String, List<String>>) args[0];
+							headers.put("uuid", Arrays.asList(mUUID));
+							headers.put("secret", Arrays.asList(mSecret));
+							headers.put("openhabversion", Arrays.asList(mOpenHABVersion));
+							headers.put("myohversion", Arrays.asList(MyOpenHABServiceImpl.myohVersion));
 						}
 					});
 				}
@@ -197,13 +190,41 @@ public class MyOHClient {
 		mSocket.connect();
 	}
 	
+	@SuppressWarnings("restriction")
+	private void startJetty() {
+		stopJetty();
+		mJettyClient = new HttpClient();
+		mJettyClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
+		mJettyClient.setMaxConnectionsPerAddress(HTTP_CLIENT_MAX_CONNECTOPNS_PER_ADDRESS);
+		mJettyClient.setTimeout(HTTP_CLIENT_TIMEOUT);
+		try {
+			mJettyClient.start();
+		} catch (Exception e) {
+			logger.error("Error starting JettyClient: {}", e.getMessage());
+		}
+	}
+	
+	@SuppressWarnings("restriction")
+	private void stopJetty() {
+		if (mJettyClient != null) {
+			try {
+				mJettyClient.stop();
+				mJettyClient = null;
+			} catch (Exception e) {
+				logger.error("Error stopping JettyCleint: {}", e.getMessage());
+			}
+		}		
+	}
+	
 	/**
 	 * Callback method for socket.io client which is called when connection is established
 	 */
 	
 	public void onConnect() {
-		logger.info("Connected to my.openHAB service (UUID = {}, base URL = {})", this.mUUID, this.mOHBaseUrl);
+		logger.info("Connected to my.openHAB service (UUID = {}, local base URL = {})", this.mUUID, this.mOHBaseUrl);
 		mIsConnected = true;
+		// Start Jetty client to be able to process remote requests
+		startJetty();
 	}
 
 	/**
@@ -211,8 +232,10 @@ public class MyOHClient {
 	 */
 	
 	public void onDisconnect() {
-		logger.info("Disconnected from my.openHAB service (UUID = {}, base URL = {})", this.mUUID, this.mOHBaseUrl);		
+		logger.info("Disconnected from my.openHAB service (UUID = {}, local base URL = {})", this.mUUID, this.mOHBaseUrl);		
 		mIsConnected = false;
+		// Stop Jetty client to shut down ongoing remote requests - we will never be able to serve them after disconnect
+		stopJetty();
 	}
 
 	/**
@@ -360,6 +383,56 @@ public class MyOHClient {
 		}
 	}
 
+	/**
+	 * This method sends log notification to my.openHAB
+	 * 
+	 * @param message notification message text
+	 * @param icon name of the icon for this notification
+	 * @param severity severity name for this notification
+	 * 
+	 */
+
+	public void sendLogNotification(String message, String icon, String severity) {
+		if (isConnected()) {
+			JSONObject notificationMessage = new JSONObject();
+			try {
+				notificationMessage.put("message", message);
+				notificationMessage.put("icon", icon);
+				notificationMessage.put("severity", severity);
+				mSocket.emit("lognotification", notificationMessage);
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+		} else {
+			logger.debug("No connection, notification is not sent");
+		}
+	}
+
+	/**
+	 * This method sends broadcast notification to my.openHAB
+	 * 
+	 * @param message notification message text
+	 * @param icon name of the icon for this notification
+	 * @param severity severity name for this notification
+	 * 
+	 */
+
+	public void sendBroadcastNotification(String message, String icon, String severity) {
+		if (isConnected()) {
+			JSONObject notificationMessage = new JSONObject();
+			try {
+				notificationMessage.put("message", message);
+				notificationMessage.put("icon", icon);
+				notificationMessage.put("severity", severity);
+				mSocket.emit("broadcastnotification", notificationMessage);
+			} catch (JSONException e) {
+				logger.error(e.getMessage());
+			}
+		} else {
+			logger.debug("No connection, notification is not sent");
+		}
+	}
+	
 	/**
 	 * Send SMS to my.openHAB
 	 * 

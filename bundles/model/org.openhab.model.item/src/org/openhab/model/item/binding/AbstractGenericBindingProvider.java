@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -42,7 +41,7 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 	private Set<BindingChangeListener> listeners = new CopyOnWriteArraySet<BindingChangeListener>();
 
 	/** caches binding configurations. maps itemNames to {@link BindingConfig}s */
-	protected Map<String, BindingConfig> bindingConfigs = new ConcurrentHashMap<String, BindingConfig>(new WeakHashMap<String, BindingConfig>());
+	protected Map<String, BindingConfig> bindingConfigs = new ConcurrentHashMap<String, BindingConfig>();
 
 	/** 
 	 * stores information about the context of items. The map has this content
@@ -77,27 +76,34 @@ public abstract class AbstractGenericBindingProvider implements BindingConfigRea
 			throw new BindingConfigParseException("context is not permitted to be null for item "+item);
 		}
 
-		Set<Item> items = contextMap.get(context);
-		if (items==null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
+		synchronized (contextMap) {
+			Set<Item> items = contextMap.get(context);
+			if (items == null) {
+				items = new HashSet<Item>();
+				contextMap.put(context, items);
+			}
+
+			items.add(item);
 		}
-			
-		items.add(item);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void removeConfigurations(String context) {
-		Set<Item> items = contextMap.get(context);
-		if(items!=null) {
-			for(Item item : items) {
+		Set<Item> items = null;
+		synchronized (contextMap) {
+			items = contextMap.get(context);
+			if (items != null) {
+				contextMap.remove(context);
+			}
+		}
+		if (items != null) {
+			for (Item item : items) {
 				// we remove all binding configurations for all items
 				bindingConfigs.remove(item.getName());
 				notifyListeners(item);
 			}
-			contextMap.remove(context);
 		}
 	}
 	

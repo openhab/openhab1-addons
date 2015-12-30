@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.openhab.persistence.rrd4j
 Bundle-Version: 1.8.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: javax.servlet;version="2.6.0",
+Import-Package: javax.servlet,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.openhab.core.items,
@@ -19,7 +19,7 @@ Import-Package: javax.servlet;version="2.6.0",
  org.openhab.ui.items;resolution:=optional,
  org.osgi.framework,
  org.osgi.service.cm,
- org.osgi.service.http;version="1.2.1",
+ org.osgi.service.http,
  org.slf4j
 Bundle-ClassPath: .,
  lib/rrd4j-2.1.1.jar

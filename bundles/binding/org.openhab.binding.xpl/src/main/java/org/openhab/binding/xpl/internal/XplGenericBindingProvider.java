@@ -120,7 +120,6 @@ public class XplGenericBindingProvider extends AbstractGenericBindingProvider im
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
 		
 		String[] configParts = bindingConfig.trim().split(",");
 		if (configParts.length < 5) {
@@ -159,6 +158,7 @@ public class XplGenericBindingProvider extends AbstractGenericBindingProvider im
 	    } 
 		
 		addBindingConfig(item, config);
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 		
 }

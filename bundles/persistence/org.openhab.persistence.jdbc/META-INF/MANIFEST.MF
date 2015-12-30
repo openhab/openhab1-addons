@@ -1,0 +1,43 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB JDBC SQL Persistence bundle
+Bundle-SymbolicName: org.openhab.persistence.jdbc;singleton:=true
+Bundle-Version: 1.8.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: com.mysql.jdbc;resolution:=optional,
+ org.apache.commons.collections.iterators,
+ org.apache.commons.lang,
+ org.apache.derby.jdbc;resolution:=optional,
+ org.h2;resolution:=optional,
+ org.h2.jdbcx;resolution:=optional,
+ org.hsqldb;resolution:=optional,
+ org.hsqldb.jdbc;resolution:=optional,
+ org.joda.time,
+ org.joda.time.format,
+ org.mariadb.jdbc;resolution:=optional,
+ org.openhab.core.autoupdate,
+ org.openhab.core.binding,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.persistence,
+ org.openhab.core.types,
+ org.openhab.io.net.http,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.postgresql;resolution:=optional,
+ org.slf4j,
+ org.sqlite;resolution:=optional,
+ org.sqlite.jdbc4;resolution:=optional
+Bundle-ClassPath: .,
+ lib/HikariCP-2.4.2.jar,
+ lib/commons-dbutils-1.6.jar,
+ lib/yank-3.1.0.jar
+Service-Component: OSGI-INF/jdbc.xml
+Export-Package: org.openhab.persistence.jdbc.db,
+ org.openhab.persistence.jdbc.internal,
+ org.openhab.persistence.jdbc.model,
+ org.openhab.persistence.jdbc.utils
+
+

@@ -96,7 +96,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	}
 
 	static public EventPublisher getEventPublisher() {
-		return eventPublisher;
+		return CVApplication.eventPublisher;
 	}
 
 	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
@@ -108,7 +108,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	}
 
 	static public ItemUIRegistry getItemUIRegistry() {
-		return itemUIRegistry;
+		return CVApplication.itemUIRegistry;
 	}
 
 	public void setModelRepository(ModelRepository modelRepository) {
@@ -120,7 +120,7 @@ public class CVApplication extends PackagesResourceConfig  {
 	}
 
 	static public ModelRepository getModelRepository() {
-		return modelRepository;
+		return CVApplication.modelRepository;
 	}
 
 	public void setDiscoveryService(DiscoveryService discoveryService) {

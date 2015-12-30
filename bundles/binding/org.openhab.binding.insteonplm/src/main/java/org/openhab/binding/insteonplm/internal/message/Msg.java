@@ -10,6 +10,7 @@ package org.openhab.binding.insteonplm.internal.message;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -280,6 +281,23 @@ public class Msg {
 		if (m_definition == null) throw new FieldException("no msg definition!");
 		return (m_definition.getField(key).getByte(m_data));
 	}
+
+	/**
+	 * Will fetch a byte array starting at a certain field
+	 * @param key the name of the first field
+	 * @param number of bytes to get
+	 * @return the byte array
+	 */
+	public byte[] getBytes(String key, int numBytes) throws FieldException {
+		if (m_definition == null) throw new FieldException("no msg definition!");
+		int offset = m_definition.getField(key).getOffset();
+		if (offset < 0 || offset + numBytes > m_data.length) {
+			throw new FieldException("data index out of bounds!");
+		}
+		byte [] section = new byte[numBytes];
+		System.arraycopy(m_data, offset, section, 0, numBytes);
+		return section;
+	}
 	
 	/**
 	 * Will fetch address from field
@@ -313,7 +331,82 @@ public class Msg {
 		}
 		return super.toString();
 	}
+	/**
+	 * Sets the userData fields from a byte array
+	 * @param data
+	 */
+	public void setUserData(byte[] arg) {
+		byte[] data = Arrays.copyOf(arg, 14); // appends zeros if short
+		try {
+			setByte("userData1", data[0]);
+			setByte("userData2", data[1]);
+			setByte("userData3", data[2]);
+			setByte("userData4", data[3]);
+			setByte("userData5", data[4]);
+			setByte("userData6", data[5]);
+			setByte("userData7", data[6]);
+			setByte("userData8", data[7]);
+			setByte("userData9", data[8]);
+			setByte("userData10", data[9]);
+			setByte("userData11", data[10]);
+			setByte("userData12", data[11]);
+			setByte("userData13", data[12]);
+			setByte("userData14", data[13]);
+		} catch (FieldException e) {
+			logger.error("got field exception for msg {}:", e);
+		}
+	}
 	
+	/**
+	 * Calculate and set the CRC with the older 1-byte method
+	 * @return the calculated crc
+	 */
+	public int setCRC() {
+		int crc;
+		try {
+			crc = getByte("command1") + getByte("command2");
+			byte[] bytes = getBytes("userData1", 13); // skip userData14!
+			for (byte b : bytes) {
+				crc += b;
+			}
+			crc = ((~crc) + 1) & 0xFF;
+			setByte("userData14", (byte)(crc & 0xFF));
+		} catch (FieldException e) {
+			logger.error("got field exception on msg {}:", this, e);
+			crc = 0;
+		}
+		return crc;
+	}
+
+	/**
+	 * Calculate and set the CRC with the newer 2-byte method
+	 * @return the calculated crc
+	 */
+	public int setCRC2() {
+		int crc = 0;
+		try {
+			byte[] bytes = getBytes("command1", 14);
+			for (int loop = 0; loop < bytes.length; loop++) {
+				int b = bytes[loop] & 0xFF;
+				for (int bit = 0; bit < 8; bit++) {
+					int fb = b & 0x01;
+					if ((crc & 0x8000) == 0) fb = fb ^ 0x01;
+					if ((crc & 0x4000) == 0) fb = fb ^ 0x01;
+					if ((crc & 0x1000) == 0) fb = fb ^ 0x01;
+					if ((crc & 0x0008) == 0) fb = fb ^ 0x01;
+					crc = ((crc << 1) | fb) & 0xFFFF;
+					b = b >> 1;
+				}
+			}
+			setByte("userData13", (byte)((crc >> 8)& 0xFF));
+			setByte("userData14", (byte)(crc & 0xFF));
+		} catch (FieldException e) {
+			logger.error("got field exception on msg {}:", this, e);
+			crc = 0;
+		}
+		return crc;
+	}
+
 	public String toString() {
 		String s = (m_direction == Direction.TO_MODEM) ? "OUT:" : "IN:";
 		if (m_definition == null || m_data == null) return toHexString();

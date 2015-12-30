@@ -24,11 +24,14 @@ Bundle-ClassPath: .,
  lib/marytts-lang-en-5.1-SNAPSHOT.jar,
  lib/opennlp-maxent-3.0.1-incubating.jar,
  lib/opennlp-tools-1.5.1-incubating.jar
-Import-Package: org.apache.commons.collections.map;version="3.2.0",
- org.apache.commons.io;version="2.0.1",
- org.apache.commons.lang;version="2.6.0",
+Import-Package: javax.sound.sampled,
+ javax.xml,
+ org.apache.commons.collections.map,
+ org.apache.commons.io,
+ org.apache.commons.lang,
  org.openhab.io.multimedia.tts,
  org.osgi.framework,
- org.slf4j
+ org.slf4j,
+ org.w3c.dom
 Service-Component: OSGI-INF/tts_marytts.xml
 Bundle-ActivationPolicy: lazy

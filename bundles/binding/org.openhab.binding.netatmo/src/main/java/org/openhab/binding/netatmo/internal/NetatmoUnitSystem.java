@@ -24,13 +24,15 @@ public enum NetatmoUnitSystem {
 
 	public static final NetatmoUnitSystem DEFAULT_UNIT_SYSTEM = NetatmoUnitSystem.M;
 
+	private static final BigDecimal KPH_TO_MPH = new BigDecimal("0.6214");
+
 	private static final double METERS_TO_FEET = 3.2808399;
 
-	private static final BigDecimal MM_TO_INCHES = new BigDecimal(0.0393700787);
+	private static final BigDecimal MM_TO_INCHES = new BigDecimal("0.0394");
 
-	private static final BigDecimal ONE_POINT_EIGHT = new BigDecimal(1.8);
+	private static final BigDecimal ONE_POINT_EIGHT = new BigDecimal("1.8");
 
-	private static final BigDecimal THIRTY_TWO = new BigDecimal(32);
+	private static final BigDecimal THIRTY_TWO = new BigDecimal("32");
 
 	String unitSystem;
 
@@ -53,6 +55,14 @@ public enum NetatmoUnitSystem {
 		throw new IllegalArgumentException("Invalid unitSystem: " + unitSystem);
 	}
 	
+	/**
+	 * Convert to appropriate measurement.
+	 *
+	 * @param value
+	 *            altitude in Meters
+	 *
+	 * @return value in the proper measurement
+	 */
 	public double convertAltitude(double value) {
 		if (this == DEFAULT_UNIT_SYSTEM) {
 			return value;
@@ -61,6 +71,17 @@ public enum NetatmoUnitSystem {
 		return value * METERS_TO_FEET;
 	}
 	
+	/**
+	 * Convert to appropriate measurement.
+	 *
+	 * The Rain gauge is accurate to 1 mm/h or 0.04 in/h, and the range starts
+	 * at 0.2 mm/h or 0.01 in/h.
+	 *
+	 * @param value
+	 *            rain in Millimeters
+	 *
+	 * @return value in the proper measurement
+	 */
 	public BigDecimal convertRain(BigDecimal value) {
 		if (this == DEFAULT_UNIT_SYSTEM) {
 			return value;
@@ -68,12 +89,40 @@ public enum NetatmoUnitSystem {
 		
 		return value.multiply(MM_TO_INCHES);
 	}
-	
+
+	/**
+	 * Convert to appropriate measurement.
+	 *
+	 * The Thermometer is accurate to +- 0.3°C or +- 0.54°F
+	 *
+	 * @param value
+	 *            temperature in Celsius
+	 *
+	 * @return value the in proper measurement
+	 */
 	public BigDecimal convertTemp(BigDecimal value) {
 		if (this == DEFAULT_UNIT_SYSTEM) {
 			return value;
 		}
 		
 		return value.multiply(ONE_POINT_EIGHT).add(THIRTY_TWO);
+	}
+
+	/**
+	 * Convert to appropriate measurement.
+	 *
+	 * The Wind gauge is accurate to 0.5 m/s (1.8 km/h, 1 mph)
+	 *
+	 * @param value
+	 *            wind in Kilometers per Hour
+	 *
+	 * @return value in the proper measurement
+	 */
+	public BigDecimal convertWind(BigDecimal value) {
+		if (this == DEFAULT_UNIT_SYSTEM) {
+			return value;
+		}
+
+		return value.multiply(KPH_TO_MPH);
 	}
 }

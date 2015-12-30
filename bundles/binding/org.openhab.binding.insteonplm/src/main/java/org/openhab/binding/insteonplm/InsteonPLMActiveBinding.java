@@ -9,7 +9,9 @@
 package org.openhab.binding.insteonplm;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -498,8 +500,22 @@ public class InsteonPLMActiveBinding
 			return;
 		}
 		DeviceFeature f = aDev.getFeature(aConfig.getFeature());
-		if (f == null) {
-			logger.error("item {} references unknown feature: {}, item disabled!", aItemName, aConfig.getFeature());
+		if (f == null || f.isFeatureGroup()) {
+			StringBuffer buf = new StringBuffer();
+			ArrayList<String> names = new ArrayList<String>(aDev.getFeatures().keySet());
+			Collections.sort(names);
+			for (String name : names) {
+				DeviceFeature feature = aDev.getFeature(name);
+				if (!feature.isFeatureGroup()) {
+					if (buf.length() > 0) {
+						buf.append(", ");
+					}
+					buf.append(name);
+				}
+			}
+
+			logger.error("item {} references unknown feature: {}, item disabled! Known features for {} are: {}.",
+					aItemName, aConfig.getFeature(), aConfig.getProductKey(), buf.toString());
 			return;
 		}
 		DeviceFeatureListener fl = new DeviceFeatureListener(this, aItemName, eventPublisher);

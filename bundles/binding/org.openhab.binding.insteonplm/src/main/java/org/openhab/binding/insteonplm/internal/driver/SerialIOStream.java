@@ -59,7 +59,8 @@ public class SerialIOStream extends IOStream {
 			logger.debug("setting port speed to {}", m_speed);
 			m_port.disableReceiveFraming();
 			m_port.enableReceiveThreshold(1);
-			m_port.disableReceiveTimeout();
+			//m_port.disableReceiveTimeout();
+			m_port.enableReceiveTimeout(1000);
 			m_in	= m_port.getInputStream();
 			m_out	= m_port.getOutputStream();
 			logger.info("successfully opened port {}", m_devName);

@@ -101,7 +101,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 					zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), getNode(), this.getController());
 	
 					if (zwaveCommandClass != null) {
-						logger.debug("NODE {}: Adding command class %s", getNode().getNodeId(), commandClass.getLabel());
+						logger.debug("NODE {}: Adding command class {}", getNode().getNodeId(), commandClass.getLabel());
 						getNode().addCommandClass(zwaveCommandClass);
 					}
 				}
@@ -111,7 +111,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 				}
 				else {
 					logger.debug("NODE {}: Calling handleApplicationCommandRequest.", this.getNode().getNodeId());
-					zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 1);
+					zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 0);
 				}
 			}
 

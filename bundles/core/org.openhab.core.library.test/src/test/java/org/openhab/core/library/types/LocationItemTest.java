@@ -34,10 +34,10 @@ public class LocationItemTest {
 		LocationItem locationBerlin = new LocationItem("berlin");
 		locationBerlin.setState(pointBerlin);
 		
-		DecimalType distance = locationParis.distanceFrom(pointParis);
+		DecimalType distance = locationParis.distanceFrom(locationParis);
 		assertEquals(distance.intValue(),0);
 		
-		double parisBerlin = locationParis.distanceFrom(pointBerlin).doubleValue();
+		double parisBerlin = locationParis.distanceFrom(locationBerlin).doubleValue();
 		assertEquals(parisBerlin,878400,50);	
 		
 		double gravParis = pointParis.getGravity().doubleValue();

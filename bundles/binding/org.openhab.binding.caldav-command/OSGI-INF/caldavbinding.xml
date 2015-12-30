@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010-2014, openHAB.org and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.caldav_command">
+	<implementation class="org.openhab.binding.caldav_command.internal.CalDavBinding" />
+
+	<service>
+		<provide interface="org.osgi.service.event.EventHandler" />
+  		<provide interface="org.osgi.service.cm.ManagedService"/>
+	</service>
+
+	<property name="event.topics" type="String" value="openhab/command/*" />
+	<property name="service.pid" type="String" value="org.openhab.caldavCommand" />
+
+	<reference bind="setEventPublisher" cardinality="1..1"
+		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
+		policy="dynamic" unbind="unsetEventPublisher" />
+ 	<reference bind="setCalDavLoader" cardinality="1..1" 
+ 		interface="org.openhab.io.caldav.CalDavLoader" name="CalDavLoader" 
+ 		policy="static" unbind="unsetCalDavLoader"/>
+ 	<reference bind="setItemRegistry" cardinality="0..1" 
+		interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" 
+		policy="dynamic" unbind="unsetItemRegistry"/>
+	<reference bind="addBindingProvider" cardinality="1..n"
+		interface="org.openhab.binding.caldav_command.CalDavBindingProvider" name="CalDavBindingProvider"
+		policy="dynamic" unbind="removeBindingProvider" />
+ 
+	
+</scr:component>

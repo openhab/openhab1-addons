@@ -15,6 +15,7 @@
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
 		<provide interface="org.osgi.service.cm.ManagedService" />
+		<provide interface="org.openhab.binding.dscalarm.DSCAlarmActionProvider" />
 	</service>
 
 	<property name="event.topics" type="String" value="openhab/command/*" />

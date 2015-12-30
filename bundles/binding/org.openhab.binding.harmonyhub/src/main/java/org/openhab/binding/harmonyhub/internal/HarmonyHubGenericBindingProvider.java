@@ -62,7 +62,6 @@ public class HarmonyHubGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
 
 		Matcher m = bindingPattern.matcher(bindingConfig);
 
@@ -105,12 +104,7 @@ public class HarmonyHubGenericBindingProvider extends AbstractGenericBindingProv
 			HarmonyHubBindingConfig config = new HarmonyHubBindingConfig(type,qualifier,type.getLabel(),param1,param2, item.getClass());
 
 			addBindingConfig(item, config);		
-			Set<Item> items = contextMap.get(context);
-			if (items == null) {
-				items = new HashSet<Item>();
-				contextMap.put(context, items);
-			}
-			items.add(item);
+			super.processBindingConfiguration(context, item, bindingConfig);
 		} else {
 			throw new BindingConfigParseException("Config string did not match pattern { harmonyhub=\"<binding>[ (qualifier:)<binding> ...]\" }");
 		}

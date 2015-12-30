@@ -55,6 +55,62 @@ public class MyOpenHAB {
 	}
 	
 	/**
+	 * Sends a simple notification to log. Log notifications are not pushed to user
+	 * devices but are shown to all account users in notifications log
+	 * 
+	 * @param message the body of the notification
+	 * 
+	 */
+	@ActionDoc(text="Sends a log notification which is shown in notifications log to all account users")
+	static public void sendLogNotification(String message) {
+		sendLogNotification(message, null, null);
+	}
+
+	/**
+	 * Sends an advanced notification to log. Log notifications are not pushed to user
+	 * devices but are shown to all account users in notifications log
+	 * 
+	 * @param message the body of the notification
+	 * @param icon name for the notification
+	 * @param severity category for the notification
+	 */
+	@ActionDoc(text="Sends a log notification which is shown in notifications log to all account users")
+	
+	static public void sendLogNotification(String message, String icon, String severity) {
+		if (mMyOpenHABService != null) {
+			mMyOpenHABService.sendLogNotification(message, icon, severity);
+		}
+	}
+
+	/**
+	 * Sends a simple broadcast notification. Broadcast notifications are pushed to all
+	 * mobile devices of all users of the account
+	 * 
+	 * @param message the body of the notification
+	 * 
+	 */
+	@ActionDoc(text="Sends a broadcast notification to all mobile devices of all account users")
+	static public void sendBroadcastNotification(String message) {
+		sendBroadcastNotification(message, null, null);
+	}
+
+	/**
+	 * Sends an advanced broadcast notification. Broadcast notifications are pushed to all
+	 * mobile devices of all users of the account
+	 * 
+	 * @param message the body of the notification
+	 * @param icon name for the notification
+	 * @param severity category for the notification
+	 */
+	@ActionDoc(text="Sends a broadcast notification to all mobile devices of all account users")
+	
+	static public void sendBroadcastNotification(String message, String icon, String severity) {
+		if (mMyOpenHABService != null) {
+			mMyOpenHABService.sendBroadcastNotification(message, icon, severity);
+		}
+	}
+
+	/**
 	 * Sends an SMS to mobile phone of user
 	 * 
 	 * @param phone the user's phone number in international format like +49XXXXXXXXXX

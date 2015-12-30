@@ -130,6 +130,9 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 	@JsonProperty("smoke_co_alarms")
 	private List<String> smoke_co_alarm_id_list;
 	private Map<String, SmokeCOAlarm> smoke_co_alarms_by_name;
+	@JsonProperty("cameras")
+	private List<String> camera_id_list;
+	private Map<String, Camera> cameras_by_name;
 	private AwayState away;
 	private String name;
 	private String country_code;
@@ -181,6 +184,22 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 
 	public void setSmoke_co_alarms_by_name(Map<String, SmokeCOAlarm> smoke_co_alarms_by_name) {
 		this.smoke_co_alarms_by_name = smoke_co_alarms_by_name;
+	}
+
+	/**
+	 * @return the cameras
+	 */
+	@JsonProperty("cameras")
+	public List<String> getCamera_id_list() {
+		return this.camera_id_list;
+	}
+
+	public Map<String, Camera> getCameras() {
+		return this.cameras_by_name;
+	}
+
+	public void setCameras_by_name(Map<String, Camera> cameras_by_name) {
+		this.cameras_by_name = cameras_by_name;
 	}
 
 	/**
@@ -288,6 +307,15 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 				}
 			}
 		}
+		this.cameras_by_name = new HashMap<String, Camera>();
+		if (this.camera_id_list != null) {
+			for (String id : this.camera_id_list) {
+				Camera cam = dataModel.getDevices().getCameras_by_id().get(id);
+				if (cam != null) {
+					this.cameras_by_name.put(cam.getName(), cam);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -297,6 +325,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 		builder.append("structure_id", this.structure_id);
 		builder.append("thermostats", this.thermostat_id_list);
 		builder.append("smoke_co_alarms", this.smoke_co_alarm_id_list);
+		builder.append("cameras", this.camera_id_list);
 		builder.append("away", this.away);
 		builder.append("name", this.name);
 		builder.append("country_code", this.country_code);

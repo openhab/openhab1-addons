@@ -50,6 +50,7 @@ public class Enigma2Node {
 	private static final String SUFFIX_VOLUME_SET = "?set=set";
 	private static final String SUFFIX_CHANNEL = "/web/subservices";
 	private static final String SUFFIX_POWERSTATE = "/web/powerstate";
+	private static final String SUFFIX_DOWNMIX = "/web/downmix";
 
 	private String hostName;
 	private String userName;
@@ -136,6 +137,21 @@ public class Enigma2Node {
 				: OnOffType.OFF.name();
 	}
 
+	/**
+	 * Requests, if downmix is active
+	 * 
+	 * @return <code>true</code>, if dowmix is active
+	 *         <code>false</code>
+	 */
+	public String getDownmix() {
+		String content = HttpUtil.executeUrl(GET,
+				createUserPasswordHostnamePrefix() + SUFFIX_DOWNMIX,
+				this.timeOut);
+		content = XmlUtils.getContentOfElement(content, "e2state");
+		return content.toLowerCase().equals("true") ? OnOffType.ON.name()
+				: OnOffType.OFF.name();
+	}
+
 	/*
 	 * Setter
 	 */
@@ -207,6 +223,24 @@ public class Enigma2Node {
 		if (command instanceof OnOffType) {
 			HttpUtil.executeUrl(GET, createUserPasswordHostnamePrefix()
 					+ SUFFIX_POWERSTATE + "?newstate=" + powerState.getValue(),
+					this.timeOut);
+		} else {
+			logger.error("Unsupported command type: {}", command.getClass()
+					.getName());
+		}
+	}
+
+	/*
+	 * Setter
+	 */
+	/**
+	 * Sets downmix
+	 */
+	public void setDownmix(Command command) {
+		if (command instanceof OnOffType) {
+			String enable = (OnOffType)command == OnOffType.ON ? "True" : "False";
+			HttpUtil.executeUrl(GET, createUserPasswordHostnamePrefix()
+					+ SUFFIX_DOWNMIX + "?enable=" + enable,
 					this.timeOut);
 		} else {
 			logger.error("Unsupported command type: {}", command.getClass()

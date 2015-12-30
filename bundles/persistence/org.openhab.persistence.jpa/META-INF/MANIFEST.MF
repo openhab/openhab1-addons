@@ -11,6 +11,8 @@ Import-Package: org.apache.commons.io,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.library.tel.items,
+ org.openhab.library.tel.types,
  org.openhab.core.persistence,
  org.openhab.core.types,
  org.openhab.io.net.http,
@@ -18,10 +20,8 @@ Import-Package: org.apache.commons.io,
  org.osgi.service.cm,
  org.slf4j
 Bundle-ClassPath: .,
- lib/postgresql-9.2-1004.jdbc41.jar,
- lib/derbyclient.jar,
- lib/mysql-connector-java-5.1.26-bin.jar,
- lib/openjpa-all-2.3.0.jar
+ lib/derby-10.11.1.1.jar,
+ lib/openjpa-all-2.4.0.jar
 Service-Component: OSGI-INF/jpa.xml, OSGI-INF/configuration.xml
 Meta-Persistence: META-INF/persistence.xml
 Bundle-Activator: org.openhab.persistence.jpa.internal.JpaPersistenceServiceActivator

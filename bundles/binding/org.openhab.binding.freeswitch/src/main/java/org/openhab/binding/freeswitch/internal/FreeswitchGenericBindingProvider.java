@@ -55,7 +55,6 @@ public class FreeswitchGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
 		
 		String[] configParts = bindingConfig.trim().split(":", 2);
 		
@@ -74,13 +73,7 @@ public class FreeswitchGenericBindingProvider extends AbstractGenericBindingProv
 		FreeswitchBindingConfig config = new FreeswitchBindingConfig(item.getName(),item.getClass(), type, argument);
 		
 		addBindingConfig(item, config);
-		
-		Set<Item> items = contextMap.get(context);
-		if (items == null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-		items.add(item);
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 
 	@Override

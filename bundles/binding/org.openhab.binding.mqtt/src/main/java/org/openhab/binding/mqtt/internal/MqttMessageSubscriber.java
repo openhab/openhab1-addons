@@ -13,16 +13,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.library.types.DateTimeType;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.HSBType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StopMoveType;
-import org.openhab.core.library.types.StringType;
-import org.openhab.core.library.types.UpDownType;
+import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
@@ -48,6 +39,9 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 
 	private String msgFilter = null;
 
+	private List<Class<? extends State>> acceptedDataTypes = null;
+	private List<Class<? extends Command>> acceptedCommandTypes = null;
+
 	/**
 	 * Create new MqttMessageSubscriber from config string.
 	 * 
@@ -58,6 +52,27 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 	 */
 	public MqttMessageSubscriber(String configuration)
 			throws BindingConfigParseException {
+		this(configuration, null);
+	}
+
+	/**
+	 * Create new MqttMessageSubscriber from config string and specific item we will be updating.
+	 * 
+	 * @param configuration
+	 *            config string
+	 * @param item
+	 *            the item to which we will later post updates and send commands
+	 * @throws BindingConfigParseException
+	 *             if the config string is invalid
+	 */
+	public MqttMessageSubscriber(String configuration, Item item)
+			throws BindingConfigParseException {
+
+		if (item != null) {
+			// copy the accepted data types and commands from the specific item we will be updating
+			this.acceptedDataTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
+			this.acceptedCommandTypes = new ArrayList<Class<? extends Command>>(item.getAcceptedCommandTypes());
+		}
 
 		String[] config = splitConfigurationString(configuration);
 		try {
@@ -142,10 +157,10 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 			value = StringUtils.replace(value, "${itemName}", getItemName());
 
 			if (getMessageType().equals(MessageType.COMMAND)) {
-				Command command = getCommand(value);
+				Command command = getCommand(value, this.acceptedCommandTypes);
 				eventPublisher.postCommand(getItemName(), command);
 			} else {
-				State state = getState(value);
+				State state = getState(value, this.acceptedDataTypes);
 				eventPublisher.postUpdate(getItemName(), state);
 			}
 		} catch (Exception e) {
@@ -204,24 +219,13 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 	 * 
 	 * @param value
 	 *            string representation of State
+	 * @param acceptedDataTypes
+	 *            list of accepted data types for converting value
 	 * @return State
 	 */
-	protected State getState(String value) {
+	protected State getState(String value, List<Class<? extends State>> acceptedDataTypes) {
 
-		List<Class<? extends State>> stateList = new ArrayList<Class<? extends State>>();
-
-		// Not sure if the sequence below is the best one..
-		stateList.add(OnOffType.class);
-		stateList.add(OpenClosedType.class);
-		stateList.add(UpDownType.class);
-		stateList.add(HSBType.class);
-		stateList.add(PercentType.class);
-		stateList.add(DecimalType.class);
-		stateList.add(DateTimeType.class);
-		stateList.add(StringType.class);
-
-		return TypeParser.parseState(stateList, value);
-
+		return TypeParser.parseState(acceptedDataTypes, value);
 	}
 
 	/**
@@ -229,24 +233,13 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 	 * 
 	 * @param value
 	 *            string representation of command
+	 * @param acceptedCommands
+	 *            list of accepted commands for converting value
 	 * @return Command
 	 */
-	protected Command getCommand(String value) {
+	protected Command getCommand(String value, List<Class<? extends Command>> acceptedCommands) {
 
-		List<Class<? extends Command>> commandList = new ArrayList<Class<? extends Command>>();
-
-		commandList.add(OnOffType.class);
-		commandList.add(OpenClosedType.class);
-		commandList.add(UpDownType.class);
-		commandList.add(IncreaseDecreaseType.class);
-		commandList.add(StopMoveType.class);
-		commandList.add(HSBType.class);
-		commandList.add(PercentType.class);
-		commandList.add(DecimalType.class);
-		commandList.add(StringType.class);
-
-		return TypeParser.parseCommand(commandList, value);
-
+		return TypeParser.parseCommand(acceptedCommands, value);
 	}
 
 	@Override

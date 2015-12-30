@@ -302,7 +302,7 @@ int checkNibeMessage(const byte* const data, byte len)
               
               // check special case, if checksum is 0x5C (start character), 
               // heat pump seems to send 0xC5 checksum
-              if (checksum != 0x5C && msg_checksum != 0xC5
+              if (checksum != 0x5C && msg_checksum != 0xC5)
                 return -2;
             }  
             

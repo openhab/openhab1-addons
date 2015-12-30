@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.persistence.caldav</module>
     <module>org.openhab.persistence.db4o</module>
     <module>org.openhab.persistence.db4o.test</module>
     <module>org.openhab.persistence.logging</module>
@@ -30,7 +31,9 @@
     <module>org.openhab.persistence.mongodb</module>
     <module>org.openhab.persistence.influxdb</module>
     <module>org.openhab.persistence.jpa</module>
+    <module>org.openhab.persistence.jdbc</module>
     <module>org.openhab.persistence.mapdb</module>
+    <module>org.openhab.persistence.sitewhere</module>
   </modules>
 
 </project>

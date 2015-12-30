@@ -4,16 +4,31 @@
 	<Endpoints>1</Endpoints>
 	<Label lang="en">Lamp Module</Label>
 	<CommandClasses>
-        <Class><id>0x20</id></Class>
-        <Class><id>0x26</id></Class>
-        <Class><id>0x27</id></Class>
-        <Class><id>0x72</id></Class>
-        <Class><id>0x86</id></Class>
-        <Class><id>0x70</id></Class>
-        <Class><id>0x77</id></Class>
-        <Class><id>0x73</id></Class>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x77</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
 	</CommandClasses>
-	
 	<Configuration>
 		<Parameter>
 			<Index>29</Index>
@@ -31,7 +46,6 @@
 			</Item>
 			<Help lang="en"></Help>
 		</Parameter>
-
 		<Parameter>
 			<Index>5</Index>
 			<Type>list</Type>
@@ -46,9 +60,9 @@
 				<Value>1</Value>
 				<Label lang="en">Yes</Label>
 			</Item>
-			<Help lang="en">This dimmer will start dimming from its current level.</Help>
+			<Help lang="en">This dimmer will start dimming from its current
+				level.</Help>
 		</Parameter>
-		
 		<Parameter>
 			<Index>7</Index>
 			<Type>byte</Type>
@@ -57,9 +71,9 @@
 			<Maximum>99</Maximum>
 			<Size>1</Size>
 			<Label lang="en">On/Off Command Dim Step</Label>
-			<Help lang="en">Indicates how many levels the dimmer will change for each dimming step.</Help>
+			<Help lang="en">Indicates how many levels the dimmer will change for
+				each dimming step.</Help>
 		</Parameter>
-		
 		<Parameter>
 			<Index>8</Index>
 			<Type>byte</Type>
@@ -68,9 +82,11 @@
 			<Maximum>255</Maximum>
 			<Size>1</Size>
 			<Label lang="en">On/Off Command Dim Rate</Label>
-			<Help lang="en">This value indicates in 10 millisecond resolution, how often the dim level will change. For example, if you set this parameter to 1, then every 10ms the dim level will change. If you set it to 255, then every 2.55 seconds the dim level will change.</Help>
+			<Help lang="en"><![CDATA[This value indicates in 10 millisecond resolution. <br>
+			This sets how often the dim level will change. For example, if you set this parameter 
+			to 1, then every 10ms the dim level will change. If you set it to 255, then 
+			every 2.55 seconds the dim level will change.]]></Help>
 		</Parameter>
-
 		<Parameter>
 			<Index>9</Index>
 			<Type>byte</Type>
@@ -79,9 +95,9 @@
 			<Maximum>99</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Local Control Dim Step</Label>
-			<Help lang="en">Indicates how many levels the dimmer will change for each dimming step.</Help>
+			<Help lang="en">Indicates how many levels the dimmer will change for
+				each dimming step.</Help>
 		</Parameter>
-
 		<Parameter>
 			<Index>10</Index>
 			<Type>byte</Type>
@@ -90,9 +106,11 @@
 			<Maximum>255</Maximum>
 			<Size>1</Size>
 			<Label lang="en">Local Control Dim Rate</Label>
-			<Help lang="en">This value indicates in 10 millisecond resolution, how often the dim level will change. For example, if you set this parameter to 1, then every 10ms the dim level will change. If you set it to 255, then every 2.55 seconds the dim level will change.</Help>
+			<Help lang="en"><![CDATA[This value indicates in 10 millisecond resolution. <br>
+			This sets how often the dim level will change. For example, if you set this parameter 
+			to 1, then every 10ms the dim level will change. If you set it to 255, then 
+			every 2.55 seconds the dim level will change.]]></Help>
 		</Parameter>
-
 		<Parameter>
 			<Index>11</Index>
 			<Type>byte</Type>
@@ -101,9 +119,9 @@
 			<Maximum>99</Maximum>
 			<Size>1</Size>
 			<Label lang="en">ALL ON/ALL OFF Dim Step</Label>
-			<Help lang="en">Indicates how many levels the dimmer will change for each dimming step.</Help>
+			<Help lang="en">Indicates how many levels the dimmer will change for
+				each dimming step.</Help>
 		</Parameter>
-
 		<Parameter>
 			<Index>12</Index>
 			<Type>byte</Type>
@@ -112,10 +130,11 @@
 			<Maximum>255</Maximum>
 			<Size>1</Size>
 			<Label lang="en">ALL ON/ALL OFF Dim Rate</Label>
-			<Help lang="en">This value indicates in 10 millisecond resolution, how often the dim level will change. For example, if you set this parameter to 1, then every 10ms the dim level will change. If you set it to 255, then every 2.55 seconds the dim level will change.</Help>
+			<Help lang="en"><![CDATA[This value indicates in 10 millisecond resolution, <br>
+			 how often the dim level will change. For example, if you set this parameter to 1,<br>
+			 then every 10ms the dim level will change. If you set it to 255, then every 2.55 <br>
+			 seconds the dim level will change.]]></Help>
 		</Parameter>
-
 	</Configuration>
-	
 </Product>
 

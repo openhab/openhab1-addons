@@ -39,12 +39,12 @@ public class JpaPersistentItem implements HistoricItem {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 
-	private String name;
-	private String realName;
+	private String name = "";
+	private String realName = "";
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date timestamp;
+	private Date timestamp = new Date();
 	@Column(length = 32672) // 32k, max varchar for apache derby
-	private String value;
+	private String value = "";
 
 	public Long getId() {
 		return id;

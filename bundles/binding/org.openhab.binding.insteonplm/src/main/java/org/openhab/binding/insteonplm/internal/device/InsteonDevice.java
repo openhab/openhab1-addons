@@ -53,8 +53,6 @@ public class InsteonDevice {
 	private boolean						m_isModem		= false;
 	private	PriorityQueue<QEntry>		m_requestQueue  = new PriorityQueue<QEntry>();
 	private	DeviceFeature				m_featureQueried = null;
-	/** time to wait for reply after direct message */
-	private static final long			TIMEOUT_DIRECT_MESSAGE_REPLY	= 30000;
 	/** need to wait after query to avoid misinterpretation of duplicate replies */
 	private static final int			QUIET_TIME_DIRECT_MESSAGE = 2000;
 	/** how far to space out poll messages */
@@ -191,9 +189,11 @@ public class InsteonDevice {
 			for (DeviceFeature i : m_features.values()) {
 				if (i.hasListeners()) {
 					Msg m = i.makePollMsg();
-					if (m != null) l.add(new QEntry(i, m, now + delay + spacing));
+					if (m != null) {
+						l.add(new QEntry(i, m, now + delay + spacing));
+						spacing += TIME_BETWEEN_POLL_MESSAGES;
+					}
 				}
-				spacing += TIME_BETWEEN_POLL_MESSAGES;
 			}
 		}
 		if (l.isEmpty()) return;
@@ -305,17 +305,52 @@ public class InsteonDevice {
 	 * @throws IOException
 	 */
 	public Msg makeExtendedMessage(byte flags, byte cmd1, byte cmd2)
+				throws FieldException, IOException {
+		return makeExtendedMessage(flags, cmd1, cmd2, new byte[] {});
+	}
+	/**
+	 * Helper method to make extended message
+	 * @param flags
+	 * @param cmd1
+	 * @param cmd2
+	 * @param data array with userdata
+	 * @return extended message
+	 * @throws FieldException
+	 * @throws IOException
+	 */
+	public Msg makeExtendedMessage(byte flags, byte cmd1, byte cmd2, byte[] data)
 			throws FieldException, IOException {
 		Msg m = Msg.s_makeMessage("SendExtendedMessage");
 		m.setAddress("toAddress", getAddress());
 		m.setByte("messageFlags", (byte) (((flags & 0xff) | 0x10) & 0xff));
 		m.setByte("command1", cmd1);
 		m.setByte("command2", cmd2);
-		int checksum = (~(cmd1 + cmd2) + 1) &0xff;
-		m.setByte("userData14", (byte)checksum);
+		m.setUserData(data);
+		m.setCRC();
 		return m;
 	}
-
+	/**
+	 * Helper method to make extended message, but with different CRC calculation
+	 * @param flags
+	 * @param cmd1
+	 * @param cmd2
+	 * @param data array with user data
+	 * @return extended message
+	 * @throws FieldException
+	 * @throws IOException
+	 */
+	public Msg makeExtendedMessageCRC2(byte flags, byte cmd1, byte cmd2, byte[] data)
+			throws FieldException, IOException {
+		Msg m = Msg.s_makeMessage("SendExtendedMessage");
+		m.setAddress("toAddress", getAddress());
+		m.setByte("messageFlags", (byte) (((flags & 0xff) | 0x10) & 0xff));
+		m.setByte("command1", cmd1);
+		m.setByte("command2", cmd2);
+		m.setUserData(data);
+		m.setCRC2();
+		return m;
+	}
+	
 	/**
 	 * Called by the RequestQueueManager when the queue has expired
 	 * @param timeNow
@@ -330,13 +365,13 @@ public class InsteonDevice {
 				// A feature has been queried, but
 				// the response has not been digested yet.
 				// Must wait for the query to be processed.
-				long dt = timeNow - (m_lastQueryTime + TIMEOUT_DIRECT_MESSAGE_REPLY);
+				long dt = timeNow - (m_lastQueryTime + m_featureQueried.getDirectAckTimeout());
 				if (dt < 0) {
 					logger.debug("still waiting for query reply from {} for another {} usec",
 							m_address, -dt);
 					return (timeNow + 2000L); // retry soon
 				} else {
-					logger.warn("gave up waiting for query reply from device {}", m_address);
+					logger.debug("gave up waiting for query reply from device {}", m_address);
 				}
 			}
 			QEntry qe = m_requestQueue.poll(); // take it off the queue!
@@ -457,7 +492,8 @@ public class InsteonDevice {
 		dev.instantiateFeatures(dt);
 		return dev;
 	}
-	
+	 
+
 	/**
 	 * Queue entry helper class
 	 * @author Bernd Pfrommer

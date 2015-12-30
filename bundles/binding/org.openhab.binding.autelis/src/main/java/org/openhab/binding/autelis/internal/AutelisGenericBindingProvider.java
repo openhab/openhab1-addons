@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.autelis.internal;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.openhab.binding.autelis.AutelisBindingProvider;
@@ -68,9 +67,6 @@ public class AutelisGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		
-		
 		//read values must contain a '.' like equipment.circuit1 or be lightcmd
 		if(bindingConfig.indexOf('.') < 0 && !bindingConfig.equalsIgnoreCase("lightscmd")){
 			logger.warn("Item {}'s configuration ({}) is not valid, please use the pattern 'parentType.childType' or lightscmd ", item.getName(), bindingConfig);
@@ -80,13 +76,8 @@ public class AutelisGenericBindingProvider extends AbstractGenericBindingProvide
 		AutelisBindingConfig config = new AutelisBindingConfig(bindingConfig);
 		
 		addBindingConfig(item, config);	
-		
-		Set<Item> items = contextMap.get(context);
-		if (items == null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-		items.add(item);
+
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 
 	/**

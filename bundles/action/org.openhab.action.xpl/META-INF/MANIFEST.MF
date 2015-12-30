@@ -14,6 +14,7 @@ Import-Package: org.cdp1802.xpl,
  org.openhab.core.scriptengine.action,
  org.openhab.io.transport.xpl,
  org.osgi.framework,
+ org.osgi.service.cm,
  org.slf4j
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

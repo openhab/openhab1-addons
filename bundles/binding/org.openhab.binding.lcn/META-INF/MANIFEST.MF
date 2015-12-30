@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB LCN Binding
+Bundle-SymbolicName: org.openhab.binding.lcn
+Bundle-Version: 1.8.0.qualifier
+Bundle-Activator: org.openhab.binding.lcn.internal.LcnBindingActivator
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Export-Package: org.openhab.binding.lcn
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/lcnbinding.xml
+

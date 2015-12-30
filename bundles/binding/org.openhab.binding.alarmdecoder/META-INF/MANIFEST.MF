@@ -9,6 +9,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the alarmdecoder backend for openHAB
 Import-Package: gnu.io,
+ org.apache.commons.lang,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
  org.openhab.core.events,

@@ -18,6 +18,7 @@ Import-Package: org.apache.commons.io,
  org.openhab.core.library.types,
  org.openhab.core.scriptengine.action,
  org.openhab.core.types,
+ org.openhab.io.net.actions,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
@@ -27,4 +28,3 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.openhab.io.net

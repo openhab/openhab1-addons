@@ -18,7 +18,7 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
  * @since 1.6.0
  */
 public class ForecastIoProvider extends AbstractWeatherProvider {
-	private static final String URL = "http://api.forecast.io/forecast/[API_KEY]/[LATITUDE],[LONGITUDE]?units=si&lang=[LANGUAGE]&exclude=hourly,flags";
+	private static final String URL = "https://api.forecast.io/forecast/[API_KEY]/[LATITUDE],[LONGITUDE]?units=si&lang=[LANGUAGE]&exclude=hourly,flags";
 
 	public ForecastIoProvider() {
 		super(new JsonWeatherParser());

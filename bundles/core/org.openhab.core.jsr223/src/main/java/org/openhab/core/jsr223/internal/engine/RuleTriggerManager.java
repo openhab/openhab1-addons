@@ -22,6 +22,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.jsr223.internal.engine.scriptmanager.Script;
 import org.openhab.core.jsr223.internal.engine.scriptmanager.ScriptManager;
 import org.openhab.core.jsr223.internal.shared.ChangedEventTrigger;
+import org.openhab.core.jsr223.internal.shared.UpdatedEventTrigger;
 import org.openhab.core.jsr223.internal.shared.CommandEventTrigger;
 import org.openhab.core.jsr223.internal.shared.EventTrigger;
 import org.openhab.core.jsr223.internal.shared.Rule;
@@ -182,13 +183,24 @@ public class RuleTriggerManager {
 			return timerEventTriggeredRules;
 		case UPDATE:
 		case CHANGE:
-		case COMMAND:
 			if (newType instanceof State) {
 				for (Rule rule : rules) {
 					for (EventTrigger t : rule.getEventTrigger()) {
 						if (t.evaluate(item, (State) oldType, (State) newType, null, triggerType)) {
 							result.add(rule);
 							break; // break from eventTrigger iteration
+						}
+					}
+				}
+			}
+			break;
+		case COMMAND:
+			if (newType instanceof Command) {
+				for (Rule rule : rules) {
+					for (EventTrigger t : rule.getEventTrigger()) {
+						if (t.evaluate(item, null, null, (Command) newType, triggerType)) {
+							result.add(rule);
+							break;
 						}
 					}
 				}
@@ -272,6 +284,14 @@ public class RuleTriggerManager {
 					changedEventTriggeredRules.put(ceTrigger.getItem(), rules);
 				}
 				rules.add(rule);
+			} else if (t instanceof UpdatedEventTrigger) {
+				UpdatedEventTrigger ueTrigger = (UpdatedEventTrigger) t;
+				Set<Rule> rules = updateEventTriggeredRules.get(ueTrigger.getItem());
+				if (rules == null) {
+					rules = new HashSet<Rule>();
+					updateEventTriggeredRules.put(ueTrigger.getItem(), rules);
+				}
+				rules.add(rule);				
 			} else if (t instanceof TimerTrigger) {
 				timerEventTriggeredRules.add(rule);
 				try {

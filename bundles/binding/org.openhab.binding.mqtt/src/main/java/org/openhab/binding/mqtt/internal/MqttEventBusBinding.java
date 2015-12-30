@@ -9,10 +9,14 @@
 package org.openhab.binding.mqtt.internal;
 
 import java.util.Dictionary;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mqtt.MqttBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.io.transport.mqtt.MqttService;
@@ -36,6 +40,9 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 
 	/** MqttService for sending/receiving messages **/
 	private MqttService mqttService;
+
+	/** openHAB ItemRegistry for resolving item names to items **/
+	private ItemRegistry itemRegistry;
 
 	/** Message producer for sending state messages to MQTT **/
 	private MqttMessagePublisher statePublisher;
@@ -155,6 +162,26 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 	}
 
 	/**
+	 * Setter for the openHAB ItemRegistry.
+	 *
+	 * @param itemRegistry
+	 * 			the openHAB item registry.
+	 */
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
+	}
+
+	/**
+	 * Unsetter for the openHAB ItemRegistry.
+	 *
+	 * @param itemRegistry
+	 * 			itemRegistry to remove.
+	 */
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
+	}
+
+	/**
 	 * Initialize publisher which publishes all openHAB commands to the given
 	 * MQTT topic.
 	 * 
@@ -202,15 +229,23 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 
 				@Override
 				public void processMessage(String topic, byte[] message) {
+					String itemName = getItemNameFromTopic(getTopic(), topic);
+					if (itemRegistry == null) {
+						logger.error("Unable to lookup item {} for command; dropping", itemName);
+						return;
+					}
 					Command command;
 					try {
-						command = getCommand(new String(message));
+						Item item = itemRegistry.getItem(itemName);
+						command = getCommand(new String(message), item.getAcceptedCommandTypes());
+					} catch (ItemNotFoundException e) {
+						logger.debug("Unable to find item {} for command; dropping", itemName);
+						return;
 					} catch (Exception e) {
 						logger.error("Error parsing command from message.", e);
 						return;
 					}
-					eventPublisher.postCommand(
-							getItemNameFromTopic(getTopic(), topic), command);
+					eventPublisher.postCommand(itemName, command);
 				}
 
 			};
@@ -245,15 +280,23 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider> im
 
 				@Override
 				public void processMessage(String topic, byte[] message) {
+					String itemName = getItemNameFromTopic(getTopic(), topic);
+					if (itemRegistry == null) {
+						logger.error("Unable to lookup item {} for update; dropping", itemName);
+						return;
+					}
 					State state;
 					try {
-						state = getState(new String(message));
+						Item item = itemRegistry.getItem(itemName);
+						state = getState(new String(message), item.getAcceptedDataTypes());
+					} catch (ItemNotFoundException e) {
+						logger.debug("Unable to find item {} for update; dropping", itemName);
+						return;
 					} catch (Exception e) {
 						logger.error("Error parsing state from message.", e);
 						return;
 					}
-					eventPublisher.postUpdate(
-							getItemNameFromTopic(getTopic(), topic), state);
+					eventPublisher.postUpdate(itemName, state);
 				}
 			};
 			mqttService.registerMessageConsumer(brokerName, stateSubscriber);

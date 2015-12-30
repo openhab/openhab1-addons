@@ -77,17 +77,6 @@ public class EnoceanGenericBindingProvider extends AbstractGenericBindingProvide
     }
 
     @Override
-    public void removeConfigurations(String context) {
-        Set<Item> configuredItems = contextMap.get(context);
-        if (configuredItems != null) {
-            for (Item item : configuredItems) {
-                items.remove(item.getName());
-            }
-        }
-        super.removeConfigurations(context);
-    }
-
-    @Override
     public EnoceanParameterAddress getParameterAddress(String itemName) {
         EnoceanBindingConfig config = (EnoceanBindingConfig) bindingConfigs.get(itemName);
         return config != null ? new EnoceanParameterAddress(EnoceanId.fromString(config.id), config.channel, config.parameter) : null;

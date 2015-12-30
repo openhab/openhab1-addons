@@ -500,12 +500,12 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.mios</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.astro</artifactId>
@@ -524,6 +524,30 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.ecobee</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.dscalarm</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.telegram</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.mqtt</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
@@ -534,6 +558,18 @@
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.bluetooth</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.caldav-command</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.caldav-personal</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1223,6 +1259,12 @@
 		</dependency>
 		<dependency> 
 			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.rpircswitch</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency> 
+			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.mochadx10</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
@@ -1239,7 +1281,13 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency> 
+		<dependency>
+		    	<groupId>org.openhab.binding</groupId>
+		    	<artifactId>org.openhab.binding.ipx800</artifactId>
+		    	<version>${project.version}</version>
+		    	<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.frontiersiliconradio</artifactId>
 			<version>${project.version}</version>
@@ -1281,7 +1329,55 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.sagercaster</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.tacmi</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.lcn</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.sapp</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.rwesmarthome</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.ucprelayboard</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.myq</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+		
+		<dependency>
+			<groupId>org.openhab.io</groupId>
+			<artifactId>org.openhab.io.caldav</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.openhab.io</groupId>
 			<artifactId>org.openhab.io.cv</artifactId>
@@ -1370,6 +1466,12 @@
 
 		<dependency>
 			<groupId>org.openhab.persistence</groupId>
+			<artifactId>org.openhab.persistence.caldav</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.persistence</groupId>
 			<artifactId>org.openhab.persistence.sense</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
@@ -1442,7 +1544,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.persistence</groupId>
+			<artifactId>org.openhab.persistence.jdbc</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.persistence</groupId>
 			<artifactId>org.openhab.persistence.mapdb</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.persistence</groupId>
+			<artifactId>org.openhab.persistence.sitewhere</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>

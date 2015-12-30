@@ -28,7 +28,6 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -173,6 +172,12 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 					connectionProperties.setHost(value);
 				else if ("port".equals(key))
 					connectionProperties.setPort(Integer.valueOf(value));
+				else if ("token".equals(key))
+					connectionProperties.setToken(value);
+				else if ("username".equals(key))
+					connectionProperties.setUsername(value);
+				else if ("password".equals(key))
+					connectionProperties.setPassword(value);
 				else if ("refresh".equals(key))
 					if (StringUtils.isNumeric(value))
 						refreshInterval = Integer.valueOf(value);

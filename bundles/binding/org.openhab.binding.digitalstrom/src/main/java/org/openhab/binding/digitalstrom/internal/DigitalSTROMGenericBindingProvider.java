@@ -9,9 +9,7 @@
 package org.openhab.binding.digitalstrom.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.openhab.binding.digitalstrom.DigitalSTROMBindingProvider;
 import org.openhab.binding.digitalstrom.internal.config.DigitalSTROMBindingConfig;
@@ -120,10 +118,5 @@ public class DigitalSTROMGenericBindingProvider extends AbstractGenericBindingPr
 			}
 		}
 		return deviceConsumptionItems;
-	}
-
-	@Override
-	public Set<Item> getItemNamesByContext(String context) {
-		return new HashMap<String, Set<Item>>(super.contextMap).get(context);
 	}
 }

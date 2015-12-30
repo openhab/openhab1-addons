@@ -79,19 +79,31 @@ public class ItemResource {
 	@Context UriInfo uriInfo;
 	@GET
     @Produces( { MediaType.WILDCARD })
-    public Response getItems(
+    public SuspendResponse<Response> getItems(
     		@Context HttpHeaders headers,
     		@QueryParam("type") String type, 
-    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);
-		final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
-		if(responseType!=null) {
-			final ItemListBean content = new ItemListBean(getItemBeans());
-	    	final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content); 
-	    	return Response.ok(responseObject, responseType).build();
-		} else {
-			return Response.notAcceptable(null).build();
+    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback, 
+    		@Context AtmosphereResource resource) {
+		if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
+			if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);
+			final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+			if(responseType!=null) {
+				final ItemListBean content = new ItemListBean(getItemBeans());
+		    	final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content); 
+		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());
+			} else {
+				throw new WebApplicationException(Response.notAcceptable(null).build());
+			}
 		}
+		
+		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+    	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
+		return new SuspendResponse.SuspendResponseBuilder<Response>()
+				.scope(SCOPE.REQUEST)
+				.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+				.broadcaster(itemBroadcaster)
+				.outputComments(true).build();
     }
 
     @GET @Path("/{itemname: [a-zA-Z_0-9]*}/state") 

@@ -75,12 +75,7 @@ public class OmniLinkGenericBindingProvider extends
 				new Object[] { config.getObjectType(), config.getNumber() });
 		addBindingConfig(item, config);
 
-		Set<Item> items = contextMap.get(context);
-		if (items == null) {
-			items = new HashSet<Item>();
-			contextMap.put(context, items);
-		}
-		items.add(item);
+		super.processBindingConfiguration(context, item, bindingConfig);
 	}
 
 	@Override

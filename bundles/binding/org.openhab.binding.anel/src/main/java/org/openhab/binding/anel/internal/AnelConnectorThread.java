@@ -21,10 +21,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The MessageListener runs as a separate thread.
- * 
+ *
  * Thread listening message from Anel Net-PwrCtrl devices and send updates to
  * openHAB bus.
- * 
+ *
  * @since 1.6.0
  * @author paphko
  */
@@ -63,7 +63,7 @@ class AnelConnectorThread extends Thread {
 
 	/**
 	 * Initialize a new thread for listening on UDP packages of an Anel device.
-	 * 
+	 *
 	 * @param device
 	 *            The device name for this thread.
 	 * @param host
@@ -95,7 +95,7 @@ class AnelConnectorThread extends Thread {
 
 	/**
 	 * Switch relay on or off.
-	 * 
+	 *
 	 * @param switchNr
 	 *            The relay number to switch.
 	 * @param newState
@@ -140,7 +140,7 @@ class AnelConnectorThread extends Thread {
 	/**
 	 * Switch IO on or off, assuming that it is set to input. Otherwise nothing
 	 * happens.
-	 * 
+	 *
 	 * @param ioNr
 	 *            The IO number to switch.
 	 * @param newState
@@ -162,8 +162,8 @@ class AnelConnectorThread extends Thread {
 
 		// check whether IO is of direction output
 		if (isInput == null || !isInput) {
-			logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF")
-					+ " but it's direction is " + (isInput == null ? "unknown" : "input"));
+			logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF") + " but it's direction is "
+					+ (isInput == null ? "unknown" : "input"));
 			return; // better not send anything if direction is not
 					// 'out'
 		}
@@ -231,8 +231,13 @@ class AnelConnectorThread extends Thread {
 				// Wait for a packet (blocking)
 				logger.trace("Listening on " + state.host + "...");
 				final byte[] data = connector.receiveDatagram();
+				if (data == null) {
+					logger.info("Nothing received, this happens during shutdown or some unknown system error.");
+					continue;
+				}
 
-				logger.trace("Received data (len={}): {}", data.length, DatatypeConverter.printString(new String(data)));
+				logger.trace("Received data (len={}): {}", data.length,
+						DatatypeConverter.printString(new String(data)));
 
 				// parse data and create commands for all state changes
 				final Map<AnelCommandType, org.openhab.core.types.State> newValues;

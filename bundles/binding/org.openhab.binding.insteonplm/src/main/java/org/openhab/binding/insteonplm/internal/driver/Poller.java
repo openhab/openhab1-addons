@@ -180,6 +180,7 @@ public class Poller {
 						readPollQueue();
 					} catch (InterruptedException e) {
 						logger.warn("poll queue reader thread interrupted!");
+						break;
 					}
 				}
 			}

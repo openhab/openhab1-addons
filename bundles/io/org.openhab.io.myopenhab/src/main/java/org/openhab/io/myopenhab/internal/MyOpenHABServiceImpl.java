@@ -81,6 +81,22 @@ public class MyOpenHABServiceImpl implements MyOpenHABService, PersistenceServic
 	/**
 	 * @{inheritDoc}
 	 */
+	public void sendLogNotification(String message, String icon, String severity) {
+		logger.debug("Sending log message '{}'", message);
+		myOHClient.sendLogNotification(message, icon, severity);
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	public void sendBroadcastNotification(String message, String icon, String severity) {
+		logger.debug("Sending broadcast message '{}'", message);
+		myOHClient.sendBroadcastNotification(message, icon, severity);
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
 	public void sendSMS(String phone, String message) {
 		logger.debug("Sending SMS '" + message + "' to phone # " + phone);
 		myOHClient.sendSMS(phone, message);

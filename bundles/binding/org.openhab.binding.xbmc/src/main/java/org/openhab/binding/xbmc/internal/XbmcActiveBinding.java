@@ -315,6 +315,8 @@ public class XbmcActiveBinding extends
 				connector.playerOpen(command.toString());
 			else if (property.equals("Player.Stop"))
 				connector.playerStop();
+			else if (property.equals("Input.ExecuteAction"))
+				connector.inputExecuteAction(command.toString());
 			else if (property.equals("GUI.ShowNotification"))
 				connector.showNotification("openHAB", command.toString());
 			else if (property.equals("System.Shutdown")
@@ -389,45 +391,47 @@ public class XbmcActiveBinding extends
 
 		Map<String, XbmcHost> hosts = new HashMap<String, XbmcHost>();
 
-		Enumeration<String> keys = config.keys();
-
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement();
-
-			if ("service.pid".equals(key)) {
-				continue;
-			}
-
-			String[] parts = key.split("\\.");
-			String hostname = parts[0];
-
-			XbmcHost host = hosts.get(hostname);
-			if (host == null) {
-				host = new XbmcHost();
-			}
-
-			String value = ((String) config.get(key)).trim();
-
-			if ("host".equals(parts[1])) {
-				host.setHostname(value);
-			}
-			if ("rsPort".equals(parts[1])) {
-				host.setRsPort(Integer.valueOf(value));
-			}
-			if ("wsPort".equals(parts[1])) {
-				host.setWsPort(Integer.valueOf(value));
-			}
-			if ("username".equals(parts[1])) {
-				host.setUsername(value);
-			}
-			if ("password".equals(parts[1])) {
-				host.setPassword(value);
-			}
-
-			hosts.put(hostname, host);
+		if(config!=null) {
+    		Enumeration<String> keys = config.keys();
+    
+    		while (keys.hasMoreElements()) {
+    			String key = keys.nextElement();
+    
+    			if ("service.pid".equals(key)) {
+    				continue;
+    			}
+    
+    			String[] parts = key.split("\\.");
+    			String hostname = parts[0];
+    
+    			XbmcHost host = hosts.get(hostname);
+    			if (host == null) {
+    				host = new XbmcHost();
+    			}
+    
+    			String value = ((String) config.get(key)).trim();
+    
+    			if ("host".equals(parts[1])) {
+    				host.setHostname(value);
+    			}
+    			if ("rsPort".equals(parts[1])) {
+    				host.setRsPort(Integer.valueOf(value));
+    			}
+    			if ("wsPort".equals(parts[1])) {
+    				host.setWsPort(Integer.valueOf(value));
+    			}
+    			if ("username".equals(parts[1])) {
+    				host.setUsername(value);
+    			}
+    			if ("password".equals(parts[1])) {
+    				host.setPassword(value);
+    			}
+    
+    			hosts.put(hostname, host);
+    		}
+    
+    		nameHostMapper = hosts;
+    		registerAllWatches();
 		}
-
-		nameHostMapper = hosts;
-		registerAllWatches();
 	}
 }

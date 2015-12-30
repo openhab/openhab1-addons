@@ -38,20 +38,19 @@ public abstract class IOStream {
 	 * @param readSize size to read
 	 * @return number of bytes read
 	 */
-	public int read(byte [] b, int offset, int readSize) {
+	public int read(byte [] b, int offset, int readSize) throws InterruptedException {
 		int len = 0;
 		while (len < 1) {
 			try {
 				len = m_in.read(b, offset, readSize);
+				if (Thread.interrupted()) {
+					throw new InterruptedException();
+				}
 			} catch (IOException e) {
 				logger.trace("got exception while reading: {}", e.getMessage());
 				while (!reconnect()) {
-					try {
-						logger.trace("sleeping before reconnecting");
-						Thread.sleep(10000);
-					} catch (InterruptedException ie) {
-						logger.warn("interrupted while sleeping on read reconnect");
-					}
+					logger.trace("sleeping before reconnecting");
+					Thread.sleep(10000); 
 				}
 			}
 		}
