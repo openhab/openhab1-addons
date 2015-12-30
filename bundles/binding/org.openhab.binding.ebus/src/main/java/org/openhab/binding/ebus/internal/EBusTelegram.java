@@ -27,17 +27,14 @@ public class EBusTelegram {
 	/** The ACK FAIL answer byte */
 	public final static byte ACK_FAIL = (byte)0xFF;
 	
-	/** The Broadcast address */
-	public final static byte BROADCAST_ADDRESS = (byte)0xFE;
-	
 	/** Telegram type broadcast */
-	public static final byte TYPE_BROADCAST = 1;
+	public static final byte BROADCAST = 1;
 	
 	/** Telegram type Master-Slave */
-	public static final byte TYPE_MASTER_SLAVE = 2;
+	public static final byte MASTER_SLAVE = 2;
 	
 	/** Telegram type Master-Master */
-	public static final byte TYPE_MASTER_MASTER = 3;
+	public static final byte MASTER_MASTER = 3;
 	
 	/** internal raw data */
 	private ByteBuffer data;
@@ -102,20 +99,20 @@ public class EBusTelegram {
 	/**
 	 * Get the telegram type
 	 * @return
-	 * @see EBusTelegramConfiguration.BROADCAST
-	 * @see EBusTelegramConfiguration.MASTER_SLAVE
-	 * @see EBusTelegramConfiguration.MASTER_MASTER
+	 * @see EBusTelegram.BROADCAST
+	 * @see EBusTelegram.MASTER_SLAVE
+	 * @see EBusTelegram.MASTER_MASTER
 	 */
 	public byte getType() {
 		int pos = getDataLen()+6;
 		byte b = data.get(pos);
 		if(b == SYN) {
-			return TYPE_BROADCAST;
+			return BROADCAST;
 		} else if(b == ACK_OK && data.get(pos+1) == SYN) {
-			return TYPE_MASTER_MASTER;
+			return MASTER_MASTER;
 		}
 		
-		return TYPE_MASTER_SLAVE;
+		return MASTER_SLAVE;
 	}
 	
 	
@@ -143,18 +140,8 @@ public class EBusTelegram {
 	 * @return
 	 */
 	public int getSlaveDataLen() {
-		if(getType() == TYPE_MASTER_SLAVE)
+		if(getType() == MASTER_SLAVE)
 			return data.get(getDataLen()+7);
-		return -1;
-	}
-	
-	/**
-	 * Get slave crc
-	 * @return
-	 */
-	public int getSlaveCRC() {
-		if(getType() == TYPE_MASTER_SLAVE)
-			return data.get(data.position()-3);
 		return -1;
 	}
 	

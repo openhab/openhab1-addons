@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.ebus.internal.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.xml.bind.DatatypeConverter;
@@ -25,12 +23,12 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class EBusUtils {
-	
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusUtils.class);
 
 	/** calculated crc values */
-	final static public byte CRC_TAB_8_VALUE[] = {
+	final static private byte CRC_TAB_8_VALUE[] = {
 		(byte) 0x00, (byte) 0x9B, (byte) 0xAD, (byte) 0x36,
 		(byte) 0xC1, (byte) 0x5A, (byte) 0x6C, (byte) 0xF7,
 		(byte) 0x19, (byte) 0x82, (byte) 0xB4, (byte) 0x2F,
@@ -103,54 +101,125 @@ public class EBusUtils {
 	 * @param crc_init The current crc result or another start value
 	 * @return The crc result
 	 */
-	public static byte crc8_tab(byte data, byte crcInit) {
-		short ci = (short) (crcInit & 0xFF);
+	public static byte crc8_tab(byte data, byte crc_init) {
+		short ci = (short) (crc_init & 0xFF);
 		byte crc = (byte) (CRC_TAB_8_VALUE[ci] ^ (data & 0xFF));
 		return crc;
 	}
 
 	/**
-	 * Convert to unsigned int
-	 * @param v
-	 * @return
+	 * Convert the value to a bcd value
+	 * @param data The encoded value
+	 * @return The bcd value
 	 */
-	public static int uint(byte v) {
-		return v & 0xFF;
+	public static int decodeBCD(byte data) {
+		return (data >> 4)*10 + (data & (byte) 0x0F);
+	}
+
+	/**
+	 * Convert eBus Type DATA1B
+	 * @param data The encoded value
+	 * @return The decoded value
+	 */
+	public static int decodeDATA1b(byte data) {
+		if((data & (byte) 0x80) == (byte) 0x80) {
+			return -1 * ((short) ((data^0xFF) & 0xFF) + 1);
+		} else {
+			return (short) (data & 0xFF);
+		}
 	}
 	
 	/**
-	 * CRC calculation
-	 * @param data The byte to crc check
-	 * @param crcInit The current crc result or another start value
-	 * @param poly The polynom
-	 * @return The crc result
+	 * Convert eBus Type DATA1C
+	 * @param data The encoded value
+	 * @return The decoded value
 	 */
-	public static byte crc8(byte data, byte crcInit, byte poly) {
-		
-		byte crc;
-		byte polynom;
-		int i;
-
-		crc = crcInit;
-		for(i = 0; i < 8; i++) {
-			
-			if((uint(crc) & 0x80) != 0) {
-				polynom = poly;
-			} else {
-				polynom = (byte)0;
-			}
-			
-			crc = (byte)((uint(crc) & ~0x80) << 1);
-			if((uint(data) & 0x80) != 0) {
-				crc = (byte)(uint(crc) | 1);
-			}
-			
-			crc = (byte)(uint(crc) ^ uint(polynom));
-			data = (byte)(uint(data) << 1);
-		}
-		return crc;
+	public static float decodeDATA1c(byte data) {
+		return (((short)data & 0xFF) / 2f);
 	}
 
+	/**
+	 * Convert eBus Type DATA2b
+	 * @param highData The encoded high byte
+	 * @param lowData The encoded low byte
+	 * @return The decoded value
+	 */
+	public static float decodeDATA2b(byte highData, byte lowData) {
+		if((highData & (byte) 0x80) == (byte) 0x80) {
+			short hh = (short) ((highData^0xFF) & 0xFF);
+			short ll = (short) ((lowData^0xFF) & 0xFF);
+			return (float) (-1 * (hh + (ll + 1) / 256f));
+
+		} else {
+			short hh = (short) (highData & 0xFF);
+			short ll = (short) (lowData & 0xFF);
+			return (float) (hh + (ll / 256f));
+		}
+	}
+
+	/**
+	 * Convert eBus Type DATA2c
+	 * @param highData The encoded high byte
+	 * @param lowData The encoded low byte
+	 * @return The decoded value
+	 */
+	public static float decodeDATA2c(byte highData, byte lowData) {
+		if((highData & (byte) 0x80) == (byte) 0x80) {
+
+			short hh = (short) ((highData^0xFF) & 0xFF);
+			short ll = (short) ((lowData^0xFF) & 0xFF);
+			short hn = (short) ((ll & 0xF0)>>4);
+			short ln = (short) (ll & 0x0F);
+
+			return -1 * ((hh * 16) + hn + ((ln+1)/16f));
+
+		} else {
+			short hh = (short) (highData & 0xFF);
+			short ll = (short) (lowData & 0xFF);
+			short hn = (short) ((ll & 0xF0)>>4);
+			short ln = (short) (ll & 0x0F);
+
+			return (hh * 16) + hn + (ln/16f);
+		}
+	}
+
+	/**
+	 * Convert eBus Type WORD
+	 * @param highData
+	 * @param lowData
+	 * @return The decoded value
+	 */
+	public static int decodeWORD(byte highData, byte lowData) {
+		return ((highData & 0xFF)<<8) + (lowData & 0xFF);
+	}
+
+	/**
+	 * Convert eBus Type CHAR
+	 * @param data
+	 * @return The decoded value
+	 */
+	public static int decodeChar(byte data) {
+		return data;
+	}
+	
+	/**
+	 * Convert eBus Type UCHAR
+	 * @param data
+	 * @return The decoded value
+	 */
+	public static int decodeUChar(byte data) {
+		return data & 0xFF;
+	}
+	
+	/**
+	 * Convert eBus Type BYTE
+	 * @param data
+	 * @return The decoded value
+	 */
+	public static int decodeByte(byte data) {
+		return data;
+	}
+	
 	/**
 	 * Convert eBus Type BIT
 	 * @param data
@@ -160,7 +229,51 @@ public class EBusUtils {
 	public static boolean decodeBit(byte data, short bit) {
 		return ((byte)data >> bit& 0x1) == 1;
 	}
-
+	
+	/**
+	 * Convert eBus Type Int, same as WORD
+	 * @param highData
+	 * @param lowData
+	 * @return The decoded value
+	 */
+	public static int decodeInt(byte highData, byte lowData) {
+		return decodeWORD(highData, lowData);
+	}
+	
+	/**
+	 * Convert eBus Type UInt
+	 * @param highData
+	 * @param lowData
+	 * @return The decoded value
+	 */
+	public static int decodeUInt(byte highData, byte lowData) {
+		int v = decodeInt(highData, lowData);
+		long unsignedValue = v & 0xffffffffl;
+		return (int) unsignedValue;
+	}
+	
+	/**
+	 * Convert eBus Type Long, same as WORD
+	 * @param highData
+	 * @param lowData
+	 * @return The decoded value
+	 */
+	public static int decodeLng(byte highData, byte lowData) {
+		return decodeWORD(highData, lowData);
+	}
+	
+	/**
+	 * Convert eBus Type ULong
+	 * @param highData
+	 * @param lowData
+	 * @return The decoded value
+	 */
+	public static int decodeULng(byte highData, byte lowData) {
+		int v = decodeInt(highData, lowData);
+		long unsignedValue = v & 0xffffffffl;
+		return (int) unsignedValue;
+	}
+	
 	/**
 	 * Expands ebus-data bytes 0xAA and 0xA9 from byte data. All other bytes
 	 * are unchanged.
@@ -168,7 +281,7 @@ public class EBusUtils {
 	 * @param pos The position to check
 	 * @return The new value or the unchanged byte
 	 */
-	static private byte decodeEBusData(byte[] data, int pos) {
+	static private byte expandByte(byte[] data, int pos) {
 		if(data[pos-1] == (byte)0xA9) {
 			if(data[pos] == (byte)0x00) {
 				return (byte)0xA9;
@@ -179,30 +292,6 @@ public class EBusUtils {
 		return data[pos];
 	}
 
-	/**
-	 * Encodes the eBUS data to replace sync and 0x9A bytes
-	 * @param data
-	 * @return
-	 */
-	public static byte[] encodeEBusData(byte[] data) {
-		final ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-		try {
-			for (byte b : data) {
-				if(b == (byte)0xAA) {
-					byteBuffer.write(new byte[] {(byte)0xA9, (byte)0x01});
-				} else if(b == (byte)0x9A) {
-					byteBuffer.write(new byte[] {(byte)0xA9, (byte)0x00});
-				} else {
-					byteBuffer.write(b);
-				}
-			}
-		} catch (IOException e) {
-			logger.error("io error", e);
-		}
-
-		return byteBuffer.toByteArray();
-	}
-	
 	/**
 	 * Check if the address is a valid master address.
 	 * @param address
@@ -262,7 +351,7 @@ public class EBusUtils {
 
 					if(b != (byte)0xA9) {
 						nnPos++;
-						buffer.put(decodeEBusData(data, i));
+						buffer.put(expandByte(data, i));
 					}
 
 					if(nnPos == nn) {
@@ -277,10 +366,8 @@ public class EBusUtils {
 
 			// check calculted crc with received crc
 			if(crc != uc_crc) {
-				if(logger.isTraceEnabled()) {
-					logger.trace("EBus telegram master-crc invalid, skip data! Data: {}");
-					logger.trace(" -> DATA: {}", toHexDumpString(data));
-				}
+
+				logger.warn("EBus telegram sender-crc invalid, skip data! Data: {}", toHexDumpString(data));
 
 				// invalid, return null
 				return null;
@@ -290,18 +377,13 @@ public class EBusUtils {
 			buffer.put(data[crcPos+1]);
 
 			if(data[crcPos+1] == EBusTelegram.SYN) {
-
-				if(data[1] == EBusTelegram.BROADCAST_ADDRESS) {
+				
+				if(data[1] == EBusTelegram.BROADCAST) {
 					// Broadcast Telegram, end
 					return new EBusTelegram(buffer);
 				}
-
-				if(logger.isTraceEnabled()) {
-					logger.debug("No answer from slave, skip data!");
-					logger.trace(" -> DATA: {}", toHexDumpString(data));
-				}
-
-				return null;
+				
+				
 			}
 
 			if((data[crcPos+1] == EBusTelegram.ACK_OK || data[crcPos+1] == EBusTelegram.ACK_FAIL) 
@@ -314,11 +396,7 @@ public class EBusUtils {
 
 			if(data[crcPos+1] != EBusTelegram.ACK_OK && data[crcPos+1] != EBusTelegram.ACK_FAIL) {
 				// Unexpected value on this position
-				if(logger.isTraceEnabled()) {
-					logger.trace("Unexpect ACK value in eBUS telegram, skip data!");
-					logger.trace(" -> DATA: {}", toHexDumpString(data));
-				}
-				
+				logger.warn("Unexpect ack value in EBus telegram, skip data!");
 				return null;
 			}
 
@@ -339,7 +417,7 @@ public class EBusUtils {
 					uc_crc = crc8_tab(b, uc_crc);
 
 					if(b != (byte)0xA9) {
-						buffer.put(decodeEBusData(data, i));
+						buffer.put(expandByte(data, i));
 					}
 				}
 			}
@@ -349,17 +427,13 @@ public class EBusUtils {
 
 			// check calculted crc with received crc
 			if(crc != uc_crc) {
-				if(logger.isTraceEnabled()) {
-					logger.trace("eBUS telegram answer-crc invalid, skip data!");
-					logger.trace(" -> DATA: {}", toHexDumpString(data));
-				}
-
+				logger.warn("EBus telegram answer-crc invalid, skip data!");
 				return null;
 			}
 
 			// return valid telegram
 			return new EBusTelegram(buffer);
-
+			
 		} catch (IndexOutOfBoundsException e) {
 			// can happen, no problem
 			return null;
@@ -384,7 +458,7 @@ public class EBusUtils {
 		return DatatypeConverter.parseHexBinary(
 				hexDumpString.replaceAll(" ", ""));
 	}
-
+	
 	/**
 	 * FIXME: Badly programmed
 	 * @param hexDumpString
@@ -393,7 +467,7 @@ public class EBusUtils {
 	static public byte toByte(String hexDumpString) {
 		return toByteArray(hexDumpString)[0];
 	}
-
+	
 	/**
 	 * Generates a string hex dump from a byte array
 	 * @param data The source
@@ -401,14 +475,11 @@ public class EBusUtils {
 	 */
 	static public StringBuilder toHexDumpString(byte[] data) {
 		StringBuilder sb = new StringBuilder();
-		if(data != null && data.length > 0) {
-			for (int i = 0; i < data.length; i++) {
-				byte c = data[i];
-				if(i > 0) sb.append(' ');
-				sb.append(toHexDumpString(c));
-			}
+		for (int i = 0; i < data.length; i++) {
+			byte c = data[i];
+			if(i > 0) sb.append(' ');
+			sb.append(toHexDumpString(c));
 		}
-
 		return sb;
 	}
 
