@@ -58,8 +58,8 @@
         <deb.distribution>development</deb.distribution>
         <deb.depends>openhab-runtime</deb.depends>
         
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         
         <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
     </properties>
