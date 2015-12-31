@@ -24,6 +24,9 @@
 		<Class>
 			<id>0x86</id>
 		</Class>
+		<Class>
+			<id>0x60</id>
+		</Class>
 	</CommandClasses>
 	<Configuration>
 		<Parameter>
