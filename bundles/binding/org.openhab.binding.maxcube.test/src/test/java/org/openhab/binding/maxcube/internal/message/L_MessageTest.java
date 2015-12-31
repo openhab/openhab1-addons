@@ -28,10 +28,10 @@ public class L_MessageTest {
 
 	private static final String rawData = "L:BgVPngkSEAsLhBkJEhkLJQDAAAsLhwwJEhkRJwDKAAYO8ZIJEhAGBU+kCRIQCwxuRPEaGQMmAMcACwxuQwkSGQgnAM8ACwQd5t0SGQ0oAMsA";
 
-	private final Map<String, Device> testDevices = new HashMap<>();
+	private final Map<String, Device> testDevices = new HashMap<String, Device>();
 
 	private L_Message message;
-	private final List<Configuration> configurations = new ArrayList<>();
+	private final List<Configuration> configurations = new ArrayList<Configuration>();
 
 	@Before
 	public void setUp() {
