@@ -198,6 +198,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 				newValue.setValue(1);
 			else if (command.equals(OnOffType.OFF))
 				newValue.setValue(0);
+		} else if (command instanceof OpenClosedType) {
+			if (command.equals(OpenClosedType.OPEN))
+				newValue.setValue(1);
+			else if (command.equals(OpenClosedType.CLOSED))
+				newValue.setValue(0);
 		}
 
 		
