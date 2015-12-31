@@ -13,7 +13,24 @@
 		<Class><id>0x85</id></Class>
 		<Class><id>0x86</id></Class>
 	</CommandClasses>
-
+	<Configuration>
+        <Parameter>
+            <Index>1</Index>
+                <Type>list</Type>
+                    <Default>0</Default>
+                    <Size>1</Size>
+                    <Item>
+                        <Value>0</Value>
+                        <Label lang="en">DISABLED</Label>
+                    </Item>
+                    <Item>
+                        <Value>255</Value>
+                        <Label lang="en">ENABLED</Label>
+                    </Item>
+                    <Label lang="en">External switch</Label>
+                    <Help lang="en">Determines if external switch can be used.</Help>
+        </Parameter>
+    </Configuration>
 	<Associations>
 		<Group>
 			<Index>1</Index>
