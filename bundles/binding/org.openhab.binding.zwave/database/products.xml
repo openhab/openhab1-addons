@@ -3013,4 +3013,17 @@
 			<ConfigFile>unknown/im-20.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0071</Id>
+		<Name>LS Control</Name>
+		<Product>
+ 			<Reference>
+ 				<Type>0002</Type>
+ 				<Id>035d</Id>
+ 			</Reference>
+ 			<Model>E861C</Model>
+ 			<Label lang="en">Temperature Sensor</Label>
+ 			<ConfigFile>lscontrol/e861c.xml</ConfigFile>
+ 		</Product>
+ 	</Manufacturer>
 </Manufacturers>
