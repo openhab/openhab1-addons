@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.openhab.binding.plex.internal.PlexProperty;
 import org.openhab.core.types.Command;
 
 /**
@@ -24,7 +25,7 @@ import org.openhab.core.types.Command;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ItemMapping {
-	String property();
+	PlexProperty property();
 	Class<? extends Command> type();
  	ItemPlayerStateMapping[] stateMappings() default {};
 }

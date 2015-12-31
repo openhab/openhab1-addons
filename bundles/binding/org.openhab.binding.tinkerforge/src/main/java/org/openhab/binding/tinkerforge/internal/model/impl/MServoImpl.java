@@ -34,6 +34,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
 import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
@@ -1884,11 +1885,18 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         default: return -1;
       }
     }
+    if (baseClass == PercentTypeActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MSERVO__PERCENT_VALUE: return ModelPackage.PERCENT_TYPE_ACTOR__PERCENT_VALUE;
+        default: return -1;
+      }
+    }
     if (baseClass == SetPointActor.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MSERVO__PERCENT_VALUE: return ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE;
         default: return -1;
       }
     }
@@ -1963,11 +1971,18 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         default: return -1;
       }
     }
+    if (baseClass == PercentTypeActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.PERCENT_TYPE_ACTOR__PERCENT_VALUE: return ModelPackage.MSERVO__PERCENT_VALUE;
+        default: return -1;
+      }
+    }
     if (baseClass == SetPointActor.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE: return ModelPackage.MSERVO__PERCENT_VALUE;
         default: return -1;
       }
     }
@@ -2040,12 +2055,19 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         default: return -1;
       }
     }
+    if (baseClass == PercentTypeActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.PERCENT_TYPE_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS: return ModelPackage.MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS;
+        default: return -1;
+      }
+    }
     if (baseClass == SetPointActor.class)
     {
       switch (baseOperationID)
       {
         case ModelPackage.SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS: return ModelPackage.MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS;
-        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS: return ModelPackage.MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS;
         default: return -1;
       }
     }

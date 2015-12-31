@@ -15,7 +15,8 @@ import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.isNumeric;
 import org.openhab.binding.novelanheatpump.HeatPumpBindingProvider;
 import org.openhab.binding.novelanheatpump.HeatpumpCommandType;
 import org.openhab.binding.novelanheatpump.HeatpumpCoolingOperationMode;
@@ -38,12 +39,15 @@ import org.slf4j.LoggerFactory;
  * With the state array each binding will be updated.
  * 
  * @author Jan-Philipp Bolle
+ * @author John Cocula -- made port configurable
  * @since 1.0.0
  */
 public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvider> implements ManagedService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HeatPumpBinding.class);
 	private static final SimpleDateFormat sdateformat = new SimpleDateFormat("dd.MM.yy HH:mm"); //$NON-NLS-1$
+	private static final int DEFAULT_PORT = 8888;
+	private static final long DEFAULT_REFRESH_INTERVAL = 60000L;
 	
 	/** Parameter code for heating operation mode */
 	public static int PARAM_HEATING_OPERATION_MODE = 3;
@@ -67,11 +71,13 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	
 
 	/** Default refresh interval (currently 1 minute) */
-	private long refreshInterval = 60000L;
+	private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
 	/* The IP address to connect to */
 	protected static String ip;
-	
+
+	/* the port to connect to. */
+	protected static int port = DEFAULT_PORT;
 
 	public void deactivate() {
 	}
@@ -85,18 +91,32 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config != null) {
-			String ip = (String) config.get("ip"); //$NON-NLS-1$
-			if (StringUtils.isNotBlank(ip) && !ip.equals(HeatPumpBinding.ip)) {
-				// only do something if the ip has changed
-				HeatPumpBinding.ip = ip;
+			boolean properlyConfigured = true;
 
-				String refreshIntervalString = (String) config.get("refresh");
-				if (StringUtils.isNotBlank(refreshIntervalString)) {
-					refreshInterval = Long.parseLong(refreshIntervalString);
-				}
+			long refreshInterval = DEFAULT_REFRESH_INTERVAL;
+			int port = DEFAULT_PORT;
+			String ip = null;
+			try {
+				String refreshIntervalString = (String) config.get("refresh"); //$NON-NLS-1$
+				refreshInterval = isNotBlank(refreshIntervalString) ?
+						Long.parseLong(refreshIntervalString) : DEFAULT_REFRESH_INTERVAL;
 
-				setProperlyConfigured(true);
+				ip = (String) config.get("ip"); //$NON-NLS-1$
+				properlyConfigured = properlyConfigured && isNotBlank(ip);
+
+				String portString = (String) config.get("port");  //$NON-NLS-1$
+				port = isNumeric(portString) ? Integer.parseInt(portString) : DEFAULT_PORT;
 			}
+			catch (NumberFormatException ex) {
+				properlyConfigured = false;
+			}
+
+			if (properlyConfigured) {
+				this.refreshInterval = refreshInterval;
+				HeatPumpBinding.ip = ip;
+				HeatPumpBinding.port = port;
+			}
+			setProperlyConfigured(properlyConfigured);
 		}
 	}
 
@@ -109,7 +129,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 			logger.debug("There is no existing Heatpump binding configuration => refresh cycle aborted!");
 			return;
 		}
-		HeatpumpConnector connector = new HeatpumpConnector(ip);
+		HeatpumpConnector connector = new HeatpumpConnector(ip, port);
 		try {
 			connector.connect();
 			// read all available values
@@ -478,7 +498,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	 * @param value
 	 */
 	private boolean sendParamToHeatpump(int param, int value) {
-		HeatpumpConnector connector = new HeatpumpConnector(ip);
+		HeatpumpConnector connector = new HeatpumpConnector(ip, port);
 		try {
 			connector.connect();
 			return connector.setParam(param, value);

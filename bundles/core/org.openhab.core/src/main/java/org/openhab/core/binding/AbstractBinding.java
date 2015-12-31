@@ -53,8 +53,9 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 * 
 	 * @param provider the new {@link BindingProvider} to add
 	 */
-	public void addBindingProvider(P provider) {
-		this.providers.add(provider);
+	@SuppressWarnings("unchecked")
+	public void addBindingProvider(BindingProvider provider) {
+		this.providers.add((P) provider);
         provider.addBindingChangeListener(this);
         allBindingsChanged(provider);
     }
@@ -65,7 +66,7 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 * 
 	 * @param provider the {@link BindingProvider} to remove
 	 */
-	public void removeBindingProvider(P provider) {
+	public void removeBindingProvider(BindingProvider provider) {
 		this.providers.remove(provider);
 		provider.removeBindingChangeListener(this);
 	}

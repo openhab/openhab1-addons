@@ -24,7 +24,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.openhab.binding.pilight.internal.communication.Action;
 import org.openhab.binding.pilight.internal.communication.Identification;
@@ -104,7 +103,6 @@ public class PilightConnector extends Thread {
 								logger.trace("Response success: " + response.isSuccess());
 							} else if (line.equals("1")) {
 								// pilight stopping
-								connection.getSocket().close();
 								throw new IOException("Connection to pilight lost");
 							} else {
 								logger.debug(line);
@@ -116,14 +114,17 @@ public class PilightConnector extends Thread {
 					}
 				}
 			} catch (IOException e) {
-				logger.error("Error in pilight listener thread", e);
+				logger.debug("Error in pilight listener thread", e);
 			}
 			
-			// empty line received (socket closed) or pilight stopped, try to reconnect
-			reconnect();
+			logger.info("Disconnected from pilight server at {}:{}", connection.getHostname(), connection.getPort());
+
+			if (running) {
+				// empty line received (socket closed) or pilight stopped but binding 
+				// is still running, try to reconnect
+				reconnect();
+			}
 		}
-				
-		cleanup();
 	}
 	
 	/**
@@ -148,6 +149,7 @@ public class PilightConnector extends Thread {
 	 */
 	public void close() {
 		running = false;
+		disconnect();
 	}
 
 	/**
@@ -190,16 +192,19 @@ public class PilightConnector extends Thread {
 		} 
 	}
 	
-	private void cleanup() {
-		try {
-			connection.getSocket().close();
-		} catch (IOException e) {
-			logger.error("Error while closing pilight socket", e);
+	private void disconnect() {
+		if (connection.getSocket() != null) {
+			try {
+				connection.getSocket().close();
+			} catch (IOException e) {
+				logger.debug("Error while closing pilight socket", e);
+			}
 		}
-		logger.info("Thread pilight listener stopped");
 	}	
 
 	private void reconnect() {
+		disconnect();
+		
 		int delay = 0;
 		
 		while (!isConnected()) {
@@ -224,13 +229,13 @@ public class PilightConnector extends Thread {
 					logger.info("Established connection to pilight server at {}:{}", connection.getHostname(), connection.getPort());
 					connection.setSocket(socket);
 				} else {
-					logger.error("pilight client not accepted: {}", response.getStatus());
+					logger.debug("pilight client not accepted: {}", response.getStatus());
 				}
 				
 			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
+				logger.debug(e.getMessage(), e);
 			} catch (InterruptedException e) {
-				logger.error(e.getMessage(), e);
+				logger.debug(e.getMessage(), e);
 			}
 			
 			delay = RECONNECT_DELAY;
@@ -238,10 +243,14 @@ public class PilightConnector extends Thread {
 	}
 	
 	public void doUpdate(Action action) {
-		if (connection.getDelay() != null) {
-			delayedUpdateCall(action);
+		if (isConnected()) {	
+			if (connection.getDelay() != null) {
+				delayedUpdateCall(action);
+			} else {
+				doUpdateCall(action);
+			}
 		} else {
-			doUpdateCall(action);
+			logger.debug("Cannot send command, not connected to pilight");
 		}
 	}
 
@@ -256,7 +265,7 @@ public class PilightConnector extends Thread {
 			connection.setLastUpdate(new Date());
 			outputMapper.writeValue(connection.getSocket().getOutputStream(), action);
 		} catch (IOException e) {
-			logger.error("Error while sending update to pilight server", e);
+			logger.debug("Error while sending update to pilight server", e);
 		}	
 	}
 	
@@ -288,7 +297,7 @@ public class PilightConnector extends Thread {
 					try {
 						Thread.sleep(delay);
 					} catch (InterruptedException e) {
-						logger.error("Error while processing pilight throttling delay");
+						logger.debug("Error while processing pilight throttling delay");
 					}
 				}
 			}

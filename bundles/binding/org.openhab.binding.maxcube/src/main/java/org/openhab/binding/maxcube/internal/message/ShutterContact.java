@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.util.Calendar;
-
 import org.openhab.core.library.types.OpenClosedType;
 
 /**
@@ -22,11 +20,6 @@ public class ShutterContact extends Device {
 
 	private OpenClosedType shutterState = null;
 	private boolean shutterStateUpdated = false;
-	private boolean linkError;
-	private boolean panelLocked;
-	private boolean gatewayOk;
-	private boolean error;
-	private boolean valid;
 	
 	public ShutterContact(Configuration c) {
 		super(c);
@@ -53,38 +46,5 @@ public class ShutterContact extends Device {
 	@Override
 	public DeviceType getType() {
 		return DeviceType.ShutterContact;
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Calendar getLastUpdate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	void setLinkError(boolean linkError) {
-		this.linkError = linkError;
-	}
-
-	void setPanelLocked(boolean panelLock) {
-		this.panelLocked = panelLock;
-	}
-
-	void setGatewayOk(boolean gatewayOk) {
-		this.gatewayOk = gatewayOk;
-
-	}
-
-	void setError(boolean error) {
-		this.error = error;
-	}
-
-	void setValid(boolean valid) {
-		this.valid = valid;
 	}
 }

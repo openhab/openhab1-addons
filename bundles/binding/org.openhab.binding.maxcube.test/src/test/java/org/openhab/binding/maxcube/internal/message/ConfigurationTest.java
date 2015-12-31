@@ -12,7 +12,6 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openhab.binding.maxcube.internal.Utils;
 
 /**
 * @author Andreas Heil (info@aheil.de)
@@ -52,12 +51,9 @@ public final String rawData = "C:003508,0gA1CAEBFP9JRVEwMTA5MTI1KCg9CQcoAzAM/wBE
 	}
 	
 	@Test
-	public void getSerialNumberTes() {
+	public void getSerialNumberTest() {
 		String serialNumber = configuration.getSerialNumber();
 		
 		Assert.assertEquals("IEQ0109125", serialNumber);
 	}
-	
-	
-	
 }
