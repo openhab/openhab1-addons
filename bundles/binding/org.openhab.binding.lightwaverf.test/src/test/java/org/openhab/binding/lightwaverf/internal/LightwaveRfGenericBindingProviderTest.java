@@ -102,7 +102,7 @@ public class LightwaveRfGenericBindingProviderTest {
 		bingindProvider.processBindingConfiguration(context, 
 				new SwitchItem("MySwitch"), "room=3,device=3,type=SWITCH");
 		
-		assertEquals(Arrays.asList("MyBattery", "MySwitch", "MyCurrentTemp", "MyDimmer"), bingindProvider.getItemNames());
+		assertEquals(Arrays.asList("MyBattery", "MyDimmer", "MySwitch", "MyCurrentTemp"), bingindProvider.getItemNames());
 
 		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getBindingItemsForRoomDevice("3", "3"));
 		assertEquals("3", bingindProvider.getRoomId("MySwitch"));
