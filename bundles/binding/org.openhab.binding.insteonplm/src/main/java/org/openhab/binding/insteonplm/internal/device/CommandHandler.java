@@ -9,6 +9,8 @@
 package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
+import java.lang.Math;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -211,6 +213,50 @@ public abstract class CommandHandler {
 				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
+	}
+
+	public static class RampOnOffCommandHandler extends RampCommandHandler {
+		RampOnOffCommandHandler(DeviceFeature f) { 
+			super(f); 
+		}
+		
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				if (cmd == OnOffType.ON) {
+					double ramptime = getRampTime(conf, 0);
+					int ramplevel = getRampLevel(conf, 100);
+					byte cmd2 = encode(ramptime, ramplevel);
+					Msg m = dev.makeStandardMessage((byte) 0x0f, getOnCmd(), (byte) cmd2,
+								s_getGroup(conf));
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent ramp on to switch {} time {} level {} cmd1 {}", 
+							nm(), dev.getAddress(), ramptime, ramplevel, getOnCmd());
+				} else if (cmd == OnOffType.OFF) {
+					double ramptime = getRampTime(conf, 0);
+					int ramplevel = getRampLevel(conf, 0 /*ignored*/);
+					byte cmd2 = encode(ramptime, ramplevel);
+					Msg m = dev.makeStandardMessage((byte) 0x0f, getOffCmd(), (byte) cmd2,
+									s_getGroup(conf));
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent ramp off to switch {} time {} cmd1 {}", 
+							nm(), dev.getAddress(), ramptime, getOffCmd());
+				}
+				// expect to get a direct ack after this!
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+		
+		private int getRampLevel(InsteonPLMBindingConfig conf, int defaultValue)
+		{
+			HashMap<String, String> params = conf.getParameters();
+			return params.containsKey("ramplevel")
+					? Integer.parseInt(params.get("ramplevel"))
+					: defaultValue;
+		}		
 	}
 
 	public static class ManualChangeCommandHandler extends CommandHandler {
@@ -453,6 +499,7 @@ public abstract class CommandHandler {
 			}
 		}
 	}
+	
 	public static class PercentHandler extends CommandHandler {
 		PercentHandler(DeviceFeature f) { super(f); }
 		@Override
@@ -477,6 +524,112 @@ public abstract class CommandHandler {
 				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
+	}
+
+	private static abstract class RampCommandHandler extends CommandHandler {
+		private static double[] halfRateRampTimes = new double[] { 
+			0.1, 0.3, 2, 6.5, 19, 23.5, 28, 32, 38.5, 47, 90, 150, 210, 270, 360, 480};
+		
+		private byte onCmd;
+		private byte offCmd;
+		
+		RampCommandHandler(DeviceFeature f) { 
+			super(f); 
+			// Can't process parameters here because they are set after constructor is invoked.
+			// Unfortunately, this means we can't declare the onCmd, offCmd to be final.
+		}
+		
+		@Override
+		void setParameters(HashMap<String, String> params)
+		{
+			super.setParameters(params);
+			onCmd = (byte) getIntParameter("on", 0x2E);
+			offCmd = (byte) getIntParameter("off", 0x2F);
+		}
+		
+		protected final byte getOnCmd() {
+			return onCmd;
+		}
+		
+		protected final byte getOffCmd() {
+			return offCmd;
+		}
+
+		protected byte encode(double ramptimeSeconds, int ramplevel) throws FieldException
+		{
+			if (ramplevel < 0 || ramplevel > 100) {
+				throw new FieldException("ramplevel must be in the range 0-100 (inclusive)");
+			}
+			
+			ramplevel = (int) Math.round(ramplevel / (100.0/15.0));
+			
+			if (ramptimeSeconds < 0) {
+				throw new FieldException("ramptime must be greater than 0");
+			}
+			
+			int ramptime;
+
+			int insertionPoint = Arrays.binarySearch(halfRateRampTimes, ramptimeSeconds);			
+			if (insertionPoint > 0) {
+				ramptime = 15 - insertionPoint;
+			}
+			else {
+				insertionPoint = -insertionPoint - 1;
+				if (insertionPoint == 0) {
+					ramptime = 15;
+				}
+				else {
+					double d1 = Math.abs(halfRateRampTimes[insertionPoint-1] - ramptimeSeconds);
+					double d2 = Math.abs(halfRateRampTimes[insertionPoint] - ramptimeSeconds);
+					ramptime = 15 - (d1 > d2 ? insertionPoint : insertionPoint - 1);
+					logger.debug("ramp encoding: time {} insert {} d1 {} d2 {} ramp {}",
+							ramptimeSeconds, insertionPoint, d1, d2, ramptime);
+				}
+			}
+			
+			return (byte)(((ramplevel & 0x0f) << 4) | (ramptime & 0xf));
+		}
+		
+		protected double getRampTime(InsteonPLMBindingConfig conf, double defaultValue)
+		{
+			HashMap<String, String> params = conf.getParameters();
+			return params.containsKey("ramptime")
+					? Double.parseDouble(params.get("ramptime"))
+					: defaultValue;			
+		}
+	}
+	
+	public static class RampPercentHandler extends RampCommandHandler {
+		
+		RampPercentHandler(DeviceFeature f) { 
+			super(f); 
+		}
+				
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				PercentType pc = (PercentType)cmd;
+				double ramptime = getRampTime(conf, 0);
+				int level = pc.intValue();
+				if (level > 0) { // make light on message with given level
+					level = getMaxLightLevel(conf, level);
+					byte cmd2 = encode(ramptime, level);
+					Msg m = dev.makeStandardMessage((byte) 0x0f, getOnCmd(), (byte) cmd2);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent msg to set {} to {} with {} second ramp time.", 
+							nm(), dev.getAddress(), level, ramptime);
+				} else { // switch off
+					Msg m = dev.makeStandardMessage((byte) 0x0f, getOffCmd(), (byte) 0x00);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("{}: sent msg to set {} to zero by switching off with {} ramp time.", 
+							nm(), dev.getAddress(), ramptime);
+				}
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}		
 	}
 
 	public static class PowerMeterCommandHandler extends CommandHandler {

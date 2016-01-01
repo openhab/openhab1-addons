@@ -264,6 +264,7 @@ Example entry:
      <model>2466D</model>
      <description>ToggleLinc Dimmer</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="rampdimmer">RampDimmer</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
@@ -280,6 +281,7 @@ Example entry:
      <model>2672-222</model>
      <description>LED Bulb</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="rampdimmer">RampDimmer_3435</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
@@ -416,10 +418,12 @@ Example entry:
      <feature name="switch">GenericSwitch</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ 
  <device productKey="F00.00.1E">
      <model>2674-222</model>
      <description>LED Bulb (recessed)</description>
      <feature name="dimmer">GenericDimmer</feature>
+     <feature name="rampdimmer">RampDimmer</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">FastOnOff</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
