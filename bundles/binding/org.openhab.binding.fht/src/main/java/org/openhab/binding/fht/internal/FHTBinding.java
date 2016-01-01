@@ -275,7 +275,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 				timeUpdatecronExpression = (String) config.get(KEY_UPDATE_CRON);
 				if (StringUtils.isEmpty(timeUpdatecronExpression)) {
 					setProperlyConfigured(false);
-					logger.debug(""Time update was configured but no cron expression");
+					logger.debug("Time update was configured but no cron expression");
 					throw new ConfigurationException(KEY_UPDATE_CRON,
 							"Time update was configured but no cron expression");
 				}
