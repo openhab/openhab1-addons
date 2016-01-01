@@ -37,16 +37,31 @@ import org.slf4j.LoggerFactory;
 		private final String deviceId;
 
 		/**
-		 * The socket number to control.
+		 * The itemConfig
 		 */
-		private final int socketNumber;
+		private final String itemConfig;
+
+		/**
+		 * The itemType
+		 */
+		private final String itemType;
+
+		/**
+		 * The channel of the energenie pwm-lan (you could have more than one) for energy measurement.
+		 */
+		//private final ChannelTypeDef pwmChannel;
+		
+		public enum ChannelTypeDef {
+			NONE, VOLTAGE, CURRENT, POWER, ENERGY
+		}
+		
 		
 
-	public EnergenieBindingConfig(String deviceId, String socketNumber)
+	public EnergenieBindingConfig(String deviceId, String itemConfig, String itemType)
 			throws BindingConfigParseException {
 			this.deviceId = parseDeviceIdConfigString(deviceId);
-			this.socketNumber = parseSocketNumberConfigString(socketNumber);
-			
+			this.itemConfig = parseItemConfigString(itemConfig);
+			this.itemType = parseItemType(itemType);
 			}
 	/**
 	 * Parses a deviceId string that has been found in the configuration.
@@ -63,21 +78,32 @@ import org.slf4j.LoggerFactory;
 			throw new BindingConfigParseException("Error parsing deviceId.");
 		}
 	}
-	/**
-	 * Parses a socket number string that has been found in the configuration.
-	 * 
-	 * @param configString
-	 *            The socket number as a string.
-	 * @return The socket number as an integer value.
-	 * @throws BindingConfigParseException
-	 */
-	private int parseSocketNumberConfigString(String configString) throws BindingConfigParseException {
-		try {
-			return Integer.parseInt(configString);
-		} catch (Exception e) {
-			throw new BindingConfigParseException("Error parsing channel number.");
+
+	private String parseItemConfigString(String configString) throws BindingConfigParseException {
+
+		if (configString != null) {
+			try {
+				return configString;
+			} catch (Exception e) {
+				throw new BindingConfigParseException("Error parsing item config.");
+			}
+			
 		}
+		return null;
 	}
+	private String parseItemType(String configString) throws BindingConfigParseException {
+
+		if (configString != null) {
+			try {
+				return configString;
+			} catch (Exception e) {
+				throw new BindingConfigParseException("Error parsing item type.");
+			}
+			
+		}
+		return null;
+	}
+
 	/**
 	 * @return The deviceId that has been declared in the binding
 	 *         configuration.
@@ -87,11 +113,16 @@ import org.slf4j.LoggerFactory;
 	}
 
 	/**
-	 * @return The socket number that has been declared in the binding
+	 * @return The itemConfig that has been declared in the binding
 	 *         configuration.
 	 */
-	public int getSocketNumber() {
-		return socketNumber;
+	public String getItemConfig() {
+		return itemConfig;
 	}
+
+	public String getItemType() {
+		return itemType;
+	}
+
 	
 }
