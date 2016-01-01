@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.energenie.internal;
 import org.openhab.binding.energenie.EnergenieBindingProvider; 
+import org.openhab.binding.energenie.internal.EnergenieBindingConfig.ChannelTypeDef;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -52,10 +54,10 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem) && !(item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only SwitchItems are allowed - please check your *.items configuration");
+					+ "', only SwitchItems and NumberItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -68,13 +70,29 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 		
 		try {
 			if (bindingConfig != null) {
+				
 				String[] configParts = bindingConfig.split(";");
 				if (configParts.length < 2 || configParts.length >2) {
-					throw new BindingConfigParseException ("energenie binding configuration must have two parts");
+					throw new BindingConfigParseException ("energenie binding configuration must have 2 parts");
 				}
-				BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], configParts[1]);
-				addBindingConfig(item,energenieBindingConfig);
-		
+				String itemType = item.toString();
+				
+				if (item instanceof SwitchItem) {
+					if ((configParts[1].equals("1")) || (configParts[1].equals("2")) || (configParts[1].equals("3")) || (configParts[1].equals("4"))) {
+						BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], configParts[1], itemType);
+						addBindingConfig(item,energenieBindingConfig);
+					} else {
+						throw new BindingConfigParseException ("Your SwitchItem configuration does not contain channelNumbers");
+					}
+				} else if (item instanceof NumberItem) {
+					ChannelTypeDef channelType = ChannelTypeDef.valueOf(configParts[1].trim());
+					if (channelType != null) {
+						BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], configParts[1], itemType);
+						addBindingConfig(item,energenieBindingConfig);
+					} else {
+						throw new BindingConfigParseException ("Your NumberItem configuration does not contain channelTypes");
+					}
+				}
 	} else {
 		logger.warn("bindingConfig is NULL (item=" + item
 				+ ") -> processing bindingConfig aborted!");
