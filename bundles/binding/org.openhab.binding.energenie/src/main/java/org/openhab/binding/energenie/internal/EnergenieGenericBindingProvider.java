@@ -11,6 +11,7 @@ import org.openhab.binding.energenie.EnergenieBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -52,10 +53,10 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem) && !(item instanceof NumberItem)) { /*add NumberItem*/
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only SwitchItems are allowed - please check your *.items configuration");
+					+ "', only SwitchItems and NumberItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -65,14 +66,22 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		
+		String itemType ="";
+		if(item instanceof SwitchItem){
+			itemType = "Switch";
+		}
+		else if(item instanceof NumberItem){
+			itemType = "Number";			
+		}		
 		try {
 			if (bindingConfig != null) {
 				String[] configParts = bindingConfig.split(";");
 				if (configParts.length < 2 || configParts.length >2) {
 					throw new BindingConfigParseException ("energenie binding configuration must have two parts");
 				}
-				BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], configParts[1]);
+				logger.info("Energenie Config: " + configParts[0]
+						+ ";"  +configParts[1]);
+				BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], itemType, configParts[1]);
 				addBindingConfig(item,energenieBindingConfig);
 		
 	} else {
