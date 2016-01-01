@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB InfluxDB 0.8 Persistence bundle
+Bundle-SymbolicName: org.openhab.persistence.influxdb08;singleton:=true
+Bundle-Version: 1.8.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.persistence,
+ org.openhab.core.types,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-ClassPath: .,
+ lib/gson-2.2.4.jar,
+ lib/guava-17.0.jar,
+ lib/influxdb-java-1.3-SNAPSHOT.jar,
+ lib/okhttp-2.0.0.jar,
+ lib/okhttp-urlconnection-2.0.0.jar,
+ lib/retrofit-1.6.1.jar,
+ lib/okio-1.0.0.jar
+Service-Component: OSGI-INF/influxdb.xml
+Bundle-Activator: org.openhab.persistence.influxdb08.internal.InfluxDBPersistenceServiceActivator

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.persistence.influxdb.internal;
+package org.openhab.persistence.influxdb08.internal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 import retrofit.RetrofitError;
 
 /**
- * This is the implementation of the InfluxDB {@link PersistenceService}. It persists item values
+ * This is the implementation of the InfluxDB 0.8 {@link PersistenceService}. It persists item values
  * using the <a href="http://influxdb.org">InfluxDB</a> time series database. The states (
  * {@link State}) of an {@link Item} are persisted in a time series with names equal to the name of
  * the item. All values are stored using integers or doubles, {@link OnOffType} and
@@ -100,7 +100,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 		disconnect();
 
 		if (config == null) {
-			logger.warn("The configuration for influxdb is missing fix openhab.cfg");
+			logger.warn("The configuration for influxdb08 is missing fix openhab.cfg");
 		}
 
 		url = (String) config.get("url");
@@ -139,7 +139,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 	}
 
 	public void deactivate(final int reason) {
-		logger.debug("influxdb persistence service deactivated");
+		logger.debug("influxdb08 persistence service deactivated");
 		disconnect();
 	}
 
@@ -188,7 +188,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
 
   @Override
   public String getName() {
-    return "influxdb";
+    return "influxdb08";
   }
 
   @Override
@@ -206,7 +206,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     }
 
     if (!isProperlyConfigured) {
-      logger.warn("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb08 not yet loaded or broken.");
       return;
     }
 
@@ -228,9 +228,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
         state = item.getState();
     }
     Object value = stateToObject(state);
-    logger.trace("storing {} in influxdb {}", name, value);
+    logger.trace("storing {} in influxdb08 {}", name, value);
 
-    // For now time is calculated by influxdb, may be this should be configurable?
+    // For now time is calculated by influxdb08, may be this should be configurable?
     Serie serie = new Serie.Builder(name)
       .columns(VALUE_COLUMN_NAME)
       .values(value)
@@ -264,7 +264,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     logger.debug("got a query");
 
     if (!isProperlyConfigured) {
-      logger.warn("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb08 not yet loaded or broken.");
       return Collections.emptyList();
     }
 
