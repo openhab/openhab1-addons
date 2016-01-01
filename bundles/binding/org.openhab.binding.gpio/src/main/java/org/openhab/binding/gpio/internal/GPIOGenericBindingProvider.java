@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * <p>Allowed item configuration string is following:</p>
  * <p><code>
- * gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no]"
+ * gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no] [force:yes|no]"
  * </code></p>
  * <p>where:</p>
  * <p>
@@ -36,9 +36,11 @@ import org.slf4j.LoggerFactory;
  * <br>
  * order of pairs isn't important, the same is valid for character's case
  * <br>
- * key "pin" is mandatory, "debounce" and "activelow" are optional. If omitted
- * "activelow" is set to "no", "debounce" - to global option in openHAB
+ * key "pin" is mandatory, "debounce", "activelow" and "force" are optional. If omitted
+ * "activelow" is set to "no", "debounce" - to global option in openHAB, 
  * configuration file (gpio:debounce) or 0 (zero) if neither is specified
+ * "force" - to global option in openHAB, 
+ * configuration file (gpio:force) or "no" if neither is specified
  * <br>
  * PIN_NUMBER is the number of the pin as seen by the kernel
  * <br>
@@ -47,12 +49,14 @@ import org.slf4j.LoggerFactory;
  * OS isn't realtime nor the application is, so debounce implementation isn't
  * something on which you can rely on 100%. You need to experiment with the
  * value here.</p>
+ * 
  * <p>
  * Examples:</p>
  * <p><code>
  * gpio="pin:49"<br>
  * gpio="pin:49 debounce:10"<br>
  * gpio="pin:49 activelow:yes"<br>
+ * gpio="pin:49 force:yes"<br>
  * gpio="pin:49 debounce:10 activelow:yes"</code></p>
  * 
  * @author Dancho Penev
@@ -120,6 +124,15 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 					throw new BindingConfigParseException("Unsupported, not numeric value for pin number (" + value + ") in configuration string '"
 							+ bindingConfig + "'");
 				}
+			} else if (key.compareToIgnoreCase("force") == 0) {
+				config.pinForce = false;
+				if (value.compareToIgnoreCase("yes") == 0 || value.compareToIgnoreCase("true") == 0) {
+					config.pinForce = true;
+				} else if (value.compareToIgnoreCase("no") != 0 && value.compareToIgnoreCase("false") != 0) {
+					logger.error("Unsupported value for force (" + value + ") in configuration string '" + bindingConfig + "'");
+					throw new BindingConfigParseException("Unsupported value for force (" + value + ") in configuration string '"
+							+ bindingConfig + "'");
+				}
 			} else if (key.compareToIgnoreCase("debounce") == 0) {
 				try {
 					config.debounceInterval = Long.parseLong(value);
@@ -174,6 +187,17 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 		return config.pinNumber; 
 	}
 
+	public boolean getPinForce(String itemName) {
+		
+		GPIOPinBindingConfig config = (GPIOPinBindingConfig) bindingConfigs.get(itemName);
+
+		if (config == null) {
+			throw new IllegalArgumentException("The item name '" + itemName + "'is invalid or the item isn't configured");
+		}
+
+		return config.pinForce; 
+	}
+
 	public long getDebounceInterval(String itemName) {
 		
 		GPIOPinBindingConfig config = (GPIOPinBindingConfig) bindingConfigs.get(itemName);
@@ -226,6 +250,9 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 
 		/** Configured pin number */
 		public int pinNumber = GPIOBindingProvider.PINNUMBER_UNDEFINED;
+
+		/** Configured pin force */
+		public boolean pinForce = false;
 
 		/** Configured pin debounce interval in milliseconds */
 		public long debounceInterval = GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED;
