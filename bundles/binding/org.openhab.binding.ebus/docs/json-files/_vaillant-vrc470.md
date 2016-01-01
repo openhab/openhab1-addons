@@ -18,7 +18,7 @@ ID                                     | Item type  | Description
 **vrc470.outsidetemp**.outsidetemp_s   | ``Number`` | Outside temperature status (0=ok;85=circuit;170=cutoff)                                                                                                                              
 **vrc470.roomtemp**.roomtemp           | ``Number`` | Room temperature                                                                                                                                                                     
 **vrc470.roomtemp**.roomtemp_s         | ``Number`` | Room temperature status (0=ok;85=circuit;170=cutoff)                                                                                                                                 
-**vrc470.set_hc1opmode**               | ``Number`` | HC1 Operation mode (0 = off, 1 = manual, 2 = auto, 3 = on, 4 = night, 5 = summer)                                                                                                    
+**vrc470.set_hc1opmode**.hc1opmode     | ``Number`` | HC1 Operation mode (0 = off, 1 = manual, 2 = auto, 3 = on, 4 = night, 5 = summer)                                                                                                    
 
 _bold part is the command-id part_
 
