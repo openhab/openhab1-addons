@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010-2015, openHAB.org and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.ekozefir.binding">
+	<implementation class="org.openhab.binding.ekozefir.internal.EkozefirBinding" />
+
+	<service>
+		<provide interface="org.osgi.service.event.EventHandler" />
+		<provide interface="org.osgi.service.cm.ManagedService" />
+	</service>
+
+	<property name="event.topics" type="String" value="openhab/command/*" />
+	<property name="service.pid" type="String" value="org.openhab.ekozefir" />
+
+	<reference bind="setEventPublisher" cardinality="1..1" configuration-policy="require"
+		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
+		policy="dynamic" unbind="unsetEventPublisher" />
+		
+	<reference bind="addBindingProvider" cardinality="1..n" configuration-policy="require"
+		interface="org.openhab.binding.ekozefir.EkozefirBindingProvider" name="EkozefirBindingProvider"
+		policy="dynamic" unbind="removeBindingProvider" />
+		
+   	<reference bind="setAhuCommandCreators" cardinality="1..1" configuration-policy="require"
+		interface="org.openhab.binding.ekozefir.AhuCommandCreators" name="AhuCommandCreators"
+		policy="dynamic" unbind="unsetAhuCommandCreators" />
+		
+    <reference bind="setResponseListenerCreators" cardinality="1..1" configuration-policy="require"
+		interface="org.openhab.binding.ekozefir.ResponseListenerCreators" name="ResponseListenerCreators"
+		policy="dynamic" unbind="unsetResponseListenerCreators" />
+	
+</scr:component>
