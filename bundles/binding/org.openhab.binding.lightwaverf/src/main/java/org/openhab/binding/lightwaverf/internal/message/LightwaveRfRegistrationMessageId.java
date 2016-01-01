@@ -12,25 +12,25 @@ import java.util.Objects;
 
 /**
  * @author Neil Renaud
- * @since 1.7.0
+ * @since 1.8.0
  */
-public class LightwaveRfHeatingMessageId implements LightwaveRfMessageId {
+public class LightwaveRfRegistrationMessageId implements LightwaveRfMessageId {
 
 	private final int messageId;
 
-	public LightwaveRfHeatingMessageId(int messageId) {
-		this.messageId = messageId;
+	public LightwaveRfRegistrationMessageId() {
+		this.messageId = 100;
 	}
 
 	public String getMessageIdString() {
 		return String.valueOf(messageId);
 	}
-
+	
 	@Override
 	public boolean equals(Object that) {
-		if (that instanceof LightwaveRfHeatingMessageId) {
+		if (that instanceof LightwaveRfRegistrationMessageId) {
 			return Objects.equals(this.messageId,
-					((LightwaveRfHeatingMessageId) that).messageId);
+					((LightwaveRfRegistrationMessageId) that).messageId);
 		}
 		return false;
 	}
@@ -42,7 +42,6 @@ public class LightwaveRfHeatingMessageId implements LightwaveRfMessageId {
 
 	@Override
 	public String toString() {
-		return "LightwaveRfHeatingMessageId[" + messageId + "]";
+		return "LightwaveRfRegistrationMessageId[" + messageId + "]";
 	}
-
 }

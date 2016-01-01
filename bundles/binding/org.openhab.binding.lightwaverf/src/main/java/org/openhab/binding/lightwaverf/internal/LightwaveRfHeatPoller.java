@@ -30,7 +30,7 @@ public class LightwaveRfHeatPoller {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(LightwaveRfHeatPoller.class);
-	private final LightwaveRFSender sender;
+	private final LightwaveRfWifiLink sender;
 	private final LightwaverfConvertor convertor;
 	private final Map<String, Integer> roomsToPoll = new HashMap<String, Integer>();
 	private final Map<String, String> itemNameToRoomMap = new HashMap<String, String>();
@@ -38,7 +38,7 @@ public class LightwaveRfHeatPoller {
 	private final ScheduledExecutorService executor = Executors
 			.newScheduledThreadPool(1);
 
-	public LightwaveRfHeatPoller(LightwaveRFSender sender,
+	public LightwaveRfHeatPoller(LightwaveRfWifiLink sender,
 			LightwaverfConvertor convertor) {
 		this.sender = sender;
 		this.convertor = convertor;
@@ -65,7 +65,7 @@ public class LightwaveRfHeatPoller {
 		} else {
 			logger.info(
 					"Request to set poll interval is larger than the current poll interval so ignored RoomId{{}], RequestedPoll[{}], CurrentPoll[{}]",
-					roomId, requestedPoll, currentPoll);
+					new Object[] {roomId, requestedPoll, currentPoll});
 		}
 
 		ScheduledFuture<?> currentFuture = tasksMap.remove(roomId);

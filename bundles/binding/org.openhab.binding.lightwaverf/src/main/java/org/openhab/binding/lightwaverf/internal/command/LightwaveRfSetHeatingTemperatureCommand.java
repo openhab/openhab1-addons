@@ -29,7 +29,7 @@ public class LightwaveRfSetHeatingTemperatureCommand extends
 		AbstractLightwaveRfCommand implements LightwaveRfRoomMessage {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile("([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,5}).*\\s*");
+			.compile(".*?([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,5}).*\\s*");
 	private static final String FUNCTION = "*t";
 	private final LightwaveRfMessageId messageId;
 	private final String roomId;
@@ -54,7 +54,7 @@ public class LightwaveRfSetHeatingTemperatureCommand extends
 	@Override
 	public String getLightwaveRfCommandString() {
 		return getMessageString(messageId, roomId, deviceId, FUNCTION,
-				String.valueOf(setTemperature));
+				setTemperature);
 	}
 
 	@Override

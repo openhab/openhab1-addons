@@ -10,14 +10,13 @@ package org.openhab.binding.lightwaverf.internal.command;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
-import org.openhab.binding.lightwaverf.internal.message.LightwaveRfHeatingMessageId;
-import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 
@@ -31,14 +30,8 @@ import org.openhab.core.types.State;
  * @author Neil Renaud
  * @since 1.7.0
  */
-public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage {
+public class LightwaveRfHeatingInfoResponse extends AbstractLightwaveRfJsonMessage implements LightwaveRfSerialMessage {
 
-	/*
-	 * Commands Like
-	 */
-
-	private static final Pattern MESSAGE_ID_REG_EXP = Pattern
-			.compile(".*\"trans\":([^,}]*).*");
 	private static final Pattern MAC_ID_REG_EXP = Pattern
 			.compile(".*\"mac\":\"([^\"}]*)\".*");
 	private static final Pattern TIME_ID_REG_EXP = Pattern
@@ -70,60 +63,46 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 	private static final Pattern PROF_REG_EXP = Pattern
 			.compile(".*\"prof\":([^,}]*).*");
 
-	private final LightwaveRfMessageId messageId;
 	private final String mac;
 	private final Date time;
 	private final String prod;
 	private final String serial;
-	private final int signal;
+	private final String signal;
 	private final String type;
-	private final double batteryLevel;
+	private final String batteryLevel;
 	private final String version;
 	private final String state;
-	private final double currentTemperature;
-	private final double currentTargetTemperature;
-	private final int output;
-	private final double nextTargetTeperature;
+	private final String currentTemperature;
+	private final String currentTargetTemperature;
+	private final String output;
+	private final String nextTargetTeperature;
 	private final String nextSlot;
-	private final int prof;
+	private final String prof;
 
-	public LightwaveRfHeatingInfoResponse(String message) {
-		messageId = new LightwaveRfHeatingMessageId(
-				Integer.valueOf(getStringFromText(MESSAGE_ID_REG_EXP, message)));
+	public LightwaveRfHeatingInfoResponse(String message) throws LightwaveRfMessageException {
+		super(message);
 		mac = getStringFromText(MAC_ID_REG_EXP, message);
-		time = new Date(
-				Long.valueOf(getStringFromText(TIME_ID_REG_EXP, message)));
+		time = getDateFromText(TIME_ID_REG_EXP, message);
 		prod = getStringFromText(PROD_REG_EXP, message);
 		serial = getStringFromText(SERIAL_ID_REG_EXP, message);
-		signal = Integer.valueOf(getStringFromText(SIGNAL_REG_EXP, message));
+		signal = getStringFromText(SIGNAL_REG_EXP, message);
 		type = getStringFromText(TYPE_REG_EXP, message);
-		batteryLevel = Double.valueOf(getStringFromText(BATTERY_REG_EXP,
-				message));
+		batteryLevel = getStringFromText(BATTERY_REG_EXP,message);
 		version = getStringFromText(VERSION_REG_EXP, message);
 		state = getStringFromText(STATE_REG_EXP, message);
-		currentTemperature = Double.valueOf(getStringFromText(
-				CURRENT_TEMP_REG_EXP, message));
-		currentTargetTemperature = Double.valueOf(getStringFromText(
-				TARGET_TEMP_REG_EXP, message));
-		output = Integer
-				.valueOf(getStringFromText(OUTPUT_TEMP_REG_EXP, message));
-		nextTargetTeperature = Double.valueOf(getStringFromText(
-				NEXT_TARGET_TEMP_REG_EXP, message));
+		currentTemperature = getStringFromText(CURRENT_TEMP_REG_EXP, message);
+		currentTargetTemperature = getStringFromText(TARGET_TEMP_REG_EXP, message);
+		output = getStringFromText(OUTPUT_TEMP_REG_EXP, message);
+		nextTargetTeperature = getStringFromText(NEXT_TARGET_TEMP_REG_EXP, message);
 		nextSlot = getStringFromText(NEXT_SLOT_REG_EXP, message);
-		prof = Integer.valueOf(getStringFromText(PROF_REG_EXP, message));
-	}
-
-	private String getStringFromText(Pattern regExp, String message) {
-		Matcher matcher = regExp.matcher(message);
-		matcher.matches();
-		return matcher.group(1);
+		prof = getStringFromText(PROF_REG_EXP, message);
 	}
 
 	@Override
 	public String getLightwaveRfCommandString() {
 		return new StringBuilder("*!{").append("\"trans\":")
-				.append(messageId.getMessageIdString()).append(",\"mac\":\"")
-				.append(mac).append("\",\"time\":").append(time.getTime())
+				.append(getMessageId().getMessageIdString()).append(",\"mac\":\"")
+				.append(mac).append("\",\"time\":").append(getLightwaveDateFromJavaDate(time))
 				.append(",\"prod\":\"").append(prod).append("\",\"serial\":\"")
 				.append(serial).append("\",\"signal\":").append(signal)
 				.append(",\"type\":\"").append(type).append("\",\"batt\":")
@@ -142,7 +121,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		switch (type) {
 		case HEATING_BATTERY:
 			return new DecimalType(getBatteryLevel());
-		case HEATING_SIGNAL:
+		case SIGNAL:
 			return new DecimalType(getSignal());
 		case HEATING_CURRENT_TEMP:
 			return new DecimalType(getCurrentTemperature());
@@ -150,11 +129,11 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 			return new DecimalType(getCurrentTargetTemperature());
 		case HEATING_MODE:
 			return new StringType(getState());
-		case HEATING_UPDATETIME:
+		case HEATING_OUTPUT:
+			return new PercentType(getOutput());
+		case UPDATETIME:
 			Calendar cal = Calendar.getInstance();
-			// The date seems to be in a strange timezone so at the moment we
-			// use server date.
-			// cal.setTime(getTime());
+			cal.setTime(getTime());
 			return new DateTimeType(cal);
 		case VERSION:
 			return new StringType(getVersion());
@@ -165,11 +144,6 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 
 	public String getState() {
 		return state;
-	}
-
-	@Override
-	public LightwaveRfMessageId getMessageId() {
-		return messageId;
 	}
 
 	public static boolean matches(String message) {
@@ -183,19 +157,19 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		return time;
 	}
 
-	public double getSignal() {
+	public String getSignal() {
 		return signal;
 	}
 
-	public double getBatteryLevel() {
+	public String getBatteryLevel() {
 		return batteryLevel;
 	}
 
-	public double getCurrentTemperature() {
+	public String getCurrentTemperature() {
 		return currentTemperature;
 	}
 
-	public double getCurrentTargetTemperature() {
+	public String getCurrentTargetTemperature() {
 		return currentTargetTemperature;
 	}
 
@@ -212,11 +186,11 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		return nextSlot;
 	}
 
-	public double getNextTargetTeperature() {
+	public String getNextTargetTeperature() {
 		return nextTargetTeperature;
 	}
 
-	public double getOutput() {
+	public String getOutput() {
 		return output;
 	}
 
@@ -224,7 +198,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		return prod;
 	}
 
-	public double getProf() {
+	public String getProf() {
 		return prof;
 	}
 
