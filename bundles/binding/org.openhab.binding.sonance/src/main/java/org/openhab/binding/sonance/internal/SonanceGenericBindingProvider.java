@@ -18,9 +18,17 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * This class is responsible for parsing the binding configuration. Binding
- * configuration format: ip:port:(mute|volume):00 Where 00 is the group number
- * (for example for the DSP8-130 IP Codes group codes are 00 (group A) to 07
- * (group H))
+ * configuration format: ip:port:(mute|volume|power)(:00)? Where 00 is the group
+ * number (for example for the DSP8-130 IP Codes group codes are 00 (group A) to
+ * 07 (group H))
+ * 
+ * Examples:
+ * <ul>
+ * <li>10.0.0.100:52000:mute:00 - mute zone A
+ * <li>10.0.0.100:52000:volume:01 - volume of zone B
+ * <li>10.0.0.200:52000:volume:07 - volume of zone H of another amplifier
+ * <li>10.0.0.100:52000:power - sleep mode of amplifier
+ * </ul>
  * 
  * @author Laurens Van Acker
  * @since 1.8.0
@@ -53,28 +61,27 @@ public class SonanceGenericBindingProvider extends
 
 		String[] configParts = bindingConfig.trim().split(":");
 
-		if (configParts.length != 4) {
+		if (configParts.length != 4 && configParts.length != 3) {
 			throw new BindingConfigParseException(
-					"Sonance binding must contain three parts separated by ':'");
+					"Sonance binding must contain three or four parts separated by ':'");
 		}
 
 		config.ip = configParts[0].trim();
 		config.port = Integer.parseInt(configParts[1].trim());
 
-		if (configParts[3].trim().length() != 2) {
-			throw new BindingConfigParseException(
-					"Last part must be two digits, like 00 for group A");
-		}
-		config.group = configParts[3].trim();
+		if (configParts.length == 4)
+			config.group = configParts[3].trim();
 
 		if (configParts[2].trim().equals("mute"))
 			config.type = Type.MUTE;
 		if (configParts[2].trim().equals("volume"))
 			config.type = Type.VOLUME;
+		if (configParts[2].trim().equals("power"))
+			config.type = Type.POWER;
 
 		if (config.type == null)
 			throw new BindingConfigParseException(
-					"Third part most be mute or volume");
+					"Third part most be mute, volume or power");
 
 		// parse bindingconfig here ...
 
@@ -89,9 +96,17 @@ public class SonanceGenericBindingProvider extends
 	 */
 
 	public enum Type {
-		MUTE, VOLUME
+		MUTE, VOLUME, POWER
 	}
 
+	/**
+	 * Every item has an ip and port to connect to and a group (music zone) to
+	 * modify. Possible changes are muting a zone, changing the volume of a zone
+	 * or waking up or putting the amplifier to sleep.
+	 * 
+	 * @author Laurens Van Acker
+	 * 
+	 */
 	class SonanceBindingConfig implements BindingConfig {
 		String ip;
 		int port;
@@ -105,35 +120,87 @@ public class SonanceGenericBindingProvider extends
 		public Boolean isVolume() {
 			return type.equals(Type.VOLUME);
 		}
+
+		public Boolean isPower() {
+			return type.equals(Type.POWER);
+		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.sonance.SonanceBindingProvider#getIP(java.lang.String
+	 * )
+	 */
 	public String getIP(String itemName) {
 		SonanceBindingConfig config = (SonanceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.ip : null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.sonance.SonanceBindingProvider#getPort(java.lang.
+	 * String)
+	 */
 	public int getPort(String itemName) {
 		SonanceBindingConfig config = (SonanceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.port : null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.sonance.SonanceBindingProvider#getGroup(java.lang
+	 * .String)
+	 */
 	public String getGroup(String itemName) {
 		SonanceBindingConfig config = (SonanceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.group : null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.sonance.SonanceBindingProvider#isMute(java.lang.String
+	 * )
+	 */
 	public Boolean isMute(String itemName) {
 		SonanceBindingConfig config = (SonanceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.isMute() : null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.sonance.SonanceBindingProvider#isVolume(java.lang
+	 * .String)
+	 */
 	public Boolean isVolume(String itemName) {
 		SonanceBindingConfig config = (SonanceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config != null ? config.isVolume() : null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.sonance.SonanceBindingProvider#isPower(java.lang.
+	 * String)
+	 */
+	public Boolean isPower(String itemName) {
+		SonanceBindingConfig config = (SonanceBindingConfig) bindingConfigs
+				.get(itemName);
+		return config != null ? config.isPower() : null;
 	}
 }
