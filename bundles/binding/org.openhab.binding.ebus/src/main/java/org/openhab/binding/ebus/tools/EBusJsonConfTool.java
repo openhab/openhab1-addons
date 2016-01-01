@@ -84,7 +84,7 @@ public class EBusJsonConfTool {
 					m.add(line);
 
 					if(entry.containsKey("class") && entry.containsKey("id")) {
-						if(singleValue) {
+						if(singleValue && !((String)entry.get("id")).startsWith("set_")) {
 							line.add("**" + (String) entry.get("class") + "." + (String) entry.get("id") + "**");
 						} else {
 							line.add("**" + (String) entry.get("class") + "." + (String) entry.get("id") + "**." + valueKey);
@@ -189,7 +189,7 @@ public class EBusJsonConfTool {
 			}
 
 			// line end
-			out.println();
+			out.print("\n");
 		}
 	}
 
@@ -236,10 +236,10 @@ public class EBusJsonConfTool {
 		PrintStream out = null;
 		
 		PrintStream mainOut = new PrintStream(new File(currentDir, "docs/json-configs.md"));
-		mainOut.println("# JSON configuration files");
-		mainOut.println();
-		mainOut.println("This is an automatic created list of all included configuration files.");
-		mainOut.println();
+		mainOut.print("# JSON configuration files\n");
+		mainOut.print("\n");
+		mainOut.print("This is an automatic created list of all included configuration files.\n");
+		mainOut.print("\n");
 		
 		EBusConfigurationProvider ebuscfg = new EBusConfigurationProvider();
 
@@ -248,8 +248,8 @@ public class EBusJsonConfTool {
 				String string = StringUtils.substringBefore(file.getName(), "-configuration.json");
 				out = new PrintStream(new File(currentDir, "docs/json-files/" + string + ".md"));
 
-				out.println("# JSON configuration for _" + string + "_");
-				out.println();
+				out.print("# JSON configuration for _" + string + "_\n");
+				out.print("\n");
 				
 				ebuscfg.loadConfigurationFile(file.toURI().toURL());
 
@@ -257,15 +257,15 @@ public class EBusJsonConfTool {
 				List<Map<String, ?>> readValue = mapper.readValue(file, List.class);
 				writeMarkdownIdTable(readValue, out);
 				
-				out.println();
-				out.println("_bold part is the command-id part_");
-				out.println();
+				out.print("\n");
+				out.print("_bold part is the command-id part_\n");
+				out.print("\n");
 				
 				configurationMap.addAll(readValue);
 				out.flush();
 				out.close();
 				
-				mainOut.println("* ["+ string + "](./json-files/"+ string + ".md)");
+				mainOut.print("* ["+ string + "](./json-files/"+ string + ".md)\n");
 			}
 
 
