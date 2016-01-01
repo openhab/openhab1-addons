@@ -2494,6 +2494,15 @@
 		<Product>
 			<Reference>
 				<Type>2</Type>
+				<Id>53</Id>
+			</Reference>
+			<Model>ZMNHND</Model>
+			<Label lang="en">Flush 1D relay</Label>
+			<ConfigFile>qubino/zmnhnd.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
 				<Id>1</Id>
 			</Reference>
 			<Model>ZMNHBA</Model>
