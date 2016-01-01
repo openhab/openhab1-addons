@@ -36,6 +36,7 @@ import org.openhab.binding.insteonplm.internal.driver.Poller;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.message.MsgListener;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -476,7 +477,7 @@ public class InsteonPLMActiveBinding
 		HashMap<InsteonAddress, ModemDBEntry> dbes = m_driver.lockModemDBEntries();
 		if (dbes.containsKey(addr)) {
 			if (!dev.hasModemDBEntry()) {
-				logger.info("device {} found in the modem database!", addr);
+				logger.info("device {} found in the modem database and {}.", addr, getLinkInfo(dbes, addr));
 				dev.setHasModemDBEntry(true);
 			}
 		} else {
@@ -523,6 +524,48 @@ public class InsteonPLMActiveBinding
 		f.addListener(fl);	
 	}
 
+	private String getLinkInfo(HashMap<InsteonAddress, ModemDBEntry> dbes,
+			InsteonAddress a) {
+		ModemDBEntry dbe = dbes.get(a);
+		ArrayList<Byte> controls = dbe.getControls();
+		ArrayList<Byte> responds = dbe.getRespondsTo();
+
+		StringBuffer buf = new StringBuffer("the modem");
+		if (!controls.isEmpty()) {
+			buf.append(" controls groups [");
+			buf.append(toGroupString(controls));
+			buf.append("]");
+		}
+
+		if (!responds.isEmpty()) {
+			if (!controls.isEmpty()) {
+				buf.append(" and");
+			}
+
+			buf.append(" responds to groups [");
+			buf.append(toGroupString(responds));
+			buf.append("]");
+		}
+
+		return buf.toString();
+	}
+
+	private String toGroupString(ArrayList<Byte> group) {
+		ArrayList<Byte> sorted = new ArrayList<Byte>(group);
+		Collections.sort(sorted);
+
+		StringBuffer buf = new StringBuffer();
+		for (Byte b : sorted) {
+			if (buf.length() > 0) {
+				buf.append(",");
+			}
+			buf.append("0x");
+			buf.append(Utils.getHexString(b));
+		}
+
+		return buf.toString();
+	}
+
 	/**
 	 * Handles messages that come in from the ports.
 	 * Will only process one message at a time.
@@ -556,6 +599,7 @@ public class InsteonPLMActiveBinding
 			for (InsteonAddress k : dbes.keySet()) {
 				logger.debug("modem db entry: {}", k);
 			}
+			HashSet<InsteonAddress> addrs = new HashSet<InsteonAddress>();
 			for (InsteonDevice dev : m_devices.values()) {
 				InsteonAddress a = dev.getAddress();
 				if (!dbes.containsKey(a)) {
@@ -563,12 +607,19 @@ public class InsteonPLMActiveBinding
 						logger.warn("device {} not found in the modem database. Did you forget to link?", a);
 				} else {
 					if (!dev.hasModemDBEntry()) {
-						logger.info("device {}     found in the modem database!", a);
+						addrs.add(a);
+						logger.info("device {} found in the modem database and {}.", a, getLinkInfo(dbes, a));
 						dev.setHasModemDBEntry(true);
 					}
 					if (dev.getStatus() != DeviceStatus.POLLING) {
 						Poller.s_instance().startPolling(dev, dbes.size());
 					}
+				}
+			}
+			for (InsteonAddress k : dbes.keySet()) {
+				if (!addrs.contains(k) && !k.equals(dbes.get(k).getPort().getAddress())) {
+					logger.info("device {} found in the modem database, but is not configured as an item and {}.",
+							k, getLinkInfo(dbes, k));
 				}
 			}
 			m_driver.unlockModemDBEntries();

@@ -201,14 +201,14 @@ public class LcnBinding<P extends LcnGenericBindingProvider> extends AbstractBin
 	
 	/** {@inheritDoc} */
 	@Override
-	public void addBindingProvider(P provider) {
+	public void addBindingProvider(BindingProvider provider) {
 		super.addBindingProvider(provider);
 		this.activeService.start();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeBindingProvider(P provider) {
+	public void removeBindingProvider(BindingProvider provider) {
 		super.removeBindingProvider(provider);
 		// If there are no binding providers left, we can stop the service
 		if (this.providers.size() == 0) {

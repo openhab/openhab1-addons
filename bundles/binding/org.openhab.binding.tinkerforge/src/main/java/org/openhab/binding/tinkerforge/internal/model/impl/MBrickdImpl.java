@@ -47,12 +47,18 @@ import org.slf4j.LoggerFactory;
 import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
+import com.tinkerforge.BrickletAccelerometer;
 import com.tinkerforge.BrickletAmbientLight;
+import com.tinkerforge.BrickletAmbientLightV2;
+import com.tinkerforge.BrickletAnalogIn;
+import com.tinkerforge.BrickletAnalogInV2;
 import com.tinkerforge.BrickletBarometer;
+import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
@@ -60,16 +66,21 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialDual020mA;
+import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
+import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletPTC;
+import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletRotaryEncoder;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSolidStateRelay;
 import com.tinkerforge.BrickletSoundIntensity;
@@ -909,6 +920,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 				logger.debug("{} addDevice AmbientLight", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletAmbientLight();
 				mDevice.setDeviceIdentifier(BrickletAmbientLight.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAmbientLightV2.DEVICE_IDENTIFIER){
+              logger.debug("{} addDevice AmbientLighV2", LoggerConstants.TFINIT);
+              mDevice = factory.createMBrickletAmbientLightV2();
+              mDevice.setDeviceIdentifier(BrickletAmbientLightV2.DEVICE_IDENTIFIER);
 			} else if (deviceIdentifier == BrickletDistanceIR.DEVICE_IDENTIFIER){
 				logger.debug("{} addDevice DistanceIR", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletDistanceIR();
@@ -1009,6 +1024,46 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletSolidStateRelay");
               mDevice = factory.createMBrickletSolidStateRelay();
               mDevice.setDeviceIdentifier(BrickletSolidStateRelay.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletPiezoSpeaker.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletPiezoSpeaker");
+              mDevice = factory.createMBrickletPiezoSpeaker();
+              mDevice.setDeviceIdentifier(BrickletPiezoSpeaker.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletRotaryEncoder.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletRotaryEncoder");
+              mDevice = factory.createMBrickletRotaryEncoder();
+              mDevice.setDeviceIdentifier(BrickletRotaryEncoder.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletDustDetector.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletDustDetector");
+              mDevice = factory.createMBrickletDustDetector();
+              mDevice.setDeviceIdentifier(BrickletDustDetector.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLoadCell.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletLoadCell");
+              mDevice = factory.createMBrickletLoadCell();
+              mDevice.setDeviceIdentifier(BrickletLoadCell.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletColor.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletColor");
+              mDevice = factory.createMBrickletColor();
+              mDevice.setDeviceIdentifier(BrickletColor.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDualAnalogIn.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrialDualAnalogIn");
+              mDevice = factory.createMBrickletIndustrialDualAnalogIn();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDualAnalogIn.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAnalogIn.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletAnalogIn");
+              mDevice = factory.createMBrickletAnalogIn();
+              mDevice.setDeviceIdentifier(BrickletAnalogIn.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAnalogInV2.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletAnalogInV2");
+              mDevice = factory.createMBrickletAnalogInV2();
+              mDevice.setDeviceIdentifier(BrickletAnalogInV2.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLaserRangeFinder.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletLaserRangeFinder");
+              mDevice = factory.createMBrickletLaserRangeFinder();
+              mDevice.setDeviceIdentifier(BrickletLaserRangeFinder.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletAccelerometer.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletAccelerometer");
+              mDevice = factory.createMBrickletAccelerometer();
+              mDevice.setDeviceIdentifier(BrickletAccelerometer.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

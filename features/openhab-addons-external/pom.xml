@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.openhab</groupId>
+        <artifactId>features</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.openhab.addons</groupId>
+    <artifactId>openhab-addons-external</artifactId>
+    <packaging>pom</packaging>
+
+    <name>openHAB Feature Addons External</name>
+    <description>openHAB 2 Addons External</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifact</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact><file>src/main/resources/conf/anel.cfg</file><type>cfg</type><classifier>anel</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/astro.cfg</file><type>cfg</type><classifier>astro</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/caldavCommand.cfg</file><type>cfg</type><classifier>caldavCommand</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/caldavio.cfg</file><type>cfg</type><classifier>caldavio</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/caldavPersonal.cfg</file><type>cfg</type><classifier>caldavPersonal</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/comfoair.cfg</file><type>cfg</type><classifier>comfoair</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/denon.cfg</file><type>cfg</type><classifier>denon</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/dmx.cfg</file><type>cfg</type><classifier>dmx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/enphaseenergy.cfg</file><type>cfg</type><classifier>enphaseenergy</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/enocean.cfg</file><type>cfg</type><classifier>enocean</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/epsonprojector.cfg</file><type>cfg</type><classifier>epsonprojector</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/freeswitch.cfg</file><type>cfg</type><classifier>freeswitch</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/logging.cfg</file><type>cfg</type><classifier>logging</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/marytts.cfg</file><type>cfg</type><classifier>marytts</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/milight.cfg</file><type>cfg</type><classifier>milight</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/modbus.cfg</file><type>cfg</type><classifier>modbus</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mysql.cfg</file><type>cfg</type><classifier>mysql</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/networkhealth.cfg</file><type>cfg</type><classifier>networkhealth</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/nibeheatpump.cfg</file><type>cfg</type><classifier>nibeheatpump</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ntp.cfg</file><type>cfg</type><classifier>ntp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/onewire.cfg</file><type>cfg</type><classifier>onewire</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/onkyo.cfg</file><type>cfg</type><classifier>onkyo</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/rrd4j.cfg</file><type>cfg</type><classifier>rrd4j</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/samsungac.cfg</file><type>cfg</type><classifier>samsungac</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/sapp.cfg</file><type>cfg</type><classifier>sapp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/satel.cfg</file><type>cfg</type><classifier>satel</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/snmp.cfg</file><type>cfg</type><classifier>snmp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/swegonventilation.cfg</file><type>cfg</type><classifier>swegonventilation</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/telegram.cfg</file><type>cfg</type><classifier>telegram</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/weather.cfg</file><type>cfg</type><classifier>weather</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/xmpp.cfg</file><type>cfg</type><classifier>xmpp</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/zwave.cfg</file><type>cfg</type><classifier>zwave</classifier></artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

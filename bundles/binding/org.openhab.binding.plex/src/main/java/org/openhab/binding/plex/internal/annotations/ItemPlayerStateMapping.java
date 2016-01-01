@@ -14,6 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.openhab.binding.plex.internal.PlexPlayerState;
+import org.openhab.binding.plex.internal.PlexProperty;
 
 /**
  * Annotation to map Plex player states to OnOffType items
@@ -24,6 +25,6 @@ import org.openhab.binding.plex.internal.PlexPlayerState;
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ItemPlayerStateMapping {
-	String property();
+	PlexProperty property();
 	PlexPlayerState state();
 }

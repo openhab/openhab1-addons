@@ -1128,6 +1128,15 @@
 			<Label lang="en">Water Sensor</Label>
 			<ConfigFile>aeon/dsb45-zwus.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0202</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>ZW089B</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>aeon/zw089.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -1238,7 +1247,8 @@
 			</Reference>
 			<Model>NS210</Model>
 			<Label lang="en">Smart PowerNode</Label>
-			<ConfigFile>greenwave/ns210.xml</ConfigFile>
+			<ConfigFile VersionMax="3">greenwave/ns210.xml</ConfigFile>
+			<ConfigFile VersionMin="4">greenwave/ns310.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1668,6 +1678,10 @@
 				<Type>0300</Type>
 				<Id>0107</Id>
 			</Reference>
+			<Reference>
+				<Type>3000</Type>
+				<Id>900</Id>
+			</Reference>
 			<Model>FGR221</Model>
 			<Label lang="en">Fibaro FGR221 Roller Shutter Controller</Label>
 			<ConfigFile>fibaro/fgr221.xml</ConfigFile>
@@ -1680,6 +1694,15 @@
 			<Model>FGD212</Model>
 			<Label lang="en">Fibaro Dimmer 2</Label>
 			<ConfigFile>fibaro/fgd212.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0C00</Type>
+				<Id>3000</Id>
+			</Reference>
+			<Model>FGSS001</Model>
+			<Label lang="en">Smoke Sensor</Label>
+			<ConfigFile>fibaro/fgss101.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2433,6 +2456,15 @@
 			<Label lang="en">Remotec ZTS-110 Z Wave Thermostat</Label>
 			<ConfigFile>remotec/zts110.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>8377</Id>
+			</Reference>
+			<Model>ZXT-120AU</Model>
+			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
+			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>159</Id>
@@ -3012,4 +3044,17 @@
 			<ConfigFile>unknown/im-20.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0071</Id>
+		<Name>LS Control</Name>
+		<Product>
+ 			<Reference>
+ 				<Type>0002</Type>
+ 				<Id>035d</Id>
+ 			</Reference>
+ 			<Model>E861C</Model>
+ 			<Label lang="en">Temperature Sensor</Label>
+ 			<ConfigFile>lscontrol/e861c.xml</ConfigFile>
+ 		</Product>
+ 	</Manufacturer>
 </Manufacturers>

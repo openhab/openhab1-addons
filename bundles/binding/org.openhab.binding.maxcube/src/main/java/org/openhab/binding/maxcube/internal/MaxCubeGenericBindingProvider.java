@@ -15,6 +15,7 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -34,6 +35,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <li>{ maxcube="JEQ304492:type=battery" } - returns the current battery state as text.</li>
  * <li>{ maxcube="JEQ304492:type=mode" } - returns the current mode as text.</li>
  * <li>{ maxcube="JEQ304492:type=actual" } - returns the current measured temparature.</li>
+ * <li>{ maxcube="JEQ304492:type=connectionError" } - returns if connection error exists between cube and device.</li>
  * </ul>
  * @author Andreas Heil
  * @since 1.4.0
@@ -52,9 +54,14 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem || item instanceof StringItem)) {
-			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Number-, Dimmer-, Contact- and StringItems are allowed - please check your *.items configuration");
+		if (!(item instanceof NumberItem || item instanceof DimmerItem || item instanceof ContactItem
+				|| item instanceof StringItem || item instanceof SwitchItem)) {
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only Number-, Dimmer-, Contact-, Switch- and StringItems are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -71,9 +78,6 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 		}
 
 		MaxCubeBindingConfig config = new MaxCubeBindingConfig();
-
-		item.getName();
-
 		config.serialNumber = configParts[0];
 
 		for (int i = 1; i < configParts.length; i++) {
@@ -87,10 +91,11 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 					config.bindingType = BindingType.ACTUAL;
 				} else if (bindingToken[1].toLowerCase().equals("battery")) {
 					config.bindingType = BindingType.BATTERY;
+				} else if (bindingToken[1].toLowerCase().equals("connectionerror")) {
+					config.bindingType = BindingType.CONNECTION_ERROR;
 				}
 			}
 		}
-
 		addBindingConfig(item, config);
 	}
 

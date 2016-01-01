@@ -8,28 +8,33 @@
  */
 package org.openhab.binding.plex.internal;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.plex.PlexBindingProvider;
 import org.openhab.binding.plex.internal.annotations.ItemMapping;
 import org.openhab.binding.plex.internal.annotations.ItemPlayerStateMapping;
 import org.openhab.binding.plex.internal.communication.MediaContainer;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,24 +46,13 @@ import org.slf4j.LoggerFactory;
 * @author Jeroen Idserda
 * @since 1.7.0
 */
-public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> implements ManagedService {
+public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
 
 	private static final Logger logger = LoggerFactory.getLogger(PlexBinding.class);
 	
 	private PlexConnector connector;
 	
-	private int refreshInterval = 5000;
-	
-	public void activate() {
-		logger.trace("Plex binding actived");
-	}
-	
-	public void deactivate() {
-		logger.trace("Plex binding deactived");
-		if (connector != null) {
-			connector.close();
-		}
-	}
+	private long refreshInterval = 5000;
 	
 	@Override
 	protected void execute() {
@@ -150,52 +144,55 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 		}
 	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("Plex binding updated");
-
-		if (config != null) {
-			PlexConnectionProperties connectionProperties  = new PlexConnectionProperties();
-			Enumeration<String> keys = config.keys();
-			
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement();
-				if ("service.pid".equals(key)) 
-					continue;
-				
-				String value = ((String) config.get(key)).trim();
-				
-				if ("host".equals(key))
-					connectionProperties.setHost(value);
-				else if ("port".equals(key))
-					connectionProperties.setPort(Integer.valueOf(value));
-				else if ("token".equals(key))
-					connectionProperties.setToken(value);
-				else if ("username".equals(key))
-					connectionProperties.setUsername(value);
-				else if ("password".equals(key))
-					connectionProperties.setPassword(value);
-				else if ("refresh".equals(key))
-					if (StringUtils.isNumeric(value))
-						refreshInterval = Integer.valueOf(value);
-					else
-						logger.warn("Non-numeric refresh interval {}, using default {}", value, refreshInterval);
-			}
-			
-			logger.debug("Plex config, server at {}:{}", connectionProperties.getHost(), connectionProperties.getPort());
-			
-			if (!StringUtils.isEmpty(connectionProperties.getHost())) {
-				connect(connectionProperties);
-				setProperlyConfigured(true);
-			} else {
-				logger.warn("No host IP configured for Plex binding");
-			}
-		}
+	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+		configureBinding(configuration);
+	}
+	
+	public void modified(final Map<String, Object> configuration) {
+		disconnect();
+		configureBinding(configuration);
 	}
 
+	private void configureBinding(final Map<String, Object> configuration) {
+		PlexConnectionProperties connectionProperties  = new PlexConnectionProperties();
+		
+		connectionProperties.setHost((String)configuration.get("host"));
+		connectionProperties.setToken((String)configuration.get("token"));
+		connectionProperties.setUsername((String)configuration.get("username"));
+		connectionProperties.setPassword((String)configuration.get("password"));
+
+		String port = (String)configuration.get("port");
+		if (isNotBlank(port) && isNumeric(port)) {
+			connectionProperties.setPort(Integer.valueOf(port));
+		}
+		
+		String refresh = (String)configuration.get("refresh");
+		if (isNotBlank(refresh) && isNumeric(refresh)) {
+			refreshInterval = Long.parseLong(refresh);
+		}
+		
+		logger.debug("Plex config, server at {}:{}", connectionProperties.getHost(), connectionProperties.getPort());
+		
+		if (isNotBlank(connectionProperties.getHost())) {
+			connect(connectionProperties);
+			setProperlyConfigured(true);
+		} else {
+			logger.warn("No host configured for Plex binding");
+			setProperlyConfigured(false);
+		}
+	}
+	
+	public void deactivate(final int reason) {
+		logger.trace("Plex binding deactived");
+		disconnect();
+	}
+
+	private void disconnect() {
+		if (connector != null) {
+			connector.close();
+		}
+	}
+	
 	/**
 	 * Get config from binding provider by Plex machine ID and property
 	 */
@@ -259,7 +256,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 	}
 
 	/**
-	 * Update all {@code PlexBindingConstants.PROPERTY_POWER} properties according to the 
+	 * Update all {@code PlexProperty.POWER} properties according to the 
 	 * list of clients that are currently online.  
 	 * 
 	 * @param container MediaContainer, containing the clients that are currently online
@@ -277,7 +274,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 			Collection<String> itemNames = provider.getItemNames();
 			for (String itemName : itemNames) {
 				PlexBindingConfig config = getConfig(itemName);
-				if (config.getProperty().equals(PlexBindingConstants.PROPERTY_POWER))
+				if (config.getProperty().equals(PlexProperty.POWER.getName()))
 					configs.add(config);
 			}
 		}
@@ -298,15 +295,17 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 		for(Field field : session.getClass().getDeclaredFields()){
 			ItemMapping itemMapping = field.getAnnotation(ItemMapping.class);
 			if (itemMapping != null) {
-				if (itemMapping.property().equals(property)) {
+ 				if (itemMapping.property().getName().equals(property)) {
 					if (itemMapping.type().equals(StringType.class)) {
-						eventPublisher.postUpdate(itemName, new StringType(getStringProperty(field, session)));
+						eventPublisher.postUpdate(itemName, getStringType(field, session));
 					} else if (itemMapping.type().equals(PercentType.class)) {
-						eventPublisher.postUpdate(itemName, new PercentType(getStringProperty(field, session)));
-					} 
+						eventPublisher.postUpdate(itemName, getPercenteType(field, session));
+					} else if (itemMapping.type().equals(DateTimeType.class)) {
+						eventPublisher.postUpdate(itemName, getDateTimeType(field, session));
+					}
 				}
 				for (ItemPlayerStateMapping stateMapping : itemMapping.stateMappings()) {
-					if (stateMapping.property().equals(property)) {
+					if (stateMapping.property().getName().equals(property)) {
 						eventPublisher.postUpdate(itemName, state.equals(stateMapping.state()) ? OnOffType.ON : OnOffType.OFF);
 					}
 				}
@@ -314,9 +313,36 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 		}
 	}
 	
+	private State getStringType(Field field, PlexSession session) {
+		return new StringType(getStringProperty(field, session));
+	}
+	
+	private State getPercenteType(Field field, PlexSession session) {
+		return new PercentType(getStringProperty(field, session));
+	}
+	
+	private State getDateTimeType(Field field, PlexSession session) {
+		Date date = getDateProperty(field, session);
+		if (date != null) {
+			return new DateTimeType(getCalendar(date));
+		} else {
+			return UnDefType.UNDEF;
+		}
+	}
+
+	private Date getDateProperty(Field field, Object object) {
+		Object value = invokeGetter(field, object);
+		return value != null ? (Date)value : null;
+	}
+	
 	private String getStringProperty(Field field, Object object) {
+		Object value = invokeGetter(field, object);
+		return value != null ? value.toString() : "";
+	}
+	
+	private Object invokeGetter(Field field, Object object) {
 		try {
-			return object.getClass().getMethod("get" + StringUtils.capitalize(field.getName())).invoke(object).toString();
+			return object.getClass().getMethod("get" + capitalize(field.getName())).invoke(object);
 		} catch (IllegalAccessException e) {
 			logger.debug("Error getting property value", e);
 		} catch (NoSuchMethodException e) {
@@ -326,7 +352,14 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> impl
 		} catch (InvocationTargetException e) {
 			logger.debug("Error getting property value", e);
 		}
-		return "";
+		
+		return null;
+	}
+
+	private Calendar getCalendar(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar;
 	}
 	
 }
