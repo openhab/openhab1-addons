@@ -51,6 +51,7 @@ public class ModbusTCPTransport
   private DataInputStream m_Input;	  //input stream
   private DataOutputStream m_Output;	 //output stream
   private BytesInputStream m_ByteIn;
+  private Socket m_Socket;
 
   /**
    * Constructs a new <tt>ModbusTransport</tt> instance,
@@ -78,12 +79,22 @@ public class ModbusTCPTransport
    * @throws IOException if an I/O related error occurs.
    */
   public void setSocket(Socket socket) throws IOException {
+    // Close existing socket and streams, if any
+    close();
+    m_Socket = socket;
     prepareStreams(socket);
   }//setSocket
 
   public void close() throws IOException {
-    m_Input.close();
-    m_Output.close();
+    if (m_Input != null) {
+      m_Input.close();
+    }
+    if (m_Output != null) {
+      m_Output.close();
+    }
+    if (m_Socket != null) {
+      m_Socket.close();
+    }
   }//close
 
   public void writeMessage(ModbusMessage msg)
