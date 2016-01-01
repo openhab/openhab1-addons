@@ -51,14 +51,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
 	private int timeout = 6000;
 
-	private enum valueTypeDef{
-		NONE,
-		VOLTAGE,
-		CURRENT,
-		POWER,
-		ENERGY
-	}
-
 	/** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
 	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|password)$");
 
@@ -97,133 +89,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	/**
 	 * @{inheritDoc}
 	 */
-	private void processSwitchItem(String loginResponseString, int pmsSocketId, String itemName){
-
-		String stateResponseSearch = "var sockstates = ";
-		int findState=loginResponseString.lastIndexOf(stateResponseSearch);
-		if (findState !=0) {
-			logger.trace("searchstring sockstates found at position {}", findState);
-			
-			String slicedResponse = loginResponseString.substring(findState+18, findState+25);
-			
-			logger.trace("transformed state response = {}", slicedResponse);
-
-			try {
-				String [] parts = slicedResponse.split(",");
-				String itemState = parts[pmsSocketId-1];
-				logger.trace("Response for item {} = {}", itemName, itemState);
-				if (itemState.equals("0")) {
-					State state = OnOffType.valueOf("OFF");
-					logger.trace("transformed state for item {} = {}", itemName, state);
-					eventPublisher.postUpdate(itemName, state);
-				}
-				if (itemState.equals("1")) {
-					State state = OnOffType.valueOf("ON");
-					logger.trace("transformed state for item {} = {}", itemName, state);
-					eventPublisher.postUpdate(itemName, state);
-				}
-			
-			} catch (Exception te) {
-				logger.error("Response transformation throws exception ", te);
-			}
-			
-		} else {
-			logger.trace("searchstring sockstates not found");			
-		}
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	private void processNumberItem(EnergenieBindingConfig deviceConfig, String loginResponseString, int pmsSocketId, String itemName){
-		String stateResponseSearch = "";
-		int start=0, stop=0, divisor=1;
-		valueTypeDef valueType = valueTypeDef.NONE;
-		double value=0.0;
-		
-		switch(pmsSocketId){
-			case 1: 
-				stateResponseSearch = "var V  = ";
-				valueType = valueTypeDef.VOLTAGE;
-				start = 9; 
-				stop = 20; 
-				divisor = 10; 
-				break;
-			case 2: 
-				stateResponseSearch = "var I  = "; 
-				valueType = valueTypeDef.CURRENT;
-				start = 9; 
-				stop = 20; 
-				divisor = 100; 
-				break;
-			case 3: 
-				stateResponseSearch = "var P="; 
-				valueType = valueTypeDef.POWER;
-				start = 6; 
-				stop = 20; 
-				divisor = 466; 
-				break;
-			case 4: 
-				stateResponseSearch = "var E="; 
-				valueType = valueTypeDef.ENERGY;
-				start = 6; 
-				stop = 20; 
-				divisor = 25600; 
-				break;
-		}
-
-		int findState=loginResponseString.lastIndexOf(stateResponseSearch);
-		if (findState > 0) {
-			logger.trace("searchstring {} found at position {}", stateResponseSearch, findState);
-			
-			String slicedResponseTmp = loginResponseString.substring(findState+start, findState+stop);
-			logger.trace("transformed state response = {}", slicedResponseTmp);
-			String[] slicedResponse = slicedResponseTmp.split(";");
-			
-			logger.trace("transformed state response = {} - {}", slicedResponse[0], slicedResponse[1]);
-			if(Double.parseDouble(slicedResponse[0])/1 == Double.parseDouble(slicedResponse[0])){
-				value = Double.parseDouble(slicedResponse[0]) / divisor;
-			}
-			else{
-				value = -1.0;
-			}
-			
-			
-			/* Update Item */
-			switch(valueType){
-				case NONE:
-					break;
-				case VOLTAGE:
-					deviceConfig.setVoltage(value);	
-					logger.trace("transformed state for item {} = {}", itemName, deviceConfig.getVoltage());
-					eventPublisher.postUpdate(itemName, deviceConfig.getVoltage());				
-					break;
-				case CURRENT: 
-					deviceConfig.setCurrent(value);	
-					logger.trace("transformed state for item {} = {}", itemName, deviceConfig.getCurrent());
-					eventPublisher.postUpdate(itemName, deviceConfig.getCurrent());				
-					break;					
-				case POWER: 
-					deviceConfig.setPower(value);	
-					logger.trace("transformed state for item {} = {}", itemName, deviceConfig.getPower());
-					eventPublisher.postUpdate(itemName, deviceConfig.getPower());				
-					break;
-				case ENERGY: 
-					deviceConfig.setEnergy(value);	
-					logger.trace("transformed state for item {} = {}", itemName, deviceConfig.getEnergy());
-					eventPublisher.postUpdate(itemName, deviceConfig.getEnergy());				
-					break;
-			}
-			
-		} else {
-			logger.trace("searchstring %s not found", stateResponseSearch);			
-		}
-		
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
 	@Override
 	protected void execute() {
 		logger.debug("execute() method is called!");
@@ -236,7 +101,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 				}
 				try {
 					String pmsId = deviceConfig.getDeviceId();
-					int pmsSocketId = deviceConfig.getSocketMeasurementNumber();
+					int pmsSocketId = deviceConfig.getSocketNumber();
 
 					String pmsIp = pmsIpConfig.get(pmsId);
 					String pmsPw = pmsPasswordConfig.get(pmsId);
@@ -247,15 +112,41 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 					
 					try {
 						loginResponseString = HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
-						if(deviceConfig.getItemType() == "Switch"){
-							processSwitchItem(loginResponseString, pmsSocketId, itemName);
-						}
-						else if(deviceConfig.getItemType() == "Number"){
-							processNumberItem(deviceConfig, loginResponseString, pmsSocketId, itemName);
+						
+						String stateResponseSearch = "var sockstates =";
+						int findState=loginResponseString.lastIndexOf(stateResponseSearch);
+						if (findState > 0) {
+							logger.trace("searchstring sockstates found at position {}", findState);
+							
+							String slicedResponse = loginResponseString.substring(findState+18, findState+25);
+							
+							logger.trace("transformed state response = {}", slicedResponse);
+
+							try {
+								String [] parts = slicedResponse.split(",");
+								String itemState = parts[pmsSocketId-1];
+								logger.trace("Response for item {} = {}", itemName, itemState);
+								if (itemState.equals("0")) {
+									State state = OnOffType.valueOf("OFF");
+									logger.trace("transformed state for item {} = {}", itemName, state);
+									eventPublisher.postUpdate(itemName, state);
+								}
+								if (itemState.equals("1")) {
+									State state = OnOffType.valueOf("ON");
+									logger.trace("transformed state for item {} = {}", itemName, state);
+									eventPublisher.postUpdate(itemName, state);
+								}
+							
+							} catch (Exception te) {
+								logger.error("Response transformation throws exception ", te);
+							}
+							
+						} else {
+							logger.trace("searchstring sockstates not found");			
 						}
 						
 					} catch (Exception e) {
-						logger.error("Failed to Login/logout from ip {}", pmsIp);
+						logger.error("Failed to logout from ip {}", pmsIp);
 					}
 
 
@@ -282,7 +173,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 		}
 		try {
 			String pmsId = deviceConfig.getDeviceId();
-			int pmsSocketId = deviceConfig.getSocketMeasurementNumber();
+			int pmsSocketId = deviceConfig.getSocketNumber();
 			
 			sendLogin(pmsId);
 			if (OnOffType.ON.equals(command)) {
@@ -358,7 +249,10 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 		String url = "http://"+pmsIp;
 
 		try {
-			HttpUtil.executeUrl("POST", url, timeout);			
+			HttpUtil.executeUrl("POST", url, timeout);
+
+			logger.trace("logout from ip {}", pmsIp);
+			
 		} catch (Exception e) {
 			logger.error("failed to logout from ip {}", pmsIp);
 		}
