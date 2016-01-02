@@ -1,0 +1,56 @@
+.x-slider-field {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.x-slider,
+.x-toggle {
+	height: $slider-thumb-size;
+}
+
+.x-slider.x-item-disabled {
+	opacity: $disabled-opacity;
+}
+
+.x-slider-multiple, .x-item-disabled {
+	.x-thumb:before {
+		border: 0;
+		width: 0px;
+	}
+}
+
+.x-thumb {
+	height: $slider-thumb-size;
+	width: $slider-thumb-size;
+	border: 0;
+
+	// The actual thumb
+	&:after {
+		@include insertion($slider-thumb-size, $slider-thumb-size, .25em, 0);
+		@include border-radius($slider-thumb-size/2);
+	}
+
+	&:before {
+		content: '';
+		position: absolute;
+		top: 15px;
+		width: 5000px;
+		right: 1em;
+		height: 4px;
+	}
+
+	&.x-dragging {
+		opacity: 1;
+	}
+}
+
+
+// Create the slider track
+.x-slider:before {
+	margin: 0;
+	border-bottom: 0;
+	width: 100%;
+
+	@include insertion(auto, $slider-size, $slider-thumb-size / 2 - $slider-size/2 + $slider-spacing/2, 0);
+	@include border-radius(1em);
+}

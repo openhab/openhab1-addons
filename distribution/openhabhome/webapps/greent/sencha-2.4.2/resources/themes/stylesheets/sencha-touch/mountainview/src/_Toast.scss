@@ -1,0 +1,14 @@
+/**
+ * @class Ext.Toast
+ */
+
+.x-toast {
+    max-width: 19em;
+    border: 1px solid $foreground-color;
+    background: $background-color;
+    .x-toast-text {
+        padding: 15px;
+        color: $primary-text-color;
+        font-size: .9em;
+    }
+}

@@ -1,0 +1,291 @@
+/**
+ * @class Ext.Toolbar
+ */
+
+.x-toolbar {
+    padding: 0 $toolbar-spacing;
+
+    &.x-docked-left {
+        width: 7em;
+        padding: $toolbar-spacing;
+    }
+
+    &.x-docked-right {
+        width: 7em;
+        padding: $toolbar-spacing;
+    }
+}
+
+.x-title {
+    line-height: $global-row-height - .5em;
+    font-size: 1.2em;
+    margin: 0 0.3em;
+    padding: 0 .3em;
+}
+
+/**
+* Creates a theme UI for toolbars.
+*
+*     // SCSS
+*     @include sencha-toolbar-ui('sub', #58710D, 'glossy');
+*
+*     // JS
+*     var myTb = new Ext.Toolbar({title: 'My Green Glossy Toolbar', ui: 'sub'})
+*
+* @param {string} $ui-label The name of the UI being created.
+*   Can not included spaces or special punctuation (used in class names)
+* @param {color} $color Base color for the UI.
+* @param {string} $gradient: $toolbar-gradien Background gradient style for the UI.
+*/
+@mixin sencha-toolbar-ui($ui-label, $color, $gradient: $toolbar-gradient) {
+    $toolbar-border-color: darken($color, 50%);
+    $toolbar-button-color: darken($color, 5%);
+
+    .x-toolbar-#{$ui-label} {
+        @include background-gradient($color, $gradient);
+        border-color: $toolbar-border-color;
+
+        .x-title {
+            @include color-by-background($color);
+            @include bevel-by-background($color);
+        }
+
+        &.x-docked-top {
+            border-bottom-color: $toolbar-border-color;
+        }
+
+        &.x-docked-bottom {
+            border-top-color: $toolbar-border-color;
+        }
+
+        &.x-docked-left {
+            border-right-color: $toolbar-border-color;
+        }
+
+        &.x-docked-right {
+            border-left-color: $toolbar-border-color;
+        }
+
+        .x-button,
+        .x-field-select .x-component-outer {
+        // .x-field-select .x-component-outer:before {
+            @include toolbar-button($toolbar-button-color, $gradient);
+        }
+
+        .x-label,
+        .x-form-label {
+            font-weight: bold;
+            @include color-by-background($color);
+            @include bevel-by-background($color);
+        }
+    }
+}
+
+@if $include-toolbar-uis {
+    @include sencha-toolbar-ui('dark', darken($toolbar-base-color, 10%));
+    @include sencha-toolbar-ui('light', $toolbar-base-color);
+    @include sencha-toolbar-ui('neutral', $neutral-color);
+
+    .x-toolbar.x-toolbar-neutral .x-toolbar-inner .x-button.x-button-pressing {
+        $mask-radial-glow: lighten($base-color, 25);
+        @include background-image(radial-gradient(fade-out($mask-radial-glow, .3), fade-out($mask-radial-glow, 1) 24px));
+        .x-button-icon.x-button-mask {
+            @include background-gradient(#fff, 'recessed');
+        }
+    }
+}
+
+
+
+/**
+ * @class Ext.field.Field
+ */
+
+/**
+ * @var {color} $toolbar-input-bg
+ * Background-color for toolbar form fields.
+ */
+$toolbar-input-bg: #fff !default;
+
+/**
+ * @var {color} $toolbar-input-color
+ * Text color for toolbar form fields.
+ */
+$toolbar-input-color: #000 !default;
+
+/**
+ * @var {measurement} $toolbar-input-height
+ * Text color for toolbar form fields.
+ */
+$toolbar-input-height: 1.6em !default;
+
+/**
+ * @var {color} $toolbar-input-border-color
+ * Border color for toolbar form fields.
+ */
+$toolbar-input-border-color: rgba(#000, .5) !default;
+
+// Private
+$toolbar-select-overflow-mask-width: 3em;
+$toolbar-search-left-padding: 1.67em;
+
+// Includes default toolbar form field styles.
+
+//so disabled fields are still dark
+.x-spinner .x-input-el,
+.x-field-select .x-input-el {
+    -webkit-text-fill-color: #000;
+    -webkit-opacity: 1;
+}
+
+.x-spinner.x-item-disabled .x-input-el,
+.x-field-select.x-item-disabled .x-input-el {
+    -webkit-text-fill-color: currentcolor;
+}
+
+//and inside toolbars
+.x-toolbar .x-field-select .x-input-el {
+    -webkit-text-fill-color: #fff;
+}
+
+.x-toolbar .x-field-select.x-item-disabled .x-input-el {
+    -webkit-text-fill-color: rgba(255,255,255,.6);
+}
+
+.x-toolbar {
+    .x-form-field-container {
+        @if $include-border-radius {
+            padding: 0 .3em;
+        }
+    }
+
+    .x-slider-field,
+    .x-toggle-field {
+        .x-component-outer {
+            padding: 0em .3em;
+        }
+    }
+
+    .x-field {
+        width: 13em;
+        padding: .5em;
+        min-height: 0;
+        border-bottom: 0;
+        background: transparent;
+
+        .x-clear-icon {
+            background-size: 50% 50%;
+            right: -0.8em;
+            margin-top: -1.06em;
+        }
+    }
+
+    .x-field-input {
+        padding-right: 1.6em !important;
+    }
+
+    .x-field-textarea,
+    .x-field-text,
+    .x-field-number,
+    .x-field-search {
+        .x-component-outer {
+            background-color: $toolbar-input-bg;
+
+            @if $include-border-radius {
+                @include border-radius(.3em);
+            }
+
+            @if $include-highlights {
+              @include box-shadow($toolbar-input-border-color 0 .1em 0 inset, $toolbar-input-border-color 0 -.1em 0 inset, $toolbar-input-border-color .1em 0 0 inset, $toolbar-input-border-color -.1em 0 0 inset, rgba(#000, .5) 0 .15em .4em inset);
+            }
+        }
+    }
+
+    .x-form-label {
+        background: transparent;
+        border: 0;
+        padding: 0;
+        line-height: 1.4em;
+    }
+
+    .x-form-field {
+        height: $toolbar-input-height;
+        color: lighten($toolbar-input-color, 43%);
+        background: transparent;
+        min-height: 0;
+        -webkit-appearance: none;
+        padding: 0em .3em;
+        margin: 0;
+
+        &:focus {
+            color: $toolbar-input-color;
+        }
+    }
+
+    .x-field-select,
+    .x-field-search {
+        .x-component-outer {
+            @if $include-border-radius {
+                @include border-radius($toolbar-input-height/2);
+            }
+        }
+    }
+
+    .x-field-search {
+        .x-field-input {
+            background-position: .5em 50%;
+        }
+    }
+
+    .x-field-select {
+        -webkit-box-shadow: none;
+
+        .x-form-field {
+            height: 1.4em;
+        }
+    }
+
+    .x-field-select {
+        background: transparent;
+
+        .x-component-outer {
+            &:after {
+                right: .4em;
+            }
+        }
+
+        &.x-item-disabled {
+            .x-component-outer:after {
+                opacity: .6;
+            }
+        }
+
+        // Background is set in _toolbar file
+        .x-component-outer:before {
+            width: $toolbar-select-overflow-mask-width;
+            border-left: none;
+
+            @if $include-border-radius {
+                @include border-right-radius($toolbar-input-height/2);
+            }
+            @if $include-highlights {
+                -webkit-mask: theme_image('default', "select_mask.png");
+                -webkit-mask-position: right top;
+                -webkit-mask-repeat: repeat-y;
+                -webkit-mask-size: $toolbar-select-overflow-mask-width .05em;
+            }
+            @else {
+                width: 0.5em !important;
+            }
+        }
+
+        .x-input-text {
+            color: #fff;
+        }
+    }
+}
+
+.x-android .x-field-search .x-field-input {
+    padding-left: .2em !important;
+    padding-right: 2.2em !important;
+}

@@ -1,0 +1,24 @@
+.x-toolbar .x-segmentedbutton, .x-segmentedbutton {
+	.x-button {
+		margin: 0 !important;
+		border: 1px solid $ios7-blue;
+		border-right: 0;
+		@include border-radius(0);
+
+		&.x-button-pressed {
+			background-color: #157efb;
+			.x-button-label {
+				color: #fff;
+			}
+		}
+	}
+
+	.x-first {
+		@include border-left-radius(6px);
+	}
+
+	.x-last {
+		@include border-right-radius(6px);
+		border-right: 1px solid $ios7-blue;
+	}
+}

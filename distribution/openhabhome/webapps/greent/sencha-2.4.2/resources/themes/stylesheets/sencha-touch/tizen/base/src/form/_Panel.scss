@@ -1,0 +1,48 @@
+.x-form {
+	padding: .4em;
+}
+
+.x-form-fieldset .x-form-fieldset-inner {
+	border: 0px;
+}
+
+// Label
+.x-form-label {
+	padding-bottom: .3em;
+}
+
+.x-field-input {
+	.x-clear-icon {
+		top: 0;
+		right: 0;
+		bottom: 0;
+		height: auto;
+		width: 32px;
+
+		&:before {
+			@include absolute-position;
+			border-width: 1px;
+			border-style: solid;
+			font-size: 1.5em;
+			font-weight: 100;
+			text-align: center;
+			content: '\00D7';
+			line-height: .7em;
+			width: 18px;
+			height: 18px;
+			margin-top: 6px;
+			margin-left: 6px;
+			@include border-radius(.15em);
+		}
+	}
+}
+
+.x-field-focused {
+	.x-field-input {
+		.x-clear-icon {
+			&:before {
+				margin-top: 5px;
+			}
+		}
+	}
+}

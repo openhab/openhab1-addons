@@ -1,0 +1,21 @@
+.x-menu {
+	background-color: $light-menu-background-color;
+
+	.x-button {
+		background: none;
+		background-color: transparent;
+		border-bottom: 1px solid $light-menu-button-bottom-border-color;
+
+		&.x-button-pressing {
+			background-color: $light-menu-button-pressing-background-color;
+		}
+
+		.x-button-icon:before {
+			color: $light-menu-button-icon-color;
+		}
+
+		.x-button-label {
+			color: $light-menu-button-label-color;
+		}
+	}
+}

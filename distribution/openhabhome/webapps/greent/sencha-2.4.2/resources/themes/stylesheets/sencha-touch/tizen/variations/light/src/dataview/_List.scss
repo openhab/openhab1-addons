@@ -1,0 +1,48 @@
+.x-panel.x-floating .x-list {
+	background-color: $light-list-floating-background-color;
+}
+
+.x-list {
+	background-color: $light-list-background-color;
+}
+
+.x-list-item {
+	border-bottom: 1px solid $light-list-border-color;
+	color: $light-list-item-color;
+	.x-list-disclosure {
+		&:before {
+			background-color: $light-list-item-disclosure-inner-color;
+		}
+		&:after {
+			color: $light-list-item-disclosure-color;
+		}
+	}
+
+	&.x-item-selected .x-list-disclosure {
+		background: none;
+		background-color: transparent;
+	}
+}
+
+.x-list .x-list-item.x-item-selected .x-dock-horizontal,
+.x-list .x-list-item.x-item-selected.x-list-item-tpl {
+	background-color: $light-list-item-selected-background-color;
+}
+
+.x-list .x-list-item.x-item-pressed.x-list-item-tpl,
+.x-list .x-list-item.x-item-pressed .x-dock-horizontal {
+	background-color: $light-list-item-pressed-background-color;
+}
+
+.x-list .x-list-header {
+	color: $light-list-header-color;
+	border-bottom: 1px solid $light-list-header-border-color;
+	background-color: $light-list-header-background-color;
+}
+
+.x-indexbar {
+	color: $light-list-indexbar-color;
+	&.x-indexbar-pressed {
+		background-color: $light-list-indexbar-pressed-background-color;
+	}
+}

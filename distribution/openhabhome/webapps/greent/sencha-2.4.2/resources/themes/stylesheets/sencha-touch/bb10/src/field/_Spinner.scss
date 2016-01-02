@@ -1,0 +1,24 @@
+.x-spinner {
+	.x-spinner-button {
+		margin: 9px 3px;
+		padding: 0;
+		width: 30px !important;
+		line-height: 33px;
+		height: 36px;
+		font-weight: bold;
+	}
+
+	.x-input-el {
+		-webkit-text-fill-color: black;
+	}
+
+	&.x-item-disabled {
+		.x-input-el {
+			-webkit-text-fill-color: #B3B3B3;
+		}
+
+		.x-spinner-button {
+			color: #aaa !important;
+		}
+	}
+}

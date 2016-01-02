@@ -1,0 +1,37 @@
+/**
+ * @class Ext.layout.Float
+ */
+
+.x-center,
+.x-centered {
+    @include absolute-position();
+    @include st-box();
+    @include st-box-align(center);
+    @include st-box-pack(center);
+
+    > * {
+        position: relative;
+    }
+
+    > .x-floating {
+        position: relative !important;
+    }
+}
+
+.x-floating {
+    position: absolute !important;
+}
+
+.x-layout-float {
+    overflow: hidden;
+
+    > .x-layout-float-item {
+        float: left;
+    }
+
+    &.x-direction-right {
+        > .x-layout-float-item {
+            float: right;
+        }
+    }
+}

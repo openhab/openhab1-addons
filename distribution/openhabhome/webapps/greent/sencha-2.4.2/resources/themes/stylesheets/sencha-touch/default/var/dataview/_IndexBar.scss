@@ -1,0 +1,21 @@
+/**
+ * @class Ext.dataview.IndexBar
+ */
+
+/**
+ * @var {measurement} $index-bar-width
+ * Width of the index bar.
+ */
+$index-bar-width: 1.1em !default;
+
+/**
+ * @var {color} $index-bar-bg-color
+ * Background-color of the index bar.
+ */
+$index-bar-bg-color: hsla(hue($base-color), 10%, 60%, .8) !default;
+
+/**
+ * @var {color} $index-bar-color
+ * Text color of the index bar.
+ */
+$index-bar-color: darken(desaturate($base-color, 5%), 15%) !default;

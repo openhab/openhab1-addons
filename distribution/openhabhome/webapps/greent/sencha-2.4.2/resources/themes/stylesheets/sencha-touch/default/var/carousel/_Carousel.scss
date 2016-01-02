@@ -1,0 +1,19 @@
+/**
+ * @class Ext.carousel.Carousel
+ */
+
+/**
+ * @var {measurement} $carousel-indicator-size Size (width/height) of carousel indicator dots.
+ */
+$carousel-indicator-size: .5em !default;
+
+/**
+ * @var {measurement} $carousel-indicator-spacing
+ * Amount of space between carousel indicator dots.
+ */
+$carousel-indicator-spacing: .2em !default;
+
+/**
+ * @var {measurement} $carousel-track-size Size of the track the carousel indicator dots are in.
+ */
+$carousel-track-size: 1.5em !default;

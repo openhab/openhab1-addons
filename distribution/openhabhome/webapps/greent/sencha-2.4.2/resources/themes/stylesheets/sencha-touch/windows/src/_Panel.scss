@@ -1,0 +1,268 @@
+/**
+ * @class Ext.Panel
+ */
+
+.x-form.x-floating,
+.x-panel.x-floating,
+.x-msgbox {
+    background-color: #fff;
+
+    @if $dark-theme {
+        color: #000;
+
+        .x-title,
+        .x-html {
+            color: #000;
+        }
+
+        .x-item-disabled {
+            .x-input-el {
+                color: $light-field-disabled-color;
+            }
+        }
+
+        .x-input-el:-ms-input-placeholder { color: $light-field-placeholder-color; }
+        .x-input-el::-webkit-input-placeholder { color: $light-field-placeholder-color; }
+        .x-item-disabled .x-input-el::-webkit-input-placeholder { color: $light-field-disabled-placeholder-color; }
+        .x-item-disabled .x-input-el:-ms-input-placeholder { color: $light-field-disabled-placeholder-color; }
+
+        // Label
+        .x-form-label {
+            color: $light-foreground-color;
+        }
+
+        .x-field-text,
+        .x-field-textarea,
+        .x-field-search,
+        .x-spinner,
+        .x-field-select {
+            .x-clear-icon,
+            .x-component-outer .x-input-el {
+                background-color: $light-field-background-color;
+                border-color: $light-field-border-color;
+            }
+
+            &.x-field-focused {
+                .x-clear-icon,
+                .x-component-outer .x-input-el {
+                    background-color: $light-field-focus-background-color;
+                    border-color: $light-field-focus-border-color;
+                }
+            }
+
+            &.x-item-disabled {
+                .x-clear-icon,
+                .x-component-outer .x-input-el {
+                    background-color: $light-field-disabled-background-color;
+                    border-color: $light-field-disabled-border-color;
+                }
+            }
+        }
+
+        // checkboxfield + radiofield
+        .x-field-checkbox .x-field-mask,
+        .x-field-radio .x-field-mask {
+            &:before {
+                background-color: $light-field-background-color;
+                border-color: $light-field-border-color;
+            }
+        }
+
+        .x-item-disabled {
+            &.x-field-checkbox .x-field-mask,
+            &.x-field-radio .x-field-mask {
+                &:before {
+                    background-color: $light-field-disabled-background-color;
+                    border-color: $light-field-disabled-border-color;
+                }
+            }
+
+            .x-input-checkbox:checked ~ .x-field-mask:after {
+                color: $light-field-disabled-color;
+            }
+
+            .x-input-radio:checked ~ .x-field-mask:after {
+                background-color: $light-field-disabled-color;
+            }
+        }
+
+        // Ext.field.Spinner
+        .x-spinner {
+            &.x-item-disabled {
+                .x-field-input:before,
+                .x-spinner-button {
+                    color: $light-field-disabled-color !important;
+                    border-color: $light-field-disabled-border-color !important;
+                    background-color: $light-field-disabled-background-color !important;
+                }
+            }
+
+            .x-spinner-button {
+                border-color: $light-field-border-color !important;
+
+                &:before {
+                    color: $light-field-border-color;
+                }
+            }
+
+            .x-button-pressed {
+                background-color: $light-field-background-color;
+
+                &:before {
+                    color: $light-field-color;
+                }
+            }
+        }
+
+        .x-form-fieldset-title {
+            color: $light-foreground-color;
+        }
+    }
+
+    .x-slider.x-item-disabled {
+        &:before {
+            background-color: $light-form-slider-disabled-background-color;
+        }
+
+        .x-thumb {
+            background-color: $light-form-slider-disabled-thumb-background-color;
+
+            &:before {
+                background-color: $light-form-slider-disabled-value-background-color;
+            }
+        }
+    }
+
+    .x-thumb {
+        background-color: $light-form-slider-thumb-background-color;
+    }
+
+    .x-slider:before {
+        background-color: $light-form-slider-background-color;
+    }
+
+    // togglefield
+    .x-toggle {
+        border-color: $light-form-toggle-border-color;
+
+        .x-thumb {
+            &:after {
+                background: $light-form-slider-thumb-background-color;
+            }
+        }
+    }
+
+    .x-toggle-inner {
+        background-color: $light-form-toggle-background-color;
+    }
+
+    .x-item-disabled .x-toggle {
+        border-color: $light-form-toggle-disabled-border-color;
+
+        .x-thumb {
+            &:after {
+                background: $light-form-slider-disabled-thumb-background-color;
+            }
+        }
+
+        .x-toggle-inner {
+            background-color: $light-form-toggle-disabled-background-color;
+        }
+    }
+
+    .x-toolbar {
+        background: transparent;
+    }
+}
+
+.x-sheet,
+.x-sheet-action,
+.x-msgbox,
+.x-panel.x-floating,
+.x-form.x-floating {
+    .x-button,
+    .x-clear-icon,
+    .x-input-el {
+        border-color: #000 !important;
+        background-color: #fff !important;
+
+        .x-button-label {
+            color: #000 !important;
+        }
+
+        &.x-item-disabled {
+            border-color: #bbb !important;
+
+            .x-button-label {
+                color: #bbb !important;
+            }
+        }
+    }
+
+    .x-button-pressing {
+        background-color: #000 !important;
+
+        .x-button-label {
+            color: #fff !important;
+        }
+    }
+
+    .x-list-item {
+        color: #000;
+    }
+}
+
+.x-panel-accent,
+.x-nested-list-accent,
+.x-list-accent,
+.x-container-accent {
+    background-color: $base-color;
+
+    // Title
+    .x-title {
+        color: #fff;
+    }
+
+    // Back buttons
+    .x-button-back,
+    .x-button-forward {
+        border-color: #fff !important;
+
+        &:before {
+            color: #fff;
+        }
+
+        &.x-button-pressing {
+            background: #fff !important;
+
+            &:before {
+                color: $base-color;
+            }
+        }
+    }
+
+    // Lists
+    .x-list-item-body {
+        color: #fff;
+    }
+
+    .x-item-pressed {
+        .x-dock-horizontal .x-dock-body {
+            background-color: rgba(255,255,255,.1) !important;
+
+            .x-list-item-body {
+                color: #fff !important;
+            }
+        }
+    }
+
+    .x-item-selected {
+        .x-dock-horizontal .x-dock-body {
+            background-color: #fff !important;
+
+            .x-list-item-body {
+                color: $base-color !important;
+            }
+        }
+    }
+}

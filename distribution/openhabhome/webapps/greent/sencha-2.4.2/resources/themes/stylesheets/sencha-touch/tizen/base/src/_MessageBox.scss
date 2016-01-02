@@ -1,0 +1,39 @@
+.x-msgbox {
+	padding: 0;
+	@include border-radius(0);
+	border: 0;
+
+	.x-toolbar {
+		margin-bottom: 10px;
+		&.x-docked-bottom {
+			margin-bottom: 0px;
+		}
+	}
+
+	.x-icon {
+		margin: 0 0.8em 0 0.5em;
+	}
+
+	.x-msgbox-title {
+		margin-top: 0;
+		margin-left: 0;
+		margin-right: 0;
+
+		.x-title {
+			font-size: 1.2em;
+			padding: 0px;
+			padding-left: .5em;
+		}
+	}
+
+	.x-dock-body {
+		margin: .25em;
+		margin-top: 0;
+	}
+
+	.x-msgbox-text {
+		font-size: .9em;
+		font-weight: 400;
+		text-align: left;
+	}
+}

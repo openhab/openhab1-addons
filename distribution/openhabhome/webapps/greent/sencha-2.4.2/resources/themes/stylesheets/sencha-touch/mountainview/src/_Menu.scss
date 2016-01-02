@@ -1,0 +1,17 @@
+.x-menu {
+	padding: 15px;
+	background: rgba($background-color, .8);
+
+	&.x-left,
+	&.x-right {
+		width: 200px;
+	}
+
+	.x-button {
+		margin-bottom: 15px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}

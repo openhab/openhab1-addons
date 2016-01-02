@@ -1,0 +1,105 @@
+.x-menu {
+    background: #000;
+    width: 70%;
+
+    padding: 17px 2px;
+}
+
+.x-menu-context {
+    width: 281px;
+
+    .x-button {
+        background: transparent;
+        background-image: none;
+        border: 0;
+        border-bottom: 1px solid #4c4c4c;
+        @include border-radius(0);
+        height: 60px;
+
+        &:before {
+            display: none;
+        }
+
+        &.x-button-pressing {
+            background: #66cdfe;
+        }
+
+        &:first-child {
+            border-top: 1px solid #4c4c4c;
+        }
+
+        &.x-docked-top,
+        &.x-docked-bottom {
+            border-width: 0;
+        }
+    }
+
+    .x-button-label {
+        text-align: left;
+        color: #fff;
+        font-size: 17px;
+    }
+
+    .x-button-icon {
+        margin: 0 12px 0 7px;
+        width: 2.0em;
+        height: 2.0em;
+
+        &:before {
+            font-size: 30px;
+            line-height: 28px;
+        }
+    }
+
+    &.action-over-flow {
+        width: 250px;
+    }
+}
+
+// Applicaiton menu
+.x-menu-application {
+    padding: 0 10px;
+
+    .x-button-label {
+        color: #fff;
+    }
+
+    .x-button {
+        border-width: 0 !important;
+    }
+
+    .x-button:before {
+        background: transparent !important;
+    }
+
+    .x-button-pressing {
+        background: transparent !important;
+    }
+}
+
+// overflow menu button
+.x-button.overflow {
+    width: 61px;
+    margin-left: 0;
+    margin-right: 0;
+    box-shadow: inset 3px 0px 9px -1px rgba(#000, .4) !important;
+    -webkit-box-shadow: inset 3px 0px 9px -1px rgba(#000, .4) !important;
+
+    &:before {
+        background-color: transparent !important;
+        @include box-shadow(none);
+    }
+
+    .x-button-icon:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: 30px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: theme_image('bb10', "icons/ic_overflow_action.png");
+    }
+}

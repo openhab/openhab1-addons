@@ -1,0 +1,24 @@
+/**
+ * @class Ext.Sheet
+ */
+
+.x-sheet,
+.x-sheet-action {
+	padding: $sheet-padding;
+	background-color: $sheet-bg-color;
+}
+
+.x-sheet-inner,
+.x-sheet-action-inner {
+	> .x-button {
+		margin-bottom: $sheet-button-spacing;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.x-sheet-action {
+	padding: 1.2em;
+}

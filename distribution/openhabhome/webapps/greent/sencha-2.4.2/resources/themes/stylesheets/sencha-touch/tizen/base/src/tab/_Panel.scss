@@ -1,0 +1,73 @@
+.x-tabbar {
+	min-height: 2.8em;
+	border: 0 !important;
+	border-width: 0 !important;
+	padding-top: .25em;
+	padding-bottom: .25em;
+}
+
+.x-tab {
+	height: 2.8em;
+	padding: 0 1em;
+	border: 0;
+	@include st-box-orient(vertical);
+	@include st-box-flex(1);
+
+	&:last-child {
+		border-right: 0;
+	}
+
+	.x-button-label {
+		font-size: 10pt;
+		text-transform: uppercase;
+		font-weight: bold;
+		line-height: 1em;
+	}
+
+	.x-button-icon {
+		display: block;
+		width: 100%;
+		height: 1.5em;
+		margin: 0 auto;
+		&:before {
+			font-size: 1.6em;
+		}
+	}
+
+	.x-badge {
+		top: 0px;
+		left: 65%;
+		right: auto;
+		max-width: 32%;
+		font-size: .65em;
+		line-height: 1.5em;
+	}
+}
+
+.x-tabbar.x-docked-bottom .x-tab {
+	.x-button-label {
+		font-size: 10pt;
+		text-transform: uppercase;
+		font-weight: bold;
+		line-height: 3.7em;
+	}
+	.x-button-icon {
+		display: none;
+	}
+
+	.x-badge {
+		top: 0px;
+		left: 65%;
+		right: auto;
+		max-width: 32%;
+		font-size: .65em;
+		line-height: 1.5em;
+	}
+
+	/* Active indicator on bottom docked tabs? */
+	/*
+	&.x-tab-active {
+		@include box-shadow(none);
+	}
+	*/
+}

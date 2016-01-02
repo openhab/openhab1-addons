@@ -1,0 +1,25 @@
+/**
+ * Includes default toast styles.
+ *
+ * @member Ext.Toast
+ */
+
+.x-toast {
+    padding: 0;
+    border: 1px solid #fff;
+    background: #000;
+    color: #fff;
+    @include border-radius(10px);
+}
+
+.x-form.x-floating,
+.x-panel.x-floating {
+    background: #fff;
+    padding: 0;
+    border: 0;
+}
+
+.x-toast-text {
+    padding: 20px;
+    font-size: 14px;
+}

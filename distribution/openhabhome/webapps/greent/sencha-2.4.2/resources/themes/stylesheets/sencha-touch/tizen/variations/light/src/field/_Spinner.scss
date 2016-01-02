@@ -1,0 +1,23 @@
+.x-spinner {
+    .x-spinner-button {
+				color: $light-spinner-button-color;
+
+			&.x-spinner-button-up {
+				@include background($light-spinner-button-up-background);
+			}
+
+			&.x-spinner-button-down {
+				@include background($light-spinner-button-down-background);
+			}
+    }
+
+    .x-button-pressed {
+			&.x-spinner-button-up {
+				@include background($light-spinner-button-up-pressed-background);
+			}
+
+			&.x-spinner-button-down {
+				@include background($light-spinner-button-down-pressed-background);
+			}
+    }
+}

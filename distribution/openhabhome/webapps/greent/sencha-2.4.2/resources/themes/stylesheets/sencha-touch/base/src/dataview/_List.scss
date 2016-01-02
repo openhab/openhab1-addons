@@ -1,0 +1,157 @@
+.x-list {
+    overflow: hidden;
+
+    .x-scroll-scroller {
+        max-width: 100%;
+    }
+
+    .x-list-inner {
+        width: 100% !important;
+    }
+
+    &.x-list-indexed .x-list-disclosure {
+        margin-right: 50px;
+    }
+
+    .x-item-selected .x-list-disclosure {
+        background-color: #fff;
+    }
+
+    .x-list-scrolldock-hidden {
+        display: none;
+    }
+
+    .x-list-item {
+        position: absolute !important;
+        left: 0;
+        top: 0;
+        width: 100%;
+
+        > .x-dock {
+            height: auto;
+        }
+
+        .x-dock-horizontal {
+            border-top: 1px solid #ccc;
+        }
+
+        &.x-item-selected .x-dock-horizontal,
+        &.x-item-selected.x-list-item-tpl {
+            background-color: #ccc;
+        }
+
+				&.x-item-pressed {
+					&.x-list-item-tpl,
+					.x-dock-horizontal {
+						background-color: #ddd;
+					}
+				}
+
+        .x-list-item-body,
+        &.x-list-item-tpl .x-innerhtml {
+            padding: 5px;
+        }
+
+        &.x-list-item-relative {
+            position: relative !important;
+        }
+    }
+
+    .x-list-header {
+        background-color: #eee;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        font-weight: bold;
+
+        &.x-list-item-relative {
+            position:  relative !important;
+        }
+    }
+
+    .x-list-disclosure {
+        margin: 5px 15px 5px 0;
+        overflow: visible;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #ccc;
+        background-color: #eee;
+    }
+
+    .x-list-item-tpl .x-list-disclosure {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+
+    .x-list-emptytext {
+        text-align: center;
+        pointer-events: none;
+        font-color: #333333;
+        @include st-box();
+        @include st-box-orient(vertical);
+        @include st-box-pack(center);
+    }
+
+    &.x-list-indexed .x-list-disclosure {
+        margin-right: 35px;
+    }
+
+    .x-list-scrolldockitem {
+        position: absolute !important;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+
+// Provides ability to capture events on the list
+.x-ie .x-list-grouped .x-translatable-container {
+  .x-list-item, .x-list-header {
+    &:before {
+      content: ". .";
+      color: transparent;
+      position: absolute;
+      left: 0px;
+      word-spacing: 3000px;
+      opacity: 0;
+    }
+  }
+}
+
+.x-list-header {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 2 !important;
+}
+
+.x-ios .x-list-header {
+    @include transform(translate3d(0, 0, 0));
+}
+
+.x-list-grouped .x-list-item.x-list-header-wrap .x-dock-horizontal,
+.x-list-grouped .x-list-item-tpl.x-list-header-wrap {
+    border-top: 0;
+}
+
+.x-list-inlineblock {
+    .x-list-item {
+        display: inline-block !important;
+    }
+}
+
+.x-list-nowrap {
+    .x-list-inner {
+        width: auto;
+    }
+
+    .x-list-container {
+        white-space: nowrap !important;
+    }
+}
+
+.x-list-item-dragging {
+    border-bottom: 1px solid #ccc;
+    background: #fff !important;
+    z-index: 1;
+}

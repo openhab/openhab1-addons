@@ -1,0 +1,24 @@
+/**
+ * @class Ext.Media
+ */
+
+.x-video {
+    height: 100%;
+    width: 100%;
+    background-color: #000;
+}
+
+.x-video > * {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.x-video-ghost {
+    -webkit-background-size: 100% auto;
+    background: #000 url() center center no-repeat;
+}
+
+audio {
+	width: 100%;
+}

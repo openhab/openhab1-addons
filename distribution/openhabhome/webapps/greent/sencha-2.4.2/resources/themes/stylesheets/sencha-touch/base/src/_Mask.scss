@@ -1,0 +1,99 @@
+/**
+ * @class Ext.Mask
+ */
+
+.x-mask {
+    min-width: 8.5em;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    z-index: 10;
+
+    @include st-box;
+    @include st-box-align(center);
+    @include st-box-pack(center);
+
+    background: rgba(0,0,0,.3) center center no-repeat;
+
+    &.x-mask-gray {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    &.x-mask-transparent {
+        background-color: transparent;
+    }
+
+    .x-mask-inner {
+        position: relative;
+        background: rgba(0, 0, 0, .25);
+        color: #fff;
+        text-align: center;
+        padding: .4em;
+        font-size: .95em;
+        font-weight: bold;
+    }
+
+    .x-loading-spinner-outer {
+        @include st-box;
+        @include st-box-orient(vertical);
+        @include st-box-align(center);
+        @include st-box-pack(center);
+        width: 100%;
+        min-width: 8em;
+        height: 8em;
+    }
+
+    &.x-indicator-hidden {
+        .x-mask-inner {
+            padding-bottom: 0 !important;
+        }
+        .x-loading-spinner-outer {
+            display: none;
+        }
+
+        .x-mask-message {
+            position: relative;
+            bottom: .25em;
+        }
+    }
+
+    .x-mask-message {
+        position: absolute;
+        bottom: 5px;
+        color: #333;
+        left: 0;
+        right: 0;
+        @include st-box-flex(0);
+    }
+
+    &.x-has-message {
+        .x-mask-inner {
+            padding-bottom: 2em;
+        }
+
+        .x-loading-spinner-outer {
+            height: 168px;
+        }
+    }
+}
+
+.x-ie .x-mask {
+    // Input fields always get focus in IE mobile when tapping on them even if they are overlapped by other elements.
+    // So we need to hide them when oberlay opens over the inputs.
+    &[visibility='visible'],
+    &:not(.x-item-hidden) {
+        ~ div:not(.x-mask),
+        ~ div:not(.x-panel),
+        ~ div:not(.x-floating),
+        ~ div:not(.x-center),
+        ~ div:not(.x-msgbox) {
+            .x-input-el {
+                visibility: collapse;
+            }
+        }
+    }
+}

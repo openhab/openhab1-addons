@@ -1,0 +1,44 @@
+/**
+ * @class Ext.field.Checkbox
+ */
+
+@mixin checkmark($color: #000){
+    @extend .x-checkmark-base;
+    color: $color;
+}
+
+.x-checkmark-base {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    bottom: 0;
+    content: '3';
+    font-family: 'Pictos';
+    font-size: 1.3em;
+    text-align: right;
+    line-height: 1.9em;
+}
+
+.x-field-checkbox .x-field-mask,
+.x-field-radio .x-field-mask {
+    &::after {
+        @include checkmark($form-light);
+    }
+}
+
+.x-input-checkbox,
+.x-input-radio {
+    visibility: hidden;
+}
+
+.x-input-el:checked + .x-field-mask::after {
+    color: #324f85;
+}
+
+.x-item-disabled {
+    &.x-field-checkbox {
+        .x-input-checkbox:checked + .x-field-mask::after {
+            color: mix($form-light, #324f85, 60);
+        }
+    }
+}

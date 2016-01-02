@@ -1,0 +1,95 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+@include icon('check2');
+@include icon('delete');
+
+.x-picker {
+    .x-toolbar {
+        padding-top: .5em;
+    }
+
+    background-color: $background-color;
+}
+
+.x-picker .x-picker-inner {
+    margin: $sheet-padding;
+
+    @if $dark-theme {
+        background-color: $background-color;
+    }
+
+    .x-picker-slot {
+        .x-body {
+            border-width: 0;
+        }
+
+        &.x-last {
+            .x-body {
+                border-left: 0;
+                border-right: 0;
+            }
+        }
+    }
+}
+
+.x-picker-bar {
+    height: $picker-row-height + 10px;
+}
+
+.x-use-titles .x-picker-bar {
+    margin-top: 400px;
+}
+
+.x-picker-slot-title {
+    position:relative;
+    z-index: 2;
+    background-color: $dialog-color;
+
+    > div {
+        font-weight: 700;
+        padding: 0 5px;
+        font-size: $font-size-normal;
+        text-transform: uppercase;
+        color: $foreground-color;
+    }
+}
+
+.x-picker-slot {
+    .x-dataview-item {
+        margin: 10px 5px;
+        height: $picker-row-height;
+        font-weight: bold;
+        padding: 0 10px;
+        color: color-by-background($background-color, 60);
+        border: 1px solid color-by-background($background-color, 30);
+        line-height: $picker-row-height;
+
+        &.x-item-selected {
+            color: color-by-background($base-color);
+            background: $base-color;
+            border-color: $base-color;
+        }
+
+        &.x-item-pressed {
+            color: color-by-background($base-color);
+        }
+    }
+
+    .x-picker-item {
+        font-size: $font-size-medium-large;
+    }
+}
+
+.x-picker-right {
+    text-align: right;
+}
+
+.x-picker-center {
+    text-align: center;
+}
+
+.x-picker-left {
+    text-align: left;
+}

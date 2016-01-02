@@ -1,0 +1,102 @@
+/**
+ * @class Ext.layout.Dock
+ */
+
+.x-dock {
+    @include st-box();
+
+    > .x-dock-body {
+        overflow: hidden;
+    }
+
+    &.x-sized, &.x-sized > .x-dock-body > *,
+    &.x-sized > .x-dock-body > .x-body > .x-inner {
+        @include absolute-fit();
+    }
+
+    &.x-sized > .x-dock-body {
+        position: relative;
+        @include st-box();
+        @include st-box-flex(1);
+        min-height: 0;
+        min-width: 0;
+    }
+
+    &.x-unsized,
+    &.x-stretched {
+        height: 100%;
+        
+        > .x-dock-body {
+            position: relative;
+            @include st-box();
+            @include st-box-flex(1);
+            @include st-box-orient(vertical);
+            min-height: 0;
+            min-width: 0;
+
+            > * {
+                @include st-box-flex(1);
+                min-height: 0;
+                min-width: 0;
+            }
+        }
+    }
+
+    &.x-dock-vertical {
+        @include st-box-orient(vertical);
+    }
+
+    &.x-dock-horizontal {
+        @include st-box-orient(horizontal, important);
+
+        > .x-dock-item {
+            @include st-box();
+
+            &.x-sized {
+                > .x-inner, > .x-body {
+                    @include absolute-fit();
+                }
+            }
+
+            &.x-unsized {
+                @include st-box-orient(vertical);
+
+                > * {
+                    @include st-box-flex(1);
+                    min-height: 0;
+                    min-width: 0;
+                }
+            }
+        }
+    }
+}
+
+// Platform specific code
+
+.x-ie {
+    .x-stretched {
+        &.x-dock-horizontal {
+            > .x-dock-body {
+                width: 0;
+            }
+        }
+
+        &.x-dock-vertical {
+            > .x-dock-body {
+                height: 0;
+            }
+        }
+    }
+
+    .x-has-width > .x-dock.x-unsized.x-dock-horizontal {
+        > .x-dock-body {
+            width: 0;
+        }
+    }
+
+    .x-has-height > .x-dock.x-unsized.x-dock-vertical {
+        > .x-dock-body {
+            height: 0;
+        }
+    }
+}

@@ -1,0 +1,21 @@
+@include font-face('Tizen Regular', inline-font-files('tizen/TizenSansRegular.ttf', truetype));
+@include font-face('Tizen Medium', inline-font-files('tizen/TizenSansMedium.ttf', truetype));
+@include icon-font('Tizen Icon', inline-font-files('tizen/tizen-icon.ttf', truetype, 'tizen/tizen-icon.woff', woff, 'tizen/tizen-icon.svg', svg));
+
+@include icon('back', 'b', 'Tizen Icon');
+@include icon('disclosure', 'c', 'Tizen Icon');
+
+body,
+html {
+	font-family: "Tizen Regular";
+	font-size: 100%;
+
+	&.tizenThemeTransition * {
+		transition: background 1s !important;
+	}
+}
+
+input,
+textarea {
+    font-family: "Tizen Regular";
+}

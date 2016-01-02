@@ -1,0 +1,43 @@
+.x-indexbar-wrapper {
+    @include st-box-pack(end, important);
+    pointer-events: none;
+}
+
+.x-indexbar {
+    pointer-events: auto;
+    z-index: 2;
+    min-height: 0 !important;
+    height: auto !important;
+
+    @include st-box-flex(0, auto, important);
+
+    > div {
+        font-size: 0.6em;
+        text-align: center;
+        line-height: 1.1em;
+        font-weight: bold;
+        display: block;
+    }
+}
+
+.x-indexbar-vertical {
+    width: 15px;
+    @include st-box-orient(vertical);
+    margin-right: 15px;
+}
+
+.x-indexbar-horizontal {
+    height: 15px;
+    @include st-box-orient(horizontal);
+}
+
+.x-phone.x-landscape .x-indexbar {
+    > div {
+        font-size: 0.38em;
+        line-height: 1em;
+    }
+}
+
+.x-indexbar-pressed {
+    background-color: #ccc;
+}

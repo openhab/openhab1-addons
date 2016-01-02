@@ -1,0 +1,75 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+.x-picker {
+    @include background-image(linear-gradient(top, rgba(#949bab, .9), rgba(#292a39, .9)));
+
+    .x-dock-body {
+        @include box-shadow(inset 0 1px 0 rgba(#fff, .2));
+    }
+
+    .x-toolbar {
+        border-top: 1px solid;
+        @include box-shadow(inset 0 1px 0 rgba(#fff, .2));
+    }
+}
+
+.x-picker .x-picker-inner {
+    background-color: #fff;
+    border: 1px solid #000000;
+    overflow: hidden;
+    margin: .6em;
+
+    @include box-shadow(0 1px 0 rgba(#fff, .2));
+    @include background-image(linear-gradient(top, #414245 0%, #f3f3f4 30%, #fff 50%, #f3f3f4 70%, #414245 100%));
+    @include border-radius($picker-sheet-radius);
+    @include background-clip(padding-box);
+}
+
+.x-picker-slot .x-scroll-view {
+    @include box-shadow(rgba(#000,.4) -1px 0 1px);
+
+    &:first-child {
+        @include box-shadow(none);
+    }
+}
+
+.x-picker-bar {
+    border-top: .12em solid rgba(#3f4757, .7);
+    border-bottom: .12em solid rgba(#3f4757, .7);
+    height: $picker-row-height;
+    // @include background-gradient(hsla(hue($active-color), 90, 50, .3), $picker-bar-gradient);
+    
+    @include box-shadow(rgba(#000,0.2) 0 .2em .2em);
+    @include background-image(linear-gradient(top, rgba(#dadfee, .45) 0%, rgba(#adb4d0, .45) 50%, rgba(#a0a7c4, .45) 51%, rgba(#abafce, .45) 100%));
+}
+
+.x-use-titles {
+    .x-picker-bar {
+        margin-top: 1.5em;
+    }
+}
+
+.x-picker-slot-title {
+    height: 1.5em;
+    // border-top: 1px solid $picker-title-bg-color;
+    // border-bottom: 1px solid darken($picker-title-bg-color, 20%);
+    padding: 0.2em 1.02em;
+
+    @include box-shadow(rgba(0, 0, 0, 0.3) 0px .1em .3em);
+
+    > div {
+        font-size: 0.8em;
+        // color: $picker-title-color;
+    }
+}
+
+.x-picker-slot {
+    .x-dataview-item {
+        height: $picker-row-height;
+        line-height: $picker-row-height;
+        font-weight: bold;
+        padding: 0 10px;
+    }
+}

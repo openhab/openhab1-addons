@@ -1,0 +1,19 @@
+.x-mask .x-mask-inner {
+	position: relative;
+	background: #fff;
+	color: $ios7-blue;
+	text-align: center;
+	padding: .4em;
+	font-size: .95em;
+	font-weight: 400;
+	@include border-radius(7px);
+
+	.x-mask-message {
+		color: $ios7-blue;
+		bottom: 15px;
+	}
+
+	.x-loading-spinner > span {
+		margin-left: -.065em;
+	}
+}

@@ -1,0 +1,54 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+.x-picker {
+	background-color: #fff;
+
+	.x-toolbar {
+		border-top: 1px solid #d9d9d9;
+		@include border-radius(0);
+	}
+}
+
+.x-picker .x-picker-inner {
+	background-color: #fff;
+	overflow: hidden;
+	margin: 0px;
+}
+
+.x-picker-bar {
+	border-top: .12em solid #d9d9d9;
+	border-bottom: .12em solid #d9d9d9;
+	height: $picker-row-height;
+}
+
+.x-use-titles {
+	.x-picker-bar {
+		margin-top: 1.5em;
+	}
+}
+
+.x-picker-slot-title {
+	height: 1.5em;
+	padding: 0.2em 1.02em;
+
+	> div {
+		font-size: 0.8em;
+	}
+}
+
+.x-picker-slot {
+	.x-dataview-item {
+		height: $picker-row-height;
+		line-height: $picker-row-height;
+		font-weight: bold;
+		padding: 0 10px;
+		//color: #aaaaaa;
+		color: #000;
+
+		&.x-item-selected {
+			color: #000;
+		}
+	}
+}

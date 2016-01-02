@@ -1,0 +1,25 @@
+.x-slider-multiple, .x-item-disabled {
+	.x-thumb:before {
+		background: transparent;
+		background-image: none;
+		@include box-shadow(none);
+	}
+}
+
+.x-thumb {
+	background: transparent none;
+
+	&:after {
+		@include background($light-slider-thumb-background);
+	}
+
+	&:before {
+		background-color: $light-slider-track-fill-background-color;
+	}
+}
+
+
+// Create the slider track
+.x-slider:before {
+	background-color: $light-slider-track-background-color;
+}

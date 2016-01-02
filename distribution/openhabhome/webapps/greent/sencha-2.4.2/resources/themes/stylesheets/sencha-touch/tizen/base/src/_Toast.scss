@@ -1,0 +1,12 @@
+.x-toast {
+	padding: 0;
+	@include border-radius(0);
+	border: 0;
+
+	.x-toast-text {
+        padding: 1em;
+		font-size: .9em;
+		font-weight: 400;
+		text-align: center;
+	}
+}

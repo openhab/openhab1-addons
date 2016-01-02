@@ -1,0 +1,105 @@
+$default-gradient: null;
+
+/**
+ * @class Global_CSS
+ */
+
+/**
+ * Includes the default styles for toolbar buttons, mostly used as a helper function.
+ *
+ * @param {color} $bg-color Base color to be used for the button.
+ */
+@mixin toolbar-button($bg-color) {
+  &,
+  .x-toolbar & {
+    border: 2px solid $foreground-color;
+    background-color: $bg-color;
+
+    &,
+    &.x-button-back:after,
+    &.x-button-forward:after {
+      background-color: $bg-color;
+    }
+
+    &.x-button-pressing,
+    &.x-button-pressed,
+    &.x-button-active {
+      &,
+      &:after {
+        color: $bg-color;
+        background-color: $foreground-color;
+      }
+    }
+  }
+}
+
+/**
+ * Creates a background gradient for masked elements, based on the lightness of their background.
+ *
+ * @param {color} $bg-color Background color of element.
+ * @param {percent} $percent Contrast of the new gradient to its background.
+ * @param {percent} $style Gradient style of the gradient.
+ * @see background-gradient
+ *
+ */
+@mixin mask-by-background($bg-color, $contrast: 100%, $style: $base-gradient) {
+  @if (lightness($bg-color) > 50) { @include background-gradient(darken($bg-color, $contrast), $style) }
+  @else { @include background-gradient(lighten($bg-color, $contrast), $style) }
+}
+
+
+@mixin readable-color($color, $contrast: 100) {
+  @if lightness(lighten($color, 100 - $contrast)) > 30 {
+      color: $color;
+      fill: $color;
+  } @else {
+      color: darken(lighten($color, 100 - $contrast), 30);
+      fill: darken(lighten($color, 100 - $contrast), 30);
+  }
+}
+
+/**
+* TextBlock styles
+*/
+@mixin phone-text-normal(){
+  font-family: $phone-font-family-normal;
+  font-size: $font-size-normal;
+  color: $foreground-color;
+}
+
+@mixin phone-text-title1(){
+  font-family: $phone-font-family-semilight;
+  font-size: $font-size-extra-large;
+  color: $foreground-color;
+}
+
+@mixin phone-text-subtle(){
+  font-family: $phone-font-family-normal;
+  font-size: $font-size-normal;
+  color: $phone-subtle-color;
+}
+
+@mixin phone-text-title2(){
+  font-family: $phone-font-family-semilight;
+  font-size: $phone-font-size-large;
+  color: $foreground-color;
+}
+
+@mixin phone-text-title3(){
+  font-family: $phone-font-family-semilight;
+  font-size: $font-size-medium;
+  color: $foreground-color;
+}
+
+@mixin phone-text-accent(){
+  font-family: $phone-font-family-semibold;
+  font-size: $font-size-normal;
+  color: $base-color;
+}
+
+@mixin fieldset-instructions() {
+  color: #666666;
+  font-size: .8em;
+  text-align: left;
+  margin: 0.7em 0 0.3em 0;
+}

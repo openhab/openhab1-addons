@@ -1,0 +1,16 @@
+.x-msgbox {
+	background-color: $dark-msgbox-background-color;
+	@include box-shadow(0px 0px 0px 2px $dark-msgbox-border-color);
+
+	.x-toolbar {
+		background-color: $dark-msgbox-toolbar-background-color;
+	}
+
+	.x-icon {
+		background: $dark-msgbox-icon-color;
+	}
+
+	.x-msgbox-text {
+		color: $dark-msgbox-text-color;
+	}
+}

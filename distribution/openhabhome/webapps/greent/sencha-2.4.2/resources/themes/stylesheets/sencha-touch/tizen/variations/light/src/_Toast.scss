@@ -1,0 +1,8 @@
+.x-toast {
+	background-color: $light-msgbox-background-color;
+	@include box-shadow(0px 0px 0px 2px $light-msgbox-border-color);
+
+	.x-toast-text {
+		color: $light-msgbox-text-color;
+	}
+}

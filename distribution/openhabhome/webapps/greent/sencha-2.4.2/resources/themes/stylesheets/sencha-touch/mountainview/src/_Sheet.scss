@@ -1,0 +1,11 @@
+.x-sheet-action {
+	padding: 15px;
+
+	.x-button {
+		margin-bottom: 15px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}

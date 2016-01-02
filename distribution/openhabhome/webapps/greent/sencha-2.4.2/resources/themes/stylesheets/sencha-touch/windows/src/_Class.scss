@@ -1,0 +1,51 @@
+body {
+    color: $foreground-color;
+
+    input {
+        font-family: "Segoe UI", "HelveticaNeue", Helvetica, Arial, sans-serif;
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-family: "Segoe UI Light", "HelveticaNeue-light", Helvetica, Arial, sans-serif;
+    }
+
+    h4,
+    h5 {
+        font-family: "Segoe UI Semibold", "HelveticaNeue-bold", Helvetica, Arial, sans-serif;
+    }
+
+    h1 { font-size: 42pt; line-height: 50pt; }
+    h2 { font-size: 20pt; line-height: 22pt; }
+    h3 { font-size: 20pt; line-height: 22pt; }
+
+    &,
+    h4,
+    h5,
+    p {
+        font-size: 11pt;
+        line-height: 16pt;
+    }
+
+    &,
+    p {
+        font-family: "Segoe UI Semilight", "HelveticaNeue-light", Helvetica, Arial, sans-serif;
+    }
+}
+
+.x-layout-card-item {
+    background: $background-color;
+}
+
+@if $dark-theme {
+    .x-html,
+    .x-html h1,
+    .x-html h2,
+    .x-html h3,
+    .x-html h4,
+    .x-html h5,
+    .x-html h6 {
+        color: #eee;
+    }
+}

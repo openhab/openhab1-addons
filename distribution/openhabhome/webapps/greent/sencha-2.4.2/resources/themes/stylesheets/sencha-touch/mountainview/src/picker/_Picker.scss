@@ -1,0 +1,43 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+.x-picker {
+    background: $background-color;
+}
+
+.x-picker .x-dock-body {
+    padding: 15px;
+}
+
+.x-picker-bar {
+    border-top: 2px solid $base-color;
+    border-bottom: 2px solid $base-color;
+    height: 50px;
+
+    @include box-shadow(0 0 0 61px rgba($background-color, .8));
+}
+
+.x-use-titles {
+    .x-picker-bar {
+        margin-top: 55px;
+    }
+}
+
+.x-picker-slot-title {
+    padding: 15px;
+    border-bottom: 2px solid $base-color;
+    font-size: 20px;
+    font-weight: normal;
+    color: $base-color;
+}
+
+.x-picker-slot {
+    .x-dataview-item {
+        color: $primary-text-color;
+        font-size: 16px;
+        height: 50px;
+        line-height: 50px;
+        padding: 0 10px;
+    }
+}

@@ -1,0 +1,34 @@
+.x-toolbar {
+	background-color: $light-toolbar-background-color;
+	color: $light-toolbar-color;
+
+	.x-button {
+		border-color: $light-toolbar-button-border-color;
+		background-color: transparent;
+		background: none;
+		border-left-style: solid;
+		border-left-color: $light-toolbar-button-separator-color;
+
+		&.x-button-pressing {
+			.x-button-label {
+				color: $light-toolbar-button-label-pressing-color;
+			}
+
+			.x-button-icon {
+				&:before {
+					color: $light-toolbar-button-icon-pressing-color;
+				}
+			}
+		}
+
+		.x-button-icon {
+			&:before {
+				color: $light-toolbar-button-icon-color;
+			}
+		}
+	}
+}
+
+.x-title {
+	color: $light-title-color;
+}

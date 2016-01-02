@@ -1,0 +1,104 @@
+.x-slider {
+    height: 3em;
+
+    overflow: hidden;
+    @include border-radius(5px);
+		& > * {
+			top: .25em;
+		}
+
+    &:before {
+        top: 16px;
+        @include background(linear-gradient(color-stops(#dadada, #e1e1e1)));
+        @include box-shadow(inset 0 2px 2px rgba(#000, .1));
+        border: 1px solid #ccc;
+        margin: .25em 0 0 0;
+    }
+
+    .x-thumb {
+        margin-top: .25em;
+    }
+
+    &.x-item-disabled {
+        &:before {
+            @include background(linear-gradient(color-stops(#fff, #e1e1e1)));
+            border-color: #ddd;
+            box-shadow: none;
+        }
+
+        .x-thumb {
+            &:before {
+                @include background(linear-gradient(color-stops(#c5c5c5, #c0c0c0)));
+                border-color: #b2b2b2;
+                box-shadow: none;
+            }
+
+            &:after {
+                @include insertion(1em, 1em, .5em, .5em);
+            }
+        }
+    }
+
+	.x-thumb-pressing {
+		&:after {
+			@include background(linear-gradient(color-stops(#3595CC, #0678C4)));
+			border: 0;
+			@include box-shadow(none);
+		};
+		.x-thumb-inner {
+			@include background-image(radial-gradient(center, ellipse cover, rgba(0,0,0,0) 40%, #0678C4 100%));
+			width: 3em;
+			height: 3em;
+			position: absolute;
+			top: -.5em;
+			left: -.5em;
+			border-radius: 3em;
+		}
+	}
+}
+
+.x-toggle,
+.x-slider-multiple {
+    .x-thumb:before {
+        border: 0;
+        background: transparent;
+        background-image: none;
+        @include box-shadow(none);
+				width: 0px;
+    }
+}
+
+.x-thumb {
+    width: 2em;
+    height: 2em;
+    background: transparent none;
+    border: 0;
+
+    &:after {
+        border: 1px solid #bbb;
+        @include insertion(2em, 2em, 0, 0);
+        @include background(linear-gradient(color-stops(#fff, #E4E2E4)));
+        @include box-shadow(inset 0 0 0 1px #fff);
+        @include border-radius(1em);
+    }
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        width: 5000px;
+        right: 1em;
+        height: 8px;
+        border: 1px solid #3177A4;
+        @include background(linear-gradient(color-stops(#3595CC, #0678C4)));
+        @include box-shadow(0 0 0 1px #CECFCE);
+    }
+}
+
+.x-thumb.x-item-disabled {
+    &:after {
+        @include background(linear-gradient(color-stops(#c0c0c0, #c0c0c0)));
+        border-color: #919191;
+        @include box-shadow(inset 0 0 1px rgba(#fff, 1));
+    }
+}

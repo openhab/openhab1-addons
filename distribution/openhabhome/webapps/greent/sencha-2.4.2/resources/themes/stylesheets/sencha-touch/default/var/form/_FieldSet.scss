@@ -1,0 +1,33 @@
+/**
+ * @class Ext.form.FieldSet
+ */
+
+/**
+ * @var {measurement} $form-fieldset-radius
+ * Default border-radius for form fieldsets.
+ */
+$form-fieldset-radius: .4em !default;
+
+ /**
+ * @var {color} $form-fieldset-border-color
+ * Default fieldset border color.
+ */
+$form-fieldset-border-color: $form-light !default;
+
+ /**
+ * @var {measurement} $form-fieldset-border-width
+ * Default fieldset border width.
+ */
+$form-fieldset-border-width: 1px !default;
+
+/**
+ * @var {boolean} $form-fieldset-title-text-shadow
+ * Default text shadow setting for the fieldset title.
+ */
+$form-fieldset-title-text-shadow: true !default;
+
+/**
+ * @var {color} $form-fieldset-title-color
+ * Default text color setting for the fieldset title.
+ */
+$form-fieldset-title-color: $form-dark !default;

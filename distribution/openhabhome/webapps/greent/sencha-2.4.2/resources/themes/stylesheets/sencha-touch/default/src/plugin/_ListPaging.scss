@@ -1,0 +1,18 @@
+/**
+ * @class Ext.plugin.ListPaging
+ */
+
+.x-list-paging {
+    padding: 1em 0;
+
+    .x-list-paging-msg {
+        color: $active-color;
+        @if $include-border-radius {
+            @include border-radius(6px);
+        }
+    }
+
+    &.x-loading {
+        padding: 0.5em;
+    }
+}

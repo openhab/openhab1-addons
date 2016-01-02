@@ -1,0 +1,57 @@
+/**
+ * @class Ext.Button
+ */
+
+/**
+ * @var {measurement} $button-height Default height for buttons.
+ */
+$button-height: 1.8em;
+
+/**
+ * @var {measurement} $button-radius
+ * Default border-radius for buttons. Please note, you can only use `em` as a value here.
+ */
+$button-radius: .4em !default;
+
+/**
+ * @var {measurement} $button-stroke-weight Default border width for buttons.
+ */
+$button-stroke-weight: 1px !default;
+
+/**
+ * @var {string} $button-gradient Default gradient for buttons.
+ */
+$button-gradient: $base-gradient !default;
+
+/**
+ * @var {string} $toolbar-icon-size Default size (width and height) for toolbar icons.
+ */
+$toolbar-icon-size: 1.4em !default;
+
+/**
+ * @var {boolean} $include-button-uis Optionally disable separate button UIs, including action, confirm, and decline.
+ */
+$include-button-uis: $include-default-uis !default;
+
+/**
+ * @var {boolean} $include-button-highlights Optionally disable special CSS3 effects on buttons including gradients, text-shadows, and box-shadows.
+ */
+$include-button-highlights: $include-highlights !default;
+
+/**
+ * @var {font-family} $button-font-family
+ * The font-family to be used for the buttons.
+ */
+$button-font-family: $font-family !default;
+
+/**
+ * @var {measurement} $button-font-size
+ * Size of the font used for the buttons.
+ */
+$button-font-size: 1em !default;
+
+/**
+ * @var {measurement} $button-line-height
+ * Size of the lines for the text inside the buttons. Adjusts button height.
+ */
+$button-line-height: 1.2em !default;

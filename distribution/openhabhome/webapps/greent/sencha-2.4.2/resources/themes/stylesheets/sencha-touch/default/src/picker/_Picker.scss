@@ -1,0 +1,79 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+.x-picker .x-picker-inner {
+    background-color: #fff;
+    overflow: hidden;
+    margin: $sheet-padding;
+
+    @if $include-border-radius {
+        @include border-radius($picker-sheet-radius);
+    }
+    @include background-clip(padding-box);
+
+    @if $include-picker-highlights {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bbbbbb), color-stop(30%,#ffffff), color-stop(70%,#ffffff), color-stop(100%,#bbbbbb));
+        background: -webkit-linear-gradient(top,  #bbbbbb 0%,#ffffff 30%,#ffffff 70%,#bbbbbb 100%);
+    }
+}
+
+.x-picker-slot .x-scroll-view {
+    @if $include-highlights {
+        @include box-shadow(rgba(#000,.4) -1px 0 1px);
+    }
+
+    &:first-child {
+        @include box-shadow(none);
+    }
+}
+
+.x-picker-bar {
+    border-top: .12em solid $picker-active-border-color;
+    border-bottom: .12em solid $picker-active-border-color;
+    height: $picker-row-height;
+    @include background-gradient(hsla(hue($active-color), 90, 50, .3), $picker-bar-gradient);
+
+    @if $include-highlights {
+        @include box-shadow(rgba(#000,0.2) 0 .2em .2em);
+    }
+}
+
+.x-use-titles {
+    .x-picker-bar {
+        margin-top: 1.5em;
+    }
+}
+
+.x-picker-slot-title {
+    height: 1.5em;
+    border-top: 1px solid $picker-title-bg-color;
+    border-bottom: 1px solid darken($picker-title-bg-color, 20%);
+    padding: 0.2em 1.02em;
+
+    @include box-shadow(rgba(0, 0, 0, 0.3) 0px .1em .3em);
+    @include background-gradient($picker-title-bg-color, $picker-title-bg-gradient);
+
+    > div {
+        font-size: 0.8em;
+        color: $picker-title-color;
+        @if $include-picker-highlights {
+            @include bevel-text('light');
+        }
+    }
+}
+
+.x-picker-slot {
+    border-left: 2px solid #acacac;
+
+    .x-dataview-item {
+        height: $picker-row-height;
+        line-height: $picker-row-height;
+        font-weight: bold;
+        padding: 0 10px;
+    }
+
+    &:first-child {
+        border-left: 0;
+    }
+}

@@ -1,0 +1,66 @@
+.x-field {
+	padding: .5em .5em;
+
+	.x-field-input {
+		position: relative;
+		min-width: 3.7em;
+	}
+
+	.x-field-input,
+	.x-input-el {
+		width: 100%;
+	}
+}
+
+.x-field-text,
+.x-field-textarea,
+.x-field-number,
+.x-field-search,
+.x-spinner,
+.x-field-select {
+	.x-clear-icon,
+	.x-component-outer .x-input-el {
+		border: 0px;
+	}
+
+	&.x-field-focused {
+		.x-clear-icon,
+		.x-component-outer .x-input-el {
+			border-width: 1px;
+			border-style: solid;
+		}
+	}
+
+	&.x-item-disabled {
+		.x-clear-icon,
+		.x-component-outer .x-input-el {
+			opacity: $disabled-opacity;
+		}
+	}
+}
+
+.x-clear-icon {
+	border-left: 0 !important;
+}
+
+.x-input-el {
+	padding: .2em;
+	min-height: 30px;
+	border-width: 0;
+	-webkit-appearance: none !important;
+	-ms-appearance: none !important;
+	appearance: none !important;
+}
+
+.x-item-disabled {
+	.x-input-el {
+		opacity: $disabled-opacity;
+	}
+}
+
+.x-container.x-floating {
+	.x-field {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}

@@ -1,0 +1,7 @@
+$light-spinner-button-color: $light-primary-background-color !default;
+
+$light-spinner-button-up-background: $winset-green !default;
+$light-spinner-button-up-pressed-background: darken($winset-green, 20%) !default;
+
+$light-spinner-button-down-background: $light-color-dark-sandstone !default;
+$light-spinner-button-down-pressed-background: darken($light-color-dark-sandstone, 20%) !default;

@@ -1,0 +1,320 @@
+//// Toolbar icons used with permission from Drew Wilson
+//// http://pictos.drewwilson.com/
+//// Pictos icons are (c) 2010 Drew Wilson
+
+/**
+ * @class Ext.Button
+ */
+
+$button-border-radius: 5px;
+
+.x-button {
+    height: 35px;
+    padding: 0 3px;
+    border-color: #CECACE;
+    @include border-radius($button-border-radius);
+    @include background(linear-gradient(color-stops(#C6C3C6, #E7E7E7)));
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
+        left: 1px;
+        border: 1px solid #B9B7B9;
+        @include border-radius(4px);
+        @include background(linear-gradient(color-stops(#FFFFFF, #DEDFDE)));
+    }
+
+    .x-button-label {
+        color: #252525;
+    }
+}
+
+.x-button-icon {
+    width: 40px;
+    height: 40px;
+    background-size: 36px;
+    background-position: bottom center;
+}
+
+.x-button-pressing {
+    border-color: #5E5E5E;
+    @include background(linear-gradient(color-stops(#404040, #858585)));
+
+    &:before {
+        border-color: #565656;
+        @include background(linear-gradient(color-stops(#2E85A1, #0C8AB2)));
+    }
+
+    .x-button-label {
+        color: #FAFAFA;
+    }
+}
+
+.x-button-round,
+.x-button-decline-round,
+.x-button-confirm-round {
+    @include border-radius(20px);
+
+    &:before {
+        @include border-radius(19px);
+    }
+}
+
+.x-button-label {
+    position: relative;
+    font-size: 14px;
+    padding: 0 5px;
+}
+
+.x-badge {
+    right: 5px;
+}
+
+// Toolbar buttons
+
+.x-toolbar {
+    .x-button {
+        margin: 0 5px;
+        padding: 0 10px;
+    }
+}
+
+.x-toolbar-light {
+    .x-button {
+        border-color: #0A5A88;
+        @include background(linear-gradient(color-stops(#05608F, #04557F)));
+        @include box-shadow(0 0 0 1px #1C79AD);
+
+        &:before {
+            border-color: #10618A;
+            @include background(linear-gradient(color-stops(#3498CB, #0974A8)));
+            @include box-shadow(inset 0 1px 0 0 #55AAD5);
+        }
+    }
+
+    .x-button-label {
+        color: #fff;
+    }
+
+    .x-button-pressed,
+    .x-button-pressing {
+        border-color: #061C27;
+        @include background(linear-gradient(color-stops(#020C10, #0A2B3B)));
+        @include box-shadow(0 0 0 1px #3889B7);
+
+        &:before {
+            border-color: #0A2532;
+            @include background(linear-gradient(color-stops(#122D3A, #0D4662)));
+            @include box-shadow(inset 0 -1px 0 0 #1B4E64);
+        }
+    }
+}
+
+.x-toolbar-dark {
+    .x-button,
+    .x-button-pressing {
+        border-color: #060606;
+        @include background(linear-gradient(color-stops(#010101, #060606)));
+        @include box-shadow(0 0 0 1px #393939);
+
+        &:before {
+            border-color: #010101;
+            @include background(linear-gradient(color-stops(#404040, #262626)));
+            @include box-shadow(inset 0 1px 0 0 #404040);
+        }
+    }
+
+    .x-button-label {
+        color: #fff;
+    }
+
+    .x-button-pressed,
+    .x-button-pressing {
+        &:before {
+            @include background(linear-gradient(color-stops(#235F71, #0D6681)));
+            @include box-shadow(inset 0 -1px 0 0 #176982);
+        }
+    }
+}
+
+.x-toolbar-plain,
+.x-toolbar-neutral {
+    .x-button-pressed,
+    .x-button-pressing {
+        .x-button-label {
+            color: #fff;
+        }
+
+        &:before {
+            @include background(linear-gradient(color-stops(#235F71, #0D6681)));
+            @include box-shadow(inset 0 -1px 0 0 #176982);
+        }
+    }
+}
+
+// Back button
+
+.x-toolbar .x-button-back,
+.x-toolbar .x-button-forward {
+    height: 100%;
+    margin: 0 !important;
+    border: 0;
+    @include border-radius(0);
+    @include box-shadow(none);
+    background: transparent;
+    background-image: none;
+    @include st-box-orient(vertical);
+    overflow: hidden;
+
+    .x-button-icon {
+        margin: 0 auto;
+        display: block;
+        height: 42px;
+        background-image: theme_image('bb10', "icons/ic_previous.png");
+        background-size: 30px;
+        background-position: center 8px;
+
+        &:before {
+            content: '';
+        }
+    }
+
+    &:before {
+        background: transparent;
+        background-image: none;
+    }
+
+    &.x-button-pressed,
+		&.x-button-pressing {
+        background: transparent;
+        background-image: none;
+
+        &:before {
+            background: transparent;
+            background-image: none;
+        }
+    }
+
+    &.x-button-pressing .x-badge {
+			display: block !important;
+			position: absolute;
+			left: 0px;
+			width: 4px;
+			top: 4px;
+			bottom: 4px;
+			border-radius: 0px;
+			padding: 0px;
+			border: 0px;
+			min-width: 4px;
+    }
+
+		.x-button-label {
+			margin: 0 0 3px;
+			font-size: 10px;
+			line-height: 12px;
+			min-width: 29px;
+		}
+
+    .x-landscape & {
+        .x-button-icon {
+            margin-top: 8px;
+            background-position: center 4px;
+        }
+    }
+}
+
+.x-toolbar .x-button-back {
+    padding: 0 30px 0 14px;
+    
+    &:before {
+        @include rotate(10deg);
+        right: 6px;
+        top: -15px;
+        bottom: -15px;
+        border-color: #0f76c2;
+        border-width: 0 2px 0 0;
+        @include border-radius(0);
+    }
+}
+
+.x-toolbar .x-button-forward {
+    padding: 0 14px 0 20px;
+
+    &:before {
+        @include rotate(-6deg);
+        left: 5px;
+        top: -5px;
+        bottom: -5px;
+        border-color: $base-color;
+        border-width: 0 0 0 2px;
+        @include border-radius(0);
+    }
+
+    .x-button-icon {
+        background-image: theme_image('bb10', "icons/ic_next.png");
+    }
+}
+
+// Badges
+
+.x-hasbadge {
+    overflow: visible;
+}
+
+.x-badge {
+    background-color: #0378B2;
+    border: 1px solid #0796D0;
+    @include border-radius(3px);
+    color: #fff;
+    padding: 1px 3px;
+    right: -2px;
+    top: -2px;
+}
+
+// Icons
+
+.x-button-icon {
+    width: 1.5em;
+    height: 1.5em;
+
+    &:before {
+        color: #fff;
+        font-size: 24px;
+        line-height: .9em;
+    }
+}
+
+@if $include-default-icons {
+    @include icon('calendar');
+    @include icon('action');
+    @include icon('add');
+    @include icon('arrow_down');
+    @include icon('arrow_left');
+    @include icon('arrow_right');
+    @include icon('arrow_up');
+    @include icon('compose');
+    @include icon('delete');
+    @include icon('organize');
+    @include icon('refresh');
+    @include icon('reply');
+    @include icon('search');
+    @include icon('settings');
+    @include icon('star');
+    @include icon('trash');
+    @include icon('maps');
+    @include icon('locate');
+    @include icon('home');
+    @include icon('bookmarks');
+    @include icon('download');
+    @include icon('favorites');
+    @include icon('info');
+    @include icon('more');
+    @include icon('time');
+    @include icon('user');
+    @include icon('team');
+    @include icon('list');
+}

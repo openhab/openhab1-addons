@@ -1,0 +1,69 @@
+/**
+ * @class Ext.field.Select
+ */
+
+@mixin selectmark($color: #000){
+    @extend .x-selectmark-base;
+    background-color: $color;
+}
+
+.x-webkit .x-selectmark-base {
+    @include insertion(1em, 1em, 50%, auto);
+    right: ($form-spacing + .1em);
+    -webkit-mask-size: 1em;
+    -webkit-mask-image: theme_image('default', "pictos/arrow_down.png");
+    margin-top: -.5em;
+}
+
+// Create the dropdown arrow
+// for select fields
+.x-field-select {
+    position: relative;
+    z-index: 1;
+
+    .x-component-outer {
+        &:after {
+            z-index: 2;
+            @include selectmark($form-light);
+        }
+
+        &:before,
+        &:after {
+            pointer-events: none;
+            position: absolute;
+            display: block;
+        }
+
+        &:before {
+            // z-index: 1;
+            // @include insertion(4em,auto,0,auto);
+            // right: 0;
+            // bottom: 0;
+
+            // @if $include-border-radius {
+            //     @include border-right-radius($form-fieldset-radius);
+            // }
+            // @if $include-highlights {
+            //     @include background-image(linear-gradient(left, color-stops(rgba(255,255,255,0), white .5)));
+            // }
+        }
+    }
+}
+
+// Overlay
+
+.x-select-overlay {
+    .x-list-item-label {
+        height: 2.6em;
+    }
+
+    .x-item-selected {
+        .x-list-label {
+            margin-right: 2.6em;
+        }
+
+        &.x-list-item::after {
+            @include checkmark($form-light);
+        }
+    }
+}

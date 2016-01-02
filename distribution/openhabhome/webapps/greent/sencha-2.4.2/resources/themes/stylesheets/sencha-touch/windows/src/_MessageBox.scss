@@ -1,0 +1,93 @@
+/**
+ * Includes default message box styles.
+ */
+
+.x-msgbox {
+    max-height: 90%;
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    margin: 0;
+    max-width: 100%;
+
+    > .x-dock {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .x-msgbox-buttons {
+        .x-toolbar-inner {
+            @include st-box-pack(end, important);
+        }
+    }
+
+    .x-title {
+        color: #000;
+        padding: 0 !important;
+    }
+
+    //icons
+    .x-icon {
+        margin: 0 20px 0 0;
+
+        &:before {
+            line-height: 45px;
+            font-size: 42px;
+        }
+    }
+
+    .x-msgbox-info {
+        @include inline-icon('info');
+    }
+
+    .x-msgbox-warning {
+        @include inline-icon('warning_black');
+    }
+
+    .x-msgbox-question {
+        @include inline-icon('help');
+    }
+
+    .x-msgbox-error {
+        @include inline-icon('delete_black1');
+    }
+
+    .x-title {
+        font-size: $font-size-medium-large;
+        font-weight: normal;
+        line-height: 1.4em;
+        margin: 0;
+    }
+
+    .x-toolbar {
+        padding: 0;
+        margin-bottom: 0;
+
+        .x-button {
+            margin: 0 0 0 5px;
+        }
+    }
+
+    .x-field {
+        margin: 6px 0 !important;
+        min-height: 2em;
+        background: #fff;
+    }
+
+    .x-form-field {
+        min-height: 32px;
+        padding-right: 0 !important;
+        -webkit-appearance: none;
+    }
+}
+
+.x-msgbox-title {
+    padding: 0 !important;
+}
+
+.x-msgbox-text {
+    color: #000;
+    padding: 10px 0;
+    text-align: left;
+    line-height: 1.4em;
+}

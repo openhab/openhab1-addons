@@ -1,0 +1,9 @@
+/**
+ * @class Ext.Button
+ */
+
+/**
+ * @var {boolean} $include-button-uis
+ * Optionally disable separate button UIs, including action, confirm, and decline.
+ */
+$include-button-uis: $include-default-uis !default;

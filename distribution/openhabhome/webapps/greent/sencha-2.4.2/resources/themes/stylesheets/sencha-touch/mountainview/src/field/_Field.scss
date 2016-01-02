@@ -1,0 +1,194 @@
+/**
+ * @class Ext.field.Field
+ */
+
+// Private variables
+$form-clear-size: 2.2em;
+
+.x-field {
+    padding: $form-spacing * 2;
+    min-height: $form-field-height;
+
+    &:last-child {
+        border-bottom: 0;
+    }
+}
+
+.x-field-text,
+.x-field-textarea,
+.x-field-search,
+.x-field-select,
+.x-field-number {
+    .x-component-outer {
+        border-bottom: 1px solid $foreground-color;
+
+        &:before,
+        &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 4px;
+            background: $foreground-color;
+        }
+
+        &:after {
+            left: 1px;
+            right: 1px;
+            background: $background-color;
+        }
+    }
+
+    &.x-field-focused {
+        .x-component-outer {
+            border-bottom-color: $base-color;
+
+            &:before {
+                background: $base-color;
+            }
+
+            &:after {
+                left: 2px;
+                right: 2px;
+                bottom: 1px;
+            }
+        }
+    }
+}
+
+.x-field-search .x-component-outer .x-field-input {
+    padding-left: 14px;
+
+    &::before {
+        position: absolute;
+        content: 's';
+        top: 0;
+        bottom: 0;
+        left: 0;
+        color: $secondary-text-color;
+        text-align: left;
+        font-family: 'Pictos';
+        font-size: 22px;
+        line-height: 44px;
+        padding-left: 7px;
+    }
+}
+
+.x-field-input {
+    .x-clear-icon {
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        margin-right: 7px;
+        margin-top: -10px;
+        background: transparent;
+
+        &::before {
+            position: absolute;
+            content: 'D';
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            color: $secondary-text-color;
+            font-family: 'Pictos';
+            font-size: 22px;
+        }
+    }
+}
+
+.x-input-el {
+  font-size: 16px;
+  background: transparent;
+  padding: .4em;
+  min-height: $form-field-height;
+  border-width: 0;
+  -webkit-appearance: none;
+  color: $primary-text-color;
+  -webkit-text-fill-color: $primary-text-color !important;
+}
+
+
+.x-field-search .x-input-el  {
+  padding: .4em .4em .4em 1em;
+}
+
+.x-ie .x-input-el {
+  background: transparent;
+}
+
+.x-item-disabled {
+  .x-form-label,
+  input,
+  .x-input-el,
+  .x-spinner-body,
+  select,
+  textarea,
+  .x-field-clear-container {
+    color: #b3b3b3;
+    -webkit-text-fill-color: #b3b3b3 !important;
+    pointer-events: none;
+  }
+}
+
+.x-item-disabled ::-webkit-input-placeholder {
+    color: $foreground-color;
+}
+
+.x-item-disabled .x-form-label {
+    color: #aaa;
+}
+
+.x-item-disabled .x-form-label:after {
+    color: #666 !important;
+}
+
+.x-field-text,
+.x-field-textarea,
+.x-field-search,
+.x-field-select,
+.x-field-number {
+  &.x-item-disabled {
+    .x-component-outer {
+      border-bottom-color: $secondary-color;
+
+      &:before {
+        background: $secondary-color;
+      }
+    }
+  }
+}
+
+.x-toolbar {
+    .x-field {
+        padding: 5px;
+    }
+}
+
+.x-field-select {
+    .x-component-outer .x-field-input {
+        overflow: hidden;
+
+        &::before {
+            z-index: 5;
+            content: '';
+            position: absolute;
+            right: -10px;
+            bottom: -1px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid $foreground-color;
+        }
+    }
+
+    &.x-item-disabled {
+        .x-component-outer .x-field-input {
+            &::before {
+                border-bottom-color: $secondary-color;
+            }
+        }
+    }
+}

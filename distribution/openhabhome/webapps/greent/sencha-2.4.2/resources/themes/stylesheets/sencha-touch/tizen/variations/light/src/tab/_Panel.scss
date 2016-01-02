@@ -1,0 +1,19 @@
+.x-tabbar {
+	background: $light-tabbar-background-color;
+}
+
+.x-tab-pressed {
+	.x-button-label, .x-button-icon {
+		color: $light-tab-pressing-color;
+	}
+}
+
+.x-tab-active {
+	@include box-shadow(0px 7px 0px -3px $light-tab-active-bottom-border-color);
+}
+
+.x-tab {
+	background: transparent;
+	border-right: 1px solid $light-tab-border-color;
+}
+

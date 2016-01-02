@@ -1,0 +1,26 @@
+/**
+ * @class Ext.form.FieldSet
+ */
+
+.x-form-fieldset {
+    background: $background-color;
+
+    .x-form-fieldset-inner {
+        background: transparent;
+        border: 0;
+    }
+}
+
+.x-form-fieldset-title {
+    @include label();
+    border-bottom: 2px solid $foreground-color;
+    color: $secondary-text-color;
+    padding: $form-spacing;
+    margin: 0 $form-spacing * 2;
+}
+
+.x-form-fieldset-instructions {
+    color: $secondary-text-color;
+    margin: .5em 0 1em;
+    font-size: .8em;
+}

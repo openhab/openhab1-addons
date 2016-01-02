@@ -1,0 +1,59 @@
+.x-ios-7.x-standalone .x-menu {
+	padding-top: 35px;
+}
+
+.x-menu {
+	padding: 15px;
+	border: 1px solid #ccc;
+	border-width: 0;
+	@include box-shadow(inset 0 1px 0 rgba(255, 255, 255, .3));
+	background-color: #fff;
+
+	.x-button {
+		margin-bottom: 7px;
+
+		&:before {
+			content: '';
+			display: block;
+			position: absolute;
+			bottom: -1px;
+			left: 1em;
+			right: 0px;
+			border-type: solid;
+			border-color: $list-item-border-color;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	&.x-left,
+	&.x-right {
+		width: 220px;
+	}
+
+	&.x-left {
+		&:before {
+			border-right-width: 1px;
+		}
+	}
+
+	&.x-right {
+		&:before {
+			border-left-width: 1px;
+		}
+	}
+
+	&.x-top {
+		&:before {
+			border-bottom-width: 1px;
+		}
+	}
+
+	&.x-bottom {
+		&:before {
+			border-top-width: 1px;
+		}
+	}
+}

@@ -1,0 +1,105 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+.x-sheet.x-picker {
+    padding: 0;
+}
+
+.x-sheet.x-picker .x-sheet-inner {
+    background-color: #fff;
+    overflow: hidden;
+
+    .x-picker-slot {
+        .x-body {
+            border-left: 1px solid #999999;
+            border-right: 1px solid #ACACAC;
+        }
+
+        &.x-first {
+            .x-body {
+                border-left: 0;
+            }
+        }
+
+        &.x-last {
+            .x-body {
+                border-left: 0;
+                border-right: 0;
+            }
+        }
+    }
+}
+
+.x-picker-slot .x-scroll-view {
+    z-index: 2;
+    position: relative;
+}
+
+.x-picker-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    @include st-box;
+    @include st-box-align(stretch);
+    @include st-box-orient(vertical);
+    @include st-box-pack(center);
+    pointer-events: none;
+}
+
+.x-picker-slot-title {
+    position: relative;
+    z-index: 2;
+
+    > div {
+        @include ellipsis;
+        font-weight: bold;
+    }
+}
+
+.x-picker-slot {
+    .x-dataview-inner {
+        width: 100% !important;
+    }
+
+    .x-dataview-item {
+        vertical-align: middle;
+        height: 30px;
+        line-height: 30px;
+
+        &.x-item-selected {
+            font-weight: bold;
+        }
+    }
+
+    .x-picker-item {
+        @include ellipsis();
+    }
+}
+
+.x-ie .x-picker-item {
+    cursor: default;
+}
+
+.x-ie .x-picker-item::before{
+    content: ". .";
+    color: transparent;
+    position: absolute;
+    left: 0px;
+    word-spacing: 3000px;
+}
+
+.x-picker-right {
+    text-align: right;
+}
+
+.x-picker-center {
+    text-align: center;
+}
+
+.x-picker-left {
+    text-align: left;
+}

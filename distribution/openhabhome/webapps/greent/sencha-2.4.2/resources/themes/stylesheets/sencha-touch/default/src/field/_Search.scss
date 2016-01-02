@@ -1,0 +1,27 @@
+/**
+ * @class Ext.field.Search
+ */
+
+.x-field-search {
+    .x-field-input {
+        position: relative;
+
+        @include inline-icon('search');
+
+        &:before {
+            color: #ccc;
+            top: .7em;
+            left: .5em;
+            font-size: 1.1em;
+            right: auto;
+
+            .x-toolbar & {
+                top: .3em;
+            }
+        }
+
+        .x-form-field {
+            margin-left: 1em;
+        }
+    }
+}

@@ -1,0 +1,300 @@
+.x-grid {
+    .x-grid-header-container {
+        border-width: 0 1px 1px 0;
+        border-style: solid;
+        height: 65px;
+        font-weight: bold;
+        overflow: hidden;
+
+        .x-grid-column {
+            display: inline-block;
+        }
+
+        .x-grid-header-container-inner {
+            width: 100000px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    }
+
+    .x-grid-column {
+        height: 64px;
+        border-width: 1px 1px 0 1px;
+        border-style: solid;
+        line-height: 64px;
+        vertical-align: middle;
+        padding: 0 8px;
+
+        .x-innerhtml {
+            display: inline-block;
+            width: auto;
+            position: relative;
+        }
+
+        &.x-column-sorted-asc,
+        &.x-column-sorted-desc {
+            .x-innerhtml:after {
+                position: absolute;
+                width: 12px;
+                line-height: 64px;
+                top: 0;
+                height: 64px;
+                font-family: 'Pictos';
+                font-size: 12px;
+            }
+        }
+
+        &.x-column-align-left,
+        &.x-column-align-center {
+            .x-innerhtml:after {
+                right: -16px;
+            }
+        }
+        &.x-column-align-right .x-innerhtml:after {
+            left: -16px;
+        }
+
+        &.x-column-sorted-asc .x-innerhtml:after {
+            content: icon-character-for-name('up');
+        }
+        &.x-column-sorted-desc .x-innerhtml:after {
+            content: icon-character-for-name('down');
+        }
+    }
+
+    .x-grid-headergroup {
+        display: inline-block;
+        position: relative;
+        vertical-align: bottom;
+        height: 64px;
+        padding-top: 32px;
+
+        .x-inner > .x-innerhtml {
+            height: 32px;
+            line-height: 28px;
+            vertical-align: middle;
+            display: block;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .x-grid-column {
+            height: 32px !important;
+            line-height: 27px !important;
+            font-size: 0.7em;
+
+            &.x-column-sorted-asc,
+            &.x-column-sorted-desc {
+                .x-innerhtml:after {
+                    line-height: 27px;
+                    height: 27px;
+                }
+            }
+        }
+    }
+
+    .x-grid-row {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-width: 0 0 1px 0;
+        border-style: solid;
+    }
+
+    .x-grid-cell {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 60px;
+        padding: 0 8px;
+        height: 60px;
+        overflow: hidden;
+        border-width: 0 1px 0 0;
+    }
+
+    .x-grid-cell-align-center,
+    .x-grid-column-align-center {
+        text-align: center;
+    }
+
+    .x-grid-cell-align-right,
+    .x-grid-column-align-right {
+        text-align: right;
+    }
+
+    .x-grid-viewoptions {
+        border-width: 0 0 0 1px;
+        border-style: solid;
+
+        .x-list-item .x-innerhtml {
+            padding: 0px !important;
+        }
+
+        .x-column-options-header {
+            height: 32px;
+            line-height: 28px;
+            vertical-align: middle;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            padding-left: 10px;
+        }
+
+        .x-column-options-sortablehandle,
+        .x-column-options-visibleindicator,
+        .x-column-options-folder,
+        .x-column-options-leaf {
+            width: 40px;
+            height: 48px;
+            position: absolute;
+            bottom: 0;
+
+            &:after {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                text-align: center;
+                font-size: 24px;
+                font-family: 'Pictos';
+                line-height: 48px;
+                content: icon-character-for-name('list');
+                vertical-align: middle;
+            }
+        }
+
+        .x-column-options-sortablehandle {
+            left: 0;
+            &:after {
+                line-height: 54px;
+            }
+        }
+        .x-column-options-visibleindicator {
+            right: 0;
+            &:after {
+                font-size: 30px;
+                line-height: 54px;
+                content: icon-character-for-name('eye');
+            }
+        }
+
+        .x-column-options-folder,
+        .x-column-options-leaf {
+            width: 30px;
+            left: 40px;
+
+            &:after {
+                line-height: 52px;
+                content: icon-character-for-name('folder');
+            }
+        }
+
+        .x-column-options-leaf:after {
+            content: icon-character-for-name('file');
+        }
+
+        .x-list-item.x-item-selected.x-list-item-tpl  {
+            background: transparent;
+            .x-innerhtml {
+                background: transparent;
+            }
+        }
+
+        .x-column-options-text {
+            display: block;
+            height: 30px;
+            margin: 10px 50px 5px 80px;
+            position: relative;
+            vertical-align: middle;
+            line-height: 28px;
+        }
+    }
+
+    .x-grid-columnoptions {
+        border-width: 0 0 1px;
+    }
+
+    .x-grid-multiselection-column {
+        position: relative;
+        padding: 0;
+
+        &:after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 64px;
+            line-height: 64px;
+            font-family: 'Pictos';
+            font-size: 26px;
+            text-align: center;
+            content: icon-character-for-name('check');
+        }
+    }
+
+    .x-grid-multiselection-cell {
+        position: relative;
+        padding: 0;
+
+        &:after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            font-family: 'Pictos';
+            font-size: 20px;
+            text-align: center;
+            content: icon-character-for-name('minus2');
+        }
+    }
+
+    .x-item-selected .x-grid-multiselection-cell:after {
+        content: icon-character-for-name('check2');
+    }
+
+    .x-grid-pagingtoolbar {
+        > .x-body {
+            padding: 0 30px 0 50px;
+        }
+    }
+
+    .x-grid-pagingtoolbar-currentpage {
+        position: relative;
+        height: 22px;
+
+        span {
+            position: absolute;
+            right: 0;
+            top: 0;
+            line-height: 22px;
+            height: 22px;
+        }
+    }
+
+    .x-grid-summaryrow {
+        height: 32px;
+        font-size: 0.8em;
+        position: relative;
+
+        .x-grid-cell {
+            height: 32px;
+            line-height: 30px;
+            border-width: 0 0 1px;
+            border-style: solid;
+        }
+    }
+
+    .x-grid-summaryrow .x-grid-multiselection-cell:after {
+        content: '';
+    }
+}

@@ -1,0 +1,33 @@
+/**
+ * @class Ext.picker.Picker
+ */
+
+/**
+ * @var {measurement} $picker-row-height
+ * The height of each picker item
+ */
+$picker-row-height: 2.5em !default;
+
+/**
+ * @var {measurement} $picker-active-border-color
+ * The height of each picker item
+ */
+$picker-active-border-color: red !default;
+
+/**
+ * @var {measurement} $picker-sheet-radius
+ * The border radius size for the picker sheet
+ */
+$picker-sheet-radius: .4em !default;
+
+/**
+ * @var {color} $picker-title-color
+ * The color for picker titles
+ */
+// $picker-title-color: darken(desaturate($base-color, 10%), 25%) !default;
+
+/**
+ * @var {color} $picker-title-bg-color
+ * The background color for picker titles
+ */
+// $picker-title-bg-color: lighten(saturate($base-color, 10%), 5%) !default;

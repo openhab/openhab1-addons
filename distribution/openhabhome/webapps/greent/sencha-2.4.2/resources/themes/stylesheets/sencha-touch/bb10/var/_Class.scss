@@ -1,0 +1,181 @@
+///**
+// * @class Global_CSS
+// *
+// * Global CSS variables and mixins of Sencha Touch.
+// */
+
+$base-color: #0AACE5 !default;
+$dark-color: #2D2D2D !default;
+
+$include-default-icons: true !default;
+
+/**
+ * @var {color} $loading-spinner-color
+ * Background-color for the bars in the loading spinner.
+ */
+$loading-spinner-color: #aaa !default;
+
+///**
+// * @var {boolean} $include-html-style
+// * Optionally remove included HTML styles/typography (for components with styleHtmlContent: true).
+// * Styles are scoped to .x-html. Set t o false to reduce CSS weight.
+// */
+//$include-html-style: true !default;
+
+///**
+// * @var {boolean} $include-default-icons
+// * Optionally remove the default icon set which includes the following toolbar and tab bar icons: action,
+// * add, arrow_down, arrow_left, arrow_right, arrow_up, bookmarks, compose, delete, download, favorites,
+// * home, info, locate, maps, more, organize, refresh, reply, search, settings, star, team, time, trash,
+// * and user. Set to false to reduce CSS weight.
+// */
+//$include-default-icons: true !default;
+
+///**
+// * @var {boolean} $include-form-sliders
+// * Decides if default HTML styles are included (for components with styleHtmlContent: true). Class is applied to .x-html.
+// */
+//$include-form-sliders: true !default;
+
+///**
+// * @var {boolean} $include-floating-panels
+// * Decides whether or not to include floating panels (useful to disable for iPhone applications which do not typically have floating menus).
+// */
+//$include-floating-panels: true !default;
+
+///**
+// * @var {boolean} $include-default-uis
+// * Decides whether or not to include the default UIs for all components.
+// */
+//$include-default-uis: true !default;
+
+///**
+// * @var {color} $active-color
+// * Color used for elements like selected rows, "action" UIs (eg. on buttons) and certain overlays like the picker mask.
+// */
+////$active-color: darken(saturate($base-color, 55%), 10%) !default;
+
+///**
+// * @var {color} $page-bg-color
+// * Background color for fullscreen components.
+// */
+////$page-bg-color: #eee !default;
+
+///**
+// * @var {measurement} $global-row-height
+// * The minimum row height for items like toolbars.
+// */
+//$global-row-height: 2.6em !default;
+
+///**
+// * @var {measurement} $global-row-height
+// * The minimum row height for items like toolbars.
+// */
+//$global-list-height: 46px !default;
+
+
+///**
+// * theme settings
+// */
+////$theme-dark: 'dark';
+////$theme-light: 'light';
+////$theme: $theme-dark !default;
+
+////$theme-name: 'windows-phone'+'/'+$theme;
+
+///**
+// * color styles
+// */
+
+
+
+//$dark-theme: true !default;
+
+//$dialog-color: #1F1F1F;
+
+
+
+///**
+// * @var {color} $base-color
+// * The primary color variable from which most elements derive their color scheme.
+// */
+//$base-color: rgba(145,0,145,1) !default; // Triton Blue
+
+//// Light theme
+//$background-color: #fff;
+//$foreground-color: #111;
+//$inactive-color: #ddd;
+
+//// Form fields
+//$field-background-color: #fff;
+//$field-border-color: #BABABA;
+//$field-color: #000;
+//$field-placeholder-color: #7A7A7A;
+//$field-focus-background-color: #fff;
+//$field-focus-border-color: #5C5C5C;
+//$field-disabled-background-color: #EAEAEA;
+//$field-disabled-border-color: #D9D9D9;
+//$field-disabled-color: #9F9F9F;
+//$field-disabled-placeholder-color: #BDBDBD;
+
+//$form-slider-background-color: #C6C6C6;
+//$form-slider-value-background-color: $base-color;
+//$form-slider-thumb-background-color: #000;
+//$form-slider-disabled-background-color: #DBDBDB;
+//$form-slider-disabled-value-background-color: #BABABA;
+//$form-slider-disabled-thumb-background-color: #A0A0A0;
+
+//$form-toggle-background-color: #A6A6A6;
+//$form-toggle-border-color: #A6A6A6;
+//$form-toggle-thumb-background-color: $form-slider-thumb-background-color;
+//$form-toggle-disabled-background-color: #E0E0E0;
+//$form-toggle-disabled-border-color: #CCCCCC;
+//$form-toggle-disabled-thumb-background-color: #A6A6A6;
+
+//// Dark theme
+//@if ($dark-theme) {
+//    $background-color: #111;
+//    $foreground-color: #fff;
+//    $inactive-color: #666;
+
+//    // Form fields
+//    $field-background-color: #D2D2D2;
+//    $field-border-color: #D2D2D2;
+//    $field-color: rgba(0,0,0,.8);
+//    $field-placeholder-color: rgba(0,0,0,.6);
+//    $field-focus-background-color: #FFFFFF;
+//    $field-focus-border-color: #FFFFFF;
+//    $field-disabled-background-color: #1D1D1D;
+//    $field-disabled-border-color: #777777;
+//    $field-disabled-color: rgba(255,255,255,.4);
+//    $field-disabled-placeholder-color: rgba(255,255,255,.2);
+
+//    $form-slider-background-color: #6C6C6C;
+//    $form-slider-value-background-color: $base-color;
+//    $form-slider-thumb-background-color: #fff;
+//    $form-slider-disabled-background-color: #383838;
+//    $form-slider-disabled-value-background-color: #535353;
+//    $form-slider-disabled-thumb-background-color: #7E7E7E;
+
+//    $form-toggle-background-color: #6B6B6B;
+//    $form-toggle-border-color: #6C6C6C;
+//    $form-toggle-thumb-background-color: $form-slider-thumb-background-color;
+//    $form-toggle-disabled-background-color: #383838;
+//    $form-toggle-disabled-border-color: #4A4A4A;
+//    $form-toggle-disabled-thumb-background-color: #6C6C6C;
+//}
+
+//$form-slider-height: 11px;
+
+//$alert-color: red !default;
+//$confirm-color: #92cf00 !default; // Green
+
+///**
+//* font sizes
+//*/
+//$font-size-small: 10pt;
+//$font-size-normal: 11pt;
+//$font-size-medium: 15pt;
+//$font-size-medium-large: 17pt;
+//$font-size-large: 19pt;
+//$font-size-extra-large: 24pt;

@@ -1,0 +1,52 @@
+$loading-spinner-offset: ($loading-spinner-size/2) - ($loading-spinner-arm-thickness / 2) - $loading-spinner-circle-thickness;
+
+.x-mask {
+	background: rgba(0, 0, 0, 0.6) center center no-repeat;
+	.x-mask-inner {
+		.x-loading-spinner {
+			.x-loading-top {
+				display: block;
+				width: $loading-spinner-size;
+				height: $loading-spinner-size;
+				border-radius: $loading-spinner-size;
+				position: relative;
+				&:before {
+					width: $loading-spinner-arm-thickness;
+					height: $loading-spinner-size/2;
+					content: '';
+					position: absolute;
+					top: $loading-spinner-offset;
+					left: $loading-spinner-offset;
+					@include transform-origin($loading-spinner-arm-thickness/2, $loading-spinner-arm-thickness/2);
+					@include transform(rotate(0deg));
+				}
+			}
+		}
+	}
+}
+
+.x-mask:not(.x-item-hidden) .x-loading-top:before {
+	$animation-support: webkit, moz, o, ms, not khtml;
+	@include experimental('animation-name', tizen-throbber, $animation-support);
+	@include experimental('animation-duration', 4s, $animation-support);
+	@include experimental('animation-timing-function', linear, $animation-support);
+	@include experimental('animation-iteration-count', infinite, $animation-support);
+}
+
+@-webkit-keyframes tizen-throbber {
+	to {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@-moz-keyframes tizen-throbber {
+	to {
+		-moz-transform: rotate(360deg);
+	}
+}
+
+@keyframes tizen-throbber {
+	to {
+		transform: rotate(360deg);
+	}
+}

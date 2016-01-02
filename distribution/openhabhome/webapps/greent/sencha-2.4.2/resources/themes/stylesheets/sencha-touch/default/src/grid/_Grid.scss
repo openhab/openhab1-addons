@@ -1,0 +1,124 @@
+// Default grid styling
+.x-grid {
+    background-color: #fff !important;
+
+    .x-grid-header-container {
+        border-color: #d7d7d7;
+        background-color: #f5f5f5;
+        color: #000000;
+
+        .x-grid-column-resizing {
+            background-color: #D2EDFE;
+        }
+    }
+
+    .x-grid-column {
+    	border-color: #fff #d7d7d7 #d7d7d7 #fff;
+
+        &.x-column-sorted-asc,
+        &.x-column-sorted-desc {
+            color: #1464AE;
+        }
+    }
+
+    .x-grid-headergroup .x-inner > .x-innerhtml {
+        border-color: #fff #d7d7d7 #d7d7d7 #fff;
+    }
+
+    .x-grid-row {
+    	border-color: #d7d7d7;
+        color: #000;
+
+        &.x-grid-item-odd {
+            background-color: #fafafa;
+        }
+
+        &.x-item-selected {
+            background-color: #D2EDFE;
+        }
+    }
+
+    .x-grid-cell {
+        border-color: #d7d7d7
+    }
+
+    .x-grid-viewoptions {
+        background-color: #fff;
+        border-color: #C0C0C0;
+
+        .x-column-options-header {
+            background: #1464AE;
+            border-color: #fff #d7d7d7 #d7d7d7 #fff;
+            color: #fff;
+        }
+
+        .x-column-options-sortablehandle,
+        .x-column-options-visibleindicator,
+        .x-column-options-folder,
+        .x-column-options-leaf {
+        	color: #C0C0C0;
+        }
+
+        .x-column-options-sortablehandle {
+            color: #aaa;
+        }
+
+        .x-column-options-text {
+            color: #C0C0C0;
+        }
+
+        .x-list-item.x-item-selected.x-list-item-tpl  {
+            border-top-color: #ccc;
+
+            .x-column-options-text {
+                color: #000;
+            }
+
+            .x-column-options-visibleindicator:after {
+                color: #1464AE;
+            }
+
+            .x-column-options-sortablehandle:after {
+                color: #aaa;
+            }
+
+            .x-column-options-folder:after,
+            .x-column-options-leaf:after {
+                color: #91E698;
+            }
+        }
+    }
+
+    .x-grid-columnoptions {
+        border-color: #d7d7d7;
+    }
+
+    .x-grid-multiselection-column {
+    	color: #C0C0C0;
+
+        &.x-grid-multiselection-allselected:after {
+            color: #1464AE !important;
+        }
+    }
+
+    .x-grid-multiselection-cell {
+    	color: #C0C0C0;
+    }
+
+    .x-item-selected .x-grid-multiselection-cell:after {
+        color: #1464AE;
+    }
+
+    .x-grid-pagingtoolbar {
+        border-top-color: #d7d7d7;
+    }
+
+    .x-grid-summaryrow {
+        background-color: #1464AE;
+        color: #fff;
+
+        .x-grid-cell {
+            border-color: #C0C0C0;
+        }
+    }
+}

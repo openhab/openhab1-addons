@@ -1,0 +1,86 @@
+.x-grid {
+	.x-grid-row {
+		border-color: #d7d7d7;
+
+	    &.x-grid-item-odd {
+	        background-color: #222222;
+	    }
+
+	    &.x-item-selected {
+	        background-color: #910091;
+	    }
+	}
+
+	.x-grid-viewoptions {
+	    background-color: #000;
+
+		.x-list-item.x-list-item-tpl {
+			color: #aaa;
+		}
+
+	    .x-column-options-text {
+	        margin: 5px 50px 5px 80px;
+	    }
+
+	    .x-list-item-dragging {
+			background-color: #000 !important;
+			border-color: #000 !important;
+	    }
+
+	    .x-list-item.x-item-selected.x-list-item-tpl  {
+	        .x-column-options-text {
+	            color: #fff;
+	        }
+
+	        .x-column-options-visibleindicator:after {
+	            color: #910091;
+	        }
+
+	        .x-column-options-sortablehandle:after {
+	            color: #fff;
+	        }
+
+	        .x-column-options-folder:after,
+	        .x-column-options-leaf:after {
+	            color: #fff;
+	        }
+	    }
+	}
+
+	.x-grid-multiselection-column {
+	    &.x-grid-multiselection-allselected:after {
+	        color: #910091 !important;
+	    }
+	}
+
+	.x-grid-pagingtoolbar {
+	    > .x-body {
+	        padding: 0 50px;
+	    }
+
+	    .x-button {
+	    	margin: 6px 6px 0;
+	    }
+	}
+
+	.x-grid-pagingtoolbar-currentpage {
+	    position: relative;
+	    height: 22px;
+
+	    span {
+	        position: absolute;
+	        right: 0;
+	        top: 0;
+	        line-height: 22px;
+	        height: 22px;
+	    }
+	}
+
+	.x-grid-summaryrow {
+	    background-color: #505050;
+
+	    .x-grid-cell {
+	        border-color: #C0C0C0;
+	    }
+	}
+}

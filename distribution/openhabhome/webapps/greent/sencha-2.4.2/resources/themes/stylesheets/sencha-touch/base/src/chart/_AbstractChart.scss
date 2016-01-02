@@ -1,0 +1,139 @@
+.x-android-3 .x-surface-wrap, .x-android-3 .x-surface-wrap > * {
+  -webkit-perspective: 1;
+}
+
+.x-draw-component {
+  position: relative;
+  .x-inner {
+    overflow: hidden;
+  }
+}
+
+.x-surface {
+  position: absolute;
+}
+
+.x-chart-watermark {
+  opacity: 0.5;
+  z-index: 9;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 4px 6px;
+  font-family: "Helvetica";
+  font-size: 12px;
+  position: absolute;
+  border-top-left-radius: 4px;
+  white-space:nowrap;
+  -webkit-border-top-left-radius: 4px;
+}
+
+$legend-border-color: #ccc !default;
+$legend-border: 1px solid $legend-border-color !default;
+$legend-background-color: #fff !default;
+$legend-z-index: 10 !default;
+$legend-item-border: 1px solid rgba($legend-border-color, .5) !default;
+$legend-item-background: rgba(#fff, 0) !default;
+$legend-item-color: #333 !default;
+$marker-size: .8em !default;
+
+.x-legend {
+  .x-legend-inner {
+    .x-legend-container {
+      @include border-radius(5px);
+      border: $legend-border;
+      background: $legend-background-color;
+
+      //@if (lightness($legend-background-color) > 30) {
+      //  @include box-shadow(rgba(#fff, .6) 0 1px 1px);
+      //} @else {
+      //  @include box-shadow(rgba(#fff, .2) 0 1px 0);
+      //}
+      .x-legend-item {
+        padding: .8em 1em .8em $marker-size + 1em;
+        color: $legend-item-color;
+        background: $legend-item-background;
+        max-width: 20em;
+        min-width: 0;
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: bold;
+        white-space: nowrap;
+        position: relative;
+
+        .x-legend-inactive {
+          @include opacity(.3);
+        }
+
+        .x-legend-item-marker {
+          position: absolute;
+          width: $marker-size;
+          height: $marker-size;
+          @include border-radius($marker-size/2);
+          @include box-shadow(rgba(#fff, .3) 0 1px 0, rgba(#000, .4) 0 1px 0 inset);
+          left: .7em;
+          top: 1em;
+        }
+      }
+    }
+  }
+  
+  &.x-docked-top, &.x-docked-bottom {
+    .x-legend-item {
+      border-right: $legend-item-border;
+      &:last-child {
+        border-right: 0;
+      }
+    }
+  }
+  
+  &.x-docked-left, &.x-docked-right {
+    .x-legend-inner {
+      display: -webkit-box;
+      -webkit-box-align: center;
+      -webkit-box-pack: center;
+    }
+  }
+}
+
+.x-chart-toolbar {
+  position: absolute;
+  z-index: 9;
+  @include display-box;
+  padding: .6em;
+
+  .x-button {
+    margin: .2em;
+  }
+
+  &[data-side=left], &[data-side=right] {
+    top: 0;
+    @include box-orient(vertical);
+  }
+
+  &[data-side=left] {
+    left: 0;
+  }
+
+  &[data-side=right] {
+    right: 0;
+  }
+
+  &[data-side=top], &[data-side=bottom] {
+    @include box-orient(horizontal);
+    right: 0;
+  }
+
+  &[data-side=top] {
+    top: 0;
+  }
+
+  &[data-side=bottom] {
+    bottom: 0;
+    @include box-orient(horizontal);
+  }
+}
+
+@include icon('list');
+@include icon('expand');

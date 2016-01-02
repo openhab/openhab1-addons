@@ -1,0 +1,58 @@
+.x-panel.x-floating,
+.x-msgbox,
+.x-form.x-floating {
+	padding: 0;
+
+	.x-toolbar.x-docked-top .x-toolbar-inner, .x-dock-body {
+		margin: .5em;
+	}
+
+	.x-toolbar .x-button {
+		border: 0;
+	}
+}
+
+.x-panel.x-floating > .x-dock.x-sized,
+.x-msgbox > .x-dock.x-sized,
+.x-form.x-floating > .x-dock.x-sized {
+	margin: 0;
+}
+
+.x-webkit .x-anchor {
+	position: absolute;
+	overflow: hidden;
+
+	&.x-anchor-top {
+		margin-top: -$anchor-height + 0.02em;
+		margin-left: -$anchor-width / 2;
+		width: $anchor-width;
+		height: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_top.png") no-repeat;
+		-webkit-mask-size: $anchor-width $anchor-height;
+	}
+
+	&.x-anchor-bottom {
+		margin-left: -$anchor-width / 2;
+		width: $anchor-width;
+		height: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_bottom.png") no-repeat;
+		-webkit-mask-size: $anchor-width $anchor-height;
+	}
+
+	&.x-anchor-left {
+		margin-left: -$anchor-width / 2 + 0.15em;
+		margin-top: -$anchor-height / 2;
+		height: $anchor-width;
+		width: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_left.png") no-repeat;
+		-webkit-mask-size: $anchor-height $anchor-width;
+	}
+
+	&.x-anchor-right {
+		margin-top: -$anchor-height / 2;
+		height: $anchor-width;
+		width: $anchor-height;
+		-webkit-mask: 0 0 theme_image('default', "tip_right.png") no-repeat;
+		-webkit-mask-size: $anchor-height $anchor-width;
+	}
+}

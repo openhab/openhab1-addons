@@ -1,0 +1,11 @@
+/**
+ * @class Ext.SgementedButton
+ */
+
+.x-segmentedbutton .x-button {
+    margin: 0;
+
+    &:not(.x-first) {
+        border-left: 0;
+    }
+}

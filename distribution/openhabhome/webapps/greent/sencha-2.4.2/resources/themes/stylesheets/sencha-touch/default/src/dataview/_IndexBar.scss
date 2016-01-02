@@ -1,0 +1,23 @@
+/**
+ * @class Ext.dataview.IndexBar
+ */
+
+.x-indexbar {
+    padding: .3em 0;
+    color: $index-bar-color;
+}
+
+.x-indexbar-vertical {
+    width: $index-bar-width;
+    margin-right: 8px;
+}
+
+.x-indexbar-horizontal {
+    height: $index-bar-width;
+    margin-bottom: 8px;
+}
+
+.x-indexbar-pressed {
+    @include border-radius(($index-bar-width)/2);
+    background-color: $index-bar-bg-color;
+}

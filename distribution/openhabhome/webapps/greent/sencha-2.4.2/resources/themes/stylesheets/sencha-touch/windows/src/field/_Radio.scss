@@ -1,0 +1,20 @@
+/**
+ * @class Ext.field.Radio
+ */
+
+.x-field-radio .x-field-mask {
+    &:before {
+        @include border-radius(32px);
+    }
+}
+
+.x-input-radio:checked ~ .x-field-mask:after {
+    position: absolute;
+    content: '';
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #000;
+    @include border-radius(22px);
+}

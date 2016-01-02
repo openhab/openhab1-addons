@@ -1,0 +1,18 @@
+.x-form-label {
+    color: $light-form-label-color;
+}
+
+.x-field-input {
+	.x-clear-icon {
+		&:before {
+			color: $light-form-clear-icon-color;
+			border-color: $light-form-clear-icon-border-color;
+		}
+
+		&.x-pressing {
+			&:before {
+				color: $light-form-clear-icon-pressing-color;;
+			}
+		}
+	}
+}

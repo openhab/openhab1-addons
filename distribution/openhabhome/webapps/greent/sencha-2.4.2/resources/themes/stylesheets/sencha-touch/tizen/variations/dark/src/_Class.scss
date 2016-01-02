@@ -1,0 +1,39 @@
+body {
+	background-color: $dark-background-color;
+	color: $dark-primary-text-color;
+}
+
+.x-html,
+.x-html h1,
+.x-html h2,
+.x-html h3,
+.x-html h4,
+.x-html h5,
+.x-html h6 {
+	color: $dark-primary-text-color;
+}
+
+.x-layout-card-item {
+	background: $dark-background-color;
+}
+
+.x-html {
+	a {
+		color: $dark-anchor-color;
+	}
+	a:visited {
+		color: $dark-anchor-visited-color;
+	}
+
+	a:focus {
+		color: $dark-anchor-focus-color;
+	}
+
+	a:hover {
+		color: $dark-anchor-hover-color;
+	}
+
+	a:active {
+		color: $dark-anchor-active-color;
+	}
+}

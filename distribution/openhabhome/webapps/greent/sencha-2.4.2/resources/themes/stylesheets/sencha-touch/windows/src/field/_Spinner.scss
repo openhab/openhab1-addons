@@ -1,0 +1,63 @@
+/**
+ * @class Ext.field.Spinner
+ */
+
+.x-spinner {
+    &.x-item-disabled {
+        .x-field-input:before,
+        .x-spinner-button {
+            color: $field-disabled-color !important;
+            border-color: $field-disabled-border-color !important;
+            background-color: $field-disabled-background-color !important;
+        }
+    }
+
+    .x-spinner-button {
+        position: relative;
+        font-size: 0px;
+        text-indent: -1000px;
+        background: transparent;
+        border: 2px solid $field-border-color !important;
+        width: 30px;
+        height: 30px;
+        margin-left: 5px;
+
+        &:before {
+            @include absolute-position;
+            text-indent: 0;
+            font-family: 'Pictos';
+            font-size: 26px;
+            line-height: 29px;
+            content: '&';
+            color: $field-border-color;
+        }
+    }
+
+    .x-spinner-button-down:before {
+        content: '_';
+    }
+
+    .x-button-pressed {
+        background-color: $field-background-color;
+
+        &:before {
+            color: $field-color;
+        }
+    }
+
+    &.x-field-grouped-buttons {
+        .x-input-el {
+            text-align: left;
+        }
+    }
+}
+
+.x-ie {
+    .x-spinner-button:before {
+        line-height: 27px !important;
+    }
+
+    .x-spinner .x-field-input .x-input-el:disabled {
+        color: $field-color;
+    }
+}

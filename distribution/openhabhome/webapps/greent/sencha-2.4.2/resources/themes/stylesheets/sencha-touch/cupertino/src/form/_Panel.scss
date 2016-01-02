@@ -1,0 +1,44 @@
+/**
+ * @class Ext.form.Panel
+ */
+
+.x-form {
+	.x-scroll-container {
+		background-color: #edebf1;
+	}
+
+	> input[type=submit] {
+		display: none;
+	}
+
+	.x-field .x-field-input,
+	.x-field .x-input-el {
+		font-weight: 300;
+	}
+
+	&.x-floating {
+		.x-input-el {
+			padding-top: .5em;
+		}
+	}
+
+	.x-field .x-field-input {
+		border: 0px;
+		background-color: transparent;
+	}
+}
+
+.x-form-label {
+	padding: .6em .6em .6em 1em;
+
+	span {
+		font-size: 1.1em;
+		font-weight: 400;
+	}
+}
+
+.x-form-fieldset .x-form-fieldset-inner {
+	border-top: 1px solid #d9d9d9;
+	border-bottom: 1px solid #d9d9d9;
+	overflow: hidden;
+}

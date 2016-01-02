@@ -1,0 +1,77 @@
+/**
+ * @class Ext.slider.Slider
+ */
+
+.x-slider {
+    height: $form-slider-height;
+
+    &:before {
+        margin: 0;
+    }
+}
+
+.x-slider-inner {
+    overflow: hidden;
+}
+
+.x-slider.x-item-disabled {
+    &:before {
+        background-color: $form-slider-disabled-background-color;
+    }
+
+    .x-thumb {
+        background-color: $form-slider-disabled-thumb-background-color;
+
+        &:before {
+            background-color: $form-slider-disabled-value-background-color;
+        }
+    }
+}
+
+.x-thumb {
+    height: $form-slider-height;
+    width: $form-slider-height;
+    background-color: $form-slider-thumb-background-color;
+    border: 0;
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 5000px;
+        right: $form-slider-height;
+        height: $form-slider-height;
+        background-color: $base-color;
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+
+        // here so the tap area is bigger on mobile devices
+        $form-slider-thumb-extra-size: 20px;
+        top: -$form-slider-thumb-extra-size;
+        left: -$form-slider-thumb-extra-size;
+        height: $form-slider-height + ($form-slider-thumb-extra-size * 2);
+        width: $form-slider-height + ($form-slider-thumb-extra-size * 2);
+    }
+}
+
+// Create the slider track
+.x-slider:before {
+    top: 0;
+    height: $form-slider-height;
+    background-color: $form-slider-background-color;
+}
+
+.x-slider-multiple {
+    .x-slider:after {
+        background-color: $base-color;
+        opacity: 1;
+    }
+
+    .x-thumb:before {
+        background: transparent;
+        width: 0;
+    }
+}

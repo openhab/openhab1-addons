@@ -1,0 +1,107 @@
+.x-button {
+	height: 35px;
+	padding: 0 3px;
+	font-size: 16px;
+	font-family: "Tizen Regular";
+	border: none;
+	@include border-radius($button-border-radius);
+
+	&.x-button-back {
+		border: 0px;
+		background-color: transparent;
+		margin: 0px;
+		padding: 0px;
+
+		&:before {
+			content: 'b';
+			font-size: 1.5em;
+			text-align: center;
+			font-family: 'Tizen Icon';
+			background-color: transparent;
+			line-height: 1.6em;
+			padding-left: .2em;
+		}
+
+		.x-button-label {
+			font-size: 1.1em;
+			line-height: 1.3em;
+			font-weight: 300;
+			padding-left: 2px;
+		}
+
+		&.x-button-pressing {
+
+		}
+	}
+
+	.x-button-icon {
+		width: 1.5em;
+		height: 1.5em;
+
+		&:before {
+			font-size: 1.4em;
+			line-height: 1.15em;
+		}
+	}
+
+	&.x-item-disabled {
+		opacity: $disabled-opacity;
+	}
+}
+
+.x-hasbadge {
+	overflow: visible;
+
+	.x-badge {
+		top: -5px;
+		right: -6px;
+		max-width: 55%;
+
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		text-align: center;
+		display: block;
+		overflow: hidden;
+
+		min-width: 18px;
+		font-weight: normal;
+		text-shadow: 0 0 0 !important;
+		font-size: .7em;
+		padding: 1px 2px 2px;
+		border: 0px;
+		@include border-radius(30px);
+	}
+}
+
+.x-toolbar.x-docked-bottom {
+	padding: 0;
+	height: auto;
+	min-height: auto;
+
+	.x-toolbar-inner {
+		@include st-box-align(center);
+
+		.x-button {
+			@include st-box-flex(1);
+			@include border-radius(0px);
+			padding: 0;
+
+			border-bottom-width: 0px;
+			height: 34px;
+			margin: 0 1em 0 1em;
+
+			&:first-child {
+				border-left-width: 0px;
+			}
+
+			&:last-child {
+				border-left-width: 0px;
+				border-right-width: 0px;
+			}
+
+			.x-button-label {
+				font-size: .9em;
+			}
+		}
+	}
+}

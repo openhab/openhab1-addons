@@ -1,0 +1,27 @@
+/**
+ * @class Ext.Sheet
+ */
+
+/**
+ * @var {color} $sheet-bg-color
+ * Background-color for action sheets and message boxes.
+ */
+$sheet-bg-color: transparentize(darken($base-color, 40%), .1) !default;
+
+/**
+ * @var {color} $sheet-bg-gradient
+ * Background gradient style for action sheets and message boxes.
+ */
+$sheet-bg-gradient: $base-gradient !default;
+
+/**
+ * @var {measurement} $sheet-button-spacing
+ * Vertical spacing between sheet buttons.
+ */
+$sheet-button-spacing: .5em !default;
+
+/**
+ * @var {measurement} $sheet-padding
+ * Overall padding in a sheet.
+ */
+$sheet-padding: .7em !default;

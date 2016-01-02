@@ -1,0 +1,20 @@
+/**
+ * @class Ext.Toast
+ */
+
+.x-toast {
+    margin: .5em;
+    max-width: 15em;
+    border: 2px solid rgba(#b7bece, .85);
+
+    @include box-shadow(rgba(#000, .4) 0 .1em .5em);
+    @include border-radius(10px);
+    background: rgba(#0e1f4b, .85);
+
+    .x-toast-text {
+        padding: 1em;
+        color: #fff;
+        font-size: .9em;
+        text-shadow: 0 -1px 0 rgba(0,0,0,.75);
+    }
+}

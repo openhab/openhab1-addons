@@ -1,0 +1,8 @@
+/**
+ * @class Ext.field.TextArea
+ */
+
+.x-field-textarea textarea {
+    min-height: $form-textarea-height;
+    padding-top: .5em;
+}

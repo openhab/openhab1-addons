@@ -1,0 +1,19 @@
+.x-segmentedbutton {
+	@include box-shadow(inset 0 -2px 0 $base-color);
+    background: $foreground-color;
+
+	.x-button {
+		margin: 0 !important;
+		background: transparent;
+
+		&.x-button-pressing,
+		&.x-button-pressed {
+			background: transparent;
+		}
+
+		&.x-button-normal.x-button-pressing,
+		&.x-button-normal.x-button-pressed {
+			@include box-shadow(inset 0 -5px 0 $base-color);
+		}
+	}
+}

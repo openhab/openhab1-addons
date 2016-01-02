@@ -1,0 +1,116 @@
+.x-tabbar {
+	min-height: 3em;
+	background-color: #f9f9f9;
+
+	&.x-docked-bottom {
+		min-height: 3.1em;
+	}
+}
+
+.x-tab {
+	height: 2.9em;
+	margin: 0 .2em;
+	border: 0;
+	background: transparent;
+	@include st-box-orient(vertical);
+}
+
+.x-tab-active {
+	background: rgba(255, 255, 255, .15);
+}
+
+.x-tab {
+	&.x-tab-active {
+		x-button-label {
+			color: $ios7-blue;
+		}
+
+		.x-button-icon:before, .x-button-label {
+			color: $ios7-blue;
+		}
+	}
+
+	.x-button-label {
+		font-size: .65em;
+		font-weight: 400;
+		color: #929292;
+		line-height: 3em;
+	}
+
+	.x-button-icon {
+		display: block;
+		width: 1.5em;
+		height: 1.5em;
+		margin: 0 auto;
+		-webkit-text-stroke-width: .35px;
+		-webkit-text-stroke-color: $ios7-blue;
+
+		.x-button-icon.x-hidden {
+			display: none;
+		}
+
+		&:before {
+			color: transparent;
+			font-size: 1.8em;
+			line-height: 1.35em;
+		}
+	}
+
+	.x-badge {
+		top: 0px;
+		left: 55%;
+		right: auto;
+		max-width: 55%;
+		font-size: .65em;
+		line-height: 1.5em;
+	}
+}
+
+$tabbar-tab-radius: 4px;
+.x-tabbar.x-docked-top {
+	padding:10px;
+	.x-tab {
+		@include border-radius(0);
+		@include st-box-flex(1);
+		min-width: 3.3em;
+		height: inherit;
+		background-color: transparent;
+		border: 0;
+		padding: 3px;
+		margin: 0;
+		border: 1px solid darken($ios7-blue, 1);
+		color: #fff;
+		padding: 7px;
+
+		.x-button-label {
+			color: $ios7-blue;
+			font-size: .8em;
+			line-height: 1;
+		}
+
+		&.x-tab-active {
+			background-color: $ios7-blue;
+			.x-button-label {
+				color: #fff;
+			}
+		}
+
+		.x-button-icon::before {
+			display: none;
+		}
+
+		&:first-child {
+			border-radius: $tabbar-tab-radius 0px 0px $tabbar-tab-radius;
+			border-right: 0;
+		}
+
+		&:last-child {
+			border-radius: 0px $tabbar-tab-radius $tabbar-tab-radius 0px;
+			border-left: 0;
+		}
+
+		.x-button-icon.x-hidden {
+			display: none !important;
+		}
+	}
+}

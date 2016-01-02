@@ -1,0 +1,24 @@
+/**
+ * @class Ext.plugin.PullRefresh
+ */
+
+.x-list-pullrefresh-arrow {
+    background: center center theme_image('default', "pullarrow.png") no-repeat;
+    background-size: 2em 3em;
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 200ms;
+    @include rotate(0deg);
+}
+
+.x-android-2 .x-list-pullrefresh-arrow {
+    -webkit-transition-property: none;
+    -webkit-transition-duration: 0;
+}
+
+.x-list-pullrefresh-release .x-list-pullrefresh-arrow {
+    @include rotate(-180deg);
+}
+
+.x-list-pullrefresh-message {
+    margin-bottom: 0.1em;
+}

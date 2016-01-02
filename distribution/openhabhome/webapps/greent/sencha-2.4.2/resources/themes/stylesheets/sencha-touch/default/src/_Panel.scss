@@ -1,0 +1,79 @@
+/**
+ * @class Ext.Panel
+ */
+
+// Private variables
+$anchor-height: .7em;
+$anchor-width: $anchor-height*2.33;
+
+@if $include-floating-panels {
+    .x-panel.x-floating,
+    .x-msgbox,
+    .x-form.x-floating {
+        @if $include-border-radius {
+            @include border-radius($panel-border-radius);
+        }
+        @include box-shadow(rgba(0,0,0,.8) 0 .2em .6em);
+        @include background-gradient(darken($base-color, 40%), 'flat');
+
+        &.x-floating-light {
+            @include background-gradient($base-color, 'flat');
+        }
+
+        .x-panel-inner,
+        > .x-body {
+            @if $include-border-radius {
+                @include border_radius($panel-border-radius);
+            }
+        }
+    }
+
+    .x-webkit .x-anchor {
+        position: absolute;
+        overflow: hidden;
+
+        &.x-anchor-top {
+            margin-top: -$anchor-height + 0.02em;
+            margin-left: -$anchor-width / 2;
+            width: $anchor-width;
+            height: $anchor-height;
+            -webkit-mask: 0 0 theme_image('default', "tip_top.png") no-repeat;
+            -webkit-mask-size: $anchor-width $anchor-height;
+            background-color: darken($base-color, 40%);
+        }
+
+        &.x-anchor-bottom {
+            margin-left: -$anchor-width / 2;
+            width: $anchor-width;
+            height: $anchor-height;
+            -webkit-mask: 0 0 theme_image('default', "tip_bottom.png") no-repeat;
+            -webkit-mask-size: $anchor-width $anchor-height;
+            background-color: darken($base-color, 40%);
+        }
+
+        &.x-anchor-left {
+            margin-left: -$anchor-width / 2 + 0.15em;
+            margin-top: -$anchor-height / 2;
+            height: $anchor-width;
+            width: $anchor-height;
+            -webkit-mask: 0 0 theme_image('default', "tip_left.png") no-repeat;
+            -webkit-mask-size: $anchor-height $anchor-width;
+            background-color: darken($base-color, 40%);
+        }
+
+        &.x-anchor-right {
+            margin-top: -$anchor-height / 2;
+            height: $anchor-width;
+            width: $anchor-height;
+            -webkit-mask: 0 0 theme_image('default', "tip_right.png") no-repeat;
+            -webkit-mask-size: $anchor-height $anchor-width;
+            background-color: darken($base-color, 40%);
+        }
+    }
+
+    .x-floating.x-panel-light {
+        &:after {
+            background-color: $base-color;
+        }
+    }
+}

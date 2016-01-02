@@ -1,0 +1,210 @@
+/**
+ * @class Ext.scroll.Scroller
+ */
+
+.x-scroll-view {
+    position: relative;
+    display: block;
+    overflow: hidden;
+}
+
+.x-scroll-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.x-scroll-scroller {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100%;
+		height: auto !important;
+		width: auto !important;
+
+		// Attempt to fix oversized bug, needs to be looked at later
+		/*
+		&.x-scroll-scroller-vertical {
+			height: auto !important;
+		}
+
+		&.x-scroll-scroller-horizontal {
+			width: auto !important;
+		}
+		*/
+}
+
+.x-scroll-stretcher {
+    position: absolute;
+    visibility: hidden;
+}
+
+.x-scroll-bar-grid-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.x-scroll-bar-grid {
+    display: table;
+    width: 100%;
+    height: 100%;
+
+    > * {
+        display: table-row;
+    }
+
+    > * > * {
+        display: table-cell;
+    }
+
+    > :first-child > :first-child {
+        width: 100%;
+        height: 100%;
+    }
+
+    > :first-child > :nth-child(2) {
+        padding: 3px 3px 0 0;
+    }
+
+    > :nth-child(2) > :first-child {
+        padding: 0 0 3px 3px;
+    }
+}
+
+.x-scroll-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.x-scroll-bar-stretcher {
+    position: absolute;
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.x-scroll-bar-x {
+    width: 100%;
+
+    > .x-scroll-bar-stretcher {
+        width: 300%;
+    }
+
+    &.active {
+        height: 6px;
+    }
+}
+
+.x-scroll-bar-y {
+    height: 100%;
+
+    > .x-scroll-bar-stretcher {
+        height: 300%;
+    }
+
+    &.active {
+        width: 6px;
+    }
+}
+
+.x-scroll-indicator {
+    background: #333;
+    position: absolute;
+    z-index: 3;
+}
+
+.x-scroll-indicator-x {
+    height: 100%;
+}
+
+.x-scroll-indicator-y {
+    width: 100%;
+}
+
+.x-scroll-indicator.rounded {
+    background: none;
+
+    > * {
+        position: absolute;
+        background-color: #333;
+    }
+
+    > :nth-child(2) {
+        -webkit-transform-origin: 0% 0%;
+        background: none;
+        content: url(data:image/bmp;base64,Qk08AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABAAAAAAAAYAAAASCwAAEgsAAAAAAAAAAAAAxhgAAAAA);
+    }
+
+    &.x-scroll-indicator-light {
+        > * {
+            background-color: #eee;
+        }
+
+        > :nth-child(2) {
+            content: url(data:image/bmp;base64,Qk08AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABAAAAAAAAYAAAASCwAAEgsAAAAAAAAAAAAAvXcAAAAA);
+        }
+    }
+
+    &.x-scroll-indicator-y {
+        > * {
+            width: 100%;
+        }
+
+        > :first-child {
+            height: 3px;
+            @include border-top-radius(3px);
+        }
+
+        > :nth-child(2) {
+            height: 1px;
+        }
+
+        > :last-child {
+            height: 3px;
+            @include border-bottom-radius(3px);
+        }
+    }
+
+    &.x-scroll-indicator-x {
+        > * {
+            height: 100%;
+        }
+
+        > :first-child {
+            width: 3px;
+            @include border-left-radius(3px);
+        }
+
+        > :nth-child(2) {
+            width: 1px;
+        }
+
+        > :last-child {
+            width: 3px;
+            @include border-right-radius(3px);
+        }
+    }
+}
+
+.x-list-light,
+.x-dataview-light {
+    .x-scroll-indicator {
+        background: #fff;
+    }
+}
+
+// Platform specific code
+.x-ios .x-scroll-scroller {
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+.x-ie {
+    .x-scroll-bar-y {
+        position: absolute;
+        margin-left: -5px;
+    }
+
+    //.x-scroll-container .x-layout-box {
+    //  width: 100% !important;
+    //}
+}

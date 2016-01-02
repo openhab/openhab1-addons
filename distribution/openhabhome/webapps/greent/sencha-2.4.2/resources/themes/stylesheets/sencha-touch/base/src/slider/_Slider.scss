@@ -1,0 +1,44 @@
+/**
+ * @class Ext.slider.Slider
+ */
+
+.x-slider,
+.x-toggle {
+    position: relative;
+    height: 16px;
+    min-height: 0;
+    min-width: 0;
+
+    > * {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.x-thumb {
+    position: absolute;
+    height: 16px;
+    width: 10px;
+    border: 1px solid #ccc;
+    background-color: #ddd;
+}
+
+// Create the slider track
+.x-slider:before {
+    @include insertion(auto, 8px, 4px, 0);
+    right: 0;
+    margin: 0 5px;
+    background-color: #eee;
+}
+
+.x-toggle {
+    border: 1px solid #ccc;
+    width: 30px;
+    overflow: hidden;
+    @include st-box-flex(0);
+}
+
+.x-toggle-on {
+    background-color: #eee;
+}

@@ -1,0 +1,21 @@
+/**
+ * @member Ext.form.FieldSet
+ */
+
+.x-form-fieldset-inner {
+    border-width: 0 !important;
+    padding: 3px;
+}
+
+.x-form-fieldset-title {
+    font-weight: bold;
+    font-size: 18px;
+    padding: 1px 10px;
+    border-top: 1px solid #F7F3F7;
+    border-bottom: 2px solid #0AA9DC;
+}
+
+.x-form-fieldset-instructions {
+    font-size: 14px;
+    padding: 10px 0;
+}

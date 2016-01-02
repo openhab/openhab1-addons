@@ -1,0 +1,24 @@
+// List Background
+$dark-list-background-color: $winset-black !default;
+$dark-list-floating-background-color: $winset-navy-blue !default;
+
+// List Border
+$dark-list-border-color: $winset-dark-gray !default;
+
+// List Item
+$dark-list-item-color: $dark-primary-text-color !default;
+$dark-list-item-selected-background-color: $winset-light-blue !default;
+$dark-list-item-pressed-background-color: $winset-navy-blue !default;
+
+//Disclosure
+$dark-list-item-disclosure-color: $winset-gray-blue !default;
+$dark-list-item-disclosure-inner-color: $dark-primary-text-color !default;
+
+//List Header
+$dark-list-header-color: $dark-secondary-text-color !default;
+$dark-list-header-border-color: $dark-list-header-color !default;
+$dark-list-header-background-color: $dark-list-background-color !default;
+
+//List Indexbar
+$dark-list-indexbar-color: $dark-list-item-color !default;
+$dark-list-indexbar-pressed-background-color: $dark-list-item-selected-background-color !default;

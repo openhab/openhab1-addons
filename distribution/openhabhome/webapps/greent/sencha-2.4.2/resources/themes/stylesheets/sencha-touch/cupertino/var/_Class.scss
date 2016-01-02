@@ -1,0 +1,18 @@
+/**
+ * @var {boolean} $include-default-icons
+ * Optionally remove the default icon set which includes the following toolbar and tab bar icons: action,
+ * add, arrow_down, arrow_left, arrow_right, arrow_up, bookmarks, compose, delete, download, favorites,
+ * home, info, locate, maps, more, organize, refresh, reply, search, settings, star, team, time, trash,
+ * and user. Set to false to reduce CSS weight.
+ */
+$include-default-icons: true !default;
+$background-color: #fff;
+$primary-text-color: #000;
+
+$ios7-blue: #157efb;
+$ios7-red: #fc3e39;
+$ios7-green: #53d769;
+
+$ios7-blue-lighten: lighten($ios7-blue, 30%);
+$ios7-red-lighten: lighten($ios7-red, 30%);
+$ios7-green-lighten: lighten($ios7-green, 30%);
