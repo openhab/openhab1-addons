@@ -18,7 +18,7 @@ import org.openhab.core.items.Item;
  * between openHAB items and the PowerDog Local API.
  * 
  * @author wuellueb
- * @since 1.7.0
+ * @since 1.8.0
  */
 public interface PowerDogLocalApiBindingProvider extends BindingProvider {
 

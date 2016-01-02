@@ -3,8 +3,8 @@ Documentation of the PowerDog Local API Binding Bundle
 ## Introduction
 
 This is an OpenHAB binding for an [eco-data PowerDog](http://www.eco-data.de/produkte.html). It supports the [PowerAPI Local Device API](http://api.power-dog.eu/documentation/) in the only available revision [v0.b](http://api.power-dog.eu/documentation/DOCUMENATION/PowerAPI%20Local%20Device%20API%20Description_v0.b.pdf).
-The binding allows to query multiple PowerDogs if they are reachable in your network via TCP/IP. For querying, it is expected that your PowerDog is already set upt.
-The binding supports reading of all PowerDog variables available via PowerDog Local API. It also supports writing of PowerAPI sensors.
+The binding allows to query multiple PowerDogs if they are reachable in your network via TCP/IP. For querying, it is expected that your PowerDog is already set up.
+The binding supports reading of all PowerDog variables available via PowerDog Local API. It also supports writing of PowerAPI sensors. The binding uses the [Redstone XML-RPC Library](http://xmlrpc.sourceforge.net/) which can be downloaded [here from Sourceforge](http://sourceforge.net/projects/xmlrpc/) for accessing the PowerAPI.
 
 
 ## Binding Configuration
