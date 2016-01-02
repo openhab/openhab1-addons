@@ -38,8 +38,8 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Display;
-import android.view.WindowManager;
+//import android.view.Display;
+//import android.view.WindowManager;
 
 import com.connectsdk.core.Util;
 import com.connectsdk.discovery.DiscoveryManager;

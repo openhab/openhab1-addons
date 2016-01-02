@@ -33,8 +33,8 @@ import org.apache.http.conn.util.InetAddressUtils;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Handler;
-import android.os.Looper;
+//import android.os.Handler;
+//import android.os.Looper;
 
 import com.connectsdk.service.capability.listeners.ErrorListener;
 import com.connectsdk.service.capability.listeners.ResponseListener;
@@ -43,7 +43,7 @@ import com.connectsdk.service.command.ServiceCommandError;
 public final class Util {
     static public String T = "Connect SDK";
 
-    static private Handler handler;
+    //static private Handler handler;
 
     static private final int NUM_OF_THREADS = 20;
 
