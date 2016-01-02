@@ -102,56 +102,57 @@ public class ChangeSetting {
 
 		CommunicationService communicationService = null;
 
-		try {
-			communicationService = new CommunicationService();
-			Map<String, String> data = new HashMap<String, String>();
-
-			List<Request> configuration = communicationService
-					.getHeatPumpConfiguration(configFile);
-
-			if (configuration == null) {
-				communicationService.finalizer();
-				System.exit(0);
-			}
-
-			RecordDefinition recordDefinition = null;
-			Request result = null;
-
-			for (Request request : configuration) {
-				for (RecordDefinition record : request.getRecordDefinitions()) {
-					if (record.getName().equalsIgnoreCase(settingParameter)) {
-						result = request;
-						recordDefinition = record;
-						break;
-					}
-				}
-			}
-
-			if (result == null) {
-				logger.info(
-						"Could not find Setting parameter {} in configfile {}",
-						settingParameter, configFile);
-				communicationService.finalizer();
-				System.exit(0);
-			}
-
-			communicationService = new CommunicationService(serialPortName,
-					baudRate, configuration);
-
-			String version = communicationService.getversion();
-			logger.info("Heat pump has version {}", version);
-
-			data = communicationService.setData(newValue, settingParameter);
-			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
-						entry.getValue());
-			}
-
-			communicationService.finalizer();
-		} catch (StiebelHeatPumpException e) {
-			communicationService.finalizer();
-			logger.error("Error : {}", e.toString());
-		}
+//		try {
+//			communicationService = new CommunicationService();
+//			Map<String, String> data = new HashMap<String, String>();
+//
+//			List<Request> configuration = communicationService
+//					.getHeatPumpConfiguration(configFile);
+//
+//			if (configuration == null) {
+//				communicationService.finalizer();
+//				System.exit(0);
+//			}
+//
+//			RecordDefinition recordDefinition = null;
+//			Request result = null;
+//
+//			for (Request request : configuration) {
+//				for (RecordDefinition record : request.getRecordDefinitions()) {
+//					if (record.getName().equalsIgnoreCase(settingParameter)) {
+//						result = request;
+//						recordDefinition = record;
+//						break;
+//					}
+//				}
+//			}
+//
+//			if (result == null) {
+//				logger.info(
+//						"Could not find Setting parameter {} in configfile {}",
+//						settingParameter, configFile);
+//				communicationService.finalizer();
+//				System.exit(0);
+//			}
+//
+//			communicationService = new CommunicationService(serialPortName,
+//					baudRate, configuration);
+//
+//			String version = communicationService.getversion();
+//			logger.info("Heat pump has version {}", version);
+//
+//			data = communicationService.setData(newValue, settingParameter);
+//			for (Map.Entry<String, String> entry : data.entrySet()) {
+//				logger.info("Data {} has value {}", entry.getKey(),
+//						entry.getValue());
+//			}
+//
+//			communicationService.finalizer();
+//		} catch (StiebelHeatPumpException e) {
+//			communicationService.finalizer();
+//			logger.error("Error : {}", e.toString());
+//		}
+		
 		System.exit(0);
 	}
 }

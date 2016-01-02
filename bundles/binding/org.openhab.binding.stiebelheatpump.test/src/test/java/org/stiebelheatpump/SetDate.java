@@ -76,26 +76,28 @@ public class SetDate {
 				serialPortName = args[i];
 			}
 		}
-		try {
-			CommunicationService communicationService = new CommunicationService(
-					serialPortName, baudRate);
-			Map<String, String> data = new HashMap<String, String>();
-
-			communicationService.getHeatPumpConfiguration(configFile);
-
-			String version = communicationService.getversion();
-			logger.info("Heat pump has version {}", version);
-
-			data = communicationService.setTime();
-			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
-						entry.getValue());
-			}
-
-			communicationService.finalizer();
-		} catch (StiebelHeatPumpException e) {
-			logger.error("Error : {}", e.toString());
-		}
+		
+//		try {
+//			CommunicationService communicationService = new CommunicationService(
+//					serialPortName, baudRate);
+//			Map<String, String> data = new HashMap<String, String>();
+//
+//			communicationService.getHeatPumpConfiguration(configFile);
+//
+//			String version = communicationService.getversion();
+//			logger.info("Heat pump has version {}", version);
+//
+//			data = communicationService.setTime();
+//			for (Map.Entry<String, String> entry : data.entrySet()) {
+//				logger.info("Data {} has value {}", entry.getKey(),
+//						entry.getValue());
+//			}
+//
+//			communicationService.finalizer();
+//		} catch (StiebelHeatPumpException e) {
+//			logger.error("Error : {}", e.toString());
+//		}
+		
 		System.exit(0);
 	}
 }

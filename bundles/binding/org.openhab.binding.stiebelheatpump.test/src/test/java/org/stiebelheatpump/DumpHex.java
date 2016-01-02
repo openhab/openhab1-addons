@@ -80,47 +80,48 @@ public class DumpHex {
 			}
 		}
 
-		try {
-
-			CommunicationService communicationService = new CommunicationService(
-					serialPortName, baudRate);
-			Map<String, String> data = new HashMap<String, String>();
-			
-			byte[] requestBytes = null;
-			if (!configFile.isEmpty())
-			{
-				List<Request> requests = communicationService.getHeatPumpConfiguration(configFile);
-				requestBytes = new byte[requests.size()];
-				int position = 0;
-				for (Request request : requests){
-					requestBytes[position] = request.getRequestByte();
-				}
-			} else{
-				// set a array of default request bytes
-				requestBytes = new byte[]{(byte) 0xfc, (byte) 0x09,(byte) 0xfb};
-			}
-			
-			Request versionRequest = new Request("Version", "Read version information",
-					(byte) 0xfd);
-			versionRequest.getRecordDefinitions().add(
-					new RecordDefinition("Version", 4, 2, 0.01,
-							RecordDefinition.Type.Status, ""));
-			
-			data = communicationService.readData(versionRequest);
-			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Heat pump has version {}", entry.getValue());
-				break;
-			}
-			
-			
-			for (byte requestByte : requestBytes){
-				communicationService.dumpResponse(requestByte);
-			}
-			
-			communicationService.finalizer();
-		} catch (StiebelHeatPumpException e) {
-			logger.error("Error : {}", e.toString());
-		}
+//		try {
+//
+//			CommunicationService communicationService = new CommunicationService(
+//					serialPortName, baudRate);
+//			Map<String, String> data = new HashMap<String, String>();
+//			
+//			byte[] requestBytes = null;
+//			if (!configFile.isEmpty())
+//			{
+//				List<Request> requests = communicationService.getHeatPumpConfiguration(configFile);
+//				requestBytes = new byte[requests.size()];
+//				int position = 0;
+//				for (Request request : requests){
+//					requestBytes[position] = request.getRequestByte();
+//				}
+//			} else{
+//				// set a array of default request bytes
+//				requestBytes = new byte[]{(byte) 0xfc, (byte) 0x09,(byte) 0xfb};
+//			}
+//			
+//			Request versionRequest = new Request("Version", "Read version information",
+//					(byte) 0xfd);
+//			versionRequest.getRecordDefinitions().add(
+//					new RecordDefinition("Version", 4, 2, 0.01,
+//							RecordDefinition.Type.Status, ""));
+//			
+//			data = communicationService.readData(versionRequest);
+//			for (Map.Entry<String, String> entry : data.entrySet()) {
+//				logger.info("Heat pump has version {}", entry.getValue());
+//				break;
+//			}
+//			
+//			
+//			for (byte requestByte : requestBytes){
+//				communicationService.dumpResponse(requestByte);
+//			}
+//			
+//			communicationService.finalizer();
+//		} catch (StiebelHeatPumpException e) {
+//			logger.error("Error : {}", e.toString());
+//		}
+		
 		System.exit(0);
 	}
 }
