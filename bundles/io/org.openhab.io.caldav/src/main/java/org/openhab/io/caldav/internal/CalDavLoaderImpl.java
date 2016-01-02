@@ -8,16 +8,12 @@
  */
 package org.openhab.io.caldav.internal;
 
-import java.io.BufferedReader;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,23 +25,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.data.UnfoldingReader;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Period;
-import net.fortuna.ical4j.model.PeriodList;
-import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
@@ -58,6 +42,8 @@ import org.openhab.io.caldav.internal.job.EventJob.EventTrigger;
 import org.openhab.io.caldav.internal.job.EventReloaderJob;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.DateBuilder;
+import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -67,11 +53,11 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 
 /**
@@ -85,8 +71,8 @@ import com.github.sardine.Sardine;
 public class CalDavLoaderImpl extends AbstractActiveService implements
 		ManagedService, CalDavLoader {
 	private static final String JOB_NAME_EVENT_RELOADER = "event-reloader";
-	private static final String JOB_NAME_EVENT_START = "event-start";
-	private static final String JOB_NAME_EVENT_END = "event-end";
+	public static final String JOB_NAME_EVENT_START = "event-start";
+	public static final String JOB_NAME_EVENT_END = "event-end";
 	private static final String PROP_RELOAD_INTERVAL = "reloadInterval";
 	private static final String PROP_PRELOAD_TIME = "preloadTime";
 	private static final String PROP_HISTORIC_LOAD_TIME = "historicLoadTime";
@@ -94,8 +80,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private static final String PROP_PASSWORD = "password";
 	private static final String PROP_USERNAME = "username";
 	private static final String PROP_TIMEZONE = "timeZone";
-	private static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
-	private DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
+	public static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
+	private static final String PROP_LAST_MODIFIED_TIMESTAMP_VALID = "lastModifiedFileTimeStampValid";
+	public static DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
 
 	private static final Logger log = LoggerFactory
 			.getLogger(CalDavLoaderImpl.class);
@@ -103,25 +90,52 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 
 	private ScheduledExecutorService execService;
 	private List<EventNotifier> eventListenerList = new ArrayList<EventNotifier>();
-	private final Scheduler scheduler;
+	private Scheduler scheduler;
 
-	public static CalDavLoaderImpl INSTANCE;
+	public static CalDavLoaderImpl instance;
 
 	public CalDavLoaderImpl() {
-		if (INSTANCE != null) {
+		if (instance != null) {
 			throw new IllegalStateException(
 					"something went wrong, the loader service should be singleton");
 		}
-		INSTANCE = this;
+		instance = this;
+	}
+	
+	
 
-		try {
-			scheduler = new StdSchedulerFactory().getScheduler();
-			scheduler.clear();
-		} catch (SchedulerException e) {
-			log.error("cannot get job-scheduler", e);
-			throw new IllegalStateException("cannot get job-scheduler", e);
-		}
+	@Override
+	public void start() {
+		super.start();
 		
+		if (this.isProperlyConfigured()) {
+			try {
+				scheduler = new StdSchedulerFactory().getScheduler();
+				this.removeAllJobs();
+			} catch (SchedulerException e) {
+				log.error("cannot get job-scheduler", e);
+				throw new IllegalStateException("cannot get job-scheduler", e);
+			}
+			
+			this.startLoading();
+		}
+	}
+
+	private void removeAllJobs() throws SchedulerException {
+		scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_RELOADER))));
+		scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_START))));
+		scheduler.deleteJobs(new ArrayList<JobKey>(scheduler.getJobKeys(jobGroupEquals(JOB_NAME_EVENT_END))));
+	}
+
+	@Override
+	public void shutdown() {
+		super.shutdown();
+		
+		try {
+			this.removeAllJobs();
+		} catch (SchedulerException e) {
+			log.error("cannot remove jobs: " + e.getMessage(), e);
+		}
 	}
 
 	@Override
@@ -178,6 +192,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				} else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
 					calDavConfig
 							.setHistoricLoadMinutes(Integer.parseInt(value));
+				} else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
+					calDavConfig
+							.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
 				} else if (paramKey
 						.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
 					calDavConfig.setDisableCertificateVerification(BooleanUtils
@@ -208,8 +225,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				eventRuntime.setConfig(calDavConfig);
 				File cachePath = Util.getCachePath(calDavConfig.getKey());
 				if (!cachePath.exists() && !cachePath.mkdirs()) {
-					log.error("cannot create directory (" + CACHE_PATH
-							+ ") for calendar caching (missing rights?)");
+					log.error("cannot create directory ({}) for calendar caching (missing rights?)", cachePath.getAbsoluteFile());
 					continue;
 				}
 				EventStorage.getInstance().getEventCache()
@@ -217,7 +233,6 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			}
 
 			setProperlyConfigured(true);
-			this.startLoading();
 		}
 	}
 
@@ -249,7 +264,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		this.eventListenerList.remove(notifier);
 	}
 
-	private synchronized void addEventToMap(EventContainer eventContainer,
+	public synchronized void addEventToMap(EventContainer eventContainer,
 			boolean createTimer) {
 		CalendarRuntime calendarRuntime = EventStorage.getInstance()
 				.getEventCache().get(eventContainer.getCalendarId());
@@ -307,8 +322,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							try {
 								createJob(eventContainer, event, index);
 							} catch (SchedulerException e) {
-								log.error("cannot create jobs for event: "
-										+ event.getShortName());
+								log.error("cannot create jobs for event '{}': ", event.getShortName(), e.getMessage());
 							}
 						}
 						index++;
@@ -351,7 +365,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private synchronized void createJob(final EventContainer eventContainer,
 			final CalDavEvent event, final int index) throws SchedulerException {
 		final String triggerStart = JOB_NAME_EVENT_START + "-"
-				+ event.getShortName();
+				+ event.getShortName() + "-" + index;
+
+		final boolean startJobTriggerDeleted = this.scheduler.unscheduleJob(TriggerKey.triggerKey(triggerStart, JOB_NAME_EVENT_START));
+		final boolean startJobDeleted = this.scheduler.deleteJob(JobKey.jobKey(triggerStart, JOB_NAME_EVENT_START));
+		log.trace("old start job ({}) deleted? {}/{}", triggerStart, startJobDeleted, startJobTriggerDeleted);
+		
 		Date startDate = event.getStart().toDate();
 		JobDetail jobStart = JobBuilder
 				.newJob()
@@ -361,7 +380,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				.usingJobData(EventJob.KEY_EVENT, eventContainer.getEventId())
 				.usingJobData(EventJob.KEY_REC_INDEX, index)
 				.usingJobData(EventJob.KEY_EVENT_TRIGGER,
-						EventTrigger.BEGIN.name()).build();
+						EventTrigger.BEGIN.name())
+				.storeDurably(false)
+				.withIdentity(triggerStart, JOB_NAME_EVENT_START).build();
 		Trigger jobTriggerStart = TriggerBuilder.newTrigger()
 				.withIdentity(triggerStart, JOB_NAME_EVENT_START)
 				.startAt(startDate).build();
@@ -372,7 +393,12 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				event.getShortName(), startDate);
 
 		final String triggerEnd = JOB_NAME_EVENT_END + "-"
-				+ event.getShortName();
+				+ event.getShortName() + "-" + index;
+		
+		final boolean endJobTriggerDeleted = this.scheduler.unscheduleJob(TriggerKey.triggerKey(triggerEnd, JOB_NAME_EVENT_END));
+		final boolean endJobDeleted = this.scheduler.deleteJob(JobKey.jobKey(triggerEnd, JOB_NAME_EVENT_END));
+		log.trace("old end job ({}) deleted? {}/{}", triggerEnd, endJobDeleted, endJobTriggerDeleted);
+		
 		Date endDate = event.getEnd().toDate();
 		JobDetail jobEnd = JobBuilder
 				.newJob()
@@ -382,7 +408,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				.usingJobData(EventJob.KEY_EVENT, eventContainer.getEventId())
 				.usingJobData(EventJob.KEY_REC_INDEX, index)
 				.usingJobData(EventJob.KEY_EVENT_TRIGGER,
-						EventTrigger.END.name()).build();
+						EventTrigger.END.name())
+				.storeDurably(false)
+				.withIdentity(triggerEnd, JOB_NAME_EVENT_END).build();
 		Trigger jobTriggerEnd = TriggerBuilder.newTrigger()
 				.withIdentity(triggerEnd, JOB_NAME_EVENT_END).startAt(endDate)
 				.build();
@@ -392,294 +420,47 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				event.getShortName(), endDate);
 	}
 
-	/**
-	 * all events which are available must be removed from the oldEventIds list
-	 * 
-	 * @param calendarRuntime
-	 * @param oldEventIds
-	 * @throws IOException
-	 * @throws ParserException
-	 */
-	public synchronized void loadEvents(final CalendarRuntime calendarRuntime,
-			final List<String> oldEventIds) throws IOException, ParserException {
-		CalDavConfig config = calendarRuntime.getConfig();
-
-		Sardine sardine = Util.getConnection(config);
-
-		List<DavResource> list = sardine.list(config.getUrl(), 1, false);
-
-		for (DavResource resource : list) {
-			if (resource.isDirectory()) {
-				continue;
-			}
-
-			final String filename = Util.getFilename(resource.getName());
-			oldEventIds.remove(filename);
-
-			// must not be loaded
-			EventContainer eventContainer = calendarRuntime
-					.getEventContainerByFilename(filename);
-			final org.joda.time.DateTime lastResourceChange = new org.joda.time.DateTime(
-					resource.getModified());
-
-			log.trace("eventContainer found: {}", eventContainer != null);
-			log.trace("last resource modification: {}", lastResourceChange);
-			log.trace("last change of already loaded event: {}",
-					eventContainer != null ? eventContainer.getLastChanged()
-							: null);
-			if (eventContainer != null
-					&& !lastResourceChange.isAfter(eventContainer
-							.getLastChanged())) {
-				// check if some timers or single (from repeating events) have
-				// to be created
-				if (eventContainer.getCalculatedUntil().isAfter(
-						org.joda.time.DateTime.now().plusMinutes(
-								config.getReloadMinutes()))) {
-					// the event is calculated as long as the next reload
-					// interval can handle this
-					log.trace("skipping resource {}, not changed",
-							resource.getName());
-					continue;
-				}
-
-				if (eventContainer.isHistoricEvent()) {
-					// no more upcoming events, do nothing
-					log.trace("skipping resource {}, not changed",
-							resource.getName());
-					continue;
-				}
-
-				File icsFile = Util.getCacheFile(config.getKey(), filename);
-				if (icsFile != null && icsFile.exists()) {
-					FileInputStream fis = new FileInputStream(icsFile);
-					this.loadEvents(filename, lastResourceChange, fis, config,
-							oldEventIds, false);
-					fis.close();
-					continue;
-				}
-			}
-
-			log.debug("loading resource: {}", resource);
-
-			URL url = new URL(config.getUrl());
-			url = new URL(url.getProtocol(), url.getHost(), url.getPort(),
-					resource.getPath());
-
-			InputStream inputStream = sardine.get(url.toString().replaceAll(
-					" ", "%20"));
-
-			try {
-				this.loadEvents(filename, lastResourceChange, inputStream, config,
-						oldEventIds, false);
-			} catch (ParserException e) {
-				log.error("cannot load calendar entry: " + filename, e);
-			}
-		}
-	}
-
-	private void loadEvents(String filename,
-			org.joda.time.DateTime lastChanged, final InputStream inputStream,
-			final CalDavConfig config, final List<String> oldEventIds,
-			boolean readFromFile) throws IOException, ParserException {
-		CalendarBuilder builder = new CalendarBuilder();
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(inputStream), 50);
-//		String calContent = IOUtils.toString(in);
-//		calContent = calContent.replace("\r", "\r\n");
-//		log.info(calContent);
-//		in.close();
-		
-		final UnfoldingReader uin = new UnfoldingReader(in, 50, true);
-		Calendar calendar = builder.build(uin);
-		uin.close();
-		log.trace("calendar: {}", calendar);
-
-		EventContainer eventContainer = new EventContainer(config.getKey());
-		eventContainer.setFilename(filename);
-		eventContainer.setLastChanged(lastChanged);
-
-		org.joda.time.DateTime loadFrom = org.joda.time.DateTime.now()
-				.minusMinutes(config.getHistoricLoadMinutes());
-		org.joda.time.DateTime loadTo = org.joda.time.DateTime.now()
-				.plusMinutes(config.getPreloadMinutes());
-
-		final ComponentList<CalendarComponent> vEventComponents = calendar
-				.getComponents(Component.VEVENT);
-		if (vEventComponents.size() == 0) {
-			// no events inside
-			if (!readFromFile) {
-				Util.storeToDisk(config.getKey(), filename, calendar);
-			}
-			return;
-		}
-		for (CalendarComponent comp : vEventComponents) {
-			VEvent vEvent = (VEvent) comp;
-			log.trace("loading event: " + vEvent.getUid().getValue() + ":"
-					+ vEvent.getSummary().getValue());
-
-			PeriodList periods = vEvent.calculateRecurrenceSet(new Period(
-					new DateTime(loadFrom.toDate()), new DateTime(loadTo
-							.toDate())));
-
-			String eventId = vEvent.getUid().getValue();
-			final String eventName = vEvent.getSummary().getValue();
-
-			// no more upcoming events
-			if (periods.size() > 0) {
-				if (vEvent.getConsumedTime(
-						new net.fortuna.ical4j.model.Date(),
-						new net.fortuna.ical4j.model.Date(
-								org.joda.time.DateTime.now().plusYears(10)
-										.getMillis())).size() == 0) {
-					log.trace("event will never be occur (historic): {}",
-							eventName);
-					eventContainer.setHistoricEvent(true);
-				}
-			}
-
-			// expecting this is for every vEvent inside a calendar equals
-			eventContainer.setEventId(eventId);
-
-			eventContainer.setCalculatedUntil(loadTo);
-
-			for (Period p : periods) {
-				org.joda.time.DateTime start = null;
-				org.joda.time.DateTime end = null;
-
-				if (p.getStart().getTimeZone() == null) {
-					if (p.getStart().isUtc()) {
-						log.trace("start is without timezone, but UTC");
-						start = new org.joda.time.DateTime(p.getRangeStart(),
-								DateTimeZone.UTC).toLocalDateTime().toDateTime(
-								defaultTimeZone);
-					} else {
-						log.trace("start is without timezone, not UTC");
-						start = new LocalDateTime(p.getRangeStart())
-								.toDateTime();
-					}
-				} else if (DateTimeZone.getAvailableIDs().contains(
-						p.getStart().getTimeZone().getID())) {
-					log.trace("start is with known timezone: {}", p.getStart()
-							.getTimeZone().getID());
-					start = new org.joda.time.DateTime(p.getRangeStart(),
-							DateTimeZone.forID(p.getStart().getTimeZone()
-									.getID()));
-				} else {
-					// unknown timezone
-					log.trace("start is with unknown timezone: {}", p
-							.getStart().getTimeZone().getID());
-					start = new org.joda.time.DateTime(p.getRangeStart(),
-							defaultTimeZone);
-				}
-
-				if (p.getEnd().getTimeZone() == null) {
-					if (p.getStart().isUtc()) {
-						end = new org.joda.time.DateTime(p.getRangeEnd(),
-								DateTimeZone.UTC).toLocalDateTime().toDateTime(
-								defaultTimeZone);
-					} else {
-						end = new LocalDateTime(p.getRangeEnd()).toDateTime();
-					}
-				} else if (DateTimeZone.getAvailableIDs().contains(
-						p.getEnd().getTimeZone().getID())) {
-					end = new org.joda.time.DateTime(p.getRangeEnd(),
-							DateTimeZone
-									.forID(p.getEnd().getTimeZone().getID()));
-				} else {
-					// unknown timezone
-					end = new org.joda.time.DateTime(p.getRangeEnd(),
-							defaultTimeZone);
-				}
-
-				CalDavEvent event = new CalDavEvent(eventName, vEvent.getUid()
-						.getValue(), config.getKey(), start, end);
-				event.setLastChanged(lastChanged);
-				if (vEvent.getLocation() != null) {
-					event.setLocation(vEvent.getLocation().getValue());
-				}
-				if (vEvent.getDescription() != null) {
-					event.setContent(vEvent.getDescription().getValue());
-				}
-				event.setFilename(filename);
-				log.trace("adding event: " + event.getShortName());
-				eventContainer.getEventList().add(event);
-
-			}
-		}
-		addEventToMap(eventContainer, true);
-		if (!readFromFile) {
-			Util.storeToDisk(config.getKey(), filename, calendar);
-		}
-	}
-
 	public void startLoading() {
 		if (execService != null) {
 			return;
 		}
 		log.trace("starting execution...");
 
+		int i = 0;
 		for (final CalendarRuntime eventRuntime : EventStorage.getInstance()
 				.getEventCache().values()) {
-			try {
-				log.debug("reload cached events for config: {}", eventRuntime
-						.getConfig().getKey());
-				for (File fileCalendarKeys : new File(CACHE_PATH).listFiles()) {
-					if (!eventRuntime
-							.getConfig()
-							.getKey()
-							.equals(Util.getFilename(fileCalendarKeys.getName()))) {
-						continue;
-					}
-					final Collection<File> icsFiles = FileUtils.listFiles(
-							fileCalendarKeys, new String[] { "ics" }, false);
-					for (File icsFile : icsFiles) {
-						try {
-							FileInputStream fis = new FileInputStream(icsFile);
-							loadEvents(
-									Util.getFilename(icsFile.getAbsolutePath()),
-									new org.joda.time.DateTime(icsFile
-											.lastModified()), fis, eventRuntime
-											.getConfig(),
-									new ArrayList<String>(), true);
-						} catch (IOException e) {
-							log.error(
-									"cannot load events for file: " + icsFile,
-									e);
-						} catch (ParserException e) {
-							log.error(
-									"cannot load events for file: " + icsFile,
-									e);
-						}
-					}
-					break;
-				}
-			} catch (Throwable e) {
-				log.error("cannot load events", e);
-			}
-
 			try {
 				JobDetail job = JobBuilder
 						.newJob()
 						.ofType(EventReloaderJob.class)
 						.usingJobData(EventReloaderJob.KEY_CONFIG,
-								eventRuntime.getConfig().getKey()).build();
+								eventRuntime.getConfig().getKey())
+						.withIdentity(eventRuntime.getConfig().getKey(),
+						JOB_NAME_EVENT_RELOADER)
+						.storeDurably()
+						.build();
+				this.scheduler.addJob(job, false);
 				SimpleTrigger jobTrigger = TriggerBuilder
 						.newTrigger()
+						.forJob(job)
 						.withIdentity(
-								JOB_NAME_EVENT_RELOADER + "-"
-										+ eventRuntime.getConfig().getKey(),
+								eventRuntime.getConfig().getKey(),
 								JOB_NAME_EVENT_RELOADER)
-						.startAt(new Date())
+						.startAt(DateBuilder.futureDate(10 + i, IntervalUnit.SECOND))
 						.withSchedule(
 								SimpleScheduleBuilder
 										.repeatMinutelyForever(eventRuntime
 												.getConfig().getReloadMinutes()))
 						.build();
-				this.scheduler.scheduleJob(job, jobTrigger);
+				this.scheduler.scheduleJob(jobTrigger);
+				log.info("reload job scheduled for: {}", eventRuntime.getConfig().getKey());
 			} catch (SchedulerException e) {
 				log.error("cannot schedule calendar-reloader", e);
 			}
+			// next event 10 seconds later
+			i += 10;
 		}
+		
 	}
 
 	@Override
@@ -709,7 +490,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		Sardine sardine = Util.getConnection(config);
 
 		Calendar calendar = Util.createCalendar(calDavEvent,
-				this.defaultTimeZone);
+				defaultTimeZone);
 
 		try {
 			final String fullIcsFile = config.getUrl() + "/"

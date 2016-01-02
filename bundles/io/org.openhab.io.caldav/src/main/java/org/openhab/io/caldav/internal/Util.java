@@ -41,6 +41,7 @@ import com.github.sardine.Sardine;
 import com.github.sardine.impl.SardineImpl;
 
 public final class Util {
+	private static final String HTTP_URL_PREFIX = "http://";
 	private static final Logger log = LoggerFactory.getLogger(Util.class);
 	
 	private Util() {}
@@ -84,22 +85,26 @@ public final class Util {
 	}
 	
 	public static void storeToDisk(String calendarId, String filename, Calendar calendar) {
+		File cacheFile = getCacheFile(calendarId, filename);
 		try {
-			FileOutputStream fout = new FileOutputStream(getCacheFile(calendarId, filename));
+			FileOutputStream fout = new FileOutputStream(cacheFile);
 			CalendarOutputter outputter = new CalendarOutputter();
 			outputter.setValidating(false);
 			outputter.output(calendar, fout);
 			fout.flush();
 			fout.close();
 		} catch (IOException e) {
-			log.error("cannot store event '{}' to disk", filename);
+			log.error("cannot store event '{}' to disk (path={}): {}", filename, cacheFile.getAbsoluteFile(), e.getMessage());
 		} catch (ValidationException e) {
-			log.error("cannot store event '{}' to disk", filename);
+			log.error("cannot store event '{}' to disk (path={}): {}", filename, cacheFile.getAbsoluteFile(), e.getMessage());
 		}
 	}
 	
 	public static Sardine getConnection(CalDavConfig config) {
 		if (config.isDisableCertificateVerification()) {
+			if (config.getUrl().startsWith(HTTP_URL_PREFIX)) {
+				log.error("do not use '{}' if no ssl is used", CalDavLoaderImpl.PROP_DISABLE_CERTIFICATE_VERIFICATION);
+			}
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
 			try {
 				httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy()
