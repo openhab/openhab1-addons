@@ -8,13 +8,13 @@
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 public class SerialPortConnector extends SerialConnector {
 	private String device;

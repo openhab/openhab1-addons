@@ -10,7 +10,10 @@ package org.openhab.binding.stiebelheatpump.protocol;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
 import org.openhab.binding.stiebelheatpump.protocol.RecordDefinition.Type;
@@ -129,7 +132,7 @@ public class DataParser {
 				bytes = new byte[2];
 				System.arraycopy(response, recordDefinition.getPosition(),
 						bytes, 0, 2);
-				number = (short) buffer
+				number = buffer
 						.getShort(recordDefinition.getPosition());
 				break;
 			}

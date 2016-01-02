@@ -76,10 +76,12 @@ public class StiebelHeatPumpBinding extends
 	public StiebelHeatPumpBinding() {
 	}
 
+	@Override
 	public void activate() {
 
 	}
 
+	@Override
 	public void deactivate() {
 
 	}
@@ -87,6 +89,7 @@ public class StiebelHeatPumpBinding extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
@@ -94,6 +97,7 @@ public class StiebelHeatPumpBinding extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	protected String getName() {
 		return "stiebelheatpump Refresh Service";
 	}
@@ -101,6 +105,7 @@ public class StiebelHeatPumpBinding extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	protected void execute() {
 
 		if (communicationInUse)
@@ -140,6 +145,7 @@ public class StiebelHeatPumpBinding extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		logger.debug("Received command {} for item {}", command, itemName);
 
@@ -187,6 +193,7 @@ public class StiebelHeatPumpBinding extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
@@ -199,6 +206,7 @@ public class StiebelHeatPumpBinding extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 

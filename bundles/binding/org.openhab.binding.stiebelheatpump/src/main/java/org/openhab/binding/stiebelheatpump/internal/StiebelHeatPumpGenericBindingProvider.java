@@ -34,6 +34,7 @@ public class StiebelHeatPumpGenericBindingProvider extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getBindingType() {
 		return "stiebelheatpump";
 	}
@@ -41,6 +42,7 @@ public class StiebelHeatPumpGenericBindingProvider extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof NumberItem || item instanceof StringItem)) {
@@ -57,6 +59,7 @@ public class StiebelHeatPumpGenericBindingProvider extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
@@ -69,6 +72,7 @@ public class StiebelHeatPumpGenericBindingProvider extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	public String getParameter(String itemName) {
 		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs
 				.get(itemName);
@@ -78,6 +82,7 @@ public class StiebelHeatPumpGenericBindingProvider extends
 	/**
 	 * @{inheritDoc
 	 */
+	@Override
 	public Class<? extends Item> getItemType(String itemName) {
 		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs
 				.get(itemName);

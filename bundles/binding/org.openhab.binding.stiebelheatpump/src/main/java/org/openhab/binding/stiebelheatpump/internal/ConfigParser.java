@@ -8,15 +8,23 @@
  */
 package org.openhab.binding.stiebelheatpump.internal;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
+import javax.xml.bind.Unmarshaller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
 import org.openhab.binding.stiebelheatpump.protocol.Requests;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Config parser class. This class parses the xml configuration file converts it

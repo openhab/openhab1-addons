@@ -69,7 +69,7 @@ public class CommunicationService {
 		String version = "";
 		try {
 			Map<String, String> data = readData(versionRequest);
-			version = (String) data.get("Version");
+			version = data.get("Version");
 			Thread.sleep(WAITING_TIME_BETWEEN_REQUESTS);
 		} catch (InterruptedException e) {
 			throw new StiebelHeatPumpException(e.toString());

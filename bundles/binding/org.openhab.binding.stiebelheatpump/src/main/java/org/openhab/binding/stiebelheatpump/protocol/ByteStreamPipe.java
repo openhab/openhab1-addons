@@ -12,7 +12,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.openhab.binding.stiebelheatpump.protocol.CircularByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +63,7 @@ public class ByteStreamPipe implements Runnable, Closeable {
 		}
 	}
 
+	@Override
 	public void close() {
 		running = false;
 		try {

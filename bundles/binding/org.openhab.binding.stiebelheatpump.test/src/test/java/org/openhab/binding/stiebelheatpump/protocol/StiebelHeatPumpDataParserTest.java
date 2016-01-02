@@ -1,6 +1,7 @@
 package org.openhab.binding.stiebelheatpump.protocol;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +29,7 @@ public class StiebelHeatPumpDataParserTest {
 		// verify the version from heat pump
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "Version";
 					}
@@ -49,6 +51,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseTime() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "Time";
 					}
@@ -79,6 +82,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseTime2() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "Time";
 					}
@@ -109,6 +113,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseOperationCounters() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "OperationCounters";
 					}
@@ -137,6 +142,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseCurrentValues() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "CurrentValues";
 					}
@@ -182,6 +188,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsNominalValues";
 					}
@@ -221,6 +228,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseSettingsVentilation() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsVentilation";
 					}
@@ -263,6 +271,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseSettingsHeating1() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsHeating1";
 					}
@@ -313,6 +322,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseSettingsHeating2() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsHeating2";
 					}
@@ -358,6 +368,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsDomesticHotWater";
 					}
@@ -394,6 +405,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseSettingsEvaporator1() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsEvaporator1";
 					}
@@ -427,6 +439,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testParseSettingsEvaporator2() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsEvaporator2";
 					}
@@ -454,6 +467,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsDryHeatingProgram";
 					}
@@ -522,6 +536,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsCirculationPump";
 					}
@@ -554,6 +569,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsHeatingProgram";
 					}
@@ -599,6 +615,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsDomesticHotWaterProgram";
 					}
@@ -632,6 +649,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsVentilationProgram";
 					}
@@ -677,6 +695,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsAbsenceProgram";
 					}
@@ -703,6 +722,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "SettingsRestartAndMixerTime";
 					}
@@ -730,6 +750,7 @@ public class StiebelHeatPumpDataParserTest {
 	public void testWriteTime() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName() == "Time";
 					}
@@ -803,6 +824,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName().equals(
 								"SettingsDomesticHotWaterProgram");
@@ -863,6 +885,7 @@ public class StiebelHeatPumpDataParserTest {
 			throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
+					@Override
 					public boolean matches(Request r) {
 						return r.getName().equals("SettingsNominalValues");
 					}

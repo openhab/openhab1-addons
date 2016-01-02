@@ -33,6 +33,7 @@ public abstract class SerialConnector implements ProtocolConnector {
 
 	private CircularByteBuffer buffer;
 
+	@Override
 	public void connect() {
 		try {
 			connectPort();

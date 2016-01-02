@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * Record definition class for Stiebel heat pump requests.

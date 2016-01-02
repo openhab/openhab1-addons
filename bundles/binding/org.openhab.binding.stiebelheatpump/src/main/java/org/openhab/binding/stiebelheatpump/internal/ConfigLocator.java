@@ -9,6 +9,7 @@
 package org.openhab.binding.stiebelheatpump.internal;
 
 import java.util.List;
+
 import org.openhab.binding.stiebelheatpump.protocol.Request;
 
 /**

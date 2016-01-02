@@ -12,12 +12,13 @@
  */
 package org.stiebelheatpump;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openhab.binding.stiebelheatpump.internal.CommunicationService;
 import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SetDate {
 

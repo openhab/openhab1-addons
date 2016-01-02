@@ -9,8 +9,6 @@ import javax.xml.bind.JAXBException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openhab.binding.stiebelheatpump.internal.ConfigLocator;
-import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
 import org.openhab.binding.stiebelheatpump.protocol.RecordDefinition;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
 
@@ -653,7 +651,7 @@ public class ConfigParserTest {
 	public void LoadParserConfiguration() throws StiebelHeatPumpException {
 		List<Request> configuration = new ArrayList<Request>();
 
-		configuration = (List<Request>) configParser.unmarshal(new File(
+		configuration = configParser.unmarshal(new File(
 				XMLLocation));
 		Request firstRequest = configuration.get(0);
 		Assert.assertEquals("Version", firstRequest.getName());
