@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * Queries eco-data PowerDog
  * 
  * @author wuellueb
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class PowerDogLocalApiBinding extends AbstractActiveBinding<PowerDogLocalApiBindingProvider> {
 

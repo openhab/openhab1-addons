@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * configuration file. <b>NOTE</b>: The parameter is case sensitive!
  * 
  * @author wuellueb
- * @since 1.7.0
+ * @since 1.8.0
  */
 public class PowerDogLocalApiGenericBindingProvider extends AbstractGenericBindingProvider implements PowerDogLocalApiBindingProvider {
 
@@ -315,7 +315,7 @@ public class PowerDogLocalApiGenericBindingProvider extends AbstractGenericBindi
 	 * <code>ON->PowerDogLocalAPIBindingConfigElement</code>
 	 * 
 	 * @author wuellueb
-	 * @since 1.7.0
+	 * @since 1.8.0
 	 */
 	class PowerDogLocalApiBindingConfig extends HashMap<Command, PowerDogLocalApiBindingConfigElement> implements BindingConfig {
 		private static final long serialVersionUID = -3746900828632519633L;
