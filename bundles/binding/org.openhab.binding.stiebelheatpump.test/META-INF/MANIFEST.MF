@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the Stiebel Heat Pump binding
+Bundle-SymbolicName: org.openhab.binding.stiebelheatpump.test
+Bundle-Version: 1.8.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.stiebelheatpump
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Import-Package: javax.xml.bind

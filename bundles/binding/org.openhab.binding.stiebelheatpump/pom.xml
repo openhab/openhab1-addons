@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.8.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.stiebelheatpump</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.stiebelheatpump</bundle.namespace>
+		<deb.name>openhab-addon-binding-stiebelheatpump</deb.name>
+		<deb.description>${project.name}</deb.description>
+		<deb.depends>openhab-addon-io-serial</deb.depends>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.stiebelheatpump</artifactId>
+
+	<name>openHAB Stiebel heat pump Binding</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<description>openhab bundle to read data from Stiebel Eltron heat pump devices.
+This binding is used to communicate to Stiebel Eltron heat pump devices supporting serial communication. It can be used to read data and set new values for settings.</description>
+
+</project>
