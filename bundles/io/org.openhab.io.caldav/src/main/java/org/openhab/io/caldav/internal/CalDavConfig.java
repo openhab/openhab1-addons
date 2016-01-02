@@ -23,12 +23,13 @@ public class CalDavConfig {
 	private int preloadMinutes = 60 * 24;
 	private int historicLoadMinutes = 0;
 	private boolean disableCertificateVerification;
-	
+	private boolean lastModifiedFileTimeStampValid = true;
+
 	public CalDavConfig() {
 	}
 
-	public CalDavConfig(String key, String username, String password, String url, 
-			int reloadMinutes, int historicLoadMinutes) {
+	public CalDavConfig(String key, String username, String password,
+			String url, int reloadMinutes, int historicLoadMinutes) {
 		this.key = key;
 		this.username = username;
 		this.password = password;
@@ -93,7 +94,7 @@ public class CalDavConfig {
 			boolean disableCertificateVerification) {
 		this.disableCertificateVerification = disableCertificateVerification;
 	}
-	
+
 	public int getHistoricLoadMinutes() {
 		return historicLoadMinutes;
 	}
@@ -102,14 +103,24 @@ public class CalDavConfig {
 		this.historicLoadMinutes = historicLoadMinutes;
 	}
 
+	public boolean isLastModifiedFileTimeStampValid() {
+		return lastModifiedFileTimeStampValid;
+	}
+
+	public void setLastModifiedFileTimeStampValid(
+			boolean lastModifiedFileTimeStampValid) {
+		this.lastModifiedFileTimeStampValid = lastModifiedFileTimeStampValid;
+	}
+
 	@Override
 	public String toString() {
 		return "CalDavConfig [key=" + key + ", username=" + username
 				+ ", password=" + password + ", url=" + url
 				+ ", reloadMinutes=" + reloadMinutes + ", preloadMinutes="
 				+ preloadMinutes + ", disableCertificateVerification="
-				+ disableCertificateVerification + "]";
+				+ disableCertificateVerification
+				+ ", lastModifiedFileTimeStampValid="
+				+ lastModifiedFileTimeStampValid + "]";
 	}
-	
-	
+
 }
