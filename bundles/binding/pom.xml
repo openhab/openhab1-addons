@@ -174,5 +174,6 @@
     <module>org.openhab.binding.octoller</module>
     <module>org.openhab.binding.akm868</module>
     <module>org.openhab.binding.sonance</module>	
+    <module>org.openhab.binding.fritzboxtr064</module>	
   </modules>
 </project>
