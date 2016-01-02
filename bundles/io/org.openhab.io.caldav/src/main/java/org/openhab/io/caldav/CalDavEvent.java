@@ -166,10 +166,5 @@ public class CalDavEvent {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return this.getShortName();
-	}
-
 	
 }
