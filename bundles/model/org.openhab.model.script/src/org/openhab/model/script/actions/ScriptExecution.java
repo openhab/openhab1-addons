@@ -28,6 +28,9 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+//Added in 0.9.1 to support from cronScheduler
+import static org.quartz.CronScheduleBuilder.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +41,11 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 0.9.0
  *
+ * Extension to also support reschedulable cron timers
+ * 
+ * @author Peter Broucke
+ * @since 0.9.1
+ * 
  */
 @SuppressWarnings("restriction")
 public class ScriptExecution {
@@ -93,13 +101,28 @@ public class ScriptExecution {
 	}
 	
 	/**
+	 * Schedules a block of code for later execution.
+	 * 
+	 * @param instant the point in time when the code should be executed
+	 * @param closure the code block to execute
+	 * 
+	 * @return a handle to the created timer, so that it can be canceled or rescheduled
+	 * @throws ScriptExecutionException if an error occurs during the execution
+	 */
+	public static Timer createTimer(String cronExpression, Procedure0 closure) {
+		JobDataMap dataMap = new JobDataMap();
+		dataMap.put("procedure", closure);
+		return makeTimer(instant, closure.toString(), dataMap);
+	}	
+	
+	/**
 	 * Schedules a block of code (with argument) for later execution
 	 * 
 	 * @param instant the point in time when the code should be executed
 	 * @param arg1 the argument to pass to the code block
 	 * @param closure the code block to execute
 	 * 
-	 * @return a handle to the created timer, so that it can be canceled or rescheduled
+	 * @return a handle to the created timer, so that it can be cancelled or rescheduled
 	 * @throws ScriptExecutionException if an error occurs during the execution
 	 */
 	public static Timer createTimerWithArgument(AbstractInstant instant, Object arg1, Procedure1<Object> closure) {
@@ -119,7 +142,10 @@ public class ScriptExecution {
 	
 	private static Timer makeTimer(AbstractInstant instant, String closure, JobDataMap dataMap) {
 		JobKey jobKey = new JobKey(instant.toString() + ": " + closure.toString());
-        Trigger trigger = newTrigger().startAt(instant.toDate()).build();
+        Trigger trigger = newTrigger()
+        		.withDescription(instant.toString())
+        		.startAt(instant.toDate())
+        		.build();
 		Timer timer = new TimerImpl(jobKey, trigger.getKey(), instant);
 		dataMap.put("timer", timer);
 		try {
@@ -135,4 +161,31 @@ public class ScriptExecution {
 			return null;
 		}		
 	}
+	/*
+	public static Timer createTimer(String cronExpression, Procedure0 closure) {
+		JobKey jobKey = new JobKey("cron " + cronExpression + ": " + closure.toString());
+	    //Trigger trigger = newTrigger().startAt(instant.toDate()).build();
+		Trigger trigger = newTrigger()
+				.withDescription("cron " + cronExpression)
+				.withSchedule(cronSchedule(cronExpression))
+				.build();
+			        
+			Timer timer = new TimerImpl(jobKey, trigger.getKey(), cronExpression);
+			try {
+				JobDataMap dataMap = new JobDataMap();
+				dataMap.put("procedure", closure);
+				dataMap.put("timer", timer);
+		        JobDetail job = newJob(TimerExecutionJob.class)
+		            .withIdentity(jobKey)
+		            .usingJobData(dataMap)
+		            .build();	
+		        TimerImpl.scheduler.scheduleJob(job, trigger);
+				logger.debug("Scheduled code for execution at {}", cronExpression);
+				return timer;
+			} catch(SchedulerException e) {
+				logger.error("Failed to schedule code for execution.", e);
+				return null;
+			}
+		}
+	*/	
 }
