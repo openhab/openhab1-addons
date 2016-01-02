@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openhab.core.items.Item;
@@ -37,6 +38,11 @@ public final class EventUtils {
 	private static List<EventContent> parseContent(CalDavEvent event, ItemRegistry itemRegistry, 
 			Item itemIn, String expectedScope) {
 		final List<EventContent> outMap = new ArrayList<EventUtils.EventContent>();
+		
+		// no content, nothing to parse
+		if (StringUtils.isEmpty(event.getContent())) {
+			return outMap;
+		}
 		
 		try {
 			BufferedReader reader = new BufferedReader(new StringReader(event.getContent()));
@@ -115,13 +121,13 @@ public final class EventUtils {
 				}
 				
 				if (!item.getName().equals(itemName)) {
-					log.debug("name of item {} does not match itemName {}", item.getName(), itemName);
+					log.trace("name of item {} does not match itemName {}", item.getName(), itemName);
 					continue;
 				}
 				
 				State state = TypeParser.parseState(item.getAcceptedDataTypes(), stateString);
 				Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), stateString);
-				log.debug("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
+				log.trace("add item {} to action list (scope={}, state={}, time={})", item, scope, state, time);
 				outMap.add(new EventContent(scope, item, state, command, time));
 			}
 		} catch (IOException e) {

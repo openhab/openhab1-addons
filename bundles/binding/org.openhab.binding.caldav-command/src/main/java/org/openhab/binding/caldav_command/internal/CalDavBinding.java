@@ -195,7 +195,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		
 		if (config.getType() != CalDavType.DISABLE) {
-			logger.error("can just use commands for type=DISABLE");
+			logger.trace("can just use commands for type=DISABLE");
 			return;
 		}
 		
