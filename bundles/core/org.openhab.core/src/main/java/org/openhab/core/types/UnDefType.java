@@ -22,6 +22,14 @@ package org.openhab.core.types;
 public enum UnDefType implements PrimitiveType, State {
 	UNDEF, NULL;
 	
+	public String toString() {
+		switch(this) {
+			case UNDEF: return "Undefined";
+			case NULL:  return "Uninitialized";
+		}
+		return "";
+	}
+	
 	public String format(String pattern) {
 		return String.format(pattern, this.toString());
 	}
