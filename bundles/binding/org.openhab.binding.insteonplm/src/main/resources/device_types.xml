@@ -83,6 +83,7 @@ Example entry:
      <model>2486DWH6</model>
      <description>KeypadLinc Dimmer - 6 Button</description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -97,6 +98,7 @@ Example entry:
      <model>2486DWH8</model>
      <description>KeypadLinc Dimmer - 8 Button</description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>     
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -319,6 +321,7 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 6-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>
      <feature_group name="button_group" type="KeyPadButtonGroup">
@@ -334,6 +337,7 @@ Example entry:
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 8-Button </description>
      <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="rampdimmer">LoadDimmerRamp</feature>
      <feature name="manualchange">ManualChange</feature>
      <feature name="fastonoff">LoadDimmerFastOnOff</feature>     
      <feature_group name="button_group" type="KeyPadButtonGroup">

@@ -127,6 +127,15 @@
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 
+<feature name="LoadDimmerRamp">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- cmd1 defaults to 0x2E, 0x2F -->
+	<!-- default dispatcher uses 0x19 for lookup key instead of cmd1 -->
+	<message-handler cmd="0x19" group="1">RampDimmerHandler</message-handler>
+	<command-handler command="PercentType">RampPercentHandler</command-handler>
+	<command-handler command="OnOffType">RampOnOffCommandHandler</command-handler>
+</feature>
+
 <feature name="KeyPadButtonGroup">
 	<message-dispatcher>DefaultGroupDispatcher</message-dispatcher>
 	<poll-handler ext="0" cmd1="0x19" cmd2="0x01" >FlexPollHandler</poll-handler>

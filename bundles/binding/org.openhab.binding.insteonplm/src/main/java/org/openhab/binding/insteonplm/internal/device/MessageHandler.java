@@ -409,31 +409,28 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
-			if (isMybutton(msg, f)) {
-				if (cmd1 == onCmd) {
-					int level = getLevel(msg);
-					logger.info("{}: device {} was switched on using ramp to level {}.", 
-							nm(), f.getDevice().getAddress(), level);
-					if (level == 100) {
-						f.publish(OnOffType.ON, StateChangeType.ALWAYS);						
-					}
-					else {
-						// The publisher will convert an ON at level==0 to an OFF.
-						// However, this is not completely accurate since a ramp
-						// off at level == 0 may not turn off the dimmer completely
-						// (if I understand the Insteon docs correctly). In any case,
-						// it would be an odd scenario to turn ON a light at level == 0
-						// rather than turn if OFF.
-						f.publish(new PercentType(level), StateChangeType.ALWAYS);
-					}
+			if (cmd1 == onCmd) {
+				int level = getLevel(msg);
+				logger.info(
+						"{}: device {} was switched on using ramp to level {}.",
+						nm(), f.getDevice().getAddress(), level);
+				if (level == 100) {
+					f.publish(OnOffType.ON, StateChangeType.ALWAYS);
+				} else {
+					// The publisher will convert an ON at level==0 to an OFF.
+					// However, this is not completely accurate since a ramp
+					// off at level == 0 may not turn off the dimmer completely
+					// (if I understand the Insteon docs correctly). In any
+					// case,
+					// it would be an odd scenario to turn ON a light at level
+					// == 0
+					// rather than turn if OFF.
+					f.publish(new PercentType(level), StateChangeType.ALWAYS);
 				}
-				else if (cmd1 == offCmd) {
-					logger.info("{}: device {} was switched off using ramp.", nm(),
-							f.getDevice().getAddress());
-					f.publish(new PercentType(0), StateChangeType.ALWAYS);
-				}
-			} else {
-				logger.debug("ignored message: {}", isMybutton(msg,f));
+			} else if (cmd1 == offCmd) {
+				logger.info("{}: device {} was switched off using ramp.", nm(),
+						f.getDevice().getAddress());
+				f.publish(new PercentType(0), StateChangeType.ALWAYS);
 			}
 		}
 
