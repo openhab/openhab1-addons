@@ -29,11 +29,20 @@ public class EventJob implements Job {
 			final EventTrigger eventTrigger = EventTrigger.valueOf(context.getJobDetail().getJobDataMap().getString(KEY_EVENT_TRIGGER));
 			
 			CalendarRuntime calendarRuntime = EventStorage.getInstance().getEventCache().get(config);
+			if (calendarRuntime == null) {
+				throw new JobExecutionException("cannot get runtime for config: " + config, false);
+			}
 			EventContainer eventContainer = calendarRuntime.getEventMap().get(eventId);
+			if (eventContainer == null) {
+				throw new JobExecutionException("cannot get event-container for config: " + config + " and eventId: " + eventId, false);
+			}
+			if (eventContainer.getEventList().size() <= recIndex) {
+				throw new JobExecutionException("cannot get recurence-event for config: " + config + " and eventId: " + eventId + " and occurence: " + recIndex, false);
+			}
 			CalDavEvent event = eventContainer.getEventList().get(recIndex);
 			
 			log.info("event {} for: {}", eventTrigger, event.getShortName());
-			for (EventNotifier notifier : CalDavLoaderImpl.INSTANCE.getEventListenerList()) {
+			for (EventNotifier notifier : CalDavLoaderImpl.instance.getEventListenerList()) {
 				try {
 					if (eventTrigger == EventTrigger.BEGIN) {
 						notifier.eventBegins(event);
