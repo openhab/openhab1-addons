@@ -1,17 +1,17 @@
 <li>
 	<img src="/images/%icon%.png" width="29" height="29" class="iFull" />
 	<span class="options">
-		<img src="images/_down.png" 
-			ontouchstart="OH.repeatedRequest('../CMD?%item%=DECREASE', %frequency%, 1, event)" 
-			ontouchend="OH.stopRepeatedRequest('../CMD?%item%=OFF', event)" 
-			onmousedown="OH.repeatedRequest('../CMD?%item%=DECREASE', %frequency%, 1)" 
-			onmouseup="OH.stopRepeatedRequest('../CMD?%item%=OFF')" />
+		<img src="/images/_down.png" 
+			ontouchstart="OH.repeatedRequest('/CMD?%item%=DECREASE', %frequency%, 1, event)" 
+			ontouchend="OH.stopRepeatedRequest('/CMD?%item%=OFF', event)" 
+			onmousedown="OH.repeatedRequest('/CMD?%item%=DECREASE', %frequency%, 1)" 
+			onmouseup="OH.stopRepeatedRequest('/CMD?%item%=OFF')" />
 		<img src="/images/colorwheel.png" width="29" height="29" border="0" 
 			onclick="OH.colorpicker.setup('%item%', '%purelabel%', '%state%')" />
-		<img src="images/_up.png" 
-			ontouchstart="OH.repeatedRequest('../CMD?%item%=INCREASE', %frequency%, 1, event)" 
-			ontouchend="OH.stopRepeatedRequest('../CMD?%item%=ON', event)" 
-			onmousedown="OH.repeatedRequest('../CMD?%item%=INCREASE', %frequency%, 1)" 
-			onmouseup="OH.stopRepeatedRequest('../CMD?%item%=ON')" />
+		<img src="/images/_up.png" 
+			ontouchstart="OH.repeatedRequest('/CMD?%item%=INCREASE', %frequency%, 1, event)" 
+			ontouchend="OH.stopRepeatedRequest('/CMD?%item%=ON', event)" 
+			onmousedown="OH.repeatedRequest('/CMD?%item%=INCREASE', %frequency%, 1)" 
+			onmouseup="OH.stopRepeatedRequest('/CMD?%item%=ON')" />
 	</span>%label%
 </li>
