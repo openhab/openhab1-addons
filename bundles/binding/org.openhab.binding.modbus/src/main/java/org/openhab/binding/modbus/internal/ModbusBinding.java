@@ -91,14 +91,14 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 ModbusSlave slave = modbusSlaves.get(config.slaveName);
-                slave.executeCommand(command, config.readRegister, config.writeRegister);
+                slave.executeCommand(command, config);
             }
         }
     }
 
     /**
      * Posts update event to OpenHAB bus for "holding" type slaves
-     * 
+     *
      * @param binding ModbusBinding to get item configuration from BindingProviding
      * @param registers data received from slave device in the last pollInterval
      * @param itemName item to update
@@ -116,7 +116,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             String slaveValueType = modbusSlaves.get(slaveName).getValueType();
             double rawDataMultiplier = modbusSlaves.get(slaveName).getRawDataMultiplier();
 
-            State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
+            State newState = extractStateFromRegisters(registers, config.readIndex, slaveValueType);
             /* receive data manipulation */
             State newStateBoolean = provider.getConfig(itemName)
                     .translateBoolean2State(!newState.equals(DecimalType.ZERO));
@@ -170,7 +170,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
 
     /**
      * Posts update event to OpenHAB bus for "coil" type slaves
-     * 
+     *
      * @param binding ModbusBinding to get item configuration from BindingProviding
      * @param registers data received from slave device in the last pollInterval
      * @param item item to update
@@ -180,7 +180,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             if (provider.providesBindingFor(itemName)) {
                 ModbusBindingConfig config = provider.getConfig(itemName);
                 if (config.slaveName.equals(slaveName)) {
-                    boolean state = coils.getBit(config.readRegister);
+                    boolean state = coils.getBit(config.readIndex);
                     State currentState = provider.getConfig(itemName).getItemState();
                     State newState = provider.getConfig(itemName).translateBoolean2State(state);
                     if (!newState.equals(currentState)) {
@@ -193,7 +193,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
 
     /**
      * Returns names of all the items, registered with this binding
-     * 
+     *
      * @return list of item names
      */
     public Collection<String> getItemNames() {
