@@ -44,7 +44,7 @@
   <Configuration>
     <Parameter>
       <Index>1</Index>
-      <Type>constant</Type>
+      <Type>list</Type>
       <Default>00</Default>
       <Size>1</Size>
       <Label lang="en">Association Group 2 Command Type</Label>
@@ -69,7 +69,7 @@
 
     <Parameter>
       <Index>3</Index>
-      <Type>constant</Type>
+      <Type>list</Type>
       <Default>00</Default>
       <Size>1</Size>
       <Label lang="en">Type of Commands to Association Group 2</Label>
@@ -85,7 +85,7 @@
 
     <Parameter>
       <Index>4</Index>
-      <Type>constant</Type>
+      <Type>list</Type>
       <Default>00</Default>
       <Size>1</Size>
       <Label lang="en">Association Group 3 Command Type</Label>
@@ -109,7 +109,7 @@
 
     <Parameter>
       <Index>6</Index>
-      <Type>constant</Type>
+      <Type>list</Type>
       <Default>00</Default>
       <Size>1</Size>
       <Label lang="en">Type of Commands to Association Group 3</Label>
@@ -125,7 +125,7 @@
 
     <Parameter>
       <Index>7</Index>
-      <Type>constant</Type>
+      <Type>list</Type>
       <Default>01</Default>
       <Size>1</Size>
       <Label lang="en">LED-Indicator</Label>
@@ -141,7 +141,7 @@
 
     <Parameter>
       <Index>8</Index>
-      <Type>constant</Type>
+      <Type>list</Type>
       <Default>00</Default>
       <Size>1</Size>
       <Label lang="en">Lifeline Command Type</Label>
