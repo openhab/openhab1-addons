@@ -25,53 +25,61 @@ public interface PowerDogLocalApiBindingProvider extends BindingProvider {
 	/**
 	 * Returns the Type of the Item identified by {@code itemName}
 	 * 
-	 * @param itemName the name of the item to find the type for
+	 * @param itemName
+	 *            the name of the item to find the type for
 	 * @return the type of the Item identified by {@code itemName}
 	 */
 	Class<? extends Item> getItemType(String itemName);
 
 	/**
-	 * Return the serverId (used in the config file) for the PowerDog linked to the item
+	 * Return the serverId (used in the config file) for the PowerDog linked to
+	 * the item
 	 * 
-	 * @param itemName the item for which to find the serverId
+	 * @param itemName
+	 *            the item for which to find the serverId
 	 */
 	String getServerId(String itemName);
 
 	/**
-	 * Return the PowerDog Value ID for the item
-	 * e.g. 'impulsecounter_1234567890'
+	 * Return the PowerDog Value ID for the item e.g.
+	 * 'impulsecounter_1234567890'
 	 * 
-	 * @param itemName the item for which to find a ValueID
+	 * @param itemName
+	 *            the item for which to find a ValueID
 	 */
 	String getValueId(String itemName);
 
 	/**
-	 * Return the parameter 'name' for this item. The variable 'name' is the PowerDog XML parameter
-	 * used for the item, e.g. 'Current_Value'
+	 * Return the parameter 'name' for this item. The variable 'name' is the
+	 * PowerDog XML parameter used for the item, e.g. 'Current_Value'
 	 * 
-	 * @param itemName the item for which to find the name
+	 * @param itemName
+	 *            the item for which to find the name
 	 */
 	String getName(String itemName);
-	
+
 	/**
 	 * Returns the refresh interval to use according to <code>itemName</code>.
 	 * Is used by PowerDog-In-Binding.
-	 *  
-	 * @param itemName the item for which to find a refresh interval
+	 * 
+	 * @param itemName
+	 *            the item for which to find a refresh interval
 	 * 
 	 * @return the matching refresh interval or <code>null</code> if no matching
-	 * refresh interval could be found.
+	 *         refresh interval could be found.
 	 */
 	int getRefreshInterval(String itemName);
-	
+
 	/**
 	 * Returns all items which are mapped to a PowerDog-In-Binding
+	 * 
 	 * @return item which are mapped to a PowerDog-In-Binding
 	 */
 	List<String> getInBindingItemNames();
 
 	/**
 	 * Returns all items which are mapped to a PowerDog-Out-Binding
+	 * 
 	 * @return item which are mapped to a PowerDog-Out-Binding
 	 */
 	List<String> getOutBindingItemNames();
