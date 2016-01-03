@@ -1669,7 +1669,7 @@
 			</Reference>
 			<Reference>
 				<Type>3000</Type>
-				<Id>900</Id>
+				<Id>0900</Id>
 			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
@@ -1700,6 +1700,10 @@
 			<Reference>
 				<Type>0102</Type>
 				<Id>1000</Id>
+			</Reference>
+			<Reference>
+				<Type>0102</Type>
+				<Id>3000</Id>
 			</Reference>
 			<Model>FGD212</Model>
 			<Label lang="en">Fibaro Dimmer 2</Label>
