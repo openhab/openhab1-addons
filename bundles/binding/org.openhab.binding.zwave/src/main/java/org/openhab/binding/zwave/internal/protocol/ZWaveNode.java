@@ -87,6 +87,7 @@ public class ZWaveNode {
 	private Date lastSent = null;
 	private Date lastReceived = null;
 
+	@XStreamOmitField
 	private boolean applicationUpdateReceived = false;
 
 	@XStreamOmitField
