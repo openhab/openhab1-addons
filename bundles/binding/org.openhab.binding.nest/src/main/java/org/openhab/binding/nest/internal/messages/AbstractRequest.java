@@ -50,7 +50,7 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 
 	private static final Properties HTTP_HEADERS;
 
-	private static final int HTTP_REQUEST_TIMEOUT = 10000;
+	private static final int DEFAULT_HTTP_REQUEST_TIMEOUT = 10000;
 
 	protected static final String HTTP_GET = "GET";
 
@@ -61,6 +61,8 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 	protected static final String API_BASE_URL = "https://developer-api.nest.com/";
 
 	protected static final ObjectMapper JSON = new ObjectMapper();
+
+	protected static int httpRequestTimeout = DEFAULT_HTTP_REQUEST_TIMEOUT;
 
 	static {
 		HTTP_HEADERS = new Properties();
@@ -74,6 +76,10 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		df.setTimeZone(tz);
 		JSON.setDateFormat(df);
+	}
+
+	public static void setHttpRequestTimeout(int timeout) {
+		httpRequestTimeout = timeout;
 	}
 
 	protected final RuntimeException newException(final String message, final Exception cause, final String url,
@@ -106,7 +112,7 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 		HttpClient client = new HttpClient();
 
 		HttpMethod method = HttpUtil.createHttpMethod(httpMethod, url);
-		method.getParams().setSoTimeout(HTTP_REQUEST_TIMEOUT);
+		method.getParams().setSoTimeout(httpRequestTimeout);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
 		for (String httpHeaderKey : HTTP_HEADERS.stringPropertyNames()) {
