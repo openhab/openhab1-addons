@@ -2693,7 +2693,7 @@
 				<Id>1</Id>
 			</Reference>
 			<Model>05438</Model>
-			<Label lang="en">Outdoor Wall Plug Switch</Label>
+			<Label lang="en">Indoor/Outdoor Wall Plug Switch</Label>
 			<ConfigFile>popp/05438.xml</ConfigFile>
 		</Product>
 		<Product>
