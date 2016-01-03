@@ -11,7 +11,7 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.powerdoglocalapi</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.powerdoglocalapi</bundle.namespace>
-		<deb.name>openhab-addon-binding-PowerDogLocalApi</deb.name>
+		<deb.name>openhab-addon-binding-powerdoglocalapi</deb.name>
 		<deb.description>openhab addon binding PowerDogLocalApi</deb.description>
 	</properties>
 

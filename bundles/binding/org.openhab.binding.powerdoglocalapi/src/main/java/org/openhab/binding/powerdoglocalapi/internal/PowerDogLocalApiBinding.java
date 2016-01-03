@@ -301,10 +301,6 @@ public class PowerDogLocalApiBinding extends AbstractActiveBinding<PowerDogLocal
 		{
 			eventPublisher.postUpdate(itemName, newState);
 		}
-		else
-		{
-			logger.warn("internalReceiveCommand({},{}) not handled!", itemName, command);
-		}
 	}
 	
 	/**
