@@ -31,6 +31,8 @@ public class FrontierSiliconRadio {
 	private static final String REQUEST_GET_POWER = "GET/netRemote.sys.power";
 	private static final String REQUEST_GET_MODE = "GET/netRemote.sys.mode";
 	private static final String REQUEST_SET_MODE = "SET/netRemote.sys.mode";
+	private static final String REQUEST_GET_EQ = "GET/netRemote.sys.eqPreset";
+	private static final String REQUEST_SET_EQ = "SET/netRemote.sys.eqPreset";
 	private static final String REQUEST_SET_VOLUME = "SET/netRemote.sys.audio.volume";
 	private static final String REQUEST_GET_VOLUME = "GET/netRemote.sys.audio.volume";
 	private static final String REQUEST_SET_MUTE = "SET/netRemote.sys.audio.mute";
@@ -184,6 +186,37 @@ public class FrontierSiliconRadio {
 			return;
 		} catch (Exception e) {
 			logger.error("request failed: " + REQUEST_SET_MODE + " = " + params);
+		}
+	}
+	
+		/**
+	 * Read the radios operating eq preset
+	 * 
+	 * @return operating eq preset. 
+	 */
+	public int getEq() {
+		try {
+			FrontierSiliconRadioApiResult result = conn.doRequest(REQUEST_GET_EQ);
+			return result.getValueU32AsInt();
+		} catch (Exception e) {
+			logger.error("request failed: " + REQUEST_GET_EQ);
+		}
+		return 0;
+	}
+
+	/**
+	 * Set the radio operating eq preset
+	 * 
+	 * @param eq
+	 *           0,1,2,3,4,5,6
+	 */
+	public void setEq(int eq) {
+		final String params = "value=" + eq;
+		try {
+			conn.doRequest(REQUEST_SET_EQ, params);
+			return;
+		} catch (Exception e) {
+			logger.error("request failed: " + REQUEST_SET_EQ + " = " + params);
 		}
 	}
 
