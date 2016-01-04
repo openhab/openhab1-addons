@@ -77,7 +77,13 @@ public class ZWaveNode {
 	private boolean frequentlyListening; 
 	private boolean routing;
 	private String healState;
-	
+    @SuppressWarnings("unused")
+    private boolean security;
+    @SuppressWarnings("unused")
+    private boolean beaming;
+    @SuppressWarnings("unused")
+    private int maxBaudRate;
+
     // Keep the NIF - just used for information and debug in the XML
     @SuppressWarnings("unused")
     private List<Integer> nodeInformationFrame = null;
@@ -829,5 +835,17 @@ public class ZWaveNode {
 	
     public void updateNIF(List<Integer> nif) {
         nodeInformationFrame = nif;
+    }
+    
+    public void setSecurity(boolean security) {
+        this.security = security;
+    }
+
+    public void setBeaming(boolean beaming) {
+        this.beaming = beaming;
+    }
+
+    public void setMaxBaud(int maxBaudRate) {
+        this.maxBaudRate = maxBaudRate;
     }
 }
