@@ -53,21 +53,34 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 
 		ZWaveNode node = zController.getNode(nodeId);
 
-		boolean listening = (incomingMessage.getMessagePayloadByte(0) & 0x80)!=0 ? true : false;
-		boolean routing = (incomingMessage.getMessagePayloadByte(0) & 0x40)!=0 ? true : false;
-		int version = (incomingMessage.getMessagePayloadByte(0) & 0x07) + 1;
-		boolean frequentlyListening = (incomingMessage.getMessagePayloadByte(1) & 0x60)!= 0 ? true : false;
+        boolean listening = (incomingMessage.getMessagePayloadByte(0) & 0x80) != 0 ? true : false;
+        boolean routing = (incomingMessage.getMessagePayloadByte(0) & 0x40) != 0 ? true : false;
+        int version = (incomingMessage.getMessagePayloadByte(0) & 0x07) + 1;
+        boolean frequentlyListening = (incomingMessage.getMessagePayloadByte(1) & 0x60) != 0 ? true : false;
+        boolean beaming = ((incomingMessage.getMessagePayloadByte(1) & 0x10) != 0);
+        boolean security = ((incomingMessage.getMessagePayloadByte(1) & 0x01) != 0);
 
-		logger.debug("NODE {}: Listening = {}", nodeId, listening);
-		logger.debug("NODE {}: Routing = {}", nodeId, routing);
-		logger.debug("NODE {}: Version = {}", nodeId, version);
-		logger.debug("NODE {}: FLIRS = {}", nodeId, frequentlyListening);
+        int maxBaudRate = 9600;
+        if ((incomingMessage.getMessagePayloadByte(0) & 0x38) == 0x10) {
+            maxBaudRate = 40000;
+        }
 
-		node.setListening(listening);
-		node.setRouting(routing);
-		node.setVersion(version);
-		node.setFrequentlyListening(frequentlyListening);
-		
+        logger.debug("NODE {}: Listening = {}", nodeId, listening);
+        logger.debug("NODE {}: Routing = {}", nodeId, routing);
+        logger.debug("NODE {}: Beaming = {}", nodeId, beaming);
+        logger.debug("NODE {}: Version = {}", nodeId, version);
+        logger.debug("NODE {}: FLIRS = {}", nodeId, frequentlyListening);
+        logger.debug("NODE {}: Security = {}", nodeId, security);
+        logger.debug("NODE {}: Max Baud = {}", nodeId, maxBaudRate);
+
+        node.setListening(listening);
+        node.setRouting(routing);
+        node.setVersion(version);
+        node.setFrequentlyListening(frequentlyListening);
+        node.setSecurity(security);
+        node.setBeaming(beaming);
+        node.setMaxBaud(maxBaudRate);
+
 		Basic basic = Basic.getBasic(incomingMessage.getMessagePayloadByte(3));
 		if (basic == null) {
 			logger.error(String.format("NODE %d: Basic device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(3)));
