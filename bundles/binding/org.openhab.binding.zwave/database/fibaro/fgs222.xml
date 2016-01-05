@@ -113,20 +113,23 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">Control key #2 behaviour</Label>			
+			<Label lang="en">Sending commands to control devices assigned to 2-nd association group (key no. 2)</Label>			
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Device status is not checked</Label>
+				<Label lang="en">Commands are sent when device is turned on and </Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Device status is checked</Label>
+				<Label lang="en">![CDATA[Commands are sent when device is turned off. Enabling device does not send control commands.<BR />
+				Double-clicking key sends 'turn on' command, dimmers memorize the last saved state (e.g. 50% brightness).]]</Label>
 			</Item>
-			<Help lang="en">Key no.2 is not represented by any physical device - only
-				devices in the association list.
-				This functionality prevents of lack of reaction on pressing key no.2
-				through polling devices
-				from association list one by one and checking their actual statuses.</Help>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">![CDATA[Commands are sent when device is turned off. Enabling device does not send control commands.<BR />
+				Double-clicking key sends 'turn on' command and dimmers are set to 100% brightness.]]</Label>
+			</Item>
+			<Help lang="en">![CDATA[NOTE: Parameter 15 value must be set to 1 to work properly.<BR />
+			This activates the double-click functionality - dimmer/roller shutter control.]]</Help>
 		</Parameter>
 		
 		<Parameter>
