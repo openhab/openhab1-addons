@@ -55,7 +55,7 @@
 			<Index>10</Index>
 			<Type>list</Type>
 			<Default>255</Default>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
 			<Item>
 				<Value>255</Value>
@@ -268,11 +268,6 @@ state and reflecting its state)</Label>
 			<Maximum>16</Maximum>
 			<Label lang="en">Binary Sensor (triggered at change of the input I2 
 state and reflecting its state)</Label>
-		</Group>
-		<Group>
-			<Index>9</Index>
-			<Maximum>16</Maximum>
-			<Label lang="en">Multilevel Sensor report (triggered at change of temperature sensor)</Label>
 		</Group>
 	</Associations>
 </Product>
