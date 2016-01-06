@@ -21,14 +21,11 @@ import org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpConnector;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpSimulator;
-import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser.NibeDataType;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpDataParser.VariableInformation;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpSerialConnector;
 import org.openhab.binding.nibeheatpump.protocol.NibeHeatPumpUDPConnector;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -39,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * Binding to receive data from Nibe heat pumps.
  *
  * @author Pauli Anttila
+ * @author John Cocula -- work around bad data from F750
  * @since 1.3.0
  */
 public class NibeHeatPumpBinding extends
@@ -155,7 +153,9 @@ public class NibeHeatPumpBinding extends
 					// Wait a packet (blocking)
 					byte[] data = connector.receiveDatagram();
 
-					logger.debug("Received data (len={}): {}", data.length, DatatypeConverter.printHexBinary(data));
+					if (logger.isDebugEnabled()) {
+						logger.debug("Received data (len={}): {}", data.length, DatatypeConverter.printHexBinary(data));
+					}
 
 					Hashtable<Integer, Short> regValues = NibeHeatPumpDataParser.ParseData(data);
 
@@ -182,26 +182,25 @@ public class NibeHeatPumpBinding extends
 								if ( variableInfo.dataType == NibeHeatPumpDataParser.NibeDataType.U32 || variableInfo.dataType == NibeHeatPumpDataParser.NibeDataType.S32 )
 								{
 									logger.debug("{}:32bit dataType", key);
-									int keyValue 		= (int) regValues.get(key) & 0xffff;		// Handling the short-value as unsigned when casting to int
-									int keyPlusOneValue = (int) regValues.get(key + 1) & 0xffff;
-//									if (keys.hasMoreElements())
-									{
-//										if ( regValues.get(key + 1) != null )
-										{
-//											keyPlusOneValue = regValues.get(key + 1);
-										}
+									int keyValue, keyPlusOneValue;
+									try {
+										keyValue        = (int) regValues.get(key) & 0xffff;		// Handling the short-value as unsigned when casting to int
+										keyPlusOneValue = (int) regValues.get(key + 1) & 0xffff;
+									} catch (Exception ex) {
+										logger.error("Received bad data key={}; skipping.", key);
+										continue;
 									}
-									logger.debug(key + ":" + Integer.toHexString(keyValue) + " " + Integer.toHexString(keyPlusOneValue));
+									if (logger.isDebugEnabled()) {
+										logger.debug("{}: {} {}", key, Integer.toHexString(keyValue), Integer.toHexString(keyPlusOneValue));
+									}
 									value = (int) keyPlusOneValue << 16 | keyValue;
 								}
 								
 								value = value / variableInfo.factor;
-//								org.openhab.core.types.State state = new DecimalType(value);	// Updates the item with unchanged resolution from 'value' (double)
 								BigDecimal bd = new BigDecimal(value).setScale( (int) Math.log10(variableInfo.factor) , RoundingMode.HALF_EVEN );
 								org.openhab.core.types.State state = new DecimalType(bd);	// Updates the item with correct resolution based on 'variableInfo.factor'
 
-								logger.debug("{}={}", key + ":"
-										+ variableInfo.variable, value);
+								logger.debug("{}:{}={}", key, variableInfo.variable, value);
 
 								for (NibeHeatPumpBindingProvider provider : providers) {
 									for (String itemName : provider
