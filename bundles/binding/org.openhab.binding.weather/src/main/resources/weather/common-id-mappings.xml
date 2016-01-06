@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <common-id-mappings>
   <common-id-mapping id="thunder">
-    <provider name="Yahoo" ids="0,3,4,17,35"/>
+    <provider name="Yahoo" ids="0,3,4,17,35,38"/>
     <provider name="OpenWeatherMap" ids="200, 201, 202, 210, 211, 212, 221, 230, 231, 232, 906"/>
     <provider name="WorldWeatherOnline" ids="392, 386, 200, 389"/>
     <provider name="Hamweather" ids="A,T"/>
@@ -156,6 +156,7 @@
   </common-id-mapping>
   <common-id-mapping id="scattered-thunder">
     <provider name="Yahoo" ids="37"/>
+    <provider name="Wunderground" icons="chancetstorms"/>
   </common-id-mapping>
   <common-id-mapping id="scattered-showers">
     <provider name="Yahoo" ids="39"/>

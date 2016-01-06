@@ -871,7 +871,11 @@ function addsWidget(id, data, container, nav_parent) {
     } else if (data.type == "Setpoint") {
 		widget = createSetpointWidget(data.item ? data.item.name : '', data.minValue, data.maxValue, data.step, data.label, data.icon);
     } else if (data.type == "Video") {
-		widget = createVideoWidget(data.item ? data.item.name : '', data.url, data.label, data.icon);
+		if (data.encoding && data.encoding == "mjpeg") {
+			widget = createImageWidget(id, data.url, 0);
+		} else {
+			widget = createVideoWidget(data.item ? data.item.name : '', data.url, data.label, data.icon);
+		}
 	} else if (data.type == "Webview") {
 		widget = createWebviewWidget(data.item ? data.item.name : '', data.url, data.height, data.label, data.icon);
 	} else if (data.type == "Chart") {

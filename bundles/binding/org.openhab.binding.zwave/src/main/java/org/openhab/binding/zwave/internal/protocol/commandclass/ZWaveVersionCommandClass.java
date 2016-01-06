@@ -45,8 +45,8 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public static final int VERSION_COMMAND_CLASS_REPORT = 0x14;
 	
 	private LibraryType libraryType = LibraryType.LIB_UNKNOWN;
-	private Double protocolVersion;
-	private Double applicationVersion;
+	private String protocolVersion;
+	private String applicationVersion;
 	
 	/**
 	 * Creates a new instance of the ZWaveVersionCommandClass class.
@@ -85,14 +85,14 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 			case VERSION_REPORT:
 				logger.debug("NODE {}: Process Version Report", this.getNode().getNodeId());
 				libraryType = LibraryType.getLibraryType(serialMessage.getMessagePayloadByte(offset + 1));
-				protocolVersion = (double)serialMessage.getMessagePayloadByte(offset + 2) +
-					    ((double)serialMessage.getMessagePayloadByte(offset + 3) / 10);
-				applicationVersion = serialMessage.getMessagePayloadByte(offset + 4) +
-						((double)serialMessage.getMessagePayloadByte(offset + 5) / 10);
-				
-				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType.key));
-				logger.debug(String.format("NODE %d: Protocol Version = %.1f", this.getNode().getNodeId(), protocolVersion));
-				logger.debug(String.format("NODE %d: Application Version = %.1f", this.getNode().getNodeId(), applicationVersion));
+				protocolVersion = Integer.toString(serialMessage.getMessagePayloadByte(offset + 2)) + "." +
+					    Integer.toString(serialMessage.getMessagePayloadByte(offset + 3));
+				applicationVersion = Integer.toString(serialMessage.getMessagePayloadByte(offset + 4)) + "." +
+						Integer.toString(serialMessage.getMessagePayloadByte(offset + 5));
+
+				logger.debug("NODE {}: Library Type        = {} ({})", this.getNode().getNodeId(), libraryType.key, libraryType.label);
+				logger.debug("NODE {}: Protocol Version    = {}", this.getNode().getNodeId(), protocolVersion);
+				logger.debug("NODE {}: Application Version = {}", this.getNode().getNodeId(), applicationVersion);
 				break;
 			case VERSION_COMMAND_CLASS_REPORT:
 				logger.debug("NODE {}: Process Version Command Class Report", this.getNode().getNodeId());
@@ -209,7 +209,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 * Returns the version of the protocol used by the device
 	 * @return Protocol version as double (version . subversion) 
 	 */
-	public Double getProtocolVersion() {
+	public String getProtocolVersion() {
 		return protocolVersion;
 	}
 	
@@ -217,7 +217,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 * Returns the version of the firmware used by the device
 	 * @return Application version as double (version . subversion) 
 	 */
-	public Double getApplicationVersion() {
+	public String getApplicationVersion() {
 		return applicationVersion;
 	}
 	

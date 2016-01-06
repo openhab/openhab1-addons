@@ -66,7 +66,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 				transactionComplete = true;
 				break;
 			case FAILED_NODE_NOT_FOUND:
-				logger.error("NODE {}: Remove failed node failed as node not found on controllers failed list!", nodeId);
+				logger.error("NODE {}: Remove failed node failed as node not found!", nodeId);
 				transactionComplete = true;
 				break;
 			case FAILED_NODE_REMOVE_PROCESS_BUSY:

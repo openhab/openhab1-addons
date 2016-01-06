@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -170,7 +169,7 @@ ZWaveCommandClassDynamicState {
 		
 		dynamicDone = true;
 		logger.debug("NODE {}: Thermostat Fan Mode Report value = {}", this.getNode().getNodeId(), fanModeType.getLabel());
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
+		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 		this.getController().notifyEventListeners(zEvent);
 	}
 

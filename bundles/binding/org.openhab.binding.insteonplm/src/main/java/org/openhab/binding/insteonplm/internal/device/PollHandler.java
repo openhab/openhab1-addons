@@ -109,6 +109,61 @@ public abstract class PollHandler {
 			return null;
 		}
 	}
+	
+	public static class ThermostatTemperaturePollHandler extends PollHandler {
+		ThermostatTemperaturePollHandler(DeviceFeature f) { super(f); }
+		@Override
+		public Msg makeMsg(InsteonDevice d) {
+			Msg m = null;
+			try {
+				m = d.makeStandardMessage((byte)0x0f, (byte)0x6a, (byte)0x00);
+				m.setQuietTime(500L);
+			} catch (FieldException e) {
+				logger.warn("error setting field in msg: ", e);
+			} catch (IOException e) {
+				logger.error("poll failed with exception ", e);
+			}
+			return m;
+		}
+	}
+	
+	public static class ThermostatHeatCoolSetPointPollHandler extends PollHandler {
+		ThermostatHeatCoolSetPointPollHandler(DeviceFeature f) { super(f); }
+		@Override
+		public Msg makeMsg(InsteonDevice d) {
+			Msg m = null;
+			try {
+				m = d.makeExtendedMessage((byte) 0x1f, (byte) 0x2e, (byte) 0x00);
+				m.setByte("userData1", (byte) 0x01);
+				m.setByte("userData3", (byte) 0x01);
+				m.setByte("userData14", (byte)0x00);
+				m.setQuietTime(500L);
+			} catch (FieldException e) {
+				logger.warn("error setting field in msg: ", e);
+			} catch (IOException e) {
+				logger.error("poll failed with exception ", e);
+			}
+			return m;
+		}
+	}
+	
+	public static class ThermostatHumidityPollHandler extends PollHandler {
+		ThermostatHumidityPollHandler(DeviceFeature f) { super(f); }
+		@Override
+		public Msg makeMsg(InsteonDevice d) {
+			Msg m = null;
+			try {
+				m = d.makeStandardMessage((byte)0x0f, (byte)0x6a, (byte)0x60);
+				m.setQuietTime(500L);
+			} catch (FieldException e) {
+				logger.warn("error setting field in msg: ", e);
+			} catch (IOException e) {
+				logger.error("poll failed with exception ", e);
+			}
+			return m;
+		}
+	}
+	
 	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param m_pollHandler the name of the handler to create

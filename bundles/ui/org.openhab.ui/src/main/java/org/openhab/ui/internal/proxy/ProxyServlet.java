@@ -27,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.openhab.io.net.http.SecureHttpContext;
 import org.openhab.model.core.ModelRepository;
 import org.openhab.model.sitemap.Image;
+import org.openhab.model.sitemap.Mapview;
 import org.openhab.model.sitemap.Sitemap;
 import org.openhab.model.sitemap.Video;
 import org.openhab.model.sitemap.Webview;
@@ -155,6 +156,8 @@ public class ProxyServlet extends HttpServlet {
 			} else if(widget instanceof Webview) {
 				Webview webview = (Webview) widget;
 				uriString = baseUrl + webview.getUrl();
+			} else if(widget instanceof Mapview) {
+				uriString = baseUrl;
 			} else {
 				if(widget==null) {
 					throw new ServletException("Widget '" + widgetId + "' could not be found!");

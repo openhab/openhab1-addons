@@ -177,19 +177,35 @@ public class OBISMessage {
 	private void postProcessKaifaE0003() {
 		logger.debug("postProcessKaifaE0003");
 
-		CosemDate powerFailureDate = (CosemDate) cosemValues
-				.get(FIRST_POWER_FAILURE_DATE);
-		CosemInteger powerFailureDuration = (CosemInteger) cosemValues
-				.get(FIRST_POWER_FAILURE_DURATION);
-
-		Calendar epoch = Calendar.getInstance();
-		epoch.setTime(new Date(0));
-
-		if (powerFailureDate.getValue().getCalendar().before(epoch)
-				&& powerFailureDuration.getValue().intValue() == Integer.MAX_VALUE) {
-			logger.debug("Filter invalid power failure entry");
-			cosemValues.remove(FIRST_POWER_FAILURE_DURATION);
-			cosemValues.remove(FIRST_POWER_FAILURE_DATE);
+		/*
+		 * The list of cosemValues for this OBIS Message is:
+		 * - [0] Number of entries in the list
+		 * - [1] Cosem Identifier
+		 * - [2] power failure date entry 1 [Optional]
+		 * - [3] power failure duration entry 1 [Optional]
+		 * - [entry n * 2] power failure date entry n
+		 * - [entry n * 2 + 1] power failure duration entry n 
+		 */
+		
+		// First check of there is at least one entry of a power failure present
+		// (i.e. date at idx 2 and duration at idx 3)  
+		if (cosemValues.size() > FIRST_POWER_FAILURE_DURATION) {
+			CosemDate powerFailureDate = (CosemDate) cosemValues
+					.get(FIRST_POWER_FAILURE_DATE);
+			CosemInteger powerFailureDuration = (CosemInteger) cosemValues
+					.get(FIRST_POWER_FAILURE_DURATION);
+	
+			Calendar epoch = Calendar.getInstance();
+			epoch.setTime(new Date(0));
+	
+			// Check if the first entry it as epoc and has a 2^32-1 value
+			// If so, filter this value, since it has no added value
+			if (powerFailureDate.getValue().getCalendar().before(epoch)
+					&& powerFailureDuration.getValue().intValue() == Integer.MAX_VALUE) {
+				logger.debug("Filter invalid power failure entry");
+				cosemValues.remove(FIRST_POWER_FAILURE_DURATION);
+				cosemValues.remove(FIRST_POWER_FAILURE_DATE);
+			}
 		}
 	}
 }

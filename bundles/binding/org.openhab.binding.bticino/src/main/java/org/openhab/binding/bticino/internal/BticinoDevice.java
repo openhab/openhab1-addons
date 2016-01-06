@@ -17,8 +17,10 @@ import java.util.List;
 import org.openhab.binding.bticino.internal.BticinoGenericBindingProvider.BticinoBindingConfig;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
@@ -282,6 +284,18 @@ public class BticinoDevice implements IBticinoEventListener {
 							.equalsIgnoreCase("Automation DOWN")) {
 						eventPublisher.postUpdate(l_item.getName(),
 								UpDownType.DOWN);
+					}
+				}
+			} else if (l_item instanceof NumberItem) {
+				logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName() + "], TRANSLATE TO OPENHAB BUS EVENT");
+			
+				// THERMOREGULATION
+				if (p_protocol_read.getProperty("messageType")
+						.equalsIgnoreCase("thermoregulation")) {
+							
+					if (p_protocol_read.getProperty("messageDescription")
+							.equalsIgnoreCase("Temperature value")) {
+						eventPublisher.postUpdate(l_item.getName(), DecimalType.valueOf(p_protocol_read.getProperty("temperature")));
 					}
 				}
 			}

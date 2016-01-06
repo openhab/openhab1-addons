@@ -27,7 +27,9 @@ public class DSCAlarmDeviceProperties {
 	private int systemConnection = 0;
 	private String systemConnectionDescription = "";
 	private String systemMessage = "";
-	private Date systemTimeDate;
+	private Date systemTime = new Date(0);
+	private boolean systemTimeStamp = false;
+	private boolean systemTimeBroadcast = false;
 	private int systemCommand = -1;
 	private int systemError = 0;
 	private int systemErrorCode = 0;
@@ -85,7 +87,6 @@ public class DSCAlarmDeviceProperties {
 	
 	enum StateType{
 		CONNECTION_STATE,
-		TIME_DATE,
 		GENERAL_STATE,
 		ARM_STATE,
 		ALARM_STATE,
@@ -133,9 +134,18 @@ public class DSCAlarmDeviceProperties {
 		return systemMessage;
 	}
 	
-	public String getTimeDate() {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:mm MM/dd/YY");
-		return tm.format(systemTimeDate);
+	public String getSystemTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		
+		return sdf.format(systemTime);
+	}
+
+	public boolean getSystemTimeStamp() {
+		return systemTimeStamp;
+	}
+
+	public boolean getSystemTimeBroadcast() {
+		return systemTimeBroadcast;
 	}
 
 	public int getSystemCommand() {
@@ -364,13 +374,25 @@ public class DSCAlarmDeviceProperties {
 		this.systemMessage = systemMessage;
 	}
 
-	public void setTimeDate(String timeDate) {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:MM MM/DD/YY");
+	public void setSystemTime(String time) {
+		SimpleDateFormat sdf = new SimpleDateFormat("HHmmMMddyy");
+		Date date = null;
+		
 		try {
-			systemTimeDate = tm.parse(timeDate);
-		} catch (ParseException parseException) {
-			logger.error("setTimeDate(): parse error {} ", parseException);
+			date = sdf.parse(time);
+		} catch (ParseException e) {
+			logger.error("setTimeDate(): Parse Exception occured while trying parse date string - {}. ",e);
 		}
+		
+		this.systemTime = date;
+	}
+
+	public void setSystemTimeStamp(boolean systemTimeStamp) {
+		this.systemTimeStamp = systemTimeStamp;
+	}
+
+	public void setSystemTimeBroadcast(boolean systemTimeBroadcast) {
+		this.systemTimeBroadcast = systemTimeBroadcast;
 	}
 
 	public void setSystemError(int systemError) {

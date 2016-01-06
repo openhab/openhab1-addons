@@ -189,6 +189,10 @@ public class Msg {
 		return isOfType(MsgType.ACK_OF_DIRECT);
 	}
 	
+	public boolean isAllLinkCleanupAckOrNack() {
+		return isOfType(MsgType.ALL_LINK_CLEANUP_ACK) || isOfType(MsgType.ALL_LINK_CLEANUP_NACK);
+	}
+	
 	public boolean isX10() {
 		try {
 			int cmd = getByte("Cmd") & 0xff;

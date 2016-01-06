@@ -1,0 +1,11 @@
+language: java
+
+jdk:
+- openjdk7
+
+before_install: "git clone https://github.com/openhab/openhab.ci.git mvn"
+
+script: "mvn clean deploy -P deploy --settings mvn/settings.xml"
+
+notifications:
+  slack: openhab:AkOKc2KLF3lDl0mAdzwJSntR

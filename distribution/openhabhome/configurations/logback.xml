@@ -43,13 +43,14 @@
 	<logger name="org.atmosphere.cpr.AtmosphereFramework" level="ERROR" />
 
 	<!-- temporary workaround for https://github.com/openhab/jmdns/issues/12 -->
-        <logger name="javax.jmdns" level="OFF"/>
+	<logger name="javax.jmdns" level="OFF"/>
 
 	<!-- temporary workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=402750 -->
 	<logger name="OSGi" level="OFF" />
 	
 	<!-- temporary workaround to circumvent error messages with any obvious effect -->
 	<logger name="org.atmosphere.cpr.AtmosphereFramework" level="OFF" />
+	<logger name="org.atmosphere.cpr.DefaultAnnotationProcessor" level="OFF" />
 	
 	<root level="WARN">
 		<appender-ref ref="FILE" />

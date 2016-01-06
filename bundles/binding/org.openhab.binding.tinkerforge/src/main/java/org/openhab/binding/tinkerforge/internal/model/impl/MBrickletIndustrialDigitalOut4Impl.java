@@ -58,6 +58,7 @@ import com.tinkerforge.IPConnection;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -264,6 +265,26 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
    * @ordered
    */
   protected EList<DigitalActorDigitalOut4> msubdevices;
+
+  /**
+   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_industrial_digital_4out";
+
+  /**
+   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDeviceType()
+   * @generated
+   * @ordered
+   */
+  protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -578,6 +599,16 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDeviceType()
+  {
+    return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void initSubDevices()
@@ -718,6 +749,8 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         return getBrickd();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return getMsubdevices();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_TYPE:
+        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -858,6 +891,8 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -976,6 +1011,8 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
+    result.append(", deviceType: ");
+    result.append(deviceType);
     result.append(')');
     return result.toString();
   }

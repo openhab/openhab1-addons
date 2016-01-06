@@ -15,7 +15,7 @@ Widget:
 	(LinkableWidget | NonLinkableWidget);
 
 NonLinkableWidget:
-	Switch | Selection | Slider | List | Setpoint | Video | Chart | Webview | Colorpicker;
+	Switch | Selection | Slider | List | Setpoint | Video | Chart | Webview | Colorpicker | Mapview;
 
 LinkableWidget:
 	(Text | Group | Image | Frame)
@@ -66,6 +66,13 @@ Chart:
 Webview:
 	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
 		('height=' height=INT)? & ('url=' url=(STRING)) &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+		
+Mapview:
+	'Mapview' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('height=' height=INT)? &
 		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
 		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
 		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
@@ -130,10 +137,10 @@ ColorArray:
 	((item=ID)? (condition=("==" | ">" | "<" | ">=" | "<=" | "!="))? (sign=('-'|'+'))? (state=XState) '=')? (arg=STRING);
 
 Command returns ecore::EString:
-	INT | ID | STRING;
+	Number | ID | STRING;
 
 Number returns ecore::EBigDecimal:
-	INT | FLOAT;
+	'-'? (INT | FLOAT);
 
 XState returns ecore::EString:
 	INT | ID | STRING | FLOAT;
@@ -143,5 +150,5 @@ terminal ID:
 	(('0'..'9')+ ('a'..'z' | 'A'..'Z' | '_') ('0'..'9' | 'a'..'z' | 'A'..'Z' | '_')*);
 
 terminal FLOAT returns ecore::EBigDecimal:
-	INT '.' INT;
+	'-'? INT '.' INT;
 	

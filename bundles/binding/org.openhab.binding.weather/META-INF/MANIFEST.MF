@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.weather.internal
 Ignore-Package: org.openhab.binding.weather.internal
 Bundle-Name: openHAB Weather Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.binding.weather.internal.bus.WeatherActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -29,8 +29,6 @@ Import-Package: javax.servlet,
  org.openhab.core.types,
  org.openhab.io.net.http,
  org.openhab.model.item.binding,
- org.openhab.model.sitemap,
- org.openhab.model.sitemap.impl,
  org.openhab.ui.items,
  org.osgi.framework,
  org.osgi.service.cm,

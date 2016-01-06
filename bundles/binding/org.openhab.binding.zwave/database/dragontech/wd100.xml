@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>WD-100</Model>
+    <Label lang="en">Wall Dimmer Switch</Label>
+    <CommandClasses>
+        <Class><id>0x20</id></Class>
+        <Class><id>0x26</id></Class>
+        <Class><id>0x27</id></Class>
+        <Class><id>0x2b</id></Class>
+        <Class><id>0x59</id></Class>
+        <Class><id>0x5a</id></Class>
+        <Class><id>0x5e</id></Class>
+        <Class><id>0x70</id></Class>
+        <Class><id>0x72</id></Class>
+        <Class><id>0x73</id></Class>
+        <Class><id>0x7a</id></Class>
+        <Class><id>0x85</id></Class>
+        <Class><id>0x86</id></Class>
+    </CommandClasses>
+
+    <Configuration>
+        <Parameter>
+            <Index>4</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Label lang="en">Orientation</Label>
+            <Help lang="en">Controls the on/off orientation of the rocker switch</Help>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Normal</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Inverted</Label>
+            </Item>
+        </Parameter>
+        <Parameter>
+            <Index>9</Index>
+            <Type>byte</Type>
+            <Default>1</Default>
+            <Size>1</Size>
+            <Label lang="en">Dim Level Increment</Label>
+            <Help lang="en">Indicates the number of levels (1-99) to change dimming each step</Help>
+        </Parameter>
+        <Parameter>
+            <Index>10</Index>
+            <Type>byte</Type>
+            <Default>3</Default>
+            <Label>Step Duration</Label>
+            <Help lang="en">The number of tens of milliseconds (1-255) to delay on each dimming step.</Help>
+        </Parameter>
+    </Configuration>
+
+    <Associations>
+        <Group>
+            <Index>1</Index>
+            <Maximum>5</Maximum>
+            <Label lang="en">Group 1</Label>
+            <SetToController>true</SetToController>
+        </Group>
+    </Associations>
+</Product>

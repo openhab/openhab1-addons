@@ -85,7 +85,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 			addBindingConfig(item, config);
 		}
 		else {
-			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+			logger.warn("bindingConfig is NULL (item={}) -> processing bindingConfig aborted!", item);
 		}
 	}
 

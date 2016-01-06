@@ -72,7 +72,9 @@ The DSCAlarmItemType maps the binding to an openHAB item type.  Here are the sup
     <tr><td>panel_connection</td><td>Number</td><td>Panel connection status.</td></tr>
     <tr><td>panel_message</td><td>String</td><td>Event messages received from the DSC Alarm system.</td></tr>
     <tr><td>panel_system_error</td><td>String</td><td>DSC Alarm system error.</td></tr>
-    <tr><td>panel_time_date</td><td>DateTime</td><td>DSC Alarm system time and date.</td></tr>
+    <tr><td>panel_time</td><td>DateTime</td><td>DSC Alarm system time and date.</td></tr>
+    <tr><td>panel_time_stamp</td><td>Switch</td><td>Turn DSC Alarm message time stamping ON/OFF.</td></tr>
+    <tr><td>panel_time_broadcast</td><td>Switch</td><td>Turn DSC Alarm time broadcasting ON/OFF.</td></tr>
     <tr><td>panel_fire_key_alarm</td><td>Switch</td><td>A fire key alarm has happened.</td></tr>
     <tr><td>panel_panic_key_alarm</td><td>Switch</td><td>A panic key alarm has happened.</td></tr>
     <tr><td>panel_aux_key_alarm</td><td>Switch</td><td>An auxiliary key alarm has happened.</td></tr>
@@ -163,6 +165,10 @@ Number PANEL_CONNECTION "Panel Connected: [%d]" (DSCAlarmPanel) {dscalarm="panel
 Number PANEL_COMMAND "Panel Commands" (DSCAlarmPanel) {dscalarm="panel:panel_command"}
 String PANEL_MESSAGE "Panel Message: [%s]" <"shield-1"> (DSCAlarmPanel) {dscalarm="panel:panel_message"}
 String PANEL_SYSTEM_ERROR "Panel System Error: [%s]" <"shield-1"> (DSCAlarmPanel) {dscalarm="panel:panel_system_error"}
+
+DateTime PANEL_TIME "Panel Time [%1$tA, %1$tm/%1$td/%1$tY %1tT]" <calendar> (DSCAlarmPanel) {dscalarm="panel:panel_time"}
+Switch PANEL_TIME_STAMP (DSCAlarmPanel) {dscalarm="panel:panel_time_stamp"}
+Switch PANEL_TIME_BROADCAST (DSCAlarmPanel) {dscalarm="panel:panel_time_broadcast"}
 
 Switch PANEL_FIRE_KEY_ALARM (DSCAlarmPanel) {dscalarm="panel:panel_fire_key_alarm"}
 Switch PANEL_PANIC_KEY_ALARM (DSCAlarmPanel) {dscalarm="panel:panel_panic_key_alarm"}
@@ -290,6 +296,10 @@ Frame label="Alarm System" {
 			Switch item=PANEL_CONNECTION label="Panel Connection" icon="shield-1" mappings=[1="Connected", 0="Disconnected"]
 			Text item=PANEL_MESSAGE icon="shield-1"
 			Selection item=PANEL_COMMAND icon="shield-1" mappings=[0="Poll", 1="Status Report", 2="Labels Request (Serial Only)", 8="Dump Zone Timers (TCP Only)", 10="Set Time/Date", 200="Send User Code"]
+			Text item=PANEL_TIME {
+				Switch item=PANEL_TIME_STAMP label="Panel Time Stamp"
+				Switch item=PANEL_TIME_BROADCAST label="Panel Time Broadcast"
+			}
 		}
 
 		Frame label="Partitions" {

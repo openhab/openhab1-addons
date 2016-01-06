@@ -35,7 +35,9 @@ public class HeatPumpActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		HeatPumpActivator.context = bundleContext;
-		logger.debug("Novelan HeatPump binding has been started.");
+		if(logger.isDebugEnabled()){
+			logger.debug("Novelan HeatPump binding has been started.");
+		}
 	}
 
 	/**
@@ -44,7 +46,9 @@ public class HeatPumpActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		HeatPumpActivator.context = null;
-		logger.debug("Novelan HeatPump binding has been stopped.");
+		if(logger.isDebugEnabled()){		
+			logger.debug("Novelan HeatPump binding has been stopped.");
+		}
 	}
 
 }

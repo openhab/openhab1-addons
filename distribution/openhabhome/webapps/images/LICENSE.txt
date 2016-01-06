@@ -11,6 +11,45 @@ settings.png
 clock.png (modified)
 clock-on.png
 grass.png
+camera.png
+computer.png
+info.png
+key.png
+line.png
+rain.png
+television.png
+temperature-max.png
+water.png
+greenhouse.png
+phone.png
+hue.png
+hue-on.png
+hue-off.png
+hue-0.png
+hue-10.png
+hue-20.png
+hue-30.png
+hue-40.png
+hue-50.png
+hue-60.png
+hue-70.png
+hue-80.png
+hue-90.png
+hue-100.png
+whites.png
+whites-on.png
+whites-off.png
+whites-0.png
+whites-10.png
+whites-20.png
+whites-30.png
+whites-40.png
+whites-50.png
+whites-60.png
+whites-70.png
+whites-80.png
+whites-90.png
+whites-100.png
 
 ################################################################################
 The following are created by icons-land under a custom license (please visit

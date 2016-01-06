@@ -66,6 +66,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	private TimerTask timerTask = null;
 	
+	private final String MAX_VERSION = "255.255";
+	
 	private PendingConfiguration PendingCfg = new PendingConfiguration();
 
 	/**
@@ -143,7 +145,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 4:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), MAX_VERSION) == false) {
 					break;
 				}
 
@@ -162,7 +164,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 5:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), MAX_VERSION) == false) {
 					break;
 				}
 
@@ -312,15 +314,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Add the action buttons
 				record.addAction("Heal", "Heal Node");
+				record.addAction("Initialise", "Reinitialise Node");
 				
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
 					record.addAction("Delete", "Delete Node");
 				}
 				records.add(record);
-
-				// This needs to be removed - temporary only until it's added to initialisation code.
-				record.addAction("Version", "Version Info");
 			}
 			return records;
 		}
@@ -491,7 +491,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = "Unknown";
 					}
 					else {
-						record.value = Double.toString(versionCommandClass.getProtocolVersion());
+						record.value = versionCommandClass.getProtocolVersion();
 					}
 					records.add(record);
 
@@ -500,7 +500,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = "Unknown";
 					}
 					else {
-						record.value = Double.toString(versionCommandClass.getApplicationVersion());
+						record.value = versionCommandClass.getApplicationVersion();
 					}
 					records.add(record);
 				}
@@ -539,11 +539,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if(networkMonitor != null) {
 					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
 					if (node.getHealState() == null) {
-                        record.value = networkMonitor.getNodeState(nodeId);
+						record.value = networkMonitor.getNodeState(nodeId);
 					}
-                    else {
-                        record.value = node.getHealState();
-                    }
+					else {
+						record.value = node.getHealState();
+					}
 					
 					records.add(record);
 				}
@@ -623,32 +623,38 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			} else if (arg.equals("associations/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) != false) {
 					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+					if (groupList == null) {
+						return records;
+					}
 
-					if (groupList != null) {
-						// Loop through the associations and add all groups to the
-						// records...
-						for (ZWaveDbAssociationGroup group : groupList) {
-							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
-									database.getLabel(group.Label), true);
+					// Get the association command class for this node if it's supported
+					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+						.getCommandClass(CommandClass.ASSOCIATION);
+					if (associationCommandClass == null) {
+						return null;
+					}
 
-							// Add the description
-							record.description = database.getLabel(group.Help);
-							
-							// For the 'value', describe how many devices are set and the maximum allowed
-							ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
-									.getCommandClass(CommandClass.ASSOCIATION);
-							int memberCnt = 0;
-							List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
-							if(members != null) {
-								memberCnt = members.size();
-							}
-							record.value = memberCnt + " of " + group.Maximum + " group members";
+					// Loop through the associations and add all groups to the
+					// records...
+					for (ZWaveDbAssociationGroup group : groupList) {
+						record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
+							database.getLabel(group.Label), true);
 
-							// Add the action for refresh
-							record.addAction("Refresh", "Refresh");
+						// Add the description
+						record.description = database.getLabel(group.Help);
 
-							records.add(record);
+						// For the 'value', describe how many devices are set and the maximum allowed
+						int memberCnt = 0;
+						List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
+						if(members != null) {
+							memberCnt = members.size();
 						}
+						record.value = memberCnt + " of " + group.Maximum + " group members";
+
+						// Add the action for refresh
+						record.addAction("Refresh", "Refresh");
+
+						records.add(record);
 					}
 				}
 			} else if (arg.startsWith("associations/association")) {
@@ -759,6 +765,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if(pendingValue != null) {
 					record.value = Integer.toString(pendingValue);
 					record.state = OpenHABConfigurationRecord.STATE.PENDING;
+				}
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "LastWake", "Last Wakeup", true);
+				if(wakeupCommandClass.getLastWakeup() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(wakeupCommandClass.getLastWakeup());
 				}
 				records.add(record);
 
@@ -876,8 +891,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// Process Controller Reset requests even if the controller isn't initialised
-		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network") && action.equals("SoftReset")) {
-			zController.requestSoftReset();
+		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network")) {
+			if(action.equals("SoftReset")) {
+				zController.requestSoftReset();
+			}
+			else if(action.equals("HardReset")) {
+				zController.requestHardReset();				
+			}
 		}
 		
 		// If the controller isn't ready, then ignore any further requests
@@ -941,23 +961,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					nodeSerializer.SerializeNode(node);
 				}
 
+				if (action.equals("Initialise")) {
+					logger.debug("NODE {}: re-initialising node", nodeId);
+
+					// Delete the saved XML
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(nodeId);
+					
+					this.zController.reinitialiseNode(nodeId);
+				}
+
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
-				}
-
-				// This is temporary
-				// It should be in the startup code, but that needs refactoring
-				if (action.equals("Version")) {
-					logger.debug("NODE {}: Get node version", nodeId);
-					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-							.getCommandClass(CommandClass.VERSION);
-					if (versionCommandClass == null) {
-						return;
-					}
-
-					// Request the version report for this node
-					this.zController.sendData(versionCommandClass.getVersionMessage());
 				}
 
 				// Return here as afterwards we assume there are more elements

@@ -8,14 +8,13 @@
  */
 package org.openhab.binding.pilight.internal.communication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * A Status message is received when a device in pilight changes state.     
- * 
- * {@link http://www.pilight.org/development/api/#receiver}
  * 
  * @author Jeroen Idserda
  * @since 1.0
@@ -24,11 +23,11 @@ public class Status {
 	
 	private String origin;
 	
-	private String type;
+	private Integer type;
 	
 	private String uuid;
-	
-	private Map<String, List<String>> devices = new HashMap<String, List<String>>();
+
+	private List<String> devices = new ArrayList<String>();
 	
 	private Map<String, String> values = new HashMap<String, String>();
 	
@@ -43,11 +42,11 @@ public class Status {
 		this.origin = origin;
 	}
 
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
@@ -59,11 +58,11 @@ public class Status {
 		this.uuid = uuid;
 	}
 
-	public Map<String, List<String>> getDevices() {
+	public List<String> getDevices() {
 		return devices;
 	}
 
-	public void setDevices(Map<String, List<String>> devices) {
+	public void setDevices(List<String> devices) {
 		this.devices = devices;
 	}
 
@@ -74,5 +73,5 @@ public class Status {
 	public void setValues(Map<String, String> values) {
 		this.values = values;
 	}
-	
+
 }

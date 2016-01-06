@@ -4,5 +4,8 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.httpcomponents.httpclient_4.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.httpcomponents.httpcore_4.4.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

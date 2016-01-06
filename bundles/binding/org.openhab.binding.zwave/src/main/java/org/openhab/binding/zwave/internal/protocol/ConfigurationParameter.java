@@ -20,9 +20,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("configurationParameter")
 public class ConfigurationParameter {
 
-	private final int index;
-	private final int size;
-	private int value;
+	private final Integer index;
+	private final Integer size;
+	private Integer value;
+	private boolean readOnly;
 	private boolean writeOnly;
 	
 	/***
@@ -31,7 +32,7 @@ public class ConfigurationParameter {
 	 * @param value. The parameter value;
 	 * @throws IllegalArgumentException thrown when the index or size arguments are out of range.
 	 */
-	public ConfigurationParameter(int index, int value, int size) throws IllegalArgumentException {
+	public ConfigurationParameter(Integer index, Integer value, Integer size) throws IllegalArgumentException {
 		
 		if (size != 1 && size != 2 && size != 4) {
 			throw new IllegalArgumentException("illegal parameter size");
@@ -50,7 +51,7 @@ public class ConfigurationParameter {
 	 * Gets the configuration parameter value
 	 * @return the value
 	 */
-	public int getValue() {
+	public Integer getValue() {
 		return value;
 	}
 
@@ -58,7 +59,7 @@ public class ConfigurationParameter {
 	 * Sets the configuration parameter value.
 	 * @param value the value to set
 	 */
-	public void setValue(int value) throws IllegalArgumentException {
+	public void setValue(Integer value) throws IllegalArgumentException {
 		this.value = value;
 	}
 
@@ -66,7 +67,7 @@ public class ConfigurationParameter {
 	 * Returns the parameter index.
 	 * @return the index
 	 */
-	public int getIndex() {
+	public Integer getIndex() {
 		return index;
 	}
 
@@ -74,7 +75,7 @@ public class ConfigurationParameter {
 	 * Returns the parameter size.
 	 * @return the size
 	 */
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 	
@@ -92,5 +93,21 @@ public class ConfigurationParameter {
 	 */
 	public boolean getWriteOnly() {
 		return writeOnly;
+	}
+
+	/**
+	 * Sets the parameter as a ReadOnly parameter
+	 * @param read true if the parameters is readonly
+	 */
+	public void setReadOnly(boolean read) {
+		readOnly = read;
+	}
+
+	/**
+	 * Returns true if this parameter is read only
+	 * @return true if the parameter should not be written to
+	 */
+	public boolean getReadOnly() {
+		return readOnly;
 	}
 }

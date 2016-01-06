@@ -12,7 +12,7 @@
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
-      version="1.7.0.qualifier"
+      version="1.8.0.qualifier"
       provider-name="openHAB.org">
 
    <description>
@@ -246,7 +246,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+		 
    <plugin
          id="org.apache.felix.gogo.command"
          download-size="0"

@@ -22,6 +22,7 @@
 			<Maximum>1</Maximum>
 			<Label lang="en">Target for Wakeup and Override Notifications</Label>
 			<Label lang="de">Ziel für Aufwach- und Übersteuerungsmeldungen</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>

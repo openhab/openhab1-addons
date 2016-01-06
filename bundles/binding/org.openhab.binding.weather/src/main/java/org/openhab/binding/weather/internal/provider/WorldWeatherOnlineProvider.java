@@ -18,7 +18,7 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
  * @since 1.6.0
  */
 public class WorldWeatherOnlineProvider extends AbstractWeatherProvider {
-	private static final String URL = "http://api.worldweatheronline.com/free/v1/weather.ashx?key=[API_KEY]&q=[LATITUDE],[LONGITUDE]&extra=localObsTime&num_of_days=5&format=json&lang=[LANGUAGE]";
+	private static final String URL = "http://api.worldweatheronline.com/free/v2/weather.ashx?key=[API_KEY]&q=[LATITUDE],[LONGITUDE]&extra=localObsTime&num_of_days=5&format=json&lang=[LANGUAGE]";
 
 	public WorldWeatherOnlineProvider() {
 		super(new JsonWeatherParser());

@@ -53,7 +53,9 @@ public class HeatpumpConnector {
 		OutputStream out = sock.getOutputStream();
 		datain = new DataInputStream(in);
 		dataout = new DataOutputStream(out);
-		logger.debug("Novelan Heatpump connect");
+		if(logger.isDebugEnabled()){
+			logger.debug("Novelan Heatpump connect");
+		}
 	}
 
 	/**
@@ -101,11 +103,11 @@ public class HeatpumpConnector {
 		int cmd = datain.readInt();
 		int resp = datain.readInt();
 		if (cmd != 3002) {
-			logger.error("can't write parameter " + param + " with value " + value +" to heatpump.");
+			logger.error("can't write parameter {} with value {} to heatpump.", param, value);
 			return false;
 		}else{
 			if(logger.isDebugEnabled()){
-				logger.debug("successful parameter" + param + " with value " + value +" to heatpump written.");
+				logger.debug("successful parameter {} with value {} to heatpump written.", param, value);
 			}
 			return true;
 		}

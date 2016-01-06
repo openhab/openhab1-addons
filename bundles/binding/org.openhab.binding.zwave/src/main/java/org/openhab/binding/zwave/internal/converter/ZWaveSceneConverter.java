@@ -17,7 +17,7 @@ import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBasicCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSceneActivationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Chris Jackson
  * @since 1.4.0
  */
-public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveBasicCommandClass> {
+public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneActivationCommandClass> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveSceneConverter.class);
 
@@ -44,8 +44,8 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveBasicCo
 	 */
 	public ZWaveSceneConverter(ZWaveController controller, EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
-        
-		// State converters used by this converter. 
+
+		// State converters used by this converter.
 		this.addStateConverter(new BinaryDecimalTypeConverter());
 		this.addStateConverter(new IntegerOnOffTypeConverter());
 		this.addStateConverter(new IntegerOpenClosedTypeConverter());
@@ -60,7 +60,7 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveBasicCo
 	}
 
 	@Override
-	SerialMessage executeRefresh(ZWaveNode node, ZWaveBasicCommandClass commandClass, int endpointId,
+	SerialMessage executeRefresh(ZWaveNode node, ZWaveSceneActivationCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		return null;
 	}
@@ -69,24 +69,24 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveBasicCo
 	void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
 		if(arguments.get("scene")==null)
 			return;
-		
+
 		int scene = Integer.parseInt(arguments.get("scene"));
 		if(scene != (Integer)event.getValue())
 			return;
 		Integer state = Integer.parseInt(arguments.get("state"));
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, state);
- 
+
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
-		
+
 		State itemState = converter.convertFromValueToState(event.getValue());
 		this.getEventPublisher().postUpdate(item.getName(), itemState);
 	}
 
 	@Override
-	void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveBasicCommandClass commandClass,
+	void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveSceneActivationCommandClass commandClass,
 			int endpointId, Map<String, String> arguments) {
 	}
 }

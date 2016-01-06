@@ -144,7 +144,7 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					 * if there are more associations to come then set up
 					 * iterator and goto state to transmit more associations
 					 */
-					if (associations.isEmpty() == false) {
+					if (associations != null && associations.isEmpty() == false) {
 						assocIter = associations.iterator();
 						state = PairingInitialisationState.SENDING_ASSOCIATIONS;
 					} else {

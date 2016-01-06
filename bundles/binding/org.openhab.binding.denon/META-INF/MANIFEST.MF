@@ -1,0 +1,45 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.denon.internal
+Ignore-Package: org.openhab.binding.denon.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Denon Binding
+Bundle-SymbolicName: org.openhab.binding.denon
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.8.0.qualifier
+Bundle-Activator: org.openhab.binding.denon.internal.DenonActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Denon binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: javax.xml.bind,
+ javax.xml.bind.annotation, 
+ javax.xml.bind.annotation.adapters,
+ javax.xml.stream,
+ javax.xml.stream.util,
+ org.openhab.io.net.http,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.methods,
+ org.apache.http, 
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.apache.commons.net,
+ org.apache.commons.net.telnet,
+ org.apache.http.client.utils,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.denon
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .,
+ lib/async-http-client-1.8.4.jar,
+ lib/netty-3.9.0.Final.jar

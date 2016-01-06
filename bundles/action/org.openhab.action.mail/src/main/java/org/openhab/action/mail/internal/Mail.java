@@ -112,14 +112,17 @@ import org.slf4j.LoggerFactory;
 
 			try {
 				email.setFrom(from);
-				email.addTo(to);
+				String[] toList = to.split(";");
+				for (String toAddress : toList){
+					email.addTo(toAddress);
+				}
 				if(!StringUtils.isEmpty(subject)) email.setSubject(subject);
 				if(!StringUtils.isEmpty(message)) email.setMsg(message);
 				email.send();
 				logger.debug("Sent email to '{}' with subject '{}'.", to, subject);
 				success = true;
 			} catch (EmailException e) {
-				logger.error("Could not send e-mail to '" + to + "‘.", e);
+				logger.error("Could not send e-mail to '" + to + "'.", e);
 			}
 		} else {
 			logger.error("Cannot send e-mail because of missing configuration settings. The current settings are: " +

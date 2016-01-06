@@ -9,14 +9,15 @@
 package org.openhab.binding.nest.internal;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.prefs.Preferences;
 
 import org.openhab.binding.nest.NestBindingProvider;
@@ -76,7 +77,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private Set<String> ignoreEventSet = new HashSet<String>();
+	private List<String> ignoreEventList = Collections.synchronizedList(new ArrayList<String>());
 
 	/**
 	 * The most recently received data model, or <code>null</code> if none have been retrieved yet.
@@ -177,8 +178,8 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 					 * we need to make sure that we won't send out this event to Nest again, when receiving it on the
 					 * openHAB bus
 					 */
-					ignoreEventSet.add(itemName + newState.toString());
-					logger.trace("Added event (item='{}', newState='{}') to the ignore event set", itemName, newState);
+					ignoreEventList.add(itemName + newState.toString());
+					logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName, newState);
 					this.eventPublisher.postUpdate(itemName, newState);
 				}
 			}
@@ -282,9 +283,8 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	}
 
 	private boolean isEcho(String itemName, State state) {
-		String ignoreEventSetKey = itemName + state.toString();
-		if (ignoreEventSet.contains(ignoreEventSetKey)) {
-			ignoreEventSet.remove(ignoreEventSetKey);
+		String ignoreEventListKey = itemName + state.toString();
+		if (ignoreEventList.remove(ignoreEventListKey)) {
 			logger.debug(
 					"We received this event (item='{}', state='{}') from Nest, so we don't send it back again -> ignore!",
 					itemName, state);
@@ -319,7 +319,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		} else {
 
 			try {
-				logger.trace("About to set property '{}' to '{}'", property, newState);
+				logger.debug("About to set property '{}' to '{}'", property, newState);
 
 				// Ask the old DataModel to generate a new DataModel that only contains the update we want to send
 				DataModel updateDataModel = oldDataModel.updateDataModel(property, newState);

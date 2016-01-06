@@ -20,6 +20,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusUDPTransport;
 
@@ -31,6 +34,7 @@ import net.wimpi.modbus.io.ModbusUDPTransport;
  */
 class UDPMasterTerminal
     implements UDPTerminal {
+  private static final Logger logger = LoggerFactory.getLogger(UDPMasterTerminal.class);
 
   private DatagramSocket m_Socket;
   private int m_Timeout = Modbus.DEFAULT_TIMEOUT;
@@ -122,7 +126,8 @@ class UDPMasterTerminal
   public synchronized void activate()
       throws Exception {
     if (!isActive()) {
-      if (Modbus.debug) System.out.println("UDPMasterTerminal::activate()::laddr=:" + m_LocalAddress.toString() + ":lport=" + m_LocalPort);
+      logger.debug("UDPMasterTerminal::activate()::laddr=:{}:lport={}", m_LocalAddress.toString(), m_LocalPort);
+      
       if (m_Socket == null) {
         if (m_LocalAddress != null && m_LocalPort != -1) {
           m_Socket = new DatagramSocket(m_LocalPort, m_LocalAddress);
@@ -132,9 +137,9 @@ class UDPMasterTerminal
           m_LocalAddress = m_Socket.getLocalAddress();
         }
       }
-      if (Modbus.debug) System.out.println("UDPMasterTerminal::haveSocket():" + m_Socket.toString());
-      if (Modbus.debug) System.out.println("UDPMasterTerminal::laddr=:" + m_LocalAddress.toString() + ":lport=" + m_LocalPort);
-      if (Modbus.debug) System.out.println("UDPMasterTerminal::raddr=:" + m_RemoteAddress.toString() + ":rport=" + m_RemotePort);
+      logger.debug("UDPMasterTerminal::haveSocket():{}", m_Socket.toString());
+      logger.debug("UDPMasterTerminal::laddr=:{}:lport={}", m_LocalAddress.toString(), m_LocalPort);
+      logger.debug("UDPMasterTerminal::raddr=:{}:rport={}", m_RemoteAddress.toString(), m_RemotePort);
 
       m_Socket.setReceiveBufferSize(1024);
       m_Socket.setSendBufferSize(1024);
@@ -142,7 +147,7 @@ class UDPMasterTerminal
       m_ModbusTransport = new ModbusUDPTransport(this);
       m_Active = true;
     }
-    if (Modbus.debug) System.out.println("UDPMasterTerminal::activated");
+    logger.info("UDPMasterTerminal::activated");
   }//activate
 
   /**
@@ -150,7 +155,7 @@ class UDPMasterTerminal
    */
   public void deactivate() {
     try {
-      if (Modbus.debug) System.out.println("UDPMasterTerminal::deactivate()");
+      logger.debug("UDPMasterTerminal::deactivate()");
       //close socket
       m_Socket.close();
       m_ModbusTransport = null;

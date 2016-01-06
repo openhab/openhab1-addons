@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Class that implements the ModbusRTU transport
@@ -39,6 +42,8 @@ import java.io.OutputStream;
  */
 public class ModbusRTUTransport
     extends ModbusSerialTransport {
+
+  private static final Logger logger = LoggerFactory.getLogger(ModbusRTUTransport.class);
 
   private InputStream m_InputStream;    //wrap into filter input
   private OutputStream m_OutputStream;      //wrap into filter output
@@ -69,7 +74,7 @@ public class ModbusRTUTransport
         byte buf[] = m_ByteOut.getBuffer();
         m_OutputStream.write(buf, 0, len);     //PDU + CRC
         m_OutputStream.flush();
-        if(Modbus.debug) System.out.println("Sent: " + ModbusUtil.toHex(buf, 0, len));
+        logger.debug("Sent: {}", ModbusUtil.toHex(buf, 0, len));
         // clears out the echoed message
         // for RS485
         if (m_Echo) {
@@ -100,8 +105,7 @@ public class ModbusRTUTransport
       int len = m_InputStream.available();
       byte buf[] = new byte[len];
       m_InputStream.read(buf, 0, len);
-      if(Modbus.debug) System.out.println("Clear input: " +
-                  ModbusUtil.toHex(buf, 0, len));
+      logger.debug("Clear input: {}", ModbusUtil.toHex(buf, 0, len));
     }
   }//cleanInput
 
@@ -134,8 +138,7 @@ public class ModbusRTUTransport
             // timeout and to message specific parsing to read a response.
             getResponse(fc, m_ByteInOut);
             dlength = m_ByteInOut.size() - 2; // less the crc
-            if (Modbus.debug) System.out.println("Response: " +
-               ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
+            logger.debug("Response: {}", ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
 
             m_ByteIn.reset(m_InBuffer, dlength);
 
@@ -159,9 +162,10 @@ public class ModbusRTUTransport
       } while (!done);
       return response;
     } catch (Exception ex) {
-      System.err.println("Last request: " + ModbusUtil.toHex(lastRequest));
-      System.err.println(ex.getMessage());
-      throw new ModbusIOException("I/O exception - failed to read");
+      final String errMsg = "failed to read";
+      logger.error("Last request: {}", ModbusUtil.toHex(lastRequest));
+      logger.error("{}: {}", errMsg, ex.getMessage());
+      throw new ModbusIOException("I/O exception - " + errMsg);
     }
   }//readResponse
 
@@ -215,8 +219,7 @@ public class ModbusRTUTransport
           out.write(inpBuf, 0, inpBytes);
           m_CommPort.disableReceiveThreshold();
           if (inpBytes != bc+2) {
-            System.out.println("Error: looking for " + (bc+2) +
-                               " bytes, received " + inpBytes);
+            logger.error("awaited {} bytes, but received {}", (bc+2), inpBytes);
           }
           break;
         case 0x05:

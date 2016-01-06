@@ -2,15 +2,55 @@
 
 set -e
 
+[ -f /etc/default/openhab ] && . /etc/default/openhab
+
+startOpenHAB() {
+	if [ -x /bin/systemctl ] ; then
+		/bin/systemctl daemon-reload
+		/bin/systemctl start openhab.service
+	elif [ -x "/etc/init.d/openhab" ]; then
+		if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+			invoke-rc.d openhab start || true
+		else
+			/etc/init.d/openhab start || true
+		fi
+	fi
+}
+
 case "$1" in
 	configure)
-		update-rc.d openhab defaults > /dev/null 2>&1
-		;;
-	abort-deconfigure|abort-remove|abort-upgrade)
-		;;
-	*)
-		echo "postinst called with unknown argument \`$1'" >&2
-		exit 1
+		OH_USER=openhab
+		OH_GROUP=openhab
+		if [ x"${USER_AND_GROUP}" != x ]; then
+			OH_USER=`echo ${USER_AND_GROUP} | cut -d ":" -f 1`
+			OH_GROUP=`echo ${USER_AND_GROUP} | cut -d ":" -f 2`
+		fi
+		if ! getent group "$OH_GROUP" > /dev/null 2>&1 ; then
+			addgroup --system "$OH_GROUP" --quiet
+		fi
+		if ! getent passwd "$OH_USER" > /dev/null 2>&1 ; then
+			adduser --quiet --system --ingroup "$OH_GROUP" --no-create-home \
+			--disabled-password --shell /bin/false \
+			--gecos "openHAB runtime user" --home /var/lib/openhab "$OH_USER"
+		fi
+	# if $2 is set, this is an upgrade
+		if [ -n $2 ] ; then
+			startOpenHAB
+	# this is a fresh installation
+		elif [ -z $2 ] ; then
+			if [ -x /bin/systemctl ] ; then
+				echo "### NOT starting on installation, please execute the following statements to configure openHAB to start automatically using systemd"
+				echo " sudo /bin/systemctl daemon-reload"
+				echo " sudo /bin/systemctl enable openhab.service"
+				echo "### You can start openhab by executing"
+				echo " sudo /bin/systemctl start openhab.service"
+			elif [ -x /usr/sbin/update-rc.d ] ; then
+				echo "### NOT starting openhab by default on bootup, please execute"
+				echo " sudo update-rc.d openhab defaults"
+				echo "### In order to start openhab, execute"
+				echo " sudo /etc/init.d/openhab start"
+			fi
+		fi
 		;;
 esac
 

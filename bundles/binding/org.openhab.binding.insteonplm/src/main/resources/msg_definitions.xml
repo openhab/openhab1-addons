@@ -93,12 +93,11 @@
 			<byte name = "Cmd">0x55</byte>
 		</header>
 	</msg>
-	<msg name = "ALLLinkCleanupFailureReport" length = "7" direction = "FROM_MODEM">
+	<msg name = "ALLLinkCleanupFailureReport" length = "6" direction = "FROM_MODEM">
 		<header length="2">
 			<byte>0x02</byte>
 			<byte name = "Cmd">0x56</byte>
 		</header>
-		<byte name = "indicator">0x01</byte>
 		<byte name = "ALLLinkGroup"/>
 		<address name = "address"/>
 	</msg>

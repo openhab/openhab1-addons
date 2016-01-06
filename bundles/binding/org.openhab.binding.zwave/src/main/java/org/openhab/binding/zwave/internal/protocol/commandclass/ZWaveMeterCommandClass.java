@@ -60,8 +60,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 
 	private MeterType meterType = null;
 	private final Set<MeterScale> meterScales = new HashSet<MeterScale>(); 
-	
-	@XStreamOmitField
+
 	private volatile boolean canReset = false;
 
 	@XStreamOmitField

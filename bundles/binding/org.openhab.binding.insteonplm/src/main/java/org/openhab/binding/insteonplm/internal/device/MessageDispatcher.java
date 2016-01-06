@@ -70,6 +70,15 @@ public abstract class MessageDispatcher {
 		return true;
 	}
 	/**
+	 * Checks if this message is in response to previous query by this feature
+	 * @param msg
+	 * @return true;
+	 */
+	boolean isMyDirectAck(Msg msg) {
+		return msg.isAckOfDirect() && (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING)
+				&& m_feature.getDevice().getFeatureQueried() == m_feature;
+	}
+	/**
 	 * Dispatches message
 	 * @param msg Message to dispatch
 	 * @param port Insteon device ('/dev/usb') from which the message came
@@ -99,6 +108,11 @@ public abstract class MessageDispatcher {
 				logger.debug("no command found, dropping msg {}", msg);
 				return false;
 			}
+			if (msg.isAllLinkCleanupAckOrNack()) {
+				// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+				// in response to a direct status query message
+				return false; 
+			}
 			if (handleAllLinkMessage(msg, port)) {
 				return false;
 			}
@@ -106,14 +120,15 @@ public abstract class MessageDispatcher {
 				// in the case of direct ack, the cmd1 code is useless.
 				// you have to know what message was sent before to
 				// interpret the reply message
-				if (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING
-						&& cmd == 0x50) {
-					// must be a reply to our message, tweak the cmd1 code!
-					logger.trace("changing key to 0x19 for msg {}", msg);
-					key = 0x19; // we have installed a handler under that command number
+				logger.debug("defdisp: {}:{} qs:{} cmd: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						m_feature.getQueryStatus(), cmd);
+				if (isMyDirectAck(msg)) {
 					isConsumed = true;
-				} else {
-					key = -1;
+					if (cmd == 0x50) {
+						// must be a reply to our message, tweak the cmd1 code!
+						logger.debug("changing key to 0x19 for msg {}", msg);
+						key = 0x19; // we have installed a handler under that command number
+					}
 				}
 			} else {
 				key = (cmd1 & 0xFF);
@@ -121,16 +136,78 @@ public abstract class MessageDispatcher {
 			if (key != -1 || m_feature.isStatusFeature()) {
 				MessageHandler h = m_feature.getMsgHandlers().get(key);
 				if (h == null) h = m_feature.getDefaultMsgHandler();
-				logger.trace("{}:{}->{} DIRECT: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+				logger.debug("{}:{}->{} DIRECT: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
 						h.getClass().getSimpleName(), msg);
 				h.handleMessage(-1, cmd1, msg, m_feature, port);
 			}
 			if (isConsumed) {
 				m_feature.setQueryStatus(DeviceFeature.QueryStatus.QUERY_ANSWERED);
+				logger.debug("defdisp: {}:{} set status to: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						m_feature.getQueryStatus());
 			}
 			return isConsumed;
 		}
 	}
+
+	private static class DefaultGroupDispatcher extends MessageDispatcher {
+		DefaultGroupDispatcher(DeviceFeature f) { super(f); }
+		@Override
+		public boolean dispatch(Msg msg, String port) {
+			byte cmd  = 0x00;
+			byte cmd1 = 0x00;
+			boolean isConsumed = false;
+			int key = -1;
+			try {
+				cmd  = msg.getByte("Cmd");
+				cmd1 = msg.getByte("command1");
+			} catch (FieldException e) {
+				logger.debug("no command found, dropping msg {}", msg);
+				return false;
+			}
+			if (msg.isAllLinkCleanupAckOrNack()) {
+				// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+				// in response to a direct status query message
+				return false; 
+			}
+			if (handleAllLinkMessage(msg, port)) {
+				return false;
+			}
+			if (msg.isAckOfDirect()) {
+				// in the case of direct ack, the cmd1 code is useless.
+				// you have to know what message was sent before to
+				// interpret the reply message
+				logger.debug("defdisp: {}:{} qs:{} cmd: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						m_feature.getQueryStatus(), cmd);
+				if (isMyDirectAck(msg)) {
+					isConsumed = true;
+					if (cmd == 0x50) {
+						// must be a reply to our message, tweak the cmd1 code!
+						logger.debug("changing key to 0x19 for msg {}", msg);
+						key = 0x19; // we have installed a handler under that command number
+					}
+				}
+			} else {
+				key = (cmd1 & 0xFF);
+			}
+			if (key != -1) {
+				for (DeviceFeature f : m_feature.getConnectedFeatures()) {
+					MessageHandler h = f.getMsgHandlers().get(key);
+					if (h == null) h = f.getDefaultMsgHandler();
+					logger.debug("{}:{}->{} DIRECT: {}", f.getDevice().getAddress(), f.getName(),
+							h.getClass().getSimpleName(), msg);
+					h.handleMessage(-1, cmd1, msg, f, port);
+					
+				}
+			}
+			if (isConsumed) {
+				m_feature.setQueryStatus(DeviceFeature.QueryStatus.QUERY_ANSWERED);
+				logger.debug("defdisp: {}:{} set status to: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						m_feature.getQueryStatus());
+			}
+			return isConsumed;
+		}
+	}
+
 	
 	private static class SimpleDispatcher extends MessageDispatcher {
 		SimpleDispatcher(DeviceFeature f) { super(f); }
@@ -141,12 +218,17 @@ public abstract class MessageDispatcher {
 				if (handleAllLinkMessage(msg, port)) {
 					return false;
 				}
+				if (msg.isAllLinkCleanupAckOrNack()) {
+					// Had cases when a KeypadLinc would send an ALL_LINK_CLEANUP_ACK
+					// in response to a direct status query message
+					return false; 
+				}
 				cmd1 = msg.getByte("command1");
 			} catch (FieldException e) {
 				logger.debug("no cmd1 found, dropping msg {}", msg);
 				return false;
 			}
-			boolean isConsumed = msg.isAckOfDirect() && (m_feature.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING);
+			boolean isConsumed = isMyDirectAck(msg);
 			int key = (cmd1 & 0xFF);
 			MessageHandler h = m_feature.getMsgHandlers().get(key);
 			if (h == null) h = m_feature.getDefaultMsgHandler();
@@ -198,6 +280,7 @@ public abstract class MessageDispatcher {
 	public static MessageDispatcher s_makeMessageDispatcher(String name, DeviceFeature f) {
 		if (name.equals("PassThroughDispatcher")) return new PassThroughDispatcher(f);
 		else if (name.equals("DefaultDispatcher")) return new DefaultDispatcher(f);
+		else if (name.equals("DefaultGroupDispatcher")) return new DefaultGroupDispatcher(f);
 		else if (name.equals("SimpleDispatcher")) return new SimpleDispatcher(f);
 		else if (name.equals("X10Dispatcher")) return new X10Dispatcher(f);
 		else {

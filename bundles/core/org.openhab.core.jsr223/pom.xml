@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>core</artifactId>
+		<version>1.8.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.core.jsr223</bundle.symbolicName>
+		<bundle.namespace>org.openhab.core.jsr223</bundle.namespace>
+		<deb.name>openhab-addon-core-jsr223</deb.name>
+		<deb.description>${project.name}</deb.description>
+	</properties>
+
+	<groupId>org.openhab.core</groupId>
+	<artifactId>org.openhab.core.jsr223</artifactId>
+
+	<name>openHAB Core Jsr223</name>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>${tycho-groupid}</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

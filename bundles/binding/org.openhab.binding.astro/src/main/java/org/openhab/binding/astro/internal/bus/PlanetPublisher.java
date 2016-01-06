@@ -55,7 +55,7 @@ public class PlanetPublisher {
 	/**
 	 * Returns the singleton instance of PlanetPublisher.
 	 */
-	public static PlanetPublisher getInstance() {
+	public static synchronized PlanetPublisher getInstance() {
 		if (instance == null) {
 			instance = new PlanetPublisher();
 		}

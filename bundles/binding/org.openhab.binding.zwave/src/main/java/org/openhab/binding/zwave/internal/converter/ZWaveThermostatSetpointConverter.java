@@ -11,7 +11,7 @@ package org.openhab.binding.zwave.internal.converter;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.converter.command.DecimalCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.BigDecimalCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
@@ -52,7 +52,7 @@ public class ZWaveThermostatSetpointConverter extends
 	public ZWaveThermostatSetpointConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
-		this.addCommandConverter(new DecimalCommandConverter());
+		this.addCommandConverter(new BigDecimalCommandConverter());
 		this.addStateConverter(new BigDecimalDecimalTypeConverter());
 	}
 

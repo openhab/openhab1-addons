@@ -25,13 +25,9 @@ public class PilightBindingConfig implements BindingConfig {
 	
 		private String instance;
 		
-		private String location;
-		
 		private String device;
 		
 		private String property; 
-		
-		private int scale = 0; 
 		
 		public String getItemName() {
 			return itemName;
@@ -58,14 +54,6 @@ public class PilightBindingConfig implements BindingConfig {
 			this.instance = instance;
 		}
 
-		public String getLocation() {
-			return location;
-		}
-
-		public void setLocation(String location) {
-			this.location = location;
-		}
-
 		public String getDevice() {
 			return device;
 		}
@@ -80,14 +68,6 @@ public class PilightBindingConfig implements BindingConfig {
 		
 		public void setProperty(String value) {
 			this.property = value;
-		}
-		
-		public int getScale() {
-			return scale;
-		}
-		
-		public void setScale(int scale) {
-			this.scale = scale;
 		}
 		
 }

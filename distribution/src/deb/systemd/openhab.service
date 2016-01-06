@@ -1,0 +1,19 @@
+[Unit]
+Description=Starts and stops the openHAB Home Automation Bus
+Documentation=http://www.openhab.org
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+EnvironmentFile=/etc/default/openhab
+User=openhab
+Group=openhab
+WorkingDirectory=/usr/share/openhab
+PermissionsStartOnly=true
+ExecStartPre=/usr/share/openhab/bin/setpermissions.sh
+ExecStart=/usr/share/openhab/bin/openhab.sh -o
+# Shutdown delay in seconds, before process is tried to be killed with KILL (if configured)
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

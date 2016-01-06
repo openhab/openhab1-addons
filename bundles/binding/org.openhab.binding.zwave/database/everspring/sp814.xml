@@ -38,7 +38,7 @@
 			</Item>
 			<Size>1</Size>
 			<Label lang="en">Enable/Disable Detecting</Label>
-			<Help lang="en">The Detecting function can be Disabled of Enabled.</Help>
+			<Help lang="en">The Detecting function can be Disabled or Enabled.</Help>
 		</Parameter>
 		
 		<Parameter>

@@ -56,7 +56,7 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 	// string to prepend to data being sent
 	private static String preAmble = "";
 	// string to append to data being sent
-	private static String postAmble = "\r\n";
+	private static String postAmble = "";
 	// flag to use the reply of the remote end to update the status of the Item receiving the data
 	private static boolean updateWithResponse = true;
 	// used character set

@@ -40,10 +40,7 @@ public class ThermostatRequest extends AbstractRequest {
 	private final Page page;
 
 	/**
-	 * Creates a request for the measurements of a device or module.
-	 * 
-	 * If you don't specify a moduleId you will retrieve the device's measurements. If you do specify a moduleId you
-	 * will retrieve the module's measurements.
+	 * Creates a request for a selection of Thermostats.
 	 * 
 	 * @param accessToken
 	 * @param selection
@@ -68,6 +65,9 @@ public class ThermostatRequest extends AbstractRequest {
 			json = executeQuery(url);
 
 			final ThermostatResponse response = JSON.readValue(json, ThermostatResponse.class);
+
+			// build internal maps and fix any internal cross references
+			response.sync();
 
 			return response;
 		} catch (final Exception e) {

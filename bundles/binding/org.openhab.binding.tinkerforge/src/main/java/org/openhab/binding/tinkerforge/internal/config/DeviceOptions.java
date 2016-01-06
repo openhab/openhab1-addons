@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.config;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * A Class for storing device options from the items configuration. The <key>=<value> options from
@@ -59,6 +60,18 @@ public class DeviceOptions {
    */
   public HashMap<String, String> getDeviceOptions() {
     return deviceOptions;
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    for (Entry<String, String> opt : deviceOptions.entrySet()){
+      buffer.append(opt.getKey());
+      buffer.append(": ");
+      buffer.append(opt.getValue());
+      buffer.append("\n");
+    }
+    return buffer.toString();
   }
 
 }

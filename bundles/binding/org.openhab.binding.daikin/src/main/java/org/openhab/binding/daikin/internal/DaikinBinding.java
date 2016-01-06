@@ -22,15 +22,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.*;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 
 import org.openhab.binding.daikin.DaikinBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -57,17 +54,26 @@ import org.slf4j.LoggerFactory;
 public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DaikinBinding.class);
+	private static HttpClient httpClient = null;
 	
+	static {
+		httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+		HttpClientParams params = httpClient.getParams();
+		params.setConnectionManagerTimeout(5000);
+		params.setSoTimeout(30000);
+		params.setContentCharset("UTF-8");	
+	}
+
 	private static final String CONFIG_KEY_REFRESH = "refresh";
 	private static final String CONFIG_KEY_HOST = "host";
 	private static final String CONFIG_KEY_USERNAME = "username";
 	private static final String CONFIG_KEY_PASSWORD = "password";
 
-	private Long refreshInterval = 60000L;
-	private Map<String, DaikinHost> hosts = new HashMap<String, DaikinHost>();
-	
 	// the temp values come back with European formatting - i.e. 23,5
     private static final NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("de"));
+	
+	private Long refreshInterval = 60000L;
+	private Map<String, DaikinHost> hosts = new HashMap<String, DaikinHost>();
 	
 	public DaikinBinding() {
 	}
@@ -112,7 +118,7 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 				logger.warn("Attempting to send a command to '{}' which is not executable ({}). Ignoring.", itemName, commandType);
 				continue;
 			}
-			
+				
 			host.setState(commandType, command);
 			updateState(host);
 		}
@@ -142,33 +148,37 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
 	}
 	
 	private void refreshState(DaikinHost host) {
-		String url = String.format("http://%s/param.csv", host.getHost());
-		CloseableHttpClient httpClient = HttpClients.custom().build();
-
 		// make a GET request to the Daikin controller for the current state
         List<String> results = new ArrayList<String>();
+		GetMethod httpGet = null;
         try {
-            HttpGet httpGet = new HttpGet( url );
-            CloseableHttpResponse httpResponse = httpClient.execute( httpGet );
-            try {
-	            InputStream content = httpResponse.getEntity().getContent();
-	            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-	
-	            String line;
-	            while ((line = reader.readLine()) != null) {
-	                if (line != null && line.length() > 0)
-	                	results.add(line.substring(0, line.length() - 1));
-	            }
-            } finally {
-            	httpResponse.close();
-            }
-        } catch (ClientProtocolException e) {
-            logger.error("Client protocol error attempting to request current state", e);
+			String url = String.format("http://%s/param.csv", host.getHost());
+            httpGet = new GetMethod(url);
+			
+			httpClient.executeMethod(httpGet);
+			
+			if (httpGet.getStatusCode() != HttpStatus.SC_OK) {
+				logger.warn("Invalid response received from Daikin controller '{}': {}", 
+						host.getHost(), 
+						httpGet.getStatusCode());
+				return;
+			}
+			
+			InputStream content = httpGet.getResponseBodyAsStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line != null && line.length() > 0)
+					results.add(line.substring(0, line.length() - 1));
+			}
+        } catch (Exception e) {
+            logger.error("Error attempting to request current state", e);
             return;
-        } catch (IOException e) {
-            logger.error("IO error attempting to request current state", e);
-            return;
-        }
+        } finally {
+			if (httpGet != null)
+				httpGet.releaseConnection();
+		}
 
         // check the response was OK
         if (!results.get(0).equals("OK")) {
@@ -198,44 +208,37 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider> 
         host.setHumidityIn(parseDecimal(results.get(15)));
 	}
 	
-	private void updateState(DaikinHost host) {
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("wON", host.getPower() ? "On" : "Off"));
-        nameValuePairs.add(new BasicNameValuePair("wMODE", host.getMode().getCommand()));
-        nameValuePairs.add(new BasicNameValuePair("wTEMP", host.getTemp().setScale(0).toPlainString() + "C"));
-        nameValuePairs.add(new BasicNameValuePair("wFUN", host.getFan().getCommand()));
-        nameValuePairs.add(new BasicNameValuePair("wSWNG", host.getSwing().getCommand()));
-        nameValuePairs.add(new BasicNameValuePair("wSETd1", "Set"));
-		
-		String url = String.format("http://%s", host.getHost());
-		CloseableHttpClient httpClient = HttpClients.custom().build();
-
+	private void updateState(DaikinHost host) {		
 		// TODO: can't figure out how to authenticate this HTTP POST request
 		// TODO: have to configure the controller with NO AUTHENTICATION for this to work
 		// TODO: maybe something like this...https://github.com/jim-easterbrook/pywws/commit/a537fab5061b8967270f972636017cd84a63065f
+		PostMethod httpPost = null;
         try {
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setEntity( new UrlEncodedFormEntity(nameValuePairs));
-            CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-            try {
-            	if (httpResponse.getStatusLine().getStatusCode() != 200)
-            	{
-            		logger.warn("Invalid response received from Daikin controller '{}': {}:{}", 
-            				host.getHost(), 
-            				httpResponse.getStatusLine().getStatusCode(), 
-            				httpResponse.getStatusLine().getReasonPhrase());
-            		return;
-            	}
-            } finally {
-            	httpResponse.close();
-            }
-        } catch (ClientProtocolException e) {
-            logger.error("Client protocol error attempting to send command", e);
+			String url = String.format("http://%s", host.getHost());
+            httpPost = new PostMethod(url);
+			
+			httpPost.addParameter("wON", host.getPower() ? "On" : "Off");
+			httpPost.addParameter("wMODE", host.getMode().getCommand());
+			httpPost.addParameter("wTEMP", host.getTemp().setScale(0).toPlainString() + "C");
+			httpPost.addParameter("wFUN", host.getFan().getCommand());
+			httpPost.addParameter("wSWNG", host.getSwing().getCommand());
+			httpPost.addParameter("wSETd1", "Set");
+
+            httpClient.executeMethod(httpPost);
+			
+			if (httpPost.getStatusCode() != HttpStatus.SC_OK) {
+				logger.warn("Invalid response received from Daikin controller '{}': {}", 
+						host.getHost(), 
+						httpPost.getStatusCode());
+				return;
+			}
+        } catch (Exception e) {
+            logger.error("Error attempting to send command", e);
             return;
-        } catch (IOException e) {
-            logger.error("IO error attempting to send command", e);
-            return;
-        }
+        } finally {
+			if (httpPost != null)
+				httpPost.releaseConnection();
+		}
 	}
 
 	private DaikinMode parseMode(String value) {

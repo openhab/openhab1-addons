@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.insteonplm.internal.device;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -23,6 +24,8 @@ public class DeviceType {
 	private String m_model			= "";
 	private String m_description 	= "";
 	private HashMap<String, String> m_features = new HashMap<String, String>();
+	private HashMap<String, FeatureGroup> m_featureGroups =
+				new HashMap<String, FeatureGroup>();
 	
 	/**
 	 * Constructor
@@ -36,6 +39,11 @@ public class DeviceType {
 	 * @return all features that this device type supports
 	 */
 	public HashMap<String, String> getFeatures() { return m_features; }
+	/**
+	 * Get all feature groups
+	 * @return all feature groups of this device type
+	 */
+	public HashMap<String, FeatureGroup> getFeatureGroups() { return m_featureGroups; }
 	/**
 	 * Sets the descriptive model string
 	 * @param aModel descriptive model string
@@ -53,17 +61,60 @@ public class DeviceType {
 	 * @return false if feature was already there
 	 */
 	public boolean addFeature(String aKey, String aFeatureName) {
-		if (m_features.containsKey(aFeatureName)) return false;
+		if (m_features.containsKey(aKey)) return false;
 		m_features.put(aKey,  aFeatureName);
 		return true;
 	}
+	/**
+	 * Adds feature group to device type
+	 * @param aKey name of the feature group, which acts as key for lookup later
+	 * @param fg feature group to add
+	 * @return true if add succeeded, false if group was already there
+	 */
+	public boolean addFeatureGroup(String aKey, FeatureGroup fg) {
+		if (m_features.containsKey(aKey)) return false;
+		m_featureGroups.put(aKey,  fg);
+		return true;
+	}
+	
 	public String toString() {
 		String s = "pk:" + m_productKey + "|model:" + m_model +
 				"|desc:" + m_description + "|features";
 		for (Entry<String, String> f : m_features.entrySet()) {
 			s += ":" + f.getKey() + "=" + f.getValue();
 		}
+		s += "|groups";
+		for (Entry<String, FeatureGroup> f : m_featureGroups.entrySet()) {
+			s += ":" + f.getKey() + "=" + f.getValue();
+		}
 		return s;
 	}
+	/**
+	 * Class that reflects feature group association
+	 * @author Bernd Pfrommer
+	 */
+	public static class FeatureGroup {
+		private	String				m_name = null;
+		private	String				m_type = null;
+		private	ArrayList<String>	m_features = new ArrayList<String>();
+		
+		FeatureGroup(String name, String type) {
+			m_name = name;
+			m_type = type;
+		}
+		public void addFeature(String f) { m_features.add(f); }
+		public ArrayList<String> getFeatures() { return m_features; }
+		public String getName() { return m_name; }
+		public String getType() { return m_type; }
+		public String toString() {
+			String s = "";
+			for (String g : m_features) {
+				s += g + ",";
+			}
+			return (s.replaceAll(",$",""));
+		}
+	}
+
+
 	
 }

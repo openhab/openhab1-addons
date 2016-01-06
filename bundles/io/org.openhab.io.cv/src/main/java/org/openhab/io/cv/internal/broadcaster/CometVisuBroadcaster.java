@@ -17,7 +17,10 @@ import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
 import org.atmosphere.jersey.JerseyBroadcaster;
+import org.openhab.io.cv.CVApplication;
 import org.openhab.io.cv.internal.listeners.ResourceStateChangeListener;
+import org.openhab.model.core.EventType;
+import org.openhab.model.core.ModelRepositoryChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @since 1.4.0
  */
-public class CometVisuBroadcaster extends JerseyBroadcaster {
+public class CometVisuBroadcaster extends JerseyBroadcaster implements ModelRepositoryChangeListener {
 	private static final Logger logger = LoggerFactory.getLogger(CometVisuBroadcaster.class);
 	protected Collection<ResourceStateChangeListener> listeners = Collections.newSetFromMap(new WeakHashMap<ResourceStateChangeListener, Boolean>());
 	
@@ -55,6 +58,7 @@ public class CometVisuBroadcaster extends JerseyBroadcaster {
 				}
 			}
 		});
+		CVApplication.modelRepository.addModelRepositoryChangeListener(this);
 		return this;
 	}
 	
@@ -67,5 +71,14 @@ public class CometVisuBroadcaster extends JerseyBroadcaster {
 			}
 		}
 
+	}
+
+	@Override
+	public void modelChanged(String modelName, EventType type) {
+		for (ResourceStateChangeListener l : listeners) {
+			// Item Model has changed so the listener listen to non existent items and need to be registered again
+			l.setBroadcaster(this);
+			l.registerItems();
+		}
 	}
 }

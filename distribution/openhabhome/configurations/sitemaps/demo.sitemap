@@ -49,6 +49,10 @@ sitemap demo label="Demo House"
 				Switch item=DemoShutter
 				Slider item=DemoBlinds
 			}
+			Frame label="Map/Location" {
+				Mapview item=DemoLocation height=10
+			}
+			
 		}
 		Text label="Multimedia" icon="video" {
 			Frame label="Radio Control" {

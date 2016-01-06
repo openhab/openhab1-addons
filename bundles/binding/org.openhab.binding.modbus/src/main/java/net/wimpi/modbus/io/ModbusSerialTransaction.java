@@ -16,6 +16,9 @@
 
 package net.wimpi.modbus.io;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.ModbusIOException;
@@ -37,6 +40,7 @@ import net.wimpi.modbus.util.Mutex;
 public class ModbusSerialTransaction
     implements ModbusTransaction {
 
+  private static final Logger logger = LoggerFactory.getLogger(ModbusSerialTransaction.class);
   //class attributes
   private static AtomicCounter c_TransactionID =
       new AtomicCounter(Modbus.DEFAULT_TRANSACTION_ID);
@@ -178,7 +182,7 @@ public class ModbusSerialTransaction
               try {
                 Thread.sleep(m_TransDelayMS);
               } catch (InterruptedException ex) {
-                System.err.println("InterruptedException: " + ex.getMessage());
+                logger.error("InterruptedException: {}", ex.getMessage());
               }
             }
             //write request message
@@ -190,8 +194,7 @@ public class ModbusSerialTransaction
             if (++tries >= m_Retries) {
               throw e;
             }
-            System.err.println("execute try " + tries + " error: " +
-                e.getMessage());
+            logger.error("execute try {} error: {}", tries, e.getMessage());
           }
         } while (!finished);
       }

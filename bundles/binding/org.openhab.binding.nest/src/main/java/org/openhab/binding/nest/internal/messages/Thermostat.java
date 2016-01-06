@@ -60,6 +60,39 @@ public class Thermostat extends AbstractDevice {
 		}
 	}
 
+	/**
+	 * Possible values for hvac_state
+	 */
+	public static enum HvacState {
+		HEATING("heating"), COOLING("cooling"), OFF("off");
+
+		private final String state;
+
+		private HvacState(String state) {
+			this.state = state;
+		}
+
+		@JsonValue
+		public String value() {
+			return state;
+		}
+
+		@JsonCreator
+		public static HvacState forValue(String v) {
+			for (HvacState hs : HvacState.values()) {
+				if (hs.state.equals(v)) {
+					return hs;
+				}
+			}
+			throw new IllegalArgumentException("Invalid hvac_state: " + v);
+		}
+
+		@Override
+		public String toString() {
+			return this.state;
+		}
+	}
+
 	private Boolean can_cool;
 	private Boolean can_heat;
 	private Boolean is_using_emergency_heat;
@@ -82,6 +115,7 @@ public class Thermostat extends AbstractDevice {
 	private BigDecimal ambient_temperature_f;
 	private BigDecimal ambient_temperature_c;
 	private BigDecimal humidity;
+	private HvacState hvac_state;
 
 	public Thermostat(@JsonProperty("device_id") String device_id) {
 		super(device_id);
@@ -331,6 +365,14 @@ public class Thermostat extends AbstractDevice {
 		return this.humidity;
 	}
 
+	/**
+	 * @return Indicates HVAC system heating/cooling/off state.
+	 */
+	@JsonProperty("hvac_state")
+	public HvacState getHvac_state() {
+		return this.hvac_state;
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();
@@ -357,6 +399,7 @@ public class Thermostat extends AbstractDevice {
 		builder.append("ambient_temperature_f", this.ambient_temperature_f);
 		builder.append("ambient_temperature_c", this.ambient_temperature_c);
 		builder.append("humidity", this.humidity);
+		builder.append("hvac_state", this.hvac_state);
 
 		return builder.toString();
 	}

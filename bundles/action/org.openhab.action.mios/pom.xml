@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>action</artifactId>
-		<version>1.7.0-SNAPSHOT</version>
+		<version>1.8.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.action.mios</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.mios</bundle.namespace>
 		<deb.name>openhab-addon-action-mios</deb.name>
-		<deb.description>openHAB Action addon for MiOS</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

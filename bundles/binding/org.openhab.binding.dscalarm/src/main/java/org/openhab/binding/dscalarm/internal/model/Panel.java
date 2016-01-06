@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class Panel extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Panel.class);
 
-	DSCAlarmDeviceProperties panelProperties = new DSCAlarmDeviceProperties();
+	public DSCAlarmDeviceProperties panelProperties = new DSCAlarmDeviceProperties();
 
 	/**
 	 * Constructor
@@ -52,6 +52,7 @@ public class Panel extends DSCAlarmDevice{
 		int state;
 		String str = "";
 		boolean trigger;
+		boolean boolState;
 		OnOffType onOffType;
 
 		if(config != null) {
@@ -69,9 +70,19 @@ public class Panel extends DSCAlarmDevice{
 						str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
 						publisher.postUpdate(item.getName(), new StringType(str));
 						break;
-					case PANEL_TIME_DATE:
-						str = panelProperties.getTimeDate();
-						publisher.postUpdate(item.getName(), new StringType(str));
+					case PANEL_TIME:
+						str = panelProperties.getSystemTime();
+						publisher.postUpdate(item.getName(), new DateTimeType(str));
+						break;
+					case PANEL_TIME_STAMP:
+						boolState = panelProperties.getSystemTimeStamp();
+						onOffType = boolState ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PANEL_TIME_BROADCAST:
+						boolState = panelProperties.getSystemTimeBroadcast();
+						onOffType = boolState ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
 						break;
 					case PANEL_COMMAND:
 						state = panelProperties.getSystemCommand();
@@ -141,100 +152,16 @@ public class Panel extends DSCAlarmDevice{
 							if(apiMessage != null) {
 								systemErrorCode = Integer.parseInt(apiMessage.getAPIData());
 								panelProperties.setSystemErrorCode(systemErrorCode);
+								panelProperties.setSystemErrorDescription(apiMessage.getError());
+								str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
+								publisher.postUpdate(item.getName(), new StringType(str));
 							}
-							
-							switch(systemErrorCode) {
-								case 1:
-									panelProperties.setSystemErrorDescription("Receive Buffer Overrun");
-									break;
-								case 2:
-									panelProperties.setSystemErrorDescription("Receive Buffer Overflow");
-									break;
-								case 3:
-									panelProperties.setSystemErrorDescription("Transmit Buffer Overflow");
-									break;
-								case 10:
-									panelProperties.setSystemErrorDescription("Keybus Transmit Buffer Overrun");
-									break;
-								case 11:
-									panelProperties.setSystemErrorDescription("Keybus Transmit Time Timeout");
-									break;
-								case 12:
-									panelProperties.setSystemErrorDescription("Keybus Transmit Mode Timeout");
-									break;
-								case 13:
-									panelProperties.setSystemErrorDescription("Keybus Transmit Keystring Timeout");
-									break;
-								case 14:
-									panelProperties.setSystemErrorDescription("Keybus Interface Not Functioning");
-									break;
-								case 15:
-									panelProperties.setSystemErrorDescription("Keybus Busy - Attempting to Disarm or Arm with user code");
-									break;
-								case 16:
-									panelProperties.setSystemErrorDescription("Keybus Busy – Lockout");
-									break;
-								case 17:
-									panelProperties.setSystemErrorDescription("Keybus Busy – Installers Mode");
-									break;
-								case 18:
-									panelProperties.setSystemErrorDescription("Keybus Busy - General Busy");
-									break;
-								case 20:
-									panelProperties.setSystemErrorDescription("API Command Syntax Error");
-									break;
-								case 21:
-									panelProperties.setSystemErrorDescription("API Command Partition Error - Requested Partition is out of bounds");
-									break;
-								case 22:
-									panelProperties.setSystemErrorDescription("API Command Not Supported");
-									break;
-								case 23:
-									panelProperties.setSystemErrorDescription("API System Not Armed - Sent in response to a disarm command");
-									break;
-								case 24:
-									panelProperties.setSystemErrorDescription("API System Not Ready to Arm - System is either not-secure, in exit-delay, or already armed");
-									break;
-								case 25:
-									panelProperties.setSystemErrorDescription("API Command Invalid Length");
-									break;
-								case 26:
-									panelProperties.setSystemErrorDescription("API User Code not Required");
-									break;
-								case 27:
-									panelProperties.setSystemErrorDescription("API Invalid Characters in Command - No alpha characters are allowed except for checksum");
-									break;
-								case 28:
-									panelProperties.setSystemErrorDescription("API Virtual Keypad is Disabled");
-									break;
-								case 29:
-									panelProperties.setSystemErrorDescription("API Not Valid Parameter");
-									break;
-								case 30:
-									panelProperties.setSystemErrorDescription("API Keypad Does Not Come Out of Blank Mode");
-									break;
-								case 31:
-									panelProperties.setSystemErrorDescription("API IT-100 is Already in Thermostat Menu");
-									break;
-								case 32:
-									panelProperties.setSystemErrorDescription("API IT-100 is NOT in Thermostat Menu");
-									break;
-								case 33:
-									panelProperties.setSystemErrorDescription("API No Response From Thermostat or Escort Module");
-									break;
-								case 0:
-								default:
-									panelProperties.setSystemErrorDescription("No Error");
-									break;
-							}
-							str = String.format("%03d", panelProperties.getSystemErrorCode()) + ": " + panelProperties.getSystemErrorDescription();
-							publisher.postUpdate(item.getName(), new StringType(str));
 							break;
-						case PANEL_TIME_DATE:
+						case PANEL_TIME:
 							if(apiMessage != null) {
-								panelProperties.setTimeDate(apiMessage.getAPIData());
+								panelProperties.setSystemTime(apiMessage.getAPIData());
+								str = panelProperties.getSystemTime();
 								publisher.postUpdate(item.getName(), new DateTimeType(str));
-								str = apiMessage.getAPIData();
 							}
 							break;
 						default:
@@ -253,6 +180,7 @@ public class Panel extends DSCAlarmDevice{
 		logger.debug("updateProperties(): Panel Item Name: {}", item.getName());
 		
 		boolean trigger = state != 0 ? true : false;
+		boolean boolState = state != 0 ? true : false;
 
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
@@ -278,10 +206,15 @@ public class Panel extends DSCAlarmDevice{
 					case PANEL_AUX_INPUT_ALARM:
 						panelProperties.setTrigger(TriggerType.AUX_INPUT_ALARM, trigger);
 						break;
-					/*case PANEL_TIME_DATE:
-						panelProperties.setState(StateType.TIME_DATE, state, description);
-						logger.debug("updateProperties(): Panel property updated: {}", item.getName());
-						break;*/
+					case PANEL_TIME:
+						panelProperties.setSystemTime(description);
+						break;
+					case PANEL_TIME_STAMP:
+						panelProperties.setSystemTimeStamp(boolState);
+						break;
+					case PANEL_TIME_BROADCAST:
+						panelProperties.setSystemTimeBroadcast(boolState);
+						break;
 					default: 
 						logger.debug("updateProperties(): Panel property not updated.");
 						break;

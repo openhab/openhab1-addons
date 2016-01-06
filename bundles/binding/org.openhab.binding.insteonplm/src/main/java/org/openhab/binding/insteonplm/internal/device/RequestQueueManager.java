@@ -14,8 +14,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that manages all the per-device request queues using a single thread
- * 
+ * Class that manages all the per-device request queues using a single thread.
+ *
+ * - Each device has its own request queue, and the RequestQueueManager keeps a
+ *   queue of queues.
+ * - Each entry in m_requestQueues corresponds to a single device's request queue.
+ *   A device should never be more than once in m_requestQueues.
+ * - A hash map (m_requestQueueHash) is kept in sync with m_requestQueues for
+ *   faster lookup in case a request queue is modified and needs to be
+ *   rescheduled.
+ *
  * @author Bernd Pfrommer
  * @since 1.6.0
 */
@@ -32,21 +40,32 @@ public class RequestQueueManager {
 		m_queueThread.start();
 	}
 	/**
-	 * Add device to global request queue  
-	 * @param dev
-	 * @param time
+	 * Add device to global request queue.
+	 * @param dev the device to add
+	 * @param time the time when the queue should be processed
 	 */
 	public void addQueue(InsteonDevice dev, long time) {
 		synchronized (m_requestQueues) {
-			if (!m_requestQueueHash.containsKey(dev)) {
-				RequestQueue q = new RequestQueue(dev, time);
-				m_requestQueues.add(q);
-				m_requestQueues.notify();
-				m_requestQueueHash.put(dev, q);
-				logger.trace("scheduling queue for dev {}", dev.getAddress());
+			RequestQueue q = m_requestQueueHash.get(dev);
+			if (q == null) {
+				logger.trace("scheduling request for device {} in {} msec",
+						dev.getAddress(), time - System.currentTimeMillis());
+				q = new RequestQueue(dev, time);
 			} else {
-				logger.trace("queue for dev {} is already scheduled", dev.getAddress());
+				logger.trace("queue for dev {} is already scheduled in {} msec", dev.getAddress(),
+						q.getExpirationTime()- System.currentTimeMillis());
+				if (!m_requestQueues.remove(q)) {
+					logger.error("queue for {} should be there, report as bug!", dev);
+				}
+				m_requestQueueHash.remove(dev);
 			}
+			long expTime = q.getExpirationTime();
+			if (expTime > time) q.setExpirationTime(time);
+			// add the queue back in after (maybe) having modified
+			// the expiration time
+			m_requestQueues.add(q);
+			m_requestQueueHash.put(dev, q);
+			m_requestQueues.notify();
 		}
 	}
 
@@ -76,23 +95,38 @@ public class RequestQueueManager {
 				while (m_keepRunning) {
 					try {
 						while (!m_requestQueues.isEmpty()) {
-							RequestQueue q = m_requestQueues.poll();
+							RequestQueue q = m_requestQueues.peek();
 							long now = System.currentTimeMillis();
 							long expTime = q.getExpirationTime();
 							InsteonDevice dev = q.getDevice();
-							logger.trace("found busy request queue dev {} expTime: {} wait: {}",
-									dev.getAddress(), expTime, expTime - now);
 							if (expTime > now) {
+								//
+								// The head of the queue is not up for processing yet, wait().
+								//
+								logger.trace("request queue head: {} must wait for {} msec",
+										dev.getAddress(), expTime - now);
 								m_requestQueues.wait(expTime - now);
+								//
+								// note that the wait() can also return because of changes to
+								// the queue, not just because the time expired!
+								//
+								continue;
 							}
+							//
+							// The head of the queue has expired and can be processed!
+							//
+							q = m_requestQueues.poll(); // remove front element
+							m_requestQueueHash.remove(dev); // and remove from hash map
 							long nextExp = dev.processRequestQueue(now);
 							if (nextExp > 0) {
-								m_requestQueues.add(new RequestQueue(dev, nextExp));
-								logger.trace("device queue for {} rescheduled", dev.getAddress());
+								q = new RequestQueue(dev, nextExp);
+								m_requestQueues.add(q);
+								m_requestQueueHash.put(dev, q);
+								logger.trace("device queue for {} rescheduled in {} msec",
+											dev.getAddress(), nextExp - now);
 							} else {
 								// remove from hash since queue is no longer scheduled
-								m_requestQueueHash.remove(dev);
-								logger.trace("device queue for {} off schedule", dev.getAddress());
+								logger.debug("device queue for {} is empty!", dev.getAddress());
 							}
 						}
 						logger.trace("waiting for request queues to fill");
@@ -118,6 +152,9 @@ public class RequestQueueManager {
 		}
 		public long getExpirationTime() {
 			return m_expirationTime;
+		}
+		public void setExpirationTime(long t) {
+			m_expirationTime = t;
 		}
 		@Override
 		public int compareTo(RequestQueue a) {

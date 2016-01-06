@@ -213,10 +213,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		transaction.setRequest(request);
 
 		try {
-			logger.debug("ModbusSlave: FC" +request.getFunctionCode()+" ref=" + writeRegister + " value=" + newValue.getValue());				
+			logger.debug("ModbusSlave: FC{} ref={} value={}", 
+					request.getFunctionCode(), writeRegister, newValue.getValue());
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave: {}", e.getMessage());
 			return;
 		}
 	}
@@ -242,10 +243,10 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		request.setUnitID(getId());
 		transaction.setRequest(request);
 		try {
-			logger.debug("ModbusSlave: FC05 ref=" + writeRegister + " value=" + b);				
+			logger.debug("ModbusSlave: FC05 ref={} value={}", writeRegister, b);
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave:{}", e.getMessage());
 			return;
 		}
 	}
@@ -333,7 +334,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		try {
 			transaction.execute();
 		} catch (Exception e) {
-			logger.debug("ModbusSlave:" + e.getMessage());
+			logger.debug("ModbusSlave:{}", e.getMessage());
 			return null;
 		}
 

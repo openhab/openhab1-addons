@@ -257,8 +257,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					} else if ("writemultipleregisters".equals(key)) {
 						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
 					} else {
-						logger.debug("given modbus-slave-config-key '" + key
-							+ "' does not follow the expected pattern or 'serial.<slaveId>.<" + VALID_COFIG_KEYS + ">'");
+						logger.debug("given modbus-slave-config-key '{}' does not follow the expected pattern or 'serial.<slaveId>.<{}>'", 
+								key, VALID_COFIG_KEYS);
 					}
 					continue;
 				}
@@ -279,7 +279,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					} else {
 						throw new ConfigurationException(slave, "the given slave type '" + slave + "' is unknown");
 					}
-					logger.debug("modbusSlave '" + slave + "' instanciated");
+					logger.debug("modbusSlave '{}' instanciated", slave);
 					modbusSlaves.put(slave,modbusSlave);
 				}
 
@@ -309,7 +309,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 							((ModbusSerialSlave) modbusSlave).setParity(chunks[3]);
 						}
 						if (chunks.length >= 5) {
-							((ModbusSerialSlave) modbusSlave).setStopbits(Integer.valueOf(chunks[4]));
+							((ModbusSerialSlave) modbusSlave).setStopbits(Double.valueOf(chunks[4]));
 						}
 						if (chunks.length == 6) {
 							((ModbusSerialSlave) modbusSlave).setEncoding(chunks[5]);

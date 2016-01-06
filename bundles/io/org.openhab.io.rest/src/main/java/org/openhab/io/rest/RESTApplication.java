@@ -197,6 +197,7 @@ public class RESTApplication extends Application {
         // use the default interceptors without PaddingAtmosphereInterceptor
         // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
         final String[] interceptors = {
+    			"org.atmosphere.interceptor.CorsInterceptor",
 			"org.atmosphere.interceptor.CacheHeadersInterceptor",
 			"org.atmosphere.interceptor.AndroidAtmosphereInterceptor",
 			"org.atmosphere.interceptor.SSEAtmosphereInterceptor",

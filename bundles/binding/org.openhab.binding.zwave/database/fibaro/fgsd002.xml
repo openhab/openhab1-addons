@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGSD002</Model>
+	<Label lang="en">Smoke Detector</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x74</id></Class>
+		<Class><id>0x7A</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x8E</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Smoke Sensor sensitivity</Label>
+			<Help lang="en">There are 3 levels of sensitivity to smoke presence. Level 1 means the highest sensitivity. Rising the parameter value lowers the sensitivity to smoke presence.</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">HIGH Sensitivity</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">MEDIUM Sensitivity</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">LOW Sensitivity</Label>
+			</Item>
+		</Parameter>
+		
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Z-Wave notifications status</Label>
+			<Help lang="en">This parameter allows to activate excess temperature and/or enclosure opening notifications sent to the main controller</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">all notifications disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enclosure opening notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">exceeding temperature threshold notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">enclosure opening notification enabled + exceeding temperature threshold notification enabled</Label>
+			</Item>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Visual indicator notifications status</Label>
+			<Help lang="en">This parameter allows to activate visual indications but does not apply to major alarms, such as FIRE, TROUBLE and LOW BATTERY ALARM.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">all notifications disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enclosure opening notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">exceeding temperature threshold notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">lack of Z-Wave range notification</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">enclosure opening notification enabled + exceeding temperature threshold notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">enclosure opening notification enabled + lack of Z-Wave range notification</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">exceeding temperature threshold notification enabled + lack of Z-Wave range notification</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">enclosure opening notification enabled + exceeding temperature threshold notification enabled + lack of Z-Wave range notification</Label>
+			</Item>
+		</Parameter>
+		
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Sound notifications status</Label>
+			<Help lang="en">This parameter allows to activate sound signals but does not apply to major alarms, such as FIRE, TROUBLE and LOW BATTERY ALARM.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">all notifications disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enclosure opening notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">exceeding temperature threshold notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">lack of Z-Wave range notification</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">enclosure opening notification enabled + exceeding temperature threshold notification enabled</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">enclosure opening notification enabled + lack of Z-Wave range notification</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">exceeding temperature threshold notification enabled + lack of Z-Wave range notification</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">enclosure opening notification enabled + exceeding temperature threshold notification enabled + lack of Z-Wave range notification</Label>
+			</Item>
+		</Parameter>
+		
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Configuration of control frames in BASIC command class</Label>
+			<Help lang="en">This parameter defines which frames will be sent in the 2-nd Association Group (FIRE ALARM). The values of BASIC ON and BASIC OFF frames may be defined as described in further parameters.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">BASIC ON and BASIC OFF enabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">BASIC ON enabled </Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">BASIC OFF enabled</Label>
+			</Item>
+		</Parameter>
+		
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">BASIC ON frame value</Label>
+			<Help lang="en">BASIC ON frame is sent in case of smoke presence detection and FIRE ALARM triggering. Its value is defined by the parameter. Available settings: 0-99, 255. 0 - turn off the device. 1-99 - set the device to 1-99%. 255 - set the last status</Help>	
+		</Parameter>
+		
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">BASIC OFF frame value</Label>
+			<Help lang="en">BASIC OFF frame is sent in case of FIRE ALARM cancellation. Its value is defined by the parameter. Available settings: 0-99, 255. 0 - turn off the device. 1-99 - set the device to 1-99%. 255 - set the last status</Help>	
+		</Parameter>
+		
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Alarm broadcast</Label>
+			<Help lang="en">A value other than 0 means that alarms are being sent in broadcast mode, i.e. to all devices within a Fibaro Smoke Sensor’s range</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">broadcast inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">FIRE ALARM broadcast (2-nd and 4-th Association Group) active; enclosure opening notification broadcast (3-rd and 5-th Association Group) inactive</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">FIRE ALARM broadcast (2-nd and 4-th Association Group) inactive; enclosure opening notification broadcast (3-rd and 5-th Association Group) active</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">FIRE ALARM broadcast (2-nd and 4-th Association Group) active; enclosure opening notification broadcast (3-rd and 5-th Association Group) active.</Label>
+			</Item>
+		</Parameter>
+		
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>8640</Maximum>
+			<Default>1</Default>
+			<Size>2</Size>
+			<Label lang="en">Temperature report interval</Label>
+			<Help lang="en">Time interval between consecutive temperature reports. Report is sent when new temperature value is different from the one previously reported - according to the set hysteresis (parameter 21). Temperature reports can be also sent as a result of polling. Available settings: 0, 1-8640 (multiply by 10 seconds) [10s-24h]. 0 – reports inactive. 1-8640 - [10s-24h]</Help>	
+		</Parameter>
+		
+		<Parameter>
+			<Index>21</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature report hysteresis</Label>
+			<Help lang="en">The temperature report will only be sent if there is a difference in temperature value from the previous value reported, defined in this parameter (hysteresis). Temperature reports can be also sent as a result of polling. Available settings: 1 – 100 (in 0,1o C steps) 1-100 - (multiply by 0,1) [0,1oC - 10oC]</Help>	
+		</Parameter>
+		
+		<Parameter>
+			<Index>30</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Default>55</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature threshold</Label>
+			<Help lang="en">Temperature value measured by the built-in temperature sensor above which the excess temperature notification is sent (visual indication/sound/Z-Wave report). Available settings: 1 - 100 (1oC - 100oC)</Help>	
+		</Parameter>
+		
+		<Parameter>
+			<Index>31</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>8640</Maximum>
+			<Default>1</Default>
+			<Size>2</Size>
+			<Label lang="en">Excess temperature signaling interval</Label>
+			<Help lang="en">Time interval of signaling (visual indication/sound) excess temperature level.Available settings: 1-8640 (multiply by 10 seconds) [10s-24h] 1-8640 - [10s-24h]</Help>	
+		</Parameter>
+		
+		<Parameter>
+			<Index>32</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>8640</Maximum>
+			<Default>180</Default>
+			<Size>2</Size>
+			<Label lang="en">Lack of Z-Wave range indication interval</Label>
+			<Help lang="en">Time interval of signaling (visual indication/sound) lack of Z-Wave range. Available settings: 1-8640 (multiply by 10 seconds) [10s-24h]. 1-8640 - [10s-24h]</Help>	
+		</Parameter>		
+	</Configuration>
+		
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Device Status</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Smoke Alarm</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Tamper Alarm</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Fire Alarm</Label>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Tamper Alarm</Label>
+		</Group>		
+	</Associations>
+</Product>

@@ -3,7 +3,7 @@ Private-Package: org.openhab.ui.webapp.internal
 Ignore-Package: org.openhab.ui.webapp.internal
 Bundle-Name: openHAB WebApp UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: org.openhab.ui.webapp.internal.WebAppActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -40,6 +40,6 @@ Service-Component: OSGI-INF/webappservlet.xml, OSGI-INF/pagerenderer.xml,
  OSGI-INF/imagerenderer.xml, OSGI-INF/sliderrenderer.xml,
  OSGI-INF/chartrenderer.xml, OSGI-INF/videorenderer.xml,
  OSGI-INF/webviewrenderer.xml, OSGI-INF/setpointrenderer.xml,
- OSGI-INF/colorpickerrenderer.xml
+ OSGI-INF/colorpickerrenderer.xml, OSGI-INF/mapviewrenderer.xml
 Export-Package: org.openhab.ui.webapp.render
 Require-Bundle: javax.servlet

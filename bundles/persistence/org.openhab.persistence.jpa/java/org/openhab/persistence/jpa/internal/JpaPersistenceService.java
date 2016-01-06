@@ -211,8 +211,15 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("javax.persistence.jdbc.url", JpaConfiguration.dbConnectionUrl);
 		properties.put("javax.persistence.jdbc.driver", JpaConfiguration.dbDriverClass);
-		properties.put("javax.persistence.jdbc.user", JpaConfiguration.dbUserName);
-		properties.put("javax.persistence.jdbc.password", JpaConfiguration.dbPassword);
+		if(JpaConfiguration.dbUserName != null) {
+		    properties.put("javax.persistence.jdbc.user", JpaConfiguration.dbUserName);
+		}
+		if(JpaConfiguration.dbPassword != null) {
+		    properties.put("javax.persistence.jdbc.password", JpaConfiguration.dbPassword);
+		}
+		if(JpaConfiguration.dbUserName != null && JpaConfiguration.dbPassword == null) {
+			logger.warn("JPA persistence - it is recommended to use a password to protect data store");
+		}
 		
 		EntityManagerFactory fac = Persistence.createEntityManagerFactory(getPersistenceUnitName(), properties);
 		logger.debug("Creating EntityManagerFactory...done");

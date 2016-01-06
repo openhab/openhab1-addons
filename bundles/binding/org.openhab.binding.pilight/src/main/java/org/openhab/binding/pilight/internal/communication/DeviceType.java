@@ -16,13 +16,14 @@ package org.openhab.binding.pilight.internal.communication;
  */
 public class DeviceType {
 	
-	public static String SERVER = "-1";
+	public static Integer SERVER = -1;
 	
-	public static String SWITCH = "1";
+	public static Integer SWITCH = 1;
 	
-	public static String DIMMER = "2";
+	public static Integer DIMMER = 2;
 	
-	public static String VALUE = "3";
+	public static Integer VALUE = 3;
+
+	public static Integer CONTACT = 6;
 
 }
-

@@ -166,7 +166,11 @@ public class WeatherPublisher {
 	 * Returns true, if the cached value is equal to the new value.
 	 */
 	private boolean equalsCachedValue(Object value, String itemName) {
-		int cachedValueHashCode = ObjectUtils.hashCode(itemCache.get(itemName));
+		Object cachedValue = itemCache.get(itemName);
+		if (cachedValue == null && value != null) {
+			return false;
+		}
+		int cachedValueHashCode = ObjectUtils.hashCode(cachedValue);
 		int valueHashCode = ObjectUtils.hashCode(value);
 		return cachedValueHashCode == valueHashCode;
 	}

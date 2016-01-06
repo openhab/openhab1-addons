@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010-2015, openHAB.org and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.core.jsr232">
+   <implementation class="org.openhab.core.jsr223.internal.engine.Jsr223Engine"/>
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <reference bind="setItemRegistry" cardinality="1..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
+   <property name="event.topics" type="String" value="openhab/command/*"/>
+</scr:component>

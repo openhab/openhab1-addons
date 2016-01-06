@@ -56,6 +56,7 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @author Chris Jackson - modified binding to support polling SNMP OIDs (SNMP GET) and setting values (SNMP SET).
+ * @author Jan N. Klug - modified binding to change protocol version
  * @since 0.9.0
  */
 public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
@@ -286,7 +287,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 			target.setAddress(providerCmd.getAddress(itemName, command));
 			target.setRetries(retries);
 			target.setTimeout(timeout);
-			target.setVersion(SnmpConstants.version1);
+			target.setVersion(providerCmd.getSnmpVersion(itemName, command));
 
 		Variable var = providerCmd.getValue(itemName, command);
 		OID oid = providerCmd.getOID(itemName, command);
@@ -339,7 +340,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 						target.setAddress(provider.getAddress(itemName));
 						target.setRetries(retries);
 						target.setTimeout(timeout);
-						target.setVersion(SnmpConstants.version1);
+						target.setVersion(provider.getSnmpVersion(itemName));
 
 					// Create the PDU
 					PDU pdu = new PDU();

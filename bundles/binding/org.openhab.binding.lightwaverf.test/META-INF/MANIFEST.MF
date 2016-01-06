@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the LightwaveRf binding
+Bundle-SymbolicName: org.openhab.binding.lightwaverf.test
+Bundle-Version: 1.7.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.lightwaverf
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
+ .

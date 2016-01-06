@@ -72,6 +72,24 @@ public abstract class RpcCall {
 		return (Map<String, Object>)data.get(param);
 	}
 	
+	public static Integer getParamAsInteger(Map<String, Object> data, String param ){
+		Object obj=data.get(param);
+		if(obj!=null && obj instanceof Integer)
+		{
+			return (Integer)obj;
+		}
+		return null;
+	}
+	
+	public static String getParamAsString(Map<String, Object> data, String param ){
+		Object obj=data.get(param);
+		if(obj!=null && obj instanceof String)
+		{
+			return (String)obj;
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static List<Object> getList(Map<String, Object> data, String param) {
 		if (!data.containsKey(param))

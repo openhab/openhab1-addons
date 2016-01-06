@@ -22,7 +22,7 @@
 	 <Configuration>
                 <Parameter>
                         <Index>37</Index>
-                        <Type>list</Type>
+                        <Type>byte</Type>
                         <Default>13</Default>
                         <Size>2</Size>
                         <Label lang="en">Sirensound and Volume</Label>

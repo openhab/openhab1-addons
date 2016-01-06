@@ -82,7 +82,7 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 		
@@ -122,8 +122,15 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 		if (command != OnOffType.ON)
 			return;
 		
-		// send reset message
+		// get the reset message - will return null if not supported
 		SerialMessage serialMessage = node.encapsulate(commandClass.getResetMessage(), commandClass, endpointId);
+		
+		if (serialMessage == null) {
+			logger.warn("NODE {}: Meter reset not supported for item = {}, endpoint = {}, ignoring event.", node.getNodeId(), item.getName(), endpointId);
+			return;
+		}
+		
+		// send reset message
 		this.getController().sendData(serialMessage);
 		
 		// poll the device

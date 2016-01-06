@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class Keypad extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Keypad.class);
 
-	DSCAlarmDeviceProperties keypadProperties = new DSCAlarmDeviceProperties();
+	public DSCAlarmDeviceProperties keypadProperties = new DSCAlarmDeviceProperties();
 
 	/**
 	 * Constructor

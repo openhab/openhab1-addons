@@ -13,13 +13,13 @@ import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
-import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
-import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,6 +173,12 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage setConfigMessage(ConfigurationParameter parameter) {
+		if(parameter != null && parameter.getReadOnly() == true) {
+			logger.debug("NODE {}: CONFIGURATIONCMD_SET ignored for parameter {} - parameter is read only",
+					this.getNode().getNodeId(), parameter);
+			return null;
+		}
+
 		logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_SET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -203,6 +209,25 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	}
 	
 	/**
+	 * Sets a parameter as Read Only
+	 * Some parameters in some devices can not be written to. Trying to write them results
+	 * in a timeout and this should be avoided.
+	 * @param index the parameter index
+	 * @param readOnly true if the parameter can not be read
+	 */
+	public void setParameterReadOnly(Integer index, boolean readOnly) {
+		ConfigurationParameter configurationParameter;
+
+		// Check if the parameter exists in our list
+		configurationParameter = this.configParameters.get(index);
+		if(configurationParameter == null) {
+			configurationParameter = new ConfigurationParameter(index, 0, 1);
+		}
+
+		configurationParameter.setReadOnly(readOnly);
+	}
+	
+	/**
 	 * Sets a parameter as Write Only
 	 * Some parameters in some devices can not be read. Trying to read them results
 	 * in a timeout and this should be avoided.
@@ -229,18 +254,15 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 * @author Chris Jackson
 	 * @since 1.4.0
 	 */
-	public class ZWaveConfigurationParameterEvent extends ZWaveEvent {
+	public class ZWaveConfigurationParameterEvent extends ZWaveCommandClassValueEvent {
 
-		private final ConfigurationParameter parameter;
-		
 		/**
 		 * Constructor. Creates a new instance of the ZWaveConfigurationParameterEvent
 		 * class.
 		 * @param nodeId the nodeId of the event. Must be set to the controller node.
 		 */
 		public ZWaveConfigurationParameterEvent(int nodeId, ConfigurationParameter parameter) {
-			super(nodeId);
-			this.parameter = parameter;
+			super(nodeId, 0, CommandClass.CONFIGURATION, parameter);
 		}
 
 		/**
@@ -248,7 +270,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		 * @return the configuration parameter.
 		 */
 		public ConfigurationParameter getParameter() {
-			return parameter;
+			return (ConfigurationParameter) this.getValue();
 		}
 	}
 }

@@ -38,7 +38,7 @@ where _ServiceURN_, _ServiceAlias_ and _ServiceAction_ have the same form as dec
 
 You can use the MiOS `invoke` URL to discover the _Actions_, and _Action-parameters_, your particular MiOS Device supports:
  
-    http://<mios:host>:49451/data_request?id=invoke
+    http://<mios:host>:3480/data_request?id=invoke
  
 ## Examples
 
@@ -59,7 +59,7 @@ You can use the MiOS `invoke` URL to discover the _Actions_, and _Action-paramet
         when
             Item HallGarageDoorZoneTripped changed to OPEN
         then
-            sendMios(OfficeSonosId, "Sonos/Say", newArrayList('Text' -> 'Warning! Garage door opened', 'Volume' -> 50))
+            sendMiosAction(OfficeSonosId, "Sonos/Say", newArrayList('Text' -> 'Warning! Garage door opened', 'Volume' -> 50))
     end
 ```
 

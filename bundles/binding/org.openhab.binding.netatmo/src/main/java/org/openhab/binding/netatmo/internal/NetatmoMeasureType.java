@@ -13,25 +13,17 @@ import org.apache.commons.lang.StringUtils;
 /**
  * @author Gaël L'hopital
  * @since 1.6.0
- * 
- * This enum holds all the different measures and states available
- * to be retrieved by the Netatmo binding
+ *
+ *        This enum holds all the different measures and states available to be
+ *        retrieved by the Netatmo binding
  */
 public enum NetatmoMeasureType {
-	CO2("Co2"),
-	TEMPERATURE("Temperature"),
-	HUMIDITY("Humidity"),
-	NOISE("Noise"),
-	PRESSURE("Pressure"),
-	RAIN("Rain"),
-	WIFISTATUS("WifiStatus"),
-	ALTITUDE("Altitude"),
-	LATITUDE("Latitude"),
-	LONGITUDE("Longitude"),
-	RFSTATUS("RfStatus"),
-	BATTERYVP("BatteryVp"),
-	TIMESTAMP("TimeStamp");
-	
+	CO2("CO2"), TEMPERATURE("Temperature"), HUMIDITY("Humidity"), NOISE("Noise"), PRESSURE(
+			"Pressure"), RAIN("Rain"), WIFISTATUS("WifiStatus"), ALTITUDE(
+			"Altitude"), LATITUDE("Latitude"), LONGITUDE("Longitude"), RFSTATUS(
+			"RfStatus"), BATTERYVP("BatteryVp"), TIMESTAMP("TimeStamp"), MODULENAME(
+			"ModuleName"), STATIONNAME("StationName"), COORDINATE("Coordinate");
+
 	String measure;
 
 	private NetatmoMeasureType(String measure) {
@@ -41,7 +33,7 @@ public enum NetatmoMeasureType {
 	public String getMeasure() {
 		return measure;
 	}
-	
+
 	public static NetatmoMeasureType fromString(String measure) {
 		if (!StringUtils.isEmpty(measure)) {
 			for (NetatmoMeasureType measureType : NetatmoMeasureType.values()) {

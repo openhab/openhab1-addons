@@ -845,6 +845,18 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
 	/**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean clear()
+  {
+    // TODO: implement this method
+    // Ensure that you remove @generated or mark it @generated NOT
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void initSubDevices()
@@ -1253,6 +1265,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
       case ModelPackage.MBRICKLET_LCD2_0X4___INIT:
         init();
         return null;
+      case ModelPackage.MBRICKLET_LCD2_0X4___CLEAR:
+        return clear();
       case ModelPackage.MBRICKLET_LCD2_0X4___INIT_SUB_DEVICES:
         initSubDevices();
         return null;

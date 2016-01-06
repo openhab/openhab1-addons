@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class Partition extends DSCAlarmDevice{
 	private static final Logger logger = LoggerFactory.getLogger(Partition.class);
 
-	DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
+	public DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
 
 	/**
 	 * Constructor
@@ -123,13 +123,11 @@ public class Partition extends DSCAlarmDevice{
 								case 650:
 								case 653:
 									state = 1;
-									partitionProperties.setState(StateType.GENERAL_STATE, state, strStatus);
 									break;
 								case 651:
 								case 672:
 								case 673:
 									state = 0;
-									partitionProperties.setState(StateType.GENERAL_STATE, 0, strStatus);
 									break;
 								case 654:
 									partitionProperties.setState(StateType.ALARM_STATE, 1, strStatus);

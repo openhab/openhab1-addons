@@ -93,6 +93,7 @@ public abstract class Device {
 		Device device = Device.create(rfAddress, configurations);
 		if (device == null) {
 			logger.warn("Can't create device from received message, returning NULL.");
+			return null;
 		}
 		
 		return Device.update(raw,configurations, device);

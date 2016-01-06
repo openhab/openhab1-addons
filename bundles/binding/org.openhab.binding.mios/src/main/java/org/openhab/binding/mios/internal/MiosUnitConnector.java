@@ -35,6 +35,7 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.AsyncHttpClientConfig.Builder;
@@ -257,7 +258,29 @@ public class MiosUnitConnector {
 		logger.debug("callMios: Would like to fire off the URL '{}'", url);
 
 		try {
-			getAsyncHttpClient().prepareGet(url).execute();
+			@SuppressWarnings("unused")
+			Future<Integer> f = getAsyncHttpClient().prepareGet(url).execute(new AsyncCompletionHandler<Integer>() {
+				@Override
+				public Integer onCompleted(Response response) throws Exception {
+
+					// Yes, their content-type really does come back with just "xml", but we'll add "text/xml" for
+					// when/if they ever fix that bug...
+					if (!(response.getStatusCode() == 200 && ("text/xml".equals(response.getContentType())
+							|| "xml".equals(response.getContentType())))) {
+						logger.debug("callMios: Error in HTTP Response code {}, content-type {}:\n{}", new Object[] {
+								response.getStatusCode(), response.getContentType(),
+								response.hasResponseBody() ? response.getResponseBody() : "No Body" });
+					}
+					return response.getStatusCode();
+				}
+
+				@Override
+				public void onThrowable(Throwable t) {
+					logger.warn("callMios: Exception Throwable occurred fetching content: {}", t.getMessage(), t);
+				}
+			}
+
+			);
 
 			// TODO: Run it and walk away?
 			//
@@ -265,7 +288,7 @@ public class MiosUnitConnector {
 			// success/fail of the call, log details (etc) so things can be
 			// diagnosed.
 		} catch (Exception e) {
-			logger.debug("callMios: Exception Error occurred fetching content: {}", e.getMessage(), e);
+			logger.warn("callMios: Exception Error occurred fetching content: {}", e.getMessage(), e);
 		}
 	}
 

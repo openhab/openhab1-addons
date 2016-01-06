@@ -18,6 +18,8 @@ import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
 import org.quartz.JobDataMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Calculates and publishes the Sun data.
@@ -26,6 +28,7 @@ import org.quartz.JobDataMap;
  * @since 1.6.0
  */
 public class DailyJob extends AbstractBaseJob {
+	private static final Logger logger = LoggerFactory.getLogger(DailyJob.class);
 
 	@Override
 	protected void executeJob(JobDataMap jobDataMap) {
@@ -44,12 +47,14 @@ public class DailyJob extends AbstractBaseJob {
 		context.getJobScheduler().scheduleSeasonJob(sun.getSeason());
 
 		context.setPlanet(PlanetName.SUN, sun);
+		logger.debug("{}", sun);
 		planetPublisher.publish(PlanetName.SUN);
 
 		// moon
 		MoonCalc moonCalc = new MoonCalc();
 		Moon moon = moonCalc.getMoonInfo(now, context.getConfig().getLatitude(), context.getConfig().getLongitude());
 		context.setPlanet(PlanetName.MOON, moon);
+		logger.debug("{}", moon);
 		planetPublisher.publish(PlanetName.MOON);
 	}
 }

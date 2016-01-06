@@ -130,7 +130,7 @@ abstract public class ResourceStateChangeListener {
 		stateChangeListener = new StateChangeListener() {
 			// don't react on update events
 			public void stateUpdated(Item item, State state) {
-				broadcaster.broadcast(item);
+//				broadcaster.broadcast(item);
 				// if the group has a base item and thus might calculate its state
 				// as a DecimalType or other, we also consider it to be necessary to
 				// send an update to the client as the label of the item might have changed,

@@ -30,7 +30,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface RemoteSwitchBConfiguration extends TFConfig
+public interface RemoteSwitchBConfiguration extends DimmableConfiguration
 {
 
   /**

@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_05459</Model>
+	<Label lang="en">Blind Control</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show working state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Show idle state</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Operated by Indicator Command Class</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Show if not closed</Label>
+			</Item>
+			<Label lang="en">LED mode</Label>
+			<Help lang="en">Set LED indication mode</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Label lang="en">Automatically open or close after</Label>
+			<Help lang="en">If not zero, automatically open or close blind after a user defined time in seconds</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Close</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Open</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Open if closed else close</Label>
+			</Item>
+			<Label lang="en">What to do on RF close command</Label>
+			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with Auto Close function: Ignore - to open the door by motion detectors and close it back after some amount of time: in case of multiple motion detectors each would try to open that would break logics; Open - to open on both On and Off paddle press on the remote and close after some amount of time. Button close click will still work (if button operations are not disabled). Note that Dim Down command will still begin close motion.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>60</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Keep in permanent motion</Label>
+			</Item>
+			<Label lang="en">Full close time</Label>
+			<Help lang="en">Time in seconds to go from opened to closed state. Used to estimate the current level. Note that in Permanent motion mode the reported value would a be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>60</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Keep in permanent motion</Label>
+			</Item>
+			<Label lang="en">Full open time</Label>
+			<Help lang="en">Time in seconds to go from closed to open state. This value may differ from Full close time for some blinds due to gravity. Used to estimate the current level. Note that in Permanent motion mode the reported value would a be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>232</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Label lang="en">Node ID of the blocking device</Label>
+			<Help lang="en">Id of the device which commands would be interpreted not as Open/Close, but as block/unblock. Usefull with door opening detector: if the door is open, block the blind not to break shades while they move.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">on On</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">on Off</Label>
+			</Item>
+			<Label lang="en">On which command from blocking node to enable the protection</Label>
+			<Help lang="en">Defines which command from blocking device to interpret as closed door and hence, unprotected.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Stop (by buttons and Binary)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Revert</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Stop (by buttons, Binary and Basic)</Label>
+			</Item>
+			<Label lang="en">Stop or Revert if opposite button is pressed</Label>
+			<Help lang="en">Defines behaviour on open press while closing and vice versa. To allow Stop behavior when switched by remote, use Stop by Basic</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Label lang="en">Invert open and close relays</Label>
+			<Help lang="en">Allows exchanging open and close relays if blind control is wired to the motor incorrectly</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical click timeout</Label>
+			<Help lang="en">Typical time used to differentiate click, hold and double and triple clicks in 10ms units</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Label lang="en">Invert buttons</Label>
+			<Help lang="en">Allows exchanging the functionality of the buttons</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">By single press and hold</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">By double press and hold</Label>
+			</Item>
+			<Label lang="en">Switch by buttons</Label>
+			<Help lang="en">If disabled, the local operations by buttons will not switch the load, but only send commands to On/Off association group. In this mode buttons are not linked with the switch anymore. They can be used separately: buttons to control remote device, switch will operate by RF commands only.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Action on button single press or hold</Label>
+			<Help lang="en">Defines which command should be sent on button single press or hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Action on button double press or hold</Label>
+			<Help lang="en">Defines which command should be sent on button double press or press-hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast. If not disabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch off only</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on only</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Label lang="en">Send the following Switch All commands</Label>
+			<Help lang="en">Defines what to do when a Switch All command arrives.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Close</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open if closed else close</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Open</Label>
+			</Item>
+			<Label lang="en">What to do on button Down press</Label>
+			<Help lang="en">Defines how to interpret button Down press. Depends on "Switch by buttons" parameter. If not Disabled this parameter will affect the action selected by the latter parameter. Can be used in conjunction with Auto Off function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Close blinds</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open blinds</Label>
+			</Item>
+			<Label lang="en">Action on Auto open or close function</Label>
+			<Help lang="en">Defines the action to perform upon auto open or auto close.</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Single press and hold of up/down buttons</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Double press and press-hold of up/down buttons</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Send Reports on blind state change</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

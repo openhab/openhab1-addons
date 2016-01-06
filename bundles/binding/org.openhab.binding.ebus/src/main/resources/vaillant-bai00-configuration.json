@@ -1,0 +1,59 @@
+[
+	{
+		"comment":	"<Regler> Vaillant: Aktuelle Geräteleistung in %",
+		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
+		"id":		"performance-kw",
+		"class":	"bai00",
+		"command":	"B5 09",
+		"data":		"0D 07 04",
+		"dst":		"08",
+		
+		"values": {
+			"performance_burner-kw":	{"type": "uchar", "pos": 12, "label": "Heizungteillast in kW", "min": 1, "max": 100}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Vaillant: Aktuelle Geräteleistung in %",
+		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
+		"id":		"performance",
+		"class":	"bai00",
+		"command":	"B5 09",
+		"data":		"0D 73 00",
+		"dst":		"08",
+		
+		"values": {
+			"performance_burner":		{"type": "uchar", "pos": 12, "label": "Aktuelle Geräteleistung (%)", "min": 0, "max": 100}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Vaillant: Vorlauf-Temperatur in °C",
+		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
+		"id":		"temp_flow",
+		"class":	"bai00",
+		"command":	"B5 09",
+		"data":		"0D 18 00",
+		"dst":		"08",
+		
+		"values": {
+			"temp_flow":		{"type": "data2c", "pos": 12, "label": "Vorlauf-Temperatur in °C", "min": 0, "max": 100},
+			"status_flow":		{"type": "byte", "pos": 14, "label": "Vorlauf-Temperatur Status"}
+		}
+	},
+	
+	{
+		"comment":	"<Regler> Vaillant: Rücklauf-Temperatur in °C",
+		"device": 	"Vaillant BAI000 VSC 196/2- C 150",
+		"id":		"temp_return",
+		"class":	"bai00",
+		"command":	"B5 09",
+		"data":		"0D 98 00",
+		"dst":		"08",
+		
+		"values": {
+			"temp_return":		{"type": "data2c", "pos": 12, "label": "Rücklauf-Temperatur in °C", "min": 0, "max": 100},
+			"status_return":	{"type": "byte", "pos": 14, "label": "Rücklauf-Temperatur Status"}
+		}
+	}
+]

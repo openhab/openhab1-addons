@@ -63,7 +63,8 @@ public class Temperature {
 	@ProviderMappings({ 
 			@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.dewpoint_c"),
 			@Provider(name = ProviderName.FORECASTIO, property = "dewPoint"),
-			@Provider(name = ProviderName.HAMWEATHER, property = "dewpointC")
+			@Provider(name = ProviderName.HAMWEATHER, property = "dewpointC"),
+			@Provider(name = ProviderName.WORLDWEATHERONLINE, property = "DewPointC")
 	})
 	private Double dewpoint;
 

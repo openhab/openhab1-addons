@@ -30,6 +30,7 @@ import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.LocationItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -196,6 +197,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 		if (itemType.equals(StringItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
 		}
+		if (itemType.equals(LocationItem.class)) {
+			return SitemapFactory.eINSTANCE.createMapview();
+		}
 		if (itemType.equals(DateTimeItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
 		}
@@ -216,60 +220,79 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	 */
 	public String getLabel(Widget w) {
 		String label = getLabelFromWidget(w);
-		
-		// now insert the value, if the state is a string or decimal value and there is some formatting pattern defined in the label 
-		// (i.e. it contains at least a %)
 		String itemName = w.getItem();
-		if(itemName!=null && label.contains("[")) {
-			
+		Item item = null;
+		try {
+			item = getItem(itemName);
+		} catch (ItemNotFoundException e) {
+			logger.debug("Cannot retrieve item {} for widget {}", itemName, w.eClass().getInstanceTypeName());
+		}
+		return formatLabel(item, itemName, label);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getFormattedLabel(Item item) {
+		String itemName = item == null ? "" : item.getName();
+		String label = getLabel(itemName);
+		return formatLabel(item, itemName, label);
+	}
+
+	private String formatLabel(Item item, String itemName, String label) {
+		// now insert the value, if the state is a string or decimal value and
+		// there is some formatting pattern defined in the label
+		// (i.e. it contains at least a %)
+		if (itemName != null && label.contains("[")) {
+
 			int indexOpenBracket = label.indexOf("[");
 			int indexCloseBracket = label.indexOf("]");
-			
+
 			State state = null;
 			String formatPattern = label.substring(indexOpenBracket + 1, indexCloseBracket);
-			try {
-				Item item = getItem(itemName);
-				// TODO: TEE: we should find a more generic solution here! When
-				// using indexes in formatString this 'contains' will fail again
-				// and will cause an 'java.util.IllegalFormatConversionException:
-				// d != java.lang.String' later on when trying to format a String
-				// as %d (number).
+			// TODO: TEE: we should find a more generic solution here! When
+			// using indexes in formatString this 'contains' will fail again
+			// and will cause an
+			// 'java.util.IllegalFormatConversionException:
+			// d != java.lang.String' later on when trying to format a
+			// String
+			// as %d (number).
+			if (item != null) {
 				if (label.contains("%d")) {
 					// a number is requested
 					state = item.getState();
-					if(!(state instanceof DecimalType)) {
+					if (!(state instanceof DecimalType)) {
 						state = item.getStateAs(DecimalType.class);
 					}
 				} else {
 					state = item.getState();
 				}
-			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve item for widget {}", w.eClass().getInstanceTypeName());
 			}
 
-			if (state==null || state instanceof UnDefType) {
+			if (state == null || state instanceof UnDefType) {
 				formatPattern = formatUndefined(formatPattern);
 			} else if (state instanceof Type) {
-				// The following exception handling has been added to work around a Java bug with formatting
+				// The following exception handling has been added to work
+				// around a Java bug with formatting
 				// numbers. See http://bugs.sun.com/view_bug.do?bug_id=6476425
-				// Without this catch, the whole sitemap, or page can not be displayed!
-				// This also handles IllegalFormatConverionException, which is a subclass of IllegalArgument.
+				// Without this catch, the whole sitemap, or page can not be
+				// displayed!
+				// This also handles IllegalFormatConverionException, which is a
+				// subclass of IllegalArgument.
 				try {
 					formatPattern = ((Type) state).format(formatPattern);
-				}
-				catch(IllegalArgumentException e) {
-					logger.warn(
-							"Exception while formatting value '{}' of item {} with format '{}': {}",
-							state, itemName, formatPattern, e);
+				} catch (IllegalArgumentException e) {
+					logger.warn("Exception while formatting value '{}' of item {} with format '{}': {}", state,
+							itemName, formatPattern, e);
 					formatPattern = new String("Err");
 				}
 			}
 
 			label = label.substring(0, indexOpenBracket + 1) + formatPattern + label.substring(indexCloseBracket);
 		}
-		
+
 		label = transform(label);
-		
+
 		return label;
 	}
 
@@ -412,7 +435,7 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				Item item = getItem(itemName);
 				return item.getState();
 			} catch (ItemNotFoundException e) {
-				logger.error("Cannot retrieve item '{}' for widget {}", new String[] { itemName, w.eClass().getInstanceTypeName() });
+				logger.error("Cannot retrieve item {} for widget {}", itemName, w.eClass().getInstanceTypeName());
 			}
 		}
 		return UnDefType.UNDEF;
