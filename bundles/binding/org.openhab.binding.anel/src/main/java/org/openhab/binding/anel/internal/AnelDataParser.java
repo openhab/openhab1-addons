@@ -71,9 +71,9 @@ public class AnelDataParser {
 		final String string = new String(data);
 		final String[] arr = string.split(":");
 
-		if (arr.length != 26 && arr.length != 16)
-			throw new IllegalArgumentException("Data with 16 or 26 values expected but " + arr.length + " received: "
-					+ string);
+		if (arr.length != 28 && arr.length != 26 && arr.length != 16)
+			throw new IllegalArgumentException("Data with 16, 26, or 28 values expected but " + arr.length
+					+ " received: " + string);
 		if (!arr[0].equals("NET-PwrCtrl"))
 			throw new IllegalArgumentException("Data must start with 'NET-PwrCtrl' but it didn't: " + arr[0]);
 		if (!state.host.equals(arr[2]) && !state.host.equalsIgnoreCase(arr[1].trim()))

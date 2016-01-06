@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -16,7 +19,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveIndicatorCommandClassChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 
 @XStreamAlias("indicatorCommandClass")
-public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveSetCommands {
+public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveSetCommands, ZWaveCommandClassDynamicState {
 
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveIndicatorCommandClass.class);
@@ -44,6 +47,11 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWa
 	private static final int INDICATOR_GET = 0x02;
 	private static final int INDICATOR_REPORT = 0x03;
 
+	private int indicator;
+	
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+	
 	private boolean isGetSupported = true;
 
 	/**
@@ -55,6 +63,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWa
 	public ZWaveIndicatorCommandClass(ZWaveNode node,
 			ZWaveController controller, ZWaveEndpoint endpoint) {
 		super(node, controller, endpoint);
+		indicator = 0;
 	}
 
 
@@ -76,7 +85,9 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWa
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case INDICATOR_SET:
-				logger.debug("NODE {}: Indicator Set sent to the controller will be processed as Indicator Report", this.getNode().getNodeId());
+				logger.debug("NODE {}: Indicator Set sent to the controller will be processed as Indicator Report", 
+						this.getNode().getNodeId());
+				
 				// Process this as if it was a value report.
 				processIndicatorReport(serialMessage, offset, endpoint);
 				break;
@@ -103,9 +114,18 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWa
 	 */
 	protected void processIndicatorReport(SerialMessage serialMessage, int offset,
 			int endpoint) {
-		int value = serialMessage.getMessagePayloadByte(offset + 1); 
-		logger.debug(String.format("NODE %d: Indicator report, value = 0x%02X", this.getNode().getNodeId(), value));
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
+		int newIndicator = serialMessage.getMessagePayloadByte(offset + 1); 
+		
+		logger.debug(String.format("NODE %d: Indicator report, value = 0x%02X", this.getNode().getNodeId(), newIndicator));
+		
+		ZWaveIndicatorCommandClassChangeEvent zEvent = new ZWaveIndicatorCommandClassChangeEvent(
+				this.getNode().getNodeId(), 
+				endpoint, 
+				this.getCommandClass(), 
+				newIndicator, 
+				indicator);
+		
+		indicator = newIndicator;
 		this.getController().notifyEventListeners(zEvent);
 	}
 
@@ -113,6 +133,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWa
 	 * Gets a SerialMessage with the INDICATOR GET command 
 	 * @return the serial message
 	 */
+	@Override
 	public SerialMessage getValueMessage() {
 		if(isGetSupported == false) {
 			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
@@ -143,17 +164,41 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass implements ZWa
 	 * @param the level to set.
 	 * @return the serial message
 	 */
-	public SerialMessage setValueMessage(int value) {
+	@Override
+	public SerialMessage setValueMessage(int newIndicator) {
 		logger.debug("NODE {}: Creating new message for application command INDICATOR_SET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
 								(byte) getCommandClass().getKey(), 
 								(byte) INDICATOR_SET,
-								(byte) value
+								(byte) newIndicator
 								};
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
+	
+	/**
+	 * Get current indicator value
+	 * @return indicator 
+	 */
+	public int getValue() {
+		return indicator;
+	}
 
+
+	@Override
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		if (refresh == true) {
+			dynamicDone = false;
+		}
+
+		if (dynamicDone == true) {
+			return null;
+		}
+
+		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
+		result.add(getValueMessage());
+		return result;
+	}	
 }

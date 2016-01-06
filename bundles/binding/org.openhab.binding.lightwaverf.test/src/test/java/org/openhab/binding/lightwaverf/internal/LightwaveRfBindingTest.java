@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openhab.binding.lightwaverf.LightwaveRfBindingProvider;
-import org.openhab.binding.lightwaverf.internal.LightwaveRFSender;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfBinding;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
-import org.openhab.binding.lightwaverf.internal.LightwaverfConvertor;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoResponse;
@@ -36,9 +32,9 @@ public class LightwaveRfBindingTest {
 
 	@Mock EventPublisher mockEventPublisher;
 	@Mock LightwaveRfBindingProvider mockBindingProvider; 
-	@Mock LightwaveRFSender mockLightwaveRfSender;
 	@Mock LightwaverfConvertor mockLightwaveRfConvertor;
 	@Mock LightwaveRFCommand mockLightwaveRfCommand;
+	@Mock LightwaveRfWifiLink mockWifiLink;
 	
 	@Mock LightwaveRfVersionMessage mockVersionMessage;
 	@Mock LightwaveRfHeatingInfoResponse mockHeatInfoResponse;
@@ -54,14 +50,15 @@ public class LightwaveRfBindingTest {
 		when(mockBindingProvider.getRoomId("MySwitch")).thenReturn("2");
 		when(mockBindingProvider.getDeviceId("MySwitch")).thenReturn("3");
 		when(mockBindingProvider.getTypeForItemName("MySwitch")).thenReturn(LightwaveRfType.SWITCH);
+		when(mockBindingProvider.getDirection("MySwitch")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
 		when(mockLightwaveRfConvertor.convertToLightwaveRfMessage("2", "3", LightwaveRfType.SWITCH, OnOffType.ON)).thenReturn(mockLightwaveRfCommand);
 		
 		LightwaveRfBinding binding = new LightwaveRfBinding();
 		binding.addBindingProvider(mockBindingProvider);
-		binding.setLightaveRfSender(mockLightwaveRfSender);
+		binding.setWifiLink(mockWifiLink);
 		binding.setLightwaveRfConvertor(mockLightwaveRfConvertor);
 		binding.internalReceiveCommand("MySwitch", OnOffType.ON);
-		verify(mockLightwaveRfSender).sendLightwaveCommand(mockLightwaveRfCommand);
+		verify(mockWifiLink).sendLightwaveCommand(mockLightwaveRfCommand);
 	}
 
 	@Test
@@ -69,14 +66,16 @@ public class LightwaveRfBindingTest {
 		when(mockBindingProvider.getRoomId("MySwitch")).thenReturn("2");
 		when(mockBindingProvider.getDeviceId("MySwitch")).thenReturn("3");
 		when(mockBindingProvider.getTypeForItemName("MySwitch")).thenReturn(LightwaveRfType.SWITCH);
+		when(mockBindingProvider.getDirection("MySwitch")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
 		when(mockLightwaveRfConvertor.convertToLightwaveRfMessage("2", "3", LightwaveRfType.SWITCH, OnOffType.ON)).thenReturn(mockLightwaveRfCommand);
+			
 		
 		LightwaveRfBinding binding = new LightwaveRfBinding();
 		binding.addBindingProvider(mockBindingProvider);
-		binding.setLightaveRfSender(mockLightwaveRfSender);
+		binding.setWifiLink(mockWifiLink);
 		binding.setLightwaveRfConvertor(mockLightwaveRfConvertor);
 		binding.internalReceiveUpdate("MySwitch", OnOffType.ON);
-		verify(mockLightwaveRfSender).sendLightwaveCommand(mockLightwaveRfCommand);	
+		verify(mockWifiLink).sendLightwaveCommand(mockLightwaveRfCommand);	
 	}
 
 	
@@ -84,7 +83,8 @@ public class LightwaveRfBindingTest {
 	public void testRoomDeviceMessageRecevied() {
 		when(mockBindingProvider.getBindingItemsForRoomDevice("2", "3")).thenReturn(Arrays.asList("MySwitch"));
 		when(mockBindingProvider.getTypeForItemName("MySwitch")).thenReturn(LightwaveRfType.SWITCH);
-
+		when(mockBindingProvider.getDirection("MySwitch")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
+		
 		LightwaveRfBinding binding = new LightwaveRfBinding();
 		binding.addBindingProvider(mockBindingProvider);
 		binding.setEventPublisher(mockEventPublisher);
@@ -98,7 +98,8 @@ public class LightwaveRfBindingTest {
 		when(mockHeatInfoRequest.getRoomId()).thenReturn("2");
 		when(mockBindingProvider.getBindingItemsForRoom("2")).thenReturn(Arrays.asList("Temp"));
 		when(mockBindingProvider.getTypeForItemName("Temp")).thenReturn(LightwaveRfType.HEATING_SET_TEMP);
-
+		when(mockBindingProvider.getDirection("Temp")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
+		
 		LightwaveRfBinding binding = new LightwaveRfBinding();
 		binding.addBindingProvider(mockBindingProvider);
 		binding.setEventPublisher(mockEventPublisher);
@@ -116,7 +117,10 @@ public class LightwaveRfBindingTest {
 		when(mockBindingProvider.getBindingItemsForSerial("655432")).thenReturn(Arrays.asList("Battery", "Temp"));
 		when(mockBindingProvider.getTypeForItemName("Battery")).thenReturn(LightwaveRfType.HEATING_BATTERY);
 		when(mockBindingProvider.getTypeForItemName("Temp")).thenReturn(LightwaveRfType.HEATING_CURRENT_TEMP);
+		when(mockBindingProvider.getDirection("Battery")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
+		when(mockBindingProvider.getDirection("Temp")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
 
+		
 		LightwaveRfBinding binding = new LightwaveRfBinding();
 		binding.addBindingProvider(mockBindingProvider);
 		binding.setEventPublisher(mockEventPublisher);
@@ -131,7 +135,9 @@ public class LightwaveRfBindingTest {
 		when(mockVersionMessage.getState(LightwaveRfType.VERSION)).thenReturn(new StringType("2.91"));
 		when(mockBindingProvider.getBindingItemsForType(LightwaveRfType.VERSION)).thenReturn(Arrays.asList("MyVersion"));
 		when(mockBindingProvider.getTypeForItemName("MyVersion")).thenReturn(LightwaveRfType.VERSION);
+		when(mockBindingProvider.getDirection("MyVersion")).thenReturn(LightwaveRfItemDirection.IN_AND_OUT);
 
+		
 		LightwaveRfBinding binding = new LightwaveRfBinding();
 		binding.addBindingProvider(mockBindingProvider);
 		binding.setEventPublisher(mockEventPublisher);

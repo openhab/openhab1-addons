@@ -62,12 +62,14 @@ public class TCPMasterConnection {
    *
    * @throws Exception if there is a network failure.
    */
-  public synchronized void connect()
-      throws Exception {
-    if(!m_Connected) {
+  public synchronized void connect() throws Exception {
+    if (!isConnected()) {
       logger.debug("connect()");
       m_Socket = new Socket(m_Address, m_Port);
       setTimeout(m_Timeout);
+      m_Socket.setReuseAddress(true);
+      m_Socket.setSoLinger(true, 1);
+      m_Socket.setKeepAlive(true);
       prepareTransport();
       m_Connected = true;
     }
@@ -183,6 +185,15 @@ public class TCPMasterConnection {
    * @return <tt>true</tt> if connected, <tt>false</tt> otherwise.
    */
   public boolean isConnected() {
+    // From j2mod originally. Sockets that are not fully open are closed.
+    if (m_Connected && m_Socket != null) {      
+      // Call close() if the connection is not fully "open"
+      if (!m_Socket.isConnected() || m_Socket.isClosed()
+          || m_Socket.isInputShutdown()
+          || m_Socket.isOutputShutdown()) {
+        close();
+      }
+    }
     return m_Connected;
   }//isConnected
 

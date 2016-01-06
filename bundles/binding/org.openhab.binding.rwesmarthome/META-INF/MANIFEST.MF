@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.rwesmarthome.internal
+Ignore-Package: org.openhab.binding.rwesmarthome.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB RWE Smarthome Binding
+Bundle-SymbolicName: org.openhab.binding.rwesmarthome
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.8.0.qualifier
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the RWE Smarthome binding of the open Home Automation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.io,
+ org.apache.commons.codec.binary,
+ org.apache.commons.collections.map,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.apache.commons.lang.builder,
+ org.apache.http,
+ org.apache.http.auth,
+ org.apache.http.client,
+ org.apache.http.client.methods,
+ org.apache.http.conn,
+ org.apache.http.conn.params,
+ org.apache.http.conn.scheme,
+ org.apache.http.entity,
+ org.apache.http.impl.client,
+ org.apache.http.impl.conn.tsccm,
+ org.apache.http.params,
+ org.apache.http.protocol,
+ org.apache.http.message,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.rwesmarthome
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .

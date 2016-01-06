@@ -146,14 +146,18 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
 			sqlTypes.put(itemType, value);
 		}
 
+	    disconnectFromDatabase();
+
 		url = (String) config.get("url");
 		if (StringUtils.isBlank(url)) {
 			logger.warn("The SQL database URL is missing - please configure the sql:url parameter in openhab.cfg");
+			return;
 		}
 
 		user = (String) config.get("user");
 		if (StringUtils.isBlank(user)) {
 			logger.warn("The SQL user is missing - please configure the sql:user parameter in openhab.cfg");
+			return;
 		}
 
 		password = (String) config.get("password");
@@ -172,7 +176,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService {
 		}
 
 		// reconnect to the database in case the configuration has changed.
-		disconnectFromDatabase();
 		connectToDatabase();
 
 		// connection has been established ... initialization completed!

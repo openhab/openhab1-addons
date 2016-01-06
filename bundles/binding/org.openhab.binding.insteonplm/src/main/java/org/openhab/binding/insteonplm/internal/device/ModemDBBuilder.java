@@ -32,7 +32,7 @@ public class ModemDBBuilder implements MsgListener, Runnable {
 	private boolean	m_isComplete 	= false;
 	private Port	m_port 			= null;
 	private	Thread	m_writeThread	= null;
-	private int		m_timeoutMillis = 60000;
+	private int		m_timeoutMillis = 120000;
 
 	public ModemDBBuilder(Port port) {
 		m_port = port;
@@ -163,6 +163,17 @@ public class ModemDBBuilder implements MsgListener, Runnable {
 		dbe.setPort(port);
 		if (m != null) {
 			dbe.addLinkRecord(m);
+			try {
+				byte group =  m.getByte("ALLLinkGroup");
+				int recordFlags = m.getByte("RecordFlags") & 0xff;
+				if ((recordFlags & (0x1 << 6)) != 0) {
+					dbe.addControls(group);
+				} else {
+					dbe.addRespondsTo(group);
+				}
+			} catch (FieldException e) {
+				logger.error("cannot access field:", e);
+			}
 		}
 		port.getDriver().unlockModemDBEntries();
 	}

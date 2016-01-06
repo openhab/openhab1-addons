@@ -17,10 +17,20 @@ package org.openhab.binding.denon.internal;
 public interface DenonUpdateReceivedCallback {
 
 	/**
-	 * Update was received. 
+	 * Update was received.
 	 * 
-	 * @param command The line of text that was received from the telnet connection
+	 * @param command
+	 *            The line of text that was received from the telnet connection
 	 */
 	public void updateReceived(String command);
 
+	/**
+	 * The listener has successfully connected to the receiver.
+	 */
+	public void listenerConnected();
+
+	/**
+	 * The listener has lost connection to the receiver.
+	 */
+	public void listenerDisconnected();
 }

@@ -10,6 +10,7 @@ package org.openhab.binding.wemo.internal;
 
 
 import java.util.Dictionary;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -17,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -29,6 +31,7 @@ import org.openhab.binding.wemo.WemoBindingProvider;
 import org.openhab.binding.wemo.internal.WemoGenericBindingProvider.WemoChannelType;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -138,6 +141,24 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
                                         eventPublisher.postUpdate(itemName,  binaryState);
                                     }
                             	}
+                            	
+                            	if (provider.getChannelType(itemName).equals(WemoChannelType.lastChangedAt)) {
+                            		long lastChangedAt = 0;
+                            		try {
+                            			lastChangedAt = Long.parseLong(splitInsightParams[1]) * 1000; // convert s to ms
+                            		} catch (NumberFormatException e) {
+                            			logger.error("Unable to parse lastChangedAt value '{}' for device '{}'; expected long", 
+                            					splitInsightParams[1], itemName);
+                            		}
+                                    GregorianCalendar cal = new GregorianCalendar();
+                                    cal.setTimeInMillis(lastChangedAt);
+                                    State lastChangedAtState = new DateTimeType(cal);
+                                    if (lastChangedAt != 0) {	
+                                        logger.trace("New InsightParam lastChangedAt '{}' for device '{}' received",
+                                        		lastChangedAtState, itemName);
+                                        eventPublisher.postUpdate(itemName,  lastChangedAtState);
+                                    }
+                            	}
 
                             	if (provider.getChannelType(itemName).equals(WemoChannelType.lastOnFor)) {
                                     State lastOnFor = DecimalType.valueOf(splitInsightParams[2]);
@@ -151,7 +172,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
                             	if (provider.getChannelType(itemName).equals(WemoChannelType.onToday)) {
                                     State onToday = DecimalType.valueOf(splitInsightParams[3]);
                                     if (onToday != null) {	
-                                        logger.trace("New InsightParam lastOnFor '{}' for device '{}' received",
+                                        logger.trace("New InsightParam onToday '{}' for device '{}' received",
                                         		onToday, itemName);
                                         eventPublisher.postUpdate(itemName,  onToday);
                                     }
@@ -160,22 +181,75 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
                             	if (provider.getChannelType(itemName).equals(WemoChannelType.onTotal)) {
                                     State onTotal = DecimalType.valueOf(splitInsightParams[4]);
                                     if (onTotal != null) {	
-                                        logger.trace("New InsightParam lastOnFor '{}' for device '{}' received",
+                                        logger.trace("New InsightParam onTotal '{}' for device '{}' received",
                                         		onTotal, itemName);
                                         eventPublisher.postUpdate(itemName,  onTotal);
                                     }
                             	}
+                            	
+                            	if (provider.getChannelType(itemName).equals(WemoChannelType.timespan)) {
+                                    State timespan = DecimalType.valueOf(splitInsightParams[5]);
+                                    if (timespan != null) {	
+                                        logger.trace("New InsightParam timespan '{}' for device '{}' received",
+                                        		timespan, itemName);
+                                        eventPublisher.postUpdate(itemName,  timespan);
+                                    }
+                            	}
+
+                            	
+                            	if (provider.getChannelType(itemName).equals(WemoChannelType.averagePower)) {
+                                    State averagePower = DecimalType.valueOf(splitInsightParams[6]); // natively given in W
+                                    if (averagePower != null) {	
+                                        logger.trace("New InsightParam averagePower '{}' for device '{}' received",
+                                        		averagePower, itemName);
+                                        eventPublisher.postUpdate(itemName,  averagePower);
+                                    }
+                            	}
+
 
                             	if (provider.getChannelType(itemName).equals(WemoChannelType.currentPower)) {
                                     BigDecimal currentMW = new BigDecimal(splitInsightParams[7]);
-                                    State currentPower = new DecimalType(currentMW.divide(new BigDecimal(1000))); // recalculate
+                                    State currentPower = new DecimalType(currentMW.divide(new BigDecimal(1000), RoundingMode.HALF_UP)); // recalculate
                                                                                                                   // mW to W
                                     if (currentPower != null) {	
-                                        logger.trace("New InsightParam lastOnFor '{}' for device '{}' received",
+                                        logger.trace("New InsightParam currentPower '{}' for device '{}' received",
                                         		currentPower, itemName);
                                         eventPublisher.postUpdate(itemName,  currentPower);
                                     }
                             	}
+                            	
+                            	if (provider.getChannelType(itemName).equals(WemoChannelType.energyToday)) {
+                                    BigDecimal energyTodayMWMin = new BigDecimal(splitInsightParams[8]);
+                                    // recalculate mW-mins to Wh
+                                    State energyToday = new DecimalType(energyTodayMWMin.divide(new BigDecimal(60000), RoundingMode.HALF_UP)); 
+                                    if (energyToday != null) {	
+                                        logger.trace("New InsightParam energyToday '{}' for device '{}' received",
+                                        		energyToday, itemName);
+                                        eventPublisher.postUpdate(itemName,  energyToday);
+                                    }
+                            	}
+                            	
+                            	if (provider.getChannelType(itemName).equals(WemoChannelType.energyTotal)) {
+                                    BigDecimal energyTotalMWMin = new BigDecimal(splitInsightParams[9]);
+                                    // recalculate mW-mins to Wh
+                                    State energyTotal = new DecimalType(energyTotalMWMin.divide(new BigDecimal(60000), RoundingMode.HALF_UP));                                   
+                                    if (energyTotal != null) {	
+                                        logger.trace("New InsightParam energyTotal '{}' for device '{}' received",
+                                        		energyTotal, itemName);
+                                        eventPublisher.postUpdate(itemName,  energyTotal);
+                                    }
+                            	}
+                            	
+                            	if (provider.getChannelType(itemName).equals(WemoChannelType.standbyLimit)) {
+                                    BigDecimal standbyLimitMW = new BigDecimal(splitInsightParams[10]);
+                                    // recalculate mW to W
+                                    State standbyLimit = new DecimalType(standbyLimitMW.divide(new BigDecimal(1000), RoundingMode.HALF_UP)); 
+                                    if (standbyLimit != null) {  
+                                        logger.trace("New InsightParam standbyLimit '{}' for device '{}' received",
+                                                standbyLimit, itemName);
+                                        eventPublisher.postUpdate(itemName,  standbyLimit);
+                                    }
+                                }
                             }
                         }
 
@@ -188,14 +262,13 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
             					eventPublisher.postUpdate(itemName,  newState);
                         	} else {
             					State itemState = state.equals("0") ? OnOffType.OFF : OnOffType.ON;
-            					eventPublisher.postUpdate(itemName,  itemState);
-                        		
+            					eventPublisher.postUpdate(itemName,  itemState);                        		
                         	}
                         }
 					}    
 
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (Exception e) {					
+					logger.error("Error in execute method: " + e.getMessage(), e);
 				}
 
 			}

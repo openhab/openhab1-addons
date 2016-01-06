@@ -9,8 +9,11 @@
 package org.openhab.binding.lightwaverf.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.openhab.core.library.items.DimmerItem;
@@ -20,10 +23,10 @@ import org.openhab.core.library.items.SwitchItem;
 
 public class LightwaveRfGenericBindingProviderTest {
 
+	private static final String context = "";
+	
 	@Test
 	public void testProcessBindingConfigurationForDimmer() throws Exception {
-		String context = "";
-
 		LightwaveRfGenericBindingProvider bingindProvider = new LightwaveRfGenericBindingProvider();
 		bingindProvider.processBindingConfiguration(context, 
 				new DimmerItem("MyDimmer"), "room=1,device=2,type=DIMMER");
@@ -33,12 +36,39 @@ public class LightwaveRfGenericBindingProviderTest {
 		assertEquals("1", bingindProvider.getRoomId("MyDimmer"));
 		assertEquals("2", bingindProvider.getDeviceId("MyDimmer"));
 		assertEquals(LightwaveRfType.DIMMER, bingindProvider.getTypeForItemName("MyDimmer"));
+		assertEquals(LightwaveRfItemDirection.IN_AND_OUT, bingindProvider.getDirection("MySwitch"));
 	}
 
 	@Test
-	public void testProcessBindingConfigurationForSwitch() throws Exception {
-		String context = "";
+	public void testProcessBindingConfiguratiLionForInOnly() throws Exception {
+		LightwaveRfGenericBindingProvider bingindProvider = new LightwaveRfGenericBindingProvider();
+		bingindProvider.processBindingConfiguration(context, 
+				new SwitchItem("MySwitch"), "<room=3,device=4,type=SWITCH");
 		
+		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getBindingItemsForRoomDevice("3", "4"));
+		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getItemNames());
+		assertEquals("3", bingindProvider.getRoomId("MySwitch"));
+		assertEquals("4", bingindProvider.getDeviceId("MySwitch"));
+		assertEquals(LightwaveRfType.SWITCH, bingindProvider.getTypeForItemName("MySwitch"));
+		assertEquals(LightwaveRfItemDirection.IN_ONLY, bingindProvider.getDirection("MySwitch"));
+	}
+	
+	@Test
+	public void testProcessBindingConfiguratiLionForOutOnly() throws Exception {
+		LightwaveRfGenericBindingProvider bingindProvider = new LightwaveRfGenericBindingProvider();
+		bingindProvider.processBindingConfiguration(context, 
+				new SwitchItem("MySwitch"), ">room=3,device=4,type=SWITCH");
+		
+		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getBindingItemsForRoomDevice("3", "4"));
+		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getItemNames());
+		assertEquals("3", bingindProvider.getRoomId("MySwitch"));
+		assertEquals("4", bingindProvider.getDeviceId("MySwitch"));
+		assertEquals(LightwaveRfType.SWITCH, bingindProvider.getTypeForItemName("MySwitch"));
+		assertEquals(LightwaveRfItemDirection.OUT_ONLY, bingindProvider.getDirection("MySwitch"));
+	}
+	
+	@Test
+	public void testProcessBindingConfigurationForSwitch() throws Exception {
 		LightwaveRfGenericBindingProvider bingindProvider = new LightwaveRfGenericBindingProvider();
 		bingindProvider.processBindingConfiguration(context, 
 				new SwitchItem("MySwitch"), "room=3,device=4,type=SWITCH");
@@ -52,8 +82,6 @@ public class LightwaveRfGenericBindingProviderTest {
 	
 	@Test
 	public void testProcessBindingConfigurationForHeatingBattery() throws Exception {
-		String context = "";
-		
 		LightwaveRfGenericBindingProvider bingindProvider = new LightwaveRfGenericBindingProvider();
 		bingindProvider.processBindingConfiguration(context, 
 				new NumberItem("MyBattery"), "room=3,device=4,type=HEATING_BATTERY");
@@ -67,8 +95,6 @@ public class LightwaveRfGenericBindingProviderTest {
 	
 	@Test
 	public void testRealLifeConfigurationForHeatingBattery() throws Exception {
-		String context = "";
-		
 		LightwaveRfGenericBindingProvider bingindProvider = new LightwaveRfGenericBindingProvider();
 		bingindProvider.processBindingConfiguration(context, 
 				new NumberItem("MyBattery"), "room=3,device=4,type=HEATING_BATTERY");
@@ -78,8 +104,10 @@ public class LightwaveRfGenericBindingProviderTest {
 				new DimmerItem("MyDimmer"), "room=1,device=2,type=DIMMER");
 		bingindProvider.processBindingConfiguration(context, 
 				new SwitchItem("MySwitch"), "room=3,device=3,type=SWITCH");
-		
-		assertEquals(Arrays.asList("MyBattery", "MySwitch", "MyCurrentTemp", "MyDimmer"), bingindProvider.getItemNames());
+
+		List<String> expectedNames = Arrays.asList("MyBattery", "MyDimmer", "MySwitch", "MyCurrentTemp");
+		Collection<String> itemNames = bingindProvider.getItemNames();
+		assertTrue(expectedNames.size() == itemNames.size() && expectedNames.containsAll(itemNames));
 
 		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getBindingItemsForRoomDevice("3", "3"));
 		assertEquals("3", bingindProvider.getRoomId("MySwitch"));

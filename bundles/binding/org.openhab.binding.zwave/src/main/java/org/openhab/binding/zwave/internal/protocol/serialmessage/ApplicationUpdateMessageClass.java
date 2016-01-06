@@ -8,7 +8,9 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -19,6 +21,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeInfoEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +79,8 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 				}
 			}
 			else {
+				List<Integer> nif = new ArrayList<Integer>();
+
 				for (int i = 6; i < length + 3; i++) {
 					int data = incomingMessage.getMessagePayloadByte(i);
 					if(data == 0xef) {
@@ -88,7 +93,12 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 						node.addCommandClass(commandClass);
 					}
 				}
+				
+                node.updateNIF(nif);
 			}
+
+			// Notify we received an info frame
+			zController.notifyEventListeners(new ZWaveNodeInfoEvent(nodeId));
 
 			// Treat the node information frame as a wakeup
 			ZWaveWakeUpCommandClass wakeUp = (ZWaveWakeUpCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP);

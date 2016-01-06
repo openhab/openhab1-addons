@@ -99,7 +99,11 @@ abstract public class ModbusSerialTransport
    *
    * @exception IOException if an error occurs
    */
-  abstract public void close() throws IOException;
+  public void close() throws IOException {
+    if (m_CommPort != null) {
+      m_CommPort.close();
+    }
+  }
   
   /**
    * <code>setCommPort</code> sets the comm port member and prepares the input
@@ -109,6 +113,8 @@ abstract public class ModbusSerialTransport
    * @throws IOException if an I/O related error occurs.
    */
   public void setCommPort(CommPort cp) throws IOException {
+    // Close existing port, if any
+    close();
     m_CommPort = cp;
     if (cp != null) {
       prepareStreams(cp.getInputStream(), cp.getOutputStream());

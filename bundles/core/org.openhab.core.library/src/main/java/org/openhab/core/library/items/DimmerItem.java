@@ -11,6 +11,7 @@ package org.openhab.core.library.items;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.openhab.core.library.types.DecimalType;
@@ -27,23 +28,22 @@ import org.openhab.core.types.UnDefType;
  * 
  * @author Kai Kreuzer
  * @since 0.1.0
- *
  */
 public class DimmerItem extends SwitchItem {
 
-	private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
-	private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
+    private static List<Class<? extends State>> acceptedDataTypes = new ArrayList<Class<? extends State>>();
+    private static List<Class<? extends Command>> acceptedCommandTypes = new ArrayList<Class<? extends Command>>();
 
-	static {
-		acceptedDataTypes.add(OnOffType.class);
-		acceptedDataTypes.add(PercentType.class);
-		acceptedDataTypes.add(UnDefType.class);
+    static {
+        acceptedDataTypes.add(OnOffType.class);
+        acceptedDataTypes.add(PercentType.class);
+        acceptedDataTypes.add(UnDefType.class);
 
-		acceptedCommandTypes.add(OnOffType.class);		
-		acceptedCommandTypes.add(IncreaseDecreaseType.class);
-		acceptedCommandTypes.add(PercentType.class);
-	}
-	
+        acceptedCommandTypes.add(OnOffType.class);
+        acceptedCommandTypes.add(IncreaseDecreaseType.class);
+        acceptedCommandTypes.add(PercentType.class);
+    }
+
 	public DimmerItem(String name) {
 		super(name);
 	}
@@ -52,42 +52,53 @@ public class DimmerItem extends SwitchItem {
 		internalSend(command);
 	}
 	
-	public List<Class<? extends State>> getAcceptedDataTypes() {
-		return acceptedDataTypes;
-	}
+    @Override
+    public List<Class<? extends State>> getAcceptedDataTypes() {
+        return Collections.unmodifiableList(acceptedDataTypes);
+    }
 
-	public List<Class<? extends Command>> getAcceptedCommandTypes() {
-		return acceptedCommandTypes;
-	}
+    @Override
+    public List<Class<? extends Command>> getAcceptedCommandTypes() {
+        return Collections.unmodifiableList(acceptedCommandTypes);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setState(State state) {
-		// we map ON/OFF values to the percent values 0 and 100
-		if(state==OnOffType.OFF) {
-			super.setState(PercentType.ZERO);
-		} else if(state==OnOffType.ON) {
-			super.setState(PercentType.HUNDRED);
-		} else {
-			super.setState(state);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public State getStateAs(Class<? extends State> typeClass) {
-		if(typeClass==OnOffType.class) {
-			// if it is not completely off, we consider the dimmer to be on
-			return state.equals(PercentType.ZERO) ? OnOffType.OFF : OnOffType.ON;
-		} else if(typeClass==DecimalType.class) {
-			if(state instanceof PercentType) {
-				return new DecimalType(((PercentType) state).toBigDecimal().divide(new BigDecimal(100), 8, RoundingMode.UP));
-			}
-		}
-		return super.getStateAs(typeClass);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setState(State state) {
+        // we map ON/OFF values to the percent values 0 and 100
+        if (state == OnOffType.OFF) {
+            super.setState(PercentType.ZERO);
+        } else if (state == OnOffType.ON) {
+            super.setState(PercentType.HUNDRED);
+        } else {
+            super.setState(state);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public State getStateAs(Class<? extends State> typeClass) {
+        if (state.getClass() == typeClass) {
+            return state;
+        } else if (typeClass == OnOffType.class) {
+            // if it is not completely off, we consider the dimmer to be on
+            return state.equals(PercentType.ZERO) ? OnOffType.OFF : OnOffType.ON;
+        } else if (typeClass == DecimalType.class) {
+            if (state instanceof PercentType) {
+                return new DecimalType(((PercentType) state).toBigDecimal().divide(new BigDecimal(100), 8,
+                        RoundingMode.UP));
+            }
+        } else if (typeClass == PercentType.class) {
+            if (state instanceof DecimalType) {
+                return new PercentType(((DecimalType) state).toBigDecimal().multiply(new BigDecimal(100)));
+            }
+        }
+
+        return super.getStateAs(typeClass);
+    }
+    
 }

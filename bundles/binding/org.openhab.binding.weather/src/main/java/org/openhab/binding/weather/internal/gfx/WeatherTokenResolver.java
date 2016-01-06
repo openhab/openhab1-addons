@@ -15,9 +15,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.openhab.binding.weather.internal.common.LocationConfig;
+import org.openhab.binding.weather.internal.common.Unit;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.binding.weather.internal.utils.PropertyUtils;
+import org.openhab.binding.weather.internal.utils.UnitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +90,9 @@ public class WeatherTokenResolver implements TokenResolver {
 		}
 		Object propertyValue = PropertyUtils.getPropertyValue(instance,
 				token.name);
+		if (token.unit != null && propertyValue instanceof Double) {
+			propertyValue = UnitUtils.convertUnit((Double) propertyValue, token.unit, token.name);
+		}
 		if (token.formatter != null) {
 			return String.format(token.formatter, propertyValue);
 		}
@@ -165,6 +170,11 @@ public class WeatherTokenResolver implements TokenResolver {
 					.substringBetween(token.name, "(", ")");
 			token.name = StringUtils.substringBefore(token.name, "(");
 		}
+		if (StringUtils.contains(token.full, "[")) {
+			token.unit = Unit.parse(StringUtils.substringBetween(token.full, "[","]"));
+			token.name = StringUtils.substringBefore(token.name, "[");
+		}
+		
 		if (!token.isValid()) {
 			throw new RuntimeException("Invalid weather token: " + token.full);
 		}
@@ -184,6 +194,7 @@ public class WeatherTokenResolver implements TokenResolver {
 		public String qualifier;
 		public String name;
 		public String formatter;
+		public Unit unit;
 
 		/**
 		 * Returns true, if a token contains a prefix and a name.

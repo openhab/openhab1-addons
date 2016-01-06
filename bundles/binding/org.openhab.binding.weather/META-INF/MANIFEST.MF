@@ -11,6 +11,7 @@ Bundle-Description: This is the Weather binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: javax.servlet,
  javax.servlet.http,
+ javax.xml.bind,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.cookie,
  org.apache.commons.httpclient.methods,

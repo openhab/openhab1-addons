@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.influxdb" immediate="true" configuration-pid="org.openhab.influxdb" configuration-policy="optional">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.influxdb" immediate="true" configuration-pid="org.openhab.influxdb" configuration-policy="require">
    <implementation class="org.openhab.persistence.influxdb.internal.InfluxDBPersistenceService"/>
    <service>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>

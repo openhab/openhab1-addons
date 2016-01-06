@@ -52,6 +52,11 @@ public class Precipitation {
 	})
 	private Integer probability;
 
+	@ProviderMappings({ 
+		@Provider(name = ProviderName.WUNDERGROUND, property = "precip_today_metric")
+	})
+	private Double total;
+
 	/**
 	 * Returns the rain in millimeters.
 	 */
@@ -102,11 +107,18 @@ public class Precipitation {
 	}
 
 	/**
+	 * Returns the total amount of todays precipitation.
+	 */
+	public Double getTotal() {
+		return total;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("rain", rain).append("snow", snow)
-				.append("probability", probability).toString();
+				.append("probability", probability).append("total", total).toString();
 	}
 }

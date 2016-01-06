@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.io.caldav</module>
     <module>org.openhab.io.cv</module>
     <module>org.openhab.io.console</module>
     <module>org.openhab.io.dropbox</module>
@@ -36,9 +37,11 @@
     <module>org.openhab.io.net.test</module>
     <module>org.openhab.io.rest</module>
     <module>org.openhab.io.rest.lib</module>
+    <module>org.openhab.io.rest.test</module>
     <module>org.openhab.io.servicediscovery</module>
     <module>org.openhab.io.squeezeserver</module>
     <module>org.openhab.io.transport.cul</module>
+    <module>org.openhab.io.transport.cul.test</module>
     <module>org.openhab.io.transport.mqtt</module>
     <module>org.openhab.io.transport.serial</module>
     <module>org.openhab.io.transport.xpl</module>

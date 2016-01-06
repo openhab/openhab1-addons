@@ -273,14 +273,44 @@
 		<Group>
 			<Index>2</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Basic on/off Q1</Label>
+			<Label lang="en">Q1 basic on/off</Label>
 			<Help lang="en">Triggered at change of the output Q1 state and reflecting its state</Help>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>16</Maximum>
-			<Label lang="en">Basic on/off Q2</Label>
+			<Label lang="en">Q1 switch binary</Label>
+			<Help lang="en">Switch binary report (triggered at change of the output Q1 state and reflecting its state) up to 16 nodes</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q1 power meter</Label>
+			<Help lang="en">Power meter report (triggered at change of the output Q1 state) up to 16 nodes.</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q2 basic on/off</Label>
 			<Help lang="en">Triggered at change of the output Q2 state and reflecting its state</Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q2 switch binary</Label>
+			<Help lang="en">Switch binary report (triggered at change of the output Q2 state and reflecting its state) up to 16 nodes</Help>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Q2 power meter</Label>
+			<Help lang="en">Power meter report (triggered at change of the output Q2 state) up to 16 nodes.</Help>
+		</Group>
+		<Group>
+			<Index>8</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Multilevel sensor</Label>
+			<Help lang="en">Multilevel sensor report (triggered at change of temperature sensor) up to 16 nodes.</Help>
 		</Group>
 	</Associations>
 </Product>

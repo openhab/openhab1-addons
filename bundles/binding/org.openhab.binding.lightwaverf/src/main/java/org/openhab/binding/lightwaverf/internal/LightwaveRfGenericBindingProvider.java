@@ -76,6 +76,14 @@ public class LightwaveRfGenericBindingProvider extends
 			LightwaveRfType type = null;
 			int poll = -1;
 			String serialId = null;
+			LightwaveRfItemDirection direction = LightwaveRfItemDirection.IN_AND_OUT;
+			
+			if(bindingConfig.startsWith("<")){
+				direction = LightwaveRfItemDirection.IN_ONLY;
+			} 
+			else if (bindingConfig.startsWith(">")) {
+				direction = LightwaveRfItemDirection.OUT_ONLY;
+			}
 
 			Matcher roomMatcher = ROOM_REG_EXP.matcher(bindingConfig);
 			if (roomMatcher.matches()) {
@@ -103,11 +111,11 @@ public class LightwaveRfGenericBindingProvider extends
 			}
 
 			LightwaveRfBindingConfig config = new LightwaveRfBindingConfig(
-					roomId, deviceId, serialId, type, poll);
+					roomId, deviceId, serialId, type, poll, direction);
 
 			logger.info(
 					"ConfigString[{}] Room[{}] Device[{}] Serial[{}] Type[{}] Poll[{}]",
-					bindingConfig, roomId, deviceId, serialId, type, poll);
+					new Object[] {bindingConfig, roomId, deviceId, serialId, type, poll});
 			addBindingConfig(item, config);
 		} catch (Exception e) {
 			throw new BindingConfigParseException(
@@ -183,6 +191,13 @@ public class LightwaveRfGenericBindingProvider extends
 	}
 
 	@Override
+	public LightwaveRfItemDirection getDirection(String itemName) {
+		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs
+				.get(itemName);
+		return itemConfig != null ? itemConfig.getDirection() : LightwaveRfItemDirection.IN_AND_OUT;
+	}
+	
+	@Override
 	public LightwaveRfType getTypeForItemName(String itemName) {
 		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs
 				.get(itemName);
@@ -217,14 +232,16 @@ public class LightwaveRfGenericBindingProvider extends
 		private final String serialId;
 		private final LightwaveRfType type;
 		private final int pollTime;
+		private final LightwaveRfItemDirection direction;
 
 		public LightwaveRfBindingConfig(String roomId, String deviceId,
-				String serialId, LightwaveRfType type, int pollTime) {
+				String serialId, LightwaveRfType type, int pollTime, LightwaveRfItemDirection direction) {
 			this.roomId = roomId;
 			this.deviceId = deviceId;
 			this.serialId = serialId;
 			this.type = type;
 			this.pollTime = pollTime;
+			this.direction = direction;
 		}
 
 		public String getDeviceId() {
@@ -245,6 +262,10 @@ public class LightwaveRfGenericBindingProvider extends
 
 		public int getPollTime() {
 			return pollTime;
+		}
+		
+		public LightwaveRfItemDirection getDirection() {
+			return direction;
 		}
 	}
 }

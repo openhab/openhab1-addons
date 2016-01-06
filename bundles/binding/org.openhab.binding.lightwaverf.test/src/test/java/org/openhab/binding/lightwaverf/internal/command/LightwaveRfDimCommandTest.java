@@ -11,6 +11,7 @@ package org.openhab.binding.lightwaverf.internal.command;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.core.library.types.PercentType;
 
@@ -37,6 +38,18 @@ public class LightwaveRfDimCommandTest {
 		assertEquals("010", command.getMessageId().getMessageIdString());
 		assertEquals(PercentType.valueOf("97"), command.getState(LightwaveRfType.DIMMER));
 	}
+	
+	@Test
+	@Ignore("Not sure that the lightwave app actually sends this message when turning off")
+	public void testDimCommandAsMessageOff() throws Exception {
+		String message = "109,!R2D1F0|Kitchen|Kitchen Ceiling OFF\n";
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfDimCommand(message);
+		assertEquals("109,!R2D1F0\n", command.getLightwaveRfCommandString());
+		assertEquals("2", command.getRoomId());
+		assertEquals("1", command.getDeviceId());
+		assertEquals("109", command.getMessageId().getMessageIdString());
+		assertEquals(PercentType.valueOf("0"), command.getState(LightwaveRfType.DIMMER));
+	}	
 
 	@Test
 	public void testDimCommandAsParametersLow() throws Exception {
@@ -58,6 +71,14 @@ public class LightwaveRfDimCommandTest {
 		assertEquals(PercentType.valueOf("100"), command.getState(LightwaveRfType.DIMMER));
 	}
 
-		
+	@Test
+	public void testDimCommandAsParametersOff() throws Exception {
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfDimCommand(10, "2", "3", 0);
+		assertEquals("010,!R2D3F0\n", command.getLightwaveRfCommandString());
+		assertEquals("2", command.getRoomId());
+		assertEquals("3", command.getDeviceId());
+		assertEquals("010", command.getMessageId().getMessageIdString());
+		assertEquals(PercentType.valueOf("0"), command.getState(LightwaveRfType.DIMMER));
+	}
 	
 }

@@ -17,4 +17,5 @@
    </service>
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
    <property name="event.topics" type="String" value="openhab/command/*"/>
+   <reference bind="setTransformationService" cardinality="0..1" interface="org.openhab.core.transform.TransformationService" name="TransformationService" policy="dynamic" target="(openhab.transform=REGEX)" unbind="unsetTransformationService"/>
 </scr:component>

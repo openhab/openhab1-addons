@@ -8,8 +8,10 @@
  */
 package org.openhab.persistence.jpa.internal;
 
+import java.util.Locale;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 
 /**
@@ -32,6 +34,13 @@ public class StateHelper {
 		if(state instanceof DecimalType) {
 			return String.valueOf(((DecimalType)state).doubleValue());
 		}
+        if(state instanceof PointType) {
+            PointType pType = (PointType)state;
+            return String.format(Locale.ENGLISH, "%f;%f;%f",
+                pType.getLatitude().doubleValue(),
+                    pType.getLongitude().doubleValue(),
+                        pType.getAltitude().doubleValue());
+        }
 
 		return state.toString();
 	}	

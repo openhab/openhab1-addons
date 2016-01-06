@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.binding.dmlsmeter.internal
-Ignore-Package: org.openhab.binding.dmlsmeter.internal
+Private-Package: org.openhab.binding.iec6205621meter.internal
+Ignore-Package: org.openhab.binding.iec6205621meter.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB IEC 62056-21 Meter Binding
 Bundle-SymbolicName: org.openhab.binding.iec6205621meter

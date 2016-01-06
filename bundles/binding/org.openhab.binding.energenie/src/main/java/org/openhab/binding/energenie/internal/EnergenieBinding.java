@@ -8,12 +8,21 @@
  */
 package org.openhab.binding.energenie.internal;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import org.openhab.binding.energenie.EnergenieBindingProvider;
-import org.openhab.binding.energenie.internal.EnergenieBindingConfig;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.energenie.EnergenieBindingProvider;
+import org.openhab.binding.energenie.internal.EnergenieBindingConfig.ChannelTypeDef;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -21,18 +30,11 @@ import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.io.*;
-import java.nio.charset.Charset;
-
-	
+import org.slf4j.LoggerFactory;	
 
 /**
- * @author Hans-Jörg Merk
+ * @author Hans-Jörg Merk - initial contribution
+ * @author Christoph Kuhr - PWM-LAN support
  * @since 1.6.0
  */
 public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProvider> implements ManagedService {
@@ -100,7 +102,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 				}
 				try {
 					String pmsId = deviceConfig.getDeviceId();
-					int pmsSocketId = deviceConfig.getSocketNumber();
 
 					String pmsIp = pmsIpConfig.get(pmsId);
 					String pmsPw = pmsPasswordConfig.get(pmsId);
@@ -112,40 +113,21 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 					try {
 						loginResponseString = HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
 						
-						String stateResponseSearch = "var sockstates =";
-						int findState=loginResponseString.lastIndexOf(stateResponseSearch);
-						if (findState > 0) {
-							logger.trace("searchstring sockstates found at position {}", findState);
-							
-							String slicedResponse = loginResponseString.substring(findState+18, findState+25);
-							
-							logger.trace("transformed state response = {}", slicedResponse);
-
-							try {
-								String [] parts = slicedResponse.split(",");
-								String itemState = parts[pmsSocketId-1];
-								logger.trace("Response for item {} = {}", itemName, itemState);
-								if (itemState.equals("0")) {
-									State state = OnOffType.valueOf("OFF");
-									logger.trace("transformed state for item {} = {}", itemName, state);
-									eventPublisher.postUpdate(itemName, state);
-								}
-								if (itemState.equals("1")) {
-									State state = OnOffType.valueOf("ON");
-									logger.trace("transformed state for item {} = {}", itemName, state);
-									eventPublisher.postUpdate(itemName, state);
-								}
-							
-							} catch (Exception te) {
-								logger.error("Response transformation throws exception ", te);
+						String itemType = deviceConfig.getItemType();
+						if (itemType != null) {
+							logger.trace("item is of Type {}", itemType);
+							if(itemType.contains("Type=SwitchItem")) {
+								logger.trace("about to process SwitchItem");
+								int pmsSocketId = Integer.parseInt(deviceConfig.getItemConfig());
+								processSwitchItem(loginResponseString, pmsSocketId, itemName);
+							} else if(itemType.contains("Type=NumberItem")){
+								logger.trace("about to process NumberItem");
+								String pwmChannelType = deviceConfig.getItemConfig();
+								processNumberItem(deviceConfig, loginResponseString, pwmChannelType, itemName);
 							}
-							
-						} else {
-							logger.trace("searchstring sockstates not found");			
 						}
-						
 					} catch (Exception e) {
-						logger.error("Failed to logout from ip {}", pmsIp);
+						logger.error("Failed to connect to ip {}", pmsIp);
 					}
 
 
@@ -172,7 +154,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 		}
 		try {
 			String pmsId = deviceConfig.getDeviceId();
-			int pmsSocketId = deviceConfig.getSocketNumber();
+			int pmsSocketId = Integer.parseInt(deviceConfig.getItemConfig());
 			
 			sendLogin(pmsId);
 			if (OnOffType.ON.equals(command)) {
@@ -232,15 +214,11 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 		
 		try {
 			HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
-
 			logger.trace("sending 'POST' request to URL : {}", url);
 			logger.trace("send command OFF to socket {} at host {}", pmsSocketId, pmsIp);
-
-			
 		} catch (Exception e) {
 			logger.error("failed so send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
 		}
-		
 	}
 
 	private void sendLogOut(String pmsId) {
@@ -249,22 +227,114 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 
 		try {
 			HttpUtil.executeUrl("POST", url, timeout);
-
 			logger.trace("logout from ip {}", pmsIp);
-			
 		} catch (Exception e) {
 			logger.error("failed to logout from ip {}", pmsIp);
 		}
-
 	}
-	
+
+	/**
+	 * @{inheritDoc}
+	 */
+	private void processSwitchItem(String loginResponseString, int pmsSocketId, String itemName){
+
+		String stateResponseSearch = "var sockstates =";
+		int findState=loginResponseString.lastIndexOf(stateResponseSearch);
+		if (findState !=0) {
+			logger.trace("searchstring sockstates found at position {}", findState);
+			String slicedResponse = loginResponseString.substring(findState+18, findState+25);
+			logger.trace("transformed state response = {}", slicedResponse);
+
+			try {
+				String [] parts = slicedResponse.split(",");
+				String itemState = parts[pmsSocketId-1];
+				logger.trace("Response for item {} = {}", itemName, itemState);
+				if (itemState.equals("0")) {
+					State state = OnOffType.valueOf("OFF");
+					logger.trace("transformed state for item {} = {}", itemName, state);
+					eventPublisher.postUpdate(itemName, state);
+				}
+				if (itemState.equals("1")) {
+					State state = OnOffType.valueOf("ON");
+					logger.trace("transformed state for item {} = {}", itemName, state);
+					eventPublisher.postUpdate(itemName, state);
+				}
+			} catch (Exception te) {
+				logger.error("Response transformation throws exception ", te);
+			}
+		} else {
+			logger.trace("searchstring sockstates not found");			
+		}
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	private void processNumberItem(EnergenieBindingConfig deviceConfig, String loginResponseString, String pwmChannelType, String itemName){
+		String stateResponseSearch = "";
+		int start=0, stop=0, divisor=1;
+		double value=0.0;
+		
+		ChannelTypeDef channelType = ChannelTypeDef.valueOf(pwmChannelType);
+		
+		switch(channelType){
+			case VOLTAGE: 
+				stateResponseSearch = "var V  = ";
+				start = 9; 
+				stop = 20; 
+				divisor = 10; 
+				break;
+			case CURRENT: 
+				stateResponseSearch = "var I  = "; 
+				start = 9; 
+				stop = 20; 
+				divisor = 100; 
+				break;
+			case POWER: 
+				stateResponseSearch = "var P="; 
+				start = 6; 
+				stop = 20; 
+				divisor = 466; 
+				break;
+			case ENERGY: 
+				stateResponseSearch = "var E="; 
+				start = 6; 
+				stop = 20; 
+				divisor = 25600; 
+				break;
+		case NONE:
+			break;
+		default:
+			break;
+		}
+
+		int findState=loginResponseString.lastIndexOf(stateResponseSearch);
+		if (findState > 0) {
+			logger.trace("searchstring {} found at position {}", stateResponseSearch, findState);
+			String slicedResponseTmp = loginResponseString.substring(findState+start, findState+stop);
+			logger.trace("transformed state response = {}", slicedResponseTmp);
+			String[] slicedResponse = slicedResponseTmp.split(";");
+			logger.trace("transformed state response = {} - {}", slicedResponse[0], slicedResponse[1]);
+			if(Double.parseDouble(slicedResponse[0])/1 == Double.parseDouble(slicedResponse[0])){
+				value = Double.parseDouble(slicedResponse[0]) / divisor;
+			}
+			else{
+				value = -1.0;
+			}
+			logger.trace("transformed state for item {} = {}", itemName, value);
+			State newState = new DecimalType(value);
+			eventPublisher.postUpdate(itemName, newState);				
+		} else {
+			logger.trace("searchstring %s not found", stateResponseSearch);			
+		}
+	}
+
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		logger.debug("internalReceiveCommand() is called!");
-
 	}
 
 	/**
@@ -363,7 +433,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 			return password;
 		}
 
-		
 		@Override
 		public String toString() {
 			return "Device [id=" + deviceId + "]";

@@ -451,8 +451,6 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						if (newValue != value) {
 							logger.trace("internalPropertyUpdate: transformation performed, from '{}' to '{}'", value,
 									newValue);
-
-							value = newValue;
 						}
 
 						//
@@ -469,25 +467,25 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						//
 						if (incremental) {
 							logger.debug("internalPropertyUpdate: BOUND (Incr) Updating '{} {mios=\"{}\"}' to '{}'",
-									itemName, property, value);
+									itemName, property, newValue);
 
-							eventPublisher.postUpdate(itemName, value);
+							eventPublisher.postUpdate(itemName, newValue);
 						} else {
 							ItemRegistry reg = miosProvider.getItemRegistry();
 							State oldValue = reg.getItem(itemName).getState();
 
-							if ((oldValue == null && value != null)
-									|| (UnDefType.UNDEF.equals(oldValue) && !UnDefType.UNDEF.equals(value))
-									|| !oldValue.equals(value)) {
+							if ((oldValue == null && newValue != null)
+									|| (UnDefType.UNDEF.equals(oldValue) && !UnDefType.UNDEF.equals(newValue))
+									|| !oldValue.equals(newValue)) {
 								logger.debug(
 										"internalPropertyUpdate: BOUND (Full) Updating '{} {mios=\"{}\"}' to '{}', was '{}'",
-										new Object[] { itemName, property, value, oldValue });
+										new Object[] { itemName, property, newValue, oldValue });
 
-								eventPublisher.postUpdate(itemName, value);
+								eventPublisher.postUpdate(itemName, newValue);
 							} else {
 								logger.trace(
 										"internalPropertyUpdate: BOUND (Full) Ignoring '{} {mios=\"{}\"}' to '{}', was '{}'",
-										new Object[] { itemName, property, value, oldValue });
+										new Object[] { itemName, property, newValue, oldValue });
 							}
 						}
 						bound++;

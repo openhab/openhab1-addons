@@ -27,7 +27,7 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand
 		implements LightwaveRFCommand {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile("(\\d{1,3}).*V=\"(.*)\"\\s*");
+			.compile(".*?(\\d{1,3}).*V=\"(.*)\"\\s*");
 
 	private final LightwaveRfMessageId messageId;
 	private final String version;

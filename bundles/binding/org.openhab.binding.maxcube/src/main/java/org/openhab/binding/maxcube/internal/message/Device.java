@@ -9,7 +9,6 @@
 package org.openhab.binding.maxcube.internal.message;
 
 import java.util.Date;
-import java.util.Calendar;
 import java.util.List;
 
 import org.openhab.binding.maxcube.internal.Utils;
@@ -29,15 +28,16 @@ public abstract class Device {
 
 	protected final static Logger logger = LoggerFactory.getLogger(Device.class);
 
-	private String serialNumber = "";
-	private String rfAddress = "";
-	private int roomId = -1;
+	private final String serialNumber;
+	private final String rfAddress;
+	private final int roomId;
 
 	private final Battery battery = new Battery();
 
 	private boolean initialized;
 	private boolean answer;
-	private boolean error;
+	private Boolean error = null;
+	private boolean errorUpdated;
 	private boolean valid;
 	private boolean DstSettingsActive;
 	private boolean gatewayKnown;
@@ -51,10 +51,6 @@ public abstract class Device {
 	}
 
 	public abstract DeviceType getType();
-
-	public abstract String getName();
-
-	public abstract Calendar getLastUpdate();
 
 	private static Device create(String rfAddress, List<Configuration> configurations) {
 		Device returnValue = null;
@@ -204,16 +200,8 @@ public abstract class Device {
 		return this.rfAddress;
 	}
 
-	public final void setRFAddress(String rfAddress) {
-		this.rfAddress = rfAddress;
-	}
-
 	public final int getRoomId() {
 		return roomId;
-	}
-
-	public final void setRoomId(int roomId) {
-		this.roomId = roomId;
 	}
 
 	private void setLinkStatusError(boolean linkStatusError) {
@@ -236,9 +224,20 @@ public abstract class Device {
 		this.valid = valid;
 	}
 
-	private void setError(boolean error) {
-		this.error = error;
-
+	protected void setError(boolean newError) {
+		errorUpdated = (this.error == null) || (this.error != newError);
+		this.error = newError;
+		if (newError){
+			logger.warn("Connection error occurred between cube and device '{}'", this.toString());
+		}
+	}
+	
+	public boolean isError(){
+		return Boolean.TRUE.equals(error);
+	}
+	
+	public boolean isErrorUpdated(){
+		return errorUpdated;
 	}
 
 	public String getSerialNumber() {
@@ -251,5 +250,10 @@ public abstract class Device {
 
 	private void setAnswer(boolean answer) {
 		this.answer = answer;
+	}
+	
+	@Override
+	public String toString() {
+		return rfAddress + " - " + serialNumber;
 	}
 }

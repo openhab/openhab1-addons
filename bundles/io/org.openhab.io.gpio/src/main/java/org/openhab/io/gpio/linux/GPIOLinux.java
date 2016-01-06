@@ -43,7 +43,8 @@ public class GPIOLinux implements GPIO, ManagedService {
 	private static final long GPIOLOCK_TIMEOUT = 10;
 	private static final TimeUnit GPIOLOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
 	private static final String PROP_DEBOUNCE_INTERVAL = "debounce";
-
+	private static final String PROP_FORCE = "force";
+	
 	private static final Logger logger = LoggerFactory.getLogger(GPIOLinux.class);
 
 	/** Path to directory where <code>sysfs</code> is mounted. */ 
@@ -51,6 +52,9 @@ public class GPIOLinux implements GPIO, ManagedService {
 
 	/** Default debounce interval in milliseconds */
 	private volatile long defaultDebounceInterval = 0;
+
+	/** Forcibly use the pins after unclean shutdown */
+	private volatile boolean defaultForce = false;
 
 	/** GPIO subsystem read/write lock. */
 	private final ReentrantReadWriteLock gpioLock = new ReentrantReadWriteLock();
@@ -116,6 +120,12 @@ public class GPIOLinux implements GPIO, ManagedService {
 							+ " is invalid, must be numeric value");
 				}
 			}
+
+			String propForce = (String) properties.get(PROP_FORCE);
+			if (propForce != null) {
+				defaultForce = Boolean.parseBoolean(propForce);
+			}
+
 		}
 	}
 
@@ -169,12 +179,16 @@ public class GPIOLinux implements GPIO, ManagedService {
 		return false;
 	}
 
+	public GPIOPin reservePin(Integer pinNumber) throws IOException {
+		return reservePin(pinNumber, false);
+	}
 	/**
 	 *  Exports the pin to user space, creates and initializes the
 	 *  backend object representing the pin. Updates the registry for
 	 *  initialized pins. 
 	 */
-	public GPIOPin reservePin(Integer pinNumber) throws IOException {
+	public GPIOPin reservePin(Integer pinNumber, boolean force)
+			throws IOException {
 
 		final String SYSFS_CLASS_GPIO = sysFS + "/class/gpio/";
 
@@ -199,8 +213,19 @@ public class GPIOLinux implements GPIO, ManagedService {
 					}
 
 					/* Exports the pin to user space. */
-					Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
-
+					try {
+						Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
+					} catch (IOException e){
+						if (force || defaultForce) {
+							/* Forcibly use the pin as unexport it and export it again */
+							Files.write(Paths.get(SYSFS_CLASS_GPIO + "unexport"), pinNumber.toString().getBytes());
+							Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
+							logger.warn("The control on GPIO pin with number '" + pinNumber + "' was forcibly acquired");
+						} else {
+							throw e;							
+						}
+					}
+					
 					/* Wait for the export to proceed */
 					Thread.sleep(500);
 					/* Create backend object */

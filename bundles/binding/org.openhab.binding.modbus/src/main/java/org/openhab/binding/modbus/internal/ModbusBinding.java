@@ -29,12 +29,14 @@ import org.openhab.binding.modbus.ModbusBindingProvider;
 import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -121,10 +123,10 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 
 			State newState = extractStateFromRegisters(registers, config.readRegister, slaveValueType);
 			/* receive data manipulation */
-			if (config.getItem() instanceof SwitchItem) {
-				newState = newState.equals(DecimalType.ZERO) ? OnOffType.OFF : OnOffType.ON;
-			}
-			if (( rawDataMultiplier != 1 ) && (config.getItem() instanceof NumberItem)) {
+			State newStateBoolean = provider.getConfig(itemName).translateBoolean2State(!newState.equals(DecimalType.ZERO));
+			if (!UnDefType.UNDEF.equals(newStateBoolean)) {
+				newState = newStateBoolean;
+			} else if (( rawDataMultiplier != 1 ) && (config.getItem() instanceof NumberItem)) {
 				double tmpValue = (double)((DecimalType)newState).doubleValue() * rawDataMultiplier;
 				newState =  new DecimalType( String.valueOf(tmpValue) );
 			}
@@ -232,11 +234,17 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 		}
 	}
 	
+	private void clearSlaves() {
+		for(ModbusSlave slave : modbusSlaves.values()){
+			slave.resetConnection();
+		}
+		modbusSlaves.clear();
+	}
 
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		// remove all known items if configuration changed
-		modbusSlaves.clear();
+		clearSlaves();
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 			while (keys.hasMoreElements()) {

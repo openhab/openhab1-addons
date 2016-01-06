@@ -116,7 +116,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	 */
 	void executeCommand(Command command, int readRegister,
 			int writeRegister) {
-		if (ModbusBindingProvider.TYPE_COIL.equals(getType()) || ModbusBindingProvider.TYPE_DISCRETE.equals(getType())) {
+		if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
 			setCoil(command, readRegister, writeRegister);
 		}
 		if (ModbusBindingProvider.TYPE_HOLDING.equals(getType())) {
@@ -197,6 +197,11 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 			if (command.equals(OnOffType.ON))
 				newValue.setValue(1);
 			else if (command.equals(OnOffType.OFF))
+				newValue.setValue(0);
+		} else if (command instanceof OpenClosedType) {
+			if (command.equals(OpenClosedType.OPEN))
+				newValue.setValue(1);
+			else if (command.equals(OpenClosedType.CLOSED))
 				newValue.setValue(0);
 		}
 

@@ -26,7 +26,7 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements
 		LightwaveRFCommand {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile("([0-9]{1,3}),OK\\s*");
+			.compile(".*?([0-9]{1,3}),OK\\s*");
 
 	private final LightwaveRfMessageId messageId;
 

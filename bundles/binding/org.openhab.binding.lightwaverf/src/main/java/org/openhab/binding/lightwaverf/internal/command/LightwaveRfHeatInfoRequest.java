@@ -26,7 +26,7 @@ public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand
 		implements LightwaveRfRoomMessage {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile("([0-9]{1,3}),!R([0-9])F\\*r\\s*");
+			.compile(".*?([0-9]{1,3}),!R([0-9])F\\*r\\s*");
 	private static final String FUNCTION = "*r";
 
 	private final LightwaveRfMessageId messageId;

@@ -21,7 +21,13 @@ Import-Package: org.apache.commons.io,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
- org.slf4j
+ org.slf4j,
+ javax.net,
+ javax.net.ssl,
+ javax.security.auth.callback,
+ javax.security.sasl,
+ javax.naming,
+ javax.naming.directory
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/xmppsupport.xml, OSGI-INF/action.xml

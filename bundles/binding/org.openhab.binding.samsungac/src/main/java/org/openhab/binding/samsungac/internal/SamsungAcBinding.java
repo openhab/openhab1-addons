@@ -58,14 +58,16 @@ public class SamsungAcBinding extends
 	}
 
 	public void activate() {
-		logger.info("active");
+		logger.debug("Started Samsung AC Binding");
 	}
 
 	public void deactivate() {
 		logger.info("deactive");
 		// close any open connections
-		for (AirConditioner connector : nameHostMapper.values()) {
-			connector.disconnect();
+		if(nameHostMapper!=null) {
+    		for (AirConditioner connector : nameHostMapper.values()) {
+    			connector.disconnect();
+    		}
 		}
 	}
 

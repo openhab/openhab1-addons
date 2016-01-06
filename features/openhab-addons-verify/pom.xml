@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.openhab</groupId>
+        <artifactId>features</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.openhab.addons</groupId>
+    <artifactId>openhab-addons-verify</artifactId>
+    <packaging>pom</packaging>
+
+    <name>openHAB 2 Feature Verification</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.karaf.features</groupId>
+            <artifactId>framework</artifactId>
+            <version>${karaf.version}</version>
+            <type>kar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.smarthome</groupId>
+            <artifactId>karaf</artifactId>
+            <version>${esh.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>de.maggu2810.shk</groupId>
+            <artifactId>shk-feature-base</artifactId>
+            <version>${shk.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.core</groupId>
+            <artifactId>openhab-core</artifactId>
+            <version>${ohc.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.addons</groupId>
+            <artifactId>openhab-addons</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>verify</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.eclipse.smarthome/karaf/${esh.version}/xml/features</descriptor>
+                                <descriptor>mvn:de.maggu2810.shk/shk-feature-base/${shk.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.openhab.core/openhab-core/${ohc.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.openhab.addons/openhab-addons/${project.version}/xml/features</descriptor>
+                            </descriptors>
+                            <distribution>org.apache.karaf.features:framework</distribution>
+                            <javase>1.8</javase>
+                            <framework>
+                                <feature>framework</feature>
+                            </framework>
+                            <features>
+                                <feature>openhab-*</feature>
+                            </features>
+                            <verifyTransitive>false</verifyTransitive>
+                            <ignoreMissingConditions>true</ignoreMissingConditions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -32,7 +32,7 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand
 		implements LightwaveRfRoomDeviceMessage {
 
 	private static final Pattern REG_EXP = Pattern
-			.compile("(\\d{1,3}),!R(\\d)D(\\d)F([0,1]).*\\s*");
+			.compile(".*?(\\d{1,3}),!R(\\d)D(\\d)F([0,1]).*\\s*");
 	private static final String ON_FUNCTION = "1";
 	private static final String OFF_FUNCTION = "0";
 

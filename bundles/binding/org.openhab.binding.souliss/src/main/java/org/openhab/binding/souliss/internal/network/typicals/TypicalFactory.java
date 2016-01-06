@@ -85,8 +85,24 @@ public class TypicalFactory {
 			T = new SoulissT53(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
 					sOHType);
 			break;
+		case Constants.Souliss_T54_LuxSensor:
+			T = new SoulissT54(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
+			break;
+		case Constants.Souliss_T55_VoltageSensor:
+			T = new SoulissT55(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
+			break;
+		case Constants.Souliss_T56_CurrentSensor:
+			T = new SoulissT56(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
+			break;
 		case Constants.Souliss_T57_PowerSensor:
 			T = new SoulissT57(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
+			break;
+		case Constants.Souliss_T58_PressureSensor:
+			T = new SoulissT58(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
 					sOHType);
 			break;
 		case Constants.Souliss_TService_NODE_HEALTY:

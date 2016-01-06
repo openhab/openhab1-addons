@@ -15,10 +15,70 @@
 
   <packaging>pom</packaging>
 
+    <properties>
+        <ohc.version>2.0.0-SNAPSHOT</ohc.version>
+        <esh.version>0.8.0-SNAPSHOT</esh.version>
+        <shk.version>1.2</shk.version>
+        <karaf.version>4.0.3</karaf.version>
+        <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
+    </properties>
+
   <modules>
     <module>org.openhab.dependencies.feature</module>
     <module>org.openhab.designer.feature</module>
     <module>org.openhab.runtime.feature</module>
+    <module>openhab-addons</module>
+    <module>openhab-addons-external</module>
+    <module>openhab-addons-verify</module>
   </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${karaf.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build.helper.maven.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>shk-bintray</id>
+            <name>Bintray Repository for shk</name>
+            <url>https://dl.bintray.com/maggu2810/maven</url>
+        </repository>
+        <repository>
+            <id>eclipse</id>
+            <name>Eclipse Snapshot Repository</name>
+            <layout>default</layout>
+            <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jfrog</id>
+            <name>JFrog OSS Repository</name>
+            <url>http://oss.jfrog.org/libs-snapshot/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
 </project>

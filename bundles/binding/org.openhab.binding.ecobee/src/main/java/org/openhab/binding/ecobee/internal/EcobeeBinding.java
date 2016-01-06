@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.beanutils.ConvertUtils;
@@ -76,10 +77,15 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		EcobeeActionProvider {
 
 	private static final String DEFAULT_USER_ID = "DEFAULT_USER";
+	private static final long DEFAULT_GRANULARITY = 5000;
+	private static final long DEFAULT_REFRESH = 180000;
+	private static final long DEFAULT_QUICKPOLL = 6000;
 
 	private static final Logger logger = LoggerFactory.getLogger(EcobeeBinding.class);
 
+	protected static final String CONFIG_GRANULARITY = "granularity";
 	protected static final String CONFIG_REFRESH = "refresh";
+	protected static final String CONFIG_QUICKPOLL = "quickpoll";
 	protected static final String CONFIG_TIMEOUT = "timeout";
 	protected static final String CONFIG_APP_KEY = "appkey";
 	protected static final String CONFIG_SCOPE = "scope";
@@ -158,9 +164,20 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	/**
-	 * the refresh interval which is used to poll values from the Ecobee server (optional, defaults to 180000ms)
+	 * the interval which is used to call the execute() method
 	 */
-	private long refreshInterval = 180000;
+	private long granularity = DEFAULT_GRANULARITY;
+
+	/**
+	 * the normal refresh interval which is used to poll values from the Ecobee server
+	 */
+	private long refreshInterval = DEFAULT_REFRESH;
+
+	/**
+	 * the quick refresh interval which is used to poll values from the Ecobee server after a command was sent, a state
+	 * was updated or an action was called
+	 */
+	private long quickPollInterval = DEFAULT_QUICKPOLL;
 
 	/**
 	 * A map of userids from the openhab.cfg file to OAuth credentials used to communicate with each app instance.
@@ -222,7 +239,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	 */
 	@Override
 	protected long getRefreshInterval() {
-		return refreshInterval;
+		return granularity;
 	}
 
 	/**
@@ -238,27 +255,32 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	 */
 	@Override
 	protected void execute() {
-		logger.trace("Querying Ecobee API");
-
 		try {
 			for (String userid : credentialsCache.keySet()) {
 				OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
 
-				Selection selection = createSelection(oauthCredentials);
-				if (selection == null) {
-					logger.debug("Nothing to retrieve for '{}'; skipping thermostat retrieval.",
-							oauthCredentials.userid);
-					continue;
-				}
+				if (oauthCredentials.pollTimeExpired()) {
+					// schedule the next poll at the standard refresh interval
+					oauthCredentials.schedulePoll(this.refreshInterval);
 
-				if (oauthCredentials.noAccessToken()) {
-					if (!oauthCredentials.refreshTokens()) {
-						logger.warn("Periodic poll skipped for '{}'.", oauthCredentials.userid);
+					logger.trace("Querying Ecobee API for instance {}", oauthCredentials.userid);
+
+					Selection selection = createSelection(oauthCredentials);
+					if (selection == null) {
+						logger.debug("Nothing to retrieve for '{}'; skipping thermostat retrieval.",
+								oauthCredentials.userid);
 						continue;
 					}
-				}
 
-				readEcobee(oauthCredentials, selection);
+					if (oauthCredentials.noAccessToken()) {
+						if (!oauthCredentials.refreshTokens()) {
+							logger.warn("Periodic poll skipped for '{}'.", oauthCredentials.userid);
+							continue;
+						}
+					}
+
+					readEcobee(oauthCredentials, selection);
+				}
 			}
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
@@ -533,7 +555,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		}
 
 		if (!provider.isOutBound(itemName)) {
-			logger.warn("attempt to update non-outbound item skipped [itemName={}, newState={}]", itemName, newState);
+			logger.debug("attempt to update non-outbound item skipped [itemName={}, newState={}]", itemName, newState);
 			return;
 		}
 
@@ -578,6 +600,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				} else {
 					logger.error("Error updating thermostat(s): {}", response);
 				}
+			} else {
+				// schedule the next poll to happen quickly
+				oauthCredentials.schedulePoll(this.quickPollInterval);
 			}
 		} catch (Exception e) {
 			logger.error("Unable to update thermostat(s)", e);
@@ -642,8 +667,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 					logger.error("Error calling function: {}", response);
 				}
 				return false;
+			} else {
+				// schedule the next poll to happen quickly
+				oauthCredentials.schedulePoll(this.quickPollInterval);
+				return true;
 			}
-			return true;
 		} catch (Exception e) {
 			logger.error("Unable to call function", e);
 			return false;
@@ -705,12 +733,23 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
 
+			// to override the default granularity one has to add a
+			// parameter to openhab.cfg like ecobee:granularity=2000
+			String granularityString = (String) config.get(CONFIG_GRANULARITY);
+			granularity = isNotBlank(granularityString) ? Long.parseLong(granularityString) : DEFAULT_GRANULARITY;
+
 			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like ecobee:refresh=240000
 			String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
-			if (isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
+			refreshInterval = isNotBlank(refreshIntervalString) ? Long.parseLong(refreshIntervalString)
+					: DEFAULT_REFRESH;
+
+			// to override the default quickPoll interval one has to add a
+			// parameter to openhab.cfg like ecobee:quickpoll=4000
+			String quickPollIntervalString = (String) config.get(CONFIG_QUICKPOLL);
+			quickPollInterval = isNotBlank(quickPollIntervalString) ? Long.parseLong(quickPollIntervalString)
+					: DEFAULT_QUICKPOLL;
+
 			// to override the default HTTP timeout one has to add a
 			// parameter to openhab.cfg like ecobee:timeout=20000
 			String timeoutString = (String) config.get(CONFIG_TIMEOUT);
@@ -735,7 +774,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
-				if (CONFIG_REFRESH.equals(configKey) || CONFIG_TIMEOUT.equals(configKey)
+				if (CONFIG_GRANULARITY.equals(configKey) || CONFIG_REFRESH.equals(configKey)
+						|| CONFIG_QUICKPOLL.equals(configKey) || CONFIG_TIMEOUT.equals(configKey)
 						|| CONFIG_TEMP_SCALE.equals(configKey) || "service.pid".equals(configKey)) {
 					continue;
 				}
@@ -996,6 +1036,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		private String accessToken;
 
 		/**
+		 * The next time to poll this instance. Initially 0 so pollTimeExpired() initially returns true.
+		 */
+		private final AtomicLong pollTime = new AtomicLong(0);
+
+		/**
 		 * The most recently received list of revisions, or an empty Map if none have been retrieved yet.
 		 */
 		private Map<String, Revision> lastRevisionMap = new HashMap<String, Revision>();
@@ -1075,7 +1120,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			logger.info("#########################################################################################");
 			logger.info("# Ecobee-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
 			logger.info("# 1. Login to www.ecobee.com using your '{}' account", this.userid);
-			logger.info("# 2. Enter the PIN '{}' in My Apps within the next {} minutes.", response.getEcobeePin(),
+			logger.info("# 2. Enter the PIN '{}' in My Apps within the next {} seconds.", response.getEcobeePin(),
 					response.getExpiresIn());
 			logger.info("# NOTE: Any API attempts will fail in the meantime.");
 			logger.info("#########################################################################################");
@@ -1130,6 +1175,25 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 					return true;
 				}
 			}
+		}
+
+		/**
+		 * Return true if this instance is at or past the time to poll.
+		 *
+		 * @return if this instance is at or past the time to poll.
+		 */
+		private boolean pollTimeExpired() {
+			return System.currentTimeMillis() >= this.pollTime.get();
+		}
+
+		/**
+		 * Record the earliest time in the future at which we are allowed to poll this instance.
+		 *
+		 * @param future
+		 *            the number of milliseconds in the future
+		 */
+		private void schedulePoll(long future) {
+			this.pollTime.set(System.currentTimeMillis() + future);
 		}
 	}
 }

@@ -92,14 +92,14 @@ public class WeatherPublisher {
 								if (Weather.isVirtualProperty(weatherProperty)) {
 									Temperature temp = instance.getTemperature();
 									if (Weather.VIRTUAL_TEMP_MINMAX.equals(weatherProperty)) {
-										Double min = UnitUtils.convertUnit(temp.getMin(), bindingConfig);
-										Double max = UnitUtils.convertUnit(temp.getMax(), bindingConfig);
+										Double min = UnitUtils.convertUnit(temp.getMin(), bindingConfig.getUnit(), bindingConfig.getWeatherProperty());
+										Double max = UnitUtils.convertUnit(temp.getMax(), bindingConfig.getUnit(), bindingConfig.getWeatherProperty());
 										value = getMinMax(min, max, bindingConfig);
 									}
 								} else {
 									value = PropertyUtils.getPropertyValue(instance, weatherProperty);
 									if (bindingConfig.hasUnit()) {
-										value = UnitUtils.convertUnit((Double) value, bindingConfig);
+										value = UnitUtils.convertUnit((Double) value, bindingConfig.getUnit(), bindingConfig.getWeatherProperty());
 									}
 								}
 

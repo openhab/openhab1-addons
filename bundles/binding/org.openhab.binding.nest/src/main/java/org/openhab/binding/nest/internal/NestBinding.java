@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 
 import org.openhab.binding.nest.NestBindingProvider;
+import org.openhab.binding.nest.internal.messages.AbstractRequest;
 import org.openhab.binding.nest.internal.messages.AccessTokenRequest;
 import org.openhab.binding.nest.internal.messages.AccessTokenResponse;
 import org.openhab.binding.nest.internal.messages.DataModel;
@@ -61,6 +62,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	protected static final String CONFIG_CLIENT_ID = "client_id";
 	protected static final String CONFIG_CLIENT_SECRET = "client_secret";
 	protected static final String CONFIG_PIN_CODE = "pin_code";
+	protected static final String CONFIG_TIMEOUT = "timeout";
 
 	/**
 	 * the refresh interval which is used to poll values from the Nest server (optional, defaults to 60000ms)
@@ -442,13 +444,20 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 
+			// to override the default HTTP request timeout one has to add a
+			// parameter to openhab.cfg like nest:timeout=20000
+			String timeoutString = (String) config.get(CONFIG_TIMEOUT);
+			if (isNotBlank(timeoutString)) {
+				AbstractRequest.setHttpRequestTimeout(Integer.parseInt(timeoutString));
+			}
+
 			Enumeration<String> configKeys = config.keys();
 			while (configKeys.hasMoreElements()) {
 				String configKey = (String) configKeys.nextElement();
 
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
-				if (CONFIG_REFRESH.equals(configKey) || "service.pid".equals(configKey)) {
+				if (CONFIG_REFRESH.equals(configKey) || CONFIG_TIMEOUT.equals(configKey) || "service.pid".equals(configKey)) {
 					continue;
 				}
 

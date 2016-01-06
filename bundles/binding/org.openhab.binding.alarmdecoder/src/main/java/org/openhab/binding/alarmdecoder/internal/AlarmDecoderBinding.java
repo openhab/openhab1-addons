@@ -23,14 +23,15 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import org.openhab.binding.alarmdecoder.AlarmDecoderBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -45,6 +46,7 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The actual AlarmDecoderBinding
@@ -74,6 +76,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	private	BufferedWriter	m_writer = null;
 	private Socket			m_socket = null;
 	private SerialPort 		m_port = null;
+	private	int				m_portSpeed = 115200;
 	private Thread 			m_thread = null;
 	private MsgReader 		m_msgReader = null;
 	private boolean			m_acceptCommands = false;
@@ -106,8 +109,9 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 		}
 	}
 	/**
-	 * Parses and stores the tcp configuration string of the binding configuration
-	 * @param parts
+	 * Parses and stores the tcp configuration string of the binding configuration.
+	 * Expected form is tcp:hostname:port
+	 * @param parts config string, split on ':'
 	 * @throws ConfigurationException
 	 */
 	private void parseTcpConfig(String [] parts) throws ConfigurationException {
@@ -123,12 +127,86 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 		logger.debug("got tcp configuration: {}:{}", m_tcpHostName, m_tcpPort);
 	}
 	
+	/**
+	 * Parses and stores the serial configuration string of the binding configuration.
+	 * Expected form is serial@portspeed:devicename, where @portspeed is optional.
+	 * @param parts config string, split on ':'
+	 * @throws ConfigurationException
+	 */
+	private void parseSerialConfig(String [] parts) throws ConfigurationException {
+		if (parts.length != 2) {
+			throw new ConfigurationException("alarmdecoder:connect", "serial device name cannot have :");
+		}
+		m_serialDeviceName = parts[1];
+		String [] p = parts[0].split("@"); // split again
+		if (p.length == 2) { // an optional port speed is provided
+			try {
+				m_portSpeed = Integer.parseInt(p[1]);
+			} catch (NumberFormatException e) {
+				throw new ConfigurationException("alarmdecoder:connect",
+							"serial port speed must be integer");
+			}
+		}
+		logger.debug("serial port configuration: speed: {} device: {}", m_portSpeed, m_serialDeviceName);		
+	}
+	
+	private void updateSerialProperties(String devName) {
+
+		/* By default, RXTX searches only devices /dev/ttyS* and
+		 * /dev/ttyUSB*, and will therefore not find devices that
+		 * have been symlinked. Adding them however is tricky, see below. */
+
+		// first go through the port identifiers to find any that are not in
+		// "gnu.io.rxtx.SerialPorts"
+		
+		ArrayList<String> allPorts = new ArrayList<String>();
+		@SuppressWarnings("rawtypes")
+		Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+        while (portList.hasMoreElements()) {
+        	CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+        	if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+        		allPorts.add(id.getName());
+        	}
+        }
+		logger.trace("ports found from identifiers: {}", StringUtils.join(allPorts, ":"));
+		
+        // now add our port so it's in the list
+        if (!allPorts.contains(devName)) {
+        	allPorts.add(devName);
+        }
+        
+		// add any that are already in "gnu.io.rxtx.SerialPorts"
+		// so we don't accidentally overwrite some of those ports
+        
+		String ports = System.getProperty("gnu.io.rxtx.SerialPorts");
+		if (ports != null) {
+			ArrayList<String> propPorts = new ArrayList<String>(Arrays.asList(ports.split(":")));
+			for (String p : propPorts) {
+				if (!allPorts.contains(p)) allPorts.add(p);
+			}
+		}
+		String finalPorts = StringUtils.join(allPorts, ":"); 
+		logger.trace("final port list: {}", finalPorts);
+		
+		// Finally overwrite the "gnu.io.rxtx.SerialPorts" System property.
+
+		// Note: calling setProperty() is not threadsafe. All bindings run in
+		// the same address space, System.setProperty() is globally visible
+		// to all bindings.
+		// This means if multiple bindings use the serial port there is a
+		// race condition where two bindings could be changing the properties
+		// at the same time.
+
+		System.setProperty("gnu.io.rxtx.SerialPorts", finalPorts);
+	}
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
 		if (config == null) {
 			throw new ConfigurationException("alarmdecoder:connect", "no config!");
 		}
+		logger.debug("config updated!");
 		try {
 			m_connectString = (String) config.get("connect");
 			if (m_connectString == null) {
@@ -140,11 +218,8 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			}
 			if (parts[0].equals("tcp")) {
 				parseTcpConfig(parts);
-			} else if (parts[0].equals("serial")) {
-				if (parts.length != 2) {
-					throw new ConfigurationException("alarmdecoder:connect", "serial device name cannot have :");
-				}
-				m_serialDeviceName = parts[1];
+			} else if (parts[0].startsWith("serial")) {
+				parseSerialConfig(parts);
 			} else {
 				throw new ConfigurationException("alarmdecoder:connect", "invalid parameter " + parts[0]);
 			}
@@ -214,7 +289,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 				 * /dev/ttyUSB*, and will so not find symlinks. The
 				 *  setProperty() call below helps 
 				 */
-				System.setProperty("gnu.io.rxtx.SerialPorts", m_serialDeviceName);
+				updateSerialProperties(m_serialDeviceName);
 				CommPortIdentifier ci =	CommPortIdentifier.getPortIdentifier(m_serialDeviceName);
 				CommPort cp = ci.open("openhabalarmdecoder", 10000);
 				if (cp == null) {
@@ -225,7 +300,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 				} else {
 					throw new IllegalStateException("unknown port type");
 				}
-				m_port.setSerialPortParams(19200, SerialPort.DATABITS_8,
+				m_port.setSerialPortParams(m_portSpeed, SerialPort.DATABITS_8,
 						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 				m_port.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 				m_port.disableReceiveFraming();

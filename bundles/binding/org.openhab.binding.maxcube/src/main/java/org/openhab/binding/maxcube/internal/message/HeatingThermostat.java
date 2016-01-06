@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.text.DecimalFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.openhab.core.library.types.DecimalType;
@@ -61,19 +59,6 @@ public class HeatingThermostat extends Device {
 	 */
 	void setType (DeviceType type) {
 		this.deviceType = type;
-	}
-
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Calendar getLastUpdate() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -140,8 +125,8 @@ public class HeatingThermostat extends Device {
 	}
 
 	/**
-	 * Returns the measured temperature  of this thermostat. 
-	 * 0�C is displayed if no actual is measured. Temperature is only updated after valve position changes
+	 * Returns the measured temperature of this thermostat. 
+	 * 0°C is displayed if no actual is measured. Temperature is only updated after valve position changes
 	 *
 	 * @return 
 	 * 			the actual temperature as <code>DecimalType</code>

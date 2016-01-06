@@ -239,16 +239,16 @@ public class SerialConnection
       return;
     }
 
-    // Check to make sure sPort has reference to avoid a NPE.
-    if (m_SerialPort != null) {
-      try {
-        m_Transport.close();
-        m_SerialIn.close();
-      } catch (IOException e) {
-        logger.error(e.getMessage());
-      }
-      // Close the port.
-      m_SerialPort.close();
+    try {
+      m_Transport.close();
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+    }
+
+    try {
+      m_SerialIn.close();
+    } catch (IOException e) {
+      logger.error(e.getMessage());
     }
 
     m_Open = false;

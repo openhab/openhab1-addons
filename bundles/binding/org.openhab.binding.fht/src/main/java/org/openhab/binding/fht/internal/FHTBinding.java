@@ -49,7 +49,8 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements the connection to the FHT devices via CUL. Some commands aren't
@@ -70,6 +71,16 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 	 * Config key for the device address. i.e. serial:/dev/ttyACM0
 	 */
 	private final static String KEY_DEVICE = "device";
+
+	/**
+	 * Config key for the device baud rate. i.e. baudrate:38400
+	 */
+	private final static String KEY_BAUD_RATE = "baudrate";
+	/**
+	 * Config key for the device parity. i.e. parity:0
+	 */
+	private final static String KEY_PARITY = "parity";
+	
 	/**
 	 * Our housecode we need to simulate a central device.
 	 */
@@ -92,6 +103,8 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 	private final static String KEY_REPORTS_CRON = "reports.cron";
 
 	private String deviceName;
+	private Map<String, Object> properties = new HashMap<String, Object>();
+	
 	private String housecode;
 	private boolean doTimeUpdate = false;
 	private String timeUpdatecronExpression;
@@ -129,8 +142,8 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 
 	private void bindCULHandler() {
 		if (!StringUtils.isEmpty(deviceName)) {
-			try {
-				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
+			try {				
+				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF, properties);
 				cul.registerListener(this);
 				cul.send("T01" + housecode);
 			} catch (CULDeviceException e) {
@@ -262,6 +275,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 				timeUpdatecronExpression = (String) config.get(KEY_UPDATE_CRON);
 				if (StringUtils.isEmpty(timeUpdatecronExpression)) {
 					setProperlyConfigured(false);
+					logger.debug("Time update was configured but no cron expression");
 					throw new ConfigurationException(KEY_UPDATE_CRON,
 							"Time update was configured but no cron expression");
 				}
@@ -285,7 +299,18 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 
 			// At last the device, after we received all other config values
 			String deviceName = parseMandatoryValue(KEY_DEVICE, config);
-			setNewDeviceName(deviceName);
+
+			String baudRateString = parseMandatoryValue(KEY_BAUD_RATE, config);			
+			if(StringUtils.isNotBlank(baudRateString)){
+				properties.put(KEY_BAUD_RATE, baudRateString);
+			}
+
+			String parityString = parseMandatoryValue(KEY_PARITY, config);
+			if(StringUtils.isNotBlank(parityString)){
+				properties.put(KEY_PARITY, parityString);
+			}
+									
+			setNewDeviceName(deviceName);			
 			setProperlyConfigured(true);
 		}
 	}
@@ -294,6 +319,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 		String value = (String) config.get(key);
 		if (StringUtils.isEmpty(value)) {
 			setProperlyConfigured(false);
+			logger.debug("Error, configuration option " + key + " is mandatory");
 			throw new ConfigurationException(key, "Configuration option " + key + " is mandatory");
 		}
 		return value;

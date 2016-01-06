@@ -19,12 +19,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TooManyListenersException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.transform.TransformationHelper;
+import org.openhab.core.transform.TransformationService;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,17 +54,46 @@ public class SerialDevice implements SerialPortEventListener {
 
 	private String port;
 	private int baud = 9600;
-	private String stringItemName;
-	private String switchItemName;
 
 	private EventPublisher eventPublisher;
-
+	private TransformationService transformationService;
+	
 	private CommPortIdentifier portId;
 	private SerialPort serialPort;
 
 	private InputStream inputStream;
 
 	private OutputStream outputStream;
+
+	private Map<String, ItemType> configMap;
+
+	class ItemType {
+		String pattern;
+		boolean base64;
+		Class<?> type;
+	}
+	
+	public boolean isEmpty() {
+		return configMap.isEmpty();
+	}
+	
+	public void addConfig(String itemName, Class<?> type, String pattern, boolean base64) {
+		if(configMap == null)
+			configMap = new HashMap<String, ItemType>();
+		
+		ItemType typeItem = new ItemType();
+		typeItem.pattern = pattern;
+		typeItem.base64 = base64;
+		typeItem.type = type;
+		
+		configMap.put(itemName, typeItem);
+	}
+	
+	public void removeConfig(String itemName) {
+		if(configMap != null) {
+			configMap.remove(itemName);
+		}
+	}
 
 	public SerialDevice(String port) {
 		this.port = port;
@@ -68,21 +111,9 @@ public class SerialDevice implements SerialPortEventListener {
 	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
 	}
-
-	public String getStringItemName() {
-		return stringItemName;
-	}
-
-	public void setStringItemName(String stringItemName) {
-		this.stringItemName = stringItemName;
-	}
-
-	public String getSwitchItemName() {
-		return switchItemName;
-	}
-
-	public void setSwitchItemName(String switchItemName) {
-		this.switchItemName = switchItemName;
+	
+	public void setTransformationService(TransformationService transformationService) {
+		this.transformationService = transformationService;
 	}
 
 	public String getPort() {
@@ -192,14 +223,49 @@ public class SerialDevice implements SerialPortEventListener {
 
 				// send data to the bus
 				logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
-				if (eventPublisher != null && stringItemName != null) {
-					eventPublisher.postUpdate(stringItemName, new StringType(result));
+
+				if (eventPublisher != null) {
+					if(configMap != null && !configMap.isEmpty()) {
+						for (Entry<String, ItemType> entry : configMap.entrySet()) {
+
+							// use pattern
+							if(entry.getValue().pattern != null) {
+
+								if(transformationService == null) {
+									logger.error("No transformation service available!");
+									
+								} else {
+									try {
+										String value = transformationService.transform(entry.getValue().pattern, result);
+										if(entry.getValue().type.equals(NumberItem.class)) {
+											try {
+												eventPublisher.postUpdate(entry.getKey(), new DecimalType(value));
+											} catch (NumberFormatException e) {
+												logger.warn("Unable to convert regex result '{}' for item {} to number", new String[] { result, entry.getKey()});
+											}
+										} else {
+											eventPublisher.postUpdate(entry.getKey(), new StringType(value));
+										}
+										
+									} catch (TransformationException e) {
+										logger.error("Unable to transform!", e);
+									}
+								}
+								
+							} else if(entry.getValue().type == StringItem.class) {
+								if (entry.getValue().base64)
+									result = Base64.encodeBase64String(result.getBytes());
+								eventPublisher.postUpdate(entry.getKey(), new StringType(result));
+								
+							} else if(entry.getValue().type == SwitchItem.class && result.trim().isEmpty()) {
+								eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
+								eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
+							}
+						}
+					}
+					
 				}
-				// if we receive empty values, we treat this to be a switch operation
-				if (eventPublisher != null && switchItemName != null && result.trim().isEmpty()) {
-					eventPublisher.postUpdate(switchItemName, OnOffType.ON);
-					eventPublisher.postUpdate(switchItemName, OnOffType.OFF);
-				}
+
 			} catch (IOException e) {
 				logger.debug("Error receiving data on serial port {}: {}", new String[] { port, e.getMessage() });
 			}
@@ -216,7 +282,11 @@ public class SerialDevice implements SerialPortEventListener {
 		logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
 		try {
 			// write string to serial port
-			outputStream.write(msg.getBytes());
+			if (msg.startsWith("BASE64:"))
+				outputStream.write(Base64.decodeBase64(msg.substring(7, msg.length())));
+			else
+				outputStream.write(msg.getBytes());
+
 			outputStream.flush();
 		} catch (IOException e) {
 			logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });

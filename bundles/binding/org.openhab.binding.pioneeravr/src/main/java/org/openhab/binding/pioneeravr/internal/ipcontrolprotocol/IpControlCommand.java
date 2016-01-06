@@ -104,8 +104,8 @@ public enum IpControlCommand {
 	PQLS_AUTO( "1PQ", "PQ1", IpControlCommandRef.PQLS_AUTO ),
 	
 	// Zone 2 control
-	ZONE2_POWER_ON( 		"APO", 		"APR0", IpControlCommandRef.ZONE2_POWER_ON ),
-	ZONE2_POWER_OFF(		"APF", 		"APR1", IpControlCommandRef.ZONE2_POWER_OFF ),
+	ZONE2_POWER_ON( 		"APO", 		"APR", IpControlCommandRef.ZONE2_POWER_ON ),
+	ZONE2_POWER_OFF(		"APF", 		"APR", IpControlCommandRef.ZONE2_POWER_OFF ),
 	ZONE2_POWER_QUERY(		"?AP", 		"APR",  IpControlCommandRef.ZONE2_POWER_QUERY ),
 	ZONE2_INPUT( 			"%02dZS",	"Z2F",  IpControlCommandRef.ZONE2_INPUT ),
 	ZONE2_INPUT_DVD(		"04ZS",		"Z2F04", IpControlCommandRef.ZONE2_INPUT_DVD ),
@@ -131,8 +131,8 @@ public enum IpControlCommand {
 	ZONE2_MUTE_QUERY(		"?Z2M",		"Z2MUT", IpControlCommandRef.ZONE2_MUTE_QUERY ),
 	
 	// zone 3 control
-	ZONE3_POWER_ON( 		"BPO", "BPR0", 	IpControlCommandRef.ZONE3_POWER_ON ),
-	ZONE3_POWER_OFF(		"BPF", "BPR1",	IpControlCommandRef.ZONE3_POWER_OFF ),
+	ZONE3_POWER_ON( 		"BPO", "BPR", 	IpControlCommandRef.ZONE3_POWER_ON ),
+	ZONE3_POWER_OFF(		"BPF", "BPR",	IpControlCommandRef.ZONE3_POWER_OFF ),
 	ZONE3_POWER_QUERY(		"?BP", "BPR", 	IpControlCommandRef.ZONE3_POWER_QUERY ),
 	ZONE3_INPUT( 			"%02dZT","Z3F", IpControlCommandRef.ZONE3_INPUT ),
 	ZONE3_INPUT_DVD(		"04ZT","Z3F04", IpControlCommandRef.ZONE3_INPUT_DVD ),

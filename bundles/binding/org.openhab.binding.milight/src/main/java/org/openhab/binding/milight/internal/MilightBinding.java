@@ -120,7 +120,6 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				if (OnOffType.OFF.equals(command)) {
 					sendOff(bulb, bridgeId);
 				}
-
 			}
 			else if (deviceConfig.getCommandType().equals(BindingType.whiteMode)) {
 				logger.debug("milight: item is of type whiteMode");
@@ -132,7 +131,6 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 				if (OnOffType.OFF.equals(command)) {
 					sendOff(bulb, bridgeId);
 				}
-
 			}
 			else if (deviceConfig.getCommandType().equals(BindingType.colorTemperature)) {
 				logger.debug("milight: item is of type warm/cold white");
@@ -177,7 +175,15 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider> impl
 			else if (deviceConfig.getCommandType().equals(BindingType.rgb)) {
 				logger.debug("milight: item is of type rgb");
 				if (command instanceof HSBType) {
-					sendColor(command, bridgeId, bulb);
+					HSBType hsbCommand = (HSBType) command;
+					DecimalType saturation = hsbCommand.getSaturation();
+					if (saturation.equals(0)) {
+						sendOn(bulb, bridgeId);
+						Thread.sleep(100);
+						sendWhiteMode(bulb, bridgeId);
+					} else {
+						sendColor(command, bridgeId, bulb);
+					}
 				} 
 				if (command instanceof PercentType) {
 					sendPercent(bulb, rgbwSteps, bridgeId, (PercentType) command, BindingType.brightness);

@@ -27,7 +27,7 @@ setPerm () {
 	chmod $spmode "${spfile}"
 }
 
-for ohdir in "${OPENHAB_HOME_DIR}" "${OPENHAB_LOG_DIR}"; do
+for ohdir in "${OPENHAB_HOME_DIR}" "${OPENHAB_LOG_DIR}" "${OPENHAB_CONFIGURATIONS_DIR}"; do
 	setPermRecursive "${ohdir}"
 done
 

@@ -9,6 +9,7 @@
 package org.openhab.binding.zwave.internal.converter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
@@ -43,6 +44,9 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiLevelSensorConverter.class);
 	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the multi level switch;
 
+	private static BigDecimal ONE_POINT_EIGHT = new BigDecimal("1.8");
+	private static BigDecimal THIRTY_TWO = new BigDecimal("32");
+	
 	/**
 	 * Constructor. Creates a new instance of the {@link ZWaveMultiLevelSensorConverter} class.
 	 * @param controller the {@link ZWaveController} to use for sending messages.
@@ -94,7 +98,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 			return;
 		}
 
-		Object val = event.getValue();
+		BigDecimal val = (BigDecimal)event.getValue();
 		// Perform a scale conversion if needed
 		if (sensorScale != null && Integer.parseInt(sensorScale) != sensorEvent.getSensorScale()) {
 			int intType = Integer.parseInt(sensorType);
@@ -106,16 +110,13 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 				switch(senType) {
 				case TEMPERATURE:
 					// For temperature, there are only two scales, so we simplify the conversion
-					if(sensorEvent.getSensorScale() == 0) {
-						// Scale is celsius, convert to fahrenheit
-						double c = ((BigDecimal)val).doubleValue();
-						val = new BigDecimal((c * 9.0 / 5.0) + 32.0 );
-					}
-					else if(sensorEvent.getSensorScale() == 1) {
-						// Scale is fahrenheit, convert to celsius
-						double f = ((BigDecimal)val).doubleValue();
-						val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
-					}
+                    if (sensorEvent.getSensorScale() == 0) {
+                        // Scale is celsius, convert to fahrenheit
+                        val = val.multiply(ONE_POINT_EIGHT).add(THIRTY_TWO);
+                    } else if (sensorEvent.getSensorScale() == 1) {
+                        // Scale is fahrenheit, convert to celsius
+                        val = val.subtract(THIRTY_TWO).divide(ONE_POINT_EIGHT, MathContext.DECIMAL32);
+                    }
 					break;
 				default:
 					break;

@@ -55,7 +55,7 @@ public class ModbusTcpSlave extends ModbusIPSlave {
 				connection = new TCPMasterConnection(InetAddress.getByName(getHost()));
 		} catch (UnknownHostException e) {
 			logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
-			connection = null;
+			resetConnection();
 			return false;
 		}
 		if (!connection.isConnected())
@@ -72,6 +72,9 @@ public class ModbusTcpSlave extends ModbusIPSlave {
 	}
 	
 	public void resetConnection() {
+		if (connection != null) {
+			connection.close();
+		}
 		connection = null;
 	}
 

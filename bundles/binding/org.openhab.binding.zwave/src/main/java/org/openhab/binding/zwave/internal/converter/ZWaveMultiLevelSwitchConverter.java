@@ -105,13 +105,24 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 		}
 
 		State state = converter.convertFromValueToState(event.getValue());
+
+		// If we read 99%, then change it to 100%
+		// This just appears better in OH otherwise you can't get 100%!
+		if(converter instanceof IntegerPercentTypeConverter) {
+			if(((DecimalType)state).intValue() == 99) {
+				state = new PercentType(100);
+			}
+		}
+
 		if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
 			// Support inversion of roller shutter UP/DOWN and percentages
 			if (converter instanceof IntegerUpDownTypeConverter) {
-				if(state == UpDownType.UP)
+				if(state == UpDownType.UP) {
 					state = UpDownType.DOWN;
-				else
+				}
+				else {
 					state = UpDownType.UP;
+				}
 			}
 		}
 		if ("true".equalsIgnoreCase(arguments.get("invert_percent")) &&	converter instanceof IntegerPercentTypeConverter) {

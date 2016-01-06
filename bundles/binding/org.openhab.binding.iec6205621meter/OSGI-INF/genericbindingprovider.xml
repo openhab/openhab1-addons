@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.dmlsmeter.genericbindingprovider">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.iec6205621meter.genericbindingprovider">
    <implementation class="org.openhab.binding.iec6205621meter.internal.Iec6205621MeterGenericBindingProvider"/>
    
    <service>

@@ -32,6 +32,7 @@
     <module>org.openhab.binding.fritzbox</module>
     <module>org.openhab.binding.ntp</module>
     <module>org.openhab.binding.mpd</module>
+    <module>org.openhab.binding.mystromecopower</module>
     <module>org.openhab.binding.vdr</module>
     <module>org.openhab.binding.asterisk</module>
     <module>org.openhab.binding.snmp</module>
@@ -138,6 +139,8 @@
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
     <module>org.openhab.binding.bticino</module>
+    <module>org.openhab.binding.caldav-command</module>
+    <module>org.openhab.binding.caldav-personal</module>
     <module>org.openhab.binding.ebus</module>
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
@@ -156,8 +159,23 @@
     <module>org.openhab.binding.panasonictv</module>
     <module>org.openhab.binding.enphaseenergy</module>
     <module>org.openhab.binding.lightwaverf</module>
-	<module>org.openhab.binding.souliss</module>
+    <module>org.openhab.binding.lightwaverf.test</module>
+    <module>org.openhab.binding.souliss</module>
     <module>org.openhab.binding.sagercaster</module>
     <module>org.openhab.binding.isy</module>
+    <module>org.openhab.binding.ipx800</module>
+    <module>org.openhab.binding.tacmi</module>
+    <module>org.openhab.binding.rwesmarthome</module>
+    <module>org.openhab.binding.lcn</module>
+    <module>org.openhab.binding.sapp</module>
+    <module>org.openhab.binding.ucprelayboard</module>
+    <module>org.openhab.binding.rpircswitch</module>
+    <module>org.openhab.binding.myq</module>
+    <module>org.openhab.binding.panstamp</module>
+    <module>org.openhab.binding.octoller</module>
+    <module>org.openhab.binding.akm868</module>
+    <module>org.openhab.binding.sonance</module>
+    <module>org.openhab.binding.stiebelheatpump</module>
+    <module>org.openhab.binding.sallegra</module>
   </modules>
 </project>

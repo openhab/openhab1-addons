@@ -41,6 +41,80 @@
 			<id>0x86</id>
 		</Class>
 	</CommandClasses>
+	<Configuration>
+        <Parameter>
+            <Index>34</Index>
+            <Type>list</Type>
+            <Size>1</Size>
+            <Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+            <Label lang="en">Turn on/off bulb</Label>
+            <Help lang="en">Enable/disable the function of using External Switch to turn on/off the bulb.
+            </Help> 
+        </Parameter>
+        <Parameter>
+            <Index>35</Index>
+            <Type>list</Type>
+            <Size>1</Size>
+            <Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+            <Label lang="en">Change bulb color</Label>
+            <Help lang="en">Enable/disable the function of using External Switch to changes the bulb’s color.
+            </Help> 
+        </Parameter>
+        <Parameter>
+            <Index>50</Index>
+            <Type>list</Type>
+            <Size>1</Size>
+            <Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Hail</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Basic</Label>
+			</Item>
+            <Label lang="en">Enable notifications</Label>
+            <Help lang="en">Enable to send notifications to associated devices (Group 1) when the state of LED Bulb is changed.
+            </Help> 
+        </Parameter>
+        <Parameter>
+            <Index>252</Index>
+            <Type>list</Type>
+            <Size>1</Size>
+            <Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+            <Label lang="en">Lock configuration</Label>
+            <Help lang="en">Enable/disable the ability to configure the device.
+            </Help> 
+        </Parameter>
+	</Configuration>
 	<Associations>
 		<Group>
 			<Index>1</Index>
