@@ -1915,6 +1915,18 @@
 			<Label lang="en">Wall Switch Set for Busch Jaeger</Label>
 			<ConfigFile>zwaveme/zme_05457.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0024</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_FT</Model>
+			<Label lang="en">Floor Thermostat</Label>
+			<ConfigFile>zwaveme/zme_ft11.xml</ConfigFile>
+			<ConfigFile VersionMax="1.2">zwaveme/zme_ftll.xml</ConfigFile> <!-- VersionMin="1.1" -->
+			<ConfigFile VersionMin="1.3" VersionMax="1.3">zwaveme/zme_ftl3.xml</ConfigFile> 
+			<ConfigFile VersionMin="1.4">zwaveme/zme_ftl4.xml</ConfigFile> 
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_FT1.4</Model>
+	<Label lang="en">Floor Thermostat</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>1800</Default>
+			<Size>2</Size>
+			<Label lang="en">Boost Dry Mode duration</Label>
+			<Minimum>-1</Minimum>
+			<Maximum>1</Maximum>
+			<Help lang="en"><![CDATA[Range is 1 to -1 seconds]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Button Mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Toggle Normal Heating / OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toggle Normal Heating / Energy Save</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Basic Mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Toggle Normal Heating / Off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toggle Normal Heating / Energy Save</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Toggle Boost Dry</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Set Normal Heating set point temperature (in 0.1 C units)</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch on/off relay directly (only if Thermostat Mode is in Off state)</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>18</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature Control Interval</Label>
+			<Minimum>1</Minimum>
+			<Maximum>60</Maximum>
+			<Help lang="en"><![CDATA[Range 1 - 60 in 10 second increments]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Maximum Allowed Temperature Deviation</Label>
+			<Minimum>1</Minimum>
+			<Maximum>60</Maximum>
+			<Help lang="en"><![CDATA[Range 1 - 60 in 0.1 C increments]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Label lang="en">Maximum Allowed Temperature </Label>
+			<Minimum>20</Minimum>
+			<Maximum>55</Maximum>
+			<Help lang="en"><![CDATA[Range 20 deg - 55 deg Celsius<BR>	In all modes the thermostat will switch off
+			 heating until temperature drops below this limit. For wooden and laminate flooring maximum allowed 
+			 temperature is 27 degree. For tile and concrete floor maximum allowed temperature value is 45 degree. ]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Energy consumption</Label>
+			<Minimum>20</Minimum>
+			<Maximum>45</Maximum>
+			<Help lang="en"><![CDATA[0 = Disabled : Range 1 - 3300 Watts<BR>Specify the consumption of the load in watts, for
+			calculation of power consumption. Max load 3300 W. ]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>900</Default>
+			<Size>2</Size>
+			<Label lang="en">Unsolicited Temperature Report Period</Label>
+			<Minimum>0</Minimum>
+			<Maximum>30 - -1</Maximum>
+			<Help lang="en"><![CDATA[0 = OFF : Range 30 to -1 Seconds<BR>Period for unsolicited send the temperature report.
+			 By default 15 minute. ]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical Click Timeout</Label>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Help lang="en"><![CDATA[Typical Time used to differentiate click from hold. <BR> Range 1 - 100 in 10ms increments]]></Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en"><![CDATA[Unsolicited notifications about thermostat mode and set point temperature changes]]></Help>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+
