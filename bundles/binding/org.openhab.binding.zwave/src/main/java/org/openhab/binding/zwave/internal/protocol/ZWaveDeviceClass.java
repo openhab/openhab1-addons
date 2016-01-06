@@ -223,7 +223,7 @@ public class ZWaveDeviceClass {
 	public enum Generic {
 		NOT_KNOWN(0, "Not Known"), 
 		REMOTE_CONTROLLER(0x01, "Remote Controller"), 
-		STATIC_CONTOLLER(0x02, "Static Controller"), 
+		STATIC_CONTROLLER(0x02, "Static Controller"), 
 		AV_CONTROL_POINT(0x03, "A/V Control Point"), 
 		DISPLAY(0x06, "Display"),
 		GARAGE_DOOR(0x07, "Garage Door"),
@@ -306,7 +306,7 @@ public class ZWaveDeviceClass {
 				case NOT_KNOWN:
 					return new CommandClass[0];
 				case REMOTE_CONTROLLER:
-				case STATIC_CONTOLLER:
+				case STATIC_CONTROLLER:
 				case GARAGE_DOOR:
 				case REPEATER_SLAVE:
 				case TOGGLE_SWITCH:
@@ -358,9 +358,9 @@ public class ZWaveDeviceClass {
 		PORTABLE_SCENE_CONTROLLER(2, Generic.REMOTE_CONTROLLER, "Portable Scene Controller"),
 		PORTABLE_INSTALLER_TOOL(3, Generic.REMOTE_CONTROLLER, "Portable Installer Tool"),
 
-		PC_CONTROLLER(1, Generic.STATIC_CONTOLLER, "PC Controller"),
-		SCENE_CONTROLLER(2, Generic.STATIC_CONTOLLER, "Scene Controller"),
-		INSTALLER_TOOL(3, Generic.STATIC_CONTOLLER, "Static Installer Tool"),
+		PC_CONTROLLER(1, Generic.STATIC_CONTROLLER, "PC Controller"),
+		SCENE_CONTROLLER(2, Generic.STATIC_CONTROLLER, "Scene Controller"),
+		INSTALLER_TOOL(3, Generic.STATIC_CONTROLLER, "Static Installer Tool"),
 
 		SATELLITE_RECEIVER(4, Generic.AV_CONTROL_POINT, "Satellite Receiver"),
 		SATELLITE_RECEIVER_V2(17, Generic.AV_CONTROL_POINT, "Satellite Receiver V2"),
