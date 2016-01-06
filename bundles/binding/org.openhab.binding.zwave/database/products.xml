@@ -2343,6 +2343,15 @@
 			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
 			<ConfigFile>leviton/vrmx1-1lz.xml</ConfigFile>
 		</Product>
+                <Product>
+                        <Reference>
+                                <Type>0e01</Type>
+                                <Id>0334</Id>
+                        </Reference>
+                        <Model>VRE06-1LZ</Model>
+                        <Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+                        <ConfigFile>leviton/vre06-1lz.xml</ConfigFile>
+                </Product>
 		<Product>
 			<Reference>
 				<Type>1902</Type>
