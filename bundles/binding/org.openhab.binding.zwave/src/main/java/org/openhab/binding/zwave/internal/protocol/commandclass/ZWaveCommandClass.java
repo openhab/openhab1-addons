@@ -52,6 +52,7 @@ public abstract class ZWaveCommandClass {
 	@XStreamOmitField
 	private ZWaveController controller;
 
+	@XStreamOmitField
 	private ZWaveEndpoint endpoint;
 	
 	private int version = 0;
