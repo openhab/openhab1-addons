@@ -16,5 +16,5 @@ package org.openhab.binding.isy.internal;
  * @since 1.7.0
  */
 public enum ISYNodeType {
-	SWITCH, GROUP, CONTACT, THERMOSTAT, NUMBER, STRING
+	SWITCH, GROUP, CONTACT, THERMOSTAT, NUMBER, STRING, DIMMER
 }

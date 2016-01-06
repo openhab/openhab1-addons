@@ -21,7 +21,9 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -278,6 +280,8 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 				case STRING:
 					state = new StringType((String) action);
 					break;
+				case DIMMER:
+					state = new PercentType((String) action);
 				default:
 					break;
 				}
@@ -497,7 +501,27 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 	private void executeCommand(final ISYBindingConfig config,
 			final UDNode node, final Command command) {
 
-		if (command instanceof OnOffType) {
+		// Do percent first so dimmers dim and do not just go on and off. 
+		if(command instanceof IncreaseDecreaseType && ISYNodeType.DIMMER.equals(config.getType())) {
+			IncreaseDecreaseType type = (IncreaseDecreaseType) command;
+			
+			switch (type) {
+			case INCREASE:
+				if (node instanceof UDGroup) {
+					this.insteonClient.brightenScene(node.address);
+				} else {
+					this.insteonClient.brightenDevice(node.address);
+				}
+				break;
+			case DECREASE:
+				if (node instanceof UDGroup) {
+					this.insteonClient.dimScene(node.address);
+				} else {
+					this.insteonClient.dimDevice(node.address);
+				}
+				break;
+			}
+		} else if (command instanceof OnOffType) {
 			OnOffType type = (OnOffType) command;
 
 			switch (type) {

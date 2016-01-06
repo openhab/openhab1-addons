@@ -34,10 +34,9 @@ public class ISYActiveBindingConfig {
 	 */
 	public ISYActiveBindingConfig(Map<Object, Object> config) {
 
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("OpenHab Binding Configuration(refresh='{}',upnp='{}',uuid='{}',ip='{}',port='{}',user='{}',password='{}')",
-					config.get("refresh"), config.get("upnp"),config.get("uuid"),config.get("ip"),config.get("port"),config.get("user"),config.get("password"));
-		}
+		this.logger.info("OpenHab Binding Configuration(refresh='{}',upnp='{}',uuid='{}',ip='{}',port='{}',user='{}',password='{}')",
+					config.get("refresh"), config.get("upnp"),config.get("uuid"),config.get("ip"),config.get("port"),config.get("user"),"xxxxxx");
+
 		if (StringUtils.isNotBlank((String) config.get("refresh"))) {
 			refreshInterval = Long.parseLong((String) config.get("refresh"));
 		}
