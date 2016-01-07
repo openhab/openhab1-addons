@@ -6,6 +6,7 @@
     <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-binding-ecobee</feature>
         <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.ecobee/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
     </feature>
