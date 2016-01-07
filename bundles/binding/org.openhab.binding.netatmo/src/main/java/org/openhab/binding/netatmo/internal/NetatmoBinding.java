@@ -77,7 +77,7 @@ public class NetatmoBinding extends
 	 */
 	private long refreshInterval = 300000;
 
-	private PointType stationPosition = null;
+	private Map<Device, PointType> stationPositions = new HashMap<Device, PointType>();
 
 	private Map<String, OAuthCredentials> credentialsCache = new HashMap<String, OAuthCredentials>();
 
@@ -262,35 +262,35 @@ public class NetatmoBinding extends
 						case STATIONNAME:
 							for (Device device : oauthCredentials.getStationsDataResponse
 									.getDevices()) {
-								if (stationPosition == null) {
-									DecimalType altitude = DecimalType.ZERO;
-									if (device.getAltitude() != null) {
-										altitude = new DecimalType(Math.round(unitSystem.
-												convertAltitude(device.getAltitude())));
-									}
-									stationPosition = new PointType(
-											new DecimalType(
-													new BigDecimal(device.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
-											new DecimalType(new BigDecimal(device.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
-											altitude);
-								}
-								if (device.getId().equals(deviceId)) {
+                                if (device.getId().equals(deviceId)) {
+                                    if (stationPositions.get(device) == null) {
+                                            DecimalType altitude = DecimalType.ZERO;
+                                            if (device.getAltitude() != null) {
+                                                    altitude = new DecimalType(Math.round(unitSystem.
+                                                                    convertAltitude(device.getAltitude())));
+                                            }
+                                            stationPositions.put(device, new PointType(
+                                                            new DecimalType(
+                                                                            new BigDecimal(device.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
+                                                                            new DecimalType(new BigDecimal(device.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
+                                                                            altitude));
+                                    }
 									switch (measureType) {
 									case LATITUDE:
-										state = stationPosition.getLatitude();
+										state = stationPositions.get(device).getLatitude();
 										break;
 									case LONGITUDE:
-										state = stationPosition.getLongitude();
+										state = stationPositions.get(device).getLongitude();
 										break;
 									case ALTITUDE:
-										state = stationPosition.getAltitude();
+										state = stationPositions.get(device).getAltitude();
 										break;
 									case WIFISTATUS:
 										state = new DecimalType(
 												device.getWifiLevel());
 										break;
 									case COORDINATE:
-										state = stationPosition;
+										state = stationPositions.get(device);
 										break;
 									case STATIONNAME:
 										state = new StringType(
