@@ -262,19 +262,18 @@ public class NetatmoBinding extends
 						case STATIONNAME:
 							for (Device device : oauthCredentials.getStationsDataResponse
 									.getDevices()) {
-                                if (device.getId().equals(deviceId)) {
-                                    if (stationPositions.get(device) == null) {
-                                            DecimalType altitude = DecimalType.ZERO;
-                                            if (device.getAltitude() != null) {
-                                                    altitude = new DecimalType(Math.round(unitSystem.
-                                                                    convertAltitude(device.getAltitude())));
-                                            }
-                                            stationPositions.put(device, new PointType(
-                                                            new DecimalType(
-                                                                            new BigDecimal(device.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
-                                                                            new DecimalType(new BigDecimal(device.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
-                                                                            altitude));
-                                    }
+								if (device.getId().equals(deviceId)) {
+									if (stationPositions.get(device) == null) {
+										DecimalType altitude = DecimalType.ZERO;
+										if (device.getAltitude() != null) {
+											altitude = new DecimalType(Math.round(unitSystem.
+													convertAltitude(device.getAltitude())));
+										}
+										stationPositions.put(device, new PointType(
+												new DecimalType(new BigDecimal(device.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
+												new DecimalType(new BigDecimal(device.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
+												altitude));
+									}
 									switch (measureType) {
 									case LATITUDE:
 										state = stationPositions.get(device).getLatitude();
