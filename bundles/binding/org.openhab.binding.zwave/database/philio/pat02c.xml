@@ -27,7 +27,7 @@
             <Type>byte</Type>
             <Default>0</Default>
             <Minimum>0</Minimum>
-            <Maximum>1</Maximum>
+            <Maximum>255</Maximum>
             <Size>1</Size>
             <Label lang="en">Basic Set OFF Level</Label>
             <Help lang="en"><![CDATA[Setting the BASIC command value<br/>
@@ -36,31 +36,28 @@
         <Parameter>
             <Index>2</Index>
             <Type>byte</Type>
-            <Default>-1</Default>
-            <Minimum>-1</Minimum>
-            <Maximum>0</Maximum>
-            <Size>1</Size>
-            <Label lang="en">Basic Set ON Level</Label>
-            <Help lang="en"><![CDATA[Setting the BASIC command value<br/>
-                <ul><li>When the flood trigger onn(0xFF), send the BASIC CC to the group 2</li></ul>]]></Help>
-        </Parameter>
-        <Parameter>
-            <Index>5</Index>
-            <Type>byte</Type>
-            <Default>0</Default>
+            <Default>255</Default>
             <Minimum>0</Minimum>
             <Maximum>255</Maximum>
             <Size>1</Size>
-            <Label lang="en">Operation Mode</Label>
-            <Help lang="en"><![CDATA[Parameter to set the Operation Mode.<br/>
-                <ul><li>Bit 0: Disable the Flood function</li>
-                <li>Bit 1: Reserve</li>
-                <li>Bit 2: Reserve</li>
-                <li>Bit 3: Reserve</li>
-                <li>Bit 4: Reserve</li>
-                <li>Bit 5: Reserve</li>
-                <li>Bit 6: Reserve</li>
-                <li>Bit 7: Reserve</li></ul>]]></Help>
+            <Label lang="en">Basic Set ON Level</Label>
+            <Help lang="en"><![CDATA[Setting the BASIC command value<br/>
+                <ul><li>When the flood trigger on(0xFF), send the BASIC CC to the group 2</li></ul>]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>5</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Label lang="en">Disable the Flood function</Label>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Flood function is enabled</Label>
+			</Item>
+			<Item>
+        		<Value>1</Value>
+        		<Label lang="en">Flood function is disabled</Label>
+			</Item>
         </Parameter>
         <Parameter>
             <Index>7</Index>
