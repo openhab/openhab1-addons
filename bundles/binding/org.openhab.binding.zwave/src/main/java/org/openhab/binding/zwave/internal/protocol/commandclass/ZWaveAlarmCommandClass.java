@@ -236,6 +236,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	 * Class to hold alarm state
 	 * @author Chris Jackson
 	 */
+	@XStreamAlias("alarmState")
 	private class Alarm {
 		AlarmType alarmType;
 		boolean initialised = false;
