@@ -53,11 +53,11 @@
             <Item>
                 <Value>0</Value>
                 <Label lang="en">Flood function is enabled</Label>
-			</Item>
-			<Item>
-        		<Value>1</Value>
-        		<Label lang="en">Flood function is disabled</Label>
-			</Item>
+	    </Item>
+	    <Item>
+        	<Value>1</Value>
+        	<Label lang="en">Flood function is disabled</Label>
+	    </Item>
         </Parameter>
         <Parameter>
             <Index>7</Index>
