@@ -266,8 +266,7 @@ public class NetatmoBinding extends
 									if (stationPositions.get(device) == null) {
 										DecimalType altitude = DecimalType.ZERO;
 										if (device.getAltitude() != null) {
-											altitude = new DecimalType(Math.round(unitSystem.
-													convertAltitude(device.getAltitude())));
+											altitude = new DecimalType(device.getAltitude());
 										}
 										stationPositions.put(device, new PointType(
 												new DecimalType(new BigDecimal(device.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_UP)),
@@ -282,7 +281,8 @@ public class NetatmoBinding extends
 										state = stationPositions.get(device).getLongitude();
 										break;
 									case ALTITUDE:
-										state = stationPositions.get(device).getAltitude();
+											state = new DecimalType(Math.round(unitSystem.
+													convertAltitude(stationPositions.get(device).getAltitude().doubleValue())));
 										break;
 									case WIFISTATUS:
 										state = new DecimalType(
