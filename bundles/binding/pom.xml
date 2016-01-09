@@ -175,6 +175,7 @@
     <module>org.openhab.binding.akm868</module>
     <module>org.openhab.binding.sonance</module>
     <module>org.openhab.binding.stiebelheatpump</module>
+    <module>org.openhab.binding.stiebelheatpump.test</module>
     <module>org.openhab.binding.sallegra</module>
   </modules>
 </project>
