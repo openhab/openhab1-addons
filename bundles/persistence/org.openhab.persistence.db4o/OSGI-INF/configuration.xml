@@ -9,6 +9,6 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" name="org.openhab.persistence.db4o" immediate="true" configuration-pid="org.openhab.db4o" configuration-policy="optional">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" name="org.openhab.persistence.db4o.configuration" immediate="true" configuration-pid="org.openhab.db4o" configuration-policy="optional">
    <implementation class="org.openhab.persistence.db4o.internal.Db4oConfiguration"/>
 </scr:component>

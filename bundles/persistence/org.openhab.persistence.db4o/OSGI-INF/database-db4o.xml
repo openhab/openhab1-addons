@@ -9,10 +9,9 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.db4o">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.db4o">
    <implementation class="org.openhab.persistence.db4o.internal.Db4oPersistenceService"/>
    <service>
-      <provide interface="org.openhab.core.persistence.QueryablePersistenceService"/>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
 </scr:component>
