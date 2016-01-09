@@ -115,10 +115,10 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 		
 		try {
 			db.store(historicItem);
-			logger.debug("Stored item state '{}' -> '{}'", new String[] {historicItem.getName(), historicItem.getState().toString() } );
+			logger.debug("Stored item state '{}' -> '{}'", historicItem.getName(), historicItem.getState().toString() );
 		} catch(Db4oException e) {
 			db.rollback();
-			logger.warn("Error storing state for item '{}' as '{}': {}", new String[] { item.getName(), alias, e.getMessage() });
+			logger.warn("Error storing state for item '{}' as '{}': {}", item.getName(), alias, e.getMessage() );
 		}
 	}
 
