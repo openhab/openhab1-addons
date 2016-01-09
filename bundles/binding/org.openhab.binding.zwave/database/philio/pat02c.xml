@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>PAT02-C</Model>
+    <Label lang="en">Flood Sensor</Label>
+    <CommandClasses>
+        <Class><id>0x20</id></Class>    <!-- COMMAND_CLASS_BASIC -->
+        <Class><id>0x30</id></Class>    <!-- COMMAND_CLASS_SENSOR_BINARY_V2 -->
+        <Class><id>0x31</id></Class>    <!-- COMMAND_CLASS_SENSOR_MULTILEVEL_V5 -->
+        <Class><id>0x59</id></Class>    <!-- COMMAND_CLASS_ASSOCIATION_GRP_INFO -->
+        <Class><id>0x5A</id></Class>    <!-- COMMAND_CLASS_DEVICE_RESET_LOCALLY -->
+        <Class><id>0x5E</id></Class>    <!-- COMMAND_CLASS_ZWAVEPLUS_INFO_V2 -->
+        <Class><id>0x70</id></Class>    <!-- COMMAND_CLASS_CONFIGURATION -->
+        <Class><id>0x71</id></Class>    <!-- COMMAND_CLASS_NOTIFICATION_V4 -->
+        <Class><id>0x72</id></Class>    <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC_V2 --> 
+        <Class><id>0x73</id></Class>    <!-- COMMAND_CLASS_POWERLEVEL -->
+        <Class><id>0x7A</id></Class>    <!-- COMMAND_CLASS_FIRMWARE_UPDATE_MD_V2 -->
+        <Class><id>0x80</id></Class>    <!-- COMMAND_CLASS_BATTERY -->
+        <Class><id>0x84</id></Class>    <!-- COMMAND_CLASS_WAKE_UP_V2 -->
+        <Class><id>0x85</id></Class>    <!-- COMMAND_CLASS_ASSOCIATION_V2-->
+        <Class><id>0x86</id></Class>    <!-- COMMAND_CLASS_VERSION_V2 -->
+        <Class><id>0x8F</id></Class>    <!-- COMMAND_CLASS_MULTI_CMD -->
+        <Class><id>0x98</id></Class>    <!-- COMMAND_CLASS_SECURITY -->
+    </CommandClasses>
+    <Configuration>
+        <Parameter>
+            <Index>1</Index>
+            <Type>byte</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Basic Set OFF Level</Label>
+            <Help lang="en"><![CDATA[Setting the BASIC command value<br/>
+                <ul><li>When the flood trigger off(0x00), send the BASIC CC to the group 2</li></ul>]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>2</Index>
+            <Type>byte</Type>
+            <Default>255</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Basic Set ON Level</Label>
+            <Help lang="en"><![CDATA[Setting the BASIC command value<br/>
+                <ul><li>When the flood trigger on(0xFF), send the BASIC CC to the group 2</li></ul>]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>5</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Label lang="en">Disable the Flood function</Label>
+            <Help lang="en"><![CDATA[Operation mode<br/>
+                <ul><li>0: Flood function is enabled</li>
+                <li>1: Flood function is disabled</li></ul>]]></Help>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Flood function is enabled</Label>
+	    </Item>
+	    <Item>
+        	<Value>1</Value>
+        	<Label lang="en">Flood function is disabled</Label>
+	    </Item>
+        </Parameter>
+        <Parameter>
+            <Index>7</Index>
+            <Type>byte</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Customer Function</Label>
+            <Help lang="en"><![CDATA[Parameter to set the sensor functions<br/>
+                <ul><li>Bit 0: Reserve</li>
+                <li>Bit 1: Reserve</li>
+                <li>Bit 2: Reserve</li>
+                <li>Bit 3: Disable send out BASIC OFF after the flood event cleared (1:Disable, 0:Enable)</li>
+                <li>Bit 4: Notification Type (0:Using Notification Report, 1:Using Sensor Binary Report)</li>
+                <li>Bit 5: Disable Multi CC in auto report (1: Disable, 0: Enable)</li>
+                <li>Bit 6: Disable to report Battery State when the device is triggered (1: Disable, 0: Enable)</li>
+                <li>Bit 7: Reserve</li></ul>]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>10</Index>
+            <Type>byte</Type>
+            <Default>12</Default>
+            <Minimum>0</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Auto Report Battery Time</Label>
+            <Help lang="en"><![CDATA[The interval time for auto reporting the battery level<br/>
+                <ul><li>0 = Turn off auto report battery.</li>
+                <li>1-127 = Number of ticks. The default value is 12. The tick time can be set by configuration No. 20.</li></ul>]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>15</Index>
+            <Type>byte</Type>
+            <Default>12</Default>
+            <Minimum>0</Minimum>
+            <Maximum>127</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Auto Report Flood Time</Label>
+            <Help lang="en"><![CDATA[The interval time for auto report the flood state<br/>
+                <ul><li>0 = Turn off auto report</li>
+                <li>1-127 = Number of ticks. The default value is 12. The tick time can be set by configuration No. 20.</li></ul>]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>20</Index>
+            <Type>byte</Type>
+            <Default>30</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <Size>1</Size>
+            <Label lang="en">Auto Report Tick Interval</Label>
+            <Help lang="en"><![CDATA[The interval time for auto reporting each tick.<br/>
+                <ul><li>0 = Turn off all auto report function.</li>
+                <li>1-255 = Number of ticks. Setting this configuration will effect configuration Nr. 10 and No. 15.</li></ul>]]></Help>
+        </Parameter>
+    </Configuration>
+    <Associations>
+        <Group>
+            <Index>1</Index>
+            <Maximum>8</Maximum>
+            <SetToController>true</SetToController>
+            <Label lang="en">Reports</Label>
+        </Group>
+        <Group>
+            <Index>2</Index>
+            <Maximum>8</Maximum>
+            <Label lang="en">Light Control</Label>
+        </Group>
+    </Associations>
+</Product>
