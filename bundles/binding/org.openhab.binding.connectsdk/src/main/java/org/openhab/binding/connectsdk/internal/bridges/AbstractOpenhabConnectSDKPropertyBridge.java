@@ -1,5 +1,8 @@
 package org.openhab.binding.connectsdk.internal.bridges;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,34 +29,64 @@ public abstract class AbstractOpenhabConnectSDKPropertyBridge<T> implements Open
 		}
 		return subscriptions;
 	}
+	
+	@Override
+	public void onDeviceReady(final ConnectableDevice device, final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
+		
+	}
+	
+	@Override
+	public void onDeviceRemoved(final ConnectableDevice device, final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
+	}
 
 	@Override
-	public final void addSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) { 
-		ServiceSubscription<T> listener = getSubscription(device, providers, eventPublisher);
-		if (listener != null) {
-			logger.debug("Subscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(),
-					device.getIpAddress());
-			
-			// not sure if this is required, trying to find performance leak 
-			if(subscriptions != null && subscriptions.containsKey(device.getIpAddress())){
-				throw new IllegalStateException("A listener for device "+device.getIpAddress()+" already exists for this Bridge: "+ this.getClass().getName()+ " Call removeAnySubscription first.");
+	public final synchronized void refreshSubscription(final ConnectableDevice device,
+			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
+		removeAnySubscription(device); // ensure all old subscriptions are cleaned out
+		Collection<String> matchingItemNames = findMatchingItemNames(device, providers);
+		if (!matchingItemNames.isEmpty()) { // only listen if least one item is configured
+			ServiceSubscription<T> listener = getSubscription(device, matchingItemNames, eventPublisher);
+			if (listener != null) {
+				logger.debug("Subscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(),
+						device.getIpAddress());
+				getSubscriptions().put(device.getIpAddress(), listener);
 			}
-			
-			getSubscriptions().put(device.getIpAddress(), listener);
 		}
 	}
 
+	protected Collection<String> findMatchingItemNames(ConnectableDevice device,
+			Collection<ConnectSDKBindingProvider> providers) {
+		Collection<String> matchingItemNames = new ArrayList<String>();
+
+		for (ConnectSDKBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				try {
+					if (matchClassAndProperty(provider.getClassForItem(itemName), provider.getPropertyForItem(itemName))
+							&& device.getIpAddress().equals(
+									InetAddress.getByName(provider.getDeviceForItem(itemName)).getHostAddress())) {
+						matchingItemNames.add(itemName);
+					}
+				} catch (UnknownHostException e) {
+					logger.error("Failed to resolve {} to IP address. Skipping update on item {}.", device, itemName);
+				}
+			}
+
+		}
+		return matchingItemNames;
+	}
+
 	/**
-	 * Creates a subscription instance for this device. This may return <code>null</code> if no subscription is possible or required.
+	 * Creates a subscription instance for this device. This may return <code>null</code> if no subscription is possible
+	 * or required.
 	 * 
-	 * @param device
-	 * @param providers
-	 * @param eventPublisher
+	 * @param device device to which state changes to subscribe to
+	 * @param itemNames item's names that shall be update on device status change. Only items that match the device ip, item property and item class must be provided.
+	 * @param eventPublisher 
 	 * @return instance or <code>null</code> if no subscription is possible or required
 	 */
-	protected abstract ServiceSubscription<T> getSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher);
+	protected ServiceSubscription<T> getSubscription(final ConnectableDevice device,  final Collection<String> itemNames, final EventPublisher eventPublisher) {
+		return null;
+	}
 
 	@Override
 	public final synchronized void removeAnySubscription(final ConnectableDevice device) { // here
@@ -61,12 +94,12 @@ public abstract class AbstractOpenhabConnectSDKPropertyBridge<T> implements Open
 			ServiceSubscription<T> l = subscriptions.remove(device.getIpAddress());
 			if (l != null) {
 				l.unsubscribe();
-				
-				// not sure if this is required, trying to find performance leak 
-				if(l instanceof URLServiceSubscription) {
-					((URLServiceSubscription<?>)l).removeListeners();
+
+				// not sure if this is required, trying to find performance leak
+				if (l instanceof URLServiceSubscription) {
+					((URLServiceSubscription<?>) l).removeListeners();
 				}
-				
+
 				logger.debug("Unsubscribed {}:{} listener on IP: {}", getItemClass(), getItemProperty(),
 						device.getIpAddress());
 			}

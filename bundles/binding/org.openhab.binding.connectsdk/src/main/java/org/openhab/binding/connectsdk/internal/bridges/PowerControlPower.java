@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.PowerControl;
-import com.connectsdk.service.command.ServiceSubscription;
 
 public class PowerControlPower extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
 	private static final Logger logger = LoggerFactory.getLogger(PowerControlPower.class);
@@ -53,11 +52,23 @@ public class PowerControlPower extends AbstractOpenhabConnectSDKPropertyBridge<V
 		}
 
 	}
-
+	
 	@Override
-	protected ServiceSubscription<Void> getSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
-		return null; // TODO: ideas how to set correct status on/off ? is presence of device or response to ping enough?
+	public void onDeviceReady(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
+			EventPublisher eventPublisher) {
+		super.onDeviceReady(device, providers, eventPublisher);
+		for(String itemName: findMatchingItemNames(device, providers)) { // Simply assuming that device is found on the network, works for Webos TV
+			eventPublisher.postUpdate(itemName, OnOffType.ON);
+		}
+	}
+	
+	@Override
+	public void onDeviceRemoved(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
+			EventPublisher eventPublisher) {
+		super.onDeviceRemoved(device, providers, eventPublisher);
+		for(String itemName: findMatchingItemNames(device, providers)) { // Simply assuming that device is off when is disappears on the network, works for Webos TV
+			eventPublisher.postUpdate(itemName, OnOffType.OFF);
+		}
 	}
 
 }

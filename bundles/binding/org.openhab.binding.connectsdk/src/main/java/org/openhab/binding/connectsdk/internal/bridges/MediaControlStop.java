@@ -1,14 +1,9 @@
 package org.openhab.binding.connectsdk.internal.bridges;
 
-import java.util.Collection;
-
-import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.MediaControl;
-import com.connectsdk.service.command.ServiceSubscription;
 
 public class MediaControlStop extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
 	
@@ -32,12 +27,6 @@ public class MediaControlStop extends AbstractOpenhabConnectSDKPropertyBridge<Vo
 			getControl(d).stop(createDefaultResponseListener());
 		}
 
-	}
-
-	@Override
-	protected ServiceSubscription<Void> getSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
-		return null;
 	}
 
 }

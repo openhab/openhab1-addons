@@ -11,13 +11,13 @@ import javax.imageio.ImageIO;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.ToastControl;
-import com.connectsdk.service.command.ServiceSubscription;
 
 public class ToastControlToast extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
 	private static final Logger logger = LoggerFactory.getLogger(ToastControlToast.class);
@@ -55,9 +55,12 @@ public class ToastControlToast extends AbstractOpenhabConnectSDKPropertyBridge<V
 	}
 
 	@Override
-	protected ServiceSubscription<Void> getSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
-		return null;
+	public void onDeviceReady(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
+			EventPublisher eventPublisher) {
+		super.onDeviceReady(device, providers, eventPublisher);
+		if(!findMatchingItemNames(device, providers).isEmpty()) { // only send hello world, if at least one toast Control item is configured
+			onReceiveCommand(device, getItemClass(), getItemProperty(), new StringType("Welcome to Openhab!"));
+		}
 	}
-
+		
 }

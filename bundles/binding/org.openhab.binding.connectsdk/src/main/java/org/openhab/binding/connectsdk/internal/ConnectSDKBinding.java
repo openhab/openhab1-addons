@@ -8,16 +8,9 @@
  */
 package org.openhab.binding.connectsdk.internal;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Base64;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
 import org.openhab.binding.connectsdk.internal.bridges.ExternalInputControlInput;
@@ -41,6 +34,7 @@ import org.openhab.binding.connectsdk.internal.bridges.VolumeControlUp;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlUpDown;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlVolume;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -52,8 +46,6 @@ import com.connectsdk.discovery.DiscoveryManager;
 import com.connectsdk.discovery.DiscoveryManagerListener;
 import com.connectsdk.service.DeviceService;
 import com.connectsdk.service.DeviceService.PairingType;
-import com.connectsdk.service.capability.ToastControl;
-import com.connectsdk.service.capability.listeners.ResponseListener;
 import com.connectsdk.service.command.ServiceCommandError;
 
 /**
@@ -68,11 +60,12 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 	private static OpenhabConnectSDKPropertyBridge[] bridges = new OpenhabConnectSDKPropertyBridge[] {
 			new VolumeControlVolume(), new VolumeControlMute(), new VolumeControlUp(), new VolumeControlDown(),
-			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new VolumeControlUpDown(), new TVControlChannelName(), new TVControlProgram(),
-			new PowerControlPower(), new ExternalInputControlInput(),
-			new MediaControlForward(), new MediaControlPause(), new MediaControlPlay(), new MediaControlRewind(), new MediaControlStop(), new MediaControlPlayState(),
+			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new VolumeControlUpDown(),
+			new TVControlChannelName(), new TVControlProgram(), new PowerControlPower(),
+			new ExternalInputControlInput(), new MediaControlForward(), new MediaControlPause(),
+			new MediaControlPlay(), new MediaControlRewind(), new MediaControlStop(), new MediaControlPlayState(),
 			new ToastControlToast()
-			
+
 	};
 
 	@Override
@@ -180,11 +173,10 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 			@Override
 			public void onDeviceReady(ConnectableDevice device) {
 				logger.info("Device ready: {}", device);
+				refreshSubscriptions(device);
 				for (OpenhabConnectSDKPropertyBridge b : bridges) {
-					b.removeAnySubscription(device); // ensure all old subscriptions are cleaned out
-					b.addSubscription(device, providers, eventPublisher);
+					b.onDeviceReady(device, providers, eventPublisher);
 				}
-				sendHelloWorld(device);
 			}
 
 			@Override
@@ -202,31 +194,64 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 			@Override
 			public void onCapabilityUpdated(ConnectableDevice device, List<String> added, List<String> removed) {
 				logger.debug("Capabilities updated: {} - added: {} - removed: {}", device, added, removed);
-				device.connect(); // ensure all services are connected, can be called even if some of the services are already connected
-				for (OpenhabConnectSDKPropertyBridge b : bridges) {
-					b.removeAnySubscription(device); // ensure all old subscriptions are cleaned out
-					b.addSubscription(device, providers, eventPublisher);
-				}				
+				refreshSubscriptions(device);
 			}
 		});
-		device.connect(); // ensure all services are connected, can be called even if some of the services are already connected
-		//logger.debug("Capabilities: " + device.getFriendlyName() + " : " + device.getCapabilities().toString());
+
+		connectIfAnyItemIsConfiguredFor(device);
+		// logger.debug("Capabilities: " + device.getFriendlyName() + " : " + device.getCapabilities().toString());
+	}
+
+	private void connectIfAnyItemIsConfiguredFor(final ConnectableDevice device) {
+		for (ConnectSDKBindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				try {
+					if (device.getIpAddress().equals(
+							InetAddress.getByName(provider.getDeviceForItem(itemName)).getHostAddress())) {
+						device.connect();
+						return;
+					}
+				} catch (UnknownHostException e) {
+					logger.error("Failed to resolve {} to IP address. Skipping update on item {}.", device, itemName);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		super.bindingChanged(provider, itemName);
+		logger.debug("Item {} binding changed, refresh all listeners", itemName);
+		/*
+		 * Every time the item model reloads this method will be called once for every item bound to this binding.
+		 * Recreating all subscriptions each time is not elegant, but there is no callback that gets called once after a
+		 * model change. Tested allBindingsChanged, but that does not get called after editing the items file.
+		 * Performance impact seems acceptable, as model reloads do not happen all that often. If we find a better way,
+		 * let's improve it.
+		 */
+		for (ConnectableDevice device : discoveryManager.getCompatibleDevices().values()) {
+			refreshSubscriptions(device);
+		}
+
+	}
+
+	private void refreshSubscriptions(ConnectableDevice device) {
+		for (OpenhabConnectSDKPropertyBridge b : bridges) {
+			b.refreshSubscription(device, providers, eventPublisher);
+		}
 	}
 
 	@Override
 	public void onDeviceUpdated(DiscoveryManager manager, ConnectableDevice device) {
 		logger.info("Device updated: {}", device);
-		for (OpenhabConnectSDKPropertyBridge b : bridges) {
-			b.removeAnySubscription(device);
-			b.addSubscription(device, providers, eventPublisher);
-		}
-		device.connect(); // ensure all services are connected, can be called even if some of the services are already connected
+		refreshSubscriptions(device);
 	}
 
 	@Override
 	public void onDeviceRemoved(DiscoveryManager manager, ConnectableDevice device) {
 		logger.info("Device removed: {}", device);
 		for (OpenhabConnectSDKPropertyBridge b : bridges) {
+			b.onDeviceRemoved(device, providers, eventPublisher);
 			b.removeAnySubscription(device);
 		}
 		// no need to call device.disconnect this is done by connect sdk framework for us
@@ -235,36 +260,6 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 	@Override
 	public void onDiscoveryFailed(DiscoveryManager manager, ServiceCommandError error) {
 		logger.warn("Discovery failed: {}", error.getMessage());
-	}
-
-	private void sendHelloWorld(ConnectableDevice device) {
-		if (device.hasCapability(ToastControl.Show_Toast)) {
-			try {
-				BufferedImage bi = ImageIO.read(getClass().getResource("/openhab-logo-square.png"));
-
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				OutputStream b64 = Base64.getEncoder().wrap(os);
-				ImageIO.write(bi, "png", b64);
-				String result = os.toString("UTF-8");
-				
-				device.getCapability(ToastControl.class).showToast("Welcome to Openhab!", result, "png",
-						new ResponseListener<Object>() {
-
-							@Override
-							public void onSuccess(Object object) {
-								logger.debug("toast: {}", object);
-							}
-
-							@Override
-							public void onError(ServiceCommandError error) {
-								logger.error(error.getMessage());
-							}
-						});
-
-			} catch (IOException ex) {
-				logger.error(ex.getMessage(), ex);
-			}
-		}
 	}
 
 }

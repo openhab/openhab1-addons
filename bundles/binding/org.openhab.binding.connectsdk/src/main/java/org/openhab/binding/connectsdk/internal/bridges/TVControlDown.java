@@ -1,14 +1,9 @@
 package org.openhab.binding.connectsdk.internal.bridges;
 
-import java.util.Collection;
-
-import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.TVControl;
-import com.connectsdk.service.command.ServiceSubscription;
 
 public class TVControlDown extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
 	
@@ -32,12 +27,6 @@ public class TVControlDown extends AbstractOpenhabConnectSDKPropertyBridge<Void>
 			getControl(d).channelDown(createDefaultResponseListener());
 		}
 
-	}
-
-	@Override
-	protected ServiceSubscription<Void> getSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
-		return null;
 	}
 
 }

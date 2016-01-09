@@ -12,9 +12,13 @@ public interface OpenhabConnectSDKPropertyBridge {
 
 	public abstract void onReceiveCommand(ConnectableDevice d, String clazz, String property, Command command);
 
-	public abstract void addSubscription(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
+	public abstract void refreshSubscription(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
 			EventPublisher eventPublisher);
 
 	public abstract void removeAnySubscription(ConnectableDevice device);
+
+	public abstract void onDeviceRemoved(final ConnectableDevice device, final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher);
+
+	public abstract void onDeviceReady(final ConnectableDevice device, final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher);
 
 }

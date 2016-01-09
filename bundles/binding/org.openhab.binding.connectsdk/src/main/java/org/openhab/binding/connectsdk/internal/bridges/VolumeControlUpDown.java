@@ -1,9 +1,5 @@
 package org.openhab.binding.connectsdk.internal.bridges;
 
-import java.util.Collection;
-
-import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
@@ -12,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.VolumeControl;
-import com.connectsdk.service.command.ServiceSubscription;
 // this class is only an experiment - it seems difficult to setup an item in the gui that sends Increase decrease commands
 public class VolumeControlUpDown extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
 	private static final Logger logger = LoggerFactory.getLogger(VolumeControlUpDown.class);
@@ -50,12 +45,6 @@ public class VolumeControlUpDown extends AbstractOpenhabConnectSDKPropertyBridge
 			}
 		}
 
-	}
-
-	@Override
-	protected ServiceSubscription<Void> getSubscription(final ConnectableDevice device,
-			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
-		return null;
 	}
 
 }
