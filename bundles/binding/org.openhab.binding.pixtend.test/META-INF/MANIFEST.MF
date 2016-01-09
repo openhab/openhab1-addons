@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the pixtend binding
+Bundle-SymbolicName: org.openhab.binding.pixtend.test
+Bundle-Version: 1.8.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.binding.pixtend
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
+ .

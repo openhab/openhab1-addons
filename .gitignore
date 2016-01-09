@@ -16,3 +16,8 @@ distribution/openhabhome/etc/rrd4j/*.rrd
 *.orig
 *~
 features/*/src/main/history
+.project
+nb-configuration.xml
+nbactions.xml
+.settings
+.classpath
