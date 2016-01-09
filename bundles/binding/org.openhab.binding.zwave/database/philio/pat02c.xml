@@ -50,6 +50,9 @@
             <Default>0</Default>
             <Size>1</Size>
             <Label lang="en">Disable the Flood function</Label>
+            <Help lang="en"><![CDATA[Operation mode<br/>
+                <ul><li>0: Flood function is enabled</li>
+                <li>1: Flood function is disabled</li></ul>]]></Help>
             <Item>
                 <Value>0</Value>
                 <Label lang="en">Flood function is enabled</Label>
