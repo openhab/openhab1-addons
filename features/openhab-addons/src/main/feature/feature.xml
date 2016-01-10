@@ -3,6 +3,14 @@
 
     <!-- action -->
 
+    <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-binding-ecobee</feature>
+        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.ecobee/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
+    </feature>
+
     <feature name="openhab-action-mail" description="Mail Action" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -91,6 +99,13 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx/${project.version}</bundle>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx.ola/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/dmx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dmx</configfile>
+    </feature>
+
+    <feature name="openhab-binding-ecobee" description="Ecobee Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ecobee/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
     </feature>
 
     <feature name="openhab-binding-energenie" description="Energenie Binding" version="${project.version}">
@@ -205,6 +220,13 @@
         <feature>openhab-transport-serial</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.modbus/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/modbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/modbus</configfile>
+    </feature>
+
+    <feature name="openhab-binding-nest" description="Nest Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nest/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
     </feature>
 
     <feature name="openhab-binding-networkhealth" description="NetworkHealth Binding" version="${project.version}">

@@ -226,12 +226,12 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 		LIB_UNKNOWN(0,"Unknown"),
 		LIB_CONTROLLER_STATIC(1,"Static Controller"),
 		LIB_CONTROLLER(2,"Controller"),
-		LIB_SLAVE_ENHANCED(3,"Slave Enhanced"),
+		LIB_SLAVE_ENHANCED(3,"Enhanced Slave"),
 		LIB_SLAVE(4,"Static Controller"),
-		LIB_INSTALLER(5,"Static Controller"),
-		LIB_SLAVE_ROUTING(5,"Static Controller"),
-		LIB_CONTROLLER_BRIDGE(6,"Static Controller"),
-		LIB_TEST(7,"Test");
+		LIB_INSTALLER(5,"Installer"),
+		LIB_SLAVE_ROUTING(6,"Routing Slave"),
+		LIB_CONTROLLER_BRIDGE(7,"Bridge Controller"),
+		LIB_TEST(8,"Test");
 		
 		/**
 		 * A mapping between the integer code and its corresponding Library type

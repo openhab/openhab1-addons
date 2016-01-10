@@ -1669,7 +1669,7 @@
 			</Reference>
 			<Reference>
 				<Type>3000</Type>
-				<Id>900</Id>
+				<Id>0900</Id>
 			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
@@ -1700,6 +1700,10 @@
 			<Reference>
 				<Type>0102</Type>
 				<Id>1000</Id>
+			</Reference>
+			<Reference>
+				<Type>0102</Type>
+				<Id>3000</Id>
 			</Reference>
 			<Model>FGD212</Model>
 			<Label lang="en">Fibaro Dimmer 2</Label>
@@ -1910,6 +1914,18 @@
 			<Model>ZME_05457</Model>
 			<Label lang="en">Wall Switch Set for Busch Jaeger</Label>
 			<ConfigFile>zwaveme/zme_05457.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0024</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_FT</Model>
+			<Label lang="en">Floor Thermostat</Label>
+			<ConfigFile>zwaveme/zme_ft11.xml</ConfigFile>
+			<ConfigFile VersionMax="1.2">zwaveme/zme_ftll.xml</ConfigFile> <!-- VersionMin="1.1" -->
+			<ConfigFile VersionMin="1.3" VersionMax="1.3">zwaveme/zme_ftl3.xml</ConfigFile> 
+			<ConfigFile VersionMin="1.4">zwaveme/zme_ftl4.xml</ConfigFile> 
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2162,6 +2178,15 @@
 			<Label lang="en">Smart Energy Plug In Switch</Label>
 			<ConfigFile>philio/pan11_1b.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0021</Id>
+			</Reference>
+			<Model>PAT02-C</Model>
+			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>philio/pat02c.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0096</Id>
@@ -2339,6 +2364,15 @@
 			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
 			<ConfigFile>leviton/vrmx1-1lz.xml</ConfigFile>
 		</Product>
+                <Product>
+                        <Reference>
+                                <Type>0e01</Type>
+                                <Id>0334</Id>
+                        </Reference>
+                        <Model>VRE06-1LZ</Model>
+                        <Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+                        <ConfigFile>leviton/vre06-1lz.xml</ConfigFile>
+                </Product>
 		<Product>
 			<Reference>
 				<Type>1902</Type>
@@ -2739,11 +2773,21 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>201</Type>
+				<Id>100</Id>
+			</Reference>
+			<Model>004001</Model>
+			<Label lang="en">Smoke Detector and Siren</Label>
+			<Label lang="de">Rauchwarnmelder mit integrierter Innensirene</Label>
+			<ConfigFile>popp/004001.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>3</Type>
 				<Id>1</Id>
 			</Reference>
 			<Model>05438</Model>
-			<Label lang="en">Outdoor Wall Plug Switch</Label>
+			<Label lang="en">Indoor/Outdoor Wall Plug Switch</Label>
 			<ConfigFile>popp/05438.xml</ConfigFile>
 		</Product>
 		<Product>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>004001</Model>
+	<Label lang="en">Smoke Detector and Siren</Label>
+	<Label lang="de">Rauchwarnmelder mit integrierter Innensirene</Label>	
+	<CommandClasses>
+		<Class>	<id>0x20</id></Class>
+		<Class>	<id>0x25</id></Class>
+		<Class>	<id>0x30</id></Class>
+		<Class>	<id>0x59</id></Class>
+		<Class>	<id>0x5A</id></Class>
+		<Class>	<id>0x5E</id></Class>
+		<Class>	<id>0x70</id></Class>
+		<Class>	<id>0x71</id></Class>
+		<Class>	<id>0x72</id></Class>
+		<Class>	<id>0x73</id></Class>
+		<Class>	<id>0x7A</id></Class>
+		<Class>	<id>0x80</id></Class>
+		<Class>	<id>0x85</id></Class>
+		<Class>	<id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+            <Minimum>3</Minimum>
+            <Maximum>81</Maximum>			
+			<Default>10</Default>
+			<Size>2</Size>
+			<Label lang="en">Siren alarm sequence interval in seconds</Label>
+			<Label lang="de">Sirenenalarm- Sequenzintervall in Sekunden</Label>
+			<Help lang="en">The additional siren is creating a different acoustic signal differentiate from the smoke alarm. This sound is partly on and partly off. This parameter defines the total length of the interval in seconds.</Help>
+			<Help lang="de">Die zusätzliche Sirene lässt ein anderes akustisches Signal ertönen, das sich von der Signalisierung eines Rauchalarms unterscheidet. Dieser Ton geht an und aus. Der Parameter definiert die Gesamtlänge des Intervalls in Sekunden.</Help>
+		</Parameter>		
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+            <Minimum>1</Minimum>
+            <Maximum>63</Maximum>			
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">Siren alarm tone length</Label>
+			<Label lang="de">Sirenenalarm-Tonlänge</Label>
+			<Help lang="en">The additional siren is creating a different acoustic signal differentiate from the smoke alarm. This sound is partly on and partly off. This parameter defines the total length of the sound versus silence within this interval.</Help>
+			<Help lang="de">Die zusätzliche Sirene lässt ein anderes akustisches Signal ertönen, das sich von der Signalisierung eines Rauchalarms unterscheidet. Dieser Ton geht an und aus. Der Parameter definiert die Gesamtlänge des Tones im Zusammenhang mit der Stille zwischen diesem Intervall.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>int</Type>
+            <Minimum>0</Minimum>
+            <Maximum>63</Maximum>			
+			<Default>63</Default>
+			<Size>1</Size>
+			<Label lang="en">Value of On-Command</Label>
+			<Label lang="de">Wert des Ein-Befehls</Label>
+			<Help lang="en"></Help>
+			<Help lang="de"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>int</Type>
+            <Minimum>0</Minimum>
+            <Maximum>63</Maximum>			
+			<Default>63</Default>
+			<Size>1</Size>
+			<Label lang="en">Value of Off-Command</Label>
+			<Label lang="de">Wert des Aus-Befehls</Label>
+			<Help lang="en"></Help>
+			<Help lang="de"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Status of automated meshing of smoke alarms</Label>
+			<Label lang="de">Status automatischer Vernetzung von Rauchalarmen</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">inactive</Label>
+				<Label lang="de">inaktiv</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">active</Label>
+				<Label lang="de">aktiv</Label>
+			</Item>
+			<Help lang="en">This smoke detector can automatically inform other smoke detectors of same type about smoke alarms. They will then also turn on the siren. This function is a requirement of wireless networked smoke detectors</Help>
+			<Help lang="de">Dieser Rauchmelder kann automatisch andere Rauchdetektoren des gleichen Typs über die Raucherkennung informieren. Diese werden wiederum Alarm geben. Diese Funktion ist eine Voraussetzung von drahtlos vernetzten Rauchmeldern.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Status of automated meshing of battery alarms</Label>
+			<Label lang="de">Status automatischer Vernetzung von Batterie-Alarmen</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">inactive</Label>
+				<Label lang="de">inaktiv</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">active</Label>
+				<Label lang="de">aktiv</Label>
+			</Item>
+			<Help lang="en">This smoke detector can automatically inform other smoke detectors of same type about battery alarms. They will then also turn on the siren. This function is a requirement of wireless networked smoke detectors.</Help>
+			<Help lang="de">Dieser Rauchmelder kann automatisch andere Rauchmelder des gleichen Typs über einen niedrigen Batteriestand informieren. Diese werden wiederum bei eigenem niedrigen Batteriestand selbst Alarm geben. Diese Funktion ist eine Voraussetzung von drahtlos vernetzten Rauchmeldern.</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Lifeline</Label>
+			<Label lang="de">Lifeline</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Alarm Reports</Label>
+			<Label lang="de">Alarmmeldung</Label>
+			<SetToController>false</SetToController>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Switching Command when Alarm</Label>
+			<Label lang="de">Schaltkommando bei Rauchalarn</Label>
+			<SetToController>false</SetToController>
+		</Group>
+	
+	</Associations>
+</Product>

@@ -42,7 +42,7 @@ BINTRAY_VERSION="${version}"
 for debfile in *.deb; do
 	ls ${debfile}
 	if [ $DRY_RUN = "false" ]; then
-		msg=`curl -T ${debfile} -u${username}:${apikey} "${BASE_URL}/${BINTRAY_REPO}/${BINTRAY_PACKAGE}/${BINTRAY_VERSION}/pool/main/${version}/${debfile};deb_distribution=${distribution};deb_distribution=${version};deb_component=main;deb_architecture=all;publish=1" 2>/dev/null`
+		msg=`curl -H "X-GPG-PASSPHRASE: ${gpgpasswd}" -T ${debfile} -u${username}:${apikey} "${BASE_URL}/${BINTRAY_REPO}/${BINTRAY_PACKAGE}/${BINTRAY_VERSION}/pool/main/${version}/${debfile};deb_distribution=${distribution};deb_distribution=${version};deb_component=main;deb_architecture=all;publish=1" 2>/dev/null`
 		echo $msg | awk -F ":" '{ if ( $2 == "\"success\"}" )  exit 0 ; else { print $0 ; exit 1 }} '
 		if [ $? -eq 0 ]; then
 			echo "ok"
@@ -55,7 +55,7 @@ for debfile in *.deb; do
 	fi
 done
 if [ $DRY_RUN = "false" ]; then
-	curl -X POST -H 'X-GPG-PASSPHRASE: ${gpgpasswd}' -u${username}:${apikey} https://api.bintray.com/calc_metadata/openhab/${BINTRAY_REPO}
+	curl -X POST -H "X-GPG-PASSPHRASE: ${gpgpasswd}" -u${username}:${apikey} https://api.bintray.com/calc_metadata/openhab/${BINTRAY_REPO}
 else
-	echo 'X-GPG-PASSPHRASE: ${gpgpasswd}' -u${username}:${apikey} https://api.bintray.com/calc_metadata/openhab/${BINTRAY_REPO}
+	echo "X-GPG-PASSPHRASE: ${gpgpasswd}" -u${username}:${apikey} https://api.bintray.com/calc_metadata/openhab/${BINTRAY_REPO}
 fi

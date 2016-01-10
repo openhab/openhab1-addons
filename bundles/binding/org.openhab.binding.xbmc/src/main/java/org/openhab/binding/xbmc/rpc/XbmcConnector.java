@@ -200,7 +200,7 @@ public class XbmcConnector {
 		@Override
 		public void onError(Throwable e) {
 			if (e instanceof ConnectException) {
-				logger.debug("[{}]: Websocket connection error", xbmc.getHostname());
+				logger.debug("[{}]: Websocket connection error '{}'", xbmc.getHostname(),e.getMessage());
 			} else if (e instanceof TimeoutException) {
 				logger.debug("[{}]: Websocket timeout error", xbmc.getHostname());
 			} else {

@@ -77,12 +77,23 @@ public class ZWaveNode {
 	private boolean frequentlyListening; 
 	private boolean routing;
 	private String healState;
+    @SuppressWarnings("unused")
+    private boolean security;
+    @SuppressWarnings("unused")
+    private boolean beaming;
+    @SuppressWarnings("unused")
+    private int maxBaudRate;
+
+    // Keep the NIF - just used for information and debug in the XML
+    @SuppressWarnings("unused")
+    private List<Integer> nodeInformationFrame = null;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastSent = null;
 	private Date lastReceived = null;
 
+	@XStreamOmitField
 	private boolean applicationUpdateReceived = false;
 
 	@XStreamOmitField
@@ -821,4 +832,20 @@ public class ZWaveNode {
 	public void setApplicationUpdateReceived(boolean received) {
 		applicationUpdateReceived = received;
 	}
+	
+    public void updateNIF(List<Integer> nif) {
+        nodeInformationFrame = nif;
+    }
+    
+    public void setSecurity(boolean security) {
+        this.security = security;
+    }
+
+    public void setBeaming(boolean beaming) {
+        this.beaming = beaming;
+    }
+
+    public void setMaxBaud(int maxBaudRate) {
+        this.maxBaudRate = maxBaudRate;
+    }
 }

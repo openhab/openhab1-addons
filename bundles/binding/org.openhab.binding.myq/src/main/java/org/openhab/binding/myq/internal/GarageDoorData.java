@@ -32,9 +32,13 @@ public class GarageDoorData {
 	/**
 	 * Matching pattern for door device types, some models have spaces in them,
 	 * some don't
+	 *
+	 * "VGDO"
+	 * "Garage Door Opener WGDO"
+	 * "GarageDoorOpener"
 	 */
 	private static final Pattern DEVICE_TYPE_PATTERN = Pattern
-			.compile("Garage\\s?Door\\s?Opener");
+			.compile("Garage\\s?Door\\s?Opener|VGDO");
 
 	LinkedList<GarageDoorDevice> devices = new LinkedList<GarageDoorDevice>();
 
@@ -68,7 +72,7 @@ public class GarageDoorData {
 									int doorstate = attributes.get(j)
 											.get("Value").asInt();
 									logger.trace(
-											"DeviceID: {} DeviceName: {} DeviceType: {} Doorstate : ",
+											"DeviceID: {} DeviceName: {} DeviceType: {} Doorstate : {}",
 											deviceId, deviceName, deviceType,
 											doorstate);
 

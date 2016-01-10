@@ -16,7 +16,9 @@
   <packaging>pom</packaging>
 
     <properties>
-        <ohc.version>2.0.0.a3</ohc.version>
+        <ohc.version>2.0.0.a4</ohc.version>
+        <esh.version>0.8.0.b2</esh.version>
+        <shk.version>1.2</shk.version>
         <karaf.version>4.0.3</karaf.version>
         <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
     </properties>
@@ -27,7 +29,7 @@
     <module>org.openhab.runtime.feature</module>
     <module>openhab-addons</module>
     <module>openhab-addons-external</module>
-<!--    <module>openhab-addons-verify</module>-->
+    <module>openhab-addons-verify</module>
   </modules>
 
     <build>
@@ -55,10 +57,31 @@
             <url>https://jcenter.bintray.com/</url>
         </repository>
         <repository>
-           <id>tmp-shk</id>
-           <url>https://github.com/maggu2810/openhab2-mvn-repo/raw/shk</url>
-           <snapshots>
-              <enabled>true</enabled>
+            <id>shk-bintray</id>
+            <name>Bintray Repository for shk</name>
+            <url>https://dl.bintray.com/maggu2810/maven</url>
+        </repository>
+        <repository>
+            <id>eclipse-snapshots</id>
+            <name>Eclipse Snapshot Repository</name>
+            <layout>default</layout>
+            <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>eclipse-releases</id>
+            <name>Eclipse Release Repository</name>
+            <layout>default</layout>
+            <url>https://repo.eclipse.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>jfrog</id>
+            <name>JFrog OSS Repository</name>
+            <url>http://oss.jfrog.org/libs-snapshot/</url>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>

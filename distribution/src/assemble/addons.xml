@@ -25,17 +25,9 @@
       <includes>
       	<include>org.openhab.action:*:jar:*</include>
       	<include>org.openhab.binding:*:jar:*</include>
-      	<include>org.openhab.persistence:*:jar:*</include>
-        <include>org.openhab.io:org.openhab.io.cv:jar:*</include>
-      	<include>org.openhab.io:org.openhab.io.dropbox:jar:*</include>
-      	<include>org.openhab.io:org.openhab.io.gcal:jar:*</include>
-        <include>org.openhab.io:org.openhab.io.gpio:jar:*</include>
-        <include>org.openhab.io:org.openhab.io.harmonyhub:jar:*</include>
-      	<include>org.openhab.io:org.openhab.io.multimedia.tts.*:jar:*</include>
-		<include>org.openhab.io:org.openhab.io.squeezeserver:jar:*</include>
-		<include>org.openhab.io:org.openhab.io.transport.*:jar:*</include>
-		<include>org.openhab.io:org.openhab.io.myopenhab:jar:*</include>
         <include>org.openhab.core:org.openhab.core.jsr223:jar:*</include>
+      	<include>org.openhab.persistence:*:jar:*</include>
+        <include>org.openhab.io:*:jar:*</include>
       </includes>
     </dependencySet>
   </dependencySets>

@@ -386,7 +386,7 @@ public class RRD4jService implements QueryablePersistenceService {
                     } else if (property.equals("items")) {
                         rrdDef.addItems(value);
                     } else {
-                        logger.warn("Unknown property {} : {}", property, value);
+                        logger.debug("Unknown property {} : {}", property, value);
                     }
                 } catch (IllegalArgumentException e) {
                     logger.warn("Ignoring illegal configuration: {}", e.getMessage());

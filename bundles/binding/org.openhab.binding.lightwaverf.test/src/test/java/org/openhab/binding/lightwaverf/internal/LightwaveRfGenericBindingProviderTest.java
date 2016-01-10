@@ -9,8 +9,11 @@
 package org.openhab.binding.lightwaverf.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.openhab.core.library.items.DimmerItem;
@@ -101,8 +104,10 @@ public class LightwaveRfGenericBindingProviderTest {
 				new DimmerItem("MyDimmer"), "room=1,device=2,type=DIMMER");
 		bingindProvider.processBindingConfiguration(context, 
 				new SwitchItem("MySwitch"), "room=3,device=3,type=SWITCH");
-		
-		assertEquals(Arrays.asList("MyBattery", "MyDimmer", "MySwitch", "MyCurrentTemp"), bingindProvider.getItemNames());
+
+		List<String> expectedNames = Arrays.asList("MyBattery", "MyDimmer", "MySwitch", "MyCurrentTemp");
+		Collection<String> itemNames = bingindProvider.getItemNames();
+		assertTrue(expectedNames.size() == itemNames.size() && expectedNames.containsAll(itemNames));
 
 		assertEquals(Arrays.asList("MySwitch"), bingindProvider.getBindingItemsForRoomDevice("3", "3"));
 		assertEquals("3", bingindProvider.getRoomId("MySwitch"));

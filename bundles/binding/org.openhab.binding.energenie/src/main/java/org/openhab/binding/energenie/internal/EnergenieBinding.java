@@ -223,7 +223,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 
 	private void sendLogOut(String pmsId) {
 		String pmsIp = pmsIpConfig.get(pmsId);
-		String url = "http://"+pmsIp;
+		String url = "http://"+pmsIp+"/login.html";
 
 		try {
 			HttpUtil.executeUrl("POST", url, timeout);

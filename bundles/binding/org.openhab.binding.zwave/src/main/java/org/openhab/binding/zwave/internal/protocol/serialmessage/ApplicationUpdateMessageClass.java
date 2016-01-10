@@ -8,7 +8,9 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -77,6 +79,8 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 				}
 			}
 			else {
+				List<Integer> nif = new ArrayList<Integer>();
+
 				for (int i = 6; i < length + 3; i++) {
 					int data = incomingMessage.getMessagePayloadByte(i);
 					if(data == 0xef) {
@@ -89,6 +93,8 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 						node.addCommandClass(commandClass);
 					}
 				}
+				
+                node.updateNIF(nif);
 			}
 
 			// Notify we received an info frame
