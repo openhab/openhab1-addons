@@ -717,7 +717,8 @@
 				<Type>8001</Type>
 				<Id>0001</Id>
 			</Reference>
-			<Model>50x5xx</Model>
+			<Model>508519</Model>
+			<ConfigFile>merten/508519.xml</ConfigFile>
 			<Label lang="en">Switch Plug</Label>
 		</Product>
 		<Product>
@@ -728,6 +729,15 @@
 			<Model>5082xx</Model>
 			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
 			<ConfigFile>merten/5082xx.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>506119</Model>
+			<Label lang="en">Battery Powered Wall Controller</Label>
+			<ConfigFile>merten/506119.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
