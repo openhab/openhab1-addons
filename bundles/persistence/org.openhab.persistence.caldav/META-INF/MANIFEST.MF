@@ -24,4 +24,3 @@ Bundle-SymbolicName: org.openhab.persistence.caldav;singleton:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .
-Require-Bundle: org.openhab.core.persistence
