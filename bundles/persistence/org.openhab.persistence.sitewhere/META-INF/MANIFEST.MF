@@ -8,7 +8,6 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Import-Package: com.google.common.annotations,
  org.apache.commons.lang,
- org.openhab.config.core,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
