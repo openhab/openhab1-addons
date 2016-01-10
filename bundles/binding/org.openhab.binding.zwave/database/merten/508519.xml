@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>508519</Model>
+	<Label lang="en">Switch Plug In 3500 W</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x28</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Other device to be switched?</Label>
+		</Group>
+	</Associations>
+</Product>
