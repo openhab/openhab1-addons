@@ -25,6 +25,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.event,
  org.quartz,
  org.quartz.impl,
+ org.quartz.utils,
  org.slf4j
 Export-Package: org.openhab.binding.mystromecopower
 Bundle-DocURL: http://www.openhab.org
@@ -32,4 +33,3 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/gson-2.2.4.jar
-Require-Bundle: org.openhab.core.scheduler
