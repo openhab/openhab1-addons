@@ -730,6 +730,15 @@
 			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
 			<ConfigFile>merten/5082xx.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>506119</Model>
+			<Label lang="en">Battery Powered Wall Controller</Label>
+			<ConfigFile>merten/506119.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0077</Id>
