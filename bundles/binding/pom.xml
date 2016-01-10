@@ -15,6 +15,7 @@
 
     <packaging>pom</packaging>
 
+
     <modules>
         <module>org.openhab.binding.lgtv</module>
         <module>org.openhab.binding.bluetooth</module>
@@ -175,6 +176,7 @@
         <module>org.openhab.binding.akm868</module>
         <module>org.openhab.binding.sonance</module>
         <module>org.openhab.binding.stiebelheatpump</module>
+        <module>org.openhab.binding.stiebelheatpump.test</module>
         <module>org.openhab.binding.sallegra</module>
         <module>org.openhab.binding.pixtend</module>
         <module>org.openhab.binding.pixtend.test</module>

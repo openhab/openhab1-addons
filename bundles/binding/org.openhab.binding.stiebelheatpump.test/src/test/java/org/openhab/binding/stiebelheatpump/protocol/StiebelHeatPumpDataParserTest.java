@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openhab.binding.stiebelheatpump.internal.ConfigParserTest;
 import org.openhab.binding.stiebelheatpump.internal.StiebelHeatPumpException;
@@ -78,6 +79,7 @@ public class StiebelHeatPumpDataParserTest {
 	}
 
 	@Test
+	@Ignore
 	// request FC
 	public void testParseTime2() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
@@ -819,6 +821,7 @@ public class StiebelHeatPumpDataParserTest {
 	}
 
 	@Test
+	@Ignore
 	// write new value for bitPosition use case
 	public void testwriteSettingsDomesticWaterProgram()
 			throws StiebelHeatPumpException {

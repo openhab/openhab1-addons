@@ -15,7 +15,6 @@ import org.openhab.binding.stiebelheatpump.protocol.Request;
 public class ConfigParserTest {
 
 	private ConfigParser configParser = new ConfigParser();
-	public static String XMLLocation = "C:/TEMP/2.06.xml";
 
 	public ConfigParserTest() {
 	}
@@ -24,7 +23,13 @@ public class ConfigParserTest {
 	public void CreateParserConfiguration() throws StiebelHeatPumpException,
 			IOException, JAXBException {
 		List<Request> configuration = getHeatPumpConfiguration();
-		configParser.marshal(configuration, new File(XMLLocation));
+		File config = new File("target/testconfig.xml");
+		configParser.marshal(configuration, config);
+		List<Request> configuration2 = configParser.unmarshal(config);
+		Request firstRequest = configuration2.get(0);
+		Assert.assertEquals("Version", firstRequest.getName());
+		Assert.assertEquals((byte) 0xfd, firstRequest.getRequestByte());
+
 	}
 
 	public List<Request> getHeatPumpConfiguration() {
@@ -645,17 +650,6 @@ public class ConfigParserTest {
 		configuration.add(SettingsDomesticHotWater);
 
 		return configuration;
-	}
-
-	@Test
-	public void LoadParserConfiguration() throws StiebelHeatPumpException {
-		List<Request> configuration = new ArrayList<Request>();
-
-		configuration = configParser.unmarshal(new File(
-				XMLLocation));
-		Request firstRequest = configuration.get(0);
-		Assert.assertEquals("Version", firstRequest.getName());
-		Assert.assertEquals((byte) 0xfd, firstRequest.getRequestByte());
 	}
 
 	@Test

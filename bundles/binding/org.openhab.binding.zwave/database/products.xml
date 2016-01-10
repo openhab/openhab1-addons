@@ -2178,6 +2178,15 @@
 			<Label lang="en">Smart Energy Plug In Switch</Label>
 			<ConfigFile>philio/pan11_1b.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0021</Id>
+			</Reference>
+			<Model>PAT02-C</Model>
+			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>philio/pat02c.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0096</Id>
@@ -2761,6 +2770,16 @@
 			<Model>123665</Model>
 			<Label lang="en">Wall Plug Meter Switch</Label>
 			<ConfigFile>popp/123665.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>201</Type>
+				<Id>100</Id>
+			</Reference>
+			<Model>004001</Model>
+			<Label lang="en">Smoke Detector and Siren</Label>
+			<Label lang="de">Rauchwarnmelder mit integrierter Innensirene</Label>
+			<ConfigFile>popp/004001.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
