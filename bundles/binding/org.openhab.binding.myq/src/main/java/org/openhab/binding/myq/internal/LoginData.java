@@ -46,7 +46,7 @@ public class LoginData {
 			throw new InvalidDataException(
 					"Could not find SecurityToken in JSON data");
 		securityToken = data.toString();
-		logger.debug("myq securityToken: {}", securityToken);
+		logger.trace("myq securityToken: {}", securityToken);
 	}
 
 	/**
