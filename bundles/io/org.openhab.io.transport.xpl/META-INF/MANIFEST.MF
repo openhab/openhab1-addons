@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB xPL Transport Bundle
 Bundle-SymbolicName: org.openhab.io.transport.xpl;singleton:=true
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.cdp1802.xpl,

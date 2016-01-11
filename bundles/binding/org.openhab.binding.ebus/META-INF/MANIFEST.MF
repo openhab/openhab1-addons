@@ -6,7 +6,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: This is the eBus binding of the open Home Aut
  omation Bus (openHAB)
 Bundle-SymbolicName: org.openhab.binding.ebus;singleton:=true
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: ch.qos.logback.classic;version="1.0.0",
  ch.qos.logback.core.util;version="1.0.0",
