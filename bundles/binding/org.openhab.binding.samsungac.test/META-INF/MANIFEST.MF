@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the Samsung Air Conditioner binding
 Bundle-SymbolicName: org.openhab.binding.samsungac.test
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.samsungac
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

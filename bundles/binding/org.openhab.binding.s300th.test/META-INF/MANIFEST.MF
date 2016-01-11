@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the S300TH binding
 Bundle-SymbolicName: org.openhab.binding.s300th.test
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.s300th;bundle-version="1.4.0"
 Require-Bundle: org.junit;bundle-version="4.8.1"

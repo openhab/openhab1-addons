@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.binding.ehealth.internal
 Bundle-Name: openHAB Libelium eHealth Binding
 Bundle-SymbolicName: org.openhab.binding.ehealth
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.ehealth.internal.EHealthActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Libelium eHealth binding of the open Home Aut

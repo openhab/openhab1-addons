@@ -3,7 +3,7 @@ Private-Package: org.openhab.ui.internal
 Ignore-Package: org.openhab.ui.internal
 Bundle-Name: openHAB UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.ui.internal.UIActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html

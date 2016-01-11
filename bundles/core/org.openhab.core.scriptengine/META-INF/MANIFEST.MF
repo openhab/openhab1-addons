@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Script Engine
 Bundle-SymbolicName: org.openhab.core.scriptengine
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.openhab.core.scriptengine,org.openhab.core.scripte

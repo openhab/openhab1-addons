@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB xPL Action
 Bundle-SymbolicName: org.openhab.action.xpl
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.action.xpl.internal.XplActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the xPL action of the open Home Aut
