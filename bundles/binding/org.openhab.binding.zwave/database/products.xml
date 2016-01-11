@@ -131,6 +131,15 @@
 			<Label lang="en">Single Wall Outlet</Label>
 			<ConfigFile>linear/wo15z-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5457</Type>
+				<Id>3033</Id>
+			</Reference>
+			<Model>WT00Z-1</Model>
+			<Label lang="en">3-Way Wall Accessory Switch</Label>
+			<ConfigFile>linear/wt00z-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
