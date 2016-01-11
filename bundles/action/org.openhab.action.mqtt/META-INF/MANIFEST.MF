@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Mqtt Action
 Bundle-SymbolicName: org.openhab.action.mqtt
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.action.mqtt.internal.MqttActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Mqtt action of the open Home Aut

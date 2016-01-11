@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.binding.dsmr.internal
 Bundle-Name: openHAB DSMR Binding
 Bundle-SymbolicName: org.openhab.binding.dsmr
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.dsmr.internal.DSMRActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the DSMR binding of the open Home Aut
