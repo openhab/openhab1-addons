@@ -28,17 +28,7 @@
         <developerConnection>scm:git:https://github.com/openhab/openhab.git</developerConnection>
         <url>https://github.com/openhab/openhab</url>
     </scm>
-    
-    <mailingLists>
-        <mailingList>
-            <name>openhab Mailing List</name>
-            <post>openhab@googlegroups.com</post>
-            <subscribe>http://groups.google.com/group/openhab</subscribe>
-            <unsubscribe>http://groups.google.com/group/openhab</unsubscribe>
-            <archive>http://groups.google.com/group/openhab</archive>
-        </mailingList>
-    </mailingLists>
-    
+        
     <issueManagement>
         <url>https://github.com/openhab/openhab/issues</url>
         <system>Github</system>
@@ -47,7 +37,7 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
     
     <properties>
-        <tycho-version>0.22.0</tycho-version>
+        <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,9 +59,7 @@
     <modules>
         <module>bundles</module>
         <module>features</module>
-        <module>products</module>
         <module>targetplatform</module>
-        <module>distribution</module>
     </modules>
         
     <!-- dependencies, which are not available in a p2-repository -->
