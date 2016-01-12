@@ -9,6 +9,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Import-Package: com.google.common.annotations;version="1.0.0",
  org.apache.commons.lang,
  org.joda.time,
+ org.joda.time.base,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
