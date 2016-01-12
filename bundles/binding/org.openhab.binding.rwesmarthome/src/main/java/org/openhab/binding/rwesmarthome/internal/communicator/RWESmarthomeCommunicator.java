@@ -54,14 +54,15 @@ public class RWESmarthomeCommunicator {
      * Stops the communication with the RWE Smarthome Central.
      */
     public void stop() {
+        logger.info("Shutting down RWE Smarthome communicator");
         runPoller = false;
 
         if (rweSmarthomeSession != null) {
-            logger.info("Shutting down RWE Smarthome communicator");
             try {
                 rweSmarthomeSession.destroy();
             } finally {
                 rweSmarthomeSession = null;
+                logger.info("RWE Smarthome communicator shut down.");
             }
         }
     }
@@ -168,8 +169,8 @@ public class RWESmarthomeCommunicator {
 
             } else if (LogicalDevice.Type_SmokeDetectorSensor.equals(ld.getType())) {
                 validParams = "smokedetector";
-                exampleConfig.add("Switch\trweSmokeDetector" + ld.getId().substring(30) + "\t\"Rauchmelder "
-                        + ld.getLocation().getName() + "\"\t<fire>\t(rwe) {" + context.getBindingType() + "=\"id="
+                exampleConfig.add("String\trweSmokeDetector" + ld.getId().substring(30) + "\t\"Rauchmelder "
+                        + ld.getLocation().getName() + " [%s]\"\t<fire>\t(rwe) {" + context.getBindingType() + "=\"id="
                         + ld.getId() + ",param=smokedetector\"}\n");
 
             } else if (LogicalDevice.Type_AlarmActuator.equals(ld.getType())) {
@@ -189,6 +190,85 @@ public class RWESmarthomeCommunicator {
                 exampleConfig.add("Switch\trweVariable" + ld.getId().substring(30) + "\t\"Variable " + ld.getName()
                         + "\"\t<switch>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
                         + ",param=variable\"}\n");
+
+                // RWE Power Control Solar
+            } else if (LogicalDevice.Type_TwoWayMeterEnergyConsumptionSensor.equals(ld.getType())) {
+                validParams = "totalenergy, energypermonthinkwh, energypermonthineuro, energyperdayinkwh, energyperdayineuro";
+                exampleConfig.add("Number\trweEnergyConsumptionTotal" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption total " + ld.getLocation().getName()
+                        + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=totalenergy\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionMonthKWh" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per month " + ld.getLocation().getName()
+                        + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energypermonthinkwh\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionMonthEuro" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per month " + ld.getLocation().getName()
+                        + " [%.2f €]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energypermonthineuro\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionDayKWh" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per day " + ld.getLocation().getName()
+                        + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energyperdayinkwh\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionDayEuro" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per day " + ld.getLocation().getName()
+                        + " [%.2f €]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energyperdayineuro\"}\n");
+
+            } else if (LogicalDevice.Type_TwoWayMeterEnergyFeedSensor.equals(ld.getType())) {
+                validParams = "totalenergy, energypermonthinkwh, energypermonthineuro, energyperdayinkwh, energyperdayineuro";
+                exampleConfig.add("Number\trweEnergyFeedTotal" + ld.getId().substring(30) + "\t\t\"EnergyFeed total "
+                        + ld.getLocation().getName() + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType()
+                        + "=\"id=" + ld.getId() + ",param=totalenergy\"}\n");
+                exampleConfig
+                        .add("Number\trweEnergyFeedMonthKWh" + ld.getId().substring(30) + "\t\t\"EnergyFeed per month "
+                                + ld.getLocation().getName() + " [%.3f kWh]\"\t<energy>\t(rwe) {"
+                                + context.getBindingType() + "=\"id=" + ld.getId() + ",param=energypermonthinkwh\"}\n");
+                exampleConfig.add("Number\trweEnergyFeedMonthEuro" + ld.getId().substring(30)
+                        + "\t\t\"EnergyFeed per month " + ld.getLocation().getName() + " [%.2f €]\"\t<energy>\t(rwe) {"
+                        + context.getBindingType() + "=\"id=" + ld.getId() + ",param=energypermonthineuro\"}\n");
+                exampleConfig.add("Number\trweEnergyFeedDayKWh" + ld.getId().substring(30) + "\t\t\"EnergyFeed per day "
+                        + ld.getLocation().getName() + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType()
+                        + "=\"id=" + ld.getId() + ",param=energyperdayinkwh\"}\n");
+                exampleConfig.add("Number\trweEnergyFeedDayEuro" + ld.getId().substring(30)
+                        + "\t\t\"EnergyFeed per day " + ld.getLocation().getName() + " [%.2f €]\"\t<energy>\t(rwe) {"
+                        + context.getBindingType() + "=\"id=" + ld.getId() + ",param=energyperdayineuro\"}\n");
+
+            } else if (LogicalDevice.Type_TwoWayMeterPowerConsumptionSensor.equals(ld.getType())) {
+                validParams = "powerinwatt";
+                exampleConfig.add("Number\trwePowerConsumption" + ld.getId().substring(30) + "\t\t\"PowerConsumption"
+                        + ld.getLocation().getName() + " [%.2f W]\"\t<energy>\t(rwe) {" + context.getBindingType()
+                        + "=\"id=" + ld.getId() + ",param=powerinwatt\"}\n");
+
+                // RWE Power Control
+            } else if (LogicalDevice.Type_PowerConsumptionSensor.equals(ld.getType())) {
+                validParams = "powerinwatt";
+                exampleConfig.add("Number\trwePowerConsumption" + ld.getId().substring(30) + "\t\t\"PowerConsumption"
+                        + ld.getLocation().getName() + " [%.2f W]\"\t<energy>\t(rwe) {" + context.getBindingType()
+                        + "=\"id=" + ld.getId() + ",param=powerinwatt\"}\n");
+
+            } else if (LogicalDevice.Type_EnergyConsumptionSensor.equals(ld.getType())) {
+                validParams = "totalenergy, energypermonthinkwh, energypermonthineuro, energyperdayinkwh, energyperdayineuro";
+                exampleConfig.add("Number\trweEnergyConsumptionTotal" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption total " + ld.getLocation().getName()
+                        + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=totalenergy\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionMonthKWh" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per month " + ld.getLocation().getName()
+                        + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energypermonthinkwh\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionMonthEuro" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per month " + ld.getLocation().getName()
+                        + " [%.2f €]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energypermonthineuro\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionDayKWh" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per day " + ld.getLocation().getName()
+                        + " [%.3f kWh]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energyperdayinkwh\"}\n");
+                exampleConfig.add("Number\trweEnergyConsumptionDayEuro" + ld.getId().substring(30)
+                        + "\t\t\"EnergyConsumption per day " + ld.getLocation().getName()
+                        + " [%.2f €]\"\t<energy>\t(rwe) {" + context.getBindingType() + "=\"id=" + ld.getId()
+                        + ",param=energyperdayineuro\"}\n");
 
             } else if (LogicalDevice.Type_ThermostatActuator.equals(ld.getType())) {
                 continue; // ignore
@@ -212,16 +292,16 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Returns true, if the communicator is already running and false, if not.
-     * 
+     *
      * @return boolean
      */
     public boolean isRunning() {
-        return rweSmarthomeSession == null;
+        return rweSmarthomeSession != null;
     }
 
     /**
      * load the state of the logical devices from RWE Smarthome SHC.
-     * 
+     *
      * This is only necessary, when the RWE binding is started and the states unknown or
      * if the binding configuration has changed. Standard device state changes are
      * propagated using poll().
@@ -288,14 +368,15 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Sends a command to an item
-     * 
+     *
      * @param itemName
      * @param command
      */
     public void sendCommand(String itemName, Command command) {
-        for (RWESmarthomeBindingProvider provider : context.getProviders()) {
-            RWESmarthomeBindingConfig config = provider.getBindingConfigFor(itemName);
-            try {
+        try {
+            for (RWESmarthomeBindingProvider provider : context.getProviders()) {
+                RWESmarthomeBindingConfig config = provider.getBindingConfigFor(itemName);
+
                 // SWITCH
                 if ("switch".equals(config.getDeviceParam())) {
                     boolean on = command.equals(OnOffType.ON);
@@ -352,18 +433,23 @@ public class RWESmarthomeCommunicator {
                     setVariableState(config.getDeviceId(), on);
 
                 }
-            } catch (RWESmarthomeSessionExpiredException e) {
-                logger.error("Error handling command", e);
             }
+        } catch (RWESmarthomeSessionExpiredException e) {
+            logger.info("Session expired while executing command '{}' for item '{}'. Restart binding...", command,
+                    itemName);
+            stop();
+            start();
+            logger.info("Retrying command '{}' for item '{}'...", command, itemName);
+            sendCommand(itemName, command);
         }
     }
 
     /**
      * Returns a percentage value as integer for a given command.
-     * 
+     *
      * Command types increase/decrease are not supported and lead to the return of null.
      * If inverted is true, the returned value will be inverted (e.g. 40% -> 60%).
-     * 
+     *
      * @param command
      * @param inverted
      * @return integer or null
@@ -391,10 +477,10 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for notifications.
-     * 
+     *
      * Should be called once before getNotifications(). Times out after a couple of hours. So make sure to
      * test against LogoutNotification and resubscribe.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForNotifications(String notificationType) throws RWESmarthomeSessionExpiredException {
@@ -412,7 +498,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for configuration change notifications.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForConfigurationChanges() throws RWESmarthomeSessionExpiredException {
@@ -421,7 +507,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for calibration notifications.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForCalibration() throws RWESmarthomeSessionExpiredException {
@@ -430,7 +516,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for custom application notifications.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForCustomApplication() throws RWESmarthomeSessionExpiredException {
@@ -439,7 +525,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for device state changes.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForDeviceStateChanges() throws RWESmarthomeSessionExpiredException {
@@ -448,7 +534,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for deployment changes.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForDeploymentChanges() throws RWESmarthomeSessionExpiredException {
@@ -457,7 +543,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Subscribes for message updates.
-     * 
+     *
      * @throws RWESmarthomeSessionExpiredException
      */
     public void subscribeForMessageUpdates() throws RWESmarthomeSessionExpiredException {
@@ -466,7 +552,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Refresh configuration.
-     * 
+     *
      * @return the RWE Smarthome configuration XML response
      * @throws RWESmarthomeSessionExpiredException
      *             the smart home session expired exception
@@ -496,7 +582,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Refresh logical device state.
-     * 
+     *
      * @return the string
      * @throws SmartHomeSessionExpiredException
      *             the smart home session expired exception
@@ -523,9 +609,9 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Gets the notifications.
-     * 
+     *
      * @return
-     * 
+     *
      * @return the XML response
      * @throws SmartHomeSessionExpiredException
      *             the smart home session expired exception
@@ -555,7 +641,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Sends the getNotificationsRequest.
-     * 
+     *
      * @return the XML response
      * @throws RWESmarthomeSessionExpiredException
      */
@@ -565,7 +651,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Switch actuator change state.
-     * 
+     *
      * @param deviceId
      *            the device id
      * @param on
@@ -591,7 +677,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Changes the temperature of a RoomTemperatureActuator
-     * 
+     *
      * @param deviceId
      * @param temperature
      * @throws RWESmarthomeSessionExpiredException
@@ -616,7 +702,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Set the operation mode of a TemperaturActuator to "Auto" if true, "Manu" if false.
-     * 
+     *
      * @param deviceId
      * @param operationModeAuto
      * @throws RWESmarthomeSessionExpiredException
@@ -642,7 +728,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Changes the alarm state
-     * 
+     *
      * @param deviceId
      * @param on
      * @throws RWESmarthomeSessionExpiredException
@@ -664,7 +750,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Change the state of a variable.
-     * 
+     *
      * @param deviceId
      * @param on
      * @throws RWESmarthomeSessionExpiredException
@@ -686,7 +772,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Sets a dimmer to a new value.
-     * 
+     *
      * @param deviceId
      * @param newValue
      * @throws RWESmarthomeSessionExpiredException
@@ -709,7 +795,7 @@ public class RWESmarthomeCommunicator {
 
     /**
      * Sets the rollershutter to a new value.
-     * 
+     *
      * @param deviceId
      * @param newValue
      * @throws RWESmarthomeSessionExpiredException
