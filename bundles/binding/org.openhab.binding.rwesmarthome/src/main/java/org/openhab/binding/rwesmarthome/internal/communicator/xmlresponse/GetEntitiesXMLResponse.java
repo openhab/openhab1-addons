@@ -95,6 +95,26 @@ public class GetEntitiesXMLResponse extends XMLResponse {
                             logDev.setType(LogicalDevice.Type_GenericActuator_SunriseSunset);
                         }
                     }
+
+                    // Powercontrol devices
+                    if (LogicalDevice.Type_GenericSensor.equals(logDev.getType())) {
+                        // power control solar
+                        if ("TwoWayMeterEnergyConsumptionSensor".equals(getTextValueFromElements(logDevEl, "DvTp"))) {
+                            logDev.setType(LogicalDevice.Type_TwoWayMeterEnergyConsumptionSensor);
+                        } else if ("TwoWayMeterEnergyFeedSensor".equals(getTextValueFromElements(logDevEl, "DvTp"))) {
+                            logDev.setType(LogicalDevice.Type_TwoWayMeterEnergyFeedSensor);
+                        } else if ("TwoWayMeterPowerConsumptionSensor"
+                                .equals(getTextValueFromElements(logDevEl, "DvTp"))) {
+                            logDev.setType(LogicalDevice.Type_TwoWayMeterPowerConsumptionSensor);
+
+                            // power control
+                        } else if ("PowerConsumptionSensor".equals(getTextValueFromElements(logDevEl, "DvTp"))) {
+                            logDev.setType(LogicalDevice.Type_PowerConsumptionSensor);
+                        } else if ("EnergyConsumptionSensor".equals(getTextValueFromElements(logDevEl, "DvTp"))) {
+                            logDev.setType(LogicalDevice.Type_EnergyConsumptionSensor);
+                        }
+
+                    }
                     logicalDevices.put(logDev.getId(), logDev);
                 }
             }

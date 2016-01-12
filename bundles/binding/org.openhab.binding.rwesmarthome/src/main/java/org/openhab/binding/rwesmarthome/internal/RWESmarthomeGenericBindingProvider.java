@@ -55,6 +55,18 @@ import org.slf4j.LoggerFactory;
  * Rollershutter rweRollershutter "Rollershutter living [%d %%]"
  * <rollershutter> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=rollershutterinverted"}
  * Dimmer rweDimmer "Light [%d %%]" <slider> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=dimmer"}
+ * Number rweEnergyConsumptionTotal "EnergyConsumption total [%.3f kWh]"
+ * <energy> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=totalenergy"}
+ * Number rweEnergyConsumptionMonthKWh "EnergyConsumption per month [%.3f kWh]"
+ * <energy> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=energypermonthinkwh"}
+ * Number rweEnergyConsumptionMonthEuro "EnergyConsumption per month [%.2f €]"
+ * <energy> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=energypermonthineuro"}
+ * Number rweEnergyConsumptionDayKWh "EnergyConsumption per day [%.3f kWh]"
+ * <energy> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=energyperdayinkwh"}
+ * Number rweEnergyConsumptionDayEuro "EnergyConsumption per day [%.2f €]"
+ * <energy> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=energyperdayineuro"}
+ * Number rwePowerConsumption "PowerConsumption [%.2f W]"
+ * <energy> {rwe="id=2951a048-1d21-5caf-d866-b63bc00280f4,param=powerinwatt"}
  *
  * @author ollie-dev
  * @since 1.8.0
@@ -107,7 +119,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
 
         Pattern patternForId = Pattern.compile("^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$");
         Pattern patternForParam = Pattern.compile(
-                "^(temperature|humidity|settemperature|variable|contact|switch|operationmodeauto|luminance|smokedetector|dimmer|dimmerinverted|rollershutter|rollershutterinverted|alarm)$");
+                "^(temperature|humidity|settemperature|variable|contact|switch|operationmodeauto|luminance|smokedetector|dimmer|dimmerinverted|rollershutter|rollershutterinverted|alarm|totalenergy|energypermonthinkwh|energypermonthineuro|energyperdayinkwh|energyperdayineuro|powerinwatt)$");
 
         for (String configstring : configstrings) {
             String[] configParts = StringUtils.trimToEmpty(configstring).split("[=]");
@@ -130,7 +142,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
             } else if ("param".equalsIgnoreCase(key)) {
                 if (!patternForParam.matcher(value).matches()) {
                     throw new BindingConfigParseException(
-                            "Invalid configuration: 'param' must be one of the following: temperature|humidity|settemperature|variable|contact|switch|operationmodeauto|luminance|smokedetector|dimmer|dimmerinverted|rollershutter|rollershutterinverted|alarm");
+                            "Invalid configuration: 'param' must be one of the following: temperature|humidity|settemperature|variable|contact|switch|operationmodeauto|luminance|smokedetector|dimmer|dimmerinverted|rollershutter|rollershutterinverted|alarm|totalenergy|energypermonthinkwh|energypermonthineuro|energyperdayinkwh|energyperdayineuro|powerinwatt");
                 }
                 config.setDeviceParam(value);
 
@@ -160,7 +172,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
 
     /**
      * This is a helper class holding binding specific configuration details
-     * 
+     *
      * @author ollie-dev
      * @since 1.8.0
      */
@@ -170,7 +182,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
 
         /**
          * Returns the id of the device.
-         * 
+         *
          * @return the device id
          */
         public String getDeviceId() {
@@ -179,7 +191,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
 
         /**
          * Sets the id of the device.
-         * 
+         *
          * @param deviceId
          */
         public void setDeviceId(String deviceId) {
@@ -188,7 +200,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
 
         /**
          * Returns the device parameter.
-         * 
+         *
          * @return device parameter
          */
         public String getDeviceParam() {
@@ -197,7 +209,7 @@ public class RWESmarthomeGenericBindingProvider extends AbstractGenericBindingPr
 
         /**
          * Sets the device parameter.
-         * 
+         *
          * @param deviceParam
          */
         public void setDeviceParam(String deviceParam) {
