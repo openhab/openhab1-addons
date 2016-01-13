@@ -37,6 +37,9 @@ public class RuleContextHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(RuleContextHelper.class);
 
+	/** Variable name for the triggering item */
+	public static final String VAR_ITEM = "item";
+
 	/** Variable name for the previous state of an item in a "changed state triggered" rule */
 	public static final String VAR_PREVIOUS_STATE = "previousState";
 

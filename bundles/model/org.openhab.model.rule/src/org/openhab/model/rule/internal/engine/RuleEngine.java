@@ -10,11 +10,6 @@ package org.openhab.model.rule.internal.engine;
 
 import static org.openhab.core.events.EventConstants.TOPIC_PREFIX;
 import static org.openhab.core.events.EventConstants.TOPIC_SEPERATOR;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.CHANGE;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.COMMAND;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.SHUTDOWN;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.STARTUP;
-import static org.openhab.model.rule.internal.engine.RuleTriggerManager.TriggerTypes.UPDATE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,7 +61,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 
 	private RuleTriggerManager triggerManager;
 
-	public void activate() {
+	public synchronized void activate() {
 		triggerManager = new RuleTriggerManager();
 
 		if (!isEnabled()) {
@@ -83,7 +78,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			EObject model = modelRepository.getModel(ruleModelName);
 			if (model instanceof RuleModel) {
 				RuleModel ruleModel = (RuleModel) model;
-				triggerManager.addRuleModel(ruleModel);
+				triggerManager.addRuleModel(ruleModelName, ruleModel);
 			}
 		}
 
@@ -94,45 +89,46 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		runStartupRules();
 	}
 
-	public void deactivate() {
+	public synchronized void deactivate() {
 		// execute all scripts that were registered for system shutdown
-		executeRules(triggerManager.getRules(SHUTDOWN));
+		executeRules(triggerManager.getShutdownRules());
 		triggerManager.clearAll();
 		triggerManager = null;
 	}
 
-	public void setItemRegistry(ItemRegistry itemRegistry) {
+	public synchronized void setItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = itemRegistry;
 		itemRegistry.addItemRegistryChangeListener(this);
 	}
 
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+	public synchronized void unsetItemRegistry(ItemRegistry itemRegistry) {
 		itemRegistry.removeItemRegistryChangeListener(this);
 		this.itemRegistry = null;
 	}
 
-	public void setModelRepository(ModelRepository modelRepository) {
+	public synchronized void setModelRepository(ModelRepository modelRepository) {
 		this.modelRepository = modelRepository;
 		modelRepository.addModelRepositoryChangeListener(this);
 	}
 
-	public void unsetModelRepository(ModelRepository modelRepository) {
+	public synchronized void unsetModelRepository(ModelRepository modelRepository) {
 		modelRepository.removeModelRepositoryChangeListener(this);
 		this.modelRepository = null;
 	}
 
-	public void setScriptEngine(ScriptEngine scriptEngine) {
+	public synchronized void setScriptEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = scriptEngine;
 	}
 
-	public void unsetScriptEngine(ScriptEngine scriptEngine) {
+	public synchronized void unsetScriptEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void allItemsChanged(Collection<String> oldItemNames) {
+	@Override
+	public synchronized void allItemsChanged(Collection<String> oldItemNames) {
 		// add the current items again
 		Collection<Item> items = itemRegistry.getItems();
 		for (Item item : items) {
@@ -144,7 +140,8 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 	/**
 	 * {@inheritDoc}
 	 */
-	public void itemAdded(Item item) {
+	@Override
+	public synchronized void itemAdded(Item item) {
 		internalItemAdded(item);
 		runStartupRules();
 	}
@@ -152,7 +149,8 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 	/**
 	 * {@inheritDoc}
 	 */
-	public void itemRemoved(Item item) {
+	@Override
+	public synchronized void itemRemoved(Item item) {
 		if (item instanceof GenericItem) {
 			GenericItem genericItem = (GenericItem) item;
 			genericItem.removeStateChangeListener(this);
@@ -162,13 +160,15 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 	/**
 	 * {@inheritDoc}
 	 */
-	public void stateChanged(Item item, State oldState, State newState) {
+	@Override
+	public synchronized void stateChanged(Item item, State oldState, State newState) {
 		if (triggerManager != null) {
 			RuleEvaluationContext context;
-			Iterable<Rule> rules = triggerManager.getRules(CHANGE, item, oldState, newState);
+			Iterable<Rule> rules = triggerManager.getChangeRules(item, oldState, newState);
 
 			for (Rule rule : rules) {
 				context = new RuleEvaluationContext();
+				context.newValue(QualifiedName.create(RuleContextHelper.VAR_ITEM), item);
 				context.newValue(QualifiedName.create(RuleContextHelper.VAR_PREVIOUS_STATE), oldState);
 				executeRule(rule, context);
 			}
@@ -178,32 +178,45 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 	/**
 	 * {@inheritDoc}
 	 */
-	public void stateUpdated(Item item, State state) {
+	@Override
+	public synchronized void stateUpdated(Item item, State state) {
+		RuleEvaluationContext context;
 		if (triggerManager != null) {
-			Iterable<Rule> rules = triggerManager.getRules(UPDATE, item, state);
-			executeRules(rules);
+			Iterable<Rule> rules = triggerManager.getUpdateRules(item, state);
+			for (Rule rule : rules) {
+				context = new RuleEvaluationContext();
+				context.newValue(QualifiedName.create(RuleContextHelper.VAR_ITEM), item);
+				executeRule(rule, context);
+			}
 		}
 	}
-
-	public void receiveCommand(String itemName, Command command) {
-		if (triggerManager != null && itemRegistry != null) {
+	
+	public synchronized void receiveCommand(String itemName, Command command) {
+		if (itemRegistry != null) {
 			try {
-				RuleEvaluationContext context;
 				Item item = itemRegistry.getItem(itemName);
-				Iterable<Rule> rules = triggerManager.getRules(COMMAND, item, command);
-
-				for (Rule rule : rules) {
-					context = new RuleEvaluationContext();
-					context.newValue(QualifiedName.create(RuleContextHelper.VAR_RECEIVED_COMMAND), command);
-					executeRule(rule, context);
-				}
+				receiveCommand(item, command);
 			} catch (ItemNotFoundException e) {
 				// ignore commands for non-existent items
+			}
+		}		
+	}
+
+	public synchronized void receiveCommand(Item item, Command command) {
+		if (triggerManager != null && itemRegistry != null) {
+			RuleEvaluationContext context;
+			Iterable<Rule> rules = triggerManager.getCommandRules(item, command);
+
+			for (Rule rule : rules) {
+				context = new RuleEvaluationContext();
+				context.newValue(QualifiedName.create(RuleContextHelper.VAR_ITEM), item);
+				context.newValue(QualifiedName.create(RuleContextHelper.VAR_RECEIVED_COMMAND), command);
+				executeRule(rule, context);
 			}
 		}
 	}
 
-	private void internalItemAdded(Item item) {
+	private synchronized void internalItemAdded(Item item) {
 		if (item instanceof GenericItem) {
 			GenericItem genericItem = (GenericItem) item;
 			genericItem.addStateChangeListener(this);
@@ -213,7 +226,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 	/**
 	 * {@inheritDoc}
 	 */
-	public void handleEvent(Event event) {
+	public synchronized void handleEvent(Event event) {
 		String itemName = (String) event.getProperty("item");
 
 		String topic = event.getTopic();
@@ -231,7 +244,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		}
 	}
 
-	public void modelChanged(String modelName, org.openhab.model.core.EventType type) {
+	public synchronized void modelChanged(String modelName, org.openhab.model.core.EventType type) {
 		if (triggerManager != null) {
 			if (isEnabled() && modelName.endsWith("rules")) {
 				RuleModel model = (RuleModel) modelRepository.getModel(modelName);
@@ -239,13 +252,13 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 				// remove the rules from the trigger sets
 				if (type == org.openhab.model.core.EventType.REMOVED
 						|| type == org.openhab.model.core.EventType.MODIFIED) {
-					triggerManager.removeRuleModel(model);
+					triggerManager.removeRuleModel(modelName);
 				}
 
 				// add new and modified rules to the trigger sets
 				if (model != null
 						&& (type == org.openhab.model.core.EventType.ADDED || type == org.openhab.model.core.EventType.MODIFIED)) {
-					triggerManager.addRuleModel(model);
+					triggerManager.addRuleModel(modelName, model);
 					// now execute all rules that are meant to trigger at startup
 					runStartupRules();
 				}
@@ -253,9 +266,9 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 		}
 	}
 
-	private void runStartupRules() {
+	private synchronized void runStartupRules() {
 		if (triggerManager != null) {
-			Iterable<Rule> startupRules = triggerManager.getRules(STARTUP);
+			Iterable<Rule> startupRules = triggerManager.getStartupRules();
 			List<Rule> executedRules = Lists.newArrayList();
 
 			for (Rule rule : startupRules) {
@@ -282,7 +295,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 				}
 			}
 			for (Rule rule : executedRules) {
-				triggerManager.removeRule(STARTUP, rule);
+				triggerManager.removeStartupRule(rule);
 			}
 		}
 	}
@@ -293,10 +306,6 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 			message = t.getCause().getMessage();
 		}
 		return message;
-	}
-
-	protected synchronized void executeRule(Rule rule) {
-		executeRule(rule, new RuleEvaluationContext());
 	}
 
 	protected synchronized void executeRule(Rule rule, RuleEvaluationContext context) {
@@ -312,7 +321,7 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 
 	protected synchronized void executeRules(Iterable<Rule> rules) {
 		for (Rule rule : rules) {
-			executeRule(rule);
+			executeRule(rule, new RuleEvaluationContext());
 		}
 	}
 

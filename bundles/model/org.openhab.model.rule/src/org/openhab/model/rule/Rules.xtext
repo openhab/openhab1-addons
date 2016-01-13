@@ -24,23 +24,29 @@ Rule:
 ;
 
 EventTrigger:
-	UpdateEventTrigger |
-	CommandEventTrigger |
-	ChangedEventTrigger |
+	ItemEventTrigger |
 	TimerTrigger |
 	SystemTrigger
 ;
 
+ItemEventTrigger:
+	'Item' (in?='in')? item=ItemName trigger=(UpdateEventTrigger|CommandEventTrigger|ChangedEventTrigger)
+;
+
+
 CommandEventTrigger:
-	'Item' item=ItemName 'received command' (command=ValidCommand)?
+	{CommandEventTrigger}
+	'received command' (command=ValidCommand)?
 ;
 
 UpdateEventTrigger:
-	'Item' item=ItemName 'received update' (state=ValidState)?
+	{UpdateEventTrigger}
+	'received update' (state=ValidState)?
 ;
 
 ChangedEventTrigger:
-	'Item' item=ItemName 'changed' ('from' oldState=ValidState)? ('to' newState=ValidState)?
+	{ChangedEventTrigger}
+	'changed' ('from' oldState=ValidState)? ('to' newState=ValidState)?
 ;		
 
 TimerTrigger:
@@ -67,7 +73,7 @@ QualifiedNameWithWildCard :
 	QualifiedName  ('.' '*')?;
 	
 ItemName :
-	ID
+	ID | STRING
 ;
 
 ValidState:

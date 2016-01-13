@@ -125,6 +125,8 @@ then
 	}
 end
 
+
+
 /** 
  * shows how to check recent switch states - very helpful to avoid executing something too often, just
  * because somebody presses a button too often (e.g. sending a notification, if the doorbell button is pressed)
@@ -182,3 +184,19 @@ then
 	var Number humidex = T + (new Double(5) / new Double(9)) * (e - 10)
 	postUpdate(Weather_Humidex, humidex)
 end
+
+rule "Window opened"
+when 
+	Item in Windows changed from "CLOSED" to "OPEN"
+then
+	sendCommand("LastOpenedWindow", item.name)
+end
+
+rule "Catch all"
+when 
+	Item "Window_.*" changed from "OPEN" to "CLOSED"
+then
+	
+	sendCommand("LastClosedWindow", item.name)
+end
+
