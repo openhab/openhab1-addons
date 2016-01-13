@@ -25,14 +25,14 @@
 	    <plugin>
 	      <groupId>org.fornax.toolsupport</groupId>
 	        <artifactId>fornax-oaw-m2-plugin</artifactId>
-	        <version>3.5.1</version>
+          <version>3.5.1</version>
 	        <configuration>
 	          <workflowEngine>mwe2</workflowEngine>
 	          <workflowDescriptor>src/org/openhab/model/rule/GenerateRules.mwe2</workflowDescriptor>
 		      <jvmSettings>
-				<jvmArgs>
-					<jvmArg>-Xmx512m</jvmArg>
-				</jvmArgs>
+				    <jvmArgs>
+              <jvmArg>-XX:+UseG1GC -Xms32m -Xmx75m -XX:MaxMetaspaceSize=60m -XX:MetaspaceSize=5m</jvmArg>
+            </jvmArgs>
 		      </jvmSettings>
 	        </configuration>
 	        <executions>

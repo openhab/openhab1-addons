@@ -30,9 +30,9 @@
 	          <workflowEngine>mwe2</workflowEngine>
 	          <workflowDescriptor>src/org/openhab/model/script/GenerateScript.mwe2</workflowDescriptor>
 		      <jvmSettings>
-				<jvmArgs>
-					<jvmArg>-Xmx512m</jvmArg>
-				</jvmArgs>
+    				<jvmArgs>
+              <jvmArg>-XX:+UseG1GC -Xms32m -Xmx75m -XX:MaxMetaspaceSize=60m -XX:MetaspaceSize=5m</jvmArg>
+            </jvmArgs>
 		      </jvmSettings>
 	        </configuration>
 	        <executions>
