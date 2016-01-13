@@ -30,9 +30,9 @@
 	          <workflowEngine>mwe2</workflowEngine>
 	          <workflowDescriptor>src/org/openhab/model/GenerateSitemap.mwe2</workflowDescriptor>
 		      <jvmSettings>
-				<jvmArgs>
-					<jvmArg>-Xmx512m</jvmArg>
-				</jvmArgs>
+    				<jvmArgs>
+              <jvmArg>-XX:+UseG1GC -Xms32m -Xmx140m -XX:MaxMetaspaceSize=40m</jvmArg>
+    				</jvmArgs>
 		      </jvmSettings>
 	        </configuration>
 	        <executions>
