@@ -57,7 +57,7 @@ public class SerialParameters {
     m_Stopbits = SerialPort.STOPBITS_1;
     m_Parity = SerialPort.PARITY_NONE;
     m_Encoding = Modbus.DEFAULT_SERIAL_ENCODING;
-    m_ReceiveTimeout = 500; //5 secs
+    m_ReceiveTimeout = 500; //0.5 seconds
     m_Echo = false;
   }//constructor
 
