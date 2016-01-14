@@ -237,14 +237,18 @@ public class SerialDevice implements SerialPortEventListener {
 								} else {
 									try {
 										String value = transformationService.transform(entry.getValue().pattern, result);
-										if(entry.getValue().type.equals(NumberItem.class)) {
-											try {
-												eventPublisher.postUpdate(entry.getKey(), new DecimalType(value));
-											} catch (NumberFormatException e) {
-												logger.warn("Unable to convert regex result '{}' for item {} to number", new String[] { result, entry.getKey()});
+										
+										// check if regex service transformed the data
+										if(!value.equals(result)) {
+											if(entry.getValue().type.equals(NumberItem.class)) {
+												try {
+													eventPublisher.postUpdate(entry.getKey(), new DecimalType(value));
+												} catch (NumberFormatException e) {
+													logger.warn("Unable to convert regex result '{}' for item {} to number", new String[] { result, entry.getKey()});
+												}
+											} else {
+												eventPublisher.postUpdate(entry.getKey(), new StringType(value));
 											}
-										} else {
-											eventPublisher.postUpdate(entry.getKey(), new StringType(value));
 										}
 										
 									} catch (TransformationException e) {
