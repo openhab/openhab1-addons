@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -348,11 +348,11 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 					localReader.processBindingConfiguration(modelName, item, config);
 				} catch (BindingConfigParseException e) {
 					logger.error("Binding configuration of type '" + bindingType
-						+ "' of item ‘" + item.getName() + "‘ could not be parsed correctly.", e);
+						+ "' of item '" + item.getName() + "' could not be parsed correctly.", e);
 				} catch (Exception e) {
 					// Catch badly behaving binding exceptions and continue processing
 					logger.error("Binding configuration of type '" + bindingType
-						+ "' of item ‘" + item.getName() + "‘ could not be parsed correctly.", e);
+						+ "' of item '" + item.getName() + "' could not be parsed correctly.", e);
 				}
 			} else {
 				logger.trace("Couldn't find config reader for binding type '{}' > " +
