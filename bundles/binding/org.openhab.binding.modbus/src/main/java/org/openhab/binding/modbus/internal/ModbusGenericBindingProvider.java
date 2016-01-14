@@ -127,6 +127,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		 * Name of the ModbusSlave instance to read/write data
 		 */
 		String slaveName;
+		public State state;
 		/**
 		 * OpenHAB Item to be configured 
 		 */
@@ -137,9 +138,9 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		}
 		
 		State getItemState() {
-			return item.getState();
+			return state != null ? state : item.getState();
 		}
-	
+
 		/**
 		 * Calculates new item state based on the new boolean value, current item state and item class
 		 * Used with item bound to "coil" type slaves
