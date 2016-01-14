@@ -56,7 +56,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 			LoggerFactory.getLogger(ProtocolGenericBindingProvider.class);
 
 	/** {@link Pattern} which matches a binding configuration part */
-	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:\\s|$)");
+	private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:[,\\s]|$)");
 	private static final Pattern ACTION_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(.*?):(?:'(.*)'|(.*))\\]");
 	private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(?:'(.*)'|(.*))\\]");
 
