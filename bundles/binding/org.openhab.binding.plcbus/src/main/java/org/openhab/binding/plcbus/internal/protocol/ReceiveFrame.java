@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,40 +10,39 @@ package org.openhab.binding.plcbus.internal.protocol;
 
 /**
  * Frame received from PLCBus
- * 
+ *
  * @author Robin Lenz
  * @since 1.1.0
  */
 public class ReceiveFrame extends Frame<ReceiveDataFrame> {
 
-	private byte endByte;
+    private byte endByte;
 
-	public ReceiveFrame() {
-		super();
-	}
+    public ReceiveFrame() {
+        super();
+    }
 
-	
-	@Override
-	public byte getEndByte() {
-		return endByte;
-	}
+    @Override
+    public byte getEndByte() {
+        return endByte;
+    }
 
-	public boolean isAcknowledgement() {
-		return getData().isAcknowledgement();
-	}
+    public boolean isAcknowledgement() {
+        return getData().isAcknowledgement();
+    }
 
-	public int getFirstParameter() {
-		return getData().getFirstParameter();
-	}
+    public int getFirstParameter() {
+        return getData().getFirstParameter();
+    }
 
-	public int getSecondParameter() {
-		return getData().getSecondParameter();
-	}
+    public int getSecondParameter() {
+        return getData().getSecondParameter();
+    }
 
-	public void parse(byte[] bytes) {
-		data = new ReceiveDataFrame();
-		data.parse(bytes);
-		endByte = bytes[bytes.length - 1];
-	}
-	
+    public void parse(byte[] bytes) {
+        data = new ReceiveDataFrame();
+        data.parse(bytes);
+        endByte = bytes[bytes.length - 1];
+    }
+
 }

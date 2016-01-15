@@ -25,76 +25,76 @@ package net.wimpi.modbus.procimg;
  */
 public interface ProcessImageFactory {
 
-  /**
-   * Returns a new ProcessImageImplementation instance.
-   *
-   * @return a ProcessImageImplementation instance.
-   */
-  public ProcessImageImplementation createProcessImageImplementation();
+    /**
+     * Returns a new ProcessImageImplementation instance.
+     *
+     * @return a ProcessImageImplementation instance.
+     */
+    public ProcessImageImplementation createProcessImageImplementation();
 
-  /**
-   * Returns a new DigitalIn instance.
-   *
-   * @return a DigitalIn instance.
-   */
-  public DigitalIn createDigitalIn();
+    /**
+     * Returns a new DigitalIn instance.
+     *
+     * @return a DigitalIn instance.
+     */
+    public DigitalIn createDigitalIn();
 
-  /**
-   * Returns a new DigitalIn instance with the given state.
-   *
-   * @param state true if set, false otherwise.
-   * @return a DigitalIn instance.
-   */
-  public DigitalIn createDigitalIn(boolean state);
+    /**
+     * Returns a new DigitalIn instance with the given state.
+     *
+     * @param state true if set, false otherwise.
+     * @return a DigitalIn instance.
+     */
+    public DigitalIn createDigitalIn(boolean state);
 
-  /**
-   * Returns a new DigitalOut instance.
-   *
-   * @return a DigitalOut instance.
-   */
-  public DigitalOut createDigitalOut();
+    /**
+     * Returns a new DigitalOut instance.
+     *
+     * @return a DigitalOut instance.
+     */
+    public DigitalOut createDigitalOut();
 
-  /**
-   * Returns a new DigitalOut instance with the
-   * given state.
-   *
-   * @param b true if set, false otherwise.
-   * @return a DigitalOut instance.
-   */
-  public DigitalOut createDigitalOut(boolean b);
+    /**
+     * Returns a new DigitalOut instance with the
+     * given state.
+     *
+     * @param b true if set, false otherwise.
+     * @return a DigitalOut instance.
+     */
+    public DigitalOut createDigitalOut(boolean b);
 
-  /**
-   * Returns a new InputRegister instance.
-   *
-   * @return an InputRegister instance.
-   */
-  public InputRegister createInputRegister();
+    /**
+     * Returns a new InputRegister instance.
+     *
+     * @return an InputRegister instance.
+     */
+    public InputRegister createInputRegister();
 
-  /**
-   * Returns a new InputRegister instance with a
-   * given value.
-   *
-   * @param b1 the first <tt>byte</tt>.
-   * @param b2 the second <tt>byte</tt>.
-   * @return an InputRegister instance.
-   */
-  public InputRegister createInputRegister(byte b1, byte b2);
+    /**
+     * Returns a new InputRegister instance with a
+     * given value.
+     *
+     * @param b1 the first <tt>byte</tt>.
+     * @param b2 the second <tt>byte</tt>.
+     * @return an InputRegister instance.
+     */
+    public InputRegister createInputRegister(byte b1, byte b2);
 
-  /**
-   * Creates a new Register instance.
-   *
-   * @return a Register instance.
-   */
-  public Register createRegister();
+    /**
+     * Creates a new Register instance.
+     *
+     * @return a Register instance.
+     */
+    public Register createRegister();
 
-  /**
-   * Returns a new Register instance with a
-   * given value.
-   *
-   * @param b1 the first <tt>byte</tt>.
-   * @param b2 the second <tt>byte</tt>.
-   * @return a Register instance.
-   */
-   public Register createRegister(byte b1, byte b2);
+    /**
+     * Returns a new Register instance with a
+     * given value.
+     *
+     * @param b1 the first <tt>byte</tt>.
+     * @param b2 the second <tt>byte</tt>.
+     * @return a Register instance.
+     */
+    public Register createRegister(byte b1, byte b2);
 
-}//interface ProcessImageFactory
+}// interface ProcessImageFactory

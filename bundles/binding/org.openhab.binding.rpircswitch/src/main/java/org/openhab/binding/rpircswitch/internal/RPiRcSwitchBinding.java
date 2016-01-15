@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,129 +32,123 @@ import de.pi3g.pi.rcswitch.RCSwitch;
  * <p>
  * Binding listening OpenHAB bus and send commands to RC switches when command
  * is received.
- * 
+ *
  * @author Matthias Röckl
  * @since 1.8.0
  */
-public class RPiRcSwitchBinding extends
-		AbstractBinding<RPiRcSwitchBindingProvider> implements ManagedService {
+public class RPiRcSwitchBinding extends AbstractBinding<RPiRcSwitchBindingProvider>implements ManagedService {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(RPiRcSwitchBinding.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RPiRcSwitchBinding.class);
 
-	private RCSwitch transmitter;
+    private RCSwitch transmitter;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.openhab.core.binding.AbstractBinding#activate()
-	 */
-	@Override
-	public void activate() {
-		LOGGER.debug("Raspberry Pi RC Switch activated");
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openhab.core.binding.AbstractBinding#activate()
+     */
+    @Override
+    public void activate() {
+        LOGGER.debug("Raspberry Pi RC Switch activated");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.openhab.core.binding.AbstractBinding#deactivate()
-	 */
-	@Override
-	public void deactivate() {
-		LOGGER.debug("Raspberry Pi RC Switch deactivated");
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openhab.core.binding.AbstractBinding#deactivate()
+     */
+    @Override
+    public void deactivate() {
+        LOGGER.debug("Raspberry Pi RC Switch deactivated");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.
-	 * lang.String, org.openhab.core.types.Command)
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// Command has been received
-		if (itemName != null) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.
+     * lang.String, org.openhab.core.types.Command)
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        // Command has been received
+        if (itemName != null) {
 
-			// Get the configuration
-			RPiRcSwitchBindingConfig config = this
-					.getConfigForItemName(itemName);
+            // Get the configuration
+            RPiRcSwitchBindingConfig config = this.getConfigForItemName(itemName);
 
-			if (config == null) {
-				LOGGER.error("No configuration for Raspberry Pi RC Switch available.");
-				return;
-			}
+            if (config == null) {
+                LOGGER.error("No configuration for Raspberry Pi RC Switch available.");
+                return;
+            }
 
-			// Only OnOffType is supported
-			if (command instanceof OnOffType) {
-				if (this.transmitter != null) {
-					if (OnOffType.ON.equals(command)) {
-						this.transmitter.switchOn(config.getGroupAddress(),
-								config.getDeviceAddress());
-					} else {
-						this.transmitter.switchOff(config.getGroupAddress(),
-								config.getDeviceAddress());
-					}
-				} else {
-					LOGGER.error("Transmitter has not been initialized. Please configure it correctly in your OpenHAB configuration.");
-				}
-			} else {
-				LOGGER.error("Only On/Off commands are supported.");
-			}
-		}
-	}
+            // Only OnOffType is supported
+            if (command instanceof OnOffType) {
+                if (this.transmitter != null) {
+                    if (OnOffType.ON.equals(command)) {
+                        this.transmitter.switchOn(config.getGroupAddress(), config.getDeviceAddress());
+                    } else {
+                        this.transmitter.switchOff(config.getGroupAddress(), config.getDeviceAddress());
+                    }
+                } else {
+                    LOGGER.error(
+                            "Transmitter has not been initialized. Please configure it correctly in your OpenHAB configuration.");
+                }
+            } else {
+                LOGGER.error("Only On/Off commands are supported.");
+            }
+        }
+    }
 
-	/**
-	 * Returns the configuration for the item with the given name.
-	 * 
-	 * @param itemName
-	 *            the name of the item
-	 * @return the configuration to use
-	 */
-	protected RPiRcSwitchBindingConfig getConfigForItemName(String itemName) {
-		for (RPiRcSwitchBindingProvider provider : this.providers) {
-			if (provider.getItemConfig(itemName) != null) {
-				return provider.getItemConfig(itemName);
-			}
-		}
-		return null;
-	}
+    /**
+     * Returns the configuration for the item with the given name.
+     * 
+     * @param itemName
+     *            the name of the item
+     * @return the configuration to use
+     */
+    protected RPiRcSwitchBindingConfig getConfigForItemName(String itemName) {
+        for (RPiRcSwitchBindingProvider provider : this.providers) {
+            if (provider.getItemConfig(itemName) != null) {
+                return provider.getItemConfig(itemName);
+            }
+        }
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
-	 */
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		LOGGER.debug("New configuration received");
-		if (config != null) {
-			Enumeration<String> keys = config.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        LOGGER.debug("New configuration received");
+        if (config != null) {
+            Enumeration<String> keys = config.keys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
 
-				if ("service.pid".equals(key)) {
-					continue;
-				}
+                if ("service.pid".equals(key)) {
+                    continue;
+                }
 
-				Object o = config.get("gpioPin");
-				if (o instanceof String) {
-					String pinAddressString = (String) o;
+                Object o = config.get("gpioPin");
+                if (o instanceof String) {
+                    String pinAddressString = (String) o;
 
-					try {
-						int pinAddress = Integer.parseInt(pinAddressString);
-						PinImpl gpioPin = new PinImpl(RaspiGpioProvider.NAME,
-								pinAddress, "GPIO_" + pinAddress, EnumSet.of(
-										PinMode.DIGITAL_INPUT,
-										PinMode.DIGITAL_OUTPUT),
-								PinPullResistance.all());
-						this.transmitter = new RCSwitch(gpioPin);
-					} catch (NumberFormatException e) {
-						LOGGER.error("Invalid configuration. Please provide an Integer value in the 'gpioPin' configuration");
-					}
-				}
-			}
-		}
-	}
+                    try {
+                        int pinAddress = Integer.parseInt(pinAddressString);
+                        PinImpl gpioPin = new PinImpl(RaspiGpioProvider.NAME, pinAddress, "GPIO_" + pinAddress,
+                                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT), PinPullResistance.all());
+                        this.transmitter = new RCSwitch(gpioPin);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error(
+                                "Invalid configuration. Please provide an Integer value in the 'gpioPin' configuration");
+                    }
+                }
+            }
+        }
+    }
 
 }

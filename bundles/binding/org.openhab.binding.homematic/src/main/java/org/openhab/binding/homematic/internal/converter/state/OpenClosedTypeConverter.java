@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,35 +13,35 @@ import org.openhab.core.library.types.OpenClosedType;
 
 /**
  * Converts between openHAB OpenClosedType and Homematic values.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 public class OpenClosedTypeConverter extends AbstractEnumTypeConverter<OpenClosedType> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected OpenClosedType getFalseType() {
-		return OpenClosedType.CLOSED;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OpenClosedType getFalseType() {
+        return OpenClosedType.CLOSED;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected OpenClosedType getTrueType() {
-		return OpenClosedType.OPEN;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OpenClosedType getTrueType() {
+        return OpenClosedType.OPEN;
+    }
 
-	/**
-	 * Invert only boolean values which are not from a sensor or a state from
-	 * some devices.
-	 */
-	@Override
-	protected boolean isInvert(HmValueItem hmValueItem) {
-		return !isName(hmValueItem, "SENSOR") && !isStateInvertDevice(hmValueItem) && hmValueItem.isBooleanValue();
-	}
+    /**
+     * Invert only boolean values which are not from a sensor or a state from
+     * some devices.
+     */
+    @Override
+    protected boolean isInvert(HmValueItem hmValueItem) {
+        return !isName(hmValueItem, "SENSOR") && !isStateInvertDevice(hmValueItem) && hmValueItem.isBooleanValue();
+    }
 
 }

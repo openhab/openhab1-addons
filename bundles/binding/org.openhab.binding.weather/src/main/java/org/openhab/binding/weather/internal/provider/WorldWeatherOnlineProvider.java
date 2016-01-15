@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,31 +13,31 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
 
 /**
  * WorldWeatherOnline weather provider.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class WorldWeatherOnlineProvider extends AbstractWeatherProvider {
-	private static final String URL = "http://api.worldweatheronline.com/free/v2/weather.ashx?key=[API_KEY]&q=[LATITUDE],[LONGITUDE]&extra=localObsTime&num_of_days=5&format=json&lang=[LANGUAGE]";
+    private static final String URL = "http://api.worldweatheronline.com/free/v2/weather.ashx?key=[API_KEY]&q=[LATITUDE],[LONGITUDE]&extra=localObsTime&num_of_days=5&format=json&lang=[LANGUAGE]";
 
-	public WorldWeatherOnlineProvider() {
-		super(new JsonWeatherParser());
-	}
+    public WorldWeatherOnlineProvider() {
+        super(new JsonWeatherParser());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ProviderName getProviderName() {
-		return ProviderName.WORLDWEATHERONLINE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProviderName getProviderName() {
+        return ProviderName.WORLDWEATHERONLINE;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getWeatherUrl() {
-		return URL;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getWeatherUrl() {
+        return URL;
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,13 +13,13 @@ package org.openhab.binding.tinkerforge.internal;
  * @since 1.3.0
  */
 public class LoggerConstants {
-	
-	public static String TFINIT = "TFINIT";
-	public static String TFINITSUB = "TFINITSUB";
-	public static String TFCOMMAND = "TFCOMMAND";
-	public static String TFMODELUPDATE = "TFMODELUPDATE";
-	public static String CONFIG = "CONFIG";
-	public static String ITEMUPDATE = "ITEMUPDATE";
-	public static String COMMAND = "COMMAND";
-	
+
+    public static String TFINIT = "TFINIT";
+    public static String TFINITSUB = "TFINITSUB";
+    public static String TFCOMMAND = "TFCOMMAND";
+    public static String TFMODELUPDATE = "TFMODELUPDATE";
+    public static String CONFIG = "CONFIG";
+    public static String ITEMUPDATE = "ITEMUPDATE";
+    public static String COMMAND = "COMMAND";
+
 }

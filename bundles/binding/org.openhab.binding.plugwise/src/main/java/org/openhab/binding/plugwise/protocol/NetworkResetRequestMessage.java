@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,24 +16,25 @@ package org.openhab.binding.plugwise.protocol;
  */
 public class NetworkResetRequestMessage extends Message {
 
-	public NetworkResetRequestMessage(String payLoad) {
-		super(payLoad);
-		type = MessageType.NETWORK_RESET_REQUEST;
-		payLoad = "00";
-		MAC = "";
-	}
+    public NetworkResetRequestMessage(String payLoad) {
+        super(payLoad);
+        type = MessageType.NETWORK_RESET_REQUEST;
+        payLoad = "00";
+        MAC = "";
+    }
 
-	@Override
-	protected String payLoadToHexString() {
-		return payLoad;
-	}
+    @Override
+    protected String payLoadToHexString() {
+        return payLoad;
+    }
 
-	@Override
-	protected void parsePayLoad() {
-	}
-	
-	protected String sequenceNumberToHexString() {
-		return "";
-	}
+    @Override
+    protected void parsePayLoad() {
+    }
+
+    @Override
+    protected String sequenceNumberToHexString() {
+        return "";
+    }
 
 }

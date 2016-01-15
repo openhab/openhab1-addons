@@ -1,7 +1,14 @@
 /**
+ * Copyright (c) 2010-2016, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+/**
  */
 package org.openhab.binding.tinkerforge.internal.model;
-
 
 /**
  * <!-- begin-user-doc -->
@@ -11,8 +18,9 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getGain <em>Gain</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime <em>Integration Time</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getGain <em>Gain</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
+ * <em>Integration Time</em>}</li>
  * </ul>
  * </p>
  *
@@ -20,58 +28,64 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface BrickletColorConfiguration extends TFConfig
-{
-  /**
-   * Returns the value of the '<em><b>Gain</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Gain</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Gain</em>' attribute.
-   * @see #setGain(Short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorConfiguration_Gain()
-   * @model unique="false"
-   * @generated
-   */
-  Short getGain();
+public interface BrickletColorConfiguration extends TFConfig {
+    /**
+     * Returns the value of the '<em><b>Gain</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Gain</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * 
+     * @return the value of the '<em>Gain</em>' attribute.
+     * @see #setGain(Short)
+     * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorConfiguration_Gain()
+     * @model unique="false"
+     * @generated
+     */
+    Short getGain();
 
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getGain <em>Gain</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Gain</em>' attribute.
-   * @see #getGain()
-   * @generated
-   */
-  void setGain(Short value);
+    /**
+     * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getGain
+     * <em>Gain</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @param value the new value of the '<em>Gain</em>' attribute.
+     * @see #getGain()
+     * @generated
+     */
+    void setGain(Short value);
 
-  /**
-   * Returns the value of the '<em><b>Integration Time</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Integration Time</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Integration Time</em>' attribute.
-   * @see #setIntegrationTime(Short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorConfiguration_IntegrationTime()
-   * @model unique="false"
-   * @generated
-   */
-  Short getIntegrationTime();
+    /**
+     * Returns the value of the '<em><b>Integration Time</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Integration Time</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * 
+     * @return the value of the '<em>Integration Time</em>' attribute.
+     * @see #setIntegrationTime(Short)
+     * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletColorConfiguration_IntegrationTime()
+     * @model unique="false"
+     * @generated
+     */
+    Short getIntegrationTime();
 
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime <em>Integration Time</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Integration Time</em>' attribute.
-   * @see #getIntegrationTime()
-   * @generated
-   */
-  void setIntegrationTime(Short value);
+    /**
+     * Sets the value of the '
+     * {@link org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration#getIntegrationTime
+     * <em>Integration Time</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @param value the new value of the '<em>Integration Time</em>' attribute.
+     * @see #getIntegrationTime()
+     * @generated
+     */
+    void setIntegrationTime(Short value);
 
 } // BrickletColorConfiguration

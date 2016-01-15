@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,76 +24,73 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.UnitProperties;
 
 /**
  * Units are most commonly lights, they can also be flags
- * 
+ *
  * @author Dan Cunningham
  * @since 1.5.0
  */
 public class Unit extends OmnilinkDevice {
-	private static final Logger logger = LoggerFactory.getLogger(Unit.class);
-	public static final int UNIT_OFF = 0;
-	public static final int UNIT_ON = 1;
-	public static final int UNIT_SCENE_A = 2;
-	public static final int UNIT_SCENE_L = 13;
-	public static final int UNIT_DIM_1 = 17;
-	public static final int UNIT_DIM_9 = 25;
-	public static final int UNIT_BRIGHTEN_1 = 33;
-	public static final int UNIT_BRIGHTEN_9 = 41;
-	public static final int UNIT_LEVEL_0 = 100;
-	public static final int UNIT_LEVEL_100 = 200;
+    private static final Logger logger = LoggerFactory.getLogger(Unit.class);
+    public static final int UNIT_OFF = 0;
+    public static final int UNIT_ON = 1;
+    public static final int UNIT_SCENE_A = 2;
+    public static final int UNIT_SCENE_L = 13;
+    public static final int UNIT_DIM_1 = 17;
+    public static final int UNIT_DIM_9 = 25;
+    public static final int UNIT_BRIGHTEN_1 = 33;
+    public static final int UNIT_BRIGHTEN_9 = 41;
+    public static final int UNIT_LEVEL_0 = 100;
+    public static final int UNIT_LEVEL_100 = 200;
 
-	private UnitProperties properties;
-	private int prevLevel = 0;
-	
-	public Unit(UnitProperties properties) {
-		this.properties = properties;
-	}
+    private UnitProperties properties;
+    private int prevLevel = 0;
 
-	@Override
-	public UnitProperties getProperties() {
-		return properties;
-	}
+    public Unit(UnitProperties properties) {
+        this.properties = properties;
+    }
 
-	public void setProperties(UnitProperties properties) {
-		this.properties = properties;
-	}
+    @Override
+    public UnitProperties getProperties() {
+        return properties;
+    }
 
-	@Override
-	public void updateItem(Item item, OmniLinkBindingConfig config,
-			EventPublisher publisher) {
-		
-		int status = properties.getState();
-		
-		logger.debug("Unit state {}", status);
-		
-		int level = prevLevel;
-		String display = "Off";
-		
-		if (status == UNIT_ON) {
-			level = 100;
-			display = "On";
-		} else if ((status >= UNIT_SCENE_A) && (status <= UNIT_SCENE_L)) {
-			level = 100;
-			display = String.format("Scene %c", status - UNIT_SCENE_A + 'A');
-		} else if ((status >= UNIT_DIM_1) && (status <= UNIT_DIM_9)) {
-			display = String.format("Dim %d", level);
-		} else if ((status >= UNIT_BRIGHTEN_1) && (status <= UNIT_BRIGHTEN_9)) {
-			display = String.format("Brighten %d", level);
-		} else if ((status >= UNIT_LEVEL_0) && (status <= UNIT_LEVEL_100)) {
-			level = status - UNIT_LEVEL_0;
-			display = String.format("Level %d", level);
-		}
+    public void setProperties(UnitProperties properties) {
+        this.properties = properties;
+    }
 
-		if (item instanceof DimmerItem) {
-			logger.debug("updating percent type {}", level);
-			publisher.postUpdate(item.getName(), new PercentType(level));
-		} else if (item instanceof SwitchItem) {
-			logger.debug("updating switch type {}",
-					level > 0 ? OnOffType.ON : OnOffType.OFF);
-			publisher.postUpdate(item.getName(), level > 0 ? OnOffType.ON
-					: OnOffType.OFF);
-		} else if (item instanceof StringItem) {
-			logger.debug("updating string type {}",display);
-			publisher.postUpdate(item.getName(), new StringType(display));
-		}
-	}
+    @Override
+    public void updateItem(Item item, OmniLinkBindingConfig config, EventPublisher publisher) {
+
+        int status = properties.getState();
+
+        logger.debug("Unit state {}", status);
+
+        int level = prevLevel;
+        String display = "Off";
+
+        if (status == UNIT_ON) {
+            level = 100;
+            display = "On";
+        } else if ((status >= UNIT_SCENE_A) && (status <= UNIT_SCENE_L)) {
+            level = 100;
+            display = String.format("Scene %c", status - UNIT_SCENE_A + 'A');
+        } else if ((status >= UNIT_DIM_1) && (status <= UNIT_DIM_9)) {
+            display = String.format("Dim %d", level);
+        } else if ((status >= UNIT_BRIGHTEN_1) && (status <= UNIT_BRIGHTEN_9)) {
+            display = String.format("Brighten %d", level);
+        } else if ((status >= UNIT_LEVEL_0) && (status <= UNIT_LEVEL_100)) {
+            level = status - UNIT_LEVEL_0;
+            display = String.format("Level %d", level);
+        }
+
+        if (item instanceof DimmerItem) {
+            logger.debug("updating percent type {}", level);
+            publisher.postUpdate(item.getName(), new PercentType(level));
+        } else if (item instanceof SwitchItem) {
+            logger.debug("updating switch type {}", level > 0 ? OnOffType.ON : OnOffType.OFF);
+            publisher.postUpdate(item.getName(), level > 0 ? OnOffType.ON : OnOffType.OFF);
+        } else if (item instanceof StringItem) {
+            logger.debug("updating string type {}", display);
+            publisher.postUpdate(item.getName(), new StringType(display));
+        }
+    }
 }

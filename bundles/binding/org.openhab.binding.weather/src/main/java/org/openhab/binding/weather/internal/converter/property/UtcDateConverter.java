@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,23 +12,23 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
 
 /**
  * Date converter with a UTC pattern.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class UtcDateConverter extends AbstractDateConverter {
-	private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm a";
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm a";
 
-	public UtcDateConverter() {
-		super(DATE_PATTERN);
-	}
+    public UtcDateConverter() {
+        super(DATE_PATTERN);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ConverterType getType() {
-		return ConverterType.UTC_DATE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ConverterType getType() {
+        return ConverterType.UTC_DATE;
+    }
 
 }

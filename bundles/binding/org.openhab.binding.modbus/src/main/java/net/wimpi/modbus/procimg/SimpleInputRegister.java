@@ -25,37 +25,35 @@ package net.wimpi.modbus.procimg;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class SimpleInputRegister
-    extends SynchronizedAbstractRegister
-    implements InputRegister {
+public class SimpleInputRegister extends SynchronizedAbstractRegister implements InputRegister {
 
-  /**
-   * Constructs a new <tt>SimpleInputRegister</tt> instance.
-   * It's state will be invalid.
-   */
-  public SimpleInputRegister() {
-  }//constructor
-  
-  /**
-   * Constructs a new <tt>SimpleInputRegister</tt> instance.
-   *
-   * @param b1 the first (hi) byte of the word.
-   * @param b2 the second (low) byte of the word.
-   */
-  public SimpleInputRegister(byte b1, byte b2) {
-    m_Register[0] = b1;
-    m_Register[1] = b2;
-  }//constructor
+    /**
+     * Constructs a new <tt>SimpleInputRegister</tt> instance.
+     * It's state will be invalid.
+     */
+    public SimpleInputRegister() {
+    }// constructor
 
-  /**
-   * Constructs a new <tt>SimpleInputRegister</tt> instance
-   * with the given value.
-   *
-   * @param value the value of this <tt>SimpleInputRegister</tt>
-   *        as <tt>int</tt>.
-   */
-  public SimpleInputRegister(int value) {
-    setValue(value);
-  }//constructor(int)
+    /**
+     * Constructs a new <tt>SimpleInputRegister</tt> instance.
+     *
+     * @param b1 the first (hi) byte of the word.
+     * @param b2 the second (low) byte of the word.
+     */
+    public SimpleInputRegister(byte b1, byte b2) {
+        m_Register[0] = b1;
+        m_Register[1] = b2;
+    }// constructor
 
-}//SimpleInputRegister
+    /**
+     * Constructs a new <tt>SimpleInputRegister</tt> instance
+     * with the given value.
+     *
+     * @param value the value of this <tt>SimpleInputRegister</tt>
+     *            as <tt>int</tt>.
+     */
+    public SimpleInputRegister(int value) {
+        setValue(value);
+    }// constructor(int)
+
+}// SimpleInputRegister

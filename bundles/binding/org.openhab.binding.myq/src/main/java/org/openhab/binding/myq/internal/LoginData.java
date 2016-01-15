@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,37 +22,37 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li>securityToken: securityToken from login request</li>
  * </ul>
- * 
+ *
  * @author Scott Hanson
  * @since 1.8.0
  */
 public class LoginData {
-	static final Logger logger = LoggerFactory.getLogger(LoginData.class);
+    static final Logger logger = LoggerFactory.getLogger(LoginData.class);
 
-	String securityToken;
+    String securityToken;
 
-	/**
-	 * Constructor of the LoginData.
-	 * 
-	 * @param loginData
-	 *            The Json node from the myq website.
-	 */
-	@SuppressWarnings("unchecked")
-	public LoginData(JsonNode root) throws IOException, InvalidDataException {
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> treeData = mapper.readValue(root, Map.class);
-		Object data = treeData.get("SecurityToken");
-		if (data == null)
-			throw new InvalidDataException(
-					"Could not find SecurityToken in JSON data");
-		securityToken = data.toString();
-		logger.trace("myq securityToken: {}", securityToken);
-	}
+    /**
+     * Constructor of the LoginData.
+     * 
+     * @param loginData
+     *            The Json node from the myq website.
+     */
+    @SuppressWarnings("unchecked")
+    public LoginData(JsonNode root) throws IOException, InvalidDataException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> treeData = mapper.readValue(root, Map.class);
+        Object data = treeData.get("SecurityToken");
+        if (data == null) {
+            throw new InvalidDataException("Could not find SecurityToken in JSON data");
+        }
+        securityToken = data.toString();
+        logger.trace("myq securityToken: {}", securityToken);
+    }
 
-	/**
-	 * @return Login SecurityToken
-	 */
-	public String getSecurityToken() {
-		return securityToken;
-	}
+    /**
+     * @return Login SecurityToken
+     */
+    public String getSecurityToken() {
+        return securityToken;
+    }
 }

@@ -18,10 +18,10 @@ package net.wimpi.modbus.cmd;
 
 import java.net.InetAddress;
 
+import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusUDPTransaction;
 import net.wimpi.modbus.msg.WriteCoilRequest;
 import net.wimpi.modbus.net.UDPMasterConnection;
-import net.wimpi.modbus.Modbus;
 
 /**
  * Class that implements a simple commandline
@@ -44,84 +44,85 @@ import net.wimpi.modbus.Modbus;
  */
 public class UDPDOTest {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    UDPMasterConnection conn = null;
-    ModbusUDPTransaction trans = null;
-    WriteCoilRequest req = null;
+        UDPMasterConnection conn = null;
+        ModbusUDPTransaction trans = null;
+        WriteCoilRequest req = null;
 
-    InetAddress addr = null;
+        InetAddress addr = null;
 
-    int ref = 0;
-    boolean set = false;
-    int repeat = 1;
-    int port = Modbus.DEFAULT_PORT;
+        int ref = 0;
+        boolean set = false;
+        int repeat = 1;
+        int port = Modbus.DEFAULT_PORT;
 
-    try {
-
-      //1. Setup the parameters
-      if (args.length < 3) {
-        printUsage();
-        System.exit(1);
-      } else {
         try {
-          String astr = args[0];
-          int idx = astr.indexOf(':');
-          if(idx > 0) {
-            port = Integer.parseInt(astr.substring(idx+1));
-            astr = astr.substring(0,idx);
-          }
-          addr = InetAddress.getByName(astr);
-          ref = Integer.parseInt(args[1]);
-          set = "true".equals(args[2]);
-          
-          if (args.length == 4) {
-            repeat = Integer.parseInt(args[3]);
-          }
+
+            // 1. Setup the parameters
+            if (args.length < 3) {
+                printUsage();
+                System.exit(1);
+            } else {
+                try {
+                    String astr = args[0];
+                    int idx = astr.indexOf(':');
+                    if (idx > 0) {
+                        port = Integer.parseInt(astr.substring(idx + 1));
+                        astr = astr.substring(0, idx);
+                    }
+                    addr = InetAddress.getByName(astr);
+                    ref = Integer.parseInt(args[1]);
+                    set = "true".equals(args[2]);
+
+                    if (args.length == 4) {
+                        repeat = Integer.parseInt(args[3]);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    printUsage();
+                    System.exit(1);
+                }
+            }
+
+            // 2. Open the connection
+            conn = new UDPMasterConnection(addr);
+            conn.setPort(502);
+            conn.connect();
+
+            // 3. Prepare a request
+            req = new WriteCoilRequest(ref, set);
+            req.setUnitID(0);
+            if (Modbus.debug) {
+                System.out.println("Request: " + req.getHexMessage());
+            }
+
+            // 4. Prepare the transaction
+            trans = new ModbusUDPTransaction(conn);
+            trans.setRequest(req);
+
+            // 5. Execute the transaction repeat times
+            int k = 0;
+            do {
+                trans.execute();
+
+                if (Modbus.debug) {
+                    System.out.println("Response: " + trans.getResponse().getHexMessage());
+                }
+                k++;
+            } while (k < repeat);
+
+            // 6. Close the connection
+            conn.close();
+
         } catch (Exception ex) {
-          ex.printStackTrace();
-          printUsage();
-          System.exit(1);
+            ex.printStackTrace();
         }
-      }
+    }// main
 
-      //2. Open the connection
-      conn = new UDPMasterConnection(addr);
-      conn.setPort(502);
-      conn.connect();
+    private static void printUsage() {
+        System.out.println(
+                "java net.wimpi.modbus.cmd.UDPDOTest <address{:<port>} [String]> <register [int16]> <state [boolean]> {<repeat [int]>}");
+    }// printUsage
 
-      //3. Prepare a request
-      req = new WriteCoilRequest(ref, set);
-      req.setUnitID(0);
-      if (Modbus.debug) System.out.println("Request: " + req.getHexMessage());
-
-      //4. Prepare the transaction
-      trans = new ModbusUDPTransaction(conn);
-      trans.setRequest(req);
-
-      //5. Execute the transaction repeat times
-      int k = 0;
-      do {
-        trans.execute();
-
-        if (Modbus.debug) System.out.println("Response: " +
-            trans.getResponse().getHexMessage()
-        );
-        k++;
-      } while (k < repeat);
-
-      //6. Close the connection
-      conn.close();
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }//main
-
-  private static void printUsage() {
-    System.out.println(
-        "java net.wimpi.modbus.cmd.UDPDOTest <address{:<port>} [String]> <register [int16]> <state [boolean]> {<repeat [int]>}"
-    );
-  }//printUsage
-
-}//class DOTest
+}// class DOTest

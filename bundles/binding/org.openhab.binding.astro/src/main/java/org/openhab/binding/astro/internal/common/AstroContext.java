@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,88 +22,88 @@ import org.openhab.core.events.EventPublisher;
 
 /**
  * Singleton with the important objects for this binding.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 public class AstroContext {
-	private EventPublisher eventPublisher;
-	private Collection<AstroBindingProvider> providers;
-	private AstroConfig config = new AstroConfig();
-	private JobScheduler jobScheduler = new JobScheduler(this);
+    private EventPublisher eventPublisher;
+    private Collection<AstroBindingProvider> providers;
+    private AstroConfig config = new AstroConfig();
+    private JobScheduler jobScheduler = new JobScheduler(this);
 
-	private Map<PlanetName, Planet> planets = new HashMap<PlanetName, Planet>();
+    private Map<PlanetName, Planet> planets = new HashMap<PlanetName, Planet>();
 
-	private static AstroContext instance;
+    private static AstroContext instance;
 
-	private AstroContext() {
-	}
+    private AstroContext() {
+    }
 
-	/**
-	 * Create or returns the instance of this class.
-	 */
-	public static AstroContext getInstance() {
-		if (instance == null) {
-			instance = new AstroContext();
-			instance.planets.put(PlanetName.SUN, new Sun());
-			instance.planets.put(PlanetName.MOON, new Moon());
-		}
-		return instance;
-	}
+    /**
+     * Create or returns the instance of this class.
+     */
+    public static AstroContext getInstance() {
+        if (instance == null) {
+            instance = new AstroContext();
+            instance.planets.put(PlanetName.SUN, new Sun());
+            instance.planets.put(PlanetName.MOON, new Moon());
+        }
+        return instance;
+    }
 
-	/**
-	 * Returns the AstroConfig.
-	 */
-	public AstroConfig getConfig() {
-		return config;
-	}
+    /**
+     * Returns the AstroConfig.
+     */
+    public AstroConfig getConfig() {
+        return config;
+    }
 
-	/**
-	 * Sets the EventPublisher for use in the binding.
-	 */
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
+    /**
+     * Sets the EventPublisher for use in the binding.
+     */
+    public void setEventPublisher(EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
 
-	/**
-	 * Returns the EventPublisher.
-	 */
-	public EventPublisher getEventPublisher() {
-		return eventPublisher;
-	}
+    /**
+     * Returns the EventPublisher.
+     */
+    public EventPublisher getEventPublisher() {
+        return eventPublisher;
+    }
 
-	/**
-	 * Returns all AstroBindingProviders.
-	 */
-	public Collection<AstroBindingProvider> getProviders() {
-		return providers;
-	}
+    /**
+     * Returns all AstroBindingProviders.
+     */
+    public Collection<AstroBindingProvider> getProviders() {
+        return providers;
+    }
 
-	/**
-	 * Sets all AstroBindingProviders for use in the binding.
-	 */
-	public void setProviders(Collection<AstroBindingProvider> providers) {
-		this.providers = providers;
-	}
+    /**
+     * Sets all AstroBindingProviders for use in the binding.
+     */
+    public void setProviders(Collection<AstroBindingProvider> providers) {
+        this.providers = providers;
+    }
 
-	/**
-	 * Returns the JobScheduler.
-	 */
-	public JobScheduler getJobScheduler() {
-		return jobScheduler;
-	}
+    /**
+     * Returns the JobScheduler.
+     */
+    public JobScheduler getJobScheduler() {
+        return jobScheduler;
+    }
 
-	/**
-	 * Returns the specified planet.
-	 */
-	public Planet getPlanet(PlanetName planetName) {
-		return planets.get(planetName);
-	}
+    /**
+     * Returns the specified planet.
+     */
+    public Planet getPlanet(PlanetName planetName) {
+        return planets.get(planetName);
+    }
 
-	/**
-	 * Sets the planet data.
-	 */
-	public void setPlanet(PlanetName planetName, Planet planet) {
-		planets.put(planetName, planet);
-	}
+    /**
+     * Sets the planet data.
+     */
+    public void setPlanet(PlanetName planetName, Planet planet) {
+        planets.put(planetName, planet);
+    }
 }

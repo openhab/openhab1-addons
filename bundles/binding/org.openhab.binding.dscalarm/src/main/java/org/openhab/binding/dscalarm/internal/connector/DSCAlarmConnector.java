@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,55 +12,55 @@ import org.openhab.binding.dscalarm.internal.DSCAlarmEventListener;
 
 /**
  * Interface for DSC Alarm communication
- * 
+ *
  * @author Russell Stephens
  * @since 1.6.0
  */
 public interface DSCAlarmConnector {
 
-	/**
-	 * Returns Connector Type
-	 **/
-	DSCAlarmConnectorType getConnectorType();
+    /**
+     * Returns Connector Type
+     **/
+    DSCAlarmConnectorType getConnectorType();
 
-	/**
-	 * Method for opening a connection to DSC Alarm.
-	 */
-	void open();
+    /**
+     * Method for opening a connection to DSC Alarm.
+     */
+    void open();
 
-	/**
-	 * Method for closing a connection to DSC Alarm.
-	 */
-	void close();
+    /**
+     * Method for closing a connection to DSC Alarm.
+     */
+    void close();
 
-	/**
-	 * Method for writing to an open DSC Alarm connection
-	 * 
-	 * @param writeString
-	 **/
-	void write(String writeString);
+    /**
+     * Method for writing to an open DSC Alarm connection
+     * 
+     * @param writeString
+     **/
+    void write(String writeString);
 
-	/**
-	 * Method for reading from an open DSC Alarm connection
-	 **/
-	String read();
+    /**
+     * Method for reading from an open DSC Alarm connection
+     **/
+    String read();
 
-	/**
-	 * Returns connection status
-	 **/
-	boolean isConnected();
+    /**
+     * Returns connection status
+     **/
+    boolean isConnected();
 
-	/**
-	 * Method for registering an event listener
-	 * 
-	 * @param listener
-	 */
-	public void addEventListener(DSCAlarmEventListener listener);
+    /**
+     * Method for registering an event listener
+     * 
+     * @param listener
+     */
+    public void addEventListener(DSCAlarmEventListener listener);
 
-	/**
-	 * Method for removing an event listener
-	 * 
-	 * @param listener
-	 */
-	public void removeEventListener(DSCAlarmEventListener listener);
+    /**
+     * Method for removing an event listener
+     * 
+     * @param listener
+     */
+    public void removeEventListener(DSCAlarmEventListener listener);
 }

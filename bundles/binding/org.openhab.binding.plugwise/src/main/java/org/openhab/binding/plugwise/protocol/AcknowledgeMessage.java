@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,179 +22,176 @@ import java.util.regex.Pattern;
  * @since 1.1.0
  */
 public class AcknowledgeMessage extends Message {
-	
-	public enum ExtensionCode {
-		NOTEXTENDED(0),
-		SUCCESS(193),
-		ERROR(194),
-		CIRCLEPLUS(221),
-		CLOCKSET(215),
-		ON(216),
-		OFF(222),
-		TIMEOUT(225),
-		UNKNOWN(999);
-		
-		private int identifier;
 
-		private ExtensionCode(int value) {
-				identifier = value;
-		}
-		
-	    private static final Map<Integer, ExtensionCode> typesByValue = new HashMap<Integer, ExtensionCode>();
+    public enum ExtensionCode {
+        NOTEXTENDED(0),
+        SUCCESS(193),
+        ERROR(194),
+        CIRCLEPLUS(221),
+        CLOCKSET(215),
+        ON(216),
+        OFF(222),
+        TIMEOUT(225),
+        UNKNOWN(999);
 
-	    static {
-	        for (ExtensionCode type : ExtensionCode.values()) {
-	            typesByValue.put(type.identifier, type);
-	        }
-	    }
-		
-	    public static ExtensionCode forValue(int value) {
-	        return typesByValue.get(value);
-	    }
-	    
-	    public int toInt() {
-	    	return identifier;
-	    }
-	}
-	
-	private ExtensionCode code;
-	private String extendedMAC = "";
+        private int identifier;
 
-	public AcknowledgeMessage(int sequenceNumber, String payLoad) {
-		super(sequenceNumber, payLoad);
-		type = MessageType.ACKNOWLEDGEMENT;
-		MAC = "";
-	}
+        private ExtensionCode(int value) {
+            identifier = value;
+        }
 
-	public AcknowledgeMessage(String payLoad) {
-		super(payLoad);
-		type = MessageType.ACKNOWLEDGEMENT;
-		MAC = "";
-	}
+        private static final Map<Integer, ExtensionCode> typesByValue = new HashMap<Integer, ExtensionCode>();
 
-	@Override
-	protected void parsePayLoad() {
-		
-		Pattern SHORT_RESPONSE_PATTERN = Pattern.compile("(\\w{4})");
-		Pattern EXTENDED_RESPONSE_PATTERN = Pattern.compile("(\\w{4})(\\w{16})");
+        static {
+            for (ExtensionCode type : ExtensionCode.values()) {
+                typesByValue.put(type.identifier, type);
+            }
+        }
 
-		Matcher shortMatcher = SHORT_RESPONSE_PATTERN.matcher(payLoad);
-		Matcher extendedMatcher = EXTENDED_RESPONSE_PATTERN.matcher(payLoad);
+        public static ExtensionCode forValue(int value) {
+            return typesByValue.get(value);
+        }
 
-		if (extendedMatcher.matches()) {
-			code = ExtensionCode.forValue(Integer.parseInt(extendedMatcher.group(1),16));
-			if(code==null) {
-				code = ExtensionCode.UNKNOWN;
-			}
-			extendedMAC = extendedMatcher.group(2);
-		} else if(shortMatcher.matches()){
-			code = ExtensionCode.forValue(Integer.parseInt(shortMatcher.group(1),16));
-			if(code==null) {
-				code = ExtensionCode.UNKNOWN;
-			}
-		} 
-		else {
-			logger.debug("Plugwise protocol AcknowledgeMessage error: {} does not match", payLoad);
-			code = ExtensionCode.UNKNOWN;
-		}
-	}
-	
-	public boolean isSuccess() {
-		if(code == ExtensionCode.SUCCESS ) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	public boolean isError() {
-		if(code == ExtensionCode.ERROR ) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	public boolean isTimeOut() {
-		if(code == ExtensionCode.TIMEOUT ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean isExtended() {
-		
-		if(code!=ExtensionCode.NOTEXTENDED && code!=ExtensionCode.SUCCESS && code!=ExtensionCode.ERROR) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public ExtensionCode getExtensionCode() {
-		if(isExtended()) {
-			return code;
-		} else {
-			return ExtensionCode.NOTEXTENDED;
-		}
-			
-	}
+        public int toInt() {
+            return identifier;
+        }
+    }
 
-	public String getExtendedMAC(){
-		if(isExtended()) {
-			return extendedMAC;
-		} else {
-			return null;
-		}
-	}
-	
-	public String getCirclePlusMAC(){
-		if(isExtended() && code == ExtensionCode.CIRCLEPLUS) {
-			return extendedMAC;
-		} else {
-			return null;
-		}
-	}
-	
-	public boolean isOn(){
-		if(isExtended() && code == ExtensionCode.ON) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean isOff(){
-		if(isExtended() && code == ExtensionCode.OFF) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	public String getPayLoad() {
-		return payLoadToHexString();
-	}
+    private ExtensionCode code;
+    private String extendedMAC = "";
 
-	@Override
-	protected String payLoadToHexString() {
-		
-		switch(code) {
-		case CIRCLEPLUS:
-			return String.format("%04X",code.toInt()) + extendedMAC;
-		case ON:
-			return String.format("%04X",code.toInt()) + extendedMAC;
-		case OFF:
-			return String.format("%04X",code.toInt()) + extendedMAC;
-		default:
-			return String.format("%04X",code.toInt());
-			
-		}
-		
-	}
+    public AcknowledgeMessage(int sequenceNumber, String payLoad) {
+        super(sequenceNumber, payLoad);
+        type = MessageType.ACKNOWLEDGEMENT;
+        MAC = "";
+    }
+
+    public AcknowledgeMessage(String payLoad) {
+        super(payLoad);
+        type = MessageType.ACKNOWLEDGEMENT;
+        MAC = "";
+    }
+
+    @Override
+    protected void parsePayLoad() {
+
+        Pattern SHORT_RESPONSE_PATTERN = Pattern.compile("(\\w{4})");
+        Pattern EXTENDED_RESPONSE_PATTERN = Pattern.compile("(\\w{4})(\\w{16})");
+
+        Matcher shortMatcher = SHORT_RESPONSE_PATTERN.matcher(payLoad);
+        Matcher extendedMatcher = EXTENDED_RESPONSE_PATTERN.matcher(payLoad);
+
+        if (extendedMatcher.matches()) {
+            code = ExtensionCode.forValue(Integer.parseInt(extendedMatcher.group(1), 16));
+            if (code == null) {
+                code = ExtensionCode.UNKNOWN;
+            }
+            extendedMAC = extendedMatcher.group(2);
+        } else if (shortMatcher.matches()) {
+            code = ExtensionCode.forValue(Integer.parseInt(shortMatcher.group(1), 16));
+            if (code == null) {
+                code = ExtensionCode.UNKNOWN;
+            }
+        } else {
+            logger.debug("Plugwise protocol AcknowledgeMessage error: {} does not match", payLoad);
+            code = ExtensionCode.UNKNOWN;
+        }
+    }
+
+    public boolean isSuccess() {
+        if (code == ExtensionCode.SUCCESS) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isError() {
+        if (code == ExtensionCode.ERROR) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isTimeOut() {
+        if (code == ExtensionCode.TIMEOUT) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isExtended() {
+
+        if (code != ExtensionCode.NOTEXTENDED && code != ExtensionCode.SUCCESS && code != ExtensionCode.ERROR) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public ExtensionCode getExtensionCode() {
+        if (isExtended()) {
+            return code;
+        } else {
+            return ExtensionCode.NOTEXTENDED;
+        }
+
+    }
+
+    public String getExtendedMAC() {
+        if (isExtended()) {
+            return extendedMAC;
+        } else {
+            return null;
+        }
+    }
+
+    public String getCirclePlusMAC() {
+        if (isExtended() && code == ExtensionCode.CIRCLEPLUS) {
+            return extendedMAC;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isOn() {
+        if (isExtended() && code == ExtensionCode.ON) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isOff() {
+        if (isExtended() && code == ExtensionCode.OFF) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String getPayLoad() {
+        return payLoadToHexString();
+    }
+
+    @Override
+    protected String payLoadToHexString() {
+
+        switch (code) {
+            case CIRCLEPLUS:
+                return String.format("%04X", code.toInt()) + extendedMAC;
+            case ON:
+                return String.format("%04X", code.toInt()) + extendedMAC;
+            case OFF:
+                return String.format("%04X", code.toInt()) + extendedMAC;
+            default:
+                return String.format("%04X", code.toInt());
+
+        }
+
+    }
 
 }

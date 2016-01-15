@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,39 +18,39 @@ import org.slf4j.LoggerFactory;
 /**
  * Bundle activator for CUL transport bundle. CULHandler implementations are
  * registered here for their specific transport prefix.
- * 
+ *
  * @author Till Klocke
  * @since 1.4.0
- * 
+ *
  */
 public class CULActivator implements BundleActivator {
 
-	private static final Logger logger = LoggerFactory.getLogger(CULActivator.class);
+    private static final Logger logger = LoggerFactory.getLogger(CULActivator.class);
 
-	private static BundleContext context;
+    private static BundleContext context;
 
-	@Override
-	public void start(BundleContext bc) throws Exception {
-		context = bc;
-		logger.debug("CUL transport has been started.");
-		CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
-		CULManager.registerHandlerClass("network", CULNetworkHandlerImpl.class);
-	}
+    @Override
+    public void start(BundleContext bc) throws Exception {
+        context = bc;
+        logger.debug("CUL transport has been started.");
+        CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
+        CULManager.registerHandlerClass("network", CULNetworkHandlerImpl.class);
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		context = null;
-		logger.debug("CUL transport has been stopped.");
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        context = null;
+        logger.debug("CUL transport has been stopped.");
 
-	}
+    }
 
-	/**
-	 * Returns the bundle context of this bundle
-	 * 
-	 * @return the bundle context
-	 */
-	public static BundleContext getContext() {
-		return context;
-	}
+    /**
+     * Returns the bundle context of this bundle
+     * 
+     * @return the bundle context
+     */
+    public static BundleContext getContext() {
+        return context;
+    }
 
 }

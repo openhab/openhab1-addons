@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.persistence.jdbc.internal;
 
 import java.util.ArrayList;
@@ -173,8 +181,9 @@ public class JdbcMapper {
 
     protected boolean checkDBAcessability() {
         // Check if connection is valid
-        if (initialized)
+        if (initialized) {
             return true;
+        }
         // first
         boolean p = pingDB();
         if (p) {
@@ -264,8 +273,9 @@ public class JdbcMapper {
     private void formatTableNames() {
 
         boolean tmpinit = initialized;
-        if (tmpinit)
+        if (tmpinit) {
             initialized = false;
+        }
 
         List<ItemsVO> al;
         HashMap<Integer, String> tableIds = new HashMap<Integer, String>();
@@ -307,9 +317,10 @@ public class JdbcMapper {
                 if (!oldName.equalsIgnoreCase(newName)) {
                     oldNewTablenames.add(new ItemVO(oldName, newName));
                     logger.warn("JDBC::formatTableNames: Table '{}' will be renamed to '{}'", oldName, newName);
-                } else
+                } else {
                     logger.warn("JDBC::formatTableNames: Table oldName='{}' newName='{}' nothing to rename", oldName,
                             newName);
+                }
             } else {
                 logger.error("JDBC::formatTableNames: Table '{}' could NOT be renamed to '{}'", oldName, newName);
                 break;
@@ -364,8 +375,9 @@ public class JdbcMapper {
             conf.timeAverage50arr.add(timerDiff);
             conf.timeAverage100arr.add(timerDiff);
             conf.timeAverage200arr.add(timerDiff);
-            if (conf.timerCount == 1)
+            if (conf.timerCount == 1) {
                 conf.timer1000 = System.currentTimeMillis();
+            }
             if (conf.timerCount == 1001) {
                 conf.time1000Statements = Math.round(((int) (System.currentTimeMillis() - conf.timer1000)) / 1000);// Seconds
                 conf.timerCount = 0;
