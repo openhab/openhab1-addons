@@ -1740,7 +1740,10 @@ var WebApp = (function() {
 		that.opt = item.parentNode;
 		that.progress = item.querySelector(".iSliderProgress");
 		that.handle = item.querySelector(".iSlider");
-		that.valueEl = that.opt.parentNode.querySelectorAll("span")[4];
+		
+		// Extract value-containing span from label if it exists
+		that.valueEl = that.opt.parentNode.getElementsByTagName('span')[4];
+		
 		that.max = 100;
 		that.min = 0;
 		that.dragState = undefined;
@@ -1847,7 +1850,9 @@ var WebApp = (function() {
 		that.displayValue = function (value) {
 			that.handle.style.left = value + '%';
 			that.progress.style.width = value + '%';
-			that.valueEl.innerHTML = value + '&nbsp;' + '%';
+			if (that.valueEl) { // Do nothing in case the item label does not render the value
+				that.valueEl.innerHTML = value + '&nbsp;' + '%';	
+			}
 		}
 		
 		// Display value specified in data-attribute
