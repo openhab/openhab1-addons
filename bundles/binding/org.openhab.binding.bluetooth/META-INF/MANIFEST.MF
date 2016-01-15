@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.openhab.binding.bluetooth
 Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.bluetooth.internal.BluetoothActivator
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base,
  com.google.common.collect,
  org.openhab.core.events,
@@ -17,7 +17,6 @@ Import-Package: com.google.common.base,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/bluecove-2.1.1.jar
 Service-Component: OSGI-INF/bluetoothbinding.xml, OSGI-INF/discoveryservice.xml

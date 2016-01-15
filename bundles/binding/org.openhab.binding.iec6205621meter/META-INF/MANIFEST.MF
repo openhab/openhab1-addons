@@ -26,7 +26,7 @@ Import-Package: org.apache.commons.lang,
 Export-Package: org.openhab.binding.iec6205621meter;uses:="org.openhab
  .core.binding"
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.4.0"

@@ -4,7 +4,7 @@ Bundle-Name: openHAB Somfy URTSI II Binding
 Bundle-SymbolicName: org.openhab.binding.urtsi
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gnu.io,
  org.apache.commons.io,
  org.openhab.core.autoupdate,
@@ -21,7 +21,6 @@ Import-Package: gnu.io,
  org.slf4j
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/urtsibinding.xml
 Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.binding.urtsi.internal.UrtsiActivator
 Require-Bundle: org.eclipse.xtend.lib,
  com.google.guava,

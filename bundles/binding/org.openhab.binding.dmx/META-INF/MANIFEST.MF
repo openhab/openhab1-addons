@@ -26,6 +26,6 @@ Import-Package: org.apache.commons.lang,
 Export-Package: org.openhab.binding.dmx;uses:="org.openhab.core.bindin
  g"
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .

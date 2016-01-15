@@ -28,7 +28,7 @@ Import-Package: org.apache.commons.io;version="2.0.1",
  org.slf4j
 Export-Package: org.openhab.binding.jointspace
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/json-simple-1.1.1.jar

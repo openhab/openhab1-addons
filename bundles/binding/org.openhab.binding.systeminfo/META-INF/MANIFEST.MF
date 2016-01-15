@@ -29,3 +29,4 @@ Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/sigar-1.6.4.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

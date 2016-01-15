@@ -33,4 +33,13 @@
 		</plugins>
 	</build>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.openhab.io</groupId>
+			<artifactId>org.openhab.io.rest.lib</artifactId>
+			<version>1.8.0</version>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
+
 </project>

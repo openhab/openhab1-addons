@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.openhab.binding.tcp
 Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.tcp.internal.TCPActivator
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.lang,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
@@ -24,7 +24,6 @@ Import-Package: org.apache.commons.lang,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.openhab.binding.tcp,org.openhab.binding.tcp.protoc
  ol

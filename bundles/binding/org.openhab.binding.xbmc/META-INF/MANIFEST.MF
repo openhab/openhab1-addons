@@ -26,7 +26,7 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Export-Package: org.openhab.binding.xbmc
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/async-http-client-1.8.4.jar,

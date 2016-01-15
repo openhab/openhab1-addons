@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB MQTT Persistence Bundle
-Bundle-SymbolicName: org.openhab.persistence.mqtt;singleton:=true
+Bundle-SymbolicName: org.openhab.persistence.mqtt
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
  org.openhab.core.items,

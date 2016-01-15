@@ -7,8 +7,7 @@ Bundle-Activator: org.openhab.binding.plugwise.internal.PlugwiseActivator
 Bundle-Vendor: openHAB
 Bundle-DocURL: http://www.openhab.org
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/plugwisebinding.xml
 Import-Package: gnu.io,
  org.apache.commons.io,

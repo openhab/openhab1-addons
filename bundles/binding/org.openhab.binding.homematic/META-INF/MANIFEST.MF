@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.homematic.internal
 Ignore-Package: org.openhab.binding.homematic.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB homematic Binding
-Bundle-SymbolicName: org.openhab.binding.homematic;singleton:=true
+Bundle-SymbolicName: org.openhab.binding.homematic
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.homematic.internal.bus.HomematicActivator
@@ -36,7 +36,6 @@ Export-Package: org.openhab.binding.homematic.internal.common,org.open
  hab.binding.homematic.internal.communicator.client,org.openhab.bindin
  g.homematic.internal.communicator.client.interfaces
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy

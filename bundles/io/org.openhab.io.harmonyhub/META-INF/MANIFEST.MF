@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB HarmonyHub IO Bundle
-Bundle-SymbolicName: org.openhab.io.harmonyhub;singleton:=true
+Bundle-SymbolicName: org.openhab.io.harmonyhub
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.openhab.io.harmonyhub, 
  net.whistlingfish.harmony,
  net.whistlingfish.harmony.config

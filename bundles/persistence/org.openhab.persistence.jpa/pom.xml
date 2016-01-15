@@ -30,7 +30,6 @@
                 <groupId>org.vafer</groupId>
                 <artifactId>jdeb</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.openjpa</groupId>
                 <artifactId>openjpa-maven-plugin</artifactId>

@@ -33,7 +33,7 @@ Bundle-SymbolicName: org.openhab.binding.astro
 Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.openhab.binding.astro.internal.calc,
  org.openhab.binding.astro.internal.model
 

@@ -10,7 +10,6 @@ package org.openhab.binding.fritzaha.internal.hardware;
 
 import java.io.IOException;
 
-import org.eclipse.jetty.client.ContentExchange;
 import org.openhab.binding.fritzaha.internal.hardware.callbacks.FritzahaCallback;
 
 /**

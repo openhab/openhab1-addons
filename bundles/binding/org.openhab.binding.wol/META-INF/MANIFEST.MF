@@ -23,7 +23,7 @@ Import-Package: org.apache.commons.codec.binary;version="1.3.0",
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.wol
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml
 Bundle-ClassPath: .
 

@@ -37,4 +37,4 @@ Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/bindingprovider.xml
 Bundle-ClassPath: .,
  lib/commons-beanutils-1.8.3.jar
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

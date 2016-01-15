@@ -29,3 +29,4 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/opensprinkler-0.0.3.jar,
  lib/pi4j-core-0.0.5.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

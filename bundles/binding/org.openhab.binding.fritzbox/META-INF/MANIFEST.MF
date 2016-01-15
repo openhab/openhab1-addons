@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.openhab.binding.fritzbox
 Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.fritzbox.internal.FritzboxActivator
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.collections,
  org.apache.commons.io,
  org.apache.commons.lang,
@@ -29,6 +29,5 @@ Import-Package: org.apache.commons.collections,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-ActivationPolicy: lazy
 Export-Package: org.openhab.binding.fritzbox
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/fritzboxbinding.xml

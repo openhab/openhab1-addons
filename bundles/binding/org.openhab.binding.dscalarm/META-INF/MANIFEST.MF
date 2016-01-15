@@ -4,7 +4,7 @@ Bundle-SymbolicName: org.openhab.binding.dscalarm
 Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.dscalarm.internal.DSCAlarmActivator
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the DSC Alarm binding of the open Home Automation Bus (openHAB)
@@ -31,7 +31,6 @@ Import-Package: gnu.io,
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Export-Package: org.openhab.binding.dscalarm
-Bundle-ActivationPolicy: lazy
 
 
 

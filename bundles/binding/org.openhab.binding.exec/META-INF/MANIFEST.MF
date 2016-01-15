@@ -29,5 +29,5 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: lib/commons-exec-1.1.jar,
  .
 Export-Package: org.openhab.binding.exec
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 
