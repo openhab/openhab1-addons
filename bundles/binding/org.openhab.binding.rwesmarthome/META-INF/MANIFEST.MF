@@ -42,6 +42,6 @@ Import-Package: com.google.common.base,
  org.slf4j
 Export-Package: org.openhab.binding.rwesmarthome
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .

@@ -24,6 +24,6 @@ Import-Package: org.apache.commons.io,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.mochadx10
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/mochadx10binding.xml
 Bundle-ClassPath: .

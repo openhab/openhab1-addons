@@ -18,9 +18,9 @@ Import-Package: com.google.common.annotations,
  org.osgi.service.cm,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.persistence.sitewhere;singleton:=true
+Bundle-SymbolicName: org.openhab.persistence.sitewhere
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  lib/jackson-annotations-2.1.5.jar,
  lib/jackson-core-2.1.5.jar,

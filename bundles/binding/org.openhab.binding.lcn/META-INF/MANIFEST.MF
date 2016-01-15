@@ -18,7 +18,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.openhab.binding.lcn
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/lcnbinding.xml

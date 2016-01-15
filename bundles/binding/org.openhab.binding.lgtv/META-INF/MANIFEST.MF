@@ -36,7 +36,7 @@ Import-Package: javax.xml.bind,
 Export-Package: org.openhab.binding.lgtv, org.openhab.binding.lgtv.lgi
  nteraction, org.openhab.binding.lgtv.internal;x-internal:=true
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Require-Bundle: javax.servlet

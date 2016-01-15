@@ -27,7 +27,7 @@ Import-Package: com.google.common.base,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.pulseaudio
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/pulseaudiobinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 

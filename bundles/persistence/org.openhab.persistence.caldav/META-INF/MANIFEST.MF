@@ -21,7 +21,7 @@ Import-Package: com.google.common.annotations;version="1.0.0",
  org.osgi.service.cm,
  org.osgi.service.event,
  org.slf4j
-Bundle-SymbolicName: org.openhab.persistence.caldav;singleton:=true
+Bundle-SymbolicName: org.openhab.persistence.caldav
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .

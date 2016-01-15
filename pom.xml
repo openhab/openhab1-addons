@@ -37,6 +37,10 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
     
     <properties>
+        <oh2-version>2.0.0-SNAPSHOT</oh2-version>
+        
+        <jdeb-version>1.4</jdeb-version>
+        
         <tycho-version>0.24.0</tycho-version>
         <tycho-groupid>org.eclipse.tycho</tycho-groupid>
         
@@ -48,8 +52,8 @@
         <deb.distribution>development</deb.distribution>
         <deb.depends>openhab-runtime</deb.depends>
         
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         
         <repo.url>https://api.bintray.com/maven/openhab/mvn/openhab</repo.url>
     </properties>
@@ -59,7 +63,6 @@
     <modules>
         <module>bundles</module>
         <module>features</module>
-        <module>targetplatform</module>
     </modules>
         
     <!-- dependencies, which are not available in a p2-repository -->
@@ -72,13 +75,6 @@
     </dependencies>
     
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav</artifactId>
-                <version>${wagon.version}</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <groupId>${tycho-groupid}</groupId>
@@ -96,9 +92,9 @@
                     <pomDependencies>consider</pomDependencies>
                     <target>
                         <artifact>
-                            <groupId>org.openhab</groupId>
+                            <groupId>org.openhab.distro</groupId>
                             <artifactId>targetplatform</artifactId>
-                            <version>${project.version}</version>
+                            <version>${oh2-version}</version>
                             <classifier>openhab</classifier>
                         </artifact>
                     </target>

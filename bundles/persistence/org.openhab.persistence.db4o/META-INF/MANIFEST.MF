@@ -22,8 +22,8 @@ Import-Package: com.google.common.annotations;version="1.0.0",
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-SymbolicName: org.openhab.persistence.db4o;singleton:=true
+Bundle-SymbolicName: org.openhab.persistence.db4o
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  lib/db4o-8.0.224.15975-all-java5.jar

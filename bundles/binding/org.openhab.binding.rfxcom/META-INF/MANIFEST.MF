@@ -28,8 +28,7 @@ Import-Package: gnu.io,
  org.osgi.service.event,
  org.slf4j
 Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/connection.xml, OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Export-Package: org.openhab.binding.rfxcom

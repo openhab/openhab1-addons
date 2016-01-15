@@ -38,7 +38,7 @@ Import-Package: javax.xml.bind,
  org.slf4j
 Export-Package: org.openhab.binding.denon
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
  lib/async-http-client-1.8.4.jar,

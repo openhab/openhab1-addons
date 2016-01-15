@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Squeeze Server Bundle
-Bundle-SymbolicName: org.openhab.io.squeezeserver;singleton:=true
+Bundle-SymbolicName: org.openhab.io.squeezeserver
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.openhab.io.squeezeserver
 Import-Package: org.apache.commons.lang;version="2.6.0",
  org.openhab.core.events,

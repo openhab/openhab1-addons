@@ -4,7 +4,7 @@ Bundle-Name: Tests for MQTT Binding
 Bundle-SymbolicName: org.openhab.binding.mqtt.test
 Bundle-Version: 1.9.0.qualifier
 Fragment-Host: org.openhab.binding.mqtt;bundle-version="1.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: openHAB.org
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-ClassPath: lib/mockito-all-1.9.5.jar,

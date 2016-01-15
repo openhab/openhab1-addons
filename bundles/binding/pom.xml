@@ -69,15 +69,15 @@
     <module>org.openhab.binding.digitalstrom</module>
     <module>org.openhab.binding.squeezebox</module>
     <module>org.openhab.binding.mqtt</module>
-    <module>org.openhab.binding.mqtt.test</module>
+    <!--module>org.openhab.binding.mqtt.test</module-->
     <module>org.openhab.binding.mqttitude</module>
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
-    <module>org.openhab.binding.systeminfo.test</module>
+    <!--module>org.openhab.binding.systeminfo.test</module-->
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.pilight</module>
     <module>org.openhab.binding.pilight.test</module>
-    <module>org.openhab.binding.fritzaha</module>
+    <!--module>org.openhab.binding.fritzaha</module-->
     <module>org.openhab.binding.tinkerforge</module>
     <module>org.openhab.binding.nibeheatpump</module>
     <module>org.openhab.binding.zwave</module>
@@ -131,7 +131,7 @@
     <module>org.openhab.binding.ekey</module>
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
-    <module>org.openhab.binding.xpl</module>
+    <!--module>org.openhab.binding.xpl</module-->
     <module>org.openhab.binding.dscalarm</module>
     <module>org.openhab.binding.benqprojector</module>
     <module>org.openhab.binding.ehealth</module>
@@ -161,7 +161,7 @@
     <module>org.openhab.binding.lightwaverf</module>
     <module>org.openhab.binding.lightwaverf.test</module>
     <module>org.openhab.binding.souliss</module>
-    <module>org.openhab.binding.sagercaster</module>
+    <!--module>org.openhab.binding.sagercaster</module-->
     <module>org.openhab.binding.ipx800</module>
     <module>org.openhab.binding.tacmi</module>
     <module>org.openhab.binding.rwesmarthome</module>

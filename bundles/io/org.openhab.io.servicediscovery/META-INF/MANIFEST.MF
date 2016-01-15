@@ -6,7 +6,7 @@ Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.io.servicediscovery.internal.DiscoveryServiceActivator
 Service-Component: OSGI-INF/servicediscovery.xml
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.osgi.framework,
  org.osgi.service.cm;version="1.4.0",
  org.apache.commons.lang;version="2.6.0",

@@ -26,7 +26,7 @@ Import-Package: org.apache.commons.io,
  org.slf4j
 Export-Package: org.openhab.binding.withings
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .,
  lib/signpost-core-1.2.1.2.jar,

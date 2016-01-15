@@ -39,9 +39,9 @@ Import-Package: com.google.common.collect,
  org.quartz.impl.matchers,
  org.quartz.utils,
  org.slf4j
-Bundle-SymbolicName: org.openhab.io.caldav;singleton:=true
+Bundle-SymbolicName: org.openhab.io.caldav
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/caldavloader.xml
 Bundle-ClassPath: .,
  lib/commons-lang3-3.3.2.jar,

@@ -48,4 +48,3 @@ Bundle-ClassPath: .,
  lib/okio-1.6.0.jar,
  lib/okhttp-2.4.0.jar,
  lib/okhttp-ws-2.4.0.jar
-Bundle-ActivationPolicy: lazy

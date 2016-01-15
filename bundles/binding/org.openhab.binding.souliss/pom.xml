@@ -29,16 +29,6 @@
 				<groupId>org.vafer</groupId>
 				<artifactId>jdeb</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>${tycho-groupid}</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 

@@ -32,5 +32,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
-Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.binding.sagercaster.internal.SagerCasterActivator

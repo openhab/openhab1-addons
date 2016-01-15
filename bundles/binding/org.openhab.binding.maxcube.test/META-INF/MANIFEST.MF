@@ -5,6 +5,6 @@ Bundle-SymbolicName: org.openhab.binding.maxcube.test
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.maxcube
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html

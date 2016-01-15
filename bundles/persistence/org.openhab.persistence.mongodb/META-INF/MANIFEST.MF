@@ -4,7 +4,7 @@ Bundle-Name: openHAB mongodb Persistence bundle
 Bundle-SymbolicName: org.openhab.persistence.mongodb
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 DynamicImport-Package: *
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,

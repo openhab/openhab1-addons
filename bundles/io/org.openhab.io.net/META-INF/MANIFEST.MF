@@ -4,7 +4,7 @@ Bundle-Name: openHAB Net I/O Bundle
 Bundle-SymbolicName: org.openhab.io.net
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-RegisterBuddy: org.openhab.core.drools
 Import-Package: javax.servlet;version="2.6.0",
  javax.servlet.http;version="2.6.0",
@@ -17,8 +17,8 @@ Import-Package: javax.servlet;version="2.6.0",
  org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.net.util,
- org.eclipse.jetty.plus.jaas.callback;resolution:=optional,
- org.eclipse.jetty.plus.jaas.spi;resolution:=optional,
+ org.eclipse.jetty.jaas.callback;resolution:=optional,
+ org.eclipse.jetty.jaas.spi;resolution:=optional,
  org.openhab.core.scriptengine.action,
  org.openhab.io.console,
  org.osgi.service.cm,

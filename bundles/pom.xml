@@ -17,15 +17,9 @@
 
   <modules>
     <module>action</module>
-    <module>archetype</module>
     <module>binding</module>
-    <module>config</module>
-    <module>core</module>
     <module>io</module>
-    <module>library</module>
-    <module>model</module>
     <module>persistence</module>
-    <module>ui</module>
   </modules>
 
   <build>
@@ -34,7 +28,7 @@
         <plugin>
             <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
-                <version>1.0.1</version>
+                <version>${jdeb-version}</version>
 				<executions>
                 	<execution>
                     	<phase>package</phase>
@@ -42,7 +36,7 @@
                         	<goal>jdeb</goal>
                         </goals>
                         <configuration>
-							<controlDir>${basedir}/../../../distribution/src/deb/control-addons</controlDir>
+							<controlDir>${basedir}/../../../../openhab-distro/distributions/apt-repo/src/deb/control-addons</controlDir>
 							<deb>${basedir}/target/${deb.name}-${project.version}.deb</deb>
 							<dataSet>
 								<data>

@@ -32,6 +32,6 @@ Import-Package: com.google.common.base,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.comfoair
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/comfoairbinding.xml
 Bundle-ClassPath: .

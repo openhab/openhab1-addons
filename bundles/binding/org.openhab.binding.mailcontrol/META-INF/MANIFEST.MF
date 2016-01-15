@@ -25,6 +25,6 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Export-Package: org.openhab.binding.mailcontrol
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,lib/mail-1.4.jar,lib/activation-1.1.jar,lib/access-email-1.0.2.jar,lib/openhab-mailcontrol-model-1.1.0.jar,lib/json-simple-1.1.jar

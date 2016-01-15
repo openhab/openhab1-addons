@@ -10,7 +10,7 @@ Bundle-Vendor: openHAB.org
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Dropbox IO bundle of the open Home Aut
  omation Bus (openHAB)
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.logging;version="1.1.1",
