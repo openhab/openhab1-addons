@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,32 +16,32 @@ import java.util.Objects;
  */
 public class LightwaveRfRegistrationMessageId implements LightwaveRfMessageId {
 
-	private final int messageId;
+    private final int messageId;
 
-	public LightwaveRfRegistrationMessageId() {
-		this.messageId = 100;
-	}
+    public LightwaveRfRegistrationMessageId() {
+        this.messageId = 100;
+    }
 
-	public String getMessageIdString() {
-		return String.valueOf(messageId);
-	}
-	
-	@Override
-	public boolean equals(Object that) {
-		if (that instanceof LightwaveRfRegistrationMessageId) {
-			return Objects.equals(this.messageId,
-					((LightwaveRfRegistrationMessageId) that).messageId);
-		}
-		return false;
-	}
+    @Override
+    public String getMessageIdString() {
+        return String.valueOf(messageId);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(messageId);
-	}
+    @Override
+    public boolean equals(Object that) {
+        if (that instanceof LightwaveRfRegistrationMessageId) {
+            return Objects.equals(this.messageId, ((LightwaveRfRegistrationMessageId) that).messageId);
+        }
+        return false;
+    }
 
-	@Override
-	public String toString() {
-		return "LightwaveRfRegistrationMessageId[" + messageId + "]";
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(messageId);
+    }
+
+    @Override
+    public String toString() {
+        return "LightwaveRfRegistrationMessageId[" + messageId + "]";
+    }
 }

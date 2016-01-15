@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,116 +20,115 @@ import org.slf4j.LoggerFactory;
 /**
  * Monitor which listens to nikobus commands and checks if ACK commands are
  * received within a given timeout.
- * 
+ *
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
 public class NikobusAckMonitor implements NikobusCommandListener {
 
-	private static Logger log = LoggerFactory.getLogger(NikobusAckMonitor.class);
+    private static Logger log = LoggerFactory.getLogger(NikobusAckMonitor.class);
 
-	private NikobusCommand command;
+    private NikobusCommand command;
 
-	private LinkedBlockingQueue<String> receivedCommands = new LinkedBlockingQueue<String>();
+    private LinkedBlockingQueue<String> receivedCommands = new LinkedBlockingQueue<String>();
 
-	private String name = UUID.randomUUID().toString();
-	
-	/**
-	 * Create a new monitor for an ACK command.
-	 * 
-	 * @param command
-	 *            for which to monitor an ACK
-	 */
-	public NikobusAckMonitor(NikobusCommand command) {		
-		this.command = command;
-	}
+    private String name = UUID.randomUUID().toString();
 
-	@Override
-	public void processNikobusCommand(NikobusCommand command, NikobusBinding binding) {
-		log.trace("Processing nikobus command {}", command.getCommand());
-		receivedCommands.add(command.getCommand());
-	}
+    /**
+     * Create a new monitor for an ACK command.
+     * 
+     * @param command
+     *            for which to monitor an ACK
+     */
+    public NikobusAckMonitor(NikobusCommand command) {
+        this.command = command;
+    }
 
-	/**
-	 * Wait for the reception of an ACK message. If no message was received
-	 * within the timeout specified in the command, an exception is thrown.
-	 * 
-	 * When the maxRetryCount of a command is > 1, the command will be resent up
-	 * to maxRetryCount times or until a successful ACK is reached. When a
-	 * command is being resent, the timeout is used for every send, so the
-	 * effective timeout = (maxRetryCount * timeout)
-	 * 
-	 * @param commandSender
-	 *            sender to use for (re)sending command
-	 * 
-	 * @throws Exception
-	 *             if no ACK received within timeout..
-	 */
-	public void waitForAck(NikobusCommandSender commandSender) throws TimeoutException {
+    @Override
+    public void processNikobusCommand(NikobusCommand command, NikobusBinding binding) {
+        log.trace("Processing nikobus command {}", command.getCommand());
+        receivedCommands.add(command.getCommand());
+    }
 
-		// initial send...
-		commandSender.sendCommand(command);
+    /**
+     * Wait for the reception of an ACK message. If no message was received
+     * within the timeout specified in the command, an exception is thrown.
+     * 
+     * When the maxRetryCount of a command is > 1, the command will be resent up
+     * to maxRetryCount times or until a successful ACK is reached. When a
+     * command is being resent, the timeout is used for every send, so the
+     * effective timeout = (maxRetryCount * timeout)
+     * 
+     * @param commandSender
+     *            sender to use for (re)sending command
+     * 
+     * @throws Exception
+     *             if no ACK received within timeout..
+     */
+    public void waitForAck(NikobusCommandSender commandSender) throws TimeoutException {
 
-		// check if the ACK is there
-		if (isAckReceived()) {
-			return;
-		}
+        // initial send...
+        commandSender.sendCommand(command);
 
-		// resend...
-		while (command.getSentCount() < command.getMaxRetryCount()) {
-			if (command.getSentCount() > 0) {
-				// only resend if the first command was actually sent..
-				commandSender.sendCommand(command);
-			}
+        // check if the ACK is there
+        if (isAckReceived()) {
+            return;
+        }
 
-			// check if the ACK is there
-			if (isAckReceived()) {
-				return;
-			}
-		}
+        // resend...
+        while (command.getSentCount() < command.getMaxRetryCount()) {
+            if (command.getSentCount() > 0) {
+                // only resend if the first command was actually sent..
+                commandSender.sendCommand(command);
+            }
 
-		// no ACK received if we get here...
-		throw new TimeoutException("No ACK received within timeout and retry count.");
-	}
+            // check if the ACK is there
+            if (isAckReceived()) {
+                return;
+            }
+        }
 
-	/**
-	 * Send a command and wait for an ACK until the timeout has been reached.
-	 * 
-	 * @return true if an ACK was received within the timeout limit.
-	 */
-	private boolean isAckReceived() {
+        // no ACK received if we get here...
+        throw new TimeoutException("No ACK received within timeout and retry count.");
+    }
 
-		String ack = null;
-		long availableTime = command.getTimeout();
-		long startTime = System.currentTimeMillis();
+    /**
+     * Send a command and wait for an ACK until the timeout has been reached.
+     * 
+     * @return true if an ACK was received within the timeout limit.
+     */
+    private boolean isAckReceived() {
 
-		while (availableTime > 0) {
+        String ack = null;
+        long availableTime = command.getTimeout();
+        long startTime = System.currentTimeMillis();
 
-			try {
-				ack = receivedCommands.poll(availableTime,
-						TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				log.warn("MonitorThread interrupted.");
-				break;
-			}
-			
-			if (ack != null && ack.startsWith(command.getAck().toUpperCase())) {
-				// good ACK received..
-				log.trace("Received expected ack '{}'", ack);
-				return true;
-			} else if (ack == null) {
-				log.trace("No ack received within poll time ({}).", command.getTimeout());
-			}
-			
-			availableTime = command.getTimeout() - (System.currentTimeMillis() - startTime);
-		}
+        while (availableTime > 0) {
 
-		return false;
-	}
+            try {
+                ack = receivedCommands.poll(availableTime, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                log.warn("MonitorThread interrupted.");
+                break;
+            }
 
-	@Override
-	public String getName() {
-		return name;
-	}
-	
+            if (ack != null && ack.startsWith(command.getAck().toUpperCase())) {
+                // good ACK received..
+                log.trace("Received expected ack '{}'", ack);
+                return true;
+            } else if (ack == null) {
+                log.trace("No ack received within poll time ({}).", command.getTimeout());
+            }
+
+            availableTime = command.getTimeout() - (System.currentTimeMillis() - startTime);
+        }
+
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
 }

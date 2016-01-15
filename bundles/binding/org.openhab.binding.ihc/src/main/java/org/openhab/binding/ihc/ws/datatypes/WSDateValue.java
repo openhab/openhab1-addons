@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,11 @@ package org.openhab.binding.ihc.ws.datatypes;
 /**
  * <p>
  * Java class for WSDateValue complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="WSDateValue">
  *   &lt;complexContent>
@@ -29,61 +29,61 @@ package org.openhab.binding.ihc.ws.datatypes;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 public class WSDateValue extends WSResourceValue {
 
-	protected byte month;
-	protected short year;
-	protected byte day;
+    protected byte month;
+    protected short year;
+    protected byte day;
 
-	/**
-	 * Gets the value of the month property.
-	 * 
-	 */
-	public byte getMonth() {
-		return month;
-	}
+    /**
+     * Gets the value of the month property.
+     * 
+     */
+    public byte getMonth() {
+        return month;
+    }
 
-	/**
-	 * Sets the value of the month property.
-	 * 
-	 */
-	public void setMonth(byte value) {
-		this.month = value;
-	}
+    /**
+     * Sets the value of the month property.
+     * 
+     */
+    public void setMonth(byte value) {
+        this.month = value;
+    }
 
-	/**
-	 * Gets the value of the year property.
-	 * 
-	 */
-	public short getYear() {
-		return year;
-	}
+    /**
+     * Gets the value of the year property.
+     * 
+     */
+    public short getYear() {
+        return year;
+    }
 
-	/**
-	 * Sets the value of the year property.
-	 * 
-	 */
-	public void setYear(short value) {
-		this.year = value;
-	}
+    /**
+     * Sets the value of the year property.
+     * 
+     */
+    public void setYear(short value) {
+        this.year = value;
+    }
 
-	/**
-	 * Gets the value of the day property.
-	 * 
-	 */
-	public byte getDay() {
-		return day;
-	}
+    /**
+     * Gets the value of the day property.
+     * 
+     */
+    public byte getDay() {
+        return day;
+    }
 
-	/**
-	 * Sets the value of the day property.
-	 * 
-	 */
-	public void setDay(byte value) {
-		this.day = value;
-	}
+    /**
+     * Sets the value of the day property.
+     * 
+     */
+    public void setDay(byte value) {
+        this.day = value;
+    }
 
 }

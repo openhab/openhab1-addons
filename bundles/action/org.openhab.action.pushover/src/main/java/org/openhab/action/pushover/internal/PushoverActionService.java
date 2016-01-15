@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,165 +20,164 @@ import org.slf4j.LoggerFactory;
 /**
  * This class registers an OSGi service for the Pushover action. Pushover is
  * a web based service that allows pushing of messages to mobile devices.
- * 
+ *
  * @author Chris Graham
  * @since 1.5.0
  */
 public class PushoverActionService implements ActionService, ManagedService {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(PushoverActionService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushoverActionService.class);
 
-	/**
-	 * Your applications API token. See https://pushover.net/api
-	 */
-	private final static String PARAM_KEY_API_KEY = "defaultToken";
-	/**
-	 * The user/group key (not e-mail address) of your user (or you).
-	 */
-	private final static String PARAM_KEY_USER = "defaultUser";
-	/**
-	 * Name of the sending app (optional). Defaults to 'openHAB'
-	 */
-	private final static String PARAM_KEY_TITLE = "defaultTitle";
-	/**
-	 * Priority to use for messages if not specified otherwise (optional).
-	 * Defaults to 0. Valid values range from -2 to 2.
-	 */
-	private final static String PARAM_KEY_DEFAULT_PRIORITY = "defaultPriority";
-	/**
-	 * Url to attach to the message if not specified in the command (optional).
-	 * This can be used to trigger actions on the device
-	 */
-	private final static String PARAM_KEY_DEFAULT_URL = "defaultUrl";
-	/**
-	 * Url title to attach to the message if not specified in the command (optional).
-	 * This can be used to trigger actions on the device
-	 */
-	private final static String PARAM_KEY_DEFAULT_URL_TITLE = "defaultUrlTitle";
+    /**
+     * Your applications API token. See https://pushover.net/api
+     */
+    private final static String PARAM_KEY_API_KEY = "defaultToken";
+    /**
+     * The user/group key (not e-mail address) of your user (or you).
+     */
+    private final static String PARAM_KEY_USER = "defaultUser";
+    /**
+     * Name of the sending app (optional). Defaults to 'openHAB'
+     */
+    private final static String PARAM_KEY_TITLE = "defaultTitle";
+    /**
+     * Priority to use for messages if not specified otherwise (optional).
+     * Defaults to 0. Valid values range from -2 to 2.
+     */
+    private final static String PARAM_KEY_DEFAULT_PRIORITY = "defaultPriority";
+    /**
+     * Url to attach to the message if not specified in the command (optional).
+     * This can be used to trigger actions on the device
+     */
+    private final static String PARAM_KEY_DEFAULT_URL = "defaultUrl";
+    /**
+     * Url title to attach to the message if not specified in the command (optional).
+     * This can be used to trigger actions on the device
+     */
+    private final static String PARAM_KEY_DEFAULT_URL_TITLE = "defaultUrlTitle";
 
-	/**
-	 * Timeout in milliseconds for the connection to pushover.net
-	 * (optional). Defaults to 10 seconds
-	 */
-	private final static String PARAM_KEY_TIMEOUT = "defaultTimeout";
+    /**
+     * Timeout in milliseconds for the connection to pushover.net
+     * (optional). Defaults to 10 seconds
+     */
+    private final static String PARAM_KEY_TIMEOUT = "defaultTimeout";
 
-	/**
-	 * Retry time in seconds to resend message for high priority messages.
-	 * (optional). Defaults to 300 seconds.
-	 */
-	private final static String PARAM_KEY_RETRY = "defaultRetry";
+    /**
+     * Retry time in seconds to resend message for high priority messages.
+     * (optional). Defaults to 300 seconds.
+     */
+    private final static String PARAM_KEY_RETRY = "defaultRetry";
 
-	/**
-	 * Expirey time in seconds to stop resending messages that are high priority.
-	 * (optional). Defaults to 3600 seconds.
-	 */
-	private final static String PARAM_KEY_EXPIRE = "defaultExpire";
-	
-	/**
-	 * Indicates whether this action is properly configured which means all
-	 * necessary configurations are set. This flag can be checked by the action
-	 * methods before executing code.
-	 */
-	static boolean isProperlyConfigured = false;
-	
-	public PushoverActionService() {
-		// nothing to do
-	}
-	
-	public void activate() {
-		logger.debug("Pushover action service activated");
-	}
+    /**
+     * Expirey time in seconds to stop resending messages that are high priority.
+     * (optional). Defaults to 3600 seconds.
+     */
+    private final static String PARAM_KEY_EXPIRE = "defaultExpire";
 
-	public void deactivate() {
-		logger.debug("Pushover action service deactivated");
-	}
-	
-	@Override
-	public String getActionClassName() {
-		return Pushover.class.getCanonicalName();
-	}
+    /**
+     * Indicates whether this action is properly configured which means all
+     * necessary configurations are set. This flag can be checked by the action
+     * methods before executing code.
+     */
+    static boolean isProperlyConfigured = false;
 
-	@Override
-	public Class<?> getActionClass() {
-		return Pushover.class;
-	}
+    public PushoverActionService() {
+        // nothing to do
+    }
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("Configuration file is being parsed.");
-		if (config != null) {
-			logger.debug("Configuration data exists. Parsing the paramaters.");
-			
-			String apiKey = (String) config.get(PARAM_KEY_API_KEY);
-			if (!StringUtils.isEmpty(apiKey)) {
-				Pushover.defaultApiKey = apiKey;
-			}
-			
-			String user = (String) config.get(PARAM_KEY_USER);
-			if (!StringUtils.isEmpty(user)) {
-				Pushover.defaultUser = user;
-			}
+    public void activate() {
+        logger.debug("Pushover action service activated");
+    }
 
-			String title = (String) config.get(PARAM_KEY_TITLE);
-			if (!StringUtils.isEmpty(title)) {
-				Pushover.defaultTitle = title;
-			}
+    public void deactivate() {
+        logger.debug("Pushover action service deactivated");
+    }
 
-			String url = (String) config.get(PARAM_KEY_DEFAULT_URL);
-			if (!StringUtils.isEmpty(url)) {
-				Pushover.defaultUrl = url;
-			}
-			
-			String urlTitle = (String) config.get(PARAM_KEY_DEFAULT_URL_TITLE);
-			if (!StringUtils.isEmpty(urlTitle)) {
-				Pushover.defaultUrlTitle = urlTitle;
-			}
+    @Override
+    public String getActionClassName() {
+        return Pushover.class.getCanonicalName();
+    }
 
-			String defaultPriority = (String) config.get(PARAM_KEY_DEFAULT_PRIORITY);
-			if (!StringUtils.isEmpty(defaultPriority)) {
-				try {
-					Pushover.defaultPriority = Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
-				} catch (NumberFormatException e) {
-					logger.warn("Can't parse the default priority value, falling back to default value.");
-				}
-			}
-			
-			String retry = (String) config.get(PARAM_KEY_RETRY);
-			if (!StringUtils.isEmpty(retry)) {
-				try {
-					Pushover.retry = Integer.parseInt((String) config.get(PARAM_KEY_RETRY));
-				} catch (NumberFormatException e) {
-					logger.warn("Can't parse the retry value, falling back to default value");
-				}
-			}
-			
-			String expire = (String) config.get(PARAM_KEY_EXPIRE);
-			if (!StringUtils.isEmpty(expire)) {
-				try {
-					Pushover.expire = Integer.parseInt((String) config.get(PARAM_KEY_EXPIRE));
-				} catch (NumberFormatException e) {
-					logger.warn("Can't parse the expire message value, falling back to default value");
-				}
-			}
-			
-			String timeOut = (String) config.get(PARAM_KEY_TIMEOUT);
-			if (!StringUtils.isEmpty(timeOut)) {
-				try {
-					Pushover.timeout = Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
-				} catch (NumberFormatException e) {
-					logger.warn("Can't parse the timeout value, falling back to default value");
-				}
-			}
-		} else {
-			// Messages can be sent by providing API Key and User key in the action binding, so no issue here.
-			logger.debug("The configurations information was empty. No defaults for Pushover loaded.");
-		}
-		
-		isProperlyConfigured = true;
-	}
-	
+    @Override
+    public Class<?> getActionClass() {
+        return Pushover.class;
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        logger.debug("Configuration file is being parsed.");
+        if (config != null) {
+            logger.debug("Configuration data exists. Parsing the paramaters.");
+
+            String apiKey = (String) config.get(PARAM_KEY_API_KEY);
+            if (!StringUtils.isEmpty(apiKey)) {
+                Pushover.defaultApiKey = apiKey;
+            }
+
+            String user = (String) config.get(PARAM_KEY_USER);
+            if (!StringUtils.isEmpty(user)) {
+                Pushover.defaultUser = user;
+            }
+
+            String title = (String) config.get(PARAM_KEY_TITLE);
+            if (!StringUtils.isEmpty(title)) {
+                Pushover.defaultTitle = title;
+            }
+
+            String url = (String) config.get(PARAM_KEY_DEFAULT_URL);
+            if (!StringUtils.isEmpty(url)) {
+                Pushover.defaultUrl = url;
+            }
+
+            String urlTitle = (String) config.get(PARAM_KEY_DEFAULT_URL_TITLE);
+            if (!StringUtils.isEmpty(urlTitle)) {
+                Pushover.defaultUrlTitle = urlTitle;
+            }
+
+            String defaultPriority = (String) config.get(PARAM_KEY_DEFAULT_PRIORITY);
+            if (!StringUtils.isEmpty(defaultPriority)) {
+                try {
+                    Pushover.defaultPriority = Integer.parseInt((String) config.get(PARAM_KEY_DEFAULT_PRIORITY));
+                } catch (NumberFormatException e) {
+                    logger.warn("Can't parse the default priority value, falling back to default value.");
+                }
+            }
+
+            String retry = (String) config.get(PARAM_KEY_RETRY);
+            if (!StringUtils.isEmpty(retry)) {
+                try {
+                    Pushover.retry = Integer.parseInt((String) config.get(PARAM_KEY_RETRY));
+                } catch (NumberFormatException e) {
+                    logger.warn("Can't parse the retry value, falling back to default value");
+                }
+            }
+
+            String expire = (String) config.get(PARAM_KEY_EXPIRE);
+            if (!StringUtils.isEmpty(expire)) {
+                try {
+                    Pushover.expire = Integer.parseInt((String) config.get(PARAM_KEY_EXPIRE));
+                } catch (NumberFormatException e) {
+                    logger.warn("Can't parse the expire message value, falling back to default value");
+                }
+            }
+
+            String timeOut = (String) config.get(PARAM_KEY_TIMEOUT);
+            if (!StringUtils.isEmpty(timeOut)) {
+                try {
+                    Pushover.timeout = Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));
+                } catch (NumberFormatException e) {
+                    logger.warn("Can't parse the timeout value, falling back to default value");
+                }
+            }
+        } else {
+            // Messages can be sent by providing API Key and User key in the action binding, so no issue here.
+            logger.debug("The configurations information was empty. No defaults for Pushover loaded.");
+        }
+
+        isProperlyConfigured = true;
+    }
+
 }

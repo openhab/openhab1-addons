@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,118 +17,118 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Class describing a device in pilight 
- * 
+ * Class describing a device in pilight
+ *
  * @author Jeroen Idserda
  * @since 1.0
  */
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Device {
-	
-	private String uuid;
-	
-	private String origin;
-	
-	private String timestamp;
-	
-	private List<String> protocol;
-	
-	private String state;
-	
-	private Integer dimlevel;
-	
-	private Integer dimlevelMaximum;
-	
-	private Integer dimlevelMinimum;
-	
-	private List<Map<String, String>> id;
-	
-	private Map<String,String> properties = new HashMap<String, String>();
 
-	public String getUuid() {
-		return uuid;
-	}
+    private String uuid;
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    private String origin;
 
-	public String getOrigin() {
-		return origin;
-	}
+    private String timestamp;
 
-	public void setOrigin(String origin) {
-		this.origin = origin;
-	}
+    private List<String> protocol;
 
-	public String getTimestamp() {
-		return timestamp;
-	}
+    private String state;
 
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+    private Integer dimlevel;
 
-	public List<String> getProtocol() {
-		return protocol;
-	}
+    private Integer dimlevelMaximum;
 
-	public void setProtocol(List<String> protocol) {
-		this.protocol = protocol;
-	}
+    private Integer dimlevelMinimum;
 
-	public String getState() {
-		return state;
-	}
+    private List<Map<String, String>> id;
 
-	public void setState(String state) {
-		this.state = state;
-	}
-	
-	public Integer getDimlevel() {
-		return dimlevel;
-	}
+    private Map<String, String> properties = new HashMap<String, String>();
 
-	public void setDimlevel(Integer dimlevel) {
-		this.dimlevel = dimlevel;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public Integer getDimlevelMaximum() {
-		return dimlevelMaximum;
-	}
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	@JsonProperty("dimlevel-maximum")
-	public void setDimlevelMaximum(Integer dimlevelMaximum) {
-		this.dimlevelMaximum = dimlevelMaximum;
-	}
+    public String getOrigin() {
+        return origin;
+    }
 
-	public Integer getDimlevelMinimum() {
-		return dimlevelMinimum;
-	}
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
 
-	@JsonProperty("dimlevel-minimum")
-	public void setDimlevelMinimum(Integer dimlevelMinimum) {
-		this.dimlevelMinimum = dimlevelMinimum;
-	}
+    public String getTimestamp() {
+        return timestamp;
+    }
 
-	public List<Map<String, String>> getId() {
-		return id;
-	}
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public void setId(List<Map<String, String>> id) {
-		this.id = id;
-	}
-	
-	public void setProperties(Map<String, String> properties) {
-		this.properties = properties;
-	}
-	
-	public Map<String, String> getProperties() {
-		return properties;
-	}
-	
-	@JsonAnySetter
+    public List<String> getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(List<String> protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Integer getDimlevel() {
+        return dimlevel;
+    }
+
+    public void setDimlevel(Integer dimlevel) {
+        this.dimlevel = dimlevel;
+    }
+
+    public Integer getDimlevelMaximum() {
+        return dimlevelMaximum;
+    }
+
+    @JsonProperty("dimlevel-maximum")
+    public void setDimlevelMaximum(Integer dimlevelMaximum) {
+        this.dimlevelMaximum = dimlevelMaximum;
+    }
+
+    public Integer getDimlevelMinimum() {
+        return dimlevelMinimum;
+    }
+
+    @JsonProperty("dimlevel-minimum")
+    public void setDimlevelMinimum(Integer dimlevelMinimum) {
+        this.dimlevelMinimum = dimlevelMinimum;
+    }
+
+    public List<Map<String, String>> getId() {
+        return id;
+    }
+
+    public void setId(List<Map<String, String>> id) {
+        this.id = id;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    @JsonAnySetter
     public void set(String name, Object value) {
-    	properties.put(name, value.toString());
+        properties.put(name, value.toString());
     }
 }

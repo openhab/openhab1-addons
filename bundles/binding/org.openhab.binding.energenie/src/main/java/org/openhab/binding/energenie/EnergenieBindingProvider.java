@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,8 +8,8 @@
  */
 package org.openhab.binding.energenie;
 
-import org.openhab.core.binding.BindingProvider;
 import org.openhab.binding.energenie.internal.EnergenieBindingConfig;
+import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Hans-Jörg Merk
@@ -17,13 +17,13 @@ import org.openhab.binding.energenie.internal.EnergenieBindingConfig;
  */
 public interface EnergenieBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns the configuration for the item with the given name.
-	 * 
-	 * @param itemName
-	 * @return the configuration if there is an item with the given name, null otherwise.
-	 */
-	
-	public EnergenieBindingConfig getItemConfig(String itemName);
+    /**
+     * Returns the configuration for the item with the given name.
+     * 
+     * @param itemName
+     * @return the configuration if there is an item with the given name, null otherwise.
+     */
+
+    public EnergenieBindingConfig getItemConfig(String itemName);
 
 }

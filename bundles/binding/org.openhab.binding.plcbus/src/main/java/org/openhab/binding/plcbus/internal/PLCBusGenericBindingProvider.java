@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * Implementation of a PLCBusBindingProvider
- * 
+ *
  * <p>
  * The syntax of the binding configuration strings accepted is the following:
  * <p>
@@ -24,42 +24,42 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 	plcbus="&lt;userCode&gt; &lt;unit&gt;"
  * </code>
  * </p>
- * 
+ *
  * <p>
  * Here are some examples for valid binding configuration strings:
  * <ul>
  * <li><code>plcbus="B2 A1"</code></li>
  * </ul>
- * 
+ *
  * @author Robin Lenz
  * @since 1.1.0
  */
 public class PLCBusGenericBindingProvider extends AbstractGenericBindingProvider implements PLCBusBindingProvider {
 
-	@Override
-	public String getBindingType() {
-		return "plcbus";
-	}
+    @Override
+    public String getBindingType() {
+        return "plcbus";
+    }
 
-	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		// all types of items are valid ...
-	}
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        // all types of items are valid ...
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		PLCBusBindingConfig config = new PLCBusBindingConfig(bindingConfig);
-		addBindingConfig(item, config);
-	}
-	
-	@Override
-	public PLCBusBindingConfig getConfigFor(String itemName) {
-		return (PLCBusBindingConfig) bindingConfigs.get(itemName);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
+        PLCBusBindingConfig config = new PLCBusBindingConfig(bindingConfig);
+        addBindingConfig(item, config);
+    }
+
+    @Override
+    public PLCBusBindingConfig getConfigFor(String itemName) {
+        return (PLCBusBindingConfig) bindingConfigs.get(itemName);
+    }
 
 }

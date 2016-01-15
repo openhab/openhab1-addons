@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,59 +13,59 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Object that holds the rssi infos for a RF device.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class HmRssiInfo {
-	private String address;
-	private Integer device;
-	private Integer peer;
+    private String address;
+    private Integer device;
+    private Integer peer;
 
-	public HmRssiInfo(String address, Integer device, Integer peer) {
-		this.address = address;
-		this.device = convert(device);
-		this.peer = convert(peer);
-	}
+    public HmRssiInfo(String address, Integer device, Integer peer) {
+        this.address = address;
+        this.device = convert(device);
+        this.peer = convert(peer);
+    }
 
-	/**
-	 * Converts the rssi value to null if necessary.
-	 */
-	private Integer convert(Integer intValue) {
-		if (intValue == null || intValue == 65536) {
-			return 0;
-		}
-		return intValue;
-	}
+    /**
+     * Converts the rssi value to null if necessary.
+     */
+    private Integer convert(Integer intValue) {
+        if (intValue == null || intValue == 65536) {
+            return 0;
+        }
+        return intValue;
+    }
 
-	/**
-	 * Returns the address of the device.
-	 */
-	public String getAddress() {
-		return address;
-	}
+    /**
+     * Returns the address of the device.
+     */
+    public String getAddress() {
+        return address;
+    }
 
-	/**
-	 * Returns the device rssi.
-	 */
-	public Integer getDevice() {
-		return device;
-	}
+    /**
+     * Returns the device rssi.
+     */
+    public Integer getDevice() {
+        return device;
+    }
 
-	/**
-	 * Returns the peer rssi.
-	 */
-	public Integer getPeer() {
-		return peer;
-	}
+    /**
+     * Returns the peer rssi.
+     */
+    public Integer getPeer() {
+        return peer;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("address", address)
-				.append("device", device).append("peer", peer).toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("address", address)
+                .append("device", device).append("peer", peer).toString();
+    }
 
 }

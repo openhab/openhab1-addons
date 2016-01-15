@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,11 @@ package org.openhab.binding.ihc.ws.datatypes;
 /**
  * <p>
  * Java class for WSTimeValue complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="WSTimeValue">
  *   &lt;complexContent>
@@ -29,62 +29,62 @@ package org.openhab.binding.ihc.ws.datatypes;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 
 public class WSTimeValue extends WSResourceValue {
 
-	protected int hours;
-	protected int minutes;
-	protected int seconds;
+    protected int hours;
+    protected int minutes;
+    protected int seconds;
 
-	/**
-	 * Gets the value of the hours property.
-	 * 
-	 */
-	public int getHours() {
-		return hours;
-	}
+    /**
+     * Gets the value of the hours property.
+     * 
+     */
+    public int getHours() {
+        return hours;
+    }
 
-	/**
-	 * Sets the value of the hours property.
-	 * 
-	 */
-	public void setHours(int value) {
-		this.hours = value;
-	}
+    /**
+     * Sets the value of the hours property.
+     * 
+     */
+    public void setHours(int value) {
+        this.hours = value;
+    }
 
-	/**
-	 * Gets the value of the minutes property.
-	 * 
-	 */
-	public int getMinutes() {
-		return minutes;
-	}
+    /**
+     * Gets the value of the minutes property.
+     * 
+     */
+    public int getMinutes() {
+        return minutes;
+    }
 
-	/**
-	 * Sets the value of the minutes property.
-	 * 
-	 */
-	public void setMinutes(int value) {
-		this.minutes = value;
-	}
+    /**
+     * Sets the value of the minutes property.
+     * 
+     */
+    public void setMinutes(int value) {
+        this.minutes = value;
+    }
 
-	/**
-	 * Gets the value of the seconds property.
-	 * 
-	 */
-	public int getSeconds() {
-		return seconds;
-	}
+    /**
+     * Gets the value of the seconds property.
+     * 
+     */
+    public int getSeconds() {
+        return seconds;
+    }
 
-	/**
-	 * Sets the value of the seconds property.
-	 * 
-	 */
-	public void setSeconds(int value) {
-		this.seconds = value;
-	}
+    /**
+     * Sets the value of the seconds property.
+     * 
+     */
+    public void setSeconds(int value) {
+        this.seconds = value;
+    }
 
 }

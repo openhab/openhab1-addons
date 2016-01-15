@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,58 +24,61 @@ import org.xml.sax.InputSource;
 
 /**
  * Base data class for all controllers data values.
- * 
+ *
  * @author Pauli Anttila
  * @since 1.5.0
  */
 public abstract class WSBaseDataType {
 
-	static public String parseValue(String xml, String xpathExpression)
-			throws IhcExecption {
-		InputStream is;
-		try {
-			is = new ByteArrayInputStream(xml.getBytes("UTF8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new IhcExecption(e);
-		}
-		
-		XPath xpath = XPathFactory.newInstance().newXPath();
-		InputSource inputSource = new InputSource(is);
+    static public String parseValue(String xml, String xpathExpression) throws IhcExecption {
+        InputStream is;
+        try {
+            is = new ByteArrayInputStream(xml.getBytes("UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new IhcExecption(e);
+        }
 
-		xpath.setNamespaceContext(new NamespaceContext() {
-			public String getNamespaceURI(String prefix) {
-				if (prefix == null)
-					throw new NullPointerException("Null prefix");
-				else if ("SOAP-ENV".equals(prefix))
-					return "http://schemas.xmlsoap.org/soap/envelope/";
-				else if ("ns1".equals(prefix))
-					return "utcs";
-				else if ("ns2".equals(prefix))
-					return "utcs.values";
-				return null;
-			}
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        InputSource inputSource = new InputSource(is);
 
-			public String getPrefix(String uri) {
-				return null;
-			}
+        xpath.setNamespaceContext(new NamespaceContext() {
+            @Override
+            public String getNamespaceURI(String prefix) {
+                if (prefix == null) {
+                    throw new NullPointerException("Null prefix");
+                } else if ("SOAP-ENV".equals(prefix)) {
+                    return "http://schemas.xmlsoap.org/soap/envelope/";
+                } else if ("ns1".equals(prefix)) {
+                    return "utcs";
+                } else if ("ns2".equals(prefix)) {
+                    return "utcs.values";
+                }
+                return null;
+            }
 
-			@SuppressWarnings("rawtypes")
-			public Iterator getPrefixes(String uri) {
-				throw new UnsupportedOperationException();
-			}
-		});
+            @Override
+            public String getPrefix(String uri) {
+                return null;
+            }
 
-		try {
-			return (String) xpath.evaluate(xpathExpression, inputSource, XPathConstants.STRING);
-		} catch (XPathExpressionException e) {
-			throw new IhcExecption(e);
-		}
-	}
-	
-	public boolean parseValueToBoolean(String xml, String xpathExpression) throws IhcExecption {
-		return Boolean.parseBoolean( parseValue( xml, xpathExpression) );
-	}
+            @Override
+            @SuppressWarnings("rawtypes")
+            public Iterator getPrefixes(String uri) {
+                throw new UnsupportedOperationException();
+            }
+        });
 
-	public abstract void encodeData(String data) throws IhcExecption;
-	
+        try {
+            return (String) xpath.evaluate(xpathExpression, inputSource, XPathConstants.STRING);
+        } catch (XPathExpressionException e) {
+            throw new IhcExecption(e);
+        }
+    }
+
+    public boolean parseValueToBoolean(String xml, String xpathExpression) throws IhcExecption {
+        return Boolean.parseBoolean(parseValue(xml, xpathExpression));
+    }
+
+    public abstract void encodeData(String data) throws IhcExecption;
+
 }

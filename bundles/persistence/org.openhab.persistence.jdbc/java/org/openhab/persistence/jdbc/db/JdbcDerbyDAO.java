@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.knowm.yank.Yank;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
@@ -24,8 +25,6 @@ import org.openhab.persistence.jdbc.model.JdbcItem;
 import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.knowm.yank.Yank;
 
 /**
  * Extended Database Configuration class. Class represents
@@ -101,8 +100,9 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
                     new String[] { vo.getItemsManageTable().toUpperCase(), vo.getColname(), vo.getColtype() });
             logger.debug("JDBC::doCreateItemsTableIfNot tableExists={} therefore sql={}", sql);
             Yank.execute(sql, null);
-        } else
+        } else {
             logger.debug("JDBC::doCreateItemsTableIfNot tableExists={}, did no CREATE TABLE", tableExists);
+        }
         return vo;
     }
 
@@ -188,8 +188,9 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
         if ("NUMBERITEM".equalsIgnoreCase(simpleName) && numberDecimalcount > -1) {
             // rounding HALF UP
             queryString += "CAST(value 0.";
-            for (int i = 0; i < numberDecimalcount; i++)
+            for (int i = 0; i < numberDecimalcount; i++) {
                 queryString += "0";
+            }
             queryString += "5 AS DECIMAL(31," + numberDecimalcount + "))"; // 31 is DECIMAL max precision
                                                                            // https://db.apache.org/derby/docs/10.0/manuals/develop/develop151.html
         } else {

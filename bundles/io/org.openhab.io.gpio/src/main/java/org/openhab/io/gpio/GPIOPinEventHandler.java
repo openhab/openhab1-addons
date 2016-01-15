@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,23 +19,23 @@ package org.openhab.io.gpio;
  */
 public interface GPIOPinEventHandler {
 
-	/**
-	 * Callback function executed on pin interrupt. When will the interrupt
-	 * be generated depends on pin's "edge detection" setting. Not all
-	 * boards/pins supports interrupts, refer to board's system
-	 * reference manual.
-	 * 
-	 * @param pin pin which generated the interrupt
-	 * @param value the value of pin after the interrupt was generated, either
-	 * <code>GPIO.VALUE_LOW</code> or <code>GPIO.VALUE_HIGH</code>
-	 */
-	public void onEvent(GPIOPin pin, int value);
+    /**
+     * Callback function executed on pin interrupt. When will the interrupt
+     * be generated depends on pin's "edge detection" setting. Not all
+     * boards/pins supports interrupts, refer to board's system
+     * reference manual.
+     * 
+     * @param pin pin which generated the interrupt
+     * @param value the value of pin after the interrupt was generated, either
+     *            <code>GPIO.VALUE_LOW</code> or <code>GPIO.VALUE_HIGH</code>
+     */
+    public void onEvent(GPIOPin pin, int value);
 
-	/**
-	 * Callback function executed when an error is detected.
-	 * 
-	 * @param pin the pin which generated the error
-	 * @param exception the exception which was thrown
-	 */
-	public void onError(GPIOPin pin, Exception exception);
+    /**
+     * Callback function executed when an error is detected.
+     * 
+     * @param pin the pin which generated the error
+     * @param exception the exception which was thrown
+     */
+    public void onError(GPIOPin pin, Exception exception);
 }
