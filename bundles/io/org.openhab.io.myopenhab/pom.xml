@@ -45,4 +45,31 @@
 		</plugins>
 	</build>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.openhab.config</groupId>
+			<artifactId>org.openhab.config.core</artifactId>
+			<version>1.8.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.core</groupId>
+			<artifactId>org.openhab.core.scriptengine</artifactId>
+			<version>1.8.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.model</groupId>
+			<artifactId>org.openhab.model.core</artifactId>
+			<version>1.8.0</version>
+			<type>jar</type>
+		</dependency>		
+		<dependency>
+			<groupId>org.openhab.model</groupId>
+			<artifactId>org.openhab.model.item</artifactId>
+			<version>1.8.0</version>
+			<type>jar</type>
+		</dependency>		
+	</dependencies>
+	
 </project>

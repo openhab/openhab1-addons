@@ -37,7 +37,7 @@
     <description>This is the open Home Automation Bus (openHAB)</description>
     
     <properties>
-        <oh2-version>2.0.0-SNAPSHOT</oh2-version>
+        <tp-version>2.0.0.b1</tp-version>
         
         <jdeb-version>1.4</jdeb-version>
         
@@ -64,16 +64,7 @@
         <module>bundles</module>
         <module>features</module>
     </modules>
-        
-    <!-- dependencies, which are not available in a p2-repository -->
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.fileinstall</artifactId>
-            <version>3.2.6</version>
-        </dependency>
-    </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -94,7 +85,7 @@
                         <artifact>
                             <groupId>org.openhab.distro</groupId>
                             <artifactId>targetplatform</artifactId>
-                            <version>${oh2-version}</version>
+                            <version>${tp-version}</version>
                             <classifier>openhab</classifier>
                         </artifact>
                     </target>
@@ -120,67 +111,6 @@
                             <arch>x86_64</arch>
                         </environment>
                     </environments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.0-beta-2</version>
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.2</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <version>2.4.3</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>2.7</version>
-                            <configuration>
-                                <aggregate>true</aggregate>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-jxr-plugin</artifactId>
-                            <configuration>
-                                <aggregate>true</aggregate>
-                            </configuration>
-                            <version>2.1</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-checkstyle-plugin</artifactId>
-                            <version>2.5</version>
-                            <configuration>
-                                <!--<configLocation>${settings.localRepository}/path /to/checkstyle.config</configLocation>-->
-                                <enableRulesSummary>false</enableRulesSummary>
-                                <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-pmd-plugin</artifactId>
-                            <version>2.4</version>
-                            <configuration>
-                                <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>jdepend-maven-plugin</artifactId>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>findbugs-maven-plugin</artifactId>
-                        </plugin>
-                    </reportPlugins>
                 </configuration>
             </plugin>
             <plugin>
@@ -228,7 +158,7 @@
                         </excludes>
                         <useDefaultExcludes>true</useDefaultExcludes>
                         <properties>
-                            <year>2015</year>
+                            <year>2016</year>
                         </properties>
                         <encoding>UTF-8</encoding>
                     </configuration>
@@ -249,38 +179,26 @@
         </pluginManagement>
     </build>
     
-    <pluginRepositories>
-        <pluginRepository>
-            <id>tycho-snapshots</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>xtend.repository</id>
-            <name>Xtend Repository</name>
-            <url>http://build.eclipse.org/common/xtend/maven/org/eclipse/xtend/org.eclipse.xtend.maven/</url>
+	<repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>openhab-bintray</id>
+            <name>Bintray Repository for openHAB</name>
+            <url>https://dl.bintray.com/openhab/mvn/</url>
+        </repository>
+        <repository>
+            <id>jfrog</id>
+            <name>JFrog OSS Repository</name>
+            <url>http://oss.jfrog.org/libs-snapshot/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>openhab.repository</id>
-            <name>openHAB Repository</name>
-            <url>https://dl.bintray.com/openhab/mvn/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>openhab.repository.rc</id>
-            <name>openHAB Snapshot Repository</name>
-            <url>https://dl.bintray.com/openhab/mvn/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>openhab.repository.snapshot</id>
-            <name>openHAB Snapshot Repository</name>
-            <url>https://dl.bintray.com/openhab/mvn/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+        </repository>
+	</repositories>
     
     <profiles>
         <profile>
