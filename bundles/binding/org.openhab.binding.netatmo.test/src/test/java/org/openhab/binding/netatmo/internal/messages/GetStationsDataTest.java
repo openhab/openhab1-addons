@@ -19,6 +19,7 @@ import java.util.List;
 import org.junit.Test;
 import org.openhab.binding.netatmo.internal.messages. GetStationsDataResponse.Device;
 import org.openhab.binding.netatmo.internal.messages. GetStationsDataResponse.Module;
+import org.openhab.binding.netatmo.internal.messages.GetStationsDataResponse.Place;
 
 /**
  * @author Rob Nielsen
@@ -44,12 +45,23 @@ public class GetStationsDataTest {
 		assertEquals("ok", response.getStatus());
 
 		final List<Device> devices = response.getDevices();
-		assertEquals(1, devices.size());
+		assertEquals(2, devices.size());
 		
-		final Device device = devices.get(0);
+		final Device device1 = devices.get(0);
 		
-		final List<Module> modules = device.getModules();
-		assertEquals(4, modules.size());
+		final List<Module> modules1 = device1.getModules();
+		assertEquals(4, modules1.size());
+		
+		final Device device2 = devices.get(1);
+		
+		final List<Module> modules2 = device2.getModules();
+		assertEquals(4, modules2.size());
+		
+		final Place place1 = device1.getPlace();
+		assertEquals(30.478512648583, place1.getAltitude());
+		
+		final Place place2 = device2.getPlace();
+		assertEquals(150.0, place2.getAltitude());
 	}
 
 }
