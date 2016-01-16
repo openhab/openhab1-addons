@@ -193,7 +193,7 @@
 				<ul><li>0 = means turn off this function.</li></ul>]]></Help>
 		</Parameter>
 		<Parameter>
-			<Index>21</Index>
+			<Index>22</Index>
 			<Type>byte</Type>
 			<Default></Default>
 			<Minimum>0</Minimum>
