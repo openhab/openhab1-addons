@@ -6,14 +6,6 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-/**
- * Copyright (c) 2010-2015, openHAB.org and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
 package org.openhab.binding.myq.internal;
 
 import java.io.IOException;
@@ -107,7 +99,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
     /**
      * Called by the SCR to activate the component with its configuration read
      * from CAS
-     * 
+     *
      * @param bundleContext
      *            BundleContext of the Bundle that defines this component
      * @param configuration
@@ -122,7 +114,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
     /**
      * Called by the SCR when the configuration of a binding has been changed
      * through the ConfigAdmin service.
-     * 
+     *
      * @param configuration
      *            Updated configuration properties
      */
@@ -161,7 +153,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
      * Called by the SCR to deactivate the component when either the
      * configuration is removed or mandatory references are no longer satisfied
      * or the component has simply been stopped.
-     * 
+     *
      * @param reason
      *            Reason code for the deactivation:<br>
      *            <ul>
@@ -292,7 +284,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
      * Checks whether the command is value and if the deviceID exists then get
      * status of Garage Door Opener and send command to change it's state
      * opposite of its current state
-     * 
+     *
      * @param command
      *            The command from the openHAB bus.
      * @param itemName
@@ -344,7 +336,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 
     /**
      * Schedule our polling task
-     * 
+     *
      * @param millis
      */
     private void schedulePoll(long millis) {
@@ -379,7 +371,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 
     /**
      * Start rapid polling
-     * 
+     *
      * @param restart
      *            if already running, otherwise ignore.
      */
