@@ -36,7 +36,7 @@
 		</Parameter>
 		<Parameter>
 			<Index>2</Index>
-			<Type>byte</Type>
+			<Type>decimal</Type>
 			<Default>0xFF</Default>
 			<Minimum>1</Minimum>
 			<Maximum>100</Maximum>
@@ -139,7 +139,7 @@
 			<Label lang="en">Auto Report Tick Interval</Label>
 			<Help lang="en"><![CDATA[The interval time for auto report each tick. Setting configuration will affect configuration no. 10, 13, 14 and 15.<br/>
 				<ul><li>0 = Caution: Setting to 0 means turn off all auto report function.</li>
-				<li>1-127 = Caution: The value is unsigned byte.</li></ul>]]></Help>
+				<li>1-254 = Caution: The value is unsigned byte.</li></ul>]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>21</Index>
