@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * querying a Website/Device.
  * 
  * @author laurent@clae.net
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0-SNAPSHOT
  */
 public class siemensHvacBinding extends
 		AbstractActiveBinding<siemensHvacBindingProvider> {

@@ -12,7 +12,7 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author laurent@clae.net
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0-SNAPSHOT
  */
 public interface siemensHvacBindingProvider extends BindingProvider {
 

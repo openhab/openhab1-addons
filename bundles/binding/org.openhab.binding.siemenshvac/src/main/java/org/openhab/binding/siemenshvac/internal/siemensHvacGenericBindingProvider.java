@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author laurent@clae.net
- * @since 1.8.0-SNAPSHOT
+ * @since 1.9.0-SNAPSHOT
  */
 public class siemensHvacGenericBindingProvider extends
 		AbstractGenericBindingProvider implements siemensHvacBindingProvider {
