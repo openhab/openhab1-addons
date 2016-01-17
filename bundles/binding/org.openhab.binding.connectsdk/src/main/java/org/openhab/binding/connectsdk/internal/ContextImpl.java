@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.connectsdk.internal;
 
 import java.io.File;
@@ -8,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlPlayState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,36 +29,12 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-//import android.content.ComponentName;
-//import android.content.ContentResolver;
-//import android.content.IntentSender;
-//import android.content.ServiceConnection;
-//import android.content.SharedPreferences;
-//import android.content.pm.ActivityInfo;
-//import android.content.pm.FeatureInfo;
-//import android.content.pm.InstrumentationInfo;
-//import android.content.pm.PermissionGroupInfo;
-//import android.content.pm.PermissionInfo;
-//import android.content.pm.ProviderInfo;
-//import android.content.pm.ResolveInfo;
-//import android.content.pm.ServiceInfo;
-//import android.content.res.AssetManager;
-//import android.content.res.Resources;
-//import android.content.res.XmlResourceParser;
-//import android.database.DatabaseErrorHandler;
-//import android.database.sqlite.SQLiteDatabase;
-//import android.graphics.Bitmap;
-//import android.net.Uri;
-//import android.os.Bundle;
-//import android.os.Handler;
-//import android.os.Looper;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.view.WindowManager;
+
 
 /**
- *
+ * Context implementation that provides connect sdk information about its surrounding environment.
  * @author Sebastian Prehn
+ * @since 1.8.0
  */
 class ContextImpl extends Context {
 	private final String CONFIG_PROPERTIES_BASE = "etc" + File.separator + "connect_sdk";
@@ -88,7 +71,6 @@ class ContextImpl extends Context {
             @Override
             public ApplicationInfo getApplicationInfo(String packageName, int flags) throws PackageManager.NameNotFoundException {
                 throw new NameNotFoundException();
-                //throw new UnsupportedOperationException("Not supported yet."); 
             }
 
             @Override
