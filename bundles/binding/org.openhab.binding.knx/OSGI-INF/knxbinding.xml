@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.knx">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.knx">
    <implementation class="org.openhab.binding.knx.internal.bus.KNXBinding"/>
    <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.knx.config.KNXBindingProvider" name="KNXBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
    <reference bind="addKNXTypeMapper" cardinality="1..n" interface="org.openhab.binding.knx.config.KNXTypeMapper" name="KNXTypeMapper" policy="dynamic" unbind="removeKNXTypeMapper"/>
