@@ -20,6 +20,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -105,7 +106,7 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
         super.processBindingConfiguration(context, item, bindingConfig);
 
         ExecBindingConfig config = new ExecBindingConfig();
-        config.itemType = item.getClass();
+        config.acceptedDataTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
 
         Matcher matcher = BASE_CONFIG_PATTERN.matcher(bindingConfig);
 
@@ -235,16 +236,16 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
      * Creates a {@link Command} out of the given <code>commandAsString</code>
      * taking the special Commands "CHANGED" and "*" into account and incorporating
      * the {@link TypeParser}.
-     * 
+     *
      * @param item
      * @param commandAsString
-     * 
+     *
      * @return an appropriate Command (see {@link TypeParser} for more
      *         information
-     * 
+     *
      * @throws BindingConfigParseException if the {@link TypeParser} couldn't
      *             create a command appropriately
-     * 
+     *
      * @see {@link TypeParser}
      */
     private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
@@ -268,9 +269,9 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
      * @{inheritDoc}
      */
     @Override
-    public Class<? extends Item> getItemType(String itemName) {
+    public List<Class<? extends State>> getAcceptedDataTypes(String itemName) {
         ExecBindingConfig config = (ExecBindingConfig) bindingConfigs.get(itemName);
-        return config != null ? config.itemType : null;
+        return config != null ? config.acceptedDataTypes : null;
     }
 
     /**
@@ -337,7 +338,7 @@ public class ExecGenericBindingProvider extends AbstractGenericBindingProvider i
 
         /** generated serialVersion UID */
         private static final long serialVersionUID = 6164971643530954095L;
-        Class<? extends Item> itemType;
+        List<Class<? extends State>> acceptedDataTypes;
     }
 
     /**
