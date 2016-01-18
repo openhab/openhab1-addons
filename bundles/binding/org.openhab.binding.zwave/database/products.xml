@@ -1811,16 +1811,34 @@
 	<Manufacturer>
 		<Id>0115</Id>
 		<Name>ZWave.me</Name>
-		<Product>
-			<Reference>
-				<Type>1000</Type>
-				<Id>0100</Id>
-			</Reference>
-			<Model>ZME_05461</Model>
-			<Label lang="en">Double switch</Label>
-			<Label lang="de">Doppeltaster</Label>
-			<ConfigFile>zwaveme/zme_05461.xml</ConfigFile>
-		</Product>
+        <Product>
+            <Reference>
+                <Type>1000</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>ZME_054336</Model>
+            <Label lang="en">Flush-Mountable Dimmer v1.8</Label>
+            <ConfigFile>zwaveme/zme_054336.xml</ConfigFile>
+        </Product>
+         <Product>
+            <Reference>
+                <Type>0024</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>ZME_10024</Model>
+            <Label lang="en">Floor thermostat 1.2</Label>
+            <ConfigFile>zwaveme/zme_10024.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>1000</Type>
+                <Id>0100</Id>
+            </Reference>
+            <Model>ZME_05461</Model>
+            <Label lang="en">Double switch</Label>
+            <Label lang="de">Doppeltaster</Label>
+            <ConfigFile>zwaveme/zme_05461.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>1000</Type>
