@@ -2206,6 +2206,16 @@
 			<Label lang="en">Flood Sensor</Label>
 			<ConfigFile>philio/pat02c.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0031</Id>
+			</Reference>
+			<Model>PAT02-A/B/C</Model>
+			<Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
+			<Label lang="de">Überschwemmungssensor inkl. Luftfeuchtigkeit und Temperatur</Label>
+			<ConfigFile>philio/pat02.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0096</Id>
