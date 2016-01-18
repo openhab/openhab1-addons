@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.multimedia.tts.googletts">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.io.multimedia.tts.googletts">
    <implementation class="org.openhab.io.multimedia.internal.tts.TTSServiceGoogleTTS"/>
    <service>
       <provide interface="org.openhab.io.multimedia.tts.TTSService"/>
