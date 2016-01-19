@@ -1816,8 +1816,8 @@
 				<Type>0100</Type>
 				<Id>0400</Id>
 			</Reference>
-			<Model>POPE005206</Model>
-			<Label lang="en">Z Weather</Label>
+			<Model>Z-Weather</Model>
+			<Label lang="en">Z-Weather</Label>
 			<ConfigFile>popp/zweather.xml</ConfigFile>
 		</Product>
 		<Product>
