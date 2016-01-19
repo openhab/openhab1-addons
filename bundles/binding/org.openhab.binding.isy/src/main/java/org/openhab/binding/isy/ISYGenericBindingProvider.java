@@ -20,6 +20,7 @@ import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -139,6 +140,8 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			type = ISYNodeType.NUMBER;
 		} else if (item instanceof StringItem) {
 			type = ISYNodeType.STRING;
+		} else if (item instanceof DimmerItem) {
+			type = ISYNodeType.DIMMER;
 		} else {
 			type = ISYNodeType.SWITCH;
 		}

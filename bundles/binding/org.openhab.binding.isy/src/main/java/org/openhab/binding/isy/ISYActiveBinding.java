@@ -11,6 +11,7 @@ package org.openhab.binding.isy;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.math.BigDecimal;
 
 import org.openhab.binding.isy.internal.ISYNodeType;
 import org.openhab.binding.isy.internal.ErrorHandler;
@@ -23,6 +24,10 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
+<<<<<<< HEAD
+=======
+import org.openhab.core.library.types.PercentType;
+>>>>>>> 90c7474... Added dimmer functionality
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -248,7 +253,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 
 			for (ISYBindingConfig config : configs) {
 
-				switch (config.getType()) {
+				switch (config.getType()) { 
 				case SWITCH:
 					if ("0".equals(action)) {
 						state = OnOffType.OFF;
@@ -281,7 +286,19 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					state = new StringType((String) action);
 					break;
 				case DIMMER:
+<<<<<<< HEAD
 					state = new PercentType((String) action);
+=======
+					if ("0".equals(action)) {
+						state = OnOffType.OFF;
+					} else if ("255".equals(action)){
+						state = OnOffType.ON;
+					} else {
+						BigDecimal dim = new BigDecimal(Math.round((new DecimalType((String) action).doubleValue() * 100) / 255));
+						
+						state = new PercentType(dim);
+					}
+>>>>>>> 90c7474... Added dimmer functionality
 				default:
 					break;
 				}
@@ -522,9 +539,9 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			switch (type) {
 			case ON:
 				if (ISYNodeType.THERMOSTAT.equals(config.getType())) {
-					// turn thermostat off
-					this.insteonClient.changeNodeState(ISYControl.CLIMD.name(),
-							"1", node.address);
+					// turn thermostat Fan State to On
+					this.insteonClient.changeNodeState(ISYControl.CLIFS.name(),
+							"7", node.address);
 
 					// provide immediate feedback such that the UI gets updated
 					// or else the switch button will not be refreshed until the
@@ -548,6 +565,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					// or else the switch button will not be refreshed until the
 					// new state has been reached
 					this.eventPublisher.postUpdate(config.getItemName(), type);
+				
 				} else if (node instanceof UDGroup) {
 					this.insteonClient.turnSceneFastOff(node.address);
 				} else {
@@ -558,7 +576,7 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 		} else if (command instanceof DecimalType) {
 			DecimalType type = (DecimalType) command;
 
-			switch (config.getType()) {
+			switch (config.getType()) {	
 			case THERMOSTAT:
 				switch (config.getControlCommand()) {
 				case CLISPH:
@@ -571,8 +589,47 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					break;
 				case CLIMD:
 				case CLIFS:
-					this.insteonClient.changeNodeState(ISYControl.CLIMD.name(),
+					this.insteonClient.changeNodeState(config.getControlCommand().name(),
 							type.format("%s"), node.address);
+					break;
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			//Dimmer Commands come in as DecimalType, not PercentType
+			case DIMMER:
+				switch (config.getControlCommand()) {
+				case ST:
+					DecimalType dim = new DecimalType(Math.round((type.doubleValue() * 255)/ 100));
+					if (dim.intValue() <= 0){
+						this.insteonClient.turnDeviceFastOff(node.address);
+					} else if (dim.intValue() >= 255){
+						this.insteonClient.turnDeviceFastOn(node.address);
+					} else {
+						this.insteonClient.changeNodeState(ISYControl.DON.name(),
+								dim.format("%s"), node.address);
+					}
+					
+					this.eventPublisher.postUpdate(config.getItemName(), dim);
+					break;
+				default:
+					break;
+				}
+			}
+		} else if (command instanceof IncreaseDecreaseType) {
+			IncreaseDecreaseType type = (IncreaseDecreaseType) command;
+
+			switch (config.getType()) {	
+			case DIMMER:
+				switch (config.getControlCommand()) {
+				case ST:
+					if (type.equals(IncreaseDecreaseType.INCREASE)) {
+						this.insteonClient.brightenDevice(node.address);
+					} else if (type.equals(IncreaseDecreaseType.DECREASE)) {
+						this.insteonClient.dimDevice(node.address);
+					}
 					break;
 				default:
 					break;
