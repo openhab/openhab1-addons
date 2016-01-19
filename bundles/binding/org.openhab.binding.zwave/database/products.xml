@@ -1841,6 +1841,15 @@
         </Product>
 		<Product>
 			<Reference>
+				<Type>0100</Type>
+				<Id>0400</Id>
+			</Reference>
+			<Model>Z-Weather</Model>
+			<Label lang="en">Z-Weather</Label>
+			<ConfigFile>popp/zweather.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1000</Type>
 				<Id>0200</Id>
 			</Reference>
