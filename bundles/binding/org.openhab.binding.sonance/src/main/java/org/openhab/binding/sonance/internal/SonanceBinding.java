@@ -69,7 +69,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
      * Called by the SCR to activate the component with the refresh Interval. To
      * override the default refresh interval one has to add a parameter to
      * openhab.cfg like Sonance:refresh=<intervalInMs>.
-     * 
+     *
      * @param bundleContext
      *            BundleContext of the Bundle that defines this component
      * @param configuration
@@ -87,7 +87,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Deallocate socket connection, output stream and buffered reader caches
-     * 
+     *
      * @param reason
      *            Reason code for the deactivation:<br>
      *            <ul>
@@ -159,12 +159,11 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
                         } else if (provider.isVolume(itemName)) {
                             sendVolumeCommand(itemName, SonanceConsts.VOLUME_QUERY + group, outputStreamCache.get(key),
                                     bufferedReaderCache.get(key));
-                        } // } else if (provider.isPower(itemName)) {
-                          // sendPowerCommand(itemName,
-                          // SonanceConsts.POWER_QUERY,
-                          // outputStreamCache.get(key),
-                          // bufferedReaderCache.get(key));
-                          // }
+                        } else if (provider.isPower(itemName)) {
+                            sendPowerCommand(itemName, SonanceConsts.POWER_QUERY, outputStreamCache.get(key),
+                                    bufferedReaderCache.get(key));
+
+                        }
                     } catch (UnknownHostException e) {
                         logger.error("UnknownHostException occured when connecting to amplifier {}:{}.", ip, port);
                     } catch (IOException e) {
@@ -252,12 +251,12 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
                     sendVolumeCommand(itemName, SonanceConsts.VOLUME_DOWN + group, outToServer, i);
                 } else {
                     try {
-                        setVolumeCommand(itemName, group, Integer.parseInt(command.toString()), outToServer, i,
-                                ip + ":" + port);
+                        Double d = Double.parseDouble(command.toString());
+                        setVolumeCommand(itemName, group, d.intValue(), outToServer, i, ip + ":" + port);
                     } catch (NumberFormatException nfe) {
-                        logger.error("I don't know what to do with the command \"{}\"", command);
+                        logger.error("I don't know what to do with the volume command \"{}\" ({})", command,
+                                nfe.getMessage());
                     }
-
                 }
             }
             s.close();
@@ -270,7 +269,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Closes a socket
-     * 
+     *
      * @param s
      *            socket to close
      */
@@ -342,7 +341,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Send volume commands to groups (music zones)
-     * 
+     *
      * @param itemName
      *            item name to send update to
      * @param command
@@ -376,7 +375,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Enable or disable specific groups (music zones)
-     * 
+     *
      * @param itemName
      *            item name to send update to
      * @param command
@@ -413,7 +412,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Wake up or put amplifier to sleep
-     * 
+     *
      * @param itemName
      *            item name to send update to
      * @param command
@@ -444,21 +443,14 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
             eventPublisher.postUpdate(itemName, OnOffType.ON);
             logger.debug("Setting power item {} on ON", itemName);
         } else {
-            logger.debug("Error sending power command {}, received this: {}", command, result); // Is trigger when
-                                                                                                // toggling to fast
-            // Put back to old state
-            if (command.equals(SonanceConsts.POWER_OFF)) {
-                eventPublisher.postUpdate(itemName, OnOffType.ON);
-            } else {
-                eventPublisher.postUpdate(itemName, OnOffType.OFF);
-            }
+            logger.trace("Error sending power command {}, received this: {}", command, result);
         }
     }
 
     /**
      * Sets the group to the specified target volume. Amplifier doesn't support
      * direct volume commands, so a loop is needed
-     * 
+     *
      * @param itemName
      *            item to publish result to
      * @param group
@@ -545,7 +537,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Get binding provider for that item
-     * 
+     *
      * @param itemName
      *            name of the item where we need to binding provder for
      * @return SonanceBindingProvider
@@ -563,7 +555,7 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
 
     /**
      * Function to convert strings to hexadecimal bytes.
-     * 
+     *
      * @param s
      *            the string to convert to a hexadecimal byte array
      * @return hexadecimal byte array
@@ -576,4 +568,5 @@ public class SonanceBinding extends AbstractActiveBinding<SonanceBindingProvider
         }
         return data;
     }
+
 }
