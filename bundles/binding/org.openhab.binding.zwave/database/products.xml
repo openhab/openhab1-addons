@@ -1813,6 +1813,15 @@
 		<Name>ZWave.me</Name>
 		<Product>
 			<Reference>
+				<Type>0100</Type>
+				<Id>0400</Id>
+			</Reference>
+			<Model>POPE005206</Model>
+			<Label lang="en">Z Weather</Label>
+			<ConfigFile>popp/zweather.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1000</Type>
 				<Id>0100</Id>
 			</Reference>
