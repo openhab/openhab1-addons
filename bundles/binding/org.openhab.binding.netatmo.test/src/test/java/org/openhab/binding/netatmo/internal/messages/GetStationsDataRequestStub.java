@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,40 +18,39 @@ import com.google.common.io.Resources;
  * @author Rob Nielsen
  * @since 1.8.0
  */
-public class GetStationsDataRequestStub extends  GetStationsDataRequest {
+public class GetStationsDataRequestStub extends GetStationsDataRequest {
 
-	protected static final String ACCESS_TOKEN = "test-access-token";
+    protected static final String ACCESS_TOKEN = "test-access-token";
 
-	public static GetStationsDataRequestStub createRequest(final String resource)
-			throws Exception {
-		return new GetStationsDataRequestStub(resource);
-	}
+    public static GetStationsDataRequestStub createRequest(final String resource) throws Exception {
+        return new GetStationsDataRequestStub(resource);
+    }
 
-	private final String response;
+    private final String response;
 
-	private String content;
+    private String content;
 
-	private GetStationsDataRequestStub(final String response) throws Exception {
-		super(ACCESS_TOKEN);
+    private GetStationsDataRequestStub(final String response) throws Exception {
+        super(ACCESS_TOKEN);
 
-		final URL resource = getClass().getResource(response);
+        final URL resource = getClass().getResource(response);
 
-		if (resource == null) {
-			throw new IOException("Resource '" + response + "' not found!");
-		}
+        if (resource == null) {
+            throw new IOException("Resource '" + response + "' not found!");
+        }
 
-		this.response = Resources.toString(resource, Charsets.UTF_8);
-	}
+        this.response = Resources.toString(resource, Charsets.UTF_8);
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public String getContent() {
+        return this.content;
+    }
 
-	@Override
-	protected String executeQuery(final String content) {
-		this.content = content;
+    @Override
+    protected String executeQuery(final String content) {
+        this.content = content;
 
-		return this.response;
-	}
+        return this.response;
+    }
 
 }

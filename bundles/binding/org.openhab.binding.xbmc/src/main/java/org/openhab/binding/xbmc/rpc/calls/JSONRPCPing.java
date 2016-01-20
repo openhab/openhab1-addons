@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,34 +17,34 @@ import com.ning.http.client.AsyncHttpClient;
 
 /**
  * JSONRPC.Ping RPC
- * 
+ *
  * @author Ben Jones
  * @since 1.5.0
  */
 public class JSONRPCPing extends RpcCall {
-	
-	private boolean pong = false;
-	
-	public JSONRPCPing(AsyncHttpClient client, String uri) {
-		super(client, uri);
-	}
-	
-	@Override
-	protected String getName() {
-		return "JSONRPC.Ping";
-	}
-	
-	@Override
-	protected Map<String, Object> getParams() {
-		return new HashMap<String, Object>();
-	}
-	
-	@Override
-	protected void processResponse(Map<String, Object> response) {
-		pong = response.containsKey("result") && response.get("result").equals("pong");
-	}
-	
-	public boolean isPong() { 
-		return pong;
-	}
+
+    private boolean pong = false;
+
+    public JSONRPCPing(AsyncHttpClient client, String uri) {
+        super(client, uri);
+    }
+
+    @Override
+    protected String getName() {
+        return "JSONRPC.Ping";
+    }
+
+    @Override
+    protected Map<String, Object> getParams() {
+        return new HashMap<String, Object>();
+    }
+
+    @Override
+    protected void processResponse(Map<String, Object> response) {
+        pong = response.containsKey("result") && response.get("result").equals("pong");
+    }
+
+    public boolean isPong() {
+        return pong;
+    }
 }

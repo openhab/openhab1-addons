@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,19 +12,19 @@ import org.openhab.core.types.State;
 
 /**
  * Interface to convert binary data into openHAB states
- * 
+ *
  * @author Trathnigg Thomas
  * @since 1.6.0
  */
 public interface DavisDataType {
 
-	/**
-	 * Generate a openhab State object based on response data.
-	 * 
-	 * @param data
-	 * @param valueType
-	 * @return converted State object
-	 */
-	State convertToState(byte[] data, DavisValueType valueType);
-	
+    /**
+     * Generate a openhab State object based on response data.
+     * 
+     * @param data
+     * @param valueType
+     * @return converted State object
+     */
+    State convertToState(byte[] data, DavisValueType valueType);
+
 }

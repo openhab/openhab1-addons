@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,17 +18,17 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DataModelResponse extends DataModel implements Response {
 
-	@JsonProperty("error")
-	private String error;
+    @JsonProperty("error")
+    private String error;
 
-	@Override
-	@JsonProperty("error")
-	public String getError() {
-		return error;
-	}
+    @Override
+    @JsonProperty("error")
+    public String getError() {
+        return error;
+    }
 
-	@Override
-	public boolean isError() {
-		return this.error != null;
-	}
+    @Override
+    public boolean isError() {
+        return this.error != null;
+    }
 }

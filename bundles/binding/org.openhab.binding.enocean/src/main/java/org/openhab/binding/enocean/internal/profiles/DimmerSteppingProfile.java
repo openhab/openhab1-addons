@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Bridge class to transform normal button behavior to a Dimmer "profile". A
  * RockerSwitch can control with this profile a light dimmer.
- * 
+ *
  * This profile increases the current light by 30% for each short press down. A
  * short press up switches off the light.
- * 
+ *
  * Not yet ready!
- * 
+ *
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * @since 1.3.0
- * 
+ *
  */
 public class DimmerSteppingProfile extends BasicProfile {
 
@@ -54,33 +54,33 @@ public class DimmerSteppingProfile extends BasicProfile {
         Command command = null;
         if (buttonDownPressed(parameterAddress)) {
             switch (buttonState) {
-            case PRESSED:
-                startDimmerThread(IncreaseDecreaseType.INCREASE);
-                buttonOPressedTime = System.currentTimeMillis();
-                break;
-            case RELEASED:
-                stopDimmerThread();
-                if (isLongOButtonReleased()) {
-                    buttonOPressedTime = 0;
-                } else {
-                    command = OnOffType.ON;
-                }
-                break;
+                case PRESSED:
+                    startDimmerThread(IncreaseDecreaseType.INCREASE);
+                    buttonOPressedTime = System.currentTimeMillis();
+                    break;
+                case RELEASED:
+                    stopDimmerThread();
+                    if (isLongOButtonReleased()) {
+                        buttonOPressedTime = 0;
+                    } else {
+                        command = OnOffType.ON;
+                    }
+                    break;
             }
         } else if (buttonUpPressed(parameterAddress)) {
             switch (buttonState) {
-            case PRESSED:
-                startDimmerThread(IncreaseDecreaseType.DECREASE);
-                buttonIPressedTime = System.currentTimeMillis();
-                break;
-            case RELEASED:
-                stopDimmerThread();
-                if (isLongIButtonReleased()) {
-                    buttonIPressedTime = 0;
-                } else {
-                    command = OnOffType.OFF;
-                }
-                break;
+                case PRESSED:
+                    startDimmerThread(IncreaseDecreaseType.DECREASE);
+                    buttonIPressedTime = System.currentTimeMillis();
+                    break;
+                case RELEASED:
+                    stopDimmerThread();
+                    if (isLongIButtonReleased()) {
+                        buttonIPressedTime = 0;
+                    } else {
+                        command = OnOffType.OFF;
+                    }
+                    break;
             }
         }
         postCommand(command);

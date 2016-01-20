@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -130,8 +130,9 @@ public class JdbcConfiguration {
             matcher.reset();
             matcher.find();
 
-            if (!matcher.group(1).equals("sqltype"))
+            if (!matcher.group(1).equals("sqltype")) {
                 continue;
+            }
 
             String itemType = matcher.group(2).toUpperCase() + "ITEM";
             String value = (String) configuration.get(key);
@@ -166,8 +167,8 @@ public class JdbcConfiguration {
 
         String np = (String) configuration.get("tableNamePrefix");
         if (StringUtils.isNotBlank(np)) {
-	    tableNamePrefix = np;
-	    logger.debug("JDBC::updateConfig: tableNamePrefix={}", tableNamePrefix);
+            tableNamePrefix = np;
+            logger.debug("JDBC::updateConfig: tableNamePrefix={}", tableNamePrefix);
         }
 
         String dd = (String) configuration.get("numberDecimalcount");
@@ -246,20 +247,21 @@ public class JdbcConfiguration {
             String warn = ""
                     + "\n\n\t!!!\n\tTo avoid this error, place a appropriate JDBC driver file for serviceName '{}' in addons directory.\n"
                     + "\tCopy missing JDBC-Driver-jar to your OpenHab/addons Folder.\n\t!!!\n" + "\tDOWNLOAD: \n";
-            if (serviceName.equals("derby"))
+            if (serviceName.equals("derby")) {
                 warn += "\tDerby:     version >= 10.11.1.1 from          http://mvnrepository.com/artifact/org.apache.derby/derby\n";
-            else if (serviceName.equals("h2"))
+            } else if (serviceName.equals("h2")) {
                 warn += "\tH2:        version >= 1.4.189 from            http://mvnrepository.com/artifact/com.h2database/h2\n";
-            else if (serviceName.equals("hsqldb"))
+            } else if (serviceName.equals("hsqldb")) {
                 warn += "\tHSQLDB:    version >= 2.3.3 from              http://mvnrepository.com/artifact/org.hsqldb/hsqldb\n";
-            else if (serviceName.equals("mariadb"))
+            } else if (serviceName.equals("mariadb")) {
                 warn += "\tMariaDB:   version >= 1.2.0 from              http://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client\n";
-            else if (serviceName.equals("mysql"))
+            } else if (serviceName.equals("mysql")) {
                 warn += "\tMySQL:     version >= 5.1.36 from             http://mvnrepository.com/artifact/mysql/mysql-connector-java\n";
-            else if (serviceName.equals("postgresql"))
+            } else if (serviceName.equals("postgresql")) {
                 warn += "\tPostgreSQL:version >= 9.4-1201-jdbc41 from    http://mvnrepository.com/artifact/org.postgresql/postgresql\n";
-            else if (serviceName.equals("sqlite"))
+            } else if (serviceName.equals("sqlite")) {
                 warn += "\tSQLite:    version >= 3.8.11.2 from           http://mvnrepository.com/artifact/org.xerial/sqlite-jdbc\n";
+            }
             logger.warn(warn, serviceName);
         }
 

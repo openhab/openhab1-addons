@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,42 +23,47 @@ import org.slf4j.LoggerFactory;
  */
 public class SceneOutputValueSensorJob implements SensorJob {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SceneOutputValueSensorJob.class);
-	
-	private Device device = null;
-	private short sceneId = 0;
+    private static final Logger logger = LoggerFactory.getLogger(SceneOutputValueSensorJob.class);
 
-	public SceneOutputValueSensorJob(Device device, short sceneId) {
-		this.device = device;
-		this.sceneId = sceneId;
-	}
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.digitalSTROM2.internal.client.job.SensorJob#execute(org.openhab.binding.digitalSTROM2.internal.client.DigitalSTROMAPI, java.lang.String)
-	 */
-	@Override
-	public void execute(DigitalSTROMAPI digitalSTROM, String token) {
-		DeviceConfig config = digitalSTROM.getDeviceConfig(token, this.device.getDSID(), null, DeviceParameterClassEnum.CLASS_128, this.sceneId);
-	
-		if (config != null) {
-			this.device.setSceneOutputValue(this.sceneId, (short) config.getValue());
-			logger.info("UPDATED sceneOutputValue for dsid: "+this.device.getDSID()+", sceneID: "+sceneId+", value: "+config.getValue());
-		}
-	}
+    private Device device = null;
+    private short sceneId = 0;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof SceneOutputValueSensorJob) {
-			SceneOutputValueSensorJob other = (SceneOutputValueSensorJob) obj;
-			String str = other.device.getDSID().getValue()+"-"+other.sceneId;
-			return (this.device.getDSID().getValue()+"-"+this.sceneId).equals(str);
-		}
-		return false;
-	}
+    public SceneOutputValueSensorJob(Device device, short sceneId) {
+        this.device = device;
+        this.sceneId = sceneId;
+    }
 
-	@Override
-	public DSID getDsid() {
-		return device.getDSID();
-	}	
-	
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openhab.binding.digitalSTROM2.internal.client.job.SensorJob#execute(org.openhab.binding.digitalSTROM2.
+     * internal.client.DigitalSTROMAPI, java.lang.String)
+     */
+    @Override
+    public void execute(DigitalSTROMAPI digitalSTROM, String token) {
+        DeviceConfig config = digitalSTROM.getDeviceConfig(token, this.device.getDSID(), null,
+                DeviceParameterClassEnum.CLASS_128, this.sceneId);
+
+        if (config != null) {
+            this.device.setSceneOutputValue(this.sceneId, (short) config.getValue());
+            logger.info("UPDATED sceneOutputValue for dsid: " + this.device.getDSID() + ", sceneID: " + sceneId
+                    + ", value: " + config.getValue());
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SceneOutputValueSensorJob) {
+            SceneOutputValueSensorJob other = (SceneOutputValueSensorJob) obj;
+            String str = other.device.getDSID().getValue() + "-" + other.sceneId;
+            return (this.device.getDSID().getValue() + "-" + this.sceneId).equals(str);
+        }
+        return false;
+    }
+
+    @Override
+    public DSID getDsid() {
+        return device.getDSID();
+    }
+
 }

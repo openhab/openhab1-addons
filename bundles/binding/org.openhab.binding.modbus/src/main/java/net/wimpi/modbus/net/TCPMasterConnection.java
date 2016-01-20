@@ -34,168 +34,166 @@ import net.wimpi.modbus.io.ModbusTransport;
  * @version @version@ (@date@)
  */
 public class TCPMasterConnection {
-  private static final Logger logger = LoggerFactory.getLogger(TCPMasterConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(TCPMasterConnection.class);
 
-  //instance attributes
-  private Socket m_Socket;
-  private int m_Timeout = Modbus.DEFAULT_TIMEOUT;
-  private boolean m_Connected;
+    // instance attributes
+    private Socket m_Socket;
+    private int m_Timeout = Modbus.DEFAULT_TIMEOUT;
+    private boolean m_Connected;
 
-  private InetAddress m_Address;
-  private int m_Port = Modbus.DEFAULT_PORT;
+    private InetAddress m_Address;
+    private int m_Port = Modbus.DEFAULT_PORT;
 
-  //private int m_Retries = Modbus.DEFAULT_RETRIES;
-  private ModbusTCPTransport m_ModbusTransport;
+    // private int m_Retries = Modbus.DEFAULT_RETRIES;
+    private ModbusTCPTransport m_ModbusTransport;
 
-  /**
-   * Constructs a <tt>TCPMasterConnection</tt> instance
-   * with a given destination address.
-   *
-   * @param adr the destination <tt>InetAddress</tt>.
-   */
-  public TCPMasterConnection(InetAddress adr) {
-    m_Address = adr;
-  }//constructor
+    /**
+     * Constructs a <tt>TCPMasterConnection</tt> instance
+     * with a given destination address.
+     *
+     * @param adr the destination <tt>InetAddress</tt>.
+     */
+    public TCPMasterConnection(InetAddress adr) {
+        m_Address = adr;
+    }// constructor
 
-  /**
-   * Opens this <tt>TCPMasterConnection</tt>.
-   *
-   * @throws Exception if there is a network failure.
-   */
-  public synchronized void connect() throws Exception {
-    if (!isConnected()) {
-      logger.debug("connect()");
-      m_Socket = new Socket(m_Address, m_Port);
-      setTimeout(m_Timeout);
-      m_Socket.setReuseAddress(true);
-      m_Socket.setSoLinger(true, 1);
-      m_Socket.setKeepAlive(true);
-      prepareTransport();
-      m_Connected = true;
-    }
-  }//connect
+    /**
+     * Opens this <tt>TCPMasterConnection</tt>.
+     *
+     * @throws Exception if there is a network failure.
+     */
+    public synchronized void connect() throws Exception {
+        if (!isConnected()) {
+            logger.debug("connect()");
+            m_Socket = new Socket(m_Address, m_Port);
+            setTimeout(m_Timeout);
+            m_Socket.setReuseAddress(true);
+            m_Socket.setSoLinger(true, 1);
+            m_Socket.setKeepAlive(true);
+            prepareTransport();
+            m_Connected = true;
+        }
+    }// connect
 
-  /**
-   * Closes this <tt>TCPMasterConnection</tt>.
-   */
-  public void close() {
-    if(m_Connected) {
-      try {
-        m_ModbusTransport.close();
-      } catch (IOException ex) {
-        logger.debug("close()");
-      }
-      m_Connected = false;
-    }
-  }//close
+    /**
+     * Closes this <tt>TCPMasterConnection</tt>.
+     */
+    public void close() {
+        if (m_Connected) {
+            try {
+                m_ModbusTransport.close();
+            } catch (IOException ex) {
+                logger.debug("close()");
+            }
+            m_Connected = false;
+        }
+    }// close
 
-  /**
-   * Returns the <tt>ModbusTransport</tt> associated with this
-   * <tt>TCPMasterConnection</tt>.
-   *
-   * @return the connection's <tt>ModbusTransport</tt>.
-   */
-  public ModbusTransport getModbusTransport() {
-    return m_ModbusTransport;
-  }//getModbusTransport
+    /**
+     * Returns the <tt>ModbusTransport</tt> associated with this
+     * <tt>TCPMasterConnection</tt>.
+     *
+     * @return the connection's <tt>ModbusTransport</tt>.
+     */
+    public ModbusTransport getModbusTransport() {
+        return m_ModbusTransport;
+    }// getModbusTransport
 
-  /**
-   * Prepares the associated <tt>ModbusTransport</tt> of this
-   * <tt>TCPMasterConnection</tt> for use.
-   *
-   * @throws IOException if an I/O related error occurs.
-   */
-  private void prepareTransport() throws IOException {
-    if (m_ModbusTransport == null) {
-      m_ModbusTransport = new ModbusTCPTransport(m_Socket);
-    } else {
-      m_ModbusTransport.setSocket(m_Socket);
-    }
-  }//prepareIO
+    /**
+     * Prepares the associated <tt>ModbusTransport</tt> of this
+     * <tt>TCPMasterConnection</tt> for use.
+     *
+     * @throws IOException if an I/O related error occurs.
+     */
+    private void prepareTransport() throws IOException {
+        if (m_ModbusTransport == null) {
+            m_ModbusTransport = new ModbusTCPTransport(m_Socket);
+        } else {
+            m_ModbusTransport.setSocket(m_Socket);
+        }
+    }// prepareIO
 
-  /**
-   * Returns the timeout for this <tt>TCPMasterConnection</tt>.
-   *
-   * @return the timeout as <tt>int</tt>.
-   */
-  public int getTimeout() {
-    return m_Timeout;
-  }//getReceiveTimeout
+    /**
+     * Returns the timeout for this <tt>TCPMasterConnection</tt>.
+     *
+     * @return the timeout as <tt>int</tt>.
+     */
+    public int getTimeout() {
+        return m_Timeout;
+    }// getReceiveTimeout
 
-  /**
-   * Sets the timeout for this <tt>TCPMasterConnection</tt>.
-   *
-   * @param timeout the timeout as <tt>int</tt>.
-   */
-  public void setTimeout(int timeout) {
-    m_Timeout = timeout;
-    if(m_Socket != null) {
-      try {
-        m_Socket.setSoTimeout(m_Timeout);
-      } catch (IOException ex) {
-        //handle?
-      } 
-    }
-  }//setReceiveTimeout
+    /**
+     * Sets the timeout for this <tt>TCPMasterConnection</tt>.
+     *
+     * @param timeout the timeout as <tt>int</tt>.
+     */
+    public void setTimeout(int timeout) {
+        m_Timeout = timeout;
+        if (m_Socket != null) {
+            try {
+                m_Socket.setSoTimeout(m_Timeout);
+            } catch (IOException ex) {
+                // handle?
+            }
+        }
+    }// setReceiveTimeout
 
-  /**
-   * Returns the destination port of this
-   * <tt>TCPMasterConnection</tt>.
-   *
-   * @return the port number as <tt>int</tt>.
-   */
-  public int getPort() {
-    return m_Port;
-  }//getPort
+    /**
+     * Returns the destination port of this
+     * <tt>TCPMasterConnection</tt>.
+     *
+     * @return the port number as <tt>int</tt>.
+     */
+    public int getPort() {
+        return m_Port;
+    }// getPort
 
-  /**
-   * Sets the destination port of this
-   * <tt>TCPMasterConnection</tt>.
-   * The default is defined as <tt>Modbus.DEFAULT_PORT</tt>.
-   *
-   * @param port the port number as <tt>int</tt>.
-   */
-  public void setPort(int port) {
-    m_Port = port;
-  }//setPort
+    /**
+     * Sets the destination port of this
+     * <tt>TCPMasterConnection</tt>.
+     * The default is defined as <tt>Modbus.DEFAULT_PORT</tt>.
+     *
+     * @param port the port number as <tt>int</tt>.
+     */
+    public void setPort(int port) {
+        m_Port = port;
+    }// setPort
 
-  /**
-   * Returns the destination <tt>InetAddress</tt> of this
-   * <tt>TCPMasterConnection</tt>.
-   *
-   * @return the destination address as <tt>InetAddress</tt>.
-   */
-  public InetAddress getAddress() {
-    return m_Address;
-  }//getAddress
+    /**
+     * Returns the destination <tt>InetAddress</tt> of this
+     * <tt>TCPMasterConnection</tt>.
+     *
+     * @return the destination address as <tt>InetAddress</tt>.
+     */
+    public InetAddress getAddress() {
+        return m_Address;
+    }// getAddress
 
-  /**
-   * Sets the destination <tt>InetAddress</tt> of this
-   * <tt>TCPMasterConnection</tt>.
-   *
-   * @param adr the destination address as <tt>InetAddress</tt>.
-   */
-  public void setAddress(InetAddress adr) {
-    m_Address = adr;
-  }//setAddress
+    /**
+     * Sets the destination <tt>InetAddress</tt> of this
+     * <tt>TCPMasterConnection</tt>.
+     *
+     * @param adr the destination address as <tt>InetAddress</tt>.
+     */
+    public void setAddress(InetAddress adr) {
+        m_Address = adr;
+    }// setAddress
 
-  /**
-   * Tests if this <tt>TCPMasterConnection</tt> is connected.
-   *
-   * @return <tt>true</tt> if connected, <tt>false</tt> otherwise.
-   */
-  public boolean isConnected() {
-    // From j2mod originally. Sockets that are not fully open are closed.
-    if (m_Connected && m_Socket != null) {      
-      // Call close() if the connection is not fully "open"
-      if (!m_Socket.isConnected() || m_Socket.isClosed()
-          || m_Socket.isInputShutdown()
-          || m_Socket.isOutputShutdown()) {
-        close();
-      }
-    }
-    return m_Connected;
-  }//isConnected
+    /**
+     * Tests if this <tt>TCPMasterConnection</tt> is connected.
+     *
+     * @return <tt>true</tt> if connected, <tt>false</tt> otherwise.
+     */
+    public boolean isConnected() {
+        // From j2mod originally. Sockets that are not fully open are closed.
+        if (m_Connected && m_Socket != null) {
+            // Call close() if the connection is not fully "open"
+            if (!m_Socket.isConnected() || m_Socket.isClosed() || m_Socket.isInputShutdown()
+                    || m_Socket.isOutputShutdown()) {
+                close();
+            }
+        }
+        return m_Connected;
+    }// isConnected
 
-
-}//class TCPMasterConnection
+}// class TCPMasterConnection

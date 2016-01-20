@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,39 +15,41 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
- * 
+ *
  * @author Karel Goderis
  * @since 1.5.0
  */
 
 public class OceanicActivator implements BundleActivator {
-	
-	private static Logger logger = LoggerFactory.getLogger(OceanicActivator.class);
 
-	private static BundleContext context;
+    private static Logger logger = LoggerFactory.getLogger(OceanicActivator.class);
 
-	static BundleContext getContext() {
-		return context;
-	}
+    private static BundleContext context;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		logger.debug("Oceanic binding has been started.");
+    static BundleContext getContext() {
+        return context;
+    }
 
-		OceanicActivator.context = bundleContext;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext bundleContext) throws Exception {
+        logger.debug("Oceanic binding has been started.");
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		logger.debug("Oceanic binding has been stopped.");
+        OceanicActivator.context = bundleContext;
+    }
 
-		OceanicActivator.context = null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext bundleContext) throws Exception {
+        logger.debug("Oceanic binding has been stopped.");
+
+        OceanicActivator.context = null;
+    }
 
 }

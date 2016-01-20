@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +9,12 @@
 package org.openhab.binding.ihc.ws.datatypes;
 
 /**
- * <p>Java class for WSUserGroup complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for WSUserGroup complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ *
  * <pre>
  * &lt;complexType name="WSUserGroup">
  *   &lt;complexContent>
@@ -24,8 +26,8 @@ package org.openhab.binding.ihc.ws.datatypes;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 
 public class WSUserGroup {
@@ -34,11 +36,11 @@ public class WSUserGroup {
 
     /**
      * Gets the value of the type property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getType() {
         return type;
@@ -46,11 +48,11 @@ public class WSUserGroup {
 
     /**
      * Sets the value of the type property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setType(String value) {
         this.type = value;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,103 +28,101 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the nikobus item binding configuration.
- * 
+ *
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
-public class NikobusGenericBindingProvider extends
-		AbstractGenericBindingProvider implements NikobusBindingProvider {
-	
-	private static final Logger log = LoggerFactory.getLogger(NikobusGenericBindingProvider.class);
+public class NikobusGenericBindingProvider extends AbstractGenericBindingProvider implements NikobusBindingProvider {
 
-	private static final String BUTTON_CONFIG_PATTERN = "^#N([A-Z0-9]){6}(:SHORT|:LONG)?"
-			+ "(\\[([A-Z0-9]){4}-[12](,[A-Z0-9]{4}-[12])*\\])?" + "$";
+    private static final Logger log = LoggerFactory.getLogger(NikobusGenericBindingProvider.class);
 
-	private static final String MODULE_CHANNEL_PATTERN = "^([A-Z0-9]){4}:([1-9]|1[0-2])$";
+    private static final String BUTTON_CONFIG_PATTERN = "^#N([A-Z0-9]){6}(:SHORT|:LONG)?"
+            + "(\\[([A-Z0-9]){4}-[12](,[A-Z0-9]{4}-[12])*\\])?" + "$";
 
-	private List<NikobusModule> allModules = new ArrayList<NikobusModule>();
+    private static final String MODULE_CHANNEL_PATTERN = "^([A-Z0-9]){4}:([1-9]|1[0-2])$";
 
-	private Map<String, NikobusModule> modules = new HashMap<String, NikobusModule>();
+    private List<NikobusModule> allModules = new ArrayList<NikobusModule>();
 
-	@Override
-	public String getBindingType() {
-		return "nikobus";
-	}
+    private Map<String, NikobusModule> modules = new HashMap<String, NikobusModule>();
 
-	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem) && !(item instanceof RollershutterItem)) {
-			throw new BindingConfigParseException("Item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', which is not supported by the Nikobus Binding.");
-		}
-	}
+    @Override
+    public String getBindingType() {
+        return "nikobus";
+    }
 
-	@Override
-	public AbstractNikobusItemConfig getItemConfig(String itemName) {
-		return (AbstractNikobusItemConfig) bindingConfigs.get(itemName);
-	}
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        if (!(item instanceof SwitchItem) && !(item instanceof RollershutterItem)) {
+            throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
+                    + item.getClass().getSimpleName() + "', which is not supported by the Nikobus Binding.");
+        }
+    }
 
-	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+    @Override
+    public AbstractNikobusItemConfig getItemConfig(String itemName) {
+        return (AbstractNikobusItemConfig) bindingConfigs.get(itemName);
+    }
 
-		super.processBindingConfiguration(context, item, bindingConfig);
-		String config = (bindingConfig == null) ? "" : bindingConfig.replaceAll(" ", "").toUpperCase();
-		log.trace("Binding item: {} with configuration {}", item.getName(), config);
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
 
-		final AbstractNikobusItemConfig itemBinding = parseItem(item, config);
+        super.processBindingConfiguration(context, item, bindingConfig);
+        String config = (bindingConfig == null) ? "" : bindingConfig.replaceAll(" ", "").toUpperCase();
+        log.trace("Binding item: {} with configuration {}", item.getName(), config);
 
-		addBindingConfig(item, itemBinding);
-	}
+        final AbstractNikobusItemConfig itemBinding = parseItem(item, config);
 
-	/**
-	 * Parse an item from the provided configuration string.
-	 * 
-	 * @param item.getName()
-	 *            item name
-	 * @param config
-	 *            string to parse
-	 * @return parsed item
-	 * @throws BindingConfigParseException
-	 *             if no item could be created
-	 */
-	private AbstractNikobusItemConfig parseItem(Item item, String config) throws BindingConfigParseException {
+        addBindingConfig(item, itemBinding);
+    }
 
-		if (config == null || config.trim().length() == 0) {
-			throw new BindingConfigParseException("Invalid config for item " + item.getName());
-		}
+    /**
+     * Parse an item from the provided configuration string.
+     * 
+     * @param item.getName()
+     *            item name
+     * @param config
+     *            string to parse
+     * @return parsed item
+     * @throws BindingConfigParseException
+     *             if no item could be created
+     */
+    private AbstractNikobusItemConfig parseItem(Item item, String config) throws BindingConfigParseException {
 
-		if (config.matches(BUTTON_CONFIG_PATTERN)) {
-			return new Button(item.getName(), config);
-		}
+        if (config == null || config.trim().length() == 0) {
+            throw new BindingConfigParseException("Invalid config for item " + item.getName());
+        }
 
-		if (config.matches(MODULE_CHANNEL_PATTERN)) {
-			String address = config.split(":")[0];
-			int channelNum = Integer.parseInt(config.split(":")[1]);
-			int group = channelNum > 6 ? 2 : 1;
-			String moduleKey = address + "-" + group;
-			NikobusModule module = getModule(moduleKey);
-			if (module == null) {
-				log.trace("Creating channel group {}", moduleKey);
-				module = new ModuleChannelGroup(address, group);
-				allModules.add(module);
-				modules.put(moduleKey, module);
-			}
-			return ((ModuleChannelGroup) module).addChannel(item.getName(), channelNum, item.getAcceptedCommandTypes());
-		}
+        if (config.matches(BUTTON_CONFIG_PATTERN)) {
+            return new Button(item.getName(), config);
+        }
 
-		throw new BindingConfigParseException("Could not determine item type from config: " + config);
-	}
+        if (config.matches(MODULE_CHANNEL_PATTERN)) {
+            String address = config.split(":")[0];
+            int channelNum = Integer.parseInt(config.split(":")[1]);
+            int group = channelNum > 6 ? 2 : 1;
+            String moduleKey = address + "-" + group;
+            NikobusModule module = getModule(moduleKey);
+            if (module == null) {
+                log.trace("Creating channel group {}", moduleKey);
+                module = new ModuleChannelGroup(address, group);
+                allModules.add(module);
+                modules.put(moduleKey, module);
+            }
+            return ((ModuleChannelGroup) module).addChannel(item.getName(), channelNum, item.getAcceptedCommandTypes());
+        }
 
-	@Override
-	public NikobusModule getModule(String name) {
-		return modules.get(name);
-	}
+        throw new BindingConfigParseException("Could not determine item type from config: " + config);
+    }
 
-	@Override
-	public List<NikobusModule> getAllModules() {
-		return allModules;
-	}
-	
+    @Override
+    public NikobusModule getModule(String name) {
+        return modules.get(name);
+    }
+
+    @Override
+    public List<NikobusModule> getAllModules() {
+        return allModules;
+    }
+
 }

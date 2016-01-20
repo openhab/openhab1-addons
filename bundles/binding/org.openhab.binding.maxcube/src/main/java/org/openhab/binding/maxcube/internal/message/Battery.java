@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,45 +15,46 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The battery of a MAX!Cube {@link Device}.
- * 
+ *
  * @author Dominic Lerbs
  * @since 1.7.0
  */
 public class Battery {
-	
-	private static final Logger logger = LoggerFactory.getLogger(Battery.class);
-	private Charge charge = Charge.UNKNOWN;
-	private boolean chargeUpdated;
 
-	public void setCharge(Charge charge) {
-		chargeUpdated = (this.charge != charge);
-		if (chargeUpdated){
-			logger.info("Battery charge changed from " + this.charge + " to " + charge);
-			this.charge = charge;
-		}
-	}
+    private static final Logger logger = LoggerFactory.getLogger(Battery.class);
+    private Charge charge = Charge.UNKNOWN;
+    private boolean chargeUpdated;
 
-	public State getCharge() {
-		return new StringType(charge.getText());
-	}
+    public void setCharge(Charge charge) {
+        chargeUpdated = (this.charge != charge);
+        if (chargeUpdated) {
+            logger.info("Battery charge changed from " + this.charge + " to " + charge);
+            this.charge = charge;
+        }
+    }
 
-	public boolean isChargeUpdated() {
-		return chargeUpdated;
-	}
-	
-	
-	/** Charging state of the battery. */
-	public enum Charge {
-		UNKNOWN("n/a"), OK("ok"), LOW("low");
+    public State getCharge() {
+        return new StringType(charge.getText());
+    }
 
-		private final String text;
+    public boolean isChargeUpdated() {
+        return chargeUpdated;
+    }
 
-		private Charge(String text) {
-			this.text = text;
-		}
+    /** Charging state of the battery. */
+    public enum Charge {
+        UNKNOWN("n/a"),
+        OK("ok"),
+        LOW("low");
 
-		public String getText() {
-			return text;
-		}
-	}
+        private final String text;
+
+        private Charge(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,24 +13,18 @@ import org.slf4j.Logger;
 
 /**
  * Utility functions for common log statements
- * 
+ *
  * @author Eric Thill
  * @since 1.4.0
  */
 public class InsteonHubBindingLogUtil {
 
-	public static void logCommunicationFailure(Logger logger,
-			InsteonHubProxy proxy, Throwable t) {
-		logger.error(
-				"Communication error with Insteon Hub @"
-						+ proxy.getConnectionString(), t);
-	}
+    public static void logCommunicationFailure(Logger logger, InsteonHubProxy proxy, Throwable t) {
+        logger.error("Communication error with Insteon Hub @" + proxy.getConnectionString(), t);
+    }
 
-	public static void logCommunicationFailure(Logger logger,
-			InsteonHubProxy proxy, String device, Throwable t) {
-		logger.warn(
-				"Cannot communicate with Insteon Hub @"
-						+ proxy.getConnectionString() + " (device:" + device
-						+ ")", t);
-	}
+    public static void logCommunicationFailure(Logger logger, InsteonHubProxy proxy, String device, Throwable t) {
+        logger.warn("Cannot communicate with Insteon Hub @" + proxy.getConnectionString() + " (device:" + device + ")",
+                t);
+    }
 }

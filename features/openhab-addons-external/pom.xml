@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>features</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
+        <version>1.9.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.openhab.addons</groupId>
@@ -57,6 +57,7 @@
                                 <artifact><file>src/main/resources/conf/modbus.cfg</file><type>cfg</type><classifier>modbus</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mysql.cfg</file><type>cfg</type><classifier>mysql</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nest.cfg</file><type>cfg</type><classifier>nest</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/netatmo.cfg</file><type>cfg</type><classifier>netatmo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/networkhealth.cfg</file><type>cfg</type><classifier>networkhealth</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nibeheatpump.cfg</file><type>cfg</type><classifier>nibeheatpump</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ntp.cfg</file><type>cfg</type><classifier>ntp</classifier></artifact>

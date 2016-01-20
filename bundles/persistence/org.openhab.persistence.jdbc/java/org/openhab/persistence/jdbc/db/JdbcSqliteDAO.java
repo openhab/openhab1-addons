@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.persistence.jdbc.db;
 
+import org.knowm.yank.Yank;
 import org.openhab.core.items.Item;
 import org.openhab.persistence.jdbc.model.ItemVO;
 import org.openhab.persistence.jdbc.model.ItemsVO;
@@ -15,13 +16,11 @@ import org.openhab.persistence.jdbc.utils.StringUtilsExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.knowm.yank.Yank;
-
 /**
  * Extended Database Configuration class. Class represents
  * the extended database-specific configuration. Overrides and supplements the
  * default settings from JdbcBaseDAO. Enter only the differences to JdbcBaseDAO here.
- * 
+ *
  * @author Helmut Lehmeyer
  * @since 1.8.0
  */

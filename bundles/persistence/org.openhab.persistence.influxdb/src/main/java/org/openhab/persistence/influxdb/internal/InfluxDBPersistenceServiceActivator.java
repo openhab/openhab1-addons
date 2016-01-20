@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,17 +19,16 @@ import org.slf4j.LoggerFactory;
  */
 public class InfluxDBPersistenceServiceActivator implements BundleActivator {
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(InfluxDBPersistenceServiceActivator.class);
+    private static final Logger logger = LoggerFactory.getLogger(InfluxDBPersistenceServiceActivator.class);
 
-  @Override
-  public void start(BundleContext context) throws Exception {
-    logger.debug("InfluxDB persistence bundle has been started.");
-  }
+    @Override
+    public void start(BundleContext context) throws Exception {
+        logger.debug("InfluxDB persistence bundle has been started.");
+    }
 
-  @Override
-  public void stop(BundleContext context) throws Exception {
-    logger.debug("InfluxDB persistence bundle has been stopped.");
-  }
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        logger.debug("InfluxDB persistence bundle has been stopped.");
+    }
 
 }
