@@ -8,10 +8,18 @@
  */
 package org.openhab.binding.connectsdk.internal;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
 import org.openhab.binding.connectsdk.internal.bridges.ExternalInputControlInput;
 import org.openhab.binding.connectsdk.internal.bridges.MediaControlForward;
@@ -37,6 +45,7 @@ import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +58,8 @@ import com.connectsdk.service.DeviceService.PairingType;
 import com.connectsdk.service.command.ServiceCommandError;
 
 /**
+ * Connect SDK Binding implementation.
+ * 
  * @author Sebastian Prehn
  * @since 1.8.0
  */
@@ -56,6 +67,9 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 	private static final Logger logger = LoggerFactory.getLogger(ConnectSDKBinding.class);
 	private DiscoveryManager discoveryManager;
 
+	/**
+	 * Array of bridges. To add a new functionality all it take is to create a new bridge and add here.
+	 */
 	private static OpenhabConnectSDKPropertyBridge[] bridges = new OpenhabConnectSDKPropertyBridge[] {
 			new VolumeControlVolume(), new VolumeControlMute(), new VolumeControlUp(), new VolumeControlDown(),
 			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new VolumeControlUpDown(),
@@ -66,11 +80,46 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 	};
 
-	@Override
-	public void activate() {
-		logger.debug("activated");
+	/**
+	 * Configured or auto-detected local IP address.
+	 */
+	private Inet4Address localIp;
 
-		ContextImpl ctx = new ContextImpl();
+	/**
+     * Called by the SCR to activate the component with its configuration read from CAS
+     * 
+     * @param bundleContext BundleContext of the Bundle that defines this component
+     * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
+     */
+    public void activate(final BundleContext bundleContext, final Map<String, ?> configuration) {
+		logger.debug("activated");
+		try {
+    		configure(configuration);
+    	} catch(RuntimeException e) { // openhab does not seem to log this exception, so i do it here
+    		logger.error(e.getMessage()); 
+    		throw e;
+    	} 
+    	start();
+	}
+    
+    /**
+     * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
+     * @param configuration Updated configuration properties
+     */
+    public void modified(final Map<String, Object> configuration) {
+    	logger.debug("modified");
+    	stop();
+    	try {
+    		configure(configuration);
+    	} catch(RuntimeException e) { // openhab does not seem to log this exception, so i do it here
+    		logger.error(e.getMessage());
+    		throw e;
+    	}
+    	start();
+    }
+
+	private void start() {
+		ContextImpl ctx = new ContextImpl(this);
 		DiscoveryManager.init(ctx);
 		discoveryManager = DiscoveryManager.getInstance();
 		discoveryManager.setPairingLevel(DiscoveryManager.PairingLevel.ON);
@@ -96,10 +145,13 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 	 */
 	public void deactivate(final int reason) {
 		logger.debug("deactivate {}", reason);
+		stop();
+		
+	}
 
+	private void stop() {
 		discoveryManager = null;
 		DiscoveryManager.destroy();
-
 	}
 
 	/**
@@ -260,4 +312,85 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 		logger.warn("Discovery failed: {}", error.getMessage());
 	}
 
+	private void configure(Map<String, ?> config) {
+		if (config != null) {
+			final String configEntry = (String) config.get("localIp");
+			if (StringUtils.isNotBlank(configEntry)) {
+				try {
+					InetAddress inetAddress = InetAddress.getByName(configEntry);
+					if(NetworkInterface.getByInetAddress(inetAddress) == null) {
+						throw new IllegalArgumentException(String.format("Config Parameter connectsdk:localIp - Configured IP address %s is incorrect. Connot find a matching network interface.", configEntry)); 
+					} 
+					if (!(inetAddress instanceof Inet4Address)) {
+						throw new IllegalArgumentException("Config Parameter connectsdk:localIp - Connect SDK only supports IPv4 addresses."); // Util.convertIpAddress
+					}
+					this.localIp = (Inet4Address) inetAddress;
+				} catch (UnknownHostException e) {
+					throw new IllegalArgumentException(String.format("Config Parameter connectsdk:localIp - Hostname cannot be resolved: %s", configEntry));
+				} catch (SocketException e) {
+					throw new IllegalArgumentException(String.format("Config Parameter connectsdk:localIp - Unable to determine the correct network interface for IP %s.", configEntry)); 
+				}
+			} else {
+				this.localIp = findLocalInetAddresses();
+			}
+			if (this.localIp == null) {
+				throw new IllegalArgumentException("Config Parameter connectsdk:localIp - Auto-detection failed. Please configure connectsdk:localIp in openhab.cfg.");
+			}
+		}
+	}
+
+	/**
+	 * Returns the local IP on the network.
+	 * 
+	 * @return the local IP address
+	 */
+	public Inet4Address getLocalIPAddress() {
+		return localIp;
+	}
+
+	/**
+	 * Attempts to autodetect the ip on the local network. It will ignore loopback and IPv6 addresses.
+	 * @return local ip or <code>null</code> if detection was not possible.
+	 */
+	private Inet4Address findLocalInetAddresses() {
+		// try to find IP via Java method (one some systems this returns the loopback interface though
+		try {
+			final InetAddress inetAddress = Inet4Address.getLocalHost();
+			if (inetAddress instanceof Inet4Address && !inetAddress.isLoopbackAddress()) {
+				logger.debug("Autodetected (via getLocalHost) local IP: {}", inetAddress);
+				return (Inet4Address) inetAddress;
+			}
+		} catch (UnknownHostException ex) {
+			logger.warn("Unable to resolve your hostname", ex);
+		}
+
+		// try to find the single non-loop back interface available
+		final List<Inet4Address> interfaces = new ArrayList<Inet4Address>();
+		try {
+			Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+			while (networkInterfaces.hasMoreElements()) {
+				NetworkInterface networkInterface = networkInterfaces.nextElement();
+				if (networkInterface.isUp() && !networkInterface.isLoopback()) {
+					for (InterfaceAddress adr : networkInterface.getInterfaceAddresses()) {
+						InetAddress inadr = adr.getAddress();
+						if (inadr instanceof Inet4Address) {
+							interfaces.add((Inet4Address) inadr);
+						}
+					}
+				}
+			}
+			
+			if (interfaces.size() == 1) { // found exactly one interface, good
+				logger.debug("Autodetected (via getNetworkInterfaces) local IP: {}", interfaces.get(0));
+				return interfaces.get(0);
+			}
+		} catch (SocketException e) {
+			logger.warn("Failed to detect network interfaces and addresses", e);
+		}
+
+		logger.error(
+				"Your hostname resolves to a loopback address and the plugin cannot autodetect your network interface out of the following available options: {}.",
+				interfaces);
+		return null;
+	}
 }

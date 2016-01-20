@@ -1,6 +1,10 @@
 package android.net.wifi;
+
+import org.openhab.binding.connectsdk.internal.ConnectSDKBinding;
+
 public class WifiManager
 {
+	private final ConnectSDKBinding binding;
 public class WifiLock
 {
 WifiLock() { throw new RuntimeException("Stub!"); }
@@ -19,10 +23,11 @@ public  void acquire() { /*throw new RuntimeException("Stub!");*/}
 public  void release() { /*throw new RuntimeException("Stub!");*/ }
 public  void setReferenceCounted(boolean refCounted) { /*throw new RuntimeException("Stub!");*/ }
 public  boolean isHeld() { return true; /*throw new RuntimeException("Stub!");*/ }
-public  java.lang.String toString() { throw new RuntimeException("Stub!"); }
-protected  void finalize() throws java.lang.Throwable { throw new RuntimeException("Stub!"); }
+public  java.lang.String toString() { return super.toString(); }
+protected  void finalize() throws java.lang.Throwable {  }
 }
-public WifiManager() { /*throw new RuntimeException("Stub!");*/ }
+public WifiManager(ConnectSDKBinding binding) {
+	this.binding = binding; }
 //public  java.util.List<android.net.wifi.WifiConfiguration> getConfiguredNetworks() { throw new RuntimeException("Stub!"); }
 //public  int addNetwork(android.net.wifi.WifiConfiguration config) { throw new RuntimeException("Stub!"); }
 //public  int updateNetwork(android.net.wifi.WifiConfiguration config) { throw new RuntimeException("Stub!"); }
@@ -34,7 +39,7 @@ public  boolean reconnect() { throw new RuntimeException("Stub!"); }
 public  boolean reassociate() { throw new RuntimeException("Stub!"); }
 public  boolean pingSupplicant() { throw new RuntimeException("Stub!"); }
 public  boolean startScan() { throw new RuntimeException("Stub!"); }
-public  android.net.wifi.WifiInfo getConnectionInfo() { return new WifiInfo(); /*throw new RuntimeException("Stub!"); */}
+public  android.net.wifi.WifiInfo getConnectionInfo() { return new WifiInfo(binding); /*throw new RuntimeException("Stub!"); */}
 //public  java.util.List<android.net.wifi.ScanResult> getScanResults() { throw new RuntimeException("Stub!"); }
 public  boolean saveConfiguration() { throw new RuntimeException("Stub!"); }
 //public  android.net.DhcpInfo getDhcpInfo() { throw new RuntimeException("Stub!"); }

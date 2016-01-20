@@ -11,11 +11,10 @@ package org.openhab.binding.connectsdk.internal.bridges;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Base64;
 import java.util.Collection;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
 import org.openhab.core.events.EventPublisher;
@@ -58,9 +57,14 @@ public class ToastControlToast extends AbstractOpenhabConnectSDKPropertyBridge<V
 			try {
 				BufferedImage bi = ImageIO.read(getClass().getResource("/openhab-logo-square.png"));
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				OutputStream b64 = Base64.getEncoder().wrap(os);
-				ImageIO.write(bi, "png", b64);
-				control.showToast(value, os.toString("UTF-8"), "png", createDefaultResponseListener() );
+				
+				// only in java 1.8
+				//OutputStream b64 = Base64.getEncoder().wrap(os);
+				//ImageIO.write(bi, "png", b64);
+				//control.showToast(value, os.toString("UTF-8"), "png", createDefaultResponseListener() );
+
+				ImageIO.write(bi, "png", os);
+				control.showToast(value, DatatypeConverter.printBase64Binary(os.toByteArray()), "png", createDefaultResponseListener() );
 			} catch (IOException ex) {
 				logger.error(ex.getMessage(), ex);
 			}

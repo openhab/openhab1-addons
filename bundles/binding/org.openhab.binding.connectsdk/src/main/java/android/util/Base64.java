@@ -1,11 +1,17 @@
 package android.util;
+
+import javax.xml.bind.DatatypeConverter;
+
 public class Base64
 {
 Base64() { throw new RuntimeException("Stub!"); }
 public static  byte[] decode(java.lang.String str, int flags) { throw new RuntimeException("Stub!"); }
 public static  byte[] decode(byte[] input, int flags) { throw new RuntimeException("Stub!"); }
 public static  byte[] decode(byte[] input, int offset, int len, int flags) { throw new RuntimeException("Stub!"); }
-public static  java.lang.String encodeToString(byte[] input, int flags) { return java.util.Base64.getEncoder().encodeToString(input); }
+public static  java.lang.String encodeToString(byte[] input, int flags) { 
+	//return java.util.Base64.getEncoder().encodeToString(input); // only available in java 1.8
+	return DatatypeConverter.printBase64Binary(input);
+}
 public static  java.lang.String encodeToString(byte[] input, int offset, int len, int flags) { throw new RuntimeException("Stub!"); }
 public static  byte[] encode(byte[] input, int flags) { throw new RuntimeException("Stub!"); }
 public static  byte[] encode(byte[] input, int offset, int len, int flags) { throw new RuntimeException("Stub!"); }

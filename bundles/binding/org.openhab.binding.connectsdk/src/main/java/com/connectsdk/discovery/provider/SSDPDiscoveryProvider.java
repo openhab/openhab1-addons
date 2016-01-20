@@ -283,7 +283,7 @@ public class SSDPDiscoveryProvider implements DiscoveryProvider {
 //
 //            @Override
 //            public void run() {
-                Log.d("Connect SDK Socket", "Packet received | type = " + ssdpPacket.getType() + " data = " + ssdpPacket.getData());
+//    	        Log.d("Connect SDK Socket", "Packet received | type = " + ssdpPacket.getType() + " data = " + ssdpPacket.getData());              
 //
 //                for (String key : ssdpPacket.getData().keySet()) {
 //                    Log.d("Connect SDK Socket", "    " + key + " = " + ssdpPacket.getData().get(key));
