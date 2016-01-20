@@ -112,7 +112,7 @@ public class ExecUtil {
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         PumpStreamHandler streamHandler = new PumpStreamHandler(stdout);
 
-        executor.setExitValue(1);
+        executor.setExitValues(null);
         executor.setStreamHandler(streamHandler);
         executor.setWatchdog(watchdog);
 
