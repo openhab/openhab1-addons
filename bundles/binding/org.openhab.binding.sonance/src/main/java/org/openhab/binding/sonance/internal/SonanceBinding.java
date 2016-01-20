@@ -169,12 +169,13 @@ public class SonanceBinding extends
 									SonanceConsts.VOLUME_QUERY + group,
 									outputStreamCache.get(key),
 									bufferedReaderCache.get(key));
-						}// } else if (provider.isPower(itemName)) {
-							// sendPowerCommand(itemName,
-							// SonanceConsts.POWER_QUERY,
-							// outputStreamCache.get(key),
-							// bufferedReaderCache.get(key));
-						// }
+						} else if (provider.isPower(itemName)) {
+							sendPowerCommand(itemName,
+									SonanceConsts.POWER_QUERY,
+									outputStreamCache.get(key),
+									bufferedReaderCache.get(key));
+
+						}
 					} catch (UnknownHostException e) {
 						logger.error(
 								"UnknownHostException occured when connecting to amplifier {}:{}.",
@@ -277,15 +278,14 @@ public class SonanceBinding extends
 							+ group, outToServer, i);
 				else {
 					try {
-						setVolumeCommand(itemName, group,
-								Integer.parseInt(command.toString()),
+						Double d = Double.parseDouble(command.toString());
+						setVolumeCommand(itemName, group, d.intValue(),
 								outToServer, i, ip + ":" + port);
 					} catch (NumberFormatException nfe) {
 						logger.error(
-								"I don't know what to do with the command \"{}\"",
-								command);
+								"I don't know what to do with the volume command \"{}\" ({})",
+								command, nfe.getMessage());
 					}
-
 				}
 			s.close();
 		} catch (IOException e) {
@@ -485,14 +485,8 @@ public class SonanceBinding extends
 			eventPublisher.postUpdate(itemName, OnOffType.ON);
 			logger.debug("Setting power item {} on ON", itemName);
 		} else {
-			logger.debug("Error sending power command {}, received this: {}",
-					command, result); // Is trigger when toggling to fast
-			// Put back to old state
-			if (command.equals(SonanceConsts.POWER_OFF)) {
-				eventPublisher.postUpdate(itemName, OnOffType.ON);
-			} else {
-				eventPublisher.postUpdate(itemName, OnOffType.OFF);
-			}
+			logger.trace("Error sending power command {}, received this: {}",
+					command, result);
 		}
 	}
 
