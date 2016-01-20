@@ -22,12 +22,8 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
-<<<<<<< HEAD
-=======
 import org.openhab.core.library.types.PercentType;
->>>>>>> 90c7474... Added dimmer functionality
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -286,19 +282,15 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					state = new StringType((String) action);
 					break;
 				case DIMMER:
-<<<<<<< HEAD
 					state = new PercentType((String) action);
-=======
 					if ("0".equals(action)) {
 						state = OnOffType.OFF;
 					} else if ("255".equals(action)){
 						state = OnOffType.ON;
 					} else {
 						BigDecimal dim = new BigDecimal(Math.round((new DecimalType((String) action).doubleValue() * 100) / 255));
-						
 						state = new PercentType(dim);
 					}
->>>>>>> 90c7474... Added dimmer functionality
 				default:
 					break;
 				}
