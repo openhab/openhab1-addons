@@ -2236,7 +2236,7 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
-				<Id>0031</Id>
+				<Id>001f</Id>
 			</Reference>
 			<Model>PAT02-A/B/C</Model>
 			<Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
