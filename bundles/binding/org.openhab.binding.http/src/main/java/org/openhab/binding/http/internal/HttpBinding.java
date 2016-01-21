@@ -107,6 +107,14 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
         setProperlyConfigured(true);
     }
 
+    protected void addBindingProvider(HttpBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(HttpBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * @{inheritDoc}
      */
@@ -212,7 +220,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
     /**
      * Splits a transformation configuration string into its two parts - the
      * transformation type and the function/pattern to apply.
-     * 
+     *
      * @param transformation the string to split
      * @return a string array with exactly two entries for the type and the function
      */
@@ -236,10 +244,10 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
      * Returns a {@link State} which is inherited from the {@link Item}s
      * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
      * <code>item</code> is <code>null</code> the {@link StringType} is used.
-     * 
+     *
      * @param itemType
      * @param transformedResponse
-     * 
+     *
      * @return a {@link State} which type is inherited by the {@link TypeParser}
      *         or a {@link StringType} if <code>item</code> is <code>null</code>
      */
@@ -268,7 +276,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
      * Finds the corresponding binding provider, replaces formatting markers
      * in the url (@see java.util.Formatter for further information) and executes
      * the formatted url.
-     * 
+     *
      * @param itemName the item context
      * @param command the executed command or one of the virtual commands
      *            (see {@link HttpGenericBindingProvider})
@@ -294,10 +302,10 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
     /**
      * Find the first matching {@link HttpBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -317,7 +325,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
 
     /**
      * Check a URL is a valid HTTP request
-     * 
+     *
      * @param url
      * @return true if a valid HTTP request, false otherwise
      */
@@ -335,7 +343,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
     /**
      * Synchronized access to the item cache. Do a quick check to see if this
      * <code>cacheId</code> references a cached item.
-     * 
+     *
      * @param cacheId
      * @return true if this <code>cacheId</code> is a cached item, false
      *         otherwise
@@ -350,7 +358,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
      * Synchronized access to the item cache. Checks the <code>cacheId</code>
      * is a cached item and returns the cached value. If the cache has
      * expired, refresh the cache value by making a new HTTP request.
-     * 
+     *
      * @param cacheId
      * @return the cached (or refreshed) dats
      */
@@ -482,7 +490,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider>imple
 
     /**
      * Internal data structure for data cache purposes
-     * 
+     *
      */
     static class CacheConfig {
 
