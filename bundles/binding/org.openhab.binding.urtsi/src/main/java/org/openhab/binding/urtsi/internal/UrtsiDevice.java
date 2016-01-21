@@ -123,7 +123,7 @@ class UrtsiDevice {
      *
      * @param msg
      *            the string to send
-     * @return Returns true, if the message has been transmitted successfully, otherwise false.
+     * @return true, if the message has been transmitted successfully, otherwise false.
      */
     synchronized boolean writeString(final String msg) {
         logger.debug("Writing '{}' to serial port {}", msg, port);

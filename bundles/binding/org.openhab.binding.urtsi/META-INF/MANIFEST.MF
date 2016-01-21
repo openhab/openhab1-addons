@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.openhab.binding.urtsi
 Bundle-Version: 1.9.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: gnu.io,
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ gnu.io,
  org.apache.commons.io,
  org.openhab.core.autoupdate,
  org.openhab.core.binding,
@@ -22,8 +24,4 @@ Import-Package: gnu.io,
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/urtsibinding.xml
 Bundle-ClassPath: .
 Bundle-Activator: org.openhab.binding.urtsi.internal.UrtsiActivator
-Require-Bundle: org.eclipse.xtend.lib,
- com.google.guava,
- org.eclipse.xtext.xbase.lib
 Export-Package: org.openhab.binding.urtsi
-
