@@ -236,7 +236,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
     /**
      * Map Aliased Service names into their "formal" UPnP-style format.
-     * 
+     *
      * @param source
      *            the original Service name to be mapped
      * @return the mapped UPnP-style Service name, if an alias mapping exists, or the original source value.
@@ -249,7 +249,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
     /**
      * Static constructor-method.
-     * 
+     *
      * @return an initialized MiOS Device Binding Configuration object.
      */
     public static final MiosBindingConfig create(String context, String itemName, String unitName, int id,
@@ -260,7 +260,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
             // outgoing stuff.
             String newInStuff = inStuff;
 
-            String tmp;
             Matcher matcher;
 
             // Extract and Map the inbound names.
@@ -384,7 +383,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
     /**
      * Returns the value "<code>device</code>".
-     * 
+     *
      * @return the value "<code>device</code>"
      */
     @Override
