@@ -75,7 +75,7 @@ import gnu.io.UnsupportedCommOperationException;
 /**
  * ZWave controller class. Implements communication with the Z-Wave
  * controller stick using serial messages.
- * 
+ *
  * @author Victor Belov
  * @author Brian Crosby
  * @author Chris Jackson
@@ -142,7 +142,7 @@ public class ZWaveController {
 
     /**
      * Constructor. Creates a new instance of the Z-Wave controller class.
-     * 
+     *
      * @param serialPortName the serial port name to use for
      *            communication with the Z-Wave controller stick.
      * @throws SerialInterfaceException when a connection error occurs.
@@ -187,7 +187,7 @@ public class ZWaveController {
     /**
      * Handles incoming Serial Messages. Serial messages can either be messages
      * that are a response to our own requests, or the stick asking us information.
-     * 
+     *
      * @param incomingMessage the incoming message to process.
      */
     private void handleIncomingMessage(SerialMessage incomingMessage) {
@@ -208,7 +208,7 @@ public class ZWaveController {
     /**
      * Handles an incoming request message.
      * An incoming request message is a message initiated by a node or the controller.
-     * 
+     *
      * @param incomingMessage the incoming message to process.
      */
     private void handleIncomingRequestMessage(SerialMessage incomingMessage) {
@@ -233,7 +233,7 @@ public class ZWaveController {
     /**
      * Handles a failed SendData request. This can either be because of the stick actively reporting it
      * or because of a time-out of the transaction in the send thread.
-     * 
+     *
      * @param originalMessage the original message that was sent
      */
     private void handleFailedSendDataRequest(SerialMessage originalMessage) {
@@ -243,7 +243,7 @@ public class ZWaveController {
     /**
      * Handles an incoming response message.
      * An incoming response message is a response, based one of our own requests.
-     * 
+     *
      * @param incomingMessage the response message to process.
      */
     private void handleIncomingResponseMessage(SerialMessage incomingMessage) {
@@ -318,7 +318,7 @@ public class ZWaveController {
 
     /**
      * Connects to the comm port and starts send and receive threads.
-     * 
+     *
      * @param serialPortName the port name to open
      * @throws SerialInterfaceException when a connection error occurs.
      */
@@ -365,6 +365,7 @@ public class ZWaveController {
      * Closes the connection to the Z-Wave controller.
      */
     public void close() {
+        logger.debug("Stopping Z-Wave controller");
         if (watchdog != null) {
             watchdog.cancel();
             watchdog = null;
@@ -394,6 +395,8 @@ public class ZWaveController {
      * send and receive threads.
      */
     public void disconnect() {
+        logger.debug("Disconnecting from serial port...");
+
         if (sendThread != null) {
             sendThread.interrupt();
             try {
@@ -423,7 +426,6 @@ public class ZWaveController {
         }
 
         transactionCompleted.drainPermits();
-        logger.trace("Transaction completed permit count -> {}", transactionCompleted.availablePermits());
         if (this.serialPort != null) {
             this.serialPort.close();
             this.serialPort = null;
@@ -433,7 +435,7 @@ public class ZWaveController {
 
     /**
      * Removes the node, and restarts the initialisation sequence
-     * 
+     *
      * @param nodeId
      */
     public void reinitialiseNode(int nodeId) {
@@ -443,7 +445,7 @@ public class ZWaveController {
 
     /**
      * Add a node to the controller
-     * 
+     *
      * @param nodeId the node number to add
      */
     private void addNode(int nodeId) {
@@ -596,7 +598,7 @@ public class ZWaveController {
 
     /**
      * Enqueues a message for sending on the send queue.
-     * 
+     *
      * @param serialMessage the serial message to enqueue.
      */
     public void enqueue(SerialMessage serialMessage) {
@@ -639,7 +641,7 @@ public class ZWaveController {
 
     /**
      * Notify our own event listeners of a Z-Wave event.
-     * 
+     *
      * @param event the event to send.
      */
     public void notifyEventListeners(ZWaveEvent event) {
@@ -734,7 +736,7 @@ public class ZWaveController {
 
     /**
      * Send Identify Node message to the controller.
-     * 
+     *
      * @param nodeId the nodeId of the node to identify
      */
     public void identifyNode(int nodeId) {
@@ -743,7 +745,7 @@ public class ZWaveController {
 
     /**
      * Send Request Node info message to the controller.
-     * 
+     *
      * @param nodeId the nodeId of the node to identify
      */
     public void requestNodeInfo(int nodeId) {
@@ -752,7 +754,7 @@ public class ZWaveController {
 
     /**
      * Polls a node for any dynamic information
-     * 
+     *
      * @param node
      */
     public void pollNode(ZWaveNode node) {
@@ -851,7 +853,7 @@ public class ZWaveController {
      * Sends a request to perform a soft reset on the controller.
      * This will just reset the controller - probably similar to a power cycle.
      * It doesn't reinitialise the network, or change the network configuration.
-     * 
+     *
      * NOTE: At least for some (most!) sticks, this doesn't return a response.
      * Therefore, the number of retries is set to 1.
      * NOTE: On some (most!) ZWave-Plus sticks, this can cause the stick to hang.
@@ -884,7 +886,7 @@ public class ZWaveController {
 
     /**
      * Request if the node is currently marked as failed by the controller.
-     * 
+     *
      * @param nodeId The address of the node to check
      */
     public void requestIsFailedNode(int nodeId) {
@@ -894,7 +896,7 @@ public class ZWaveController {
     /**
      * Removes a failed node from the network.
      * Note that this won't remove nodes that have not failed.
-     * 
+     *
      * @param nodeId The address of the node to remove
      */
     public void requestRemoveFailedNode(int nodeId) {
@@ -904,7 +906,7 @@ public class ZWaveController {
     /**
      * Delete all return nodes from the specified node. This should be performed
      * before updating the routes
-     * 
+     *
      * @param nodeId
      */
     public void requestDeleteAllReturnRoutes(int nodeId) {
@@ -913,7 +915,7 @@ public class ZWaveController {
 
     /**
      * Request the controller to set the return route between two nodes
-     * 
+     *
      * @param nodeId
      *            Source node
      * @param destinationId
@@ -925,7 +927,7 @@ public class ZWaveController {
 
     /**
      * Request the controller to set the return route from a node to the controller
-     * 
+     *
      * @param nodeId
      *            Source node
      */
@@ -935,7 +937,7 @@ public class ZWaveController {
 
     /**
      * Returns the next callback ID
-     * 
+     *
      * @return callback ID
      */
     public int getCallbackId() {
@@ -950,7 +952,7 @@ public class ZWaveController {
     /**
      * Transmits the SerialMessage to a single Z-Wave Node.
      * Sets the transmission options as well.
-     * 
+     *
      * @param serialMessage the Serial message to send.
      */
     public void sendData(SerialMessage serialMessage) {
@@ -979,7 +981,7 @@ public class ZWaveController {
 
     /**
      * Add a listener for Z-Wave events to this controller.
-     * 
+     *
      * @param eventListener the event listener to add.
      */
     public void addEventListener(ZWaveEventListener eventListener) {
@@ -990,7 +992,7 @@ public class ZWaveController {
 
     /**
      * Remove a listener for Z-Wave events to this controller.
-     * 
+     *
      * @param eventListener the event listener to remove.
      */
     public void removeEventListener(ZWaveEventListener eventListener) {
@@ -1001,7 +1003,7 @@ public class ZWaveController {
 
     /**
      * Gets the API Version of the controller.
-     * 
+     *
      * @return the serialAPIVersion
      */
     public String getSerialAPIVersion() {
@@ -1010,7 +1012,7 @@ public class ZWaveController {
 
     /**
      * Gets the zWave Version of the controller.
-     * 
+     *
      * @return the zWaveVersion
      */
     public String getZWaveVersion() {
@@ -1019,7 +1021,7 @@ public class ZWaveController {
 
     /**
      * Gets the Manufacturer ID of the controller.
-     * 
+     *
      * @return the manufactureId
      */
     public int getManufactureId() {
@@ -1028,7 +1030,7 @@ public class ZWaveController {
 
     /**
      * Gets the device type of the controller;
-     * 
+     *
      * @return the deviceType
      */
     public int getDeviceType() {
@@ -1037,7 +1039,7 @@ public class ZWaveController {
 
     /**
      * Gets the device ID of the controller.
-     * 
+     *
      * @return the deviceId
      */
     public int getDeviceId() {
@@ -1046,7 +1048,7 @@ public class ZWaveController {
 
     /**
      * Gets the node ID of the controller.
-     * 
+     *
      * @return the deviceId
      */
     public int getOwnNodeId() {
@@ -1055,7 +1057,7 @@ public class ZWaveController {
 
     /**
      * Gets the device type of the controller.
-     * 
+     *
      * @return the device type
      */
     public ZWaveDeviceType getControllerType() {
@@ -1064,7 +1066,7 @@ public class ZWaveController {
 
     /**
      * Gets the networks SUC controller ID.
-     * 
+     *
      * @return the device id of the SUC, or 0 if none exists
      */
     public int getSucId() {
@@ -1074,7 +1076,7 @@ public class ZWaveController {
     /**
      * Returns true if the binding is the master controller in the network.
      * The master controller simply means that we get notifications.
-     * 
+     *
      * @return true if this is the master
      */
     public boolean isMasterController() {
@@ -1084,7 +1086,7 @@ public class ZWaveController {
     /**
      * Gets the node object using it's node ID as key.
      * Returns null if the node is not found
-     * 
+     *
      * @param nodeId the Node ID of the node to get.
      * @return node object
      */
@@ -1094,7 +1096,7 @@ public class ZWaveController {
 
     /**
      * Gets the node list
-     * 
+     *
      * @return
      */
     public Collection<ZWaveNode> getNodes() {
@@ -1104,7 +1106,7 @@ public class ZWaveController {
     /**
      * Indicates a working connection to the
      * Z-Wave controller stick and initialization complete
-     * 
+     *
      * @return isConnected;
      */
     public boolean isConnected() {
@@ -1113,7 +1115,7 @@ public class ZWaveController {
 
     /**
      * Gets the number of Start Of Frames received.
-     * 
+     *
      * @return the sOFCount
      */
     public int getSOFCount() {
@@ -1122,7 +1124,7 @@ public class ZWaveController {
 
     /**
      * Gets the number of Canceled Frames received.
-     * 
+     *
      * @return the cANCount
      */
     public int getCANCount() {
@@ -1131,7 +1133,7 @@ public class ZWaveController {
 
     /**
      * Gets the number of Not Acknowledged Frames received.
-     * 
+     *
      * @return the nAKCount
      */
     public int getNAKCount() {
@@ -1140,7 +1142,7 @@ public class ZWaveController {
 
     /**
      * Gets the number of Acknowledged Frames received.
-     * 
+     *
      * @return the aCKCount
      */
     public int getACKCount() {
@@ -1149,7 +1151,7 @@ public class ZWaveController {
 
     /**
      * Returns the number of Out of Order frames received.
-     * 
+     *
      * @return the OOFCount
      */
     public int getOOFCount() {
@@ -1158,7 +1160,7 @@ public class ZWaveController {
 
     /**
      * Returns the number of Time-Outs while sending.
-     * 
+     *
      * @return the timeoutCount
      */
     public int getTimeOutCount() {
@@ -1171,7 +1173,7 @@ public class ZWaveController {
      * Input thread. This processes incoming messages - it decouples the receive thread,
      * which responds to messages from the controller, and the actual processing of messages
      * to ensure we respond to the controller in a timely manner
-     * 
+     *
      * @author Chris Jackson
      */
     private class ZWaveInputThread extends Thread {
@@ -1208,7 +1210,7 @@ public class ZWaveController {
     /**
      * Z-Wave controller Send Thread. Takes care of sending all messages.
      * It uses a semaphore to synchronize communication with the receiving thread.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @author Chris Jackson
      * @since 1.3.0
@@ -1238,6 +1240,7 @@ public class ZWaveController {
                         lastSentMessage = sendQueue.take();
                         logger.debug("Took message from queue for sending. Queue length = {}", sendQueue.size());
                     } catch (InterruptedException e1) {
+                        logger.error("InterruptedException during Z-Wave thread: sendQueue.take {}", e1);
                         break;
                     }
 
@@ -1363,6 +1366,7 @@ public class ZWaveController {
                         logger.trace("Acquired. Transaction completed permit count -> {}",
                                 transactionCompleted.availablePermits());
                     } catch (InterruptedException e) {
+                        logger.error("InterruptedException during Z-Wave thread: tryAcquire", e);
                         break;
                     }
                 }
@@ -1376,7 +1380,7 @@ public class ZWaveController {
     /**
      * Z-Wave controller Receive Thread. Takes care of receiving all messages.
      * It uses a semaphore to synchronize communication with the sending thread.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -1400,7 +1404,7 @@ public class ZWaveController {
 
         /**
          * Sends 1 byte frame response.
-         * 
+         *
          * @param response the response code to send.
          */
         private void sendResponse(int response) {
@@ -1417,7 +1421,7 @@ public class ZWaveController {
 
         /**
          * Processes incoming message and notifies event handlers.
-         * 
+         *
          * @param buffer the buffer to process.
          * @throws InterruptedException
          */
@@ -1486,7 +1490,12 @@ public class ZWaveController {
                     switch (nextByte) {
                         case SOF:
                             // Use the sendAllowed semaphore to signal that the receive queue is not empty!
-                            sendAllowed.acquire();
+                            try {
+                                sendAllowed.acquire();
+                            } catch (InterruptedException e) {
+                                logger.debug("Interrupted waiting for 'sendAllowed.acquire'.");
+                                // break;
+                            }
 
                             SOFCount++;
                             int messageLength;
@@ -1565,7 +1574,7 @@ public class ZWaveController {
      * WatchDogTimerTask class. Acts as a watch dog and
      * checks the serial threads to see whether they are
      * still running.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -1576,7 +1585,7 @@ public class ZWaveController {
 
         /**
          * Creates a new instance of the WatchDogTimerTask class.
-         * 
+         *
          * @param serialPortName the serial port name to reconnect to
          *            in case the serial threads have died.
          */

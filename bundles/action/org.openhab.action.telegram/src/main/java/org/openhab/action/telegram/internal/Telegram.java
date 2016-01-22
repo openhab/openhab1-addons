@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HeaderElement;
@@ -28,6 +29,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
@@ -140,6 +143,14 @@ public class Telegram {
     static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption) {
 
+        return sendTelegramPhoto(group, photoURL, caption, null, null);
+    }
+
+    @ActionDoc(text = "Sends a Picture, protected by username/password authentication, via Telegram REST API")
+    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+            @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
+            @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password) {
+
         if (groupTokens.get(group) == null) {
             logger.error("Bot '{}' not defined, action skipped", group);
             return false;
@@ -154,6 +165,13 @@ public class Telegram {
         byte[] imageFromURL;
 
         HttpClient getClient = new HttpClient();
+
+        if (username != null && password != null) {
+            getClient.getParams().setAuthenticationPreemptive(true);
+            Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
+            getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
+        }
+
         GetMethod getMethod = new GetMethod(photoURL);
         getMethod.getParams().setSoTimeout(HTTP_PHOTO_TIMEOUT);
         getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));

@@ -11,8 +11,8 @@ package org.openhab.binding.exec;
 import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -28,25 +28,25 @@ import org.openhab.core.types.Command;
 public interface ExecBindingProvider extends BindingProvider {
 
     /**
-     * Returns the Type of the Item identified by {@code itemName}
-     * 
+     * Returns the list of acceptedDataTypes of the Item identified by {@code itemName}
+     *
      * @param itemName
-     *            the name of the item to find the type for
-     * @return the type of the Item identified by {@code itemName}
+     *            the name of the item to find the list of accepted data types for
+     * @return the list of data types accepted by the Item identified by {@code itemName}
      */
-    Class<? extends Item> getItemType(String itemName);
+    List<Class<? extends State>> getAcceptedDataTypes(String itemName);
 
     /**
      * Returns the commandLine to execute according to <code>itemName</code> and
      * <code>command</code>. If there is no direct match a second attempt with
      * command <code>*</code> is triggered.
-     * 
-     * 
+     *
+     *
      * @param itemName
      *            the item for which to find a commandLine
      * @param command
      *            the openHAB command for which to find a commandLine
-     * 
+     *
      * @return the matching commandLine or <code>null</code> if no matching
      *         commandLine could be found.
      */
@@ -54,10 +54,10 @@ public interface ExecBindingProvider extends BindingProvider {
 
     /**
      * Returns the commandLine to execute according to <code>itemName</code>.
-     * 
+     *
      * @param itemName
      *            the item for which to find a commandLine
-     * 
+     *
      * @return the matching commandLine or <code>null</code> if no matching
      *         commandLine could be found.
      */
@@ -66,10 +66,10 @@ public interface ExecBindingProvider extends BindingProvider {
     /**
      * Returns the refresh interval to use according to <code>itemName</code>.
      * Is used by In-Binding.
-     * 
+     *
      * @param itemName
      *            the item for which to find a refresh interval
-     * 
+     *
      * @return the matching refresh interval or <code>null</code> if no matching
      *         refresh interval could be found.
      */
@@ -78,10 +78,10 @@ public interface ExecBindingProvider extends BindingProvider {
     /**
      * Returns the transformation rule to use according to <code>itemName</code>
      * . Is used by In-Binding.
-     * 
+     *
      * @param itemName
      *            the item for which to find a transformation rule
-     * 
+     *
      * @return the matching transformation rule or <code>null</code> if no
      *         matching transformation rule could be found.
      */
@@ -89,7 +89,7 @@ public interface ExecBindingProvider extends BindingProvider {
 
     /**
      * Returns all items which are mapped to a Exec-In-Binding
-     * 
+     *
      * @return item which are mapped to a Exec-In-Binding
      */
     List<String> getInBindingItemNames();

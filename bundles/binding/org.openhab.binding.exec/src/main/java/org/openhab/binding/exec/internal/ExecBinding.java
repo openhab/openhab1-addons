@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,15 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
@@ -137,11 +129,15 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
                         transformedResponse = transformResponse(response, transformation);
                     }
 
-                    Class<? extends Item> itemType = provider.getItemType(itemName);
-                    State state = createState(itemType, transformedResponse);
-
+                    List<Class<? extends State>> acceptedDataTypes = provider.getAcceptedDataTypes(itemName);
+                    State state = null;
+                    if (acceptedDataTypes != null) {
+                        state = TypeParser.parseState(acceptedDataTypes, transformedResponse);
+                    }
                     if (state != null) {
                         eventPublisher.postUpdate(itemName, state);
+                    } else {
+                        logger.debug("Couldn't create state for value '{}'", transformedResponse);
                     }
 
                     lastUpdateMap.put(itemName, System.currentTimeMillis());
@@ -183,7 +179,7 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
     /**
      * Splits a transformation configuration string into its two parts - the
      * transformation type and the function/pattern to apply.
-     * 
+     *
      * @param transformation the string to split
      * @return a string array with exactly two entries for the type and the function
      */
@@ -201,36 +197,6 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
         String pattern = matcher.group(2);
 
         return new String[] { type, pattern };
-    }
-
-    /**
-     * Returns a {@link State} which is inherited from the {@link Item}s
-     * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
-     * <code>item</code> is <code>null</code> the {@link StringType} is used.
-     * 
-     * @param itemType
-     * @param transformedResponse
-     * 
-     * @return a {@link State} which type is inherited by the {@link TypeParser}
-     *         or a {@link StringType} if <code>item</code> is <code>null</code>
-     */
-    private State createState(Class<? extends Item> itemType, String transformedResponse) {
-        try {
-            if (itemType.isAssignableFrom(NumberItem.class)) {
-                return DecimalType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(ContactItem.class)) {
-                return OpenClosedType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(SwitchItem.class)) {
-                return OnOffType.valueOf(transformedResponse);
-            } else if (itemType.isAssignableFrom(RollershutterItem.class)) {
-                return PercentType.valueOf(transformedResponse);
-            } else {
-                return StringType.valueOf(transformedResponse);
-            }
-        } catch (Exception e) {
-            logger.debug("Couldn't create state of type '{}' for value '{}'", itemType, transformedResponse);
-            return StringType.valueOf(transformedResponse);
-        }
     }
 
     /**
@@ -264,10 +230,10 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
      * Find the first matching {@link ExecBindingProvider} according to
      * <code>itemName</code> and <code>command</code>. If no direct match is
      * found, a second match is issued with wilcard-command '*'.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -314,7 +280,7 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
      * A possible {@link IOException} gets logged but no further processing is
      * done.
      * </p>
-     * 
+     *
      * @param commandLine the command line to execute
      * @see http://www.peterfriese.de/running-applescript-from-java/
      */
@@ -346,7 +312,7 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
      * A possible {@link IOException} gets logged but no further processing is
      * done.
      * </p>
-     * 
+     *
      * @param commandLine the command line to execute
      * @return response data from executed command line
      */
