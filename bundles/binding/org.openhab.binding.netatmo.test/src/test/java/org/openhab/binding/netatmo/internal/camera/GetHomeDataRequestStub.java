@@ -6,38 +6,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
-
-import static com.google.common.base.Charsets.UTF_8;
+package org.openhab.binding.netatmo.internal.camera;
 
 import java.io.IOException;
 import java.net.URL;
 
+import org.openhab.binding.netatmo.internal.camera.GetHomeDataRequest;
+
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 /**
- * @author Andreas Brenk
- * @author Rob Nielsen
- * @since 1.4.0
+ * @author Ing. Peter Weiss
+ * @since 1.9.0
  */
-public class MeasurementRequestStub extends MeasurementRequest {
+public class GetHomeDataRequestStub extends GetHomeDataRequest {
 
     protected static final String ACCESS_TOKEN = "000000000000000000000000|11111111111111111111111111111111";
 
-    protected static final String DEVICE_ID = "70:ee:50:00:02:20";
-
-    protected static final String MODULE_ID = "02:00:00:00:02:a0";
-
-    public static MeasurementRequestStub createRequest(final String resource) throws Exception {
-        return new MeasurementRequestStub(resource);
+    public static GetHomeDataRequestStub createRequest(final String resource) throws Exception {
+        return new GetHomeDataRequestStub(resource);
     }
 
     private final String response;
 
     private String content;
 
-    private MeasurementRequestStub(final String response) throws Exception {
-        super(ACCESS_TOKEN, DEVICE_ID, MODULE_ID);
+    GetHomeDataRequestStub(final String response) throws Exception {
+        super(ACCESS_TOKEN);
 
         final URL resource = getClass().getResource(response);
 
@@ -45,8 +41,7 @@ public class MeasurementRequestStub extends MeasurementRequest {
             throw new IOException("Resource '" + response + "' not found!");
         }
 
-        this.response = Resources.toString(resource, UTF_8);
-
+        this.response = Resources.toString(resource, Charsets.UTF_8);
     }
 
     public String getContent() {

@@ -6,37 +6,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
-
-import static com.google.common.base.Charsets.UTF_8;
+package org.openhab.binding.netatmo.internal.weather;
 
 import java.io.IOException;
 import java.net.URL;
 
+import org.openhab.binding.netatmo.internal.weather.GetStationsDataRequest;
+
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 /**
- * @author Andreas Brenk
- * @since 1.4.0
+ * @author Rob Nielsen
+ * @since 1.8.0
  */
-public class RefreshTokenRequestStub extends RefreshTokenRequest {
+public class GetStationsDataRequestStub extends GetStationsDataRequest {
 
-    protected static final String CLIENT_ID = "000000000000000000000000";
+    protected static final String ACCESS_TOKEN = "test-access-token";
 
-    protected static final String CLIENT_SECRET = "11111111111111111111111111111111111";
-
-    protected static final String REFRESH_TOKEN = "000000000000000000000000|22222222222222222222222222222222";
-
-    public static RefreshTokenRequestStub createRequest(final String resource) throws Exception {
-        return new RefreshTokenRequestStub(resource);
+    public static GetStationsDataRequestStub createRequest(final String resource) throws Exception {
+        return new GetStationsDataRequestStub(resource);
     }
 
     private final String response;
 
     private String content;
 
-    private RefreshTokenRequestStub(final String response) throws Exception {
-        super(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN);
+    private GetStationsDataRequestStub(final String response) throws Exception {
+        super(ACCESS_TOKEN);
 
         final URL resource = getClass().getResource(response);
 
@@ -44,7 +41,7 @@ public class RefreshTokenRequestStub extends RefreshTokenRequest {
             throw new IOException("Resource '" + response + "' not found!");
         }
 
-        this.response = Resources.toString(resource, UTF_8);
+        this.response = Resources.toString(resource, Charsets.UTF_8);
     }
 
     public String getContent() {

@@ -6,11 +6,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
+package org.openhab.binding.netatmo.internal.authentication;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.openhab.binding.netatmo.internal.messages.AbstractResponse;
 
 /**
  * Java Bean to represent a JSON response to a <code>refresh_token</code> API

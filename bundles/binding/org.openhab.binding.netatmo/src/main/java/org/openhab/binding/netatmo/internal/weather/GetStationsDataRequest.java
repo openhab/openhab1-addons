@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
+package org.openhab.binding.netatmo.internal.weather;
 
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
 
@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openhab.binding.netatmo.internal.messages.AbstractRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

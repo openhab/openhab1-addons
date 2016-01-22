@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
+package org.openhab.binding.netatmo.internal.authentication;
 
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
 
@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.openhab.binding.netatmo.internal.messages.AbstractRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Andreas Brenk
  * @author Rob Nielsen
+ * @author Ing. Peter Weiss
  * @since 1.4.0
  * @see <a
  *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">refreshtoken</a>
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class RefreshTokenRequest extends AbstractRequest {
     private static final String URL = "https://api.netatmo.net/oauth2/token";
 
-    private static final String CONTENT = "grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s&scope=read_station";
+    private static final String CONTENT = "grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s&scope=read_station read_camera";
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshTokenRequest.class);
 

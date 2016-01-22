@@ -6,12 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
+package org.openhab.binding.netatmo.internal.authentication;
 
 import static junit.framework.Assert.*;
-import static org.openhab.binding.netatmo.internal.messages.RefreshTokenRequestStub.*;
+import static org.openhab.binding.netatmo.internal.authentication.RefreshTokenRequestStub.*;
 
 import org.junit.Test;
+import org.openhab.binding.netatmo.internal.messages.NetatmoError;
 
 /**
  * @author Andreas Brenk
@@ -42,7 +43,7 @@ public class RefreshTokenTest {
         assertNull(response.getError());
 
         assertEquals("grant_type=refresh_token&refresh_token=" + REFRESH_TOKEN + "&client_id=" + CLIENT_ID
-                + "&client_secret=" + CLIENT_SECRET + "&scope=read_station", request.getContent());
+                + "&client_secret=" + CLIENT_SECRET + "&scope=read_station read_camera", request.getContent());
         assertEquals("000000000000000000000000|11111111111111111111111111111111", response.getAccessToken());
     }
 }

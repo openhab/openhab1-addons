@@ -6,21 +6,24 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal.messages;
+package org.openhab.binding.netatmo.internal.weather;
 
 import static junit.framework.Assert.*;
-import static org.openhab.binding.netatmo.internal.NetatmoMeasureType.*;
-import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.*;
+import static org.openhab.binding.netatmo.internal.weather.MeasurementRequestStub.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;
-import org.openhab.binding.netatmo.internal.messages.MeasurementResponse.Body;
+import org.openhab.binding.netatmo.internal.messages.NetatmoError;
+import org.openhab.binding.netatmo.internal.weather.MeasurementResponse;
+import org.openhab.binding.netatmo.internal.weather.NetatmoMeasureType;
+import org.openhab.binding.netatmo.internal.weather.MeasurementResponse.Body;
 
 /**
  * @author Andreas Brenk
  * @author Rob Nielsen
+ * @author Ing. Peter Weiss
  * @since 1.4.0
  */
 public class MeasurementTest {
@@ -42,8 +45,8 @@ public class MeasurementTest {
     @Test
     public void testSuccess() throws Exception {
         final MeasurementRequestStub request = createRequest("/getmeasure.json");
-        request.addMeasure(TEMPERATURE);
-        request.addMeasure(HUMIDITY);
+        request.addMeasure(NetatmoMeasureType.TEMPERATURE);
+        request.addMeasure(NetatmoMeasureType.HUMIDITY);
 
         final MeasurementResponse response = request.execute();
 

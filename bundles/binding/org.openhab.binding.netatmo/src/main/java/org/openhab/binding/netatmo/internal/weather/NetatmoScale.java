@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.netatmo.internal;
+package org.openhab.binding.netatmo.internal.weather;
 
 import org.apache.commons.lang.StringUtils;
 
