@@ -19,6 +19,16 @@
 	
 	<Configuration>
 		<Parameter>
+			<Index>0</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Min. variation of load current</Label>
+			<Help lang="en">Minimum variation in load current before a message is sent. Value in percent (30 => 30%)</Help>
+		</Parameter>
+
+		<Parameter>
 			<Index>1</Index>
 			<Type>byte</Type>
 			<Default>2</Default>
@@ -32,6 +42,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<ReadOnly>true</ReadOnly>
 			<Item>
 				<Value>128</Value>
 				<Label lang="en">Black</Label>
@@ -77,6 +88,30 @@
 			<Help lang="en">The room color (Corner wheel color) on the GreenWave device</Help>
 		</Parameter>
 	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Wheel position change</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Current leakage on relay</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Power level change</Label>
+			<Help lang="en">The new power reading is sent if the delta of the change is greater than the defined minimum variation</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Over-current detection</Label>
+		</Group>
+	</Associations>
 
 </Product>
 

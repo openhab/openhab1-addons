@@ -1261,17 +1261,18 @@
 				<Type>0003</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>NP210</Model>
-			<Label lang="en">Smart PowerNode</Label>
-			<ConfigFile>greenwave/np210.xml</ConfigFile>
+			<Model>NP210/NP310</Model>
+			<Label lang="en">Smart PowerNode (6x)</Label>
+			<ConfigFile VersionMax="3">greenwave/np210.xml</ConfigFile>
+			<ConfigFile VersionMin="4">greenwave/np310.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>NS210</Model>
-			<Label lang="en">Smart PowerNode</Label>
+			<Model>NS210/NS310</Model>
+			<Label lang="en">Smart PowerNode (single)</Label>
 			<ConfigFile VersionMax="3">greenwave/ns210.xml</ConfigFile>
 			<ConfigFile VersionMin="4">greenwave/ns310.xml</ConfigFile>
 		</Product>
