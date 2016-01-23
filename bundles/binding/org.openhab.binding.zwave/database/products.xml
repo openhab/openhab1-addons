@@ -2037,6 +2037,10 @@
 				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0011</Id>
+            </Reference>
 			<Model>TZ88</Model>
 			<Label lang="en">Energy Monitoring Wall Plug</Label>
 			<ConfigFile>tkb/tz88.xml</ConfigFile>
@@ -2569,15 +2573,24 @@
 	<Manufacturer>
 		<Id>159</Id>
 		<Name>Qubino</Name>
-		<Product>
-			<Reference>
-				<Type>2</Type>
-				<Id>2</Id>
-			</Reference>
-			<Model>ZMNHAA</Model>
-			<Label lang="en">Flush 1 relay</Label>
-			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
-		</Product>
+        <Product>
+            <Reference>
+                <Type>2</Type>
+                <Id>2</Id>
+            </Reference>
+            <Model>ZMNHAA</Model>
+            <Label lang="en">Flush 1 relay</Label>
+            <ConfigFile>qubino/zmnhaa.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>1</Type>
+                <Id>52</Id>
+            </Reference>
+            <Model>ZMNHSD</Model>
+            <Label lang="en">DIN dimmer</Label>
+            <ConfigFile>qubino/zmnhsd.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>2</Type>
