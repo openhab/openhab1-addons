@@ -66,7 +66,7 @@
 			<Item>
 				<Value>4</Value>
 				<Label lang="en">Switch on/off relay directly (only if Thermostat Mode is in Off state)</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			</Item>
 		</Parameter>
 		<Parameter>
 			<Index>4</Index>

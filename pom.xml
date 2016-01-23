@@ -243,7 +243,7 @@
         <!-- openHAB dependencies p2 repository -->
         <repository>
             <id>p2-openhab-deps-repo</id>
-            <url>http://repository-openhab.forge.cloudbees.com/release/openhab-deps-repo/${ohdr.version}</url>
+            <url>https://dl.bintray.com/openhab/p2/openhab-deps-repo/${ohdr.version}</url>
             <layout>p2</layout>
         </repository>
 
