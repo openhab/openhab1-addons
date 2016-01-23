@@ -2037,6 +2037,10 @@
 				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0011</Id>
+            </Reference>
 			<Model>TZ88</Model>
 			<Label lang="en">Energy Monitoring Wall Plug</Label>
 			<ConfigFile>tkb/tz88.xml</ConfigFile>
