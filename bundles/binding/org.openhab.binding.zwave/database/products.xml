@@ -3198,4 +3198,17 @@
  			<ConfigFile>lscontrol/e861c.xml</ConfigFile>
  		</Product>
  	</Manufacturer>
+ 	<Manufacturer>
+		<Id>0176</Id>
+		<Name>Telldus</Name>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TZDW-100</Model>
+			<Label lang="en">Door Sensor</Label>
+			<ConfigFile>telldus/tzdw-100.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
