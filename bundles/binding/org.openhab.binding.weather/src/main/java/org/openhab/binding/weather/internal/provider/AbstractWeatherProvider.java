@@ -90,9 +90,14 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             url = StringUtils.replace(url, "[API_KEY]", providerConfig.getApiKey());
             url = StringUtils.replace(url, "[API_KEY_2]", providerConfig.getApiKey2());
         }
-        url = StringUtils.replace(url, "[LATITUDE]", locationConfig.getLatitude().toString());
-        url = StringUtils.replace(url, "[LONGITUDE]", locationConfig.getLongitude().toString());
+        if (locationConfig.getLatitude() != null) {
+            url = StringUtils.replace(url, "[LATITUDE]", locationConfig.getLatitude().toString());
+        }
+        if (locationConfig.getLongitude() != null) {
+            url = StringUtils.replace(url, "[LONGITUDE]", locationConfig.getLongitude().toString());
+        }
         url = StringUtils.replace(url, "[LANGUAGE]", locationConfig.getLanguage());
+        url = StringUtils.replace(url, "[WOEID]", locationConfig.getWoeid());
         return url;
     }
 
