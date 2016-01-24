@@ -798,6 +798,15 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+        <Product>
+            <Reference>
+                <Type>0104</Type>
+                <Id>0038</Id>
+            </Reference>
+            <Model>ZW056-A</Model>
+            <Label lang="en">Doorbell</Label>
+            <ConfigFile>aeon/zw056.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
