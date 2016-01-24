@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import org.apache.commons.lang.builder.StandardToStringStyle;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +35,7 @@ import net.wimpi.modbus.io.ModbusTransport;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class TCPMasterConnection {
+public class TCPMasterConnection implements ModbusSlaveConnection {
     private static final Logger logger = LoggerFactory.getLogger(TCPMasterConnection.class);
 
     // instance attributes
@@ -47,6 +49,12 @@ public class TCPMasterConnection {
     // private int m_Retries = Modbus.DEFAULT_RETRIES;
     private ModbusTCPTransport m_ModbusTransport;
 
+    private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
+
+    static {
+        toStringStyle.setUseShortClassName(true);
+    }
+
     /**
      * Constructs a <tt>TCPMasterConnection</tt> instance
      * with a given destination address.
@@ -57,12 +65,18 @@ public class TCPMasterConnection {
         m_Address = adr;
     }// constructor
 
+    public TCPMasterConnection(InetAddress adr, int port) {
+        this(adr);
+        setPort(port);
+    }
+
     /**
      * Opens this <tt>TCPMasterConnection</tt>.
      *
      * @throws Exception if there is a network failure.
      */
-    public synchronized void connect() throws Exception {
+    @Override
+    public synchronized boolean connect() throws Exception {
         if (!isConnected()) {
             logger.debug("connect()");
             m_Socket = new Socket(m_Address, m_Port);
@@ -73,6 +87,7 @@ public class TCPMasterConnection {
             prepareTransport();
             m_Connected = true;
         }
+        return m_Connected;
     }// connect
 
     /**
@@ -133,7 +148,8 @@ public class TCPMasterConnection {
             try {
                 m_Socket.setSoTimeout(m_Timeout);
             } catch (IOException ex) {
-                // handle?
+                logger.error("Could not set socket timeout on connection {} {}: {}", getAddress(), getPort(),
+                        ex.getMessage());
             }
         }
     }// setReceiveTimeout
@@ -184,6 +200,7 @@ public class TCPMasterConnection {
      *
      * @return <tt>true</tt> if connected, <tt>false</tt> otherwise.
      */
+    @Override
     public boolean isConnected() {
         // From j2mod originally. Sockets that are not fully open are closed.
         if (m_Connected && m_Socket != null) {
@@ -195,5 +212,15 @@ public class TCPMasterConnection {
         }
         return m_Connected;
     }// isConnected
+
+    @Override
+    public void resetConnection() {
+        close();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, toStringStyle).append("socket", m_Socket).toString();
+    }
 
 }// class TCPMasterConnection

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +61,8 @@ public class ModbusASCIITransport extends ModbusSerialTransport {
 
     @Override
     public void close() throws IOException {
-        if (m_InputStream != null) {
-            m_InputStream.close();
-        }
-        if (m_OutputStream != null) {
-            m_OutputStream.close();
-        }
+        IOUtils.closeQuietly(m_InputStream);
+        IOUtils.closeQuietly(m_OutputStream);
         super.close();
     }// close
 
@@ -160,7 +157,7 @@ public class ModbusASCIITransport extends ModbusSerialTransport {
         boolean done = false;
         ModbusResponse response = null;
         int in = -1;
-
+        setReceiveThreshold(1);
         try {
             do {
                 // 1. Skip to FRAME_START
@@ -169,6 +166,7 @@ public class ModbusASCIITransport extends ModbusSerialTransport {
                         throw new IOException("readResponse: I/O exception - Serial port timeout.");
                     }
                 }
+                logger.trace("Managed to read at least one byte");
                 // 2. Read to FRAME_END
                 synchronized (m_InBuffer) {
                     m_ByteInOut.reset();
@@ -209,9 +207,11 @@ public class ModbusASCIITransport extends ModbusSerialTransport {
             } while (!done);
             return response;
         } catch (Exception ex) {
-            final String errMsg = "I/O exception - failed to read";
-            logger.debug("{}: {}", errMsg, ex.getMessage());
+            final String errMsg = String.format("I/O exception - failed to read: %s", ex.getMessage());
+            logger.debug("{}", errMsg);
             throw new ModbusIOException("readResponse " + errMsg);
+        } finally {
+            m_CommPort.disableReceiveThreshold();
         }
     }// readResponse
 

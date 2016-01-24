@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for Modbus Binding
+Bundle-SymbolicName: org.openhab.binding.modbus.test
+Bundle-Version: 1.8.0.qualifier
+Fragment-Host: org.openhab.binding.modbus
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit
+Bundle-Vendor: openHAB.org
+Bundle-ClassPath: lib/mockito-all-1.10.19.jar,
+    lib/slf4j-simple-1.7.5.jar,
+    ../org.openhab.binding.modbus/lib/commons-pool2-2.4.2.jar
+    .
