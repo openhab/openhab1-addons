@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,158 +35,139 @@ import org.openhab.core.types.Command;
 @RunWith(MockitoJUnitRunner.class)
 public class ModuleChannelGroupTest {
 
-	@Mock
-	private NikobusBinding binding;
+    @Mock
+    private NikobusBinding binding;
 
-	@Captor
-	ArgumentCaptor<NikobusCommand> command;
+    @Captor
+    ArgumentCaptor<NikobusCommand> command;
 
-	ModuleChannelGroup group1;
-	ModuleChannelGroup group2;
-	ModuleChannelGroup group3;
+    ModuleChannelGroup group1;
+    ModuleChannelGroup group2;
+    ModuleChannelGroup group3;
 
-	@Before
-	public void setup() throws URISyntaxException {
+    @Before
+    public void setup() throws URISyntaxException {
 
-		group1 = new ModuleChannelGroup("6C94", 1);
-		group2 = new ModuleChannelGroup("6C94", 2);
-		group3 = new ModuleChannelGroup("5FCB", 1);
+        group1 = new ModuleChannelGroup("6C94", 1);
+        group2 = new ModuleChannelGroup("6C94", 2);
+        group3 = new ModuleChannelGroup("5FCB", 1);
 
-	}
+    }
 
-	@Test
-	public void canRequestGroup1Status() throws Exception {
+    @Test
+    public void canRequestGroup1Status() throws Exception {
 
-		NikobusCommand cmd = group1.getStatusRequestCommand();
-		assertEquals("$10126C946CE5A0", cmd.getCommand());
-		assertEquals("$1C6C94", cmd.getAck());
+        NikobusCommand cmd = group1.getStatusRequestCommand();
+        assertEquals("$10126C946CE5A0", cmd.getCommand());
+        assertEquals("$1C6C94", cmd.getAck());
 
-	}
+    }
 
-	@Test
-	public void canRequestGroup2Status() throws Exception {
+    @Test
+    public void canRequestGroup2Status() throws Exception {
 
-		NikobusCommand cmd = group2.getStatusRequestCommand();
-		assertEquals("$10176C948715BB", cmd.getCommand());
-		assertEquals("$1C6C94", cmd.getAck());
-	}
+        NikobusCommand cmd = group2.getStatusRequestCommand();
+        assertEquals("$10176C948715BB", cmd.getCommand());
+        assertEquals("$1C6C94", cmd.getAck());
+    }
 
-	@Test
-	public void canSendGroup1Update() throws Exception {
+    @Test
+    public void canSendGroup1Update() throws Exception {
 
-		ModuleChannel item = group1.addChannel("test4", 4, new ArrayList<Class<? extends Command>>());
-		item.setState(OnOffType.ON);
+        ModuleChannel item = group1.addChannel("test4", 4, new ArrayList<Class<? extends Command>>());
+        item.setState(OnOffType.ON);
 
-		group1.publishStateToNikobus(item, binding);
+        group1.publishStateToNikobus(item, binding);
 
-		Mockito.verify(binding, Mockito.times(1)).sendCommand(
-				command.capture());
+        Mockito.verify(binding, Mockito.times(1)).sendCommand(command.capture());
 
-		NikobusCommand cmd = command.getAllValues().get(0);
-		assertEquals("$1E156C94000000FF0000FF60E149", cmd.getCommand());
-	}
-	
-	@Test
-	public void canSendGroup1DimmerUpdate() throws Exception {
+        NikobusCommand cmd = command.getAllValues().get(0);
+        assertEquals("$1E156C94000000FF0000FF60E149", cmd.getCommand());
+    }
 
-		ModuleChannel item = group1.addChannel("test4", 4, new ArrayList<Class<? extends Command>>());
-		item.setState(new PercentType(25));
+    @Test
+    public void canSendGroup1DimmerUpdate() throws Exception {
 
-		group1.publishStateToNikobus(item, binding);
+        ModuleChannel item = group1.addChannel("test4", 4, new ArrayList<Class<? extends Command>>());
+        item.setState(new PercentType(25));
 
-		Mockito.verify(binding, Mockito.times(1)).sendCommand(
-				command.capture());
+        group1.publishStateToNikobus(item, binding);
 
-		NikobusCommand cmd = command.getAllValues().get(0);
-		assertEquals("$1E156C94000000400000FF45DE7B", cmd.getCommand());
-	}
+        Mockito.verify(binding, Mockito.times(1)).sendCommand(command.capture());
 
-	@Test
-	public void canSendGroup2Update() throws Exception {
+        NikobusCommand cmd = command.getAllValues().get(0);
+        assertEquals("$1E156C94000000400000FF45DE7B", cmd.getCommand());
+    }
 
-		ModuleChannel item2 = group2.addChannel("test12", 12, new ArrayList<Class<? extends Command>>());
-		item2.setState(OnOffType.ON);
+    @Test
+    public void canSendGroup2Update() throws Exception {
 
-		group2.publishStateToNikobus(item2, binding);
+        ModuleChannel item2 = group2.addChannel("test12", 12, new ArrayList<Class<? extends Command>>());
+        item2.setState(OnOffType.ON);
 
-		Mockito.verify(binding, Mockito.times(1)).sendCommand(
-				command.capture());
+        group2.publishStateToNikobus(item2, binding);
 
-		NikobusCommand cmd = command.getAllValues().get(0);
-		assertEquals("$1E166C940000000000FFFF997295", cmd.getCommand());
-	}
+        Mockito.verify(binding, Mockito.times(1)).sendCommand(command.capture());
 
-	@Test
-	public void canProcessGroup1StatusUpdate() {
+        NikobusCommand cmd = command.getAllValues().get(0);
+        assertEquals("$1E166C940000000000FFFF997295", cmd.getCommand());
+    }
 
-		ModuleChannel item = group1.addChannel("test5", 5, new ArrayList<Class<? extends Command>>());
-		item.setState(OnOffType.OFF);
+    @Test
+    public void canProcessGroup1StatusUpdate() {
 
-		group1.processNikobusCommand(new NikobusCommand("$0512"), binding);
+        ModuleChannel item = group1.addChannel("test5", 5, new ArrayList<Class<? extends Command>>());
+        item.setState(OnOffType.OFF);
 
-		group1.processNikobusCommand(new NikobusCommand(
-				"$1C6C940000000000FF00557CF8"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test5",
-				OnOffType.ON);
+        group1.processNikobusCommand(new NikobusCommand("$0512"), binding);
 
-		group1.processNikobusCommand(new NikobusCommand("$0512"), binding);
-		group1.processNikobusCommand(new NikobusCommand(
-				"$1C6C9400000000FF00FF557CF8"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test5",
-				OnOffType.OFF);
-	}
+        group1.processNikobusCommand(new NikobusCommand("$1C6C940000000000FF00557CF8"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test5", OnOffType.ON);
 
-	@Test
-	public void canProcessGroup2StatusUpdate() {
+        group1.processNikobusCommand(new NikobusCommand("$0512"), binding);
+        group1.processNikobusCommand(new NikobusCommand("$1C6C9400000000FF00FF557CF8"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test5", OnOffType.OFF);
+    }
 
-		ModuleChannel item = group2.addChannel("test11", 11, new ArrayList<Class<? extends Command>>());
-		item.setState(OnOffType.OFF);
+    @Test
+    public void canProcessGroup2StatusUpdate() {
 
-		group2.processNikobusCommand(new NikobusCommand("$0517"), binding);
-		group2.processNikobusCommand(new NikobusCommand(
-				"$1C6C940000000000FF00557CF8"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test11",
-				OnOffType.ON);
+        ModuleChannel item = group2.addChannel("test11", 11, new ArrayList<Class<? extends Command>>());
+        item.setState(OnOffType.OFF);
 
-		group2.processNikobusCommand(new NikobusCommand("$0517"), binding);
-		group2.processNikobusCommand(new NikobusCommand(
-				"$1C6C9400000000FF00FF557CF8"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test11",
-				OnOffType.OFF);
+        group2.processNikobusCommand(new NikobusCommand("$0517"), binding);
+        group2.processNikobusCommand(new NikobusCommand("$1C6C940000000000FF00557CF8"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test11", OnOffType.ON);
 
-	}
+        group2.processNikobusCommand(new NikobusCommand("$0517"), binding);
+        group2.processNikobusCommand(new NikobusCommand("$1C6C9400000000FF00FF557CF8"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test11", OnOffType.OFF);
 
-	@Test
-	public void canProcessGroup1StatusUpdateDimmer() {
-		
-		List<Class<? extends Command>> acceptedCommands = new ArrayList<Class<? extends Command>>();
-		acceptedCommands.add(PercentType.class);
-		ModuleChannel item = group3.addChannel("test2", 1, acceptedCommands);
-		item.setState(OnOffType.OFF);
+    }
 
-		group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
-		group3.processNikobusCommand(new NikobusCommand(
-				"$1C5FCB03400000000000E36D38"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test2",
-				PercentType.valueOf("26"));
+    @Test
+    public void canProcessGroup1StatusUpdateDimmer() {
 
-		group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
-		group3.processNikobusCommand(new NikobusCommand(
-				"$1C5FCB037F000000000009E2C0"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test2",
-				PercentType.valueOf("50"));
-		
-		group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
-		group3.processNikobusCommand(new NikobusCommand(
-				"$1C5FCB03D90000000000652B76"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test2",
-				PercentType.valueOf("86"));
-		
-		group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
-		group3.processNikobusCommand(new NikobusCommand(
-				"$1C5FCB03A70000000000A0143B"), binding);
-		Mockito.verify(binding, Mockito.times(1)).postUpdate("test2",
-				PercentType.valueOf("66"));
-		
-	}
+        List<Class<? extends Command>> acceptedCommands = new ArrayList<Class<? extends Command>>();
+        acceptedCommands.add(PercentType.class);
+        ModuleChannel item = group3.addChannel("test2", 1, acceptedCommands);
+        item.setState(OnOffType.OFF);
+
+        group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
+        group3.processNikobusCommand(new NikobusCommand("$1C5FCB03400000000000E36D38"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test2", PercentType.valueOf("26"));
+
+        group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
+        group3.processNikobusCommand(new NikobusCommand("$1C5FCB037F000000000009E2C0"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test2", PercentType.valueOf("50"));
+
+        group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
+        group3.processNikobusCommand(new NikobusCommand("$1C5FCB03D90000000000652B76"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test2", PercentType.valueOf("86"));
+
+        group3.processNikobusCommand(new NikobusCommand("$0512"), binding);
+        group3.processNikobusCommand(new NikobusCommand("$1C5FCB03A70000000000A0143B"), binding);
+        Mockito.verify(binding, Mockito.times(1)).postUpdate("test2", PercentType.valueOf("66"));
+
+    }
 }

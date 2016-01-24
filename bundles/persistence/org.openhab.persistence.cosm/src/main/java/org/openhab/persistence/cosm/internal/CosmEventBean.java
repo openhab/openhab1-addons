@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,55 +8,54 @@
  */
 package org.openhab.persistence.cosm.internal;
 
-
 /**
  * This is a standard Java bean used as an input to the JSON serializer.
- * 
+ *
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
 public class CosmEventBean {
 
-	private String id;
-	private String value;
-	private String minValue = null;
-	private String maxValue = null;
-	
-	public CosmEventBean(String feedId, String eventValue) {
-		this.id = feedId;
-		this.value = eventValue;
-	}
+    private String id;
+    private String value;
+    private String minValue = null;
+    private String maxValue = null;
 
-	public String getId() {
-		return this.id;
-	}
+    public CosmEventBean(String feedId, String eventValue) {
+        this.id = feedId;
+        this.value = eventValue;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public String getValue() {
-		return this.value;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setValue(String eventValue) {
-		this.value = eventValue;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public String getMaxValue() {
-		return maxValue;
-	}
+    public void setValue(String eventValue) {
+        this.value = eventValue;
+    }
 
-	public void setMaxValue(String maxValue) {
-		this.maxValue = maxValue;
-	}
+    public String getMaxValue() {
+        return maxValue;
+    }
 
-	public String getMinValue() {
-		return minValue;
-	}
+    public void setMaxValue(String maxValue) {
+        this.maxValue = maxValue;
+    }
 
-	public void setMinValue(String minValue) {
-		this.minValue = minValue;
-	}
-	
+    public String getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(String minValue) {
+        this.minValue = minValue;
+    }
+
 }

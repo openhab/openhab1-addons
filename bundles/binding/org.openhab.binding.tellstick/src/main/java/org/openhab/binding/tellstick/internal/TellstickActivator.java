@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,52 +16,54 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Tellstick activator, starts the JNA connection to Telldus Center.
- * 
+ *
  * @author jarlebh
  * @since 1.5.0
  */
 public final class TellstickActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(TellstickActivator.class);
+    private static Logger logger = LoggerFactory.getLogger(TellstickActivator.class);
 
-	private static BundleContext context;
+    private static BundleContext context;
 
-	/**
-	 * Called whenever the OSGi framework starts our bundle
-	 */
-	public void start(BundleContext bc) throws Exception {
-		context = bc;
-		logger.debug("Tellstick binding has been started." + Thread.currentThread());
-		try {
-			TellstickDevice.setSupportedMethods(JNA.CLibrary.TELLSTICK_BELL | JNA.CLibrary.TELLSTICK_TURNOFF
-					| JNA.CLibrary.TELLSTICK_TURNON | JNA.CLibrary.TELLSTICK_DIM | JNA.CLibrary.TELLSTICK_LEARN
-					| JNA.CLibrary.TELLSTICK_EXECUTE | JNA.CLibrary.TELLSTICK_STOP);
-		} catch (Exception e) {
-			logger.error("Failed to init ", e);
-			throw e;
-		} catch (Throwable e) {
-			logger.error("Failed to init ", e);
-			throw new RuntimeException(e);
-		}
-	}
+    /**
+     * Called whenever the OSGi framework starts our bundle
+     */
+    @Override
+    public void start(BundleContext bc) throws Exception {
+        context = bc;
+        logger.debug("Tellstick binding has been started." + Thread.currentThread());
+        try {
+            TellstickDevice.setSupportedMethods(JNA.CLibrary.TELLSTICK_BELL | JNA.CLibrary.TELLSTICK_TURNOFF
+                    | JNA.CLibrary.TELLSTICK_TURNON | JNA.CLibrary.TELLSTICK_DIM | JNA.CLibrary.TELLSTICK_LEARN
+                    | JNA.CLibrary.TELLSTICK_EXECUTE | JNA.CLibrary.TELLSTICK_STOP);
+        } catch (Exception e) {
+            logger.error("Failed to init ", e);
+            throw e;
+        } catch (Throwable e) {
+            logger.error("Failed to init ", e);
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-		context = null;
-		logger.debug("Tellstick binding has been stopped.");
-		JNA.CLibrary.INSTANCE.tdClose();
+    /**
+     * Called whenever the OSGi framework stops our bundle
+     */
+    @Override
+    public void stop(BundleContext bc) throws Exception {
+        context = null;
+        logger.debug("Tellstick binding has been stopped.");
+        JNA.CLibrary.INSTANCE.tdClose();
 
-	}
+    }
 
-	/**
-	 * Returns the bundle context of this bundle
-	 * 
-	 * @return the bundle context
-	 */
-	public static BundleContext getContext() {
-		return context;
-	}
+    /**
+     * Returns the bundle context of this bundle
+     * 
+     * @return the bundle context
+     */
+    public static BundleContext getContext() {
+        return context;
+    }
 
 }

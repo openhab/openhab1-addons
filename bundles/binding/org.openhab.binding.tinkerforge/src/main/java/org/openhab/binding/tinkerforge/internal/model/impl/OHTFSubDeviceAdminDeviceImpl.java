@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,9 +13,7 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
@@ -30,72 +28,72 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
  *
  * @generated
  */
-public class OHTFSubDeviceAdminDeviceImpl<TFC extends TFConfig, IDS extends Enum> extends OHTFDeviceImpl<TFC, IDS> implements OHTFSubDeviceAdminDevice<TFC, IDS>
-{
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected OHTFSubDeviceAdminDeviceImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return ModelPackage.Literals.OHTF_SUB_DEVICE_ADMIN_DEVICE;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public boolean isValidSubId(String subId)
-  {
-    return true;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
-  {
-    if (baseClass == OHTFDevice.class)
-    {
-      switch (baseOperationID)
-      {
-        case ModelPackage.OHTF_DEVICE___IS_VALID_SUB_ID__STRING: return ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING;
-        default: return super.eDerivedOperationID(baseOperationID, baseClass);
-      }
+public class OHTFSubDeviceAdminDeviceImpl<TFC extends TFConfig, IDS extends Enum> extends OHTFDeviceImpl<TFC, IDS>
+        implements OHTFSubDeviceAdminDevice<TFC, IDS> {
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    protected OHTFSubDeviceAdminDeviceImpl() {
+        super();
     }
-    return super.eDerivedOperationID(baseOperationID, baseClass);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
-  {
-    switch (operationID)
-    {
-      case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING:
-        return isValidSubId((String)arguments.get(0));
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return ModelPackage.Literals.OHTF_SUB_DEVICE_ADMIN_DEVICE;
     }
-    return super.eInvoke(operationID, arguments);
-  }
 
-} //OHTFSubDeviceAdminDeviceImpl
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public boolean isValidSubId(String subId) {
+        return true;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
+        if (baseClass == OHTFDevice.class) {
+            switch (baseOperationID) {
+                case ModelPackage.OHTF_DEVICE___IS_VALID_SUB_ID__STRING:
+                    return ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING;
+                default:
+                    return super.eDerivedOperationID(baseOperationID, baseClass);
+            }
+        }
+        return super.eDerivedOperationID(baseOperationID, baseClass);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    @Override
+    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+        switch (operationID) {
+            case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE___IS_VALID_SUB_ID__STRING:
+                return isValidSubId((String) arguments.get(0));
+        }
+        return super.eInvoke(operationID, arguments);
+    }
+
+} // OHTFSubDeviceAdminDeviceImpl

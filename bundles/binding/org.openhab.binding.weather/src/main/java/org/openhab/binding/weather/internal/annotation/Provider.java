@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.openhab.binding.weather.internal.model.ProviderName;
 /**
  * This annotation marks provider properties and map them to weather model
  * properties.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
@@ -28,10 +28,10 @@ import org.openhab.binding.weather.internal.model.ProviderName;
 @Retention(RUNTIME)
 public @interface Provider {
 
-	public ProviderName name();
+    public ProviderName name();
 
-	public String property();
+    public String property();
 
-	public ConverterType converter() default ConverterType.AUTO;
+    public ConverterType converter() default ConverterType.AUTO;
 
 }

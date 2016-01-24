@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,87 +28,89 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Trathnigg Thomas
  * @since 1.6.0
  */
 public class DavisGenericBindingProvider extends AbstractGenericBindingProvider implements DavisBindingProvider {
 
-	static final Logger logger = LoggerFactory.getLogger(DavisGenericBindingProvider.class);
+    static final Logger logger = LoggerFactory.getLogger(DavisGenericBindingProvider.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getBindingType() {
-		return "davis";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getBindingType() {
+        return "davis";
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem)) {
-			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Number- and StringItems are allowed - please check your *.items configuration");
-		}
-	}
+    /**
+     * @{inheritDoc
+     */
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof DateTimeItem)) {
+            throw new BindingConfigParseException(
+                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + "', only Number- and StringItems are allowed - please check your *.items configuration");
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		DavisBindingConfig config = new DavisBindingConfig(bindingConfig);
-		addBindingConfig(item, config);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
+        DavisBindingConfig config = new DavisBindingConfig(bindingConfig);
+        addBindingConfig(item, config);
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	public List<String> getConfiguredKeys() {
-		Set<String> eventTypes = new HashSet<String>();
+    /**
+     * @{inheritDoc
+     */
+    public List<String> getConfiguredKeys() {
+        Set<String> eventTypes = new HashSet<String>();
 
-		Iterator<BindingConfig> it = bindingConfigs.values().iterator();
-		while (it.hasNext()) {
-			BindingConfig config = it.next();
-			eventTypes.add(((DavisBindingConfig) config).key);
-		}
+        Iterator<BindingConfig> it = bindingConfigs.values().iterator();
+        while (it.hasNext()) {
+            BindingConfig config = it.next();
+            eventTypes.add(((DavisBindingConfig) config).key);
+        }
 
-		return new ArrayList<String>(eventTypes);
-	}
+        return new ArrayList<String>(eventTypes);
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	public List<String> getItemNamesForKey(String key) {
-		Set<String> itemNames = new HashSet<String>();
-		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
-			DavisBindingConfig config = (DavisBindingConfig) entry.getValue();
-			if (config.key.equals(key)) {
-				itemNames.add(entry.getKey());
-			}
-		}
-		return new ArrayList<String>(itemNames);
-	}
+    /**
+     * @{inheritDoc
+     */
+    public List<String> getItemNamesForKey(String key) {
+        Set<String> itemNames = new HashSet<String>();
+        for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
+            DavisBindingConfig config = (DavisBindingConfig) entry.getValue();
+            if (config.key.equals(key)) {
+                itemNames.add(entry.getKey());
+            }
+        }
+        return new ArrayList<String>(itemNames);
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	public String getConfiguredKeyForItem(String itemName) {
-		return ((DavisBindingConfig) bindingConfigs.get(itemName)).key;
-	}
+    /**
+     * @{inheritDoc
+     */
+    public String getConfiguredKeyForItem(String itemName) {
+        return ((DavisBindingConfig) bindingConfigs.get(itemName)).key;
+    }
 
-	/**
-	 * This is an internal data structure to store information from the binding
-	 * config strings.
-	 */
-	class DavisBindingConfig implements BindingConfig {
-		// put member fields here which holds the parsed values
-		public String key;
+    /**
+     * This is an internal data structure to store information from the binding
+     * config strings.
+     */
+    class DavisBindingConfig implements BindingConfig {
+        // put member fields here which holds the parsed values
+        public String key;
 
-		public DavisBindingConfig(String bindingConfig) {
-			key = bindingConfig;
-		}
-	}
+        public DavisBindingConfig(String bindingConfig) {
+            key = bindingConfig;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,16 @@ package org.openhab.binding.weather.internal.gfx;
 /**
  * Interface which is used by TokenReplacingReader to replace a token in a
  * stream.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public interface TokenResolver {
 
-	/**
-	 * Returns the value to which the token is replaced, null to not replace the
-	 * token.
-	 */
-	public String resolveToken(String tokenName);
+    /**
+     * Returns the value to which the token is replaced, null to not replace the
+     * token.
+     */
+    public String resolveToken(String tokenName);
 
 }

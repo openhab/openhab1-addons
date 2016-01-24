@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,11 +30,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>This class acts as a Cometvisu resource for writing to Items.</p>
- * 
- * <p>The typical content types are XML or JSON.</p>
- * 
- * <p>This resource is registered with the Jersey servlet.</p>
+ * <p>
+ * This class acts as a Cometvisu resource for writing to Items.
+ * </p>
+ *
+ * <p>
+ * The typical content types are XML or JSON.
+ * </p>
+ *
+ * <p>
+ * This resource is registered with the Jersey servlet.
+ * </p>
  *
  * @author Tobias Bräutigam
  * @since 1.4.0
@@ -42,50 +48,50 @@ import org.slf4j.LoggerFactory;
 @Path(WriteResource.PATH_WRITE)
 public class WriteResource {
 
-	private static final Logger logger = LoggerFactory.getLogger(WriteResource.class); 
+    private static final Logger logger = LoggerFactory.getLogger(WriteResource.class);
 
-	public static final String PATH_WRITE = "w";
-    
-	@Context UriInfo uriInfo;
-	@Context Broadcaster itemBroadcaster;
+    public static final String PATH_WRITE = "w";
 
-	@GET
-    @Produces( { MediaTypeHelper.APPLICATION_X_JAVASCRIPT })
-    public Response getResults(
-    		@Context HttpHeaders headers,
-    		@QueryParam("a") String itemName,
-    		@QueryParam("v") String value,
-    		@QueryParam("ts") long timestamp,
-    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for item '{}'.", uriInfo.getPath(), itemName);
-		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
-		if(responseType!=null) {
-			try {
-				ReturnType rt = new ReturnType(itemName);
-				Item item = rt.getItem();
-			
-				boolean commandSend = false;
-				if (item!=null) {
-					Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
-					if (command!=null) {
-						CVApplication.getEventPublisher().postCommand(item.getName(),command);
-						commandSend = true;
-					}
-				}
-		    	return Response.ok(getSuccessBean(commandSend),responseType).build();
-			}
-			catch (ItemNotFoundException e) {
-				return Response.notAcceptable(null).build();
-			}
-		} else {
-			return Response.notAcceptable(null).build();
-		}
+    @Context
+    UriInfo uriInfo;
+    @Context
+    Broadcaster itemBroadcaster;
+
+    @GET
+    @Produces({ MediaTypeHelper.APPLICATION_X_JAVASCRIPT })
+    public Response getResults(@Context HttpHeaders headers, @QueryParam("a") String itemName,
+            @QueryParam("v") String value, @QueryParam("ts") long timestamp,
+            @QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Received HTTP GET request at '{}' for item '{}'.", uriInfo.getPath(), itemName);
+        }
+        String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
+        if (responseType != null) {
+            try {
+                ReturnType rt = new ReturnType(itemName);
+                Item item = rt.getItem();
+
+                boolean commandSend = false;
+                if (item != null) {
+                    Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), value);
+                    if (command != null) {
+                        CVApplication.getEventPublisher().postCommand(item.getName(), command);
+                        commandSend = true;
+                    }
+                }
+                return Response.ok(getSuccessBean(commandSend), responseType).build();
+            } catch (ItemNotFoundException e) {
+                return Response.notAcceptable(null).build();
+            }
+        } else {
+            return Response.notAcceptable(null).build();
+        }
     }
-	
-	private SuccessBean getSuccessBean(boolean ok) {
-		SuccessBean bean = new SuccessBean();
-		bean.success = ok ? 1 : 0;
-		return bean;
-	}
-	
+
+    private SuccessBean getSuccessBean(boolean ok) {
+        SuccessBean bean = new SuccessBean();
+        bean.success = ok ? 1 : 0;
+        return bean;
+    }
+
 }

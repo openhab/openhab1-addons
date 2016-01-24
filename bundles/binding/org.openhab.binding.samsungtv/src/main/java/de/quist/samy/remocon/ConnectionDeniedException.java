@@ -11,7 +11,7 @@ package de.quist.samy.remocon;
 /**
  * Copied from https://github.com/keremkusmezer/SamyGo-Android-Remote/tree/master/src/de/quist/samy/remocon,
  * since there is no binary build available anymore. Thanks to Tom Quist!
- *  
+ * 
  * @author Tom Quist
  */
 @SuppressWarnings("serial")

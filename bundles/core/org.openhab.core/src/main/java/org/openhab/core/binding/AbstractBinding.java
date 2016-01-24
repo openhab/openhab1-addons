@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,8 +53,9 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 * 
 	 * @param provider the new {@link BindingProvider} to add
 	 */
-	public void addBindingProvider(P provider) {
-		this.providers.add(provider);
+	@SuppressWarnings("unchecked")
+	public void addBindingProvider(BindingProvider provider) {
+		this.providers.add((P) provider);
         provider.addBindingChangeListener(this);
         allBindingsChanged(provider);
     }
@@ -65,7 +66,7 @@ public abstract class AbstractBinding<P extends BindingProvider> extends Abstrac
 	 * 
 	 * @param provider the {@link BindingProvider} to remove
 	 */
-	public void removeBindingProvider(P provider) {
+	public void removeBindingProvider(BindingProvider provider) {
 		this.providers.remove(provider);
 		provider.removeBindingChangeListener(this);
 	}

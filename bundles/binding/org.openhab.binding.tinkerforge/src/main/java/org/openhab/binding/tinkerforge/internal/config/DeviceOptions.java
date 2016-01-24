@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,62 +16,62 @@ import java.util.Map.Entry;
  * the items configuration will be are stored in a HashMap with <key> as key and <value> as value.
  * This class is meant to pass through the items configuration to the tinkerforge device when doing
  * method calls on it.
- * 
+ *
  * @author Theo Weiss
  * @since 1.5.0
  */
 public class DeviceOptions {
-  HashMap<String, String> deviceOptions = new HashMap<String, String>();
+    HashMap<String, String> deviceOptions = new HashMap<String, String>();
 
-  /**
-   * Add an option to the DeviceOptions.
-   * 
-   * @param key option name as String
-   * @param value option value as String
-   */
-  public void put(String key, String value) {
-    deviceOptions.put(key, value);
-  }
-
-  /**
-   * Returns the value for the specified option key.
-   * 
-   * @param option key as {@link String}
-   * @return the value as String
-   */
-  public String getOption(String option) {
-    return deviceOptions.get(option);
-  }
-
-  /**
-   * Returns true if this DeviceOptions contains a option for the specified key.
-   * 
-   * @param key option name as String
-   * @return true if there is an option with this key otherwise false
-   */
-  public boolean containsKey(String key) {
-    return deviceOptions.containsKey(key);
-  }
-
-  /**
-   * Returns all options as HashMap of option keys and option values as Strings.
-   * 
-   * @return
-   */
-  public HashMap<String, String> getDeviceOptions() {
-    return deviceOptions;
-  }
-
-  @Override
-  public String toString() {
-    StringBuffer buffer = new StringBuffer();
-    for (Entry<String, String> opt : deviceOptions.entrySet()){
-      buffer.append(opt.getKey());
-      buffer.append(": ");
-      buffer.append(opt.getValue());
-      buffer.append("\n");
+    /**
+     * Add an option to the DeviceOptions.
+     * 
+     * @param key option name as String
+     * @param value option value as String
+     */
+    public void put(String key, String value) {
+        deviceOptions.put(key, value);
     }
-    return buffer.toString();
-  }
+
+    /**
+     * Returns the value for the specified option key.
+     * 
+     * @param option key as {@link String}
+     * @return the value as String
+     */
+    public String getOption(String option) {
+        return deviceOptions.get(option);
+    }
+
+    /**
+     * Returns true if this DeviceOptions contains a option for the specified key.
+     * 
+     * @param key option name as String
+     * @return true if there is an option with this key otherwise false
+     */
+    public boolean containsKey(String key) {
+        return deviceOptions.containsKey(key);
+    }
+
+    /**
+     * Returns all options as HashMap of option keys and option values as Strings.
+     * 
+     * @return
+     */
+    public HashMap<String, String> getDeviceOptions() {
+        return deviceOptions;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        for (Entry<String, String> opt : deviceOptions.entrySet()) {
+            buffer.append(opt.getKey());
+            buffer.append(": ");
+            buffer.append(opt.getValue());
+            buffer.append("\n");
+        }
+        return buffer.toString();
+    }
 
 }

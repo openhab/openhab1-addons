@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,13 +10,13 @@ package org.openhab.binding.enocean.internal.bus;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.opencean.core.address.EnoceanId;
 import org.opencean.core.address.EnoceanParameterAddress;
 import org.opencean.core.common.EEPId;
 import org.opencean.core.common.Parameter;
 import org.opencean.core.common.values.ButtonState;
-import org.junit.Before;
-import org.junit.Test;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
@@ -115,7 +115,8 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         assertEquals("No new state expected", null, publisher.popLastCommand());
         waitFor(100);
-        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.O);
+        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID),
+                Parameter.O);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         assertEquals("Update State", StopMoveType.STOP, publisher.popLastCommand());
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
@@ -130,7 +131,8 @@ public class RockerSwitchInRollershutterProfileTest extends BasicBindingTest {
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         publisher.popLastCommand();
         waitFor(100);
-        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), Parameter.I);
+        valueParameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID),
+                Parameter.I);
         binding.valueChanged(valueParameterAddress, ButtonState.PRESSED);
         binding.valueChanged(valueParameterAddress, ButtonState.RELEASED);
         assertEquals("Update State", StopMoveType.STOP, publisher.popLastCommand());

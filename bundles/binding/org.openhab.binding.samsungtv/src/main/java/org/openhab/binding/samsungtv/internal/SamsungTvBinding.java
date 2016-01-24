@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.samsungtv.SamsungTvBindingProvider;
-
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
@@ -28,183 +27,177 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Binding listening OpenHAB bus and send commands to Samsung devices when
  * command is received.
- * 
+ *
  * @author Pauli Anttila
  * @since 1.2.0
  */
-public class SamsungTvBinding extends AbstractBinding<SamsungTvBindingProvider> implements ManagedService {
+public class SamsungTvBinding extends AbstractBinding<SamsungTvBindingProvider>implements ManagedService {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(SamsungTvBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(SamsungTvBinding.class);
 
-	/** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_TV_CONFIG_PATTERN = 
-		Pattern	.compile("^(.*?)\\.(host|port)$");
-	
-	private final static int DEFAULT_TV_PORT = 55000;
+    /** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
+    private static final Pattern EXTRACT_TV_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
 
-	protected Map<String, DeviceConfig> deviceConfigCache = new HashMap<String, DeviceConfig>();
-	
-	
-	public SamsungTvBinding() {
-	}
+    private final static int DEFAULT_TV_PORT = 55000;
 
-	public void activate() {
-	}
+    protected Map<String, DeviceConfig> deviceConfigCache = new HashMap<String, DeviceConfig>();
 
-	public void deactivate() {
-	}
+    public SamsungTvBinding() {
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
+    @Override
+    public void activate() {
+    }
 
-		if (itemName != null) {
-			SamsungTvBindingProvider provider = 
-				findFirstMatchingBindingProvider(itemName, command.toString());
+    @Override
+    public void deactivate() {
+    }
 
-			if (provider == null) {
-				logger.warn("Doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
-				return;
-			}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
 
-			logger.debug(
-					"Received command (item='{}', state='{}', class='{}')",
-					new Object[] { itemName, command.toString(),
-							command.getClass().toString() });
+        if (itemName != null) {
+            SamsungTvBindingProvider provider = findFirstMatchingBindingProvider(itemName, command.toString());
 
-			String tmp = provider.getTVCommand(itemName, command.toString());
+            if (provider == null) {
+                logger.warn("Doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
+                return;
+            }
 
-			String[] commandParts = tmp.split(":");
-			String deviceId = commandParts[0];
-			String cmd = commandParts[1];
+            logger.debug("Received command (item='{}', state='{}', class='{}')",
+                    new Object[] { itemName, command.toString(), command.getClass().toString() });
 
-			logger.debug("Get connection details for device id '{}'", deviceId);
-			
-			DeviceConfig tvConfig = deviceConfigCache.get(deviceId);
+            String tmp = provider.getTVCommand(itemName, command.toString());
 
-			if (tvConfig != null) {
-				SamsungTvConnection remoteController = tvConfig.getConnection();
+            String[] commandParts = tmp.split(":");
+            String deviceId = commandParts[0];
+            String cmd = commandParts[1];
 
-				if (remoteController != null) {
-					remoteController.send(cmd);
-				}
-				
-			} else {
-				logger.warn("Cannot find connection details for device id '{}'", deviceId);
-			}
-		}
-	}
+            logger.debug("Get connection details for device id '{}'", deviceId);
 
-	/**
-	 * Find the first matching {@link SamsungTvBindingProvider} according to
-	 * <code>itemName</code>.
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the matching binding provider or <code>null</code> if no binding
-	 *         provider could be found
-	 */
-	private SamsungTvBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
-		
-		SamsungTvBindingProvider firstMatchingProvider = null;
+            DeviceConfig tvConfig = deviceConfigCache.get(deviceId);
 
-		for (SamsungTvBindingProvider provider : this.providers) {
+            if (tvConfig != null) {
+                SamsungTvConnection remoteController = tvConfig.getConnection();
 
-			String tmp = provider.getTVCommand(itemName, command.toString());
+                if (remoteController != null) {
+                    remoteController.send(cmd);
+                }
 
-			if (tmp != null) {
-				firstMatchingProvider = provider;
-				break;
-			}
-		}
+            } else {
+                logger.warn("Cannot find connection details for device id '{}'", deviceId);
+            }
+        }
+    }
 
-		return firstMatchingProvider;
-	}
+    /**
+     * Find the first matching {@link SamsungTvBindingProvider} according to
+     * <code>itemName</code>.
+     * 
+     * @param itemName
+     * 
+     * @return the matching binding provider or <code>null</code> if no binding
+     *         provider could be found
+     */
+    private SamsungTvBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        SamsungTvBindingProvider firstMatchingProvider = null;
 
-		if (config != null) {
-			Enumeration<String> keys = config.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+        for (SamsungTvBindingProvider provider : this.providers) {
 
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
-				}
+            String tmp = provider.getTVCommand(itemName, command.toString());
 
-				Matcher matcher = EXTRACT_TV_CONFIG_PATTERN.matcher(key);
+            if (tmp != null) {
+                firstMatchingProvider = provider;
+                break;
+            }
+        }
 
-				if (!matcher.matches()) {
-					logger.debug("given config key '"
-							+ key
-							+ "' does not follow the expected pattern '<id>.<host|port>'");
-					continue;
-				}
+        return firstMatchingProvider;
+    }
 
-				matcher.reset();
-				matcher.find();
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
-				String deviceId = matcher.group(1);
+        if (config != null) {
+            Enumeration<String> keys = config.keys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
 
-				DeviceConfig deviceConfig = deviceConfigCache.get(deviceId);
+                // the config-key enumeration contains additional keys that we
+                // don't want to process here ...
+                if ("service.pid".equals(key)) {
+                    continue;
+                }
 
-				if (deviceConfig == null) {
-					deviceConfig = new DeviceConfig(deviceId);
-					deviceConfigCache.put(deviceId, deviceConfig);
-				}
+                Matcher matcher = EXTRACT_TV_CONFIG_PATTERN.matcher(key);
 
-				String configKey = matcher.group(2);
-				String value = (String) config.get(key);
+                if (!matcher.matches()) {
+                    logger.debug(
+                            "given config key '" + key + "' does not follow the expected pattern '<id>.<host|port>'");
+                    continue;
+                }
 
-				if ("host".equals(configKey)) {
-					deviceConfig.host = value;
-				} else if ("port".equals(configKey)) {
-					deviceConfig.port = Integer.valueOf(value);
-				} else {
-					throw new ConfigurationException(configKey,
-						"the given configKey '" + configKey + "' is unknown");
-				}
-			}
-		}
-	}
+                matcher.reset();
+                matcher.find();
 
-	/**
-	 * Internal data structure which carries the connection details of one
-	 * device (there could be several)
-	 */
-	static class DeviceConfig {
+                String deviceId = matcher.group(1);
 
-		String host;
-		int port = DEFAULT_TV_PORT;
+                DeviceConfig deviceConfig = deviceConfigCache.get(deviceId);
 
-		SamsungTvConnection connection = null;
-		String deviceId;
+                if (deviceConfig == null) {
+                    deviceConfig = new DeviceConfig(deviceId);
+                    deviceConfigCache.put(deviceId, deviceConfig);
+                }
 
-		public DeviceConfig(String deviceId) {
-			this.deviceId = deviceId;
-		}
+                String configKey = matcher.group(2);
+                String value = (String) config.get(key);
 
-		@Override
-		public String toString() {
-			return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
-		}
+                if ("host".equals(configKey)) {
+                    deviceConfig.host = value;
+                } else if ("port".equals(configKey)) {
+                    deviceConfig.port = Integer.valueOf(value);
+                } else {
+                    throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
+                }
+            }
+        }
+    }
 
-		SamsungTvConnection getConnection() {
-			if (connection == null) {
-				connection = new SamsungTvConnection(host, port);
-			}
-			return connection;
-		}
+    /**
+     * Internal data structure which carries the connection details of one
+     * device (there could be several)
+     */
+    static class DeviceConfig {
 
-	}
+        String host;
+        int port = DEFAULT_TV_PORT;
+
+        SamsungTvConnection connection = null;
+        String deviceId;
+
+        public DeviceConfig(String deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        @Override
+        public String toString() {
+            return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
+        }
+
+        SamsungTvConnection getConnection() {
+            if (connection == null) {
+                connection = new SamsungTvConnection(host, port);
+            }
+            return connection;
+        }
+
+    }
 
 }

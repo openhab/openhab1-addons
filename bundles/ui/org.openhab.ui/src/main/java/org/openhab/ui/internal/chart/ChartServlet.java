@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -309,8 +309,10 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		}
 		if(properties.get("scale") != null) {
 			scale = Double.parseDouble((String)properties.get("scale"));
-			if(scale < 0.5)
+			// Set scale to normal if the custom value is unrealisticly low
+			if(scale < 0.1) {
 				scale = 1.0;
+			}
 		}
 	}
 

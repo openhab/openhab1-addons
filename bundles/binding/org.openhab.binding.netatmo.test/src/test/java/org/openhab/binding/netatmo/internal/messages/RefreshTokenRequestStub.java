@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,42 +21,41 @@ import com.google.common.io.Resources;
  */
 public class RefreshTokenRequestStub extends RefreshTokenRequest {
 
-	protected static final String CLIENT_ID = "000000000000000000000000";
+    protected static final String CLIENT_ID = "000000000000000000000000";
 
-	protected static final String CLIENT_SECRET = "11111111111111111111111111111111111";
+    protected static final String CLIENT_SECRET = "11111111111111111111111111111111111";
 
-	protected static final String REFRESH_TOKEN = "000000000000000000000000|22222222222222222222222222222222";
+    protected static final String REFRESH_TOKEN = "000000000000000000000000|22222222222222222222222222222222";
 
-	public static RefreshTokenRequestStub createRequest(final String resource)
-			throws Exception {
-		return new RefreshTokenRequestStub(resource);
-	}
+    public static RefreshTokenRequestStub createRequest(final String resource) throws Exception {
+        return new RefreshTokenRequestStub(resource);
+    }
 
-	private final String response;
+    private final String response;
 
-	private String content;
+    private String content;
 
-	private RefreshTokenRequestStub(final String response) throws Exception {
-		super(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN);
+    private RefreshTokenRequestStub(final String response) throws Exception {
+        super(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN);
 
-		final URL resource = getClass().getResource(response);
+        final URL resource = getClass().getResource(response);
 
-		if (resource == null) {
-			throw new IOException("Resource '" + response + "' not found!");
-		}
+        if (resource == null) {
+            throw new IOException("Resource '" + response + "' not found!");
+        }
 
-		this.response = Resources.toString(resource, UTF_8);
-	}
+        this.response = Resources.toString(resource, UTF_8);
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public String getContent() {
+        return this.content;
+    }
 
-	@Override
-	protected String executeQuery(final String content) {
-		this.content = content;
+    @Override
+    protected String executeQuery(final String content) {
+        this.content = content;
 
-		return this.response;
-	}
+        return this.response;
+    }
 
 }
