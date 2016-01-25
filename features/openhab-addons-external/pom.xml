@@ -77,6 +77,7 @@
                                 <artifact><file>src/main/resources/conf/systeminfo.cfg</file><type>cfg</type><classifier>systeminfo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/telegram.cfg</file><type>cfg</type><classifier>telegram</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/urtsi.cfg</file><type>cfg</type><classifier>urtsi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/weather.cfg</file><type>cfg</type><classifier>weather</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xmpp.cfg</file><type>cfg</type><classifier>xmpp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/zwave.cfg</file><type>cfg</type><classifier>zwave</classifier></artifact>

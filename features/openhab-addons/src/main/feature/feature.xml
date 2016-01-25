@@ -368,6 +368,14 @@
         <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
     </feature>
 
+    <feature name="openhab-binding-urtsi" description="Somfy URTSI II Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-transport-serial</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.urtsi/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/urtsi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/urtsi</configfile>
+    </feature>
+
     <feature name="openhab-binding-weather" description="Weather Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
