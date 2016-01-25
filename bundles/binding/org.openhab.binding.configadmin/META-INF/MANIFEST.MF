@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.configadmin.internal
 Ignore-Package: org.openhab.binding.configadmin.internal
 Bundle-Name: openHAB ConfigAdmin Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.configadmin.internal.ConfigAdminActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -28,5 +28,5 @@ Bundle-RequiredconfigadminutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Export-Package: org.openhab.binding.configadmin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,18 +13,17 @@ import java.util.EventObject;
 
 /**
  * This interface defines an interface to receive data from the Heatmiser thermostats.
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  */
 public interface HeatmiserEventListener extends EventListener {
 
-	/**
-	 * Receive data from the Heatmiser interface.
-	 * 
-	 * @param data
-	 */
-	void packetReceived(EventObject event, byte[] data);
+    /**
+     * Receive data from the Heatmiser interface.
+     * 
+     * @param data
+     */
+    void packetReceived(EventObject event, byte[] data);
 
 }
-

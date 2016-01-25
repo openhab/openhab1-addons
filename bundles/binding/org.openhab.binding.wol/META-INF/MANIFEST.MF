@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.wol.internal
 Ignore-Package: org.openhab.binding.wol.internal
 Bundle-Name: openHAB WoL Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.8.0.qualifier
+Bundle-Version: 1.9.0.qualifier
 Bundle-Activator: org.openhab.binding.wol.internal.WolActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -23,7 +23,7 @@ Import-Package: org.apache.commons.codec.binary;version="1.3.0",
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.wol
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml
 Bundle-ClassPath: .
 

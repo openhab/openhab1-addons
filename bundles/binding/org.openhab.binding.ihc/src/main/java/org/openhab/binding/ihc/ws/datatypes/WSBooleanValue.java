@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,11 @@ package org.openhab.binding.ihc.ws.datatypes;
 /**
  * <p>
  * Java class for WSBooleanValue complex type.
- * 
+ *
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="WSBooleanValue">
  *   &lt;complexContent>
@@ -27,28 +27,28 @@ package org.openhab.binding.ihc.ws.datatypes;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 
 public class WSBooleanValue extends WSResourceValue {
 
-	protected boolean value;
+    protected boolean value;
 
-	/**
-	 * Gets the value of the value property.
-	 * 
-	 */
-	public boolean isValue() {
-		return value;
-	}
+    /**
+     * Gets the value of the value property.
+     * 
+     */
+    public boolean isValue() {
+        return value;
+    }
 
-	/**
-	 * Sets the value of the value property.
-	 * 
-	 */
-	public void setValue(boolean value) {
-		this.value = value;
-	}
+    /**
+     * Sets the value of the value property.
+     * 
+     */
+    public void setValue(boolean value) {
+        this.value = value;
+    }
 
 }

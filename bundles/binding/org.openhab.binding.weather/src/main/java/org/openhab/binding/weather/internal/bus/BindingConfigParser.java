@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,149 +27,149 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Example:
  * </p>
- * 
+ *
  * <pre>
- * Number  Temperature    "Temperature [%.2f °C]"        {weather="locationId=home, type=temperature, property=current"} 
- * Number  Temperature_F  "Temperature [%.2f °F]"        {weather="locationId=home, type=temperature, property=current, unit=fahrenheit"} 
+ * Number  Temperature    "Temperature [%.2f °C]"        {weather="locationId=home, type=temperature, property=current"}
+ * Number  Temperature_F  "Temperature [%.2f °F]"        {weather="locationId=home, type=temperature, property=current, unit=fahrenheit"}
  * Number  Humidity       "Humidity [%.0f %]"            {weather="locationId=home, type=atmosphere, property=humidity"}
  * Number  Rain           "Rain [%.2f mm]"               {weather="locationId=home, type=precipitation, property=rain"}
- * 
+ *
  * Number  Temperature    "Temperature [%.0f °C]"        {weather="locationId=home, type=precipitation, property=rain, roundingMode=ceiling, scale=0"}
- * 
+ *
  * </pre>
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class BindingConfigParser {
-	private static final Logger logger = LoggerFactory.getLogger(BindingConfigParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(BindingConfigParser.class);
 
-	/**
-	 * Parses the bindingConfig of an item and returns a WeatherBindingConfig.
-	 */
-	public WeatherBindingConfig parse(Item item, String bindingConfig) throws BindingConfigParseException {
-		bindingConfig = StringUtils.trimToEmpty(bindingConfig);
-		bindingConfig = StringUtils.removeStart(bindingConfig, "{");
-		bindingConfig = StringUtils.removeEnd(bindingConfig, "}");
-		String[] entries = bindingConfig.split("[,]");
-		WeatherBindingConfigHelper helper = new WeatherBindingConfigHelper();
+    /**
+     * Parses the bindingConfig of an item and returns a WeatherBindingConfig.
+     */
+    public WeatherBindingConfig parse(Item item, String bindingConfig) throws BindingConfigParseException {
+        bindingConfig = StringUtils.trimToEmpty(bindingConfig);
+        bindingConfig = StringUtils.removeStart(bindingConfig, "{");
+        bindingConfig = StringUtils.removeEnd(bindingConfig, "}");
+        String[] entries = bindingConfig.split("[,]");
+        WeatherBindingConfigHelper helper = new WeatherBindingConfigHelper();
 
-		for (String entry : entries) {
-			String[] entryParts = StringUtils.trimToEmpty(entry).split("[=]");
-			if (entryParts.length != 2) {
-				throw new BindingConfigParseException("A bindingConfig must have a key and a value");
-			}
-			String key = StringUtils.trim(entryParts[0]);
+        for (String entry : entries) {
+            String[] entryParts = StringUtils.trimToEmpty(entry).split("[=]");
+            if (entryParts.length != 2) {
+                throw new BindingConfigParseException("A bindingConfig must have a key and a value");
+            }
+            String key = StringUtils.trim(entryParts[0]);
 
-			String value = StringUtils.trim(entryParts[1]);
-			value = StringUtils.removeStart(value, "\"");
-			value = StringUtils.removeEnd(value, "\"");
+            String value = StringUtils.trim(entryParts[1]);
+            value = StringUtils.removeStart(value, "\"");
+            value = StringUtils.removeEnd(value, "\"");
 
-			try {
-				helper.getClass().getDeclaredField(key).set(helper, value);
-			} catch (Exception e) {
-				throw new BindingConfigParseException("Could not set value " + value + " for attribute " + key);
-			}
-		}
+            try {
+                helper.getClass().getDeclaredField(key).set(helper, value);
+            } catch (Exception e) {
+                throw new BindingConfigParseException("Could not set value " + value + " for attribute " + key);
+            }
+        }
 
-		if (!helper.isValid()) {
-			throw new BindingConfigParseException("Invalid binding: " + bindingConfig);
-		}
+        if (!helper.isValid()) {
+            throw new BindingConfigParseException("Invalid binding: " + bindingConfig);
+        }
 
-		helper.type = StringUtils.replace(helper.type, "athmosphere", "atmosphere");
-		
-		WeatherBindingConfig weatherConfig = null;
-		if (helper.isForecast()) {
-			Integer forecast = parseInteger(helper.forecast, bindingConfig);
-			if (forecast < 0) {
-				throw new BindingConfigParseException("Invalid binding, forecast must be >= 0: " + bindingConfig);
-			}
-			weatherConfig = new ForecastBindingConfig(helper.locationId, forecast, helper.type, helper.property);
-		} else {
-			weatherConfig = new WeatherBindingConfig(helper.locationId, helper.type, helper.property);
-		}
+        helper.type = StringUtils.replace(helper.type, "athmosphere", "atmosphere");
 
-		Weather validationInstance = new Weather(null);
-		String property = weatherConfig.getWeatherProperty();
-		if (!Weather.isVirtualProperty(property) && !PropertyUtils.hasProperty(validationInstance, property)) {
-			throw new BindingConfigParseException("Invalid binding, unknown type or property: " + bindingConfig);
-		}
+        WeatherBindingConfig weatherConfig = null;
+        if (helper.isForecast()) {
+            Integer forecast = parseInteger(helper.forecast, bindingConfig);
+            if (forecast < 0) {
+                throw new BindingConfigParseException("Invalid binding, forecast must be >= 0: " + bindingConfig);
+            }
+            weatherConfig = new ForecastBindingConfig(helper.locationId, forecast, helper.type, helper.property);
+        } else {
+            weatherConfig = new WeatherBindingConfig(helper.locationId, helper.type, helper.property);
+        }
 
-		boolean isDecimalTypeItem = item.getAcceptedDataTypes().contains(DecimalType.class);
-		if (isDecimalTypeItem || Weather.isVirtualProperty(property)) {
-			RoundingMode roundingMode = RoundingMode.HALF_UP;
-			if (helper.roundingMode != null) {
-				try {
-					roundingMode = RoundingMode.valueOf(StringUtils.upperCase(helper.roundingMode));
-				} catch (IllegalArgumentException ex) {
-					throw new BindingConfigParseException("Invalid binding, unknown roundingMode: " + bindingConfig);
-				}
-			}
+        Weather validationInstance = new Weather(null);
+        String property = weatherConfig.getWeatherProperty();
+        if (!Weather.isVirtualProperty(property) && !PropertyUtils.hasProperty(validationInstance, property)) {
+            throw new BindingConfigParseException("Invalid binding, unknown type or property: " + bindingConfig);
+        }
 
-			Integer scale = 2;
-			if (helper.scale != null) {
-				scale = parseInteger(helper.scale, bindingConfig);
-				if (scale < 0) {
-					throw new BindingConfigParseException("Invalid binding, scale must be >= 0: " + bindingConfig);
-				}
-			}
-			weatherConfig.setScale(roundingMode, scale);
-		}
+        boolean isDecimalTypeItem = item.getAcceptedDataTypes().contains(DecimalType.class);
+        if (isDecimalTypeItem || Weather.isVirtualProperty(property)) {
+            RoundingMode roundingMode = RoundingMode.HALF_UP;
+            if (helper.roundingMode != null) {
+                try {
+                    roundingMode = RoundingMode.valueOf(StringUtils.upperCase(helper.roundingMode));
+                } catch (IllegalArgumentException ex) {
+                    throw new BindingConfigParseException("Invalid binding, unknown roundingMode: " + bindingConfig);
+                }
+            }
 
-		weatherConfig.setUnit(Unit.parse(helper.unit));
-		if (StringUtils.isNotBlank(helper.unit) && weatherConfig.getUnit() == null) {
-			throw new BindingConfigParseException("Invalid binding, unknown unit: " + bindingConfig);
-		}
+            Integer scale = 2;
+            if (helper.scale != null) {
+                scale = parseInteger(helper.scale, bindingConfig);
+                if (scale < 0) {
+                    throw new BindingConfigParseException("Invalid binding, scale must be >= 0: " + bindingConfig);
+                }
+            }
+            weatherConfig.setScale(roundingMode, scale);
+        }
 
-		try {
-			if (!Weather.isVirtualProperty(property) && weatherConfig.hasUnit()) {
-				String doubleTypeName = Double.class.getName();
-				String propertyTypeName = PropertyUtils.getPropertyTypeName(validationInstance, property);
-				if (!StringUtils.equals(doubleTypeName, propertyTypeName)) {
-					throw new BindingConfigParseException(
-							"Invalid binding, unit specified but property is not a double type: " + bindingConfig);
-				}
-			}
-		} catch (IllegalAccessException ex) {
-			logger.error(ex.getMessage(), ex);
-			throw new BindingConfigParseException(ex.getMessage());
-		}
-		return weatherConfig;
-	}
+        weatherConfig.setUnit(Unit.parse(helper.unit));
+        if (StringUtils.isNotBlank(helper.unit) && weatherConfig.getUnit() == null) {
+            throw new BindingConfigParseException("Invalid binding, unknown unit: " + bindingConfig);
+        }
 
-	/**
-	 * Parse a string to a integer value.
-	 */
-	private Integer parseInteger(String valueString, String bindingConfig) throws BindingConfigParseException {
-		try {
-			return Integer.parseInt(valueString);
-		} catch (Exception ex) {
-			throw new BindingConfigParseException("Invalid binding, value " + valueString + " is not a number: "
-					+ bindingConfig);
-		}
-	}
+        try {
+            if (!Weather.isVirtualProperty(property) && weatherConfig.hasUnit()) {
+                String doubleTypeName = Double.class.getName();
+                String propertyTypeName = PropertyUtils.getPropertyTypeName(validationInstance, property);
+                if (!StringUtils.equals(doubleTypeName, propertyTypeName)) {
+                    throw new BindingConfigParseException(
+                            "Invalid binding, unit specified but property is not a double type: " + bindingConfig);
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            logger.error(ex.getMessage(), ex);
+            throw new BindingConfigParseException(ex.getMessage());
+        }
+        return weatherConfig;
+    }
 
-	/**
-	 * Helper class for parsing the bindingConfig.
-	 */
-	private class WeatherBindingConfigHelper {
-		public String locationId;
-		public String type;
-		public String property;
-		public String forecast;
-		public String roundingMode;
-		public String scale;
-		public String unit;
+    /**
+     * Parse a string to a integer value.
+     */
+    private Integer parseInteger(String valueString, String bindingConfig) throws BindingConfigParseException {
+        try {
+            return Integer.parseInt(valueString);
+        } catch (Exception ex) {
+            throw new BindingConfigParseException(
+                    "Invalid binding, value " + valueString + " is not a number: " + bindingConfig);
+        }
+    }
 
-		protected boolean isValid() {
-			return StringUtils.isNotBlank(locationId) && StringUtils.isNotBlank(type)
-					&& StringUtils.isNotBlank(property);
-		}
+    /**
+     * Helper class for parsing the bindingConfig.
+     */
+    private class WeatherBindingConfigHelper {
+        public String locationId;
+        public String type;
+        public String property;
+        public String forecast;
+        public String roundingMode;
+        public String scale;
+        public String unit;
 
-		protected boolean isForecast() {
-			return StringUtils.isNotBlank(forecast);
-		}
+        protected boolean isValid() {
+            return StringUtils.isNotBlank(locationId) && StringUtils.isNotBlank(type)
+                    && StringUtils.isNotBlank(property);
+        }
 
-	}
+        protected boolean isForecast() {
+            return StringUtils.isNotBlank(forecast);
+        }
+
+    }
 
 }

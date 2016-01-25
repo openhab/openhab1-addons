@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,92 +27,99 @@ import org.slf4j.LoggerFactory;
  * commands or querying for items or their current statuses.
  * A user must be listed in the configuration in order to be permitted to send
  * messages to openHAB.
- * 
+ *
  * @author Kai Kreuzer
  * @since 0.4.0
  *
  */
 public class XMPPConsole implements ChatManagerListener, MessageListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(XMPPConsole.class);
-	
-	private String[] allowedUsers;
+    private static final Logger logger = LoggerFactory.getLogger(XMPPConsole.class);
 
-	public XMPPConsole(String[] userArray) {
-		this.allowedUsers = userArray;
-	}
+    private String[] allowedUsers;
 
-	public void chatCreated(Chat chat, boolean arg1) {
-		String chatUser = chat.getParticipant();
-		if(chatUser.contains("/")) chatUser = chatUser.substring(0, chatUser.indexOf("/"));
-		if(ArrayUtils.contains(allowedUsers, chatUser)) {
-			chat.addMessageListener(this);
-		} else {
-			try {
-				chat.sendMessage("Sorry, you are not allowed to send messages.");
-				logger.warn("Received chat request from the unknown user '{}'.", chatUser);
-			} catch (XMPPException e) {
-				logger.warn("Error sending XMPP message: {}", e.getMessage());
-			} catch (NotConnectedException e) {
-				logger.warn("Error sending XMPP message: {}", e.getMessage());
-			}
-		}
-	}
+    public XMPPConsole(String[] userArray) {
+        this.allowedUsers = userArray;
+    }
 
-	public void processMessage(Chat chat, Message msg) {
-		logger.debug("Received XMPP message: {} of type {}", msg.getBody(), msg.getType());
-		if (msg.getType() == Message.Type.error || msg.getBody() == null) {
-			return;
-		}
-		String cmd = msg.getBody();
-		String[] args = cmd.split(" ");
-		ConsoleInterpreter.handleRequest(args, new ChatConsole(chat));
-	}
-	
-	/**
-	 * An implementation of the {@link Console} interface, which sends
-	 * all console output directly to the chat participant.
-	 * 
-	 * @author Kai Kreuzer
-	 * @since 0.4.0
-	 *
-	 */
-	private static class ChatConsole implements Console {
-		
-		private Chat chat;
-		
-		/* used to store strings for simply print commands until a println is sent */
-		private StringBuffer sb;
+    @Override
+    public void chatCreated(Chat chat, boolean arg1) {
+        String chatUser = chat.getParticipant();
+        if (chatUser.contains("/")) {
+            chatUser = chatUser.substring(0, chatUser.indexOf("/"));
+        }
+        if (ArrayUtils.contains(allowedUsers, chatUser)) {
+            chat.addMessageListener(this);
+        } else {
+            try {
+                chat.sendMessage("Sorry, you are not allowed to send messages.");
+                logger.warn("Received chat request from the unknown user '{}'.", chatUser);
+            } catch (XMPPException e) {
+                logger.warn("Error sending XMPP message: {}", e.getMessage());
+            } catch (NotConnectedException e) {
+                logger.warn("Error sending XMPP message: {}", e.getMessage());
+            }
+        }
+    }
 
-		public ChatConsole(Chat chat) {
-			this.chat = chat;
-			this.sb = new StringBuffer();
-		}
+    @Override
+    public void processMessage(Chat chat, Message msg) {
+        logger.debug("Received XMPP message: {} of type {}", msg.getBody(), msg.getType());
+        if (msg.getType() == Message.Type.error || msg.getBody() == null) {
+            return;
+        }
+        String cmd = msg.getBody();
+        String[] args = cmd.split(" ");
+        ConsoleInterpreter.handleRequest(args, new ChatConsole(chat));
+    }
 
-		public void print(String s) {
-			sb.append(s);
-		}
+    /**
+     * An implementation of the {@link Console} interface, which sends
+     * all console output directly to the chat participant.
+     * 
+     * @author Kai Kreuzer
+     * @since 0.4.0
+     *
+     */
+    private static class ChatConsole implements Console {
 
-		public void println(String s) {
-			String msg = sb.toString() + s;
-			try {
-				chat.sendMessage(msg);
-			} catch (XMPPException e) {
-				logger.error("Error sending message '{}': {}", msg, e.getMessage());
-			} catch (NotConnectedException e) {
-				logger.error("Error sending message '{}': {}", msg, e.getMessage());
-			}
-			sb = new StringBuffer();
-		}
+        private Chat chat;
 
-		public void printUsage(String s) {
-			try {
-				chat.sendMessage("Usage: \n" + s);
-			} catch (XMPPException e) {
-				logger.error("Error sending message '{}': {}", s, e.getMessage());
-			} catch (NotConnectedException e) {
-				logger.error("Error sending message '{}': {}", s, e.getMessage());
-			}
-		}
-	}
+        /* used to store strings for simply print commands until a println is sent */
+        private StringBuffer sb;
+
+        public ChatConsole(Chat chat) {
+            this.chat = chat;
+            this.sb = new StringBuffer();
+        }
+
+        @Override
+        public void print(String s) {
+            sb.append(s);
+        }
+
+        @Override
+        public void println(String s) {
+            String msg = sb.toString() + s;
+            try {
+                chat.sendMessage(msg);
+            } catch (XMPPException e) {
+                logger.error("Error sending message '{}': {}", msg, e.getMessage());
+            } catch (NotConnectedException e) {
+                logger.error("Error sending message '{}': {}", msg, e.getMessage());
+            }
+            sb = new StringBuffer();
+        }
+
+        @Override
+        public void printUsage(String s) {
+            try {
+                chat.sendMessage("Usage: \n" + s);
+            } catch (XMPPException e) {
+                logger.error("Error sending message '{}': {}", s, e.getMessage());
+            } catch (NotConnectedException e) {
+                logger.error("Error sending message '{}': {}", s, e.getMessage());
+            }
+        }
+    }
 }

@@ -18,12 +18,12 @@ package net.wimpi.modbus.cmd;
 
 import java.net.InetAddress;
 
+import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.io.ModbusTransaction;
 import net.wimpi.modbus.msg.ModbusRequest;
 import net.wimpi.modbus.msg.WriteCoilRequest;
 import net.wimpi.modbus.net.TCPMasterConnection;
-import net.wimpi.modbus.Modbus;
 
 /**
  * Class that implements a simple commandline
@@ -46,82 +46,85 @@ import net.wimpi.modbus.Modbus;
  */
 public class DOTest {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    InetAddress addr = null;
-    TCPMasterConnection con = null;
-    ModbusRequest req = null;
-    ModbusTransaction trans = null;
-    int ref = 0;
-    boolean count = false;
-    int repeat = 1;
-    int port = Modbus.DEFAULT_PORT;
+        InetAddress addr = null;
+        TCPMasterConnection con = null;
+        ModbusRequest req = null;
+        ModbusTransaction trans = null;
+        int ref = 0;
+        boolean count = false;
+        int repeat = 1;
+        int port = Modbus.DEFAULT_PORT;
 
-    try {
-
-      //1. Setup the parameters
-      if (args.length < 3) {
-        printUsage();
-        System.exit(1);
-      } else {
         try {
-          String astr = args[0];
-          int idx = astr.indexOf(':');
-          if(idx > 0) {
-            port = Integer.parseInt(astr.substring(idx+1));
-            astr = astr.substring(0,idx);
-          }
-          addr = InetAddress.getByName(astr);
-          ref = Integer.parseInt(args[1]);
-          count = "true".equals(args[2]);         
-          if (args.length == 4) {
-            repeat = Integer.parseInt(args[3]);
-          }
+
+            // 1. Setup the parameters
+            if (args.length < 3) {
+                printUsage();
+                System.exit(1);
+            } else {
+                try {
+                    String astr = args[0];
+                    int idx = astr.indexOf(':');
+                    if (idx > 0) {
+                        port = Integer.parseInt(astr.substring(idx + 1));
+                        astr = astr.substring(0, idx);
+                    }
+                    addr = InetAddress.getByName(astr);
+                    ref = Integer.parseInt(args[1]);
+                    count = "true".equals(args[2]);
+                    if (args.length == 4) {
+                        repeat = Integer.parseInt(args[3]);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    printUsage();
+                    System.exit(1);
+                }
+            }
+            // 2. Open the connection
+            con = new TCPMasterConnection(addr);
+            con.setPort(port);
+            con.connect();
+
+            if (Modbus.debug) {
+                System.out.println("Connected to " + addr.toString() + ":" + con.getPort());
+            }
+
+            // 3. Prepare the request
+            req = new WriteCoilRequest(ref, count);
+            req.setUnitID(0);
+            if (Modbus.debug) {
+                System.out.println("Request: " + req.getHexMessage());
+            }
+
+            // 4. Prepare the transaction
+            trans = new ModbusTCPTransaction(con);
+            trans.setRequest(req);
+
+            // 5. Execute the transaction repeat times
+            int k = 0;
+            do {
+                trans.execute();
+
+                if (Modbus.debug) {
+                    System.out.println("Response: " + trans.getResponse().getHexMessage());
+                }
+                k++;
+            } while (k < repeat);
+
+            // 6. Close the connection
+            con.close();
+
         } catch (Exception ex) {
-          ex.printStackTrace();
-          printUsage();
-          System.exit(1);
+            ex.printStackTrace();
         }
-      }
-      //2. Open the connection
-      con = new TCPMasterConnection(addr);
-      con.setPort(port);
-      con.connect();
+    }// main
 
-      if (Modbus.debug) System.out.println("Connected to " + addr.toString() + ":" + con.getPort());
+    private static void printUsage() {
+        System.out.println(
+                "java net.wimpi.modbus.cmd.DOTest <address{:<port>} [String]> <register [int16]> <state [boolean]> {<repeat [int]>}");
+    }// printUsage
 
-      //3. Prepare the request
-      req = new WriteCoilRequest(ref, count);
-      req.setUnitID(0);
-      if (Modbus.debug) System.out.println("Request: " + req.getHexMessage());
-
-      //4. Prepare the transaction
-      trans = new ModbusTCPTransaction(con);
-      trans.setRequest(req);
-
-      //5. Execute the transaction repeat times
-      int k = 0;
-      do {
-        trans.execute();
-
-        if (Modbus.debug) System.out.println("Response: " +
-            trans.getResponse().getHexMessage()
-        );
-        k++;
-      } while (k < repeat);
-
-      //6. Close the connection
-      con.close();
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }//main
-
-  private static void printUsage() {
-    System.out.println(
-        "java net.wimpi.modbus.cmd.DOTest <address{:<port>} [String]> <register [int16]> <state [boolean]> {<repeat [int]>}"
-    );
-  }//printUsage
-
-}//class DOTest
+}// class DOTest

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,7 @@ import org.openhab.binding.homematic.internal.model.adapter.HmInterfaceAdapter;
 
 /**
  * Object that represents a Homematic device.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
@@ -33,62 +33,62 @@ import org.openhab.binding.homematic.internal.model.adapter.HmInterfaceAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class HmDevice {
 
-	@XmlAttribute(name = "address", required = true)
-	private String address;
+    @XmlAttribute(name = "address", required = true)
+    private String address;
 
-	@XmlAttribute(name = "interface", required = true)
-	@XmlJavaTypeAdapter(value = HmInterfaceAdapter.class)
-	private HmInterface hmInterface;
+    @XmlAttribute(name = "interface", required = true)
+    @XmlJavaTypeAdapter(value = HmInterfaceAdapter.class)
+    private HmInterface hmInterface;
 
-	@XmlAttribute(name = "type", required = true)
-	private String type;
+    @XmlAttribute(name = "type", required = true)
+    private String type;
 
-	@XmlElement(name = "channel")
-	private List<HmChannel> channels = new ArrayList<HmChannel>();
+    @XmlElement(name = "channel")
+    private List<HmChannel> channels = new ArrayList<HmChannel>();
 
-	/**
-	 * Returns the address of the device.
-	 */
-	public String getAddress() {
-		return address;
-	}
+    /**
+     * Returns the address of the device.
+     */
+    public String getAddress() {
+        return address;
+    }
 
-	/**
-	 * Returns the interface of the device.
-	 */
-	public HmInterface getHmInterface() {
-		return hmInterface;
-	}
+    /**
+     * Returns the interface of the device.
+     */
+    public HmInterface getHmInterface() {
+        return hmInterface;
+    }
 
-	/**
-	 * Returns the type of the device.
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Returns the type of the device.
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Returns all channels of the device.
-	 */
-	public List<HmChannel> getChannels() {
-		return channels;
-	}
+    /**
+     * Returns all channels of the device.
+     */
+    public List<HmChannel> getChannels() {
+        return channels;
+    }
 
-	/**
-	 * Adds a channel to this device.
-	 */
-	public void addChannel(HmChannel channel) {
-		channel.setDevice(this);
-		channels.add(channel);
-	}
+    /**
+     * Adds a channel to this device.
+     */
+    public void addChannel(HmChannel channel) {
+        channel.setDevice(this);
+        channels.add(channel);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("address", address)
-				.append("hmInterface", hmInterface.toString()).append("type", type).toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("address", address)
+                .append("hmInterface", hmInterface.toString()).append("type", type).toString();
+    }
 
 }

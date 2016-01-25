@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,24 +25,24 @@ import org.slf4j.LoggerFactory;
  * converting a {@link State} into a protocol value, the
  * {@link #getFromStateConverter(String, State)} a converter for converting a
  * protocol value into a {@link State}. These can be the same class.
- * 
+ *
  * The normal usage has three parts:
- * 
+ *
  * Instantiate it:
  * <code>private ConverterFactory converterFactory = new ConverterFactory();</code>
- * 
+ *
  * Configure it:
  * <code>converterFactory.addCommandConverter("LEVEL", OnOffType.class, OnOffPercentageCommandConverter.class);</code>
  * <code>converterFactory.addStateConverter("LEVEL", PercentType.class, DoublePercentageConverter.class);</code>
- * 
+ *
  * Use it:
  * <code>StateConverter<?, ?> converter = converterFactory.getFromStateConverter(parameterAddress.getParameterKey(), newState);
  *            Object value = converter.convertFrom(newState);
  * </code>
- * 
+ *
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * @since 1.3.0
- * 
+ *
  */
 public class ConverterFactory {
 
@@ -52,7 +52,7 @@ public class ConverterFactory {
 
     /**
      * Adds a new {@link StateConverter} for the protocolValue.
-     * 
+     *
      * @param protocolValue
      *            The value key for the binding specific protocol.
      * @param state
@@ -60,13 +60,14 @@ public class ConverterFactory {
      * @param converter
      *            The actual converter.
      */
-    public void addStateConverter(String protocolValue, Class<? extends State> state, Class<? extends StateConverter<?, ?>> converter) {
+    public void addStateConverter(String protocolValue, Class<? extends State> state,
+            Class<? extends StateConverter<?, ?>> converter) {
         converters.addStateConverter(protocolValue, state, converter);
     }
 
     /**
      * Adds a new {@link CommandConverter} for the protocolValue.
-     * 
+     *
      * @param protocolValue
      *            The value key for the binding specific protocol.
      * @param command
@@ -82,10 +83,10 @@ public class ConverterFactory {
     /**
      * Returns the first matching converter for the given protocolValue and the
      * item. It considers the possible types (states) the item can accept.
-     * 
+     *
      * This method is to be used for getting a converter for the direction from
      * a protocolValue to a State.
-     * 
+     *
      * @param protocolValue
      *            The value key for the binding specific protocol.
      * @param item
@@ -95,20 +96,20 @@ public class ConverterFactory {
      */
     public StateConverter<?, ?> getToStateConverter(String protocolValue, Item item) {
         List<Class<? extends State>> acceptedTypes = new ArrayList<Class<? extends State>>();
-	List<Class<? extends State>> itemTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
-	List<Class<? extends State>> matchingTypes = converters.getMatchingStates(protocolValue);
+        List<Class<? extends State>> itemTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
+        List<Class<? extends State>> matchingTypes = converters.getMatchingStates(protocolValue);
         for (Class<? extends State> matchingType : matchingTypes) {
-	    for (Class<? extends State> itemType : itemTypes) {
-		    if(itemType.isAssignableFrom(matchingType)){
-			acceptedTypes.add(matchingType);
-			break;
-		    }
-	    }
-	}
+            for (Class<? extends State> itemType : itemTypes) {
+                if (itemType.isAssignableFrom(matchingType)) {
+                    acceptedTypes.add(matchingType);
+                    break;
+                }
+            }
+        }
 
-	if (acceptedTypes.isEmpty()) {
-	    return null;
-	}
+        if (acceptedTypes.isEmpty()) {
+            return null;
+        }
         // Take best matching as accepted Type. Best matching is calculated by
         // ordering by importance of state.
         Collections.sort(acceptedTypes, new StateComparator());
@@ -119,10 +120,10 @@ public class ConverterFactory {
     /**
      * Returns the first matching converter for the given protocolValue and the
      * state.
-     * 
+     *
      * This method is to be used for getting a converter for the direction from
      * a state (the given state to be exact) to a protocolValue.
-     * 
+     *
      * @param protocolValue
      *            The value key for the binding specific protocol.
      * @param state
@@ -141,10 +142,10 @@ public class ConverterFactory {
     /**
      * Returns the first matching converter for the given protocolValue and the
      * command.
-     * 
+     *
      * This method is to be used for getting a converter for the direction from
      * a command (the given command to be exact) to a state.
-     * 
+     *
      * @param protocolValue
      *            The value key for the binding specific protocol.
      * @param command

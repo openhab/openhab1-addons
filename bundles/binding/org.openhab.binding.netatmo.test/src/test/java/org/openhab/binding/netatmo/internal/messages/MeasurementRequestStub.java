@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,43 +22,42 @@ import com.google.common.io.Resources;
  */
 public class MeasurementRequestStub extends MeasurementRequest {
 
-	protected static final String ACCESS_TOKEN = "000000000000000000000000|11111111111111111111111111111111";
+    protected static final String ACCESS_TOKEN = "000000000000000000000000|11111111111111111111111111111111";
 
-	protected static final String DEVICE_ID = "70:ee:50:00:02:20";
+    protected static final String DEVICE_ID = "70:ee:50:00:02:20";
 
-	protected static final String MODULE_ID = "02:00:00:00:02:a0";
+    protected static final String MODULE_ID = "02:00:00:00:02:a0";
 
-	public static MeasurementRequestStub createRequest(final String resource)
-			throws Exception {
-		return new MeasurementRequestStub(resource);
-	}
+    public static MeasurementRequestStub createRequest(final String resource) throws Exception {
+        return new MeasurementRequestStub(resource);
+    }
 
-	private final String response;
+    private final String response;
 
-	private String content;
+    private String content;
 
-	private MeasurementRequestStub(final String response) throws Exception {
-		super(ACCESS_TOKEN, DEVICE_ID, MODULE_ID);
+    private MeasurementRequestStub(final String response) throws Exception {
+        super(ACCESS_TOKEN, DEVICE_ID, MODULE_ID);
 
-		final URL resource = getClass().getResource(response);
+        final URL resource = getClass().getResource(response);
 
-		if (resource == null) {
-			throw new IOException("Resource '" + response + "' not found!");
-		}
+        if (resource == null) {
+            throw new IOException("Resource '" + response + "' not found!");
+        }
 
-		this.response = Resources.toString(resource, UTF_8);
+        this.response = Resources.toString(resource, UTF_8);
 
-	}
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public String getContent() {
+        return this.content;
+    }
 
-	@Override
-	protected String executeQuery(final String content) {
-		this.content = content;
+    @Override
+    protected String executeQuery(final String content) {
+        this.content = content;
 
-		return this.response;
-	}
+        return this.response;
+    }
 
 }

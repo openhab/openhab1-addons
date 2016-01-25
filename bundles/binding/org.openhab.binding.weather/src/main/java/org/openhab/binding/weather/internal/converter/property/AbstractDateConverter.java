@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,30 +19,30 @@ import org.openhab.binding.weather.internal.converter.Converter;
 
 /**
  * Base date converter class with a date pattern.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public abstract class AbstractDateConverter implements Converter<Calendar> {
 
-	private DateFormat DATE_PATTERN;
+    private DateFormat DATE_PATTERN;
 
-	/**
-	 * Creates a DateConverter with the specified pattern.
-	 */
-	public AbstractDateConverter(String pattern) {
-		DATE_PATTERN = new SimpleDateFormat(pattern, Locale.ENGLISH);
-	}
+    /**
+     * Creates a DateConverter with the specified pattern.
+     */
+    public AbstractDateConverter(String pattern) {
+        DATE_PATTERN = new SimpleDateFormat(pattern, Locale.ENGLISH);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Calendar convert(String value) throws ParseException {
-		Calendar cal = Calendar.getInstance();
-		Date date = DATE_PATTERN.parse(value);
-		cal.setTime(date);
-		return cal;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Calendar convert(String value) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        Date date = DATE_PATTERN.parse(value);
+        cal.setTime(date);
+        return cal;
+    }
 
 }

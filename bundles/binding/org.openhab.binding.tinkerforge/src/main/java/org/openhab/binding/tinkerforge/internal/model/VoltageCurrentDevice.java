@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,16 +13,17 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Voltage Current Device</b></em>'.
- * 
+ *
  * @author Theo Weiss
  * @since 1.5.0
- * <!-- end-user-doc -->
+ *        <!-- end-user-doc -->
  *
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getVoltageCurrentDevice()
- * @model interface="true" abstract="true" superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent> org.openhab.binding.tinkerforge.internal.model.CallbackListener org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ * @model interface="true" abstract="true" superTypes=
+ *        "org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent> org.openhab.binding.tinkerforge.internal.model.CallbackListener org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
  * @generated
  */
-public interface VoltageCurrentDevice extends MSensor<DecimalValue>, MSubDevice<MBrickletVoltageCurrent>, CallbackListener, MTFConfigConsumer<TFBaseConfiguration>
-{
+public interface VoltageCurrentDevice extends MSensor<DecimalValue>, MSubDevice<MBrickletVoltageCurrent>,
+        CallbackListener, MTFConfigConsumer<TFBaseConfiguration> {
 } // VoltageCurrentDevice

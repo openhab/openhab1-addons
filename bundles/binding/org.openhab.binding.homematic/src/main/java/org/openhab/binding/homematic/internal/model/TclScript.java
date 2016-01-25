@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,32 +18,32 @@ import org.openhab.binding.homematic.internal.model.adapter.TrimToNullStringAdap
 
 /**
  * Simple class with the JAXB mapping for a TclRega script.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TclScript {
 
-	@XmlAttribute(name = "name", required = true)
-	private String name;
+    @XmlAttribute(name = "name", required = true)
+    private String name;
 
-	@XmlElement(name = "data", required = true)
-	@XmlJavaTypeAdapter(value = TrimToNullStringAdapter.class)
-	private String data;
+    @XmlElement(name = "data", required = true)
+    @XmlJavaTypeAdapter(value = TrimToNullStringAdapter.class)
+    private String data;
 
-	/**
-	 * Returns the name of the script.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the name of the script.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Returns the script data.
-	 */
-	public String getData() {
-		return data;
-	}
+    /**
+     * Returns the script data.
+     */
+    public String getData() {
+        return data;
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;
 /**
  * This represents the configuration of a openHAB item that is binded to a Hue
  * bulb. It contains the following information:
- * 
+ *
  * <ul>
  * <li>The device number the bulb has on the Hue bridge. The bulbs should have
  * numbers from 1 up to the number of connected bulbs.
- * (Since the option to delete items on the bridge the assumption of continuous sequence 
+ * (Since the option to delete items on the bridge the assumption of continuous sequence
  * of item numbers is no longer correct, but this is now handled in HueBinding execute correctly)</li>
  * <li>The binding type of the hue item</li>
  * <ul>
@@ -34,158 +34,157 @@ import org.slf4j.LoggerFactory;
  * <li>The optionally configurable step size that will be used when the bulb is
  * dimmed up or down. Default is 25.</li>
  * </ul>
- * 
+ *
  * @author Roman Hartmann
  * @since 1.2.0
  */
 public class HueBindingConfig implements BindingConfig {
 
-	static final Logger logger = LoggerFactory
-			.getLogger(HueBindingConfig.class);
+    static final Logger logger = LoggerFactory.getLogger(HueBindingConfig.class);
 
-	/**
-	 * The binding type of the hue item.
-	 * <ul>
-	 * <li>Switch</li>
-	 * <li>Brightness</li>
-	 * <li>Color temperature</li>
-	 * <li>RGB</li>
-	 * </ul>
-	 */
-	public enum BindingType {
-		switching, brightness, colorTemperature, rgb
-	}
+    /**
+     * The binding type of the hue item.
+     * <ul>
+     * <li>Switch</li>
+     * <li>Brightness</li>
+     * <li>Color temperature</li>
+     * <li>RGB</li>
+     * </ul>
+     */
+    public enum BindingType {
+        switching,
+        brightness,
+        colorTemperature,
+        rgb
+    }
 
-	/**
-	 * The id under which the bulb is filed in the Hue bridge.
-	 */
-	private final String deviceId;
+    /**
+     * The id under which the bulb is filed in the Hue bridge.
+     */
+    private final String deviceId;
 
-	/**
-	 * The binding type of the hue item.
-	 */
-	private final BindingType type;
+    /**
+     * The binding type of the hue item.
+     */
+    private final BindingType type;
 
-	/**
-	 * The optionally configurable step size that will be used when the bulb is
-	 * dimmed up or down. Default is 25.
-	 */
-	private final int stepSize;
-	
-	/**
-	 * On / Off Item State
-	 */
-	public OnOffType itemStateOnOffType;
-	
-	/**
-	 * Percentage Item State
-	 */
-	public PercentType itemStatePercentType;
-	
-	/**
-	 * HSBType Item State
-	 */
-	public HSBType itemStateHSBType;
-	
-	/**
-	 * Constructor of the HueBindingConfig.
-	 * 
-	 * @param deviceId
-	 *            The id under which the bulb is filed in the Hue bridge.
-	 * @param type
-	 *            The optional binding type of the hue binding.
-	 *            <ul>
-	 *            <li>Switch</li>
-	 *            <li>Brightness (default)</li>
-	 *            <li>Color temperature</li>
-	 *            <li>RGB</li>
-	 *            </ul>
-	 * @param stepSize
-	 *            The optionally configurable step size that will be used when
-	 *            the bulb is dimmed up or down. Default is 25.
-	 * @throws BindingConfigParseException
-	 */
-	public HueBindingConfig(String deviceId, String type, String stepSize)
-			throws BindingConfigParseException {
+    /**
+     * The optionally configurable step size that will be used when the bulb is
+     * dimmed up or down. Default is 25.
+     */
+    private final int stepSize;
 
-		this.deviceId = deviceId;
+    /**
+     * On / Off Item State
+     */
+    public OnOffType itemStateOnOffType;
 
-		if (type != null) {
-			this.type = parseBindingTypeConfigString(type);
-		} else {
-			this.type = HueBindingConfig.BindingType.brightness;
-		}
+    /**
+     * Percentage Item State
+     */
+    public PercentType itemStatePercentType;
 
-		if (stepSize != null) {
-			this.stepSize = parseStepSizeConfigString(stepSize);
-		} else {
-			this.stepSize = 25;
-		}
+    /**
+     * HSBType Item State
+     */
+    public HSBType itemStateHSBType;
 
-	}
+    /**
+     * Constructor of the HueBindingConfig.
+     * 
+     * @param deviceId
+     *            The id under which the bulb is filed in the Hue bridge.
+     * @param type
+     *            The optional binding type of the hue binding.
+     *            <ul>
+     *            <li>Switch</li>
+     *            <li>Brightness (default)</li>
+     *            <li>Color temperature</li>
+     *            <li>RGB</li>
+     *            </ul>
+     * @param stepSize
+     *            The optionally configurable step size that will be used when
+     *            the bulb is dimmed up or down. Default is 25.
+     * @throws BindingConfigParseException
+     */
+    public HueBindingConfig(String deviceId, String type, String stepSize) throws BindingConfigParseException {
 
-	/**
-	 * Parses a step size string that has been found in the configuration.
-	 * 
-	 * @param configString
-	 *            The step size as a string.
-	 * @return The step size as an integer value.
-	 * @throws BindingConfigParseException
-	 */
-	private int parseStepSizeConfigString(String configString)
-			throws BindingConfigParseException {
-		try {
-			return Integer.parseInt(configString);
-		} catch (Exception e) {
-			throw new BindingConfigParseException(
-					"Error parsing step size.");
-		}
-	}
+        this.deviceId = deviceId;
 
-	/**
-	 * Parses a binding type string that has been found in the configuration. If
-	 * the string could not be parsed, the switch type is returned as default.
-	 * 
-	 * @param configString
-	 *            The binding type as a string.
-	 * @return The binding type as a {@link HueBindingConfig.BindingType}
-	 * @throws BindingConfigParseException
-	 */
-	private HueBindingConfig.BindingType parseBindingTypeConfigString(
-			String configString) throws BindingConfigParseException {
+        if (type != null) {
+            this.type = parseBindingTypeConfigString(type);
+        } else {
+            this.type = HueBindingConfig.BindingType.brightness;
+        }
 
-		if (configString != null) {
-			try {
-				return BindingType.valueOf(configString.trim());
-			} catch (Exception ignore) {
-			}
-		}
-		return HueBindingConfig.BindingType.switching;
-	}
+        if (stepSize != null) {
+            this.stepSize = parseStepSizeConfigString(stepSize);
+        } else {
+            this.stepSize = 25;
+        }
 
-	/**
-	 * @return The device id that has been declared in the binding
-	 *         configuration.
-	 */
-	public String getDeviceId() {
-		return deviceId;
-	}
+    }
 
-	/**
-	 * @return The binding type as a {@link HueBindingConfig.BindingType} that
-	 *         has been declared in the binding configuration.
-	 */
-	public BindingType getType() {
-		return type;
-	}
+    /**
+     * Parses a step size string that has been found in the configuration.
+     * 
+     * @param configString
+     *            The step size as a string.
+     * @return The step size as an integer value.
+     * @throws BindingConfigParseException
+     */
+    private int parseStepSizeConfigString(String configString) throws BindingConfigParseException {
+        try {
+            return Integer.parseInt(configString);
+        } catch (Exception e) {
+            throw new BindingConfigParseException("Error parsing step size.");
+        }
+    }
 
-	/**
-	 * @return The step size that has been declared in the binding
-	 *         configuration. This is the amount of increase and decrease of
-	 *         bulb values like hue or brightness.
-	 */
-	public int getStepSize() {
-		return stepSize;
-	}
+    /**
+     * Parses a binding type string that has been found in the configuration. If
+     * the string could not be parsed, the switch type is returned as default.
+     * 
+     * @param configString
+     *            The binding type as a string.
+     * @return The binding type as a {@link HueBindingConfig.BindingType}
+     * @throws BindingConfigParseException
+     */
+    private HueBindingConfig.BindingType parseBindingTypeConfigString(String configString)
+            throws BindingConfigParseException {
+
+        if (configString != null) {
+            try {
+                return BindingType.valueOf(configString.trim());
+            } catch (Exception ignore) {
+            }
+        }
+        return HueBindingConfig.BindingType.switching;
+    }
+
+    /**
+     * @return The device id that has been declared in the binding
+     *         configuration.
+     */
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    /**
+     * @return The binding type as a {@link HueBindingConfig.BindingType} that
+     *         has been declared in the binding configuration.
+     */
+    public BindingType getType() {
+        return type;
+    }
+
+    /**
+     * @return The step size that has been declared in the binding
+     *         configuration. This is the amount of increase and decrease of
+     *         bulb values like hue or brightness.
+     */
+    public int getStepSize() {
+        return stepSize;
+    }
 
 }

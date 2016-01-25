@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,266 +27,255 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 
-
 /**
  * RFXCOM data class for blinds1 message.
- * 
+ *
  * @author Peter Janson / Pål Edman
  * @since 1.4.0
- * 
+ *
  */
 public class RFXComBlinds1Message extends RFXComBaseMessage {
 
-	public enum Commands {
-		OPEN(0),			//MediaMount DOWN(0),
-		CLOSE(1),			//MediaMount UPP(1),
-		STOP(2),
-		CONFIRM(3),
-		SET_LIMIT(4),		//YR1326 SET_UPPER_LIMIT(4),
-		SET_LOWER_LIMIT(5),	//YR1326
-		DELETE_LIMITS(6),	//YR1326
-		CHANGE_DIRECTON(7),	//YR1326
-		
-		UNKNOWN(255);
-		
-		private final int command;
+    public enum Commands {
+        OPEN(0), // MediaMount DOWN(0),
+        CLOSE(1), // MediaMount UPP(1),
+        STOP(2),
+        CONFIRM(3),
+        SET_LIMIT(4), // YR1326 SET_UPPER_LIMIT(4),
+        SET_LOWER_LIMIT(5), // YR1326
+        DELETE_LIMITS(6), // YR1326
+        CHANGE_DIRECTON(7), // YR1326
 
-		Commands(int command) {
-			this.command = command;
-		}
+        UNKNOWN(255);
 
-		Commands(byte command) {
-			this.command = command;
-		}
+        private final int command;
 
-		public byte toByte() {
-			return (byte) command;
-		}
-	}
+        Commands(int command) {
+            this.command = command;
+        }
 
-	public enum SubType {
-		HASTA_NEW(0),	//Hasta new/RollerTrol
-		HASTA_OLD(1),
-		RF01(2),
-		AC114(3),
-		YR1326(4),		//Additional commands.
-		MEDIAMOUNT(5),	//MEDIA MOUNT have different direction commands than the rest!! Needs to be fixed.
-		DC106(6),
-		FOREST(7),
-		CS4330(8),		// Chamberlain CS4330
-		
-		UNKNOWN(255);
+        Commands(byte command) {
+            this.command = command;
+        }
 
-		private final int subType;
+        public byte toByte() {
+            return (byte) command;
+        }
+    }
 
-		SubType(int subType) {
-			this.subType = subType;
-		}
+    public enum SubType {
+        HASTA_NEW(0), // Hasta new/RollerTrol
+        HASTA_OLD(1),
+        RF01(2),
+        AC114(3),
+        YR1326(4), // Additional commands.
+        MEDIAMOUNT(5), // MEDIA MOUNT have different direction commands than the rest!! Needs to be fixed.
+        DC106(6),
+        FOREST(7),
+        CS4330(8), // Chamberlain CS4330
 
-		SubType(byte subType) {
-			this.subType = subType;
-		}
+        UNKNOWN(255);
 
-		public byte toByte() {
-			return (byte) subType;
-		}
-	}
+        private final int subType;
 
-	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
-			.asList(RFXComValueSelector.RAW_DATA,
-					RFXComValueSelector.SIGNAL_LEVEL,
-					RFXComValueSelector.BATTERY_LEVEL,
-					RFXComValueSelector.COMMAND);
+        SubType(int subType) {
+            this.subType = subType;
+        }
 
-	public SubType subType = SubType.HASTA_NEW;
-	public int sensorId = 0;
-	public byte unitcode = 0;
-	public Commands command = Commands.STOP;
-	public byte signalLevel = 0;
-	public byte batteryLevel = 0;
+        SubType(byte subType) {
+            this.subType = subType;
+        }
 
-	public RFXComBlinds1Message() {
-		packetType = PacketType.BLINDS1;
-	}
+        public byte toByte() {
+            return (byte) subType;
+        }
+    }
 
-	public RFXComBlinds1Message(byte[] data) {
-		encodeMessage(data);
-	}
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.COMMAND);
 
-	@Override
-	public String toString() {
-		String str = "";
+    public SubType subType = SubType.HASTA_NEW;
+    public int sensorId = 0;
+    public byte unitcode = 0;
+    public Commands command = Commands.STOP;
+    public byte signalLevel = 0;
+    public byte batteryLevel = 0;
 
-		str += super.toString();
-		str += "\n - Sub type = " + subType;
-		str += "\n - Id = " + sensorId;
-		str += "\n - Unit code = " + unitcode;
-		str += "\n - Command = " + command;
-		str += "\n - Signal level = " + signalLevel;
-		str += "\n - Battery level = " + batteryLevel;
+    public RFXComBlinds1Message() {
+        packetType = PacketType.BLINDS1;
+    }
 
-		return str;
-	}
+    public RFXComBlinds1Message(byte[] data) {
+        encodeMessage(data);
+    }
 
-	@Override
-	public void encodeMessage(byte[] data) {
+    @Override
+    public String toString() {
+        String str = "";
 
-		super.encodeMessage(data);
-		
-		try {
-			subType = SubType.values()[super.subType];
-		} catch (Exception e) {
-			subType = SubType.UNKNOWN;
-		}
-		
-		sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
-		unitcode = data[7];
+        str += super.toString();
+        str += "\n - Sub type = " + subType;
+        str += "\n - Id = " + sensorId;
+        str += "\n - Unit code = " + unitcode;
+        str += "\n - Command = " + command;
+        str += "\n - Signal level = " + signalLevel;
+        str += "\n - Battery level = " + batteryLevel;
 
-		try {
-			command = Commands.values()[data[8]];
-		} catch (Exception e) {
-			command = Commands.UNKNOWN;
-		}
+        return str;
+    }
 
-		signalLevel = (byte) ((data[9] & 0xF0) >> 4);
-		batteryLevel = (byte) (data[9] & 0x0F);
-	}
+    @Override
+    public void encodeMessage(byte[] data) {
 
-	@Override
-	public byte[] decodeMessage() {
-		 // Example data
-		 // BLINDS1 09 19 00 06 00 B1 8F 01 00 70
-		
-		byte[] data = new byte[10];
+        super.encodeMessage(data);
 
-		data[0] = 0x09;
-		data[1] = RFXComBaseMessage.PacketType.BLINDS1.toByte();
-		data[2] = subType.toByte();
-		data[3] = seqNbr;
-		data[4] = (byte) ((sensorId >> 16) & 0xFF);
-		data[5] = (byte) ((sensorId >> 8) & 0xFF);
-		data[6] = (byte) (sensorId & 0xFF);
-		data[7] = unitcode;
-		data[8] = command.toByte();
-		data[9] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
-		
-		return data;
-	}
-	
-	@Override
-	public String generateDeviceId() {
-		 return sensorId + "." + unitcode;
-	}
+        try {
+            subType = SubType.values()[super.subType];
+        } catch (Exception e) {
+            subType = SubType.UNKNOWN;
+        }
 
-	@Override
-	public State convertToState(RFXComValueSelector valueSelector)
-			throws RFXComException {
+        sensorId = (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
+        unitcode = data[7];
 
-		org.openhab.core.types.State state = UnDefType.UNDEF;
+        try {
+            command = Commands.values()[data[8]];
+        } catch (Exception e) {
+            command = Commands.UNKNOWN;
+        }
 
-		if (valueSelector.getItemClass() == NumberItem.class) {
+        signalLevel = (byte) ((data[9] & 0xF0) >> 4);
+        batteryLevel = (byte) (data[9] & 0x0F);
+    }
 
-			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+    @Override
+    public byte[] decodeMessage() {
+        // Example data
+        // BLINDS1 09 19 00 06 00 B1 8F 01 00 70
 
-				state = new DecimalType(signalLevel);
+        byte[] data = new byte[10];
 
-			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+        data[0] = 0x09;
+        data[1] = RFXComBaseMessage.PacketType.BLINDS1.toByte();
+        data[2] = subType.toByte();
+        data[3] = seqNbr;
+        data[4] = (byte) ((sensorId >> 16) & 0xFF);
+        data[5] = (byte) ((sensorId >> 8) & 0xFF);
+        data[6] = (byte) (sensorId & 0xFF);
+        data[7] = unitcode;
+        data[8] = command.toByte();
+        data[9] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));
 
-				state = new DecimalType(batteryLevel);
+        return data;
+    }
 
-			} else {
-				throw new RFXComException("Can't convert " + valueSelector
-						+ " to NumberItem");
-			}
+    @Override
+    public String generateDeviceId() {
+        return sensorId + "." + unitcode;
+    }
 
-		} else if (valueSelector.getItemClass() == RollershutterItem.class) {
+    @Override
+    public State convertToState(RFXComValueSelector valueSelector) throws RFXComException {
 
-			if (valueSelector == RFXComValueSelector.COMMAND) {
+        org.openhab.core.types.State state = UnDefType.UNDEF;
 
-				switch (command) {
-				case CLOSE:
-					state = OpenClosedType.CLOSED;
-					break;
+        if (valueSelector.getItemClass() == NumberItem.class) {
 
-				case OPEN:
-					state = OpenClosedType.OPEN;
-					break;
+            if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
 
-				default:
-					break;
-				}
+                state = new DecimalType(signalLevel);
 
-			} else {
-				throw new NumberFormatException("Can't convert "
-						+ valueSelector + " to RollershutterItem");
-			}
+            } else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
 
-		} else if (valueSelector.getItemClass() == StringItem.class) {
+                state = new DecimalType(batteryLevel);
 
-			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
+            }
 
-				state = new StringType(
-						DatatypeConverter.printHexBinary(rawMessage));
+        } else if (valueSelector.getItemClass() == RollershutterItem.class) {
 
-			} else {
-				throw new NumberFormatException("Can't convert "
-						+ valueSelector + " to StringItem");
-			}
+            if (valueSelector == RFXComValueSelector.COMMAND) {
 
-		} else {
+                switch (command) {
+                    case CLOSE:
+                        state = OpenClosedType.CLOSED;
+                        break;
 
-			throw new NumberFormatException("Can't convert " + valueSelector
-					+ " to " + valueSelector.getItemClass());
+                    case OPEN:
+                        state = OpenClosedType.OPEN;
+                        break;
 
-		}
+                    default:
+                        break;
+                }
 
-		return state;
-	}
+            } else {
+                throw new NumberFormatException("Can't convert " + valueSelector + " to RollershutterItem");
+            }
 
-	@Override
-	public void convertFromState(RFXComValueSelector valueSelector, String id,
-			Object subType, Type type, byte seqNumber) throws RFXComException {
+        } else if (valueSelector.getItemClass() == StringItem.class) {
 
-		this.subType = ((SubType) subType);
-		seqNbr = seqNumber;
-		String[] ids = id.split("\\.");
-		sensorId = Integer.parseInt(ids[0]);
-		unitcode = Byte.parseByte(ids[1]);
+            if (valueSelector == RFXComValueSelector.RAW_DATA) {
 
-		switch (valueSelector) {
-		case SHUTTER:
-			if (type instanceof OpenClosedType) {
-				command = (type == OpenClosedType.CLOSED ? Commands.CLOSE : Commands.OPEN);
-			} else if (type instanceof UpDownType) {
-				command = (type == UpDownType.UP ? Commands.OPEN : Commands.CLOSE);
-			} else if (type instanceof StopMoveType) {
-				command = Commands.STOP;
+                state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
 
-			} else {
-				throw new NumberFormatException("Can't convert " + type + " to Command");
-			}
-			break;
+            } else {
+                throw new NumberFormatException("Can't convert " + valueSelector + " to StringItem");
+            }
 
-		default:
-			throw new RFXComException("Can't convert " + type + " to "
-					+ valueSelector);
-		}
-	}
+        } else {
 
-	@Override
-	public Object convertSubType(String subType) throws RFXComException {
+            throw new NumberFormatException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
 
-		for (SubType s : SubType.values()) {
-			if (s.toString().equals(subType)) {
-				return s;
-			}
-		}
-		
-		throw new RFXComException("Unknown sub type " + subType);
-	}
+        }
 
-	@Override
-	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
-		return supportedValueSelectors;
-	}
+        return state;
+    }
+
+    @Override
+    public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
+            byte seqNumber) throws RFXComException {
+
+        this.subType = ((SubType) subType);
+        seqNbr = seqNumber;
+        String[] ids = id.split("\\.");
+        sensorId = Integer.parseInt(ids[0]);
+        unitcode = Byte.parseByte(ids[1]);
+
+        switch (valueSelector) {
+            case SHUTTER:
+                if (type instanceof OpenClosedType) {
+                    command = (type == OpenClosedType.CLOSED ? Commands.CLOSE : Commands.OPEN);
+                } else if (type instanceof UpDownType) {
+                    command = (type == UpDownType.UP ? Commands.OPEN : Commands.CLOSE);
+                } else if (type instanceof StopMoveType) {
+                    command = Commands.STOP;
+
+                } else {
+                    throw new NumberFormatException("Can't convert " + type + " to Command");
+                }
+                break;
+
+            default:
+                throw new RFXComException("Can't convert " + type + " to " + valueSelector);
+        }
+    }
+
+    @Override
+    public Object convertSubType(String subType) throws RFXComException {
+
+        for (SubType s : SubType.values()) {
+            if (s.toString().equals(subType)) {
+                return s;
+            }
+        }
+
+        throw new RFXComException("Unknown sub type " + subType);
+    }
+
+    @Override
+    public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+        return supportedValueSelectors;
+    }
 }

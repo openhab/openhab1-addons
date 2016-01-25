@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,66 +8,67 @@
  */
 package org.openhab.binding.plcbus.internal.protocol;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Baseclass for Frames in PLCBus Protocol
- * 
+ *
  * @author Robin Lenz
  * @since 1.1.0
- * 
+ *
  * @param <TDataFrame> Type of the containing DataFrame
  */
 public abstract class Frame<TDataFrame extends DataFrame> {
-	
-	final static byte START_BYTE = 0x02;
 
-	protected TDataFrame data;
+    final static byte START_BYTE = 0x02;
 
-	public Frame() {
+    protected TDataFrame data;
 
-	}
+    public Frame() {
 
-	public Frame(TDataFrame data) {
-		this.data = data;
-	}
+    }
 
-	public byte getStartByte() {
-		return START_BYTE;
-	}
+    public Frame(TDataFrame data) {
+        this.data = data;
+    }
 
-	public abstract byte getEndByte();
+    public byte getStartByte() {
+        return START_BYTE;
+    }
 
-	public int getLength() {
-		if (data == null) {
-			return 0;
-		}
+    public abstract byte getEndByte();
 
-		return data.getBytes().size();
+    public int getLength() {
+        if (data == null) {
+            return 0;
+        }
 
-	}
+        return data.getBytes().size();
 
-	public TDataFrame getData() {
-		return data;
-	}
+    }
 
-	public List<Byte> getBytes() {
-		List<Byte> result = new ArrayList<Byte>();
+    public TDataFrame getData() {
+        return data;
+    }
 
-		result.add(getStartByte());
-		result.add(Convert.toByte(getLength()));
+    public List<Byte> getBytes() {
+        List<Byte> result = new ArrayList<Byte>();
 
-		if (data != null) {
-			result.addAll(data.getBytes());
-		}
+        result.add(getStartByte());
+        result.add(Convert.toByte(getLength()));
 
-		result.add(getEndByte());
+        if (data != null) {
+            result.addAll(data.getBytes());
+        }
 
-		return result;
-	}
+        result.add(getEndByte());
 
-	public Command getCommand() {
-		return data.getCommand();
-	}
-	
+        return result;
+    }
+
+    public Command getCommand() {
+        return data.getCommand();
+    }
+
 }

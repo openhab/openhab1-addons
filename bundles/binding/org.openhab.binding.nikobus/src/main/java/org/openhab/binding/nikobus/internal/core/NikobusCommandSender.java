@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,108 +16,109 @@ import org.slf4j.LoggerFactory;
 /**
  * Command sender. Runs in dedicated thread to send commands asynchronously to
  * the Nikobus interface.
- * 
+ *
  * @author Davy Vanherbergen
  * @since 1.3.0
  */
 public class NikobusCommandSender implements Runnable {
 
-	private static Logger log = LoggerFactory.getLogger(NikobusCommandSender.class);
+    private static Logger log = LoggerFactory.getLogger(NikobusCommandSender.class);
 
-	private LinkedBlockingQueue<NikobusCommand> sendQueue = new LinkedBlockingQueue<NikobusCommand>();
+    private LinkedBlockingQueue<NikobusCommand> sendQueue = new LinkedBlockingQueue<NikobusCommand>();
 
-	private NikobusInterface serialInterface;
+    private NikobusInterface serialInterface;
 
-	private boolean stopped;
+    private boolean stopped;
 
-	/**
-	 * Create new instance linked to the given serial interface.
-	 * 
-	 * @param serialInterface
-	 *            Nikobus interface.
-	 */
-	public NikobusCommandSender(NikobusInterface serialInterface) {
-		this.serialInterface = serialInterface;
-	}
+    /**
+     * Create new instance linked to the given serial interface.
+     * 
+     * @param serialInterface
+     *            Nikobus interface.
+     */
+    public NikobusCommandSender(NikobusInterface serialInterface) {
+        this.serialInterface = serialInterface;
+    }
 
-	/**
-	 * Start sending thread.
-	 */
-	@Override
-	public void run() {
-		log.debug("Command sender started.");
+    /**
+     * Start sending thread.
+     */
+    @Override
+    public void run() {
+        log.debug("Command sender started.");
 
-		try {
-			while (true && !stopped) {
-				NikobusCommand command = sendQueue.take();
+        try {
+            while (true && !stopped) {
+                NikobusCommand command = sendQueue.take();
 
-				if (command.getWaitForSilence()) {
-					waitForQuietBus();
-				}
+                if (command.getWaitForSilence()) {
+                    waitForQuietBus();
+                }
 
-				log.trace("Sending command {}", command.getCommand());
-				for (int i = 0; i < command.getRepeats(); i++) {
-					serialInterface.writeMessage(command.getCommand());
-				}
+                log.trace("Sending command {}", command.getCommand());
+                for (int i = 0; i < command.getRepeats(); i++) {
+                    serialInterface.writeMessage(command.getCommand());
+                }
 
-				command.incrementSentCount();
-				
-				// leave a little time between consecutive commands
-				Thread.sleep(50);
-			}
+                command.incrementSentCount();
 
-		} catch (InterruptedException e) {
-			log.debug("Command sender stopped.");
-		} catch (Exception e) {
-			log.error("Error writing command.", e);
-		}
-	}
-	
-	/**
-	 * Wait until there has been no activity on the bus in the last 150 ms.
-	 */
-	private void waitForQuietBus() {
-		while (System.currentTimeMillis()- serialInterface.getLastEventTimestamp() < 150) {
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				break;
-			}
-		}
-	}
+                // leave a little time between consecutive commands
+                Thread.sleep(50);
+            }
 
-	/**
-	 * Send a command to the Nikobus. Sending is done asynchronously. This
-	 * method will return immediately.
-	 * 
-	 * @param cmd
-	 *            command to send.
-	 */
-	public void sendCommand(NikobusCommand cmd) {
-		if (isCommandRedundant(cmd)) {
-			return;
-		}
-		sendQueue.add(cmd);
-	}
+        } catch (InterruptedException e) {
+            log.debug("Command sender stopped.");
+        } catch (Exception e) {
+            log.error("Error writing command.", e);
+        }
+    }
 
-	/**
-	 * Stop execution.
-	 */
-	public void stop() {
-		stopped = true;
-	}
-	
-	/**
-	 * Check if the sending of the command is redundant or not allowed.
-	 * @param cmd Nikobus Command
-	 * @return true if the command is already scheduled for sending..
-	 */
-	public boolean isCommandRedundant(NikobusCommand cmd) {
-		if (!cmd.getAllowDuplicates() && sendQueue.contains(cmd)) {
-			log.trace("Ignoring duplicate command {}", cmd.toString());
-			return true;
-		}
-		return false;
-	}
-	
+    /**
+     * Wait until there has been no activity on the bus in the last 150 ms.
+     */
+    private void waitForQuietBus() {
+        while (System.currentTimeMillis() - serialInterface.getLastEventTimestamp() < 150) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Send a command to the Nikobus. Sending is done asynchronously. This
+     * method will return immediately.
+     * 
+     * @param cmd
+     *            command to send.
+     */
+    public void sendCommand(NikobusCommand cmd) {
+        if (isCommandRedundant(cmd)) {
+            return;
+        }
+        sendQueue.add(cmd);
+    }
+
+    /**
+     * Stop execution.
+     */
+    public void stop() {
+        stopped = true;
+    }
+
+    /**
+     * Check if the sending of the command is redundant or not allowed.
+     * 
+     * @param cmd Nikobus Command
+     * @return true if the command is already scheduled for sending..
+     */
+    public boolean isCommandRedundant(NikobusCommand cmd) {
+        if (!cmd.getAllowDuplicates() && sendQueue.contains(cmd)) {
+            log.trace("Ignoring duplicate command {}", cmd.toString());
+            return true;
+        }
+        return false;
+    }
+
 }

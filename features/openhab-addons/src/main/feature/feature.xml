@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010-2016, openHAB.org and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
     <!-- action -->
+
+    <feature name="openhab-action-ecobee" description="Ecobee Action" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-binding-ecobee</feature>
+        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.ecobee/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
+    </feature>
 
     <feature name="openhab-action-mail" description="Mail Action" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
         <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mail/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/mail.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mail</configfile>
+    </feature>
+
+    <feature name="openhab-action-mios" description="MiOS Action" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-binding-mios</feature>
+        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mios/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
     </feature>
 
     <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
@@ -91,6 +117,13 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx/${project.version}</bundle>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.dmx.ola/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/dmx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dmx</configfile>
+    </feature>
+
+    <feature name="openhab-binding-ecobee" description="Ecobee Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ecobee/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/ecobee.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ecobee</configfile>
     </feature>
 
     <feature name="openhab-binding-energenie" description="Energenie Binding" version="${project.version}">
@@ -199,12 +232,33 @@
         <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
     </feature>
 
+    <feature name="openhab-binding-mios" description="MiOS Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mios/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
+    </feature>
+
     <feature name="openhab-binding-modbus" description="Modbus Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
         <feature>openhab-transport-serial</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.modbus/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/modbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/modbus</configfile>
+    </feature>
+
+    <feature name="openhab-binding-nest" description="Nest Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.nest/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/nest.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/nest</configfile>
+    </feature>
+
+    <feature name="openhab-binding-netatmo" description="Netatmo Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.netatmo/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/netatmo.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/netatmo</configfile>
     </feature>
 
     <feature name="openhab-binding-networkhealth" description="NetworkHealth Binding" version="${project.version}">

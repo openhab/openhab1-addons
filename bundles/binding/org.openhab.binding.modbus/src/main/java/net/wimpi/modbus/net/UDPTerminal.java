@@ -28,61 +28,61 @@ import net.wimpi.modbus.io.ModbusUDPTransport;
  */
 public interface UDPTerminal {
 
-  /**
-   * Returns the local address of this <tt>UDPTerminal</tt>.
-   *
-   * @return an <tt>InetAddress</tt> instance.
-   */
-  public InetAddress getLocalAddress();
+    /**
+     * Returns the local address of this <tt>UDPTerminal</tt>.
+     *
+     * @return an <tt>InetAddress</tt> instance.
+     */
+    public InetAddress getLocalAddress();
 
-  /**
-   * Returns the local port of this <tt>UDPTerminal</tt>.
-   *
-   * @return the local port as <tt>int</tt>.
-   */
-  public int getLocalPort();
+    /**
+     * Returns the local port of this <tt>UDPTerminal</tt>.
+     *
+     * @return the local port as <tt>int</tt>.
+     */
+    public int getLocalPort();
 
-  /**
-   * Tests if this <tt>UDPTerminal</tt> is active.
-   *
-   * @return <tt>true</tt> if active, <tt>false</tt> otherwise.
-   */
-  public boolean isActive();
+    /**
+     * Tests if this <tt>UDPTerminal</tt> is active.
+     *
+     * @return <tt>true</tt> if active, <tt>false</tt> otherwise.
+     */
+    public boolean isActive();
 
-  /**
-   * Activate this <tt>UDPTerminal</tt>.
-   *
-   * @throws java.lang.Exception if there is a network failure.
-   */
-  public void activate() throws Exception;
+    /**
+     * Activate this <tt>UDPTerminal</tt>.
+     *
+     * @throws java.lang.Exception if there is a network failure.
+     */
+    public void activate() throws Exception;
 
-  /**
-   * Deactivates this <tt>UDPTerminal</tt>.
-   */
-  public void deactivate();
+    /**
+     * Deactivates this <tt>UDPTerminal</tt>.
+     */
+    public void deactivate();
 
-  /**
-   * Returns the <tt>ModbusTransport</tt> associated with this
-   * <tt>UDPTerminal</tt>.
-   *
-   * @return a <tt>ModbusTransport</tt> instance.
-   */
-  public ModbusUDPTransport getModbusTransport();
+    /**
+     * Returns the <tt>ModbusTransport</tt> associated with this
+     * <tt>UDPTerminal</tt>.
+     *
+     * @return a <tt>ModbusTransport</tt> instance.
+     */
+    public ModbusUDPTransport getModbusTransport();
 
-  /**
-   * Sends the given message.
-   *
-   * @param msg the message as <tt>byte[]</tt>.
-   * @throws Exception if sending the message fails.
-   */
-  public void sendMessage(byte[] msg) throws Exception;
+    /**
+     * Sends the given message.
+     *
+     * @param msg the message as <tt>byte[]</tt>.
+     * @throws Exception if sending the message fails.
+     */
+    public void sendMessage(byte[] msg) throws Exception;
 
-  /**
-   * Receives and returns a message.
-   *
-   * @return the message as a newly allocated <tt>byte[]</tt>.
-   * @throws Exception if receiving a message fails.
-   */
-  public byte[] receiveMessage() throws Exception;
+    /**
+     * Receives and returns a message.
+     *
+     * @return the message as a newly allocated <tt>byte[]</tt>.
+     * @throws Exception if receiving a message fails.
+     */
+    public byte[] receiveMessage() throws Exception;
 
-}//interface UDPTerminal
+}// interface UDPTerminal

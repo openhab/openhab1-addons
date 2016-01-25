@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.persistence.jdbc.utils;
 
 import java.net.URI;
@@ -18,7 +26,7 @@ public class StringUtilsExt {
 
     /**
      * Replaces multiple found words with the given Array contents
-     * 
+     *
      * @param str - String for replacement
      * @param separate - A String or Array to be replaced
      * @param separators - Array will be merged to str
@@ -88,8 +96,9 @@ public class StringUtilsExt {
         }
 
         // replace all \
-        if (url.contains("\\"))
+        if (url.contains("\\")) {
             url = url.replaceAll("\\\\", "/");
+        }
 
         // replace first ; with ?
         if (url.contains(";")) {
@@ -148,16 +157,20 @@ public class StringUtilsExt {
                     path = stringBeforeSubstr(gp, st) + st;
                 }
             }
-            if (dbURI.getScheme() != null && dbURI.getScheme().length() == 1)
+            if (dbURI.getScheme() != null && dbURI.getScheme().length() == 1) {
                 path = dbURI.getScheme() + ":" + path;
+            }
             props.put("serverPath", path);
         }
-        if (dbURI.getPath() != null)
+        if (dbURI.getPath() != null) {
             props.put("databaseName", stringAfterLastSubstr(dbURI.getPath(), "/"));
-        if (dbURI.getPort() != -1)
+        }
+        if (dbURI.getPort() != -1) {
             props.put("portNumber", dbURI.getPort() + "");
-        if (dbURI.getHost() != null)
+        }
+        if (dbURI.getHost() != null) {
             props.put("serverName", dbURI.getHost());
+        }
 
         return props;
     }

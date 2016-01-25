@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -71,48 +71,51 @@ public class StreamClientImpl implements StreamClient<StreamClientConfigurationI
         this.configuration = configuration;
 
         ConnManagerParams.setMaxTotalConnections(globalParams, getConfiguration().getMaxTotalConnections());
-        HttpConnectionParams.setConnectionTimeout(globalParams, getConfiguration().getConnectionTimeoutSeconds() * 1000);
+        HttpConnectionParams.setConnectionTimeout(globalParams,
+                getConfiguration().getConnectionTimeoutSeconds() * 1000);
         HttpConnectionParams.setSoTimeout(globalParams, getConfiguration().getDataReadTimeoutSeconds() * 1000);
         HttpProtocolParams.setContentCharset(globalParams, getConfiguration().getContentCharset());
-        if(getConfiguration().getSocketBufferSize() != -1) {
-        	
-        	// Android configuration will set this to 8192 as its httpclient is based 
-        	// on a random pre 4.0.1 snapshot whose BasicHttpParams do not set a default value for socket buffer size.
-        	// This will also avoid OOM on the HTC Thunderbolt where default size is 2Mb (!):
-        	// http://stackoverflow.com/questions/5358014/android-httpclient-oom-on-4g-lte-htc-thunderbolt
-        	
-        	HttpConnectionParams.setSocketBufferSize(globalParams, getConfiguration().getSocketBufferSize());
+        if (getConfiguration().getSocketBufferSize() != -1) {
+
+            // Android configuration will set this to 8192 as its httpclient is based
+            // on a random pre 4.0.1 snapshot whose BasicHttpParams do not set a default value for socket buffer size.
+            // This will also avoid OOM on the HTC Thunderbolt where default size is 2Mb (!):
+            // http://stackoverflow.com/questions/5358014/android-httpclient-oom-on-4g-lte-htc-thunderbolt
+
+            HttpConnectionParams.setSocketBufferSize(globalParams, getConfiguration().getSocketBufferSize());
         }
         HttpConnectionParams.setStaleCheckingEnabled(globalParams, getConfiguration().getStaleCheckingEnabled());
-
 
         // This is a pretty stupid API... https://issues.apache.org/jira/browse/HTTPCLIENT-805
         SchemeRegistry registry = new SchemeRegistry();
         registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory())); // The 80 here is... useless
         clientConnectionManager = new ThreadSafeClientConnManager(globalParams, registry);
         httpClient = new DefaultHttpClient(clientConnectionManager, globalParams);
-        if(getConfiguration().getRequestRetryCount() != -1) {
-        	httpClient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(getConfiguration().getRequestRetryCount(), false));
-        }
-        
-        /*
-        // TODO: Ugh! And it turns out that by default it doesn't even use persistent connections properly!
-        @Override
-        protected ConnectionReuseStrategy createConnectionReuseStrategy() {
-            return new NoConnectionReuseStrategy();
+        if (getConfiguration().getRequestRetryCount() != -1) {
+            httpClient.setHttpRequestRetryHandler(
+                    new DefaultHttpRequestRetryHandler(getConfiguration().getRequestRetryCount(), false));
         }
 
-        @Override
-        protected ConnectionKeepAliveStrategy createConnectionKeepAliveStrategy() {
-            return new ConnectionKeepAliveStrategy() {
-                public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
-                    return 0;
-                }
-            };
-        }
-        httpClient.removeRequestInterceptorByClass(RequestConnControl.class);
-        */
+        /*
+         * // TODO: Ugh! And it turns out that by default it doesn't even use persistent connections properly!
+         * 
+         * @Override
+         * protected ConnectionReuseStrategy createConnectionReuseStrategy() {
+         * return new NoConnectionReuseStrategy();
+         * }
+         * 
+         * @Override
+         * protected ConnectionKeepAliveStrategy createConnectionKeepAliveStrategy() {
+         * return new ConnectionKeepAliveStrategy() {
+         * public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
+         * return 0;
+         * }
+         * };
+         * }
+         * httpClient.removeRequestInterceptorByClass(RequestConnControl.class);
+         */
     }
+
     @Override
     public StreamClientConfigurationImpl getConfiguration() {
         return configuration;
@@ -122,7 +125,8 @@ public class StreamClientImpl implements StreamClient<StreamClientConfigurationI
     public StreamResponseMessage sendRequest(StreamRequestMessage requestMessage) {
 
         final UpnpRequest requestOperation = requestMessage.getOperation();
-        log.fine("Preparing HTTP request message with method '" + requestOperation.getHttpMethodName() + "': " + requestMessage);
+        log.fine("Preparing HTTP request message with method '" + requestOperation.getHttpMethodName() + "': "
+                + requestMessage);
 
         try {
 
@@ -155,7 +159,8 @@ public class StreamClientImpl implements StreamClient<StreamClientConfigurationI
         clientConnectionManager.shutdown();
     }
 
-    protected HttpUriRequest createHttpRequest(UpnpMessage upnpMessage, UpnpRequest upnpRequestOperation) throws MethodNotSupportedException {
+    protected HttpUriRequest createHttpRequest(UpnpMessage upnpMessage, UpnpRequest upnpRequestOperation)
+            throws MethodNotSupportedException {
 
         switch (upnpRequestOperation.getMethod()) {
             case GET:
@@ -211,14 +216,15 @@ public class StreamClientImpl implements StreamClient<StreamClientConfigurationI
 
     protected ResponseHandler<StreamResponseMessage> createResponseHandler() {
         return new ResponseHandler<StreamResponseMessage>() {
+            @Override
             public StreamResponseMessage handleResponse(final HttpResponse httpResponse) throws IOException {
 
                 StatusLine statusLine = httpResponse.getStatusLine();
                 log.fine("Received HTTP response: " + statusLine);
 
                 // Status
-                UpnpResponse responseOperation =
-                        new UpnpResponse(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+                UpnpResponse responseOperation = new UpnpResponse(statusLine.getStatusCode(),
+                        statusLine.getReasonPhrase());
 
                 // Message
                 StreamResponseMessage responseMessage = new StreamResponseMessage(responseOperation);
@@ -228,7 +234,9 @@ public class StreamClientImpl implements StreamClient<StreamClientConfigurationI
 
                 // Body
                 HttpEntity entity = httpResponse.getEntity();
-                if (entity == null || entity.getContentLength() == 0) return responseMessage;
+                if (entity == null || entity.getContentLength() == 0) {
+                    return responseMessage;
+                }
 
                 if (responseMessage.isContentTypeMissingOrText()) {
                     log.fine("HTTP response message contains text entity");
@@ -246,21 +254,16 @@ public class StreamClientImpl implements StreamClient<StreamClientConfigurationI
     protected HttpParams getRequestParams(StreamRequestMessage requestMessage) {
         HttpParams localParams = new BasicHttpParams();
 
-        localParams.setParameter(
-                CoreProtocolPNames.PROTOCOL_VERSION,
-                requestMessage.getOperation().getHttpMinorVersion() == 0 ? HttpVersion.HTTP_1_0 : HttpVersion.HTTP_1_1
-        );
+        localParams.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+                requestMessage.getOperation().getHttpMinorVersion() == 0 ? HttpVersion.HTTP_1_0 : HttpVersion.HTTP_1_1);
 
         // DefaultHttpClient adds HOST header automatically in its default processor
 
         // Let's add the user-agent header on every request
-        HttpProtocolParams.setUserAgent(
-                localParams,
-                getConfiguration().getUserAgentValue(requestMessage.getUdaMajorVersion(), requestMessage.getUdaMinorVersion())
-        );
+        HttpProtocolParams.setUserAgent(localParams, getConfiguration()
+                .getUserAgentValue(requestMessage.getUdaMajorVersion(), requestMessage.getUdaMinorVersion()));
 
         return new DefaultedHttpParams(localParams, globalParams);
     }
-
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +9,12 @@
 package org.openhab.binding.ihc.ws.datatypes;
 
 /**
- * <p>Java class for WSUser complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for WSUser complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ *
  * <pre>
  * &lt;complexType name="WSUser">
  *   &lt;complexContent>
@@ -33,8 +35,8 @@ package org.openhab.binding.ihc.ws.datatypes;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 
 public class WSUser {
@@ -52,11 +54,11 @@ public class WSUser {
 
     /**
      * Gets the value of the createdDate property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link WSDate }
-     *     
+     *         possible object is
+     *         {@link WSDate }
+     * 
      */
     public WSDate getCreatedDate() {
         return createdDate;
@@ -64,11 +66,11 @@ public class WSUser {
 
     /**
      * Sets the value of the createdDate property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link WSDate }
-     *     
+     *            allowed object is
+     *            {@link WSDate }
+     * 
      */
     public void setCreatedDate(WSDate value) {
         this.createdDate = value;
@@ -76,11 +78,11 @@ public class WSUser {
 
     /**
      * Gets the value of the loginDate property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link WSDate }
-     *     
+     *         possible object is
+     *         {@link WSDate }
+     * 
      */
     public WSDate getLoginDate() {
         return loginDate;
@@ -88,11 +90,11 @@ public class WSUser {
 
     /**
      * Sets the value of the loginDate property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link WSDate }
-     *     
+     *            allowed object is
+     *            {@link WSDate }
+     * 
      */
     public void setLoginDate(WSDate value) {
         this.loginDate = value;
@@ -100,11 +102,11 @@ public class WSUser {
 
     /**
      * Gets the value of the username property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getUsername() {
         return username;
@@ -112,11 +114,11 @@ public class WSUser {
 
     /**
      * Sets the value of the username property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setUsername(String value) {
         this.username = value;
@@ -124,11 +126,11 @@ public class WSUser {
 
     /**
      * Gets the value of the password property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getPassword() {
         return password;
@@ -136,11 +138,11 @@ public class WSUser {
 
     /**
      * Sets the value of the password property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setPassword(String value) {
         this.password = value;
@@ -148,11 +150,11 @@ public class WSUser {
 
     /**
      * Gets the value of the email property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getEmail() {
         return email;
@@ -160,11 +162,11 @@ public class WSUser {
 
     /**
      * Sets the value of the email property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setEmail(String value) {
         this.email = value;
@@ -172,11 +174,11 @@ public class WSUser {
 
     /**
      * Gets the value of the firstname property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getFirstname() {
         return firstname;
@@ -184,11 +186,11 @@ public class WSUser {
 
     /**
      * Sets the value of the firstname property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setFirstname(String value) {
         this.firstname = value;
@@ -196,11 +198,11 @@ public class WSUser {
 
     /**
      * Gets the value of the lastname property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getLastname() {
         return lastname;
@@ -208,11 +210,11 @@ public class WSUser {
 
     /**
      * Sets the value of the lastname property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setLastname(String value) {
         this.lastname = value;
@@ -220,11 +222,11 @@ public class WSUser {
 
     /**
      * Gets the value of the phone property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getPhone() {
         return phone;
@@ -232,11 +234,11 @@ public class WSUser {
 
     /**
      * Sets the value of the phone property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setPhone(String value) {
         this.phone = value;
@@ -244,11 +246,11 @@ public class WSUser {
 
     /**
      * Gets the value of the group property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link WSUserGroup }
-     *     
+     *         possible object is
+     *         {@link WSUserGroup }
+     * 
      */
     public WSUserGroup getGroup() {
         return group;
@@ -256,11 +258,11 @@ public class WSUser {
 
     /**
      * Sets the value of the group property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link WSUserGroup }
-     *     
+     *            allowed object is
+     *            {@link WSUserGroup }
+     * 
      */
     public void setGroup(WSUserGroup value) {
         this.group = value;
@@ -268,11 +270,11 @@ public class WSUser {
 
     /**
      * Gets the value of the project property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     * 
      */
     public String getProject() {
         return project;
@@ -280,11 +282,11 @@ public class WSUser {
 
     /**
      * Sets the value of the project property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     * 
      */
     public void setProject(String value) {
         this.project = value;

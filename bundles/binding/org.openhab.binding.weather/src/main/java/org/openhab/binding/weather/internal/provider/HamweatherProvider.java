@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,31 +13,31 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
 
 /**
  * Hamweather weather provider.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class HamweatherProvider extends AbstractWeatherProvider {
-	private static final String URL = "http://api.aerisapi.com/batch?p=[LATITUDE],[LONGITUDE]&requests=/observations,/forecasts%3Ffilter=day%26to=+5days&client_id=[API_KEY]&client_secret=[API_KEY_2]";
+    private static final String URL = "http://api.aerisapi.com/batch?p=[LATITUDE],[LONGITUDE]&requests=/observations,/forecasts%3Ffilter=day%26to=+5days&client_id=[API_KEY]&client_secret=[API_KEY_2]";
 
-	public HamweatherProvider() {
-		super(new JsonWeatherParser());
-	}
+    public HamweatherProvider() {
+        super(new JsonWeatherParser());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ProviderName getProviderName() {
-		return ProviderName.HAMWEATHER;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProviderName getProviderName() {
+        return ProviderName.HAMWEATHER;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getWeatherUrl() {
-		return URL;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getWeatherUrl() {
+        return URL;
+    }
 
 }

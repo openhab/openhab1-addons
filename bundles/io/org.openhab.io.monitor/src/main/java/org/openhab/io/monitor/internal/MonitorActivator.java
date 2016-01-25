@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,16 +15,18 @@ import org.osgi.framework.BundleContext;
  * Extension of the default OSGi bundle activator
  */
 public final class MonitorActivator implements BundleActivator {
-	
-	/**
-	 * Called whenever the OSGi framework starts our bundle
-	 */
-	public void start(BundleContext bc) throws Exception {
-	}
 
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-	}
+    /**
+     * Called whenever the OSGi framework starts our bundle
+     */
+    @Override
+    public void start(BundleContext bc) throws Exception {
+    }
+
+    /**
+     * Called whenever the OSGi framework stops our bundle
+     */
+    @Override
+    public void stop(BundleContext bc) throws Exception {
+    }
 }
