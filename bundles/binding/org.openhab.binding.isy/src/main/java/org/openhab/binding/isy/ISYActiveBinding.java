@@ -282,7 +282,6 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					state = new StringType((String) action);
 					break;
 				case DIMMER:
-					state = new PercentType((String) action);
 					if ("0".equals(action)) {
 						state = OnOffType.OFF;
 					} else if ("255".equals(action)){
