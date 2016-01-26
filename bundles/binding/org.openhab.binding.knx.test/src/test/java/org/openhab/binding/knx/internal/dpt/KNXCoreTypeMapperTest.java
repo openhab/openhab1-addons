@@ -259,6 +259,26 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.016 DPT_ACK
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_016() throws KNXFormatException {
+		testTypeMappingB1(DPTXlatorBoolean.DPT_ACK, OnOffType.class, "no action", "acknowledge");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.017 DPT_TRIGGER
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_017() throws KNXFormatException {
+		testTypeMappingB1(DPTXlatorBoolean.DPT_TRIGGER, OnOffType.class, "trigger", "trigger");
+	}
+
+	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.018 DPT_OCCUPANCY
 	 * 
 	 * @throws KNXFormatException
@@ -307,6 +327,16 @@ public class KNXCoreTypeMapperTest {
 	@Test
 	public void testTypeMappingB1_1_023() throws KNXFormatException {
 		testTypeMappingB1(DPTXlatorBoolean.DPT_SHUTTER_BLINDS_MODE, OnOffType.class, "only move up/down", "move up/down + step-stop");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.100 DPT_HEAT_COOL
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_100() throws KNXFormatException {
+		testTypeMappingB1(DPTXlatorBoolean.DPT_HEAT_COOL, OnOffType.class, "cooling", "heating");
 	}
 
 	/**
@@ -1317,9 +1347,92 @@ public class KNXCoreTypeMapperTest {
 		Locale defaultLocale = Locale.getDefault();
 
 		Locale[] locales = {defaultLocale, Locale.ENGLISH, Locale.GERMAN};
-		DPT[] dpts = {DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, DPTXlator4ByteFloat.DPT_ANGLE_DEG,
-				DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, DPTXlator4ByteFloat.DPT_FREQUENCY,
-				DPTXlator4ByteFloat.DPT_POWER};
+		DPT[] dpts = {
+				DPTXlator4ByteFloat.DPT_ACCELERATION,
+				DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR,
+				DPTXlator4ByteFloat.DPT_ACTIVATION_ENERGY,
+				DPTXlator4ByteFloat.DPT_ACTIVITY,
+				DPTXlator4ByteFloat.DPT_MOL,
+				DPTXlator4ByteFloat.DPT_AMPLITUDE,
+				DPTXlator4ByteFloat.DPT_ANGLE_RAD,
+				DPTXlator4ByteFloat.DPT_ANGLE_DEG,
+				DPTXlator4ByteFloat.DPT_ANGULAR_MOMENTUM,
+				DPTXlator4ByteFloat.DPT_ANGULAR_VELOCITY,
+				DPTXlator4ByteFloat.DPT_AREA,
+				DPTXlator4ByteFloat.DPT_CAPACITANCE,
+				DPTXlator4ByteFloat.DPT_CHARGE_DENSITY_SURFACE,
+				DPTXlator4ByteFloat.DPT_CHARGE_DENSITY_VOLUME,
+				DPTXlator4ByteFloat.DPT_COMPRESSIBILITY,
+				DPTXlator4ByteFloat.DPT_CONDUCTANCE,
+				DPTXlator4ByteFloat.DPT_ELECTRICAL_CONDUCTIVITY,
+				DPTXlator4ByteFloat.DPT_DENSITY,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_CHARGE,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENTDENSITY,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_DIPOLEMOMENT,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_DISPLACEMENT,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_FIELDSTRENGTH,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_FLUX,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_FLUX_DENSITY,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_POLARIZATION,				
+				DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL_DIFFERENCE,
+				DPTXlator4ByteFloat.DPT_ELECTROMAGNETIC_MOMENT,
+				DPTXlator4ByteFloat.DPT_ELECTROMOTIVE_FORCE,
+				DPTXlator4ByteFloat.DPT_ENERGY,
+				DPTXlator4ByteFloat.DPT_FORCE,
+				DPTXlator4ByteFloat.DPT_FREQUENCY,
+				DPTXlator4ByteFloat.DPT_ANGULAR_FREQUENCY,
+				DPTXlator4ByteFloat.DPT_HEAT_CAPACITY,
+				DPTXlator4ByteFloat.DPT_HEAT_FLOWRATE,
+				DPTXlator4ByteFloat.DPT_HEAT_QUANTITY,
+				DPTXlator4ByteFloat.DPT_IMPEDANCE,
+				DPTXlator4ByteFloat.DPT_LENGTH,
+				DPTXlator4ByteFloat.DPT_LIGHT_QUANTITY,
+				DPTXlator4ByteFloat.DPT_LUMINANCE,
+				DPTXlator4ByteFloat.DPT_LUMINOUS_FLUX,
+				DPTXlator4ByteFloat.DPT_LUMINOUS_INTENSITY,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_FIELDSTRENGTH,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_FLUX,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_FLUX_DENSITY,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_MOMENT,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_POLARIZATION,
+				DPTXlator4ByteFloat.DPT_MAGNETIZATION,
+				DPTXlator4ByteFloat.DPT_MAGNETOMOTIVE_FORCE,
+				DPTXlator4ByteFloat.DPT_MASS,
+				DPTXlator4ByteFloat.DPT_MASS_FLUX,
+				DPTXlator4ByteFloat.DPT_MOMENTUM,
+				DPTXlator4ByteFloat.DPT_PHASE_ANGLE_RAD,
+				DPTXlator4ByteFloat.DPT_PHASE_ANGLE_DEG,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_MOMENT,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_MOMENT,
+				DPTXlator4ByteFloat.DPT_MAGNETIC_MOMENT,
+				DPTXlator4ByteFloat.DPT_POWER,
+				DPTXlator4ByteFloat.DPT_POWER_FACTOR,
+				DPTXlator4ByteFloat.DPT_PRESSURE,
+				DPTXlator4ByteFloat.DPT_REACTANCE,
+				DPTXlator4ByteFloat.DPT_RESISTANCE,
+				DPTXlator4ByteFloat.DPT_RESISTIVITY,
+				DPTXlator4ByteFloat.DPT_SELF_INDUCTANCE,
+				DPTXlator4ByteFloat.DPT_SOLID_ANGLE,
+				DPTXlator4ByteFloat.DPT_SOUND_INTENSITY,
+				DPTXlator4ByteFloat.DPT_SPEED,
+				DPTXlator4ByteFloat.DPT_STRESS,
+				DPTXlator4ByteFloat.DPT_SURFACE_TENSION,
+				DPTXlator4ByteFloat.DPT_COMMON_TEMPERATURE,
+				DPTXlator4ByteFloat.DPT_ABSOLUTE_TEMPERATURE,
+				DPTXlator4ByteFloat.DPT_TEMPERATURE_DIFFERENCE,
+				DPTXlator4ByteFloat.DPT_THERMAL_CAPACITY,
+				DPTXlator4ByteFloat.DPT_THERMAL_CONDUCTIVITY,
+				DPTXlator4ByteFloat.DPT_THERMOELECTRIC_POWER,
+				DPTXlator4ByteFloat.DPT_TIME,
+				DPTXlator4ByteFloat.DPT_TORQUE,
+				DPTXlator4ByteFloat.DPT_VOLUME,
+				DPTXlator4ByteFloat.DPT_VOLUME_FLUX,
+				DPTXlator4ByteFloat.DPT_WEIGHT,
+				DPTXlator4ByteFloat.DPT_WORK
+		};
+
 		// Iterate over the locales
 		for (Locale locale : locales) {
 			//Iterate over the subtypes to be tested
@@ -1404,18 +1517,24 @@ public class KNXCoreTypeMapperTest {
 		/*
 		 * According to spec the length of this DPT is fixed to 14 bytes. 
 		 * 
-		 * Test the that a too short array results in an <null> string. There should be an error logged by calimero lib (V2.2.0).
+		 * Test that a too short array results in an <null> string. There should be an error logged by calimero lib (V2.2.1).
 		 */
 		Type type=testToType(dpt, new byte[] { 0x61, 0x62 }, StringType.class);
 		testToDPTValue(dpt, type, null);
 
+		/* 
+		 * Test a "padded" byte array with 14 bytes length
+		 */
+		type=testToType(dpt, new byte[] { 0x61, 0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, StringType.class);
+		testToDPTValue(dpt, type, "ab");
+
 		/*
-		 * FIXME: According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this correctly and has a bug in
+		 * FIXME: According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.1) isn't checking this correctly and has a bug in
 		 * tuwien.auto.calimero.dptxlator.DPTXlatorString.toDPT(final byte[] buf, final int offset). Calimero accepts any byte array larger or equal to 14 bytes
 		 * without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted but cutoff. Even for the failed check (less
 		 * then 14 bytes) calimero is not throwing an exception but is logging an error which we cannot check for here.
 		 * 
-		 * Test the erroneous behavior that a too long arrays result in a cutoff string. There probably won't be an error logged by calimero lib (V2.2.0).
+		 * Test the erroneous behavior that a too long arrays result in a cutoff string. There probably won't be an error logged by calimero lib.
 		 */
 		type=testToType(dpt, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F }, StringType.class);
 		testToDPTValue(dpt, type, "abcdefghijklmn");
