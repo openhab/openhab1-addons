@@ -150,10 +150,11 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
                             if (stateChanged(deviceId, property, volume)) {
                                 final int percent = radio.convertVolumeToPercent(volume);
                                 logger.debug("volume changed to " + volume + " (" + percent + "%)");
+                                // based on the item type, either set absolue value or percent value
                                 if (provider.getItemType(itemName) == DimmerItem.class) {
                                     eventPublisher.postUpdate(itemName, new PercentType(percent));
                                 } else {
-                                    eventPublisher.postUpdate(itemName, new DecimalType(percent));
+                                    eventPublisher.postUpdate(itemName, new DecimalType(volume));
                                 }
                             }
                             break;
