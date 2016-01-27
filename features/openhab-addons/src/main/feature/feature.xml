@@ -28,6 +28,14 @@
         <configfile finalname="${openhab.conf}/services/mail.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mail</configfile>
     </feature>
 
+    <feature name="openhab-action-mios" description="MiOS Action" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-binding-mios</feature>
+        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mios/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
+    </feature>
+
     <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -224,6 +232,13 @@
         <configfile finalname="${openhab.conf}/services/milight.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/milight</configfile>
     </feature>
 
+    <feature name="openhab-binding-mios" description="MiOS Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mios/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
+    </feature>
+
     <feature name="openhab-binding-modbus" description="Modbus Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -351,6 +366,14 @@
         <feature>openhab-runtime-compat1x</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.tinkerforge/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
+    </feature>
+
+    <feature name="openhab-binding-urtsi" description="Somfy URTSI II Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-transport-serial</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.urtsi/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/urtsi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/urtsi</configfile>
     </feature>
 
     <feature name="openhab-binding-weather" description="Weather Binding" version="${project.version}">

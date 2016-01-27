@@ -798,6 +798,15 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+        <Product>
+            <Reference>
+                <Type>0104</Type>
+                <Id>0038</Id>
+            </Reference>
+            <Model>ZW056-A</Model>
+            <Label lang="en">Doorbell</Label>
+            <ConfigFile>aeon/zw056.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
@@ -2037,6 +2046,10 @@
 				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0011</Id>
+            </Reference>
 			<Model>TZ88</Model>
 			<Label lang="en">Energy Monitoring Wall Plug</Label>
 			<ConfigFile>tkb/tz88.xml</ConfigFile>
@@ -2236,7 +2249,7 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
-				<Id>0031</Id>
+				<Id>001f</Id>
 			</Reference>
 			<Model>PAT02-A/B/C</Model>
 			<Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
@@ -2569,15 +2582,24 @@
 	<Manufacturer>
 		<Id>159</Id>
 		<Name>Qubino</Name>
-		<Product>
-			<Reference>
-				<Type>2</Type>
-				<Id>2</Id>
-			</Reference>
-			<Model>ZMNHAA</Model>
-			<Label lang="en">Flush 1 relay</Label>
-			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
-		</Product>
+        <Product>
+            <Reference>
+                <Type>2</Type>
+                <Id>2</Id>
+            </Reference>
+            <Model>ZMNHAA</Model>
+            <Label lang="en">Flush 1 relay</Label>
+            <ConfigFile>qubino/zmnhaa.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>1</Type>
+                <Id>52</Id>
+            </Reference>
+            <Model>ZMNHSD</Model>
+            <Label lang="en">DIN dimmer</Label>
+            <ConfigFile>qubino/zmnhsd.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>2</Type>
@@ -3176,4 +3198,17 @@
  			<ConfigFile>lscontrol/e861c.xml</ConfigFile>
  		</Product>
  	</Manufacturer>
+ 	<Manufacturer>
+		<Id>0176</Id>
+		<Name>Telldus</Name>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TZDW-100</Model>
+			<Label lang="en">Door Sensor</Label>
+			<ConfigFile>telldus/tzdw-100.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

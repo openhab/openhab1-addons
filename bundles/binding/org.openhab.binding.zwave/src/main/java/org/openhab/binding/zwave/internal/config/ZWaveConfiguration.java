@@ -75,7 +75,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
     /**
      * Constructor for the configuration class. Sets the zwave controller
      * which is required in order to allow the class to retrieve the configuration.
-     * 
+     *
      * @param controller The zWave controller
      */
     public ZWaveConfiguration(ZWaveController controller, ZWaveNetworkMonitor monitor) {
@@ -365,7 +365,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
                 ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass) node
                         .getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
-                if (switchAllCommandClass != null) {
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.SWITCH_ALL) != null) {
                     record = new OpenHABConfigurationRecord(domain, "SwitchAll", "Switch All", false);
                     record.type = OpenHABConfigurationRecord.TYPE.LIST;
                     record.addValue("0", "Exclude from All On and All Off groups");
@@ -376,31 +376,24 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
                     records.add(record);
                 }
 
-                if (node.getManufacturer() != Integer.MAX_VALUE) {
-                    if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(),
-                            node.getApplicationVersion()) == true) {
-                        // Add links to configuration if the node supports the various command classes
-                        if (database.doesProductImplementCommandClass(
-                                ZWaveCommandClass.CommandClass.CONFIGURATION.getKey()) == true) {
-                            record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
-                            record.addAction("Refresh", "Refresh");
-                            records.add(record);
-                        }
+                // Add links to configuration if the node supports the various command classes
+                // Get the configuration command class for this node if it's supported
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.CONFIGURATION) != null) {
+                    record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
+                    record.addAction("Refresh", "Refresh");
+                    records.add(record);
+                }
 
-                        if (database.doesProductImplementCommandClass(
-                                ZWaveCommandClass.CommandClass.ASSOCIATION.getKey()) == true) {
-                            record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
-                            record.addAction("Refresh", "Refresh");
-                            records.add(record);
-                        }
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION) != null) {
+                    record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
+                    record.addAction("Refresh", "Refresh");
+                    records.add(record);
+                }
 
-                        if (database.doesProductImplementCommandClass(
-                                ZWaveCommandClass.CommandClass.WAKE_UP.getKey()) == true) {
-                            record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
-                            record.addAction("Refresh", "Refresh");
-                            records.add(record);
-                        }
-                    }
+                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.WAKE_UP) != null) {
+                    record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
+                    record.addAction("Refresh", "Refresh");
+                    records.add(record);
                 }
 
                 // Is this a controller
@@ -1264,7 +1257,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
     /**
      * Handle the inclusion/exclusion event. This just notifies the GUI.
-     * 
+     *
      * @param event
      */
     void handleInclusionEvent(ZWaveInclusionEvent event) {
@@ -1304,7 +1297,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
     /**
      * Event handler method for incoming Z-Wave events.
-     * 
+     *
      * @param event
      *            the incoming Z-Wave event.
      */
@@ -1422,7 +1415,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
      * of the new value here so that any requests for the current value can take account
      * of the pending request.
      * When the information is updated, we remove the request from the pending list.
-     * 
+     *
      * @author Chris Jackson
      *
      */
