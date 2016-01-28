@@ -29,7 +29,7 @@
 	<Configuration>
 		<Parameter>
 	        	<Index>2</Index>
-	            	<Type>long</Type>
+	            	<Type>int</Type>
 	            	<Default>2</Default>
 			<Size>1</Size>
 	            	<Minimum>0</Minimum>
@@ -39,7 +39,7 @@
 		</Parameter>
 	        <Parameter>
 			<Index>5</Index>
-			<Type>long</Type>
+			<Type>int</Type>
 			<Default>1</Default>
 			<Size>1</Size>
 			<Minimum>1</Minimum>
@@ -91,7 +91,7 @@
 	        </Parameter>
 	        <Parameter>
 			<Index>8</Index>
-	            	<Type>long</Type>
+	            	<Type>int</Type>
 	            	<Default>10</Default>
 	            	<Size>1</Size>
 	            	<Minimum>0</Minimum>
