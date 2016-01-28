@@ -536,6 +536,15 @@
 		<Name>GE</Name>
 		<Product>
 			<Reference>
+				<Type>5044</Type>
+				<Id>3031</Id>
+			</Reference>
+			<Model>12718</Model>
+			<Label lang="en">Lighting Lamp Module with Dimmer Control</Label>
+			<ConfigFile>ge/12718.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>5257</Type>
 				<Id>3533</Id>
 			</Reference>
