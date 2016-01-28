@@ -247,6 +247,14 @@
         <configfile finalname="${openhab.conf}/services/modbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/modbus</configfile>
     </feature>
 
+    <feature name="openhab-binding-myq" description="Chamberlain MyQ Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>shk-apache-httpclient</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.myq/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
+    </feature>
+
     <feature name="openhab-binding-nest" description="Nest Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
