@@ -79,6 +79,7 @@
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/urtsi.cfg</file><type>cfg</type><classifier>urtsi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/weather.cfg</file><type>cfg</type><classifier>weather</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/xbmc.cfg</file><type>cfg</type><classifier>xbmc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xmpp.cfg</file><type>cfg</type><classifier>xmpp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/zwave.cfg</file><type>cfg</type><classifier>zwave</classifier></artifact>
                             </artifacts>
