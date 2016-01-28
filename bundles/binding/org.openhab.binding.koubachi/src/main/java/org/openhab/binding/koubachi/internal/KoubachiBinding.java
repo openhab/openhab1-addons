@@ -77,15 +77,15 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * the URL of the Device list (optional, defaults to
-     * 'https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
+     * 'https://api.koubachi.com/v3/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
      */
-    private static String apiDeviceListUrl = "https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s";
+    private static String apiDeviceListUrl = "https://api.koubachi.com/v3/user/smart_devices?user_credentials=%1$s&app_key=%2$s";
 
     /**
      * the URL of the Plant list (optional, defaults to
-     * 'https://api.koubachi.com/v2/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
+     * 'https://api.koubachi.com/v3/user/smart_devices?user_credentials=%1$s&app_key=%2$s')
      */
-    private static String apiPlantListUrl = "https://api.koubachi.com/v2/plants?user_credentials=%1$s&app_key=%2$s";
+    private static String apiPlantListUrl = "https://api.koubachi.com/v3/plants?user_credentials=%1$s&app_key=%2$s";
 
     /**
      * The URL of the "plants/tasks" API method, to publish an action back to
@@ -102,7 +102,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * @see #updated(Dictionary)
      * @see https://labs.koubachi.com/documentations/9
      */
-    private static String apiTasksUrl = "https://api.koubachi.com/v2/plants/%3$s/tasks?user_credentials=%1$s&app_key=%2$s";
+    private static String apiTasksUrl = "https://api.koubachi.com/v3/plants/%3$s/tasks?user_credentials=%1$s&app_key=%2$s";
 
     /** The single access token configured at http://labs.kpubachi.com */
     private static String credentials;
