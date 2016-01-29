@@ -1817,6 +1817,15 @@
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>EZMultiPli</Model>
+			<Label lang="en">Multi Sensor</Label>
+			<ConfigFile>homeseer/ezmultipli.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0115</Id>
