@@ -15,10 +15,10 @@ package org.openhab.binding.wr3223.internal;
  *
  */
 public enum WR3223Commands {
-	/** Abtau ein Temperatur lesen/schreiben */
+	/** Abtau ein, beginn Abtauung ab Verdampfertemperatur. Temperatur lesen/schreiben */
 	AE,
 	
-	/** Abtau aus Temperatur lesen/schreiben */
+	/** Abtau aus, ende Abtauung ab Verdampfertemperatur. Temperatur lesen/schreiben */
 	AA,
 	
 	/** Abtau Zuluft lesen/schreiben */
@@ -145,16 +145,16 @@ public enum WR3223Commands {
 	/** Maximale Kondensationstemperatur lesen/schreiben */
 	KM, 
 	
-	/** Zusatzheizung frei lesen/schreiben */
+	/** Zusatzheizung frei (ausgeschaltet (0) oder freigegeben (1)) lesen/schreiben */
 	ZH, 
 	
 	/** Zusatzheizung Ein lesen/schreiben */
 	ZE, 
 	
-	/** Wärmepumpe frei lesen/schreiben */
+	/** Wärmepumpe frei (freigegeben (1) oder aus (0)) lesen/schreiben */
 	WP, 
 	
-	/** Ausgleichszeit lesen/schreiben */
+	/**  Pausezeit für Druckabbau bei automatischer Umschaltung  lesen/schreiben */
 	PA, 
 	
 	/** Identifikation lesen */
@@ -182,6 +182,30 @@ public enum WR3223Commands {
 	E3, 
 	
 	/** Parameter, LuflREDUK, Luftwechsel um 3% reduziert ab Außentemp. ...°C (-20°C bis +10°C) */
-	LR 
+	LR,
+	
+	/** Parameter  Solar max */
+	SM,
+	
+	/** Messwert   Solar Nutzen (Stunden) */
+    SN,
+    
+    /** Parameter  Delta T Aus Temperaturdifferenz zwischen Speicher u. Kollektor */
+    DA,
+    
+    /** Parameter  Delta T Ein Temperaturdifferenz zwischen Speicher u. Kollektor */
+    DE,  
+
+    /** Parameter  Unterstuetzungsgeblaese bei Luftstufe 1 bei EWT */
+    S1,  
+    
+    /** Parameter  Unterstuetzungsgeblaese bei Luftstufe 2 bei EWT */
+    S2,  
+    
+    /** Parameter  Unterstuetzungsgeblaese bei Luftstufe 3 bei EWT */
+    S3,  
+ 
+    /** Parameter  Warmwasser Sollwert */
+    WS
 
 }

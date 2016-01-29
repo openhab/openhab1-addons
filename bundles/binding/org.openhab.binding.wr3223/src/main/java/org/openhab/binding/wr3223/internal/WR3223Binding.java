@@ -74,7 +74,21 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		WR3223CommandType.DEFROSTING_VENTILATION_LEVEL,
 		WR3223CommandType.DEFROSTING_HOLD_OFF_TIME,
 		WR3223CommandType.DEFROSTING_OVERTRAVEL_TIME,
-		WR3223CommandType.DEFROSTING_HEAT_FEEDBACK_RATE
+		WR3223CommandType.DEFROSTING_HEAT_FEEDBACK_RATE,
+		WR3223CommandType.SOLAR_MAX,
+		WR3223CommandType.SOLAR_USAGE,
+		WR3223CommandType.DELTA_T_OFF,
+		WR3223CommandType.DELTA_T_ON,
+		WR3223CommandType.TEMPERATURE_CONDENSER_MAX,
+		WR3223CommandType.IDLE_TIME_PRESSURE_REDUCTION,
+		WR3223CommandType.SUPPORT_FAN_LEVEL_1_EARTH_HEAT_EXCHANGER,
+		WR3223CommandType.SUPPORT_FAN_LEVEL_2_EARTH_HEAT_EXCHANGER,
+		WR3223CommandType.SUPPORT_FAN_LEVEL_3_EARTH_HEAT_EXCHANGER,
+		WR3223CommandType.CONTROL_VOLTAGE_OUTGOING_AIR,
+		WR3223CommandType.CONTROL_VOLTAGE_SUPPLY_AIR,
+		WR3223CommandType.WARM_WATER_TARGET_TEMPERATURE,
+		WR3223CommandType.HEAT_PUMP_OPEN,
+		WR3223CommandType.ADDITIONAL_HEATER_OPEN
 	};
 	
 	private static final WR3223CommandType[] WRITE_COMMANDS = {
@@ -97,7 +111,18 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 		WR3223CommandType.DEFROSTING_VENTILATION_LEVEL,
 		WR3223CommandType.DEFROSTING_HOLD_OFF_TIME,
 		WR3223CommandType.DEFROSTING_OVERTRAVEL_TIME,
-		WR3223CommandType.DEFROSTING_HEAT_FEEDBACK_RATE
+		WR3223CommandType.DEFROSTING_HEAT_FEEDBACK_RATE,
+		WR3223CommandType.SOLAR_MAX,
+		WR3223CommandType.DELTA_T_OFF,
+		WR3223CommandType.DELTA_T_ON,
+		WR3223CommandType.TEMPERATURE_CONDENSER_MAX,
+		WR3223CommandType.IDLE_TIME_PRESSURE_REDUCTION,
+		WR3223CommandType.SUPPORT_FAN_LEVEL_1_EARTH_HEAT_EXCHANGER,
+		WR3223CommandType.SUPPORT_FAN_LEVEL_2_EARTH_HEAT_EXCHANGER,
+		WR3223CommandType.SUPPORT_FAN_LEVEL_3_EARTH_HEAT_EXCHANGER,
+		WR3223CommandType.WARM_WATER_TARGET_TEMPERATURE,
+		WR3223CommandType.HEAT_PUMP_OPEN,
+		WR3223CommandType.ADDITIONAL_HEATER_OPEN			
 	};	
 	
 	
@@ -399,12 +424,10 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 				}catch(NumberFormatException nfe){
 					logger.error("Can't set value {} to item type {} because it's not a decimal number.", value, wr3223CommandType.getCommand());
 				}
-			}else if(wr3223CommandType.getItemClass() == SwitchItem.class && value instanceof Boolean){
-				Boolean bolValue = (Boolean)value;
-				state = bolValue ? OnOffType.ON : OnOffType.OFF;
-			}else if(wr3223CommandType.getItemClass() == ContactItem.class && value instanceof Boolean){
-				Boolean bolValue = (Boolean)value;
-				state = bolValue ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+			}else if(wr3223CommandType.getItemClass() == SwitchItem.class){
+				state = parseBooleanValue(value);
+			}else if(wr3223CommandType.getItemClass() == ContactItem.class){
+				state = parseBooleanValue(value);
 			}else{
 				logger.error("Can't set value {} to item type {}.", value, wr3223CommandType.getCommand());
 			}
@@ -417,6 +440,18 @@ public class WR3223Binding extends AbstractActiveBinding<WR3223BindingProvider> 
 			logger.error("Can't set NULL value to item type {}.", wr3223CommandType.getCommand());
 			
 		}
+	}
+
+	/**
+	 * Versucht aus einem Objekt ein On/Off Status zu lesen
+	 * @param value
+	 * @return
+	 */
+	private State parseBooleanValue(Object value) {
+		State state;
+		String valStr = value.toString().trim();
+		state = (valStr.equalsIgnoreCase("true") || valStr.equals("1")) ? OnOffType.ON : OnOffType.OFF;
+		return state;
 	}		
 	
 	private List<String> getBoundItemsForType( WR3223CommandType wr3223CommandType) {
