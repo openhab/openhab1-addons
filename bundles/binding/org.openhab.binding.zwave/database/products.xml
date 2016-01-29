@@ -536,6 +536,15 @@
 		<Name>GE</Name>
 		<Product>
 			<Reference>
+				<Type>5044</Type>
+				<Id>3031</Id>
+			</Reference>
+			<Model>12718</Model>
+			<Label lang="en">Lighting Lamp Module with Dimmer Control</Label>
+			<ConfigFile>ge/12718.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>5257</Type>
 				<Id>3533</Id>
 			</Reference>
@@ -798,6 +807,15 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+        <Product>
+            <Reference>
+                <Type>0104</Type>
+                <Id>0038</Id>
+            </Reference>
+            <Model>ZW056-A</Model>
+            <Label lang="en">Doorbell</Label>
+            <ConfigFile>aeon/zw056.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
@@ -1261,17 +1279,18 @@
 				<Type>0003</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>NP210</Model>
-			<Label lang="en">Smart PowerNode</Label>
-			<ConfigFile>greenwave/np210.xml</ConfigFile>
+			<Model>NP210/NP310</Model>
+			<Label lang="en">Smart PowerNode (6x)</Label>
+			<ConfigFile VersionMax="3">greenwave/np210.xml</ConfigFile>
+			<ConfigFile VersionMin="4">greenwave/np310.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>NS210</Model>
-			<Label lang="en">Smart PowerNode</Label>
+			<Model>NS210/NS310</Model>
+			<Label lang="en">Smart PowerNode (single)</Label>
 			<ConfigFile VersionMax="3">greenwave/ns210.xml</ConfigFile>
 			<ConfigFile VersionMin="4">greenwave/ns310.xml</ConfigFile>
 		</Product>
@@ -1806,6 +1825,15 @@
 			<Model>EZMotion Express</Model>
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>EZMultiPli</Model>
+			<Label lang="en">Multi Sensor</Label>
+			<ConfigFile>homeseer/ezmultipli.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

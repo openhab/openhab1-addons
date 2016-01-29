@@ -40,6 +40,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.netty.handler.timeout.TimeoutException;
 import org.openhab.binding.plex.internal.communication.AbstractSessionItem;
 import org.openhab.binding.plex.internal.communication.Child;
+import org.openhab.binding.plex.internal.communication.Connection;
+import org.openhab.binding.plex.internal.communication.Device;
 import org.openhab.binding.plex.internal.communication.MediaContainer;
 import org.openhab.binding.plex.internal.communication.Player;
 import org.openhab.binding.plex.internal.communication.Server;
@@ -86,6 +88,8 @@ public class PlexConnector extends Thread {
 
     private static final String SIGN_IN_URL = "https://plex.tv/users/sign_in.xml";
 
+    private static final String API_RESOURCES_URL = "https://plex.tv/api/resources?includeHttps=1";
+
     private final AsyncHttpClient client;
 
     private final WebSocketUpgradeHandler handler;
@@ -128,7 +132,7 @@ public class PlexConnector extends Thread {
 
     /**
      * Create a connector for a single connection to a Plex server
-     * 
+     *
      * @param connection
      *            Connection properties
      * @param callback
@@ -138,19 +142,22 @@ public class PlexConnector extends Thread {
         this.connection = connection;
         this.callback = callback;
 
-        this.wsUri = String.format("ws://%s:%d/:/websockets/notifications", connection.getHost(), connection.getPort());
-        this.sessionsUrl = String.format("http://%s:%d/status/sessions", connection.getHost(), connection.getPort());
-        this.clientsUrl = String.format("http://%s:%d/clients", connection.getHost(), connection.getPort());
+        requestToken();
+        resolveServer();
+
+        this.wsUri = String.format("%s://%s:%d/:/websockets/notifications",
+                connection.getUri().getScheme().equals("https") ? "wss" : "ws", connection.getUri().getHost(),
+                connection.getUri().getPort());
+        this.sessionsUrl = String.format("%s/status/sessions", connection.getUri().toString());
+        this.clientsUrl = String.format("%s/clients", connection.getUri().toString());
 
         this.client = new AsyncHttpClient(new NettyAsyncHttpProvider(createAsyncHttpClientConfig()));
         this.handler = createWebSocketHandler();
-
-        requestToken();
     }
 
     /**
      * Check if the connection to the Plex server is active
-     * 
+     *
      * @return true if an active connection to the Plex server exists, false otherwise
      */
     public boolean isConnected() {
@@ -171,7 +178,7 @@ public class PlexConnector extends Thread {
 
     /**
      * Attempts to create a web socket connection to the Plex server and begins listening for updates
-     * 
+     *
      * @throws IOException
      * @throws InterruptedException
      * @throws ExecutionException
@@ -194,12 +201,12 @@ public class PlexConnector extends Thread {
 
     /**
      * Send command to Plex
-     * 
+     *
      * @param config
      *            The binding configuration for the item
      * @param command
      *            Command to send
-     * 
+     *
      * @throws IOException
      *             When it's not possible to send HTTP GET command
      */
@@ -229,7 +236,7 @@ public class PlexConnector extends Thread {
 
     /**
      * Finds a PlexSession for a certain client identified by machineIdentifier
-     * 
+     *
      * @param machineIdentifier
      *            Plex client ID
      * @return Session for the machineIdentifier or null
@@ -439,7 +446,7 @@ public class PlexConnector extends Thread {
 
     /**
      * Listener for web socket. Receives and parses status updates from Plex.
-     * 
+     *
      * @author Jeroen Idserda
      * @since 1.7.0
      */
@@ -570,6 +577,29 @@ public class PlexConnector extends Thread {
         }
 
         return null;
+    }
+
+    private void resolveServer() {
+        MediaContainer container = getDocument(API_RESOURCES_URL, MediaContainer.class);
+
+        if (container != null) {
+            for (Device devices : container.getDevices()) {
+                for (Connection deviceConnection : devices.getConnections()) {
+                    boolean uriSet = (connection.getUri() != null);
+                    boolean portEqual = String.valueOf(connection.getPort()).equals(deviceConnection.getPort());
+                    boolean hostEqual = connection.getHost().equals(deviceConnection.getAddress());
+
+                    if (!uriSet && portEqual && hostEqual) {
+                        connection.setUri(deviceConnection.getUri());
+                    }
+                }
+            }
+        }
+
+        if (connection.getUri() == null) {
+            connection.setUri(String.format("http://%s:%d", connection.getHost(), connection.getPort()));
+        }
+
     }
 
     private void requestToken() {

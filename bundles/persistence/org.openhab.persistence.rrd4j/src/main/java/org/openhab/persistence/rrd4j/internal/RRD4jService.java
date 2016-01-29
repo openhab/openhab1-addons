@@ -39,7 +39,6 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
-import org.osgi.framework.BundleContext;
 import org.rrd4j.ConsolFun;
 import org.rrd4j.DsType;
 import org.rrd4j.core.FetchData;
@@ -339,7 +338,7 @@ public class RRD4jService implements QueryablePersistenceService {
     /**
      * @{inheritDoc
      */
-    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+    public void activate(final Map<String, Object> config) {
 
         // add default configurations
         RrdDefConfig defaultNumeric = new RrdDefConfig("default_numeric");
@@ -364,7 +363,7 @@ public class RRD4jService implements QueryablePersistenceService {
 
             String key = keys.next();
 
-            if (key.equals("service.pid")) { // ignore servioce.pid
+            if (key.equals("service.pid") || key.equals("component.name")) { // ignore service.pid and name
                 continue;
             }
 
@@ -413,7 +412,7 @@ public class RRD4jService implements QueryablePersistenceService {
             if (rrdDef.isValid()) {
                 logger.debug("Created {}", rrdDef.toString());
             } else {
-                logger.info("Removing invalid defintion {}", rrdDef.toString());
+                logger.info("Removing invalid definition {}", rrdDef.toString());
                 rrdDefs.remove(rrdDef.name);
             }
         }
