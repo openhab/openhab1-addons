@@ -563,7 +563,7 @@ public class XbmcConnector {
     private void requestPlayerUpdate(int playerId, boolean updatePolledPropertiesOnly) {
         // CRIT: if a PVR recording is played in XBMC the playerId is reported as -1
         if (playerId == -1) {
-            logger.warn(
+            logger.debug(
                     "[{}]: Invalid playerId ({}) - assume this is a PVR recording playback and update playerId -> 1 (video player)",
                     xbmc.getHostname(), playerId);
             playerId = 1;

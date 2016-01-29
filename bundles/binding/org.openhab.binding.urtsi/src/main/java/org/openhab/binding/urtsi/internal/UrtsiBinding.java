@@ -73,7 +73,7 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>implement
      * {@link org.openhab.core.binding.BindingProvider} and uses it to get the
      * corresponding URTSI device and channel. Bases on the given type a command
      * is send to the device.
-     * 
+     *
      * @param itemName
      *            name of the item
      * @param type
@@ -88,63 +88,51 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>implement
             provider = providers.iterator().next();
         }
         if (provider == null) {
-            if (logger.isErrorEnabled()) {
-                logger.error("doesn't find matching binding provider [itemName={}, type={}]", itemName, type);
-            }
+            logger.error("doesn't find matching binding provider [itemName={}, type={}]", itemName, type);
             return false;
         }
         String urtsiDeviceId = provider.getDeviceId(itemName);
         UrtsiDevice urtsiDevice = idToDeviceMap.get(urtsiDeviceId);
 
         if (urtsiDevice == null) {
-            if (logger.isErrorEnabled()) {
-                logger.error("No serial port has been configured for urtsi device id '" + urtsiDeviceId + "'");
-            }
+            logger.error("No serial port has been configured for urtsi device id '{}'", urtsiDeviceId);
             return false;
         }
 
         int channel = provider.getChannel(itemName);
         int address = provider.getAddress(itemName);
 
-        if (urtsiDevice != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Send to URTSI for item: " + itemName + "; Type: " + type);
+        logger.debug("Send to URTSI for item: {}; Type: {}", itemName, type);
+        String actionKey = null;
+        if (type instanceof UpDownType) {
+            switch ((UpDownType) type) {
+                case UP:
+                    actionKey = COMMAND_UP;
+                    break;
+                case DOWN:
+                    actionKey = COMMAND_DOWN;
+                    break;
             }
-            String actionKey = null;
-            if (type instanceof UpDownType) {
-                switch ((UpDownType) type) {
-                    case UP:
-                        actionKey = COMMAND_UP;
-                        break;
-                    case DOWN:
-                        actionKey = COMMAND_DOWN;
-                        break;
-                }
-            } else if (type instanceof StopMoveType) {
-                switch ((StopMoveType) type) {
-                    case STOP:
-                        actionKey = COMMAND_STOP;
-                        break;
-                    default:
-                        break;
-                }
+        } else if (type instanceof StopMoveType) {
+            switch ((StopMoveType) type) {
+                case STOP:
+                    actionKey = COMMAND_STOP;
+                    break;
+                default:
+                    break;
             }
+        }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Action key: " + actionKey);
+        logger.debug("Action key: {}", actionKey);
+        if (actionKey != null) {
+            String channelString = String.format("%02d", channel);
+            String addressString = String.format("%02d", address);
+            String command = addressString + channelString + actionKey;
+            boolean executedSuccessfully = urtsiDevice.writeString(command);
+            if (!executedSuccessfully) {
+                logger.warn("Command has not been processed [itemName={}, command={}]", itemName, command);
             }
-            if (actionKey != null) {
-                String channelString = String.format("%02d", channel);
-                String addressString = String.format("%02d", address);
-                String command = addressString + channelString + actionKey;
-                boolean executedSuccessfully = urtsiDevice.writeString(command);
-                if (!executedSuccessfully) {
-                    if (logger.isErrorEnabled()) {
-                        logger.error("Command has not been processed [itemName={}, command={}]", itemName, command);
-                    }
-                }
-                return executedSuccessfully;
-            }
+            return executedSuccessfully;
         }
         return false;
     }
@@ -155,9 +143,7 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>implement
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Received command for " + itemName + "! Command: " + command);
-        }
+        logger.debug("Received command for {}! Command: {}", itemName, command);
         boolean executedSuccessfully = sendToUrtsi(itemName, command);
         if (executedSuccessfully && command instanceof State) {
             eventPublisher.postUpdate(itemName, (State) command);
@@ -167,13 +153,11 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>implement
     /**
      * With openHAB 1.7.0 the state-update is not passed to the URTSI device anymore as this let to multiple actions in
      * the past.
-     * 
+     *
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Received update for " + itemName + "! New state: " + newState);
-        }
+        logger.debug("Received update for {}! New state: {}", itemName, newState);
     }
 
     /**
@@ -190,14 +174,14 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>implement
             Enumeration<String> keys = config.keys();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
-                logger.debug("Processing key '" + key + "'");
+                logger.debug("Processing key '{}'", key);
                 // the config-key enumeration contains additional keys that we
                 // don't want to process here ...
-                if (key != "service.pid") {
+                if (!key.equals("service.pid") && !key.equals("component.name")) {
 
                     Matcher matcher = EXTRACT_URTSI_CONFIG_PATTERN.matcher(key);
                     if (!matcher.matches()) {
-                        logger.debug("given config key '" + key + "' does not follow the expected pattern '<id>.port'");
+                        logger.debug("given config key '{}' does not follow the expected pattern '<id>.port'", key);
                     } else {
                         matcher.reset();
                         matcher.find();

@@ -13,6 +13,10 @@ There are some configuration settings that you can set in the openhab.cfg file. 
 ```
 ############################## DSC Alarm Binding #####################################
 #
+# DSC Alarm interface device type
+# Valid values are it100 (default for serial connection) or envisalink (default for tcp connection)
+#dscalarm:deviceType=
+
 # DSC Alarm port name for a serial connection.
 # Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.
 # Leave undefined if not connecting by serial port.
@@ -23,9 +27,14 @@ There are some configuration settings that you can set in the openhab.cfg file. 
 # Leave undefined if using default.
 #dscalarm:baud=
 
-# DSC Alarm IP address for a TCP connection. 
+# DSC Alarm IP address for a TCP connection.
 # Leave undefined if not connecting by network connection.
 #dscalarm:ip=
+
+# DSC Alarm TCP port for a TCP connection.
+# Can be EyezOn Envisalink on 4025 (default) or a TCP serial server to IT-100
+# Leave undefined if not connecting by network connection.
+#dscalarm:tcpPort=
 
 # DSC Alarm password for logging into the EyezOn Envisalink 3/2DS interface.
 # Leave undefined if using default.

@@ -12,7 +12,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" name="org.openhab.persistence.rrd4j" immediate="true" configuration-pid="org.openhab.rrd4j" configuration-policy="optional">
    <implementation class="org.openhab.persistence.rrd4j.internal.RRD4jService"/>
    <service>
-	<provide interface="org.openhab.core.persistence.PersistenceService"/>
+    <provide interface="org.openhab.core.persistence.PersistenceService"/>
    </service>
    <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
 </scr:component>
