@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,92 +38,92 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Main class to communicate with a enigma2 based sat receiver.
- * 
+ *
  * @see http://e2devel.com/apidoc/webif/
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class OpenWebIfCommunicator {
-	private static final Logger logger = LoggerFactory.getLogger(OpenWebIfCommunicator.class);
+    private static final Logger logger = LoggerFactory.getLogger(OpenWebIfCommunicator.class);
 
-	private static final String POWERSTATE = "/web/powerstate";
-	private static final String MESSAGE = "/web/message";
-	private static final int CONNECTION_TIMEOUT = 5000;
+    private static final String POWERSTATE = "/web/powerstate";
+    private static final String MESSAGE = "/web/message";
+    private static final int CONNECTION_TIMEOUT = 5000;
 
-	/**
-	 * Returns true, if the sat receiver is turned off or is in deep standby.
-	 */
-	public boolean isOff(OpenWebIfConfig config) throws IOException {
-		return !Ping.checkVitality(config.getHost(), config.getPort(), CONNECTION_TIMEOUT);
-	}
+    /**
+     * Returns true, if the sat receiver is turned off or is in deep standby.
+     */
+    public boolean isOff(OpenWebIfConfig config) throws IOException {
+        return !Ping.checkVitality(config.getHost(), config.getPort(), CONNECTION_TIMEOUT);
+    }
 
-	/**
-	 * Returns true, if the sat reveiver is in standby.
-	 */
-	public boolean isStandby(OpenWebIfConfig config) throws IOException {
-		String url = new UrlBuilder(config, POWERSTATE).build();
-		PowerState result = executeRequest(config, url, PowerState.class);
-		return result.isStandby();
-	}
+    /**
+     * Returns true, if the sat reveiver is in standby.
+     */
+    public boolean isStandby(OpenWebIfConfig config) throws IOException {
+        String url = new UrlBuilder(config, POWERSTATE).build();
+        PowerState result = executeRequest(config, url, PowerState.class);
+        return result.isStandby();
+    }
 
-	/**
-	 * Sends a message to the sat receiver specified in the config.
-	 */
-	public SimpleResult sendMessage(OpenWebIfConfig config, String text, MessageType type, int timeout)
-			throws IOException {
-		UrlBuilder ub = new UrlBuilder(config, MESSAGE).addParameter("text", text).addParameter("type", type.getId())
-				.addParameter("timeout", String.valueOf(timeout));
-		return executeRequest(config, ub.build(), SimpleResult.class);
-	}
+    /**
+     * Sends a message to the sat receiver specified in the config.
+     */
+    public SimpleResult sendMessage(OpenWebIfConfig config, String text, MessageType type, int timeout)
+            throws IOException {
+        UrlBuilder ub = new UrlBuilder(config, MESSAGE).addParameter("text", text).addParameter("type", type.getId())
+                .addParameter("timeout", String.valueOf(timeout));
+        return executeRequest(config, ub.build(), SimpleResult.class);
+    }
 
-	/**
-	 * Executes the http request and parses the returned stream.
-	 */
-	@SuppressWarnings("unchecked")
-	private <T> T executeRequest(OpenWebIfConfig config, String url, Class<T> clazz) throws IOException {
-		HttpURLConnection con = null;
-		try {
-			logger.trace("Request [{}]: {}", config.getName(), url);
+    /**
+     * Executes the http request and parses the returned stream.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T executeRequest(OpenWebIfConfig config, String url, Class<T> clazz) throws IOException {
+        HttpURLConnection con = null;
+        try {
+            logger.trace("Request [{}]: {}", config.getName(), url);
 
-			con = (HttpURLConnection) new URL(url).openConnection();
-			con.setConnectTimeout(CONNECTION_TIMEOUT);
-			con.setReadTimeout(10000);
+            con = (HttpURLConnection) new URL(url).openConnection();
+            con.setConnectTimeout(CONNECTION_TIMEOUT);
+            con.setReadTimeout(10000);
 
-			if (config.hasLogin()) {
-				String userpass = config.getUser() + ":" + config.getPassword();
-				String basicAuth = "Basic " + DatatypeConverter.printBase64Binary(userpass.getBytes());
-				con.setRequestProperty("Authorization", basicAuth);
-			}
+            if (config.hasLogin()) {
+                String userpass = config.getUser() + ":" + config.getPassword();
+                String basicAuth = "Basic " + DatatypeConverter.printBase64Binary(userpass.getBytes());
+                con.setRequestProperty("Authorization", basicAuth);
+            }
 
-			if (con instanceof HttpsURLConnection) {
-				HttpsURLConnection sCon = (HttpsURLConnection) con;
-				TrustManager[] trustManager = new TrustManager[] { new SimpleTrustManager() };
-				SSLContext context = SSLContext.getInstance("TLS");
-				context.init(new KeyManager[0], trustManager, new SecureRandom());
-				sCon.setSSLSocketFactory(context.getSocketFactory());
-				sCon.setHostnameVerifier(new AllowAllHostnameVerifier());
-			}
-			StringWriter sw = new StringWriter();
-			IOUtils.copy(con.getInputStream(), sw);
-			con.disconnect();
+            if (con instanceof HttpsURLConnection) {
+                HttpsURLConnection sCon = (HttpsURLConnection) con;
+                TrustManager[] trustManager = new TrustManager[] { new SimpleTrustManager() };
+                SSLContext context = SSLContext.getInstance("TLS");
+                context.init(new KeyManager[0], trustManager, new SecureRandom());
+                sCon.setSSLSocketFactory(context.getSocketFactory());
+                sCon.setHostnameVerifier(new AllowAllHostnameVerifier());
+            }
+            StringWriter sw = new StringWriter();
+            IOUtils.copy(con.getInputStream(), sw);
+            con.disconnect();
 
-			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				String response = sw.toString();
-				logger.trace("Response: [{}]: {}", config.getName(), response);
+            if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                String response = sw.toString();
+                logger.trace("Response: [{}]: {}", config.getName(), response);
 
-				Unmarshaller um = JAXBContext.newInstance(clazz).createUnmarshaller();
-				return (T) um.unmarshal(new StringReader(response));
-			} else {
-				throw new IOException(con.getResponseMessage());
-			}
-		} catch (JAXBException ex) {
-			throw new IOException(ex.getMessage(), ex);
-		} catch (GeneralSecurityException ex) {
-			throw new IOException(ex.getMessage(), ex);
-		} finally {
-			if (con != null) {
-				con.disconnect();
-			}
-		}
-	}
+                Unmarshaller um = JAXBContext.newInstance(clazz).createUnmarshaller();
+                return (T) um.unmarshal(new StringReader(response));
+            } else {
+                throw new IOException(con.getResponseMessage());
+            }
+        } catch (JAXBException ex) {
+            throw new IOException(ex.getMessage(), ex);
+        } catch (GeneralSecurityException ex) {
+            throw new IOException(ex.getMessage(), ex);
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,17 +13,17 @@ import org.quartz.JobDataMap;
 
 /**
  * Publishes the item state ON/OFF for scheduled events.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class ItemJob extends AbstractBaseJob {
 
-	@Override
-	protected void executeJob(JobDataMap jobDataMap) {
-		String itemName = jobDataMap.getString("itemName");
-		context.getEventPublisher().postUpdate(itemName, OnOffType.ON);
-		context.getEventPublisher().postUpdate(itemName, OnOffType.OFF);
-	}
+    @Override
+    protected void executeJob(JobDataMap jobDataMap) {
+        String itemName = jobDataMap.getString("itemName");
+        context.getEventPublisher().postUpdate(itemName, OnOffType.ON);
+        context.getEventPublisher().postUpdate(itemName, OnOffType.OFF);
+    }
 
 }

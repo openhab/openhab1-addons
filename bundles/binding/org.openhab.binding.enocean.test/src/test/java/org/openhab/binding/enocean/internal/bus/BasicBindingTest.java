@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,10 @@
  */
 package org.openhab.binding.enocean.internal.bus;
 
+import org.junit.Before;
 import org.opencean.core.ESP3Host;
 import org.opencean.core.address.EnoceanParameterAddress;
 import org.opencean.core.common.ProtocolConnector;
-import org.junit.Before;
 
 public class BasicBindingTest {
 

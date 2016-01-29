@@ -116,17 +116,17 @@
 			<Label lang="en">Control key #2 behaviour</Label>			
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Device status is not checked</Label>
+				<Label lang="en">Commands are sent when device is turned on and off.</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Device status is checked</Label>
+				<Label lang="en">Commands sent when turned off, double-click sends 'turn on', dimmers memorizes last saved state.</Label>			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Commands are sent when device is turned off, double-click sends 'turn on' command, dimmers set to 100%.</Label>
 			</Item>
-			<Help lang="en">Key no.2 is not represented by any physical device - only
-				devices in the association list.
-				This functionality prevents of lack of reaction on pressing key no.2
-				through polling devices
-				from association list one by one and checking their actual statuses.</Help>
+			<Help lang="en">![CDATA[NOTE: Parameter 15 value must be set to 1 to work properly.<BR />
+			This activates the double-click functionality - dimmer/roller shutter control.]]</Help>
 		</Parameter>
 		
 		<Parameter>

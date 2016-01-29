@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,12 +21,12 @@ import org.openhab.core.types.State;
  * The command is first converter to a state with this converter. This new state
  * is then set on the corresponding binding (normally by converting it to a
  * binding protocol value and sending it).
- * 
+ *
  * A {@link CommandConverter} is used like
  * <code>converterFactory.addCommandConverter("LEVEL", OnOffType.class, OnOffPercentageCommandConverter.class);</code>
- * 
+ *
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * 
+ *
  * @param <OPENHAB_STATE>
  *            The OpenHAB State to convert into (the conversion target, a
  *            subclass of {@link State})
@@ -39,7 +39,7 @@ public abstract class CommandConverter<OPENHAB_STATE extends State, OPENHAB_COMM
 
     /**
      * The method to overwrite.
-     * 
+     *
      * @param actualState
      *            The current state.
      * @param command
@@ -50,10 +50,10 @@ public abstract class CommandConverter<OPENHAB_STATE extends State, OPENHAB_COMM
 
     /**
      * Applies a Command to the actualState.
-     * 
+     *
      * E.g. this method can apply an IncreaseDecreaseType Command to a decimal
      * value and increase / decrease it.
-     * 
+     *
      * @param actualState
      *            The current state.
      * @param command

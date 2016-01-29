@@ -35,144 +35,143 @@ import net.wimpi.modbus.msg.ModbusResponse;
  * @version @version@ (@date@)
  */
 public class ModbusUDPListener {
-  private static final Logger logger = LoggerFactory.getLogger(ModbusUDPListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModbusUDPListener.class);
 
-  private UDPSlaveTerminal m_Terminal;
-  private ModbusUDPHandler m_Handler;
-  private Thread m_HandlerThread;
-  private int m_Port = Modbus.DEFAULT_PORT;
-  private boolean m_Listening;
-  private InetAddress m_Interface;
+    private UDPSlaveTerminal m_Terminal;
+    private ModbusUDPHandler m_Handler;
+    private Thread m_HandlerThread;
+    private int m_Port = Modbus.DEFAULT_PORT;
+    private boolean m_Listening;
+    private InetAddress m_Interface;
 
-  /**
-   * Constructs a new ModbusUDPListener instance.
-   */
-  public ModbusUDPListener() {
-  }//ModbusUDPListener
+    /**
+     * Constructs a new ModbusUDPListener instance.
+     */
+    public ModbusUDPListener() {
+    }// ModbusUDPListener
 
-  /**
-   * Create a new <tt>ModbusUDPListener</tt> instance
-   * listening to the given interface address.
-   *
-   * @param ifc an <tt>InetAddress</tt> instance.
-   */
-  public ModbusUDPListener(InetAddress ifc) {
-    m_Interface = ifc;
-  }//ModbusUDPListener
+    /**
+     * Create a new <tt>ModbusUDPListener</tt> instance
+     * listening to the given interface address.
+     *
+     * @param ifc an <tt>InetAddress</tt> instance.
+     */
+    public ModbusUDPListener(InetAddress ifc) {
+        m_Interface = ifc;
+    }// ModbusUDPListener
 
-  /**
-   * Returns the number of the port this <tt>ModbusUDPListener</tt>
-   * is listening to.
-   *
-   * @return the number of the IP port as <tt>int</tt>.
-   */
-  public int getPort() {
-    return m_Port;
-  }//getPort
+    /**
+     * Returns the number of the port this <tt>ModbusUDPListener</tt>
+     * is listening to.
+     *
+     * @return the number of the IP port as <tt>int</tt>.
+     */
+    public int getPort() {
+        return m_Port;
+    }// getPort
 
-  /**
-   * Sets the number of the port this <tt>ModbusUDPListener</tt>
-   * is listening to.
-   *
-   * @param port the number of the IP port as <tt>int</tt>.
-   */
-  public void setPort(int port) {
-    m_Port = ((port>0)? port : Modbus.DEFAULT_PORT);
-  }//setPort
+    /**
+     * Sets the number of the port this <tt>ModbusUDPListener</tt>
+     * is listening to.
+     *
+     * @param port the number of the IP port as <tt>int</tt>.
+     */
+    public void setPort(int port) {
+        m_Port = ((port > 0) ? port : Modbus.DEFAULT_PORT);
+    }// setPort
 
-  /**
-   * Starts this <tt>ModbusUDPListener</tt>.
-   */
-  public void start() {
-    //start listening
-    try {
-      if(m_Interface == null) {
-        m_Terminal = new UDPSlaveTerminal(InetAddress.getLocalHost());
-      } else {
-        m_Terminal = new UDPSlaveTerminal(m_Interface);
-      }
-      m_Terminal.setLocalPort(m_Port);
-      m_Terminal.activate();
-
-      m_Handler = new ModbusUDPHandler(m_Terminal.getModbusTransport());
-      m_HandlerThread = new Thread(m_Handler);
-      m_HandlerThread.start();
-
-    } catch (Exception e) {
-      //FIXME: this is a major failure, how do we handle this
-    }
-    m_Listening = true;
-  }//start
-
-  /**
-   * Stops this <tt>ModbusUDPListener</tt>.
-   */
-  public void stop() {
-    //stop listening
-    m_Terminal.deactivate();
-    m_Handler.stop();
-    m_Listening = false;
-  }//stop
-
-  /**
-   * Tests if this <tt>ModbusTCPListener</tt> is listening
-   * and accepting incoming connections.
-   *
-   * @return true if listening (and accepting incoming connections),
-   *          false otherwise.
-   */
-  public boolean isListening() {
-    return m_Listening;
-  }//isListening
-
-  class ModbusUDPHandler
-      implements Runnable {
-
-    private ModbusUDPTransport m_Transport;
-    private boolean m_Continue = true;
-
-    public ModbusUDPHandler(ModbusUDPTransport transport) {
-      m_Transport = transport;
-    }//constructor
-
-    public void run() {
-      try {
-        do {
-          //1. read the request
-          ModbusRequest request = m_Transport.readRequest();
-          logger.trace("Request: {}", request.getHexMessage());
-          ModbusResponse response = null;
-
-          //test if Process image exists
-          if (ModbusCoupler.getReference().getProcessImage() == null) {
-            response =
-                request.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
-          } else {
-            response = request.createResponse();
-          }
-          logger.debug("Request: {}", request.getHexMessage());
-          logger.debug("Response: {}", response.getHexMessage());
-
-          m_Transport.writeMessage(response);
-        } while (m_Continue);
-      } catch (ModbusIOException ex) {
-        if (!ex.isEOF()) {
-          //other troubles, output for debug
-          ex.printStackTrace();
-        }
-      } finally {
+    /**
+     * Starts this <tt>ModbusUDPListener</tt>.
+     */
+    public void start() {
+        // start listening
         try {
-          m_Terminal.deactivate();
-        } catch (Exception ex) {
-          //ignore
+            if (m_Interface == null) {
+                m_Terminal = new UDPSlaveTerminal(InetAddress.getLocalHost());
+            } else {
+                m_Terminal = new UDPSlaveTerminal(m_Interface);
+            }
+            m_Terminal.setLocalPort(m_Port);
+            m_Terminal.activate();
+
+            m_Handler = new ModbusUDPHandler(m_Terminal.getModbusTransport());
+            m_HandlerThread = new Thread(m_Handler);
+            m_HandlerThread.start();
+
+        } catch (Exception e) {
+            // FIXME: this is a major failure, how do we handle this
         }
-      }
-    }//run
+        m_Listening = true;
+    }// start
 
+    /**
+     * Stops this <tt>ModbusUDPListener</tt>.
+     */
     public void stop() {
-      m_Continue = false;
-    }//stop
+        // stop listening
+        m_Terminal.deactivate();
+        m_Handler.stop();
+        m_Listening = false;
+    }// stop
 
-  }//inner class ModbusUDPHandler
+    /**
+     * Tests if this <tt>ModbusTCPListener</tt> is listening
+     * and accepting incoming connections.
+     *
+     * @return true if listening (and accepting incoming connections),
+     *         false otherwise.
+     */
+    public boolean isListening() {
+        return m_Listening;
+    }// isListening
 
-}//class ModbusUDPListener
+    class ModbusUDPHandler implements Runnable {
+
+        private ModbusUDPTransport m_Transport;
+        private boolean m_Continue = true;
+
+        public ModbusUDPHandler(ModbusUDPTransport transport) {
+            m_Transport = transport;
+        }// constructor
+
+        @Override
+        public void run() {
+            try {
+                do {
+                    // 1. read the request
+                    ModbusRequest request = m_Transport.readRequest();
+                    logger.trace("Request: {}", request.getHexMessage());
+                    ModbusResponse response = null;
+
+                    // test if Process image exists
+                    if (ModbusCoupler.getReference().getProcessImage() == null) {
+                        response = request.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
+                    } else {
+                        response = request.createResponse();
+                    }
+                    logger.debug("Request: {}", request.getHexMessage());
+                    logger.debug("Response: {}", response.getHexMessage());
+
+                    m_Transport.writeMessage(response);
+                } while (m_Continue);
+            } catch (ModbusIOException ex) {
+                if (!ex.isEOF()) {
+                    // other troubles, output for debug
+                    ex.printStackTrace();
+                }
+            } finally {
+                try {
+                    m_Terminal.deactivate();
+                } catch (Exception ex) {
+                    // ignore
+                }
+            }
+        }// run
+
+        public void stop() {
+            m_Continue = false;
+        }// stop
+
+    }// inner class ModbusUDPHandler
+
+}// class ModbusUDPListener

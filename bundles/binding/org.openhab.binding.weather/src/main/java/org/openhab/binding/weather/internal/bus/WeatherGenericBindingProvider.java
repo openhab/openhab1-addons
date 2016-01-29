@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,63 +20,63 @@ import org.slf4j.LoggerFactory;
 /**
  * This class can parse information from the binding format and provides Weather
  * binding informations.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class WeatherGenericBindingProvider extends AbstractGenericBindingProvider implements WeatherBindingProvider {
-	private static final Logger logger = LoggerFactory.getLogger(WeatherGenericBindingProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeatherGenericBindingProvider.class);
 
-	private BindingConfigParser parser = new BindingConfigParser();
+    private BindingConfigParser parser = new BindingConfigParser();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getBindingType() {
-		return "weather";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBindingType() {
+        return "weather";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		// validation is done in processBindingConfiguration
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        // validation is done in processBindingConfiguration
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
 
-		WeatherBindingConfig config = parser.parse(item, bindingConfig);
-		logger.debug("Adding item {} with {}", item.getName(), config);
-		addBindingConfig(item, config);
-	}
+        WeatherBindingConfig config = parser.parse(item, bindingConfig);
+        logger.debug("Adding item {} with {}", item.getName(), config);
+        addBindingConfig(item, config);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public WeatherBindingConfig getBindingFor(String itemName) {
-		return (WeatherBindingConfig) bindingConfigs.get(itemName);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WeatherBindingConfig getBindingFor(String itemName) {
+        return (WeatherBindingConfig) bindingConfigs.get(itemName);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean hasBinding(String locationId) {
-		for (BindingConfig bindingConfig : bindingConfigs.values()) {
-			if (((WeatherBindingConfig) bindingConfig).getLocationId().equals(locationId)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasBinding(String locationId) {
+        for (BindingConfig bindingConfig : bindingConfigs.values()) {
+            if (((WeatherBindingConfig) bindingConfig).getLocationId().equals(locationId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

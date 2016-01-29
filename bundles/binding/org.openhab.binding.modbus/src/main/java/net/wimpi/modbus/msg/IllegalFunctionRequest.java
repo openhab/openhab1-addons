@@ -17,9 +17,7 @@
 package net.wimpi.modbus.msg;
 
 import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutput;
-import java.io.EOFException;
 import java.io.IOException;
 
 import net.wimpi.modbus.Modbus;
@@ -27,42 +25,43 @@ import net.wimpi.modbus.Modbus;
 /**
  * Provides an implementation of a <tt>ModbusRequest</tt>
  * which is created for illegal or non implemented
- * function codes.<p>
+ * function codes.
+ * <p>
  * This is just a helper class to keep the implementation
  * patterns the same for all cases.
  *
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class IllegalFunctionRequest
-    extends ModbusRequest {
+public class IllegalFunctionRequest extends ModbusRequest {
 
-  /**
-   * Constructs a new <tt>IllegalFunctionRequest</tt> instance for
-   * a given function code.
-   *
-   * @param fc the function code as <tt>int</tt>.
-   */
-  public IllegalFunctionRequest(int fc) {
-    setFunctionCode(fc);
-  }//constructor
+    /**
+     * Constructs a new <tt>IllegalFunctionRequest</tt> instance for
+     * a given function code.
+     *
+     * @param fc the function code as <tt>int</tt>.
+     */
+    public IllegalFunctionRequest(int fc) {
+        setFunctionCode(fc);
+    }// constructor
 
-  public ModbusResponse createResponse() {
-    return this.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
-  }//createResponse
+    @Override
+    public ModbusResponse createResponse() {
+        return this.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
+    }// createResponse
 
-  public void writeData(DataOutput dout)
-      throws IOException {
-    throw new RuntimeException();
-  }//writeData
+    @Override
+    public void writeData(DataOutput dout) throws IOException {
+        throw new RuntimeException();
+    }// writeData
 
-  public void readData(DataInput din)
-      throws IOException {
-    //skip all following bytes
-    int length = getDataLength();
-    for (int i = 0; i < length; i++) {
-      din.readByte();
-    }
-  }//readData
+    @Override
+    public void readData(DataInput din) throws IOException {
+        // skip all following bytes
+        int length = getDataLength();
+        for (int i = 0; i < length; i++) {
+            din.readByte();
+        }
+    }// readData
 
-}//IllegalFunctionRequest
+}// IllegalFunctionRequest

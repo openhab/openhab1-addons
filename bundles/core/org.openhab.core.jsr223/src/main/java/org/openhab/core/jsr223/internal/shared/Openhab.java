@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class Openhab extends BusEvent {
 	private static final Logger logger = LoggerFactory.getLogger(Openhab.class);
 
-	private static String LOGGER_NAME_PREFIX = "org.openhab.model.jsr232.";
+	private static String LOGGER_NAME_PREFIX = "org.openhab.model.jsr223.";
 
 	/**
 	 * Returns all available action providers

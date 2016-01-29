@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,57 +23,57 @@ import org.slf4j.LoggerFactory;
 /**
  * Waits for a message from the Homematic server and starts the
  * BinRpcCallbackHandler to handle the message.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 public class BinRpcNetworkService implements Runnable {
-	private static final Logger logger = LoggerFactory.getLogger(BinRpcNetworkService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BinRpcNetworkService.class);
 
-	private ServerSocket serverSocket;
-	private final ExecutorService pool = Executors.newCachedThreadPool();
-	private boolean accept = true;
-	private HomematicCallbackReceiver callbackReceiver;
+    private ServerSocket serverSocket;
+    private final ExecutorService pool = Executors.newCachedThreadPool();
+    private boolean accept = true;
+    private HomematicCallbackReceiver callbackReceiver;
 
-	/**
-	 * Creates the socket for listening to events from the Homematic server.
-	 */
-	public BinRpcNetworkService(HomematicCallbackReceiver callbackReceiver) throws Exception {
-		this.callbackReceiver = callbackReceiver;
+    /**
+     * Creates the socket for listening to events from the Homematic server.
+     */
+    public BinRpcNetworkService(HomematicCallbackReceiver callbackReceiver) throws Exception {
+        this.callbackReceiver = callbackReceiver;
 
-		HomematicConfig config = HomematicContext.getInstance().getConfig();
-		serverSocket = new ServerSocket(config.getCallbackPort());
-		serverSocket.setReuseAddress(true);
-	}
+        HomematicConfig config = HomematicContext.getInstance().getConfig();
+        serverSocket = new ServerSocket(config.getCallbackPort());
+        serverSocket.setReuseAddress(true);
+    }
 
-	/**
-	 * Listening for events and starts the callbackHandler if a event received.
-	 */
-	@Override
-	public void run() {
-		while (accept) {
-			try {
-				Socket cs = serverSocket.accept();
-				BinRpcCallbackHandler rpcHandler = new BinRpcCallbackHandler(cs, callbackReceiver);
-				pool.execute(rpcHandler);
-			} catch (IOException ex) {
-				// ignore
-			}
-		}
-	}
+    /**
+     * Listening for events and starts the callbackHandler if a event received.
+     */
+    @Override
+    public void run() {
+        while (accept) {
+            try {
+                Socket cs = serverSocket.accept();
+                BinRpcCallbackHandler rpcHandler = new BinRpcCallbackHandler(cs, callbackReceiver);
+                pool.execute(rpcHandler);
+            } catch (IOException ex) {
+                // ignore
+            }
+        }
+    }
 
-	/**
-	 * Stops the listening.
-	 */
-	public void shutdown() {
-		logger.debug("Shutting down {}", this.getClass().getSimpleName());
-		accept = false;
-		try {
-			serverSocket.close();
-		} catch (IOException ioe) {
-			// ignore
-		}
-		pool.shutdownNow();
-	}
+    /**
+     * Stops the listening.
+     */
+    public void shutdown() {
+        logger.debug("Shutting down {}", this.getClass().getSimpleName());
+        accept = false;
+        try {
+            serverSocket.close();
+        } catch (IOException ioe) {
+            // ignore
+        }
+        pool.shutdownNow();
+    }
 
 }

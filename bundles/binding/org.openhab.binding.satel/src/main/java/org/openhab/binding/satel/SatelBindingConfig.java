@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,96 +27,120 @@ import org.openhab.core.types.State;
 /**
  * Base class that all Satel configuration classes must extend. Provides methods
  * to convert data between openHAB and Satel module.
- * 
+ *
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
 public abstract class SatelBindingConfig implements BindingConfig {
 
-	public enum Options {
-		COMMANDS_ONLY, FORCE_ARM, INVERT_STATE
-	}
+    public enum Options {
+        COMMANDS_ONLY,
+        FORCE_ARM,
+        INVERT_STATE
+    }
 
-	private static final DecimalType DECIMAL_ONE = new DecimalType(1);
+    private static final DecimalType DECIMAL_ONE = new DecimalType(1);
 
-	private Map<String, String> options;
+    private Map<String, String> options;
+    private boolean itemInitialized;
 
-	/**
-	 * Checks whether given option is set to <code>true</code>.
-	 * 
-	 * @param option option to check
-	 * @return <code>true</code> if option is enabled
-	 */
-	public boolean hasOptionEnabled(Options option) {
-		return Boolean.parseBoolean(getOption(option));
-	}
+    /**
+     * Checks whether given option is set to <code>true</code>.
+     * 
+     * @param option
+     *            option to check
+     * @return <code>true</code> if option is enabled
+     */
+    public boolean hasOptionEnabled(Options option) {
+        return Boolean.parseBoolean(getOption(option));
+    }
 
-	/**
-	 * Returns value of given option.
-	 * 
-	 * @param option option to get value for
-	 * @return string value or <code>null</code> if option is not present
-	 */
-	public String getOption(Options option) {
-		return this.options.get(option.name());
-	}
+    /**
+     * Returns value of given option.
+     * 
+     * @param option
+     *            option to get value for
+     * @return string value or <code>null</code> if option is not present
+     */
+    public String getOption(Options option) {
+        return this.options.get(option.name());
+    }
 
-	/**
-	 * Returns string representation of option map.
-	 * 
-	 * @return string as pairs of [name]=[value] separated by comma
-	 */
-	public String optionsAsString() {
-		return this.options.toString();
-	}
+    /**
+     * Returns string representation of option map.
+     * 
+     * @return string as pairs of [name]=[value] separated by comma
+     */
+    public String optionsAsString() {
+        return this.options.toString();
+    }
 
-	/**
-	 * Converts data from {@link SatelEvent} to openHAB state of specified item.
-	 * 
-	 * @param item
-	 *            an item to get new state for
-	 * @param event
-	 *            incoming event
-	 * @return new item state
-	 */
-	public abstract State convertEventToState(Item item, SatelEvent event);
+    /**
+     * Returns initialization state of bound item.
+     * 
+     * @return <code>true</code> if bound item has received state update,
+     *         <code>false</code> if it is uninitialized
+     */
+    public boolean isItemInitialized() {
+        return itemInitialized;
+    }
 
-	/**
-	 * Converts openHAB command to proper Satel message that changes state of
-	 * bound object (output, zone).
-	 * 
-	 * @param command
-	 *            command to convert
-	 * @param integraType
-	 *            type of connected Integra
-	 * @param userCode
-	 *            user's password
-	 * @return a message to send
-	 */
-	public abstract SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode);
+    /**
+     * Notifies that bound item has its state updated.
+     */
+    public void setItemInitialized() {
+        this.itemInitialized = true;
+    }
 
-	/**
-	 * Returns message needed to get current state of bound object.
-	 * 
-	 * @param integraType
-	 *            type of connected Integra
-	 * @return a message to send
-	 */
-	public abstract SatelMessage buildRefreshMessage(IntegraType integraType);
+    /**
+     * Converts data from {@link SatelEvent} to openHAB state of specified item.
+     * 
+     * @param item
+     *            an item to get new state for
+     * @param event
+     *            incoming event
+     * @return new item state
+     */
+    public abstract State convertEventToState(Item item, SatelEvent event);
 
-	protected SatelBindingConfig(Map<String, String> options) {
-		this.options = options;
-	}
+    /**
+     * Converts openHAB command to proper Satel message that changes state of
+     * bound object (output, zone).
+     * 
+     * @param command
+     *            command to convert
+     * @param integraType
+     *            type of connected Integra
+     * @param userCode
+     *            user's password
+     * @return a message to send
+     */
+    public abstract SatelMessage convertCommandToMessage(Command command, IntegraType integraType, String userCode);
 
-	protected State booleanToState(Item item, boolean value) {
-		if (item instanceof ContactItem) {
-			return value ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-		} else if (item instanceof SwitchItem) {
-			return value ? OnOffType.ON : OnOffType.OFF;
-		} else if (item instanceof NumberItem) {
-			return value ? DECIMAL_ONE : DecimalType.ZERO;
-		}
+    /**
+     * Returns message needed to get current state of bound object.
+     * 
+     * @param integraType
+     *            type of connected Integra
+     * @return a message to send
+     */
+    public abstract SatelMessage buildRefreshMessage(IntegraType integraType);
 
-		return null;
-	}
+    protected SatelBindingConfig(Map<String, String> options) {
+        this.options = options;
+        this.itemInitialized = false;
+    }
+
+    protected State booleanToState(Item item, boolean value) {
+        if (item instanceof ContactItem) {
+            return value ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+        } else if (item instanceof SwitchItem) {
+            return value ? OnOffType.ON : OnOffType.OFF;
+        } else if (item instanceof NumberItem) {
+            return value ? DECIMAL_ONE : DecimalType.ZERO;
+        }
+
+        return null;
+    }
+
 }

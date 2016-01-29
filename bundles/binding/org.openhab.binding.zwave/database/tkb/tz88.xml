@@ -146,5 +146,13 @@
 			<Help lang="en"><![CDATA[?]]></Help>
 		</Parameter>
 	</Configuration>
+	<Associations>
+		<Group>
+        	<Index>1</Index>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+            <Label lang="en">Target for automatic reports</Label>
+        </Group>
+	</Associations>
 </Product>
 

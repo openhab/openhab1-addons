@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template id="sitemap" autoinsert="true" context="org.openhab.model.Sitemap.SitemapModel" deleted="false" description="Template for a new Sitemap" enabled="true" name="Sitemap">sitemap ${name} label="${label}" {
-	${cursor}
-}
-</template></templates>

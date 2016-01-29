@@ -1,0 +1,248 @@
+[
+    {
+        "comment": "<Controller> Displayed room temperature (°C)",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_room_disp",
+        "class":   "controller",
+        "command": "B5 09",
+        "data":    "0D 80 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_room_disp": {"type": "data2c", "pos": 12, "label": "Room temperature"}
+        }
+    },
+
+    {
+        "comment": "<Controller> Raw room temperature (°C)",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_room",
+        "class":   "controller",
+        "command": "B5 09",
+        "data":    "0D 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_room":   {"type": "data2c", "pos": 12, "label": "Room temperature"},
+            "status":      {"type": "uchar", "pos": 14, "label": "Room temperature status",
+                "mapping": {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment":  "<Controller> Outside temperature (°C)",
+        "device":   "Vaillant VRC 430",
+        "id":       "temp_outside",
+        "class":    "controller",
+        "command":  "B5 09",
+        "data":     "0D 62 00",
+        "dst":      "15",
+
+        "values": {
+            "temp_outside": {"type": "data2c", "pos": 12, "label": "Outside temperature"},
+            "status":       {"type": "uchar", "pos": 14, "label": "Outside temperature status",
+                "mapping":  {"0":"Ok", "85":"Circuit", "170":"Cutoff"}}
+        }
+    },
+
+    {
+        "comment": "<DHW> DHW Operation mode",
+        "device":  "Vaillant VRC 430",
+        "id":      "program_dhw_circuit",
+        "class":   "dhw",
+        "command": "B5 09",
+        "data":    "0D 42 00",
+        "dst":     "15",
+
+        "values": {
+            "program": {"type": "uchar", "pos": 12, "label": "DHW Operation mode",
+                "mapping": {"0":"Off", "1":"Manual", "2":"Auto"}}
+        }
+    },
+
+    {
+        "comment": "<DHW> Set DHW Operation mode",
+        "device":  "Vaillant VRC 430",
+        "id":      "set_program_dhw_circuit",
+        "class":   "dhw",
+        "command": "B5 09",
+        "data":    "0E 42 00 00",
+        "dst":     "15",
+
+        "values": {
+            "program": {"type": "uchar", "pos": 9, "label": "DHW Operation mode",
+                "mapping": {"0":"Off", "1":"Manual", "2":"Auto"}}
+        }
+    },
+	
+    {
+        "comment": "<DHW> Domestic Hot Water Setpoint",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_d_dhw",
+        "class":   "dhw",
+        "command": "B5 09",
+        "data":    "0D 44 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_dhw": {"type": "data1c", "pos": 12, "label": "DHW setpoint"}
+        }
+    },
+
+    {
+        "comment": "<DHW> Set Domestic Hot Water Setpoint",
+        "device":  "Vaillant VRC 430",
+        "id":      "set_temp_d_dhw",
+        "class":   "dhw",
+        "command": "B5 09",
+        "data":    "0E 44 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_dhw": {"type": "data1c", "pos": 9, "label": "DHW setpoint"}
+        }
+    },
+
+    {
+        "comment": "<DHW> Domestic Hot Water actual desired temperature",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_d_actual_dhw",
+        "class":   "dhw",
+        "command": "B5 09",
+        "data":    "0D 86 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_actual_dhw": {"type": "data1c", "pos": 12, "label": "DHW actual desired temperature"}
+        }
+    },
+
+    {
+        "comment": "<Heating> HC1 Operation mode",
+        "device":  "Vaillant VRC 430",
+        "id":      "program_heating_circuit",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0D 2F 00",
+        "dst":     "15",
+
+        "values": {
+            "program": {"type": "uchar", "pos": 12, "label": "HC1 Operation mode",
+                "mapping": {"0":"Off", "1":"Manual", "2":"Auto", "3":"Day", "4":"Night", "5":"Summer"}}
+        }
+    },
+
+    {
+        "comment": "<Heating> Set HC1 Operation mode",
+        "device":  "Vaillant VRC 430",
+        "id":      "set_program_heating_circuit",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0E 2F 00 00",
+        "dst":     "15",
+
+        "values": {
+            "program": {"type": "uchar", "pos": 9, "label": "HC1 Operation",
+                "mapping": {"0":"Off", "1":"Manual", "2":"Auto", "3":"Day", "4":"Night", "5":"Summer"}}
+        }
+    },
+
+    {
+        "comment": "<Heating> HC1 Night Setpoint (°C)",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_d_night",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0D 30 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_night": {"type": "data1c", "pos": 12, "label": "HC1 Night setpoint"}
+        }
+    },
+
+
+    {
+        "comment": "<Heating> Set HC1 Night Setpoint (°C)",
+        "device":  "Vaillant VRC 430",
+        "id":      "set_temp_d_night",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0E 30 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_night": {"type": "data1c", "pos": 9, "label": "HC1 Night setpoint"}
+        }
+    },
+
+    {
+        "comment": "<Heating> HC1 Manual Setpoint (°C)",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_d_man",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0D 32 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_man": {"type": "data1c", "pos": 12, "label": "HC1 Day setpoint"}
+        }
+    },
+
+    {
+        "comment": "<Heating> Set HC1 Manual Setpoint",
+        "device":  "Vaillant VRC 430",
+        "id":      "set_temp_d_man",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0E 32 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_man": {"type": "data1c", "pos": 9, "label": "HC1 Day setpoint"}
+        }
+    },
+
+    {
+        "comment": "<Heating> HC1 Manual override setpoint",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_d_room_override",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0D 3C 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_d_room_override": {"type": "data1c", "pos": 12, "label": "HC1 Manual override setpoint"}
+        }
+    },
+
+    {
+        "comment": "<Heating> HC1 Heating curve",
+        "device":  "Vaillant VRC 430",
+        "id":      "temp_hcurve",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0D 31 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_hcurve": {"type": "uint", "pos": 12, "label": "HC1 Heating curve", "factor": 0.01}
+        }
+    },
+
+    {
+        "comment": "<Heating> Set HC1 Heating curve",
+        "device":  "Vaillant VRC 430",
+        "id":      "set_temp_hcurve",
+        "class":   "heating",
+        "command": "B5 09",
+        "data":    "0E 31 00 00",
+        "dst":     "15",
+
+        "values": {
+            "temp_hcurve": {"type": "uint", "pos": 9, "label": "HC1 Heating curve", "factor": 0.01, "min": 0.2, "max": 4.0}
+        }
+    }
+]

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,26 +13,26 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
 
 /**
  * Converts a string holding a percent value to a integer value.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class PercentIntegerConverter extends IntegerConverter {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Integer convert(String value) {
-		return super.convert(StringUtils.remove(value, "%"));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer convert(String value) {
+        return super.convert(StringUtils.remove(value, "%"));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ConverterType getType() {
-		return ConverterType.PERCENT_INTEGER;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ConverterType getType() {
+        return ConverterType.PERCENT_INTEGER;
+    }
 
 }

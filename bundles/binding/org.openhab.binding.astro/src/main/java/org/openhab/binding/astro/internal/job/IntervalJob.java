@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,26 +20,26 @@ import org.quartz.JobDataMap;
 /**
  * Calculates and publishes the current sun azimuth and elevation and moon
  * illumination end distance.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 public class IntervalJob extends AbstractBaseJob {
 
-	@Override
-	protected void executeJob(JobDataMap jobDataMap) {
-		Calendar now = Calendar.getInstance();
+    @Override
+    protected void executeJob(JobDataMap jobDataMap) {
+        Calendar now = Calendar.getInstance();
 
-		// sun
-		SunCalc sunCalc = new SunCalc();
-		Sun sun = (Sun) context.getPlanet(PlanetName.SUN);
-		sunCalc.setSunPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), sun);
-		planetPublisher.publish(PlanetName.SUN);
+        // sun
+        SunCalc sunCalc = new SunCalc();
+        Sun sun = (Sun) context.getPlanet(PlanetName.SUN);
+        sunCalc.setSunPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), sun);
+        planetPublisher.publish(PlanetName.SUN);
 
-		// moon
-		MoonCalc moonCalc = new MoonCalc();
-		Moon moon = (Moon) context.getPlanet(PlanetName.MOON);
-		moonCalc.setMoonPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), moon);
-		planetPublisher.publish(PlanetName.MOON);
-	}
+        // moon
+        MoonCalc moonCalc = new MoonCalc();
+        Moon moon = (Moon) context.getPlanet(PlanetName.MOON);
+        moonCalc.setMoonPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), moon);
+        planetPublisher.publish(PlanetName.MOON);
+    }
 }

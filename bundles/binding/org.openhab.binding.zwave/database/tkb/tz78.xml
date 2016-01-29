@@ -65,6 +65,7 @@
 		<Group>
         	<Index>1</Index>
             <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
             <Label lang="en">Target for automatic reports</Label>
             <Label lang="de">Ziel für automatische reports</Label>
         </Group>

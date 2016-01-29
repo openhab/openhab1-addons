@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,155 +10,179 @@ package org.openhab.binding.netatmo.internal.messages;
 
 import static org.openhab.io.net.http.HttpUtil.executeUrl;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.openhab.binding.netatmo.internal.NetatmoException;
 import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
+import org.openhab.binding.netatmo.internal.NetatmoScale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Queries the Netatmo API for the measures of a single device or module.
- * 
+ *
  * @author Andreas Brenk
  * @author Gaël L'hopital
+ * @author Rob Nielsen
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/getmeasure">getmeasure</a>
  */
 public class MeasurementRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = API_BASE_URL + "getmeasure";
+    private static final String URL = API_BASE_URL + "getmeasure";
 
-	/**
-	 * @param deviceId
-	 *            mandatory, must not be <code>null</code>
-	 * @param moduleId
-	 *            optional, may be <code>null</code>
-	 * @return a unique key suitable to store a request in a map
-	 */
-	public static String createKey(final String deviceId, final String moduleId) {
-		if (moduleId == null) {
-			return "device:" + deviceId;
+    private static final Logger logger = LoggerFactory.getLogger(MeasurementRequest.class);
 
-		} else {
-			return "module:" + moduleId;
-		}
-	}
+    /**
+     * @param deviceId
+     *            mandatory, must not be <code>null</code>
+     * @param moduleId
+     *            optional, may be <code>null</code>
+     * @return a unique key suitable to store a request in a map
+     */
+    public static String createKey(final String deviceId, final String moduleId, final NetatmoScale scale) {
+        final String s = ":" + scale.getScale();
+        if (moduleId == null) {
+            return "device:" + deviceId + s;
 
-	private final String accessToken;
+        } else {
+            return "module:" + moduleId + s;
+        }
+    }
 
-	private final String deviceId;
+    private final String accessToken;
 
-	private final String moduleId;
+    private final String deviceId;
 
-	private final SortedSet<String> measures = new TreeSet<String>();
+    private final String moduleId;
 
-	/**
-	 * Creates a request for the measurements of a device or module.
-	 * 
-	 * If you don't specify a moduleId you will retrieve the device's
-	 * measurements. If you do specify a moduleId you will retrieve the module's
-	 * measurements.
-	 * 
-	 * @param accessToken
-	 * @param deviceId
-	 * @param moduleId
-	 *            optional, may be <code>null</code>
-	 */
-	public MeasurementRequest(final String accessToken, final String deviceId,
-			final String moduleId) {
-		assert accessToken != null : "accessToken must not be null!";
-		assert deviceId != null : "deviceId must not be null!";
+    private final NetatmoScale scale;
 
-		this.accessToken = accessToken;
-		this.deviceId = deviceId;
-		this.moduleId = moduleId;
-	}
+    private final SortedSet<String> measures = new TreeSet<String>();
 
-	/**
-	 * @param measure
-	 *            the name of a supported measure, e.g. "Temperature" or
-	 *            "Humidity"
-	 */
-	public void addMeasure(final NetatmoMeasureType measureType) {
-		this.measures.add(measureType.getMeasure());
-	}
+    /**
+     * Creates a request for the measurements of a device or module
+     * using the default scale.
+     * 
+     * If you don't specify a moduleId you will retrieve the device's
+     * measurements. If you do specify a moduleId you will retrieve the module's
+     * measurements.
+     * 
+     * @param accessToken
+     * @param deviceId
+     * @param moduleId
+     *            optional, may be <code>null</code>
+     */
+    public MeasurementRequest(final String accessToken, final String deviceId, final String moduleId) {
+        this(accessToken, deviceId, moduleId, NetatmoScale.MAX);
+    }
 
-	@Override
-	public MeasurementResponse execute() {
-		final String url = buildQueryString();
-		String json = null;
+    /**
+     * Creates a request for the measurements of a device or module
+     * using the scale specified.
+     *
+     * If you don't specify a moduleId you will retrieve the device's
+     * measurements. If you do specify a moduleId you will retrieve the module's
+     * measurements.
+     *
+     * @param accessToken
+     * @param deviceId
+     * @param moduleId
+     *            optional, may be <code>null</code>
+     * @param scale
+     */
+    public MeasurementRequest(final String accessToken, final String deviceId, final String moduleId,
+            final NetatmoScale scale) {
+        assert accessToken != null : "accessToken must not be null!";
+        assert deviceId != null : "deviceId must not be null!";
+        assert scale != null : "scale must not be null!";
 
-		try {
-			
-			json = executeQuery(url);
-			
-			final MeasurementResponse response = JSON.readValue(json,
-					MeasurementResponse.class);
+        this.accessToken = accessToken;
+        this.deviceId = deviceId;
+        this.moduleId = moduleId;
+        this.scale = scale;
+    }
 
-			return response;
-		} catch (final Exception e) {
-			throw newException("Could not get measurements!", e, url, json);
-		}
-	}
+    /**
+     * @param measure
+     *            the name of a supported measure, e.g. "Temperature" or
+     *            "Humidity"
+     */
+    public void addMeasure(final NetatmoMeasureType measureType) {
+        this.measures.add(measureType.getMeasure());
+    }
 
-	/**
-	 * @see #createKey(String, String)
-	 */
-	public String getKey() {
-		return createKey(this.deviceId, this.moduleId);
-	}
+    @Override
+    public MeasurementResponse execute() {
+        final String content = buildContentString();
 
-	public SortedSet<String> getMeasures() {
-		return this.measures;
-	}
+        String json = null;
+        try {
+            json = executeQuery(content);
 
-	@Override
-	public String toString() {
-		final ToStringBuilder builder = createToStringBuilder();
-		builder.appendSuper(super.toString());
-		builder.append("accessToken", this.accessToken);
-		builder.append("deviceId", this.deviceId);
-		if (this.moduleId != null) {
-			builder.append("moduleId", this.moduleId);
-		}
-		builder.append("measures", this.measures);
+            return JSON.readValue(json, MeasurementResponse.class);
+        } catch (final Exception e) {
+            throw newException("Could not get measurements!", e, URL, content, json);
+        }
+    }
 
-		return builder.toString();
-	}
+    /**
+     * @see #createKey(String, String)
+     */
+    public String getKey() {
+        return createKey(this.deviceId, this.moduleId, this.scale);
+    }
 
-	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_GET, url, HTTP_HEADERS, null, null,
-				HTTP_REQUEST_TIMEOUT);
-	}
+    public SortedSet<String> getMeasures() {
+        return this.measures;
+    }
 
-	private String buildQueryString() {
-		final StringBuilder urlBuilder = new StringBuilder(RESOURCE_URL);
-		urlBuilder.append("?access_token=");
-		urlBuilder.append(this.accessToken);
-		urlBuilder.append("&scale=max");
-		urlBuilder.append("&date_end=last");
-		urlBuilder.append("&device_id=");
-		urlBuilder.append(this.deviceId);
-		if (this.moduleId != null) {
-			urlBuilder.append("&module_id=");
-			urlBuilder.append(this.moduleId);
-		}
-		urlBuilder.append("&type=");
-		for (final Iterator<String> i = this.measures.iterator(); i.hasNext();) {
-			urlBuilder.append(i.next());
-			if (i.hasNext()) {
-				urlBuilder.append(",");
-			}
-		}
+    @Override
+    public String toString() {
+        final ToStringBuilder builder = createToStringBuilder();
+        builder.appendSuper(super.toString());
+        builder.append("accessToken", this.accessToken);
+        builder.append("deviceId", this.deviceId);
+        if (this.moduleId != null) {
+            builder.append("moduleId", this.moduleId);
+        }
+        builder.append("measures", this.measures);
 
-		try {
-			return URIUtil.encodeQuery(urlBuilder.toString());
-		} catch (final URIException e) {
-			throw new NetatmoException(e);
-		}
-	}
+        return builder.toString();
+    }
+
+    protected String executeQuery(final String content) throws Exception {
+        final InputStream stream = new ByteArrayInputStream(content.getBytes(CHARSET));
+
+        logger.debug("HTTP Post url='{}' content='{}'", URL, content);
+
+        return executeUrl(HTTP_POST, URL, HTTP_HEADERS, stream, HTTP_CONTENT_TYPE, HTTP_REQUEST_TIMEOUT);
+    }
+
+    private String buildContentString() {
+        final StringBuilder contentBuilder = new StringBuilder();
+        contentBuilder.append("access_token=");
+        contentBuilder.append(this.accessToken);
+        contentBuilder.append("&scale=" + scale.getScale());
+        contentBuilder.append("&date_end=last");
+        contentBuilder.append("&device_id=");
+        contentBuilder.append(this.deviceId);
+        if (this.moduleId != null) {
+            contentBuilder.append("&module_id=");
+            contentBuilder.append(this.moduleId);
+        }
+        contentBuilder.append("&type=");
+        for (final Iterator<String> i = this.measures.iterator(); i.hasNext();) {
+            contentBuilder.append(i.next());
+            if (i.hasNext()) {
+                contentBuilder.append(",");
+            }
+        }
+
+        return contentBuilder.toString();
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * method call.
  * <p>
  * Sample response:
- * 
+ *
  * <pre>
  * {"status":"ok",
  *  "body":[{"beg_time":1367965202,
@@ -33,7 +33,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  *  "time_exec":0.0072271823883057,
  *  "time_server":1367965438}
  * </pre>
- * 
+ *
  * @author Andreas Brenk
  * @author Gaël L'hopital
  * @since 1.4.0
@@ -41,65 +41,66 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MeasurementResponse extends AbstractResponse {
 
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static class Body extends AbstractMessagePart {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Body extends AbstractMessagePart {
 
-		private List<List<BigDecimal>> values;
-		private long begTime;
+        private List<List<BigDecimal>> values;
+        private long begTime;
 
-		@JsonProperty("value")
-		public List<List<BigDecimal>> getValues() {
-			return this.values;
-		}
-		
-		@JsonProperty("beg_time")
-		public long getBegTime() {
-			return this.begTime;
-		}
+        @JsonProperty("value")
+        public List<List<BigDecimal>> getValues() {
+            return this.values;
+        }
 
-		@Override
-		public String toString() {
-			final ToStringBuilder builder = createToStringBuilder();
-			builder.appendSuper(super.toString());
-			builder.append("values", this.values);
-			builder.append("begTime",this.begTime);
-			return builder.toString();
-		}
-	}
+        @JsonProperty("beg_time")
+        public long getBegTime() {
+            return this.begTime;
+        }
 
-	private String status;
+        @Override
+        public String toString() {
+            final ToStringBuilder builder = createToStringBuilder();
+            builder.appendSuper(super.toString());
+            builder.append("values", this.values);
+            builder.append("begTime", this.begTime);
+            return builder.toString();
+        }
+    }
 
-	private List<Body> body;
+    private String status;
 
-	@JsonProperty("body")
-	public List<Body> getBody() {
-		return this.body;
-	}
+    private List<Body> body;
 
-	@JsonProperty("status")
-	public String getStatus() {
-		return this.status;
-	}
+    @JsonProperty("body")
+    public List<Body> getBody() {
+        return this.body;
+    }
 
-	@Override
-	public String toString() {
-		final ToStringBuilder builder = createToStringBuilder();
-		builder.appendSuper(super.toString());
-		builder.append("status", this.status);
-		builder.append("body", this.body);
+    @JsonProperty("status")
+    public String getStatus() {
+        return this.status;
+    }
 
-		return builder.toString();
-	}
-	
-	public Calendar getTimeStamp() {
-		Calendar result = null;
-		if ((body != null) && !body.isEmpty()) {
-			result = Calendar.getInstance();
-			/* We make the asumption that the timestamp of the first value is
-			 * the good one for the whole module => get(0)
-			 */
-			result.setTimeInMillis(body.get(0).getBegTime() * 1000);
-		}
-		return result;
-	}
+    @Override
+    public String toString() {
+        final ToStringBuilder builder = createToStringBuilder();
+        builder.appendSuper(super.toString());
+        builder.append("status", this.status);
+        builder.append("body", this.body);
+
+        return builder.toString();
+    }
+
+    public Calendar getTimeStamp() {
+        Calendar result = null;
+        if ((body != null) && !body.isEmpty()) {
+            result = Calendar.getInstance();
+            /*
+             * We make the asumption that the timestamp of the first value is
+             * the good one for the whole module => get(0)
+             */
+            result.setTimeInMillis(body.get(0).getBegTime() * 1000);
+        }
+        return result;
+    }
 }

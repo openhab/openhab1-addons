@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.cv.internal.ReturnType;
@@ -37,180 +38,184 @@ import org.slf4j.LoggerFactory;
  * This is an abstract super class which adds Broadcaster config, lifecycle and
  * filters to its derived classes and registers listeners to subscribed
  * resources.
- * 
- * 
+ *
+ *
  * @author Tobias Bräutigam
  * @since 1.4.0
- * 
+ *
  */
 abstract public class ResourceStateChangeListener {
-	private static final Logger logger = LoggerFactory
-			.getLogger(ResourceStateChangeListener.class);
-	
-	private StateChangeListener stateChangeListener;
-	private CometVisuBroadcaster broadcaster;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
 
-	public ResourceStateChangeListener() {
-	}
+    private StateChangeListener stateChangeListener;
+    private CometVisuBroadcaster broadcaster;
 
-	public ResourceStateChangeListener(CometVisuBroadcaster broadcaster) {
-		this.broadcaster = broadcaster;
-	}
+    public ResourceStateChangeListener() {
+    }
 
-	public CometVisuBroadcaster getBroadcaster() {
-		return broadcaster;
-	}
+    public ResourceStateChangeListener(CometVisuBroadcaster broadcaster) {
+        this.broadcaster = broadcaster;
+    }
 
-	public void setBroadcaster(CometVisuBroadcaster broadcaster) {
-		this.broadcaster = broadcaster;
-	}
+    public CometVisuBroadcaster getBroadcaster() {
+        return broadcaster;
+    }
 
-	public void registerItems() {
-		broadcaster.getBroadcasterConfig().setBroadcasterCache(
-				new CVBroadcasterCache());
-		broadcaster.getBroadcasterConfig().getBroadcasterCache()
-				.configure(broadcaster.getBroadcasterConfig());
-		broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
+    public void setBroadcaster(CometVisuBroadcaster broadcaster) {
+        this.broadcaster = broadcaster;
+    }
 
-		broadcaster.getBroadcasterConfig().addFilter(
-				new PerRequestBroadcastFilter() {
+    public void registerItems() {
+        broadcaster.getBroadcasterConfig().setBroadcasterCache(new CVBroadcasterCache());
+        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
 
-					@Override
-					public BroadcastAction filter(String broadcasterId,
-							Object originalMessage, Object message) {
-						return new BroadcastAction(message);
-					}
+        broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 
-					@Override
-					public BroadcastAction filter(String broadcasterId,
-							AtmosphereResource resource,
-							Object originalMessage, Object message) {
-						HttpServletRequest request = resource.getRequest();
-						Object responseObject;
-						if (message instanceof Item) {
-							responseObject = getSingleResponseObject(
-									(Item) message, request);
-						} else if (message instanceof ItemStateListBean) {
-							responseObject = message;
-						} else {
-							responseObject = getResponseObject(request);
-						}
-						if (responseObject != null)
-							return new BroadcastAction(ACTION.CONTINUE,
-									responseObject);
-						else
-							return new BroadcastAction(ACTION.ABORT, message);
-					}
-				});
+            @Override
+            public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+                return new BroadcastAction(message);
+            }
 
-		broadcaster.getBroadcasterConfig()
-				.addFilter(new ResponseObjectFilter());
+            @Override
+            public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, Object originalMessage,
+                    Object message) {
+                HttpServletRequest request = resource.getRequest();
+                Object responseObject;
+                if (message instanceof Item) {
+                    responseObject = getSingleResponseObject((Item) message, request);
+                } else if (message instanceof ItemStateListBean) {
+                    responseObject = message;
+                } else {
+                    responseObject = getResponseObject(request);
+                }
+                if (responseObject != null) {
+                    return new BroadcastAction(ACTION.CONTINUE, responseObject);
+                } else {
+                    return new BroadcastAction(ACTION.ABORT, message);
+                }
+            }
+        });
 
-		stateChangeListener = new StateChangeListener() {
-			public void stateUpdated(Item item, State state) {
-				// broadcast this update
-				if (item instanceof GroupItem && getRelevantItemNames().containsKey(item.getName())) {
-					Collection<ItemBean> beans = new LinkedList<ItemBean>();
-					for (ReturnType rt : getRelevantItemNames().get(
-							item.getName())) {
-						if (rt.getStateClass() != null) {
-							logger.debug("updating item {} statetype {}=>'{}'",rt.getClientItemName(),rt.getStateClass(),item
-									.getStateAs(rt.getStateClass()).toString());
-							beans.add(new ItemBean(rt.getClientItemName(), item
-									.getStateAs(rt.getStateClass()).toString()));
-						}
-					}
-					if (beans.size()>0) {
-						ItemStateListBean responseBean = new ItemStateListBean(
-								new ItemListBean(beans));
-						responseBean.index = System.currentTimeMillis();
-						broadcaster.broadcast(responseBean);
-					}
-				}
-			}
+        broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
 
-			public void stateChanged(final Item item, State oldState,
-					State newState) {
-				// broadcast the item, or cache it when there is no resource
-				// available at the moment
-				broadcaster.broadcast(item);
-			}
-		};
-		registerStateChangeListenerOnRelevantItems(broadcaster.getID(),
-				stateChangeListener);
-	}
+        stateChangeListener = new StateChangeListener() {
+            @Override
+            public void stateUpdated(Item item, State state) {
+                // broadcast this update
+                if (item instanceof GroupItem && getRelevantItemNames().containsKey(item.getName())) {
+                    Collection<ItemBean> beans = new LinkedList<ItemBean>();
+                    for (ReturnType rt : getRelevantItemNames().get(item.getName())) {
+                        if (rt.getStateClass() != null) {
+                            logger.debug("updating item {} statetype {}=>'{}'", rt.getClientItemName(),
+                                    rt.getStateClass(), item.getStateAs(rt.getStateClass()).toString());
+                            beans.add(new ItemBean(rt.getClientItemName(),
+                                    item.getStateAs(rt.getStateClass()).toString()));
+                        }
+                    }
+                    if (beans.size() > 0) {
+                        ItemStateListBean responseBean = new ItemStateListBean(new ItemListBean(beans));
+                        responseBean.index = System.currentTimeMillis();
+                        broadcaster.broadcast(responseBean);
+                    }
+                }
+            }
 
-	public void unregisterItems() {
-		unregisterStateChangeListenerOnRelevantItems();
-	}
+            @Override
+            public void stateChanged(final Item item, State oldState, State newState) {
+                // broadcast the item, or cache it when there is no resource
+                // available at the moment
+                broadcaster.broadcast(item);
+            }
+        };
+        registerStateChangeListenerOnRelevantItems(broadcaster.getID(), stateChangeListener);
+    }
 
-	protected void registerStateChangeListenerOnRelevantItems(String pathInfo,
-			StateChangeListener stateChangeListener) {
-		for (List<ReturnType> rts : getRelevantItemNames().values()) {
-			for (ReturnType rt : rts) {
-				registerChangeListenerOnItem(stateChangeListener, rt);
-			}
-		}
-	}
+    public void unregisterItems() {
+        unregisterStateChangeListenerOnRelevantItems();
+    }
 
-	protected void unregisterStateChangeListenerOnRelevantItems() {
-		for (List<ReturnType> rts : getRelevantItemNames().values()) {
-			for (ReturnType rt : rts) {
-				unregisterChangeListenerOnItem(stateChangeListener, rt);
-			}
-		}
-	}
+    protected void registerStateChangeListenerOnRelevantItems(String pathInfo,
+            StateChangeListener stateChangeListener) {
+        for (List<ReturnType> rts : getRelevantItemNames().values()) {
+            for (ReturnType rt : rts) {
+                registerChangeListenerOnItem(stateChangeListener, rt);
+            }
+        }
+    }
 
-	private void registerChangeListenerOnItem(
-			StateChangeListener stateChangeListener, ReturnType rt) {
-		Item item = rt.getItem();
-		if (item instanceof GenericItem) {
-			GenericItem genericItem = (GenericItem) item;
-			genericItem.addStateChangeListener(stateChangeListener);
-		}
-	}
+    protected void unregisterStateChangeListenerOnRelevantItems() {
+        for (List<ReturnType> rts : getRelevantItemNames().values()) {
+            for (ReturnType rt : rts) {
+                unregisterChangeListenerOnItem(stateChangeListener, rt);
+            }
+        }
+    }
 
-	private void unregisterChangeListenerOnItem(
-			StateChangeListener stateChangeListener, ReturnType rt) {
-		Item item = rt.getItem();
-		if (item instanceof GenericItem) {
-			GenericItem genericItem = (GenericItem) item;
-			genericItem.removeStateChangeListener(stateChangeListener);
-		}
-	}
+    private void registerChangeListenerOnItem(StateChangeListener stateChangeListener, ReturnType rt) {
+        Item item = rt.getItem();
+        if (item instanceof GenericItem) {
+            GenericItem genericItem = (GenericItem) item;
+            genericItem.addStateChangeListener(stateChangeListener);
+        }
+    }
 
-	/**
-	 * Returns a set of all items that should be observed for this request. A
-	 * status change of any of those items will resume the suspended request.
-	 * 
-	 * @param pathInfo
-	 *            the pathInfo object from the http request
-	 * @return a set of item names
-	 */
-	abstract protected Map<String, List<ReturnType>> getRelevantItemNames();
+    private void unregisterChangeListenerOnItem(StateChangeListener stateChangeListener, ReturnType rt) {
+        Item item = rt.getItem();
+        if (item instanceof GenericItem) {
+            GenericItem genericItem = (GenericItem) item;
+            genericItem.removeStateChangeListener(stateChangeListener);
+        }
+    }
 
-	/**
-	 * Determines the response content for an HTTP request. This method has to
-	 * do all the HTTP header evaluation itself that is normally done through
-	 * Jersey annotations (if anybody knows a way to avoid this, let me know!)
-	 * 
-	 * @param request
-	 *            the HttpServletRequest
-	 * @return the response content
-	 */
-	abstract protected Object getResponseObject(final HttpServletRequest request);
+    /**
+     * After a model change the item objects in the ReturnType of all relevant items
+     * need to be refreshed to the new item objects
+     * 
+     */
+    public void refreshRelevantItems() {
+        for (List<ReturnType> rts : getRelevantItemNames().values()) {
+            for (ReturnType rt : rts) {
+                try {
+                    rt.refreshItem();
+                } catch (ItemNotFoundException e) {
+                    // item does not exist, do nothing
+                }
+            }
+        }
+    }
 
-	/**
-	 * Determines the response content for a single item. This method has to do
-	 * all the HTTP header evaluation itself that is normally done through
-	 * Jersey annotations (if anybody knows a way to avoid this, let me know!)
-	 * 
-	 * @param item
-	 *            the Item object
-	 * @param request
-	 *            the HttpServletRequest
-	 * @return the response content
-	 */
-	abstract protected Object getSingleResponseObject(Item item,
-			final HttpServletRequest request);
+    /**
+     * Returns a set of all items that should be observed for this request. A
+     * status change of any of those items will resume the suspended request.
+     * 
+     * @param pathInfo
+     *            the pathInfo object from the http request
+     * @return a set of item names
+     */
+    abstract protected Map<String, List<ReturnType>> getRelevantItemNames();
+
+    /**
+     * Determines the response content for an HTTP request. This method has to
+     * do all the HTTP header evaluation itself that is normally done through
+     * Jersey annotations (if anybody knows a way to avoid this, let me know!)
+     * 
+     * @param request
+     *            the HttpServletRequest
+     * @return the response content
+     */
+    abstract protected Object getResponseObject(final HttpServletRequest request);
+
+    /**
+     * Determines the response content for a single item. This method has to do
+     * all the HTTP header evaluation itself that is normally done through
+     * Jersey annotations (if anybody knows a way to avoid this, let me know!)
+     * 
+     * @param item
+     *            the Item object
+     * @param request
+     *            the HttpServletRequest
+     * @return the response content
+     */
+    abstract protected Object getSingleResponseObject(Item item, final HttpServletRequest request);
 }

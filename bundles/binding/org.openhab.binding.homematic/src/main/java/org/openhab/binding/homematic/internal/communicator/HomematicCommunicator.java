@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -44,359 +44,359 @@ import org.slf4j.LoggerFactory;
 /**
  * The heart of the Homematic binding, this class handles the complete
  * communication between a Homematic server and openHAB.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 public class HomematicCommunicator implements HomematicCallbackReceiver {
-	private static final Logger logger = LoggerFactory.getLogger(HomematicCommunicator.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomematicCommunicator.class);
 
-	private HomematicContext context = HomematicContext.getInstance();
-	private DelayedExecutor delayedExecutor = new DelayedExecutor();
+    private HomematicContext context = HomematicContext.getInstance();
+    private DelayedExecutor delayedExecutor = new DelayedExecutor();
 
-	private int newDevicesCounter;
+    private int newDevicesCounter;
 
-	private HomematicCallbackServer homematicCallbackServer;
-	private HomematicClient homematicClient;
-	private ItemDisabler itemDisabler;
+    private HomematicCallbackServer homematicCallbackServer;
+    private HomematicClient homematicClient;
+    private ItemDisabler itemDisabler;
 
-	private long lastEventTime = System.currentTimeMillis();
-	private long lastReconnectTime = System.currentTimeMillis();
-	private HomematicPublisher publisher = new HomematicPublisher();
+    private long lastEventTime = System.currentTimeMillis();
+    private long lastReconnectTime = System.currentTimeMillis();
+    private HomematicPublisher publisher = new HomematicPublisher();
 
-	private Set<BindingConfig> sentPressEvents = Collections.synchronizedSet(new HashSet<BindingConfig>());
+    private Set<BindingConfig> sentPressEvents = Collections.synchronizedSet(new HashSet<BindingConfig>());
 
-	/**
-	 * Starts the communicator and initializes everything.
-	 */
-	public void start() {
-		if (homematicCallbackServer == null) {
-			logger.info("Starting Homematic communicator");
-			try {
-				homematicCallbackServer = new BinRpcCallbackServer(this);
+    /**
+     * Starts the communicator and initializes everything.
+     */
+    public void start() {
+        if (homematicCallbackServer == null) {
+            logger.info("Starting Homematic communicator");
+            try {
+                homematicCallbackServer = new BinRpcCallbackServer(this);
 
-				itemDisabler = new ItemDisabler();
-				itemDisabler.start();
-				newDevicesCounter = 0;
+                itemDisabler = new ItemDisabler();
+                itemDisabler.start();
+                newDevicesCounter = 0;
 
-				RpcClient rpcClient = new BinRpcClient();
-				context.setServerId(rpcClient.getServerId(HmInterface.RF));
-				logger.info("Homematic {}", context.getServerId());
+                RpcClient rpcClient = new BinRpcClient();
+                context.setServerId(rpcClient.getServerId(HmInterface.RF));
+                logger.info("Homematic {}", context.getServerId());
 
-				homematicClient = context.getServerId().isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(
-						rpcClient);
+                homematicClient = context.getServerId().isHomegear() ? new HomegearClient(rpcClient)
+                        : new CcuClient(rpcClient);
 
-				context.setHomematicClient(homematicClient);
-				homematicClient.start();
+                context.setHomematicClient(homematicClient);
+                homematicClient.start();
 
-				context.getStateHolder().init();
-				context.getStateHolder().loadDatapoints();
-				context.getStateHolder().loadVariables();
+                context.getStateHolder().init();
+                context.getStateHolder().loadDatapoints();
+                context.getStateHolder().loadVariables();
 
-				homematicCallbackServer.start();
-				homematicClient.registerCallback();
+                homematicCallbackServer.start();
+                homematicClient.registerCallback();
 
-				scheduleFirstRefresh();
+                scheduleFirstRefresh();
 
-				lastReconnectTime = System.currentTimeMillis();
-			} catch (Exception e) {
-				logger.error("Could not start Homematic communicator: " + e.getMessage(), e);
-				stop();
-			}
-		}
-	}
+                lastReconnectTime = System.currentTimeMillis();
+            } catch (Exception e) {
+                logger.error("Could not start Homematic communicator: " + e.getMessage(), e);
+                stop();
+            }
+        }
+    }
 
-	/**
-	 * Schedule refresh after one minute in case there is a value change between
-	 * initial load and server startup
-	 */
-	private void scheduleFirstRefresh() {
-		logger.info("Scheduling one datapoint reload job in one minute");
-		delayedExecutor.schedule(new TimerTask() {
+    /**
+     * Schedule refresh after one minute in case there is a value change between
+     * initial load and server startup
+     */
+    private void scheduleFirstRefresh() {
+        logger.info("Scheduling one datapoint reload job in one minute");
+        delayedExecutor.schedule(new TimerTask() {
 
-			@Override
-			public void run() {
-				logger.debug("Initial Homematic datapoints reload");
-				context.getStateHolder().reloadDatapoints();
-			}
-		}, 61000); // 61 seconds to prevent reload at a reconnect
-	}
+            @Override
+            public void run() {
+                logger.debug("Initial Homematic datapoints reload");
+                context.getStateHolder().reloadDatapoints();
+            }
+        }, 61000); // 61 seconds to prevent reload at a reconnect
+    }
 
-	/**
-	 * Stops the communicator.
-	 */
-	public void stop() {
-		if (homematicCallbackServer != null) {
-			logger.info("Shutting down Homematic communicator");
-			try {
-				delayedExecutor.cancel();
-				homematicCallbackServer.shutdown();
-				if (homematicClient != null) {
-					try {
-						homematicClient.releaseCallback();
-					} catch (HomematicClientException e) {
-						// ignore
-					}
-					try {
-						homematicClient.shutdown();
-					} catch (HomematicClientException e) {
-						// ignore
-					}
-				}
-				if (itemDisabler != null) {
-					itemDisabler.stop();
-				}
-				if (context.getStateHolder() != null) {
-					context.getStateHolder().destroy();
-				}
-			} finally {
-				homematicCallbackServer = null;
-			}
-		}
-	}
+    /**
+     * Stops the communicator.
+     */
+    public void stop() {
+        if (homematicCallbackServer != null) {
+            logger.info("Shutting down Homematic communicator");
+            try {
+                delayedExecutor.cancel();
+                homematicCallbackServer.shutdown();
+                if (homematicClient != null) {
+                    try {
+                        homematicClient.releaseCallback();
+                    } catch (HomematicClientException e) {
+                        // ignore
+                    }
+                    try {
+                        homematicClient.shutdown();
+                    } catch (HomematicClientException e) {
+                        // ignore
+                    }
+                }
+                if (itemDisabler != null) {
+                    itemDisabler.stop();
+                }
+                if (context.getStateHolder() != null) {
+                    context.getStateHolder().destroy();
+                }
+            } finally {
+                homematicCallbackServer = null;
+            }
+        }
+    }
 
-	/**
-	 * Receives a message from the Homematic server and publishes the state to
-	 * openHAB.
-	 */
-	@Override
-	public void event(String interfaceId, String addressWithChannel, String parameter, Object value) {
-		boolean isVariable = "".equals(addressWithChannel);
+    /**
+     * Receives a message from the Homematic server and publishes the state to
+     * openHAB.
+     */
+    @Override
+    public void event(String interfaceId, String addressWithChannel, String parameter, Object value) {
+        boolean isVariable = "".equals(addressWithChannel);
 
-		HomematicBindingConfig bindingConfig = null;
-		if (isVariable) {
-			bindingConfig = new VariableConfig(parameter);
-		} else {
-			bindingConfig = new DatapointConfig(HmInterface.parse(interfaceId), addressWithChannel, parameter);
-		}
+        HomematicBindingConfig bindingConfig = null;
+        if (isVariable) {
+            bindingConfig = new VariableConfig(parameter);
+        } else {
+            bindingConfig = new DatapointConfig(HmInterface.parse(interfaceId), addressWithChannel, parameter);
+        }
 
-		String className = value == null ? "Unknown" : value.getClass().getSimpleName();
-		logger.debug("Received new ({}) value '{}' for {}", className, value, bindingConfig);
-		lastEventTime = System.currentTimeMillis();
+        String className = value == null ? "Unknown" : value.getClass().getSimpleName();
+        logger.debug("Received new ({}) value '{}' for {}", className, value, bindingConfig);
+        lastEventTime = System.currentTimeMillis();
 
-		final Event event = new Event(bindingConfig, value);
+        final Event event = new Event(bindingConfig, value);
 
-		if (sentPressEvents.remove(event.getBindingConfig())) {
-			logger.debug("Echo PRESS_* event detected, ignoring: {}", event.getBindingConfig());
-		} else {
-			if (context.getStateHolder().isDatapointReloadInProgress() && !isVariable) {
-				context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
-			}
+        if (sentPressEvents.remove(event.getBindingConfig())) {
+            logger.debug("Echo PRESS_* event detected, ignoring: {}", event.getBindingConfig());
+        } else {
+            if (context.getStateHolder().isDatapointReloadInProgress() && !isVariable) {
+                context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
+            }
 
-			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
-			if (event.getHmValueItem() != null) {
-				event.getHmValueItem().setValue(event.getNewValue());
+            event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
+            if (event.getHmValueItem() != null) {
+                event.getHmValueItem().setValue(event.getNewValue());
 
-				new ProviderItemIterator().iterate(event.getBindingConfig(), new ProviderItemIteratorCallback() {
+                new ProviderItemIterator().iterate(event.getBindingConfig(), new ProviderItemIteratorCallback() {
 
-					@Override
-					public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
-						State state = converter.convertFromBinding(event.getHmValueItem());
-						context.getEventPublisher().postUpdate(item.getName(), state);
-						if (state == OnOffType.ON) {
-							executeBindingAction(providerBindingConfig);
-							if (event.isPressValueItem()) {
-								itemDisabler.add(providerBindingConfig);
-							}
-						}
-					}
-				});
+                    @Override
+                    public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
+                        State state = converter.convertFromBinding(event.getHmValueItem());
+                        context.getEventPublisher().postUpdate(item.getName(), state);
+                        if (state == OnOffType.ON) {
+                            executeBindingAction(providerBindingConfig);
+                            if (event.isPressValueItem()) {
+                                itemDisabler.add(providerBindingConfig);
+                            }
+                        }
+                    }
+                });
 
-			} else {
-				logger.warn("Can't find {}, value is not published to openHAB!", event.getBindingConfig());
-			}
-		}
-	}
+            } else {
+                logger.warn("Can't find {}, value is not published to openHAB!", event.getBindingConfig());
+            }
+        }
+    }
 
-	/**
-	 * Called on startup or when some binding has changed, for example if a item
-	 * file is reloaded. Publishes the current States to openHAB.
-	 */
-	public void publishChangedItemToOpenhab(Item item, HomematicBindingConfig bindingConfig) {
-		HmValueItem hmValueItem = context.getStateHolder().getState(bindingConfig);
-		if (hmValueItem != null) {
-			Converter<?> converter = context.getConverterFactory().createConverter(item, bindingConfig);
-			if (converter != null) {
-				State state = converter.convertFromBinding(hmValueItem);
-				context.getEventPublisher().postUpdate(item.getName(), state);
-			}
-		} else if (bindingConfig instanceof ProgramConfig || bindingConfig instanceof ActionConfig) {
-			context.getEventPublisher().postUpdate(item.getName(), OnOffType.OFF);
-		} else {
-			logger.warn("Can't find {}, value is not published to openHAB!", bindingConfig);
-		}
-	}
+    /**
+     * Called on startup or when some binding has changed, for example if a item
+     * file is reloaded. Publishes the current States to openHAB.
+     */
+    public void publishChangedItemToOpenhab(Item item, HomematicBindingConfig bindingConfig) {
+        HmValueItem hmValueItem = context.getStateHolder().getState(bindingConfig);
+        if (hmValueItem != null) {
+            Converter<?> converter = context.getConverterFactory().createConverter(item, bindingConfig);
+            if (converter != null) {
+                State state = converter.convertFromBinding(hmValueItem);
+                context.getEventPublisher().postUpdate(item.getName(), state);
+            }
+        } else if (bindingConfig instanceof ProgramConfig || bindingConfig instanceof ActionConfig) {
+            context.getEventPublisher().postUpdate(item.getName(), OnOffType.OFF);
+        } else {
+            logger.warn("Can't find {}, value is not published to openHAB!", bindingConfig);
+        }
+    }
 
-	/**
-	 * Receives a update from openHAB and sends it to the Homematic server.
-	 */
-	public void receiveUpdate(Item item, State newState, HomematicBindingConfig bindingConfig) {
-		logger.debug("Received update {} for item {}", newState, item.getName());
-		Event event = new Event(item, newState, bindingConfig);
-		receiveType(event);
-	}
+    /**
+     * Receives a update from openHAB and sends it to the Homematic server.
+     */
+    public void receiveUpdate(Item item, State newState, HomematicBindingConfig bindingConfig) {
+        logger.debug("Received update {} for item {}", newState, item.getName());
+        Event event = new Event(item, newState, bindingConfig);
+        receiveType(event);
+    }
 
-	/**
-	 * Receives a command from openHAB and sends it to the Homematic server.
-	 */
-	public void receiveCommand(Item item, Command command, HomematicBindingConfig bindingConfig) {
-		logger.debug("Received command {} for item {}", command, item.getName());
-		Event event = new Event(item, command, bindingConfig);
-		receiveType(event);
-	}
+    /**
+     * Receives a command from openHAB and sends it to the Homematic server.
+     */
+    public void receiveCommand(Item item, Command command, HomematicBindingConfig bindingConfig) {
+        logger.debug("Received command {} for item {}", command, item.getName());
+        Event event = new Event(item, command, bindingConfig);
+        receiveType(event);
+    }
 
-	/**
-	 * Receives updates/commands from openHAB and sends messages to the
-	 * Homematic server.
-	 */
-	public void receiveType(Event event) {
-		if (event.isProgram()) {
-			if (event.isOnType()) {
-				executeProgram(event);
-			}
-		} else if (event.isAction()) {
-			if (event.isOnType()) {
-				executeBindingAction(event.getBindingConfig());
-				itemDisabler.add(event.getBindingConfig());
-			}
-		} else {
-			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
+    /**
+     * Receives updates/commands from openHAB and sends messages to the
+     * Homematic server.
+     */
+    public void receiveType(Event event) {
+        if (event.isProgram()) {
+            if (event.isOnType()) {
+                executeProgram(event);
+            }
+        } else if (event.isAction()) {
+            if (event.isOnType()) {
+                executeBindingAction(event.getBindingConfig());
+                itemDisabler.add(event.getBindingConfig());
+            }
+        } else {
+            event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
 
-			if (event.getHmValueItem() == null) {
-				logger.warn("Can't find {}, value is not published to Homematic server!", event.getBindingConfig());
-			} else {
-				try {
-					if (event.isStopLevelDatapoint()) {
-						homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), "STOP", true);
-					} else {
-						Converter<?> converter = context.getConverterFactory().createConverter(event.getItem(),
-								event.getBindingConfig());
-						if (converter != null) {
-							if (!event.isStopLevelDatapoint()) {
-								event.setNewValue(converter.convertToBinding(event.getType(), event.getHmValueItem()));
-							}
-							publishToHomematicServer(event);
-							publishToAllBindings(event);
+            if (event.getHmValueItem() == null) {
+                logger.warn("Can't find {}, value is not published to Homematic server!", event.getBindingConfig());
+            } else {
+                try {
+                    if (event.isStopLevelDatapoint()) {
+                        homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), "STOP", true);
+                    } else {
+                        Converter<?> converter = context.getConverterFactory().createConverter(event.getItem(),
+                                event.getBindingConfig());
+                        if (converter != null) {
+                            if (!event.isStopLevelDatapoint()) {
+                                event.setNewValue(converter.convertToBinding(event.getType(), event.getHmValueItem()));
+                            }
+                            publishToHomematicServer(event);
+                            publishToAllBindings(event);
 
-							if (event.isOnType()) {
-								executeBindingAction(event.getBindingConfig());
-								if (event.isPressValueItem()) {
-									itemDisabler.add(event.getBindingConfig());
-								}
-							}
-						}
-					}
-				} catch (Exception ex) {
-					logger.error(ex.getMessage(), ex);
-					context.getStateHolder().reloadDatapoints();
-					context.getStateHolder().reloadVariables();
-				}
-			}
-		}
-	}
+                            if (event.isOnType()) {
+                                executeBindingAction(event.getBindingConfig());
+                                if (event.isPressValueItem()) {
+                                    itemDisabler.add(event.getBindingConfig());
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage(), ex);
+                    context.getStateHolder().reloadDatapoints();
+                    context.getStateHolder().reloadVariables();
+                }
+            }
+        }
+    }
 
-	/**
-	 * Sends the event to the Homematic server.
-	 */
-	private void publishToHomematicServer(Event event) throws HomematicClientException {
-		if (event.isPressValueItem()) {
-			sentPressEvents.add(event.getBindingConfig());
-		}
+    /**
+     * Sends the event to the Homematic server.
+     */
+    private void publishToHomematicServer(Event event) throws HomematicClientException {
+        if (event.isPressValueItem()) {
+            sentPressEvents.add(event.getBindingConfig());
+        }
 
-		if (!event.getHmValueItem().isWriteable()) {
-			logger.warn("Datapoint/Variable is not writeable, item is not published to the Homematic server: {}",
-					event.getBindingConfig());
-		}
+        if (!event.getHmValueItem().isWriteable()) {
+            logger.warn("Datapoint/Variable is not writeable, item is not published to the Homematic server: {}",
+                    event.getBindingConfig());
+        }
 
-		else if (event.isNewValueEqual()) {
-			logger.debug("Value '{}' equals cached Homematic server value '{}' and forceUpdate is false, ignoring {}",
-					event.getHmValueItem().getValue(), event.getNewValue(), event.getBindingConfig());
-		}
+        else if (event.isNewValueEqual()) {
+            logger.debug("Value '{}' equals cached Homematic server value '{}' and forceUpdate is false, ignoring {}",
+                    event.getHmValueItem().getValue(), event.getNewValue(), event.getBindingConfig());
+        }
 
-		else {
-			publisher.execute(event);
-		}
-	}
+        else {
+            publisher.execute(event);
+        }
+    }
 
-	/**
-	 * Publishes the event to all items bound to the same Homematic item.
-	 */
-	private void publishToAllBindings(final Event event) {
-		new ProviderItemIterator().iterate(event.getBindingConfig(), new ProviderItemIteratorCallback() {
+    /**
+     * Publishes the event to all items bound to the same Homematic item.
+     */
+    private void publishToAllBindings(final Event event) {
+        new ProviderItemIterator().iterate(event.getBindingConfig(), new ProviderItemIteratorCallback() {
 
-			@Override
-			public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
-				if (!item.getName().equals(event.getItem().getName())) {
-					if (event.isCommand()) {
-						context.getEventPublisher().postCommand(item.getName(), (Command) event.getType());
-					} else {
-						State state = converter.convertFromBinding(event.getHmValueItem());
-						context.getEventPublisher().postUpdate(item.getName(), state);
-					}
-				}
-			}
-		});
-	}
+            @Override
+            public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
+                if (!item.getName().equals(event.getItem().getName())) {
+                    if (event.isCommand()) {
+                        context.getEventPublisher().postCommand(item.getName(), (Command) event.getType());
+                    } else {
+                        State state = converter.convertFromBinding(event.getHmValueItem());
+                        context.getEventPublisher().postUpdate(item.getName(), state);
+                    }
+                }
+            }
+        });
+    }
 
-	/**
-	 * Executes a program on the Homematic server.
-	 */
-	private void executeProgram(Event event) {
-		try {
-			homematicClient.executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
-		} catch (HomematicClientException ex) {
-			logger.error(ex.getMessage(), ex);
-		} finally {
-			itemDisabler.add(event.getBindingConfig());
-		}
-	}
+    /**
+     * Executes a program on the Homematic server.
+     */
+    private void executeProgram(Event event) {
+        try {
+            homematicClient.executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
+        } catch (HomematicClientException ex) {
+            logger.error(ex.getMessage(), ex);
+        } finally {
+            itemDisabler.add(event.getBindingConfig());
+        }
+    }
 
-	/**
-	 * If a binding action is configured, execute it.
-	 */
-	private void executeBindingAction(HomematicBindingConfig bindingConfig) {
-		if (bindingConfig.getAction() != null) {
-			if (bindingConfig.getAction() == BindingAction.RELOAD_VARIABLES) {
-				context.getStateHolder().reloadVariables();
-			} else if (bindingConfig.getAction() == BindingAction.RELOAD_DATAPOINTS) {
-				context.getStateHolder().reloadDatapoints();
-			} else if (bindingConfig.getAction() == BindingAction.RELOAD_RSSI) {
-				context.getStateHolder().reloadRssi();
-			} else {
-				logger.warn("Unknown action {}", bindingConfig.getAction());
-			}
-		}
-	}
+    /**
+     * If a binding action is configured, execute it.
+     */
+    private void executeBindingAction(HomematicBindingConfig bindingConfig) {
+        if (bindingConfig.getAction() != null) {
+            if (bindingConfig.getAction() == BindingAction.RELOAD_VARIABLES) {
+                context.getStateHolder().reloadVariables();
+            } else if (bindingConfig.getAction() == BindingAction.RELOAD_DATAPOINTS) {
+                context.getStateHolder().reloadDatapoints();
+            } else if (bindingConfig.getAction() == BindingAction.RELOAD_RSSI) {
+                context.getStateHolder().reloadRssi();
+            } else {
+                logger.warn("Unknown action {}", bindingConfig.getAction());
+            }
+        }
+    }
 
-	/**
-	 * Called when the Homematic server detects a new device, datapoints are
-	 * refreshed to have the new device in the cache.
-	 */
-	@Override
-	public void newDevices(String interfaceId, Object[] deviceDescriptions) {
-		if (newDevicesCounter < 3) {
-			newDevicesCounter++;
-		}
+    /**
+     * Called when the Homematic server detects a new device, datapoints are
+     * refreshed to have the new device in the cache.
+     */
+    @Override
+    public void newDevices(String interfaceId, Object[] deviceDescriptions) {
+        if (newDevicesCounter < 3) {
+            newDevicesCounter++;
+        }
 
-		// prevent from duplicate loading at startup
-		if (newDevicesCounter > 2) {
-			logger.info("New device(s) detected, refreshing datapoints");
-			context.getStateHolder().reloadDatapoints();
-		}
-	}
+        // prevent from duplicate loading at startup
+        if (newDevicesCounter > 2) {
+            logger.info("New device(s) detected, refreshing datapoints");
+            context.getStateHolder().reloadDatapoints();
+        }
+    }
 
-	/**
-	 * Returns the timestamp from the last Homematic server event.
-	 */
-	public long getLastEventTime() {
-		return lastEventTime;
-	}
+    /**
+     * Returns the timestamp from the last Homematic server event.
+     */
+    public long getLastEventTime() {
+        return lastEventTime;
+    }
 
-	/**
-	 * Returns the timestamp from the last Homematic server reconnect.
-	 */
-	public long getLastReconnectTime() {
-		return lastReconnectTime;
-	}
+    /**
+     * Returns the timestamp from the last Homematic server reconnect.
+     */
+    public long getLastReconnectTime() {
+        return lastReconnectTime;
+    }
 
 }

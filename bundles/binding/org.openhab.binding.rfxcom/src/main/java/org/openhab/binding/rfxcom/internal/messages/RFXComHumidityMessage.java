@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,210 +25,202 @@ import org.openhab.core.types.UnDefType;
 
 /**
  * RFXCOM data class for humidity message.
- * 
+ *
  * @author Pauli Anttila, Jan Sjölander
  * @since 1.4.0
  */
 public class RFXComHumidityMessage extends RFXComBaseMessage {
 
-	public enum SubType {
-		UNDEF(0),
-		LACROSSE_TX3(1),
-		LACROSSE_WS2300(2),
-		
-		UNKNOWN(255);
+    public enum SubType {
+        UNDEF(0),
+        LACROSSE_TX3(1),
+        LACROSSE_WS2300(2),
 
-		private final int subType;
+        UNKNOWN(255);
 
-		SubType(int subType) {
-			this.subType = subType;
-		}
+        private final int subType;
 
-		SubType(byte subType) {
-			this.subType = subType;
-		}
+        SubType(int subType) {
+            this.subType = subType;
+        }
 
-		public byte toByte() {
-			return (byte) subType;
-		}
-	}
+        SubType(byte subType) {
+            this.subType = subType;
+        }
 
-	public enum HumidityStatus {
-		NORMAL(0),
-		COMFORT(1),
-		DRY(2),
-		WET(3),
-		
-		UNKNOWN(255);
+        public byte toByte() {
+            return (byte) subType;
+        }
+    }
 
-		private final int humidityStatus;
+    public enum HumidityStatus {
+        NORMAL(0),
+        COMFORT(1),
+        DRY(2),
+        WET(3),
 
-		HumidityStatus(int humidityStatus) {
-			this.humidityStatus = humidityStatus;
-		}
+        UNKNOWN(255);
 
-		HumidityStatus(byte humidityStatus) {
-			this.humidityStatus = humidityStatus;
-		}
+        private final int humidityStatus;
 
-		public byte toByte() {
-			return (byte) humidityStatus;
-		}
-	}
+        HumidityStatus(int humidityStatus) {
+            this.humidityStatus = humidityStatus;
+        }
 
-	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
-			.asList(RFXComValueSelector.RAW_DATA,
-					RFXComValueSelector.SIGNAL_LEVEL,
-					RFXComValueSelector.BATTERY_LEVEL,
-					RFXComValueSelector.HUMIDITY,
-					RFXComValueSelector.HUMIDITY_STATUS);
+        HumidityStatus(byte humidityStatus) {
+            this.humidityStatus = humidityStatus;
+        }
 
-	public SubType subType = SubType.LACROSSE_TX3;
-	public int sensorId = 0;
-	public byte humidity = 0;
-	public HumidityStatus humidityStatus = HumidityStatus.NORMAL;
-	public byte signalLevel = 0;
-	public byte batteryLevel = 0;
+        public byte toByte() {
+            return (byte) humidityStatus;
+        }
+    }
 
-	public RFXComHumidityMessage() {
-		packetType = PacketType.HUMIDITY;
-	}
+    private final static List<RFXComValueSelector> supportedValueSelectors = Arrays.asList(RFXComValueSelector.RAW_DATA,
+            RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.HUMIDITY,
+            RFXComValueSelector.HUMIDITY_STATUS);
 
-	public RFXComHumidityMessage(byte[] data) {
-		encodeMessage(data);
-	}
+    public SubType subType = SubType.LACROSSE_TX3;
+    public int sensorId = 0;
+    public byte humidity = 0;
+    public HumidityStatus humidityStatus = HumidityStatus.NORMAL;
+    public byte signalLevel = 0;
+    public byte batteryLevel = 0;
 
-	@Override
-	public String toString() {
-		String str = "";
+    public RFXComHumidityMessage() {
+        packetType = PacketType.HUMIDITY;
+    }
 
-		str += super.toString();
-		str += "\n - Sub type = " + subType;
-		str += "\n - Id = " + sensorId;
-		str += "\n - Humidity = " + humidity;
-		str += "\n - Humidity status = " + humidityStatus;
-		str += "\n - Signal level = " + signalLevel;
-		str += "\n - Battery level = " + batteryLevel;
+    public RFXComHumidityMessage(byte[] data) {
+        encodeMessage(data);
+    }
 
-		return str;
-	}
+    @Override
+    public String toString() {
+        String str = "";
 
-	@Override
-	public void encodeMessage(byte[] data) {
+        str += super.toString();
+        str += "\n - Sub type = " + subType;
+        str += "\n - Id = " + sensorId;
+        str += "\n - Humidity = " + humidity;
+        str += "\n - Humidity status = " + humidityStatus;
+        str += "\n - Signal level = " + signalLevel;
+        str += "\n - Battery level = " + batteryLevel;
 
-		super.encodeMessage(data);
+        return str;
+    }
 
-		try {
-			subType = SubType.values()[super.subType];
-		} catch (Exception e) {
-			subType = SubType.UNKNOWN;
-		}
-		sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
-		humidity = data[6];
+    @Override
+    public void encodeMessage(byte[] data) {
 
-		try {
-			humidityStatus = HumidityStatus.values()[data[7]];
-		} catch (Exception e) {
-			humidityStatus = HumidityStatus.UNKNOWN;
-		}
-		signalLevel = (byte) ((data[8] & 0xF0) >> 4);
-		batteryLevel = (byte) (data[8] & 0x0F);
-	}
+        super.encodeMessage(data);
 
-	@Override
-	public byte[] decodeMessage() {
-		byte[] data = new byte[9];
+        try {
+            subType = SubType.values()[super.subType];
+        } catch (Exception e) {
+            subType = SubType.UNKNOWN;
+        }
+        sensorId = (data[4] & 0xFF) << 8 | (data[5] & 0xFF);
+        humidity = data[6];
 
-		data[0] = 0x0A;
-		data[1] = RFXComBaseMessage.PacketType.HUMIDITY.toByte();
-		data[2] = subType.toByte();
-		data[3] = seqNbr;
-		data[4] = (byte) ((sensorId & 0xFF00) >> 8);
-		data[5] = (byte) (sensorId & 0x00FF);
-		data[6] = humidity;
-		data[7] = humidityStatus.toByte();
-		data[8] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));// Janne
+        try {
+            humidityStatus = HumidityStatus.values()[data[7]];
+        } catch (Exception e) {
+            humidityStatus = HumidityStatus.UNKNOWN;
+        }
+        signalLevel = (byte) ((data[8] & 0xF0) >> 4);
+        batteryLevel = (byte) (data[8] & 0x0F);
+    }
 
-		return data;
-	}
+    @Override
+    public byte[] decodeMessage() {
+        byte[] data = new byte[9];
 
-	@Override
-	public String generateDeviceId() {
-		return String.valueOf(sensorId);
-	}
+        data[0] = 0x0A;
+        data[1] = RFXComBaseMessage.PacketType.HUMIDITY.toByte();
+        data[2] = subType.toByte();
+        data[3] = seqNbr;
+        data[4] = (byte) ((sensorId & 0xFF00) >> 8);
+        data[5] = (byte) (sensorId & 0x00FF);
+        data[6] = humidity;
+        data[7] = humidityStatus.toByte();
+        data[8] = (byte) (((signalLevel & 0x0F) << 4) | (batteryLevel & 0x0F));// Janne
 
-	@Override
-	public State convertToState(RFXComValueSelector valueSelector)
-			throws RFXComException {
-		
-		org.openhab.core.types.State state = UnDefType.UNDEF;
+        return data;
+    }
 
-		if (valueSelector.getItemClass() == NumberItem.class) {
+    @Override
+    public String generateDeviceId() {
+        return String.valueOf(sensorId);
+    }
 
-			if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
+    @Override
+    public State convertToState(RFXComValueSelector valueSelector) throws RFXComException {
 
-				state = new DecimalType(signalLevel);
+        org.openhab.core.types.State state = UnDefType.UNDEF;
 
-			} else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
+        if (valueSelector.getItemClass() == NumberItem.class) {
 
-				state = new DecimalType(batteryLevel);
+            if (valueSelector == RFXComValueSelector.SIGNAL_LEVEL) {
 
-			} else if (valueSelector == RFXComValueSelector.HUMIDITY) {
+                state = new DecimalType(signalLevel);
 
-				state = new DecimalType(humidity);
+            } else if (valueSelector == RFXComValueSelector.BATTERY_LEVEL) {
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to NumberItem");
-			}
+                state = new DecimalType(batteryLevel);
 
-		} else if (valueSelector.getItemClass() == StringItem.class) {
+            } else if (valueSelector == RFXComValueSelector.HUMIDITY) {
 
-			if (valueSelector == RFXComValueSelector.RAW_DATA) {
+                state = new DecimalType(humidity);
 
-				state = new StringType(
-						DatatypeConverter.printHexBinary(rawMessage));
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to NumberItem");
+            }
 
-			} else if (valueSelector == RFXComValueSelector.HUMIDITY_STATUS) {
+        } else if (valueSelector.getItemClass() == StringItem.class) {
 
-				state = new StringType(humidityStatus.toString());
+            if (valueSelector == RFXComValueSelector.RAW_DATA) {
 
-			} else {
-				throw new RFXComException("Can't convert "
-						+ valueSelector + " to StringItem");
-			}
-		} else {
+                state = new StringType(DatatypeConverter.printHexBinary(rawMessage));
 
-			throw new RFXComException("Can't convert " + valueSelector
-					+ " to " + valueSelector.getItemClass());
+            } else if (valueSelector == RFXComValueSelector.HUMIDITY_STATUS) {
 
-		}
+                state = new StringType(humidityStatus.toString());
 
-		return state;
-	}
+            } else {
+                throw new RFXComException("Can't convert " + valueSelector + " to StringItem");
+            }
+        } else {
 
-	@Override
-	public void convertFromState(RFXComValueSelector valueSelector, String id,
-			Object subType, Type type, byte seqNumber) throws RFXComException {
-		
-		throw new RFXComException("Not supported");
-	}
+            throw new RFXComException("Can't convert " + valueSelector + " to " + valueSelector.getItemClass());
 
-	@Override
-	public Object convertSubType(String subType) throws RFXComException {
-		
-		for (SubType s : SubType.values()) {
-			if (s.toString().equals(subType)) {
-				return s;
-			}
-		}
-		
-		throw new RFXComException("Unknown sub type " + subType);
-	}
-	
-	@Override
-	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
-		return supportedValueSelectors;
-	}
+        }
+
+        return state;
+    }
+
+    @Override
+    public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
+            byte seqNumber) throws RFXComException {
+
+        throw new RFXComException("Not supported");
+    }
+
+    @Override
+    public Object convertSubType(String subType) throws RFXComException {
+
+        for (SubType s : SubType.values()) {
+            if (s.toString().equals(subType)) {
+                return s;
+            }
+        }
+
+        throw new RFXComException("Unknown sub type " + subType);
+    }
+
+    @Override
+    public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+        return supportedValueSelectors;
+    }
 
 }

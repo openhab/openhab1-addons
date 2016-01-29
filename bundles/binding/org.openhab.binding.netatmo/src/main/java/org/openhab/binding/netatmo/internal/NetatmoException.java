@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,18 +14,18 @@ package org.openhab.binding.netatmo.internal;
  */
 public class NetatmoException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public NetatmoException(String message) {
-		super(message);
-	}
-	
-	public NetatmoException(final Throwable cause) {
-		super(cause);
-	}
+    public NetatmoException(String message) {
+        super(message);
+    }
 
-	public NetatmoException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
-	
+    public NetatmoException(final Throwable cause) {
+        super(cause);
+    }
+
+    public NetatmoException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
 }

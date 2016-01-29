@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,62 +22,57 @@ import org.openhab.core.types.State;
  * @author Neil Renaud
  * @since 1.7.0
  */
-public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand
-		implements LightwaveRfRoomMessage {
+public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand implements LightwaveRfRoomMessage {
 
-	private static final Pattern REG_EXP = Pattern
-			.compile("([0-9]{1,3}),!R([0-9])F\\*r\\s*");
-	private static final String FUNCTION = "*r";
+    private static final Pattern REG_EXP = Pattern.compile(".*?([0-9]{1,3}),!R([0-9])F\\*r\\s*");
+    private static final String FUNCTION = "*r";
 
-	private final LightwaveRfMessageId messageId;
-	private final String roomId;
+    private final LightwaveRfMessageId messageId;
+    private final String roomId;
 
-	public LightwaveRfHeatInfoRequest(int messageId, String roomId) {
-		this.messageId = new LightwaveRfGeneralMessageId(messageId);
-		this.roomId = roomId;
-	}
+    public LightwaveRfHeatInfoRequest(int messageId, String roomId) {
+        this.messageId = new LightwaveRfGeneralMessageId(messageId);
+        this.roomId = roomId;
+    }
 
-	public LightwaveRfHeatInfoRequest(String message)
-			throws LightwaveRfMessageException {
-		try {
-			Matcher m = REG_EXP.matcher(message);
-			m.matches();
-			messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m
-					.group(1)));
-			roomId = m.group(2);
-		} catch (Exception e) {
-			throw new LightwaveRfMessageException("Error converting message: "
-					+ message);
-		}
-	}
+    public LightwaveRfHeatInfoRequest(String message) throws LightwaveRfMessageException {
+        try {
+            Matcher m = REG_EXP.matcher(message);
+            m.matches();
+            messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m.group(1)));
+            roomId = m.group(2);
+        } catch (Exception e) {
+            throw new LightwaveRfMessageException("Error converting message: " + message);
+        }
+    }
 
-	@Override
-	public String getLightwaveRfCommandString() {
-		return getFunctionMessageString(messageId, roomId, FUNCTION);
-	}
+    @Override
+    public String getLightwaveRfCommandString() {
+        return getFunctionMessageString(messageId, roomId, FUNCTION);
+    }
 
-	@Override
-	public String getRoomId() {
-		return roomId;
-	}
+    @Override
+    public String getRoomId() {
+        return roomId;
+    }
 
-	@Override
-	public State getState(LightwaveRfType type) {
-		return null;
-	}
+    @Override
+    public State getState(LightwaveRfType type) {
+        return null;
+    }
 
-	@Override
-	public LightwaveRfMessageId getMessageId() {
-		return messageId;
-	}
+    @Override
+    public LightwaveRfMessageId getMessageId() {
+        return messageId;
+    }
 
-	public static boolean matches(String message) {
-		return message.contains(FUNCTION);
-	}
+    public static boolean matches(String message) {
+        return message.contains(FUNCTION);
+    }
 
-	@Override
-	public LightwaveRfMessageType getMessageType() {
-		return LightwaveRfMessageType.HEAT_REQUEST;
-	}
+    @Override
+    public LightwaveRfMessageType getMessageType() {
+        return LightwaveRfMessageType.HEAT_REQUEST;
+    }
 
 }
