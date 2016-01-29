@@ -1,0 +1,11 @@
+How to configure your device itself.
+Simple version is to just configure the mac adress. The item is considered to be a switch, which than is ON or OFF.
+Following example creates a binding to edmiax for device with MAC: 01234567ABCD.
+Example: Switch EdimaxSimple {edimax="01234567ABCD"}
+
+Also the Password to the device is configurable. The following example creates a device with password '1234'.
+Example: {edimax="01234567ABCD:1234"}
+
+There is also the option to configure the type, currently available types are STATE,POWER and CURRENT.
+STATE is the default. POWER for example assumes a number item and will show the power consumption of the device.
+Example: Number EdimaxCurrent  {edimax="01234567ABCD:1234:CURRENT"}
