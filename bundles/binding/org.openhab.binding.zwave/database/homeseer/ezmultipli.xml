@@ -100,6 +100,7 @@ TempAdj is a twos-complement number that is used to adjust the temperature readi
 			<Index>1</Index>
 			<Maximum>1</Maximum>
 			<Label lang="en">LIFELINE</Label>
+			<SetToController>true</SetToController>
 			<Help lang="en"><![CDATA[
 This group is normally automatically assigned to the Z-Wave system controller when EZMultiPli is added to the ZWave network. All Notification command class reports (motion detection) are sent to the node assigned to this group. Advanced lighting control should be handled by a home control application based on these reports.			
 			]]></Help>
@@ -108,6 +109,7 @@ This group is normally automatically assigned to the Z-Wave system controller wh
 			<Index>2</Index>
 			<Maximum>4</Maximum>
 			<Label lang="en">BASIC</Label>
+			<SetToController>true</SetToController>
 			<Help lang="en"><![CDATA[
 This group is used to directly turn lights on or off when motion is detected. Up to four (4) Z-Wave devices can be associated in this group. EZMultiPli will send a BASIC ON command to all devices that are associated in this group. Note that the Z-Wave devices in this group must be within direct range (about 30’) of EZMultiPli. Control of nodes that are further away or blocked by metal or concrete walls should rely on the Z-Wave system controller and the home-control application for reliable operation.
 			]]></Help>
