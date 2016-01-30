@@ -61,8 +61,8 @@ public class ChartRenderer extends AbstractWidgetRenderer {
 			String snippet = getSnippet("image");			
 
 			if(chart.getRefresh()>0) {
-				snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">imagesToRefreshOnPage=1</script>");
-				snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('reloadImage(\\'%url%\\', \\'%id%\\')', " + chart.getRefresh() + ")\"");
+				snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">OH.imagesToRefreshOnPage=1</script>");
+				snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('OH.reloadImage(\\'%url%\\', \\'%id%\\')', " + chart.getRefresh() + ")\"");
 			} else {
 				snippet = StringUtils.replace(snippet, "%setrefresh%", "");
 				snippet = StringUtils.replace(snippet, "%refresh%", "");

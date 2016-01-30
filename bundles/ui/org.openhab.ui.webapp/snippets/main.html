@@ -50,8 +50,8 @@
         search = search + "sitemap=%sitemap%&w=" + hash.substring(2) + "&poll=true";
         url = path + search;
         WA.Request(url, null, -1, true, null); 
-        OH.images.refresh = OH.images.countOnPage;
-        OH.images.countOnPage = 0;
+        OH.imageRefresh = OH.imagesToRefreshOnPage;
+        OH.imagesToRefreshOnPage = 0;
       });
 
       WA.AddEventListener("load", function () {
@@ -106,13 +106,11 @@
       };
 
       // Functions for image refresh
-      OH.images = {
-        refresh: 0,
-        countOnPage: 0
-      };
+      OH.imageRefresh = 0;
+      OH.imagesToRefreshOnPage = 0;
 
       OH.reloadImage = function reloadImage(url, id) {
-        if (OH.images.refresh) {
+        if (OH.imageRefresh) {
           document.getElementById(id).src = url + new Date().getMilliseconds();
         }
       };
