@@ -32,7 +32,11 @@ import org.slf4j.LoggerFactory;
 public class RefreshTokenRequest extends AbstractRequest {
     private static final String URL = "https://api.netatmo.net/oauth2/token";
 
-    private static final String CONTENT = "grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s&scope=read_station read_camera";
+    private static final String CONTENT = "grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s&scope=";
+
+    private static final String READ_STATION = "read_station";
+
+    private static final String READ_CAMERA = "read_camera";
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshTokenRequest.class);
 
@@ -42,15 +46,33 @@ public class RefreshTokenRequest extends AbstractRequest {
 
     private final String refreshToken;
 
-    public RefreshTokenRequest(final String clientId, final String clientSecret, final String refreshToken) {
+    private final boolean weather;
+
+    private final boolean camera;
+
+    public RefreshTokenRequest(final String clientId, final String clientSecret, final String refreshToken, boolean weather, boolean camera) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.refreshToken = refreshToken;
+        this.weather = weather;
+        this.camera = camera;
     }
 
     @Override
     public RefreshTokenResponse execute() {
-        final String content = String.format(CONTENT, this.refreshToken, this.clientId, this.clientSecret);
+        final StringBuffer buf = new StringBuffer(CONTENT);
+        if (weather) {
+            buf.append(READ_STATION);
+        }
+
+        if (camera) {
+            if (weather) {
+                buf.append(" ");
+            }
+            buf.append(READ_CAMERA);
+        }
+
+        final String content = String.format(buf.toString(), this.refreshToken, this.clientId, this.clientSecret);
 
         String json = null;
         try {
