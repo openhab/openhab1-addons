@@ -1619,10 +1619,14 @@
 			<ConfigFile>fibaro/fgs222.xml</ConfigFile>
 		</Product>
 		<Product>
-			<Reference>
-				<Type>0700</Type>
-				<Id>1000</Id>
-			</Reference>
+            <Reference>
+                <Type>0700</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Reference>
+                <Type>0700</Type>
+                <Id>2000</Id>
+            </Reference>
 			<Reference>
 				<Type>0700</Type>
 				<Id>3000</Id>
