@@ -145,7 +145,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     /**
      * Initialize IHC client and open connection to IHC / ELKO LS controller.
-     * 
+     *
      */
     public void connect() throws IhcExecption {
 
@@ -170,7 +170,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     /**
      * Disconnect connection to IHC / ELKO LS controller.
-     * 
+     *
      */
     public void disconnect() {
         if (ihc != null) {
@@ -272,6 +272,14 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     }
 
+    protected void addBindingProvider(IhcBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(IhcBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -283,7 +291,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
     /**
      * {@inheritDoc}
-     * 
+     *
      */
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
@@ -493,9 +501,9 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
     /**
      * Find the first matching {@link IhcBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
