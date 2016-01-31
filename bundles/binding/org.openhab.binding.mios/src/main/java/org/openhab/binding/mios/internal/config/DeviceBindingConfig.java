@@ -443,7 +443,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
             // If we don't have a transform, look for a special one called
             // "_default".
-            if (result == null || "".equals(result)) {
+            if (result == null || "".equals(result) || key.equals(result)) {
                 result = ts.transform(getCommandTransformParam(), DEFAULT_COMMAND_TRANSFORM);
             }
         } else {
