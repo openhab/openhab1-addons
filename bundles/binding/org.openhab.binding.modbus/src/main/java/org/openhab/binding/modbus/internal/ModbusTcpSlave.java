@@ -68,7 +68,10 @@ public class ModbusTcpSlave extends ModbusIPSlave {
                 connection.setPort(getPort());
                 connection.connect();
                 ((ModbusTCPTransaction) transaction).setConnection(connection);
-                ((ModbusTCPTransaction) transaction).setReconnecting(false);
+                // We want to close connection after every transaction since some modbus tcp servers
+                // can accept only single connection at a time. If we would keep the connection open,
+                // the server would be blocked for other users.
+                ((ModbusTCPTransaction) transaction).setReconnecting(true);
             } catch (Exception e) {
                 logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
                 return false;
