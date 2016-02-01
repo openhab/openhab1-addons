@@ -42,9 +42,6 @@ import org.bff.javampd.events.PlayerBasicChangeEvent;
 import org.bff.javampd.events.PlayerBasicChangeListener;
 import org.bff.javampd.events.PlayerChangeEvent;
 import org.bff.javampd.events.TrackPositionChangeEvent;
-// to manually detect changes
-import org.bff.javampd.events.TrackPositionChangeEvent;
-import org.bff.javampd.events.TrackPositionChangeListener;
 import org.bff.javampd.events.TrackPositionChangeListener;
 import org.bff.javampd.events.VolumeChangeEvent;
 import org.bff.javampd.events.VolumeChangeListener;
@@ -159,10 +156,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     /**
      * Find the first matching {@link MpdBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -183,7 +180,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
      * Executes the given <code>playerCommandLine</code> on the MPD. The
      * <code>playerCommandLine</code> is split into it's properties
      * <code>playerId</code> and <code>playerCommand</code>.
-     * 
+     *
      * @param playerCommandLine the complete commandLine which gets splitted into
      *            it's properties.
      */
@@ -302,10 +299,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
      * <code>PLAYER_STARTED</code>-Events are translated to <code>ON</code> whereas
      * <code>PLAYER_PAUSED</code> and <code>PLAYER_STOPPED</code>-Events are
      * translated to <code>OFF</code>.
-     * 
+     *
      * In this case, we use the play state change to trigger full state update, including
      * artist and song name.
-     * 
+     *
      * @param pbce the event which type is translated and posted onto the internal
      *            event bus
      */
@@ -481,7 +478,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     /**
      * Implementation of {@link VolumeChangeListener}. Posts the volume value
      * of the {@link VolumeChangeEvent} onto the internal event bus.
-     * 
+     *
      * @param vce the event which volume value is posted onto the internal event bus
      */
     @Override
@@ -498,10 +495,10 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
 
     /**
      * Handles MPD output change events.
-     * 
+     *
      * @param playerId the playerId which generated the <code>event</code>
      * @param event the {@link OutputChangeEvent} that occurred
-     * 
+     *
      * @since 1.6.0
      */
     private void outputChanged(String playerId, OutputChangeEvent event) {
@@ -532,6 +529,14 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             itemNames.addAll(Arrays.asList(provider.getItemNamesByPlayerAndPlayerCommand(playerId, playerCommand)));
         }
         return itemNames.toArray(new String[itemNames.size()]);
+    }
+
+    protected void addBindingProvider(MpdBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MpdBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override
@@ -634,7 +639,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     /**
      * Connects the player <code>playerId</code> to the given <code>host</code>
      * and <code>port</code> and registers this binding as MPD-Event listener.
-     * 
+     *
      * @param playerId
      * @param host
      * @param port
@@ -697,7 +702,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
 
     /**
      * Disconnects the player <code>playerId</code>
-     * 
+     *
      * @param playerId the id of the player to disconnect from
      */
     private void disconnect(String playerId) {
@@ -721,7 +726,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     /**
      * Reconnects to <code>playerId</code> that means disconnect first and try
      * to connect again.
-     * 
+     *
      * @param playerId the id of the player to disconnect from
      */
     private void reconnect(String playerId) {
@@ -742,7 +747,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
     /**
      * Internal data structure which carries the connection details of one
      * MPD (there could be several)
-     * 
+     *
      * @author Thomas.Eichstaedt-Engelen
      */
     static class MpdPlayerConfig {

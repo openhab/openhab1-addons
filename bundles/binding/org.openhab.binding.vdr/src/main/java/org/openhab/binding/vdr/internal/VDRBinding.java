@@ -134,9 +134,9 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements Ma
     /**
      * Find the first matching {@link VDRBindingProvider} according to
      * <code>itemName</code>
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -156,10 +156,10 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements Ma
     /**
      * Find the first matching {@link VDRBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -174,6 +174,14 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements Ma
             }
         }
         return firstMatchingProvider;
+    }
+
+    protected void addBindingProvider(VDRBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(VDRBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override
@@ -228,7 +236,7 @@ public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements Ma
     /**
      * Internal data structure which carries the connection details of one VDR
      * (there could be several)
-     * 
+     *
      * @author Wolfgang Willinghoefer
      */
     static class VDRConfig {

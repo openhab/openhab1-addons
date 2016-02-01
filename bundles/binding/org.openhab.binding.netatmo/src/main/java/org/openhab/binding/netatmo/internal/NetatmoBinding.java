@@ -140,6 +140,14 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
         }
     }
 
+    protected void addBindingProvider(NetatmoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(NetatmoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

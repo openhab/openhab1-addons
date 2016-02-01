@@ -368,8 +368,16 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
         return retval;
     }
 
+    protected void addBindingProvider(SysteminfoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SysteminfoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

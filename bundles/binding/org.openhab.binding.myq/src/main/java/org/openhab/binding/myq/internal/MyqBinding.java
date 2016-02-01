@@ -111,6 +111,14 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
         modified(configuration);
     }
 
+    protected void addBindingProvider(MyqBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MyqBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Called by the SCR when the configuration of a binding has been changed
      * through the ConfigAdmin service.

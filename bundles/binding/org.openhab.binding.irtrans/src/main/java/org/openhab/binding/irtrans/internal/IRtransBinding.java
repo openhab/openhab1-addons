@@ -60,11 +60,11 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
     private class IrCommand {
 
         /**
-         * 
+         *
          * Each infrared command is in essence a sequence of characters/pointers that refer
          * to pulse/pause timing pairs. So, in order to build an infrared command one has to
          * collate the pulse/pause timings as defined by the sequence
-         * 
+         *
          * PulsePair is a small datastructure to capture each pulse/pair timing pair
          *
          */
@@ -90,7 +90,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
         /**
          * Matches two IrCommands
          * Commands match if they have the same remote and the same command
-         * 
+         *
          * @param anotherCommand
          *            the another command
          * @return true, if successful
@@ -103,7 +103,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
          * Match remote fields of two IrCommands
          * In everything we do in the IRtrans binding, the "*" stands for a wilcard
          * character and will match anything
-         * 
+         *
          * @param S
          *            the s
          * @return true, if successful
@@ -122,7 +122,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
         /**
          * Match command fields of two IrCommands
-         * 
+         *
          * @param S
          *            the s
          * @return true, if successful
@@ -141,7 +141,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
         /**
          * Convert/Parse the IRCommand into a ByteBuffer that is compatible with the IRTrans devices
-         * 
+         *
          * @return the byte buffer
          */
         @SuppressWarnings("restriction")
@@ -248,10 +248,10 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
         /**
          * Convert the the infrared command to a Hexadecimal notation/string that can be
          * interpreted by the IRTrans device
-         * 
+         *
          * Convert the first 44 bytes to hex notation, then copy the remainder
          * (= IR command piece) as ASCII string
-         * 
+         *
          * @return the byte buffer in Hex format
          */
         public ByteBuffer toHEXByteBuffer() {
@@ -280,7 +280,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
         /**
          * Convert 'sequence' bit of the IRTrans compatible byte buffer to a Hexidecimal string
-         * 
+         *
          * @return the string
          */
         public String sequenceToHEXString() {
@@ -290,7 +290,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
         /**
          * Convert the IRTrans compatible byte buffer to a string
-         * 
+         *
          * @return the string
          */
         public String toHEXString() {
@@ -299,13 +299,21 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
         /**
          * Convert the IRTrans compatible byte buffer to a byte array.
-         * 
+         *
          * @return the byte[]
          */
         public byte[] toHEXByteArray() {
             return toHEXByteBuffer().array();
         }
 
+    }
+
+    protected void addBindingProvider(IRtransBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(IRtransBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -431,7 +439,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * Main method to parse ASCII string received from the IR Transceiver.
-     * 
+     *
      * @param qualifiedItems
      *            the qualified items, e.g. only those items that have the host:port combination
      *            in its binding configuration string will "receive" the ASCII string from the
@@ -470,7 +478,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * Parses the rcv hex.
-     * 
+     *
      * @param itemName
      *            the qualified items
      * @param message
@@ -566,7 +574,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * Parses the result send.
-     * 
+     *
      * @param itemName
      *            the qualified items
      * @param message
@@ -578,7 +586,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * "Pack" the infrared command so that it can be sent to the IRTrans device
-     * 
+     *
      * @param led
      *            the led
      * @param theCommand
@@ -640,7 +648,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * "Pack" the infrared command so that it can be sent to the IRTrans device
-     * 
+     *
      * @param led
      *            the led
      * @param theCommand
@@ -704,7 +712,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
      * Strip byte count from the bytebuffer. IRTrans devices include the number of bytes sent
      * in each response it sends back to the connected host. This is a simple error checking
      * mechanism - we do need that information, and so, we strip it
-     * 
+     *
      * @param byteBuffer
      *            the byte buffer
      * @return the string
@@ -729,7 +737,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * Fetch the IrCommand that corresponds with the given (hex)String.
-     * 
+     *
      * @param someString
      *            the some string
      * @return the ir command
@@ -755,7 +763,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 
     /**
      * Fetch the IrCommand for a given remote:command combination
-     * 
+     *
      * @param remote
      *            the remote
      * @param command

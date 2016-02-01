@@ -166,6 +166,14 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
         }
     }
 
+    protected void addBindingProvider(FritzboxBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(FritzboxBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -343,9 +351,9 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
 
     /**
      * This is the thread that does the real work
-     * 
+     *
      * @author Kai Kreuzer
-     * 
+     *
      */
     private static class MonitorThread extends Thread {
 
@@ -450,7 +458,7 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
 
         /**
          * Parses the string that was received from the FritzBox
-         * 
+         *
          * @param line
          *            the received string
          * @return the parse result
@@ -480,7 +488,7 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
 
         /**
          * Processes a monitor event.
-         * 
+         *
          * @param event
          *            the event to process
          */
@@ -500,7 +508,7 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
 
         /**
          * Processes a monitor event for a given binding type
-         * 
+         *
          * @param event
          *            the monitor event to process
          * @param bindingType
@@ -540,9 +548,9 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
          * Class representing a monitor event received from the FritzBox. Not
          * all attributes are used for the moment, but might be useful for
          * future extensions.
-         * 
+         *
          * @author Kai Kreuzer
-         * 
+         *
          */
         @SuppressWarnings("unused")
         private static class MonitorEvent {
@@ -659,7 +667,7 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
 
     /**
      * Send line via Telnet to FritzBox
-     * 
+     *
      * @param client
      *            the telnet client
      * @param data
@@ -678,7 +686,7 @@ public class FritzboxBinding extends AbstractActiveBinding<FritzboxBindingProvid
     /**
      * Receive answer from FritzBox - careful! This blocks if there is no answer
      * from FritzBox
-     * 
+     *
      * @param client
      *            the telnet client
      * @return

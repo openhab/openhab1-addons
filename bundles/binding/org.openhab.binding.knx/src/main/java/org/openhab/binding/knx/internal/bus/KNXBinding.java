@@ -95,7 +95,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String,
      * org.openhab.core.types.Command)
      */
@@ -109,7 +109,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#internalReceiveUpdate(java.lang.String,
      * org.openhab.core.types.State)
      */
@@ -164,13 +164,13 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see tuwien.auto.calimero.process.ProcessListener#groupWrite(tuwien.auto.calimero.process.ProcessEvent)
      */
     /**
      * If <code>knx:ignorelocalevents=true</code> is set in configuration, it prevents internal events
      * coming from 'openHAB event bus' a second time to be sent back to the 'openHAB event bus'.
-     * 
+     *
      * @param e the {@link ProcessEvent} to handle.
      */
     @Override
@@ -187,7 +187,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see tuwien.auto.calimero.process.ProcessListener#detached(tuwien.auto.calimero.DetachEvent)
      */
     @Override
@@ -200,7 +200,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      * Item (by iterating through all known group addresses) this Item is updated.
      * Each item is added to a special list to identify and avoid echo's in
      * the <code>receiveUpdate</code> and <code>receiveCommand</code> methods.
-     * 
+     *
      * @param e the {@link ProcessEvent} to handle.
      */
     private void readFromKNX(ProcessEvent e) {
@@ -257,9 +257,17 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
         }
     }
 
+    protected void addBindingProvider(KNXBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(KNXBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core.binding.BindingProvider,
      * java.lang.String)
      */
@@ -286,7 +294,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#allBindingsChanged(org.openhab.core.binding.BindingProvider)
      */
     @Override
@@ -315,7 +323,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
      */
     @Override
@@ -339,7 +347,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionLost()
      */
     @Override
@@ -353,7 +361,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
      * Determines whether the given <code>groupAddress</code> is the address which
      * will be interpreted as the command type. This method iterates over all
      * registered KNX binding providers to find the result.
-     * 
+     *
      * @param groupAddress the group address to check
      * @return true, if it is a command GA
      */
@@ -369,7 +377,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
     /**
      * Returns all listening item names. This method iterates over all registered KNX binding providers and aggregates
      * the result.
-     * 
+     *
      * @param groupAddress
      *            the group address that the items are listening to
      * @return an array of all listening items
@@ -387,7 +395,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
     /**
      * Returns the datapoints for a given item and group address. This method iterates over all registered KNX binding
      * providers to find the result.
-     * 
+     *
      * @param itemName
      *            the item name for the datapoint
      * @param groupAddress
@@ -406,7 +414,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /**
      * Transforms the raw KNX bus data of a given datapoint into an openHAB type (command or state)
-     * 
+     *
      * @param datapoint
      *            the datapoint to which the data belongs
      * @param asdu
@@ -426,7 +434,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
     /**
      * Returns the datapoints for a given item and type class. This method iterates over all registered KNX binding
      * providers to find the result.
-     * 
+     *
      * @param itemName
      *            the item name for the datapoints
      * @param typeClass
@@ -445,12 +453,12 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>implements Pr
 
     /**
      * Transforms an openHAB type (command or state) into a datapoint type value for the KNX bus.
-     * 
+     *
      * @param type
      *            the openHAB command or state to transform
      * @param dpt
      *            the datapoint type to which should be converted
-     * 
+     *
      * @return the corresponding KNX datapoint type value as a string
      */
     private String toDPTValue(Type type, String dpt) {

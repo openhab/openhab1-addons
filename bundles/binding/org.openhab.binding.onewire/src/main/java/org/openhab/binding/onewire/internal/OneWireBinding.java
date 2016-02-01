@@ -78,9 +78,17 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
         ivOneWireReaderScheduler.stop();
     }
 
+    protected void addBindingProvider(OneWireBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OneWireBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override
@@ -125,7 +133,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.openhab.core.binding.AbstractBinding#allBindingsChanged(org.openhab
      * .core.binding.BindingProvider)
@@ -137,7 +145,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /**
      * schedule All Bindings to get updated
-     * 
+     *
      * @param pvProvider
      */
     private void scheduleAllBindings(BindingProvider pvProvider) {
@@ -182,7 +190,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core
      * .binding.BindingProvider, java.lang.String)
@@ -224,7 +232,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.onewire.internal.listener.
      * InterfaceOneWireDevicePropertyWantsUpdateListener#
      * devicePropertyWantsUpdate(org.openhab.binding.onewire.internal.listener.
@@ -240,7 +248,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
     }
 
     /**
-     * 
+     *
      * @param pvItemName
      * @return the corresponding AbstractOneWireDevicePropertyBindingConfig to
      *         the given <code>pvItemName</code>
@@ -253,7 +261,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
     }
 
     /**
-     * 
+     *
      * @param pvItemName
      * @return the corresponding Item to the given <code>pvItemName</code>
      */
@@ -266,7 +274,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
     /**
      * Update an item with value from 1-wire device property
-     * 
+     *
      * @param pvItemName
      */
     public void updateItemFromOneWire(String pvItemName) {

@@ -497,7 +497,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
     /**
      * Processes the S message and updates Duty Cycle & Free Memory Slots
-     * 
+     *
      * @param S_Message message
      */
     private void sMessageProcessing(S_Message message) {
@@ -539,6 +539,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
             }
         }
         return null;
+    }
+
+    protected void addBindingProvider(MaxCubeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MaxCubeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -583,7 +591,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
     /**
      * Discovers the MAX!CUbe LAN Gateway IP address.
-     * 
+     *
      * @return the cube IP if available, a blank string otherwise.
      * @throws ConfigurationException
      */

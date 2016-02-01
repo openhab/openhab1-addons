@@ -71,7 +71,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
     /**
      * Processes a status update received from pilight and changes the state of the
      * corresponding openHAB item (if item config is found)
-     * 
+     *
      * @param connection pilight connection
      * @param status The new Status
      */
@@ -237,8 +237,16 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
         return new ArrayList<PilightBindingConfig>();
     }
 
+    protected void addBindingProvider(PilightBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PilightBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -315,7 +323,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
 
     /**
      * Gets the state for item in {@code bindingConfig} from {@code pilightConfig}
-     * 
+     *
      * @param pilightConfig The complete pilight configuration
      * @param bindingConfig Specific pilight item in openHAB
      * @return Current state of the item
@@ -380,7 +388,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider>imple
 
     /**
      * Synchronize itemName with the current state in pilight.
-     * 
+     *
      * @param provider The PilightBindingProvider
      * @param itemName The itemName in openHAB
      */

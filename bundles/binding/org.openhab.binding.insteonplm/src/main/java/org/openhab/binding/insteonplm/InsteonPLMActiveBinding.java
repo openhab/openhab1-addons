@@ -56,14 +56,14 @@ import org.slf4j.LoggerFactory;
  * 1) The entries of the link database of the modem are not reliable. The category/subcategory entries in
  * particular have junk data. Forget about using the modem database to generate a list of devices.
  * The database should only be used to verify that a device has been linked.
- * 
+ *
  * 2) Querying devices for their product information does not work either. First of all, battery operated devices
  * (and there are a lot of those) have their radio switched off, and may generally not respond to product
  * queries. Even main stream hardwired devices sold presently (like the 2477s switch and the 2477d dimmer)
  * don't even have a product ID. Although supposedly part of the Insteon protocol, we have yet to
  * encounter a device that would cough up a product id when queried, even among very recent devices. They
  * simply return zeros as product id. Lesson: forget about querying devices to generate a device list.
- * 
+ *
  * 3) Polling is a thorny issue: too much traffic on the network, and messages will be dropped left and right,
  * and not just the poll related ones, but others as well. In particular sending back-to-back messages
  * seemed to result in the second message simply never getting sent, without flow control back pressure
@@ -74,12 +74,12 @@ import org.slf4j.LoggerFactory;
  * messages are received) leads to complicated state management because there is no guarantee at what
  * point (if at all) the binding configuration will be available. It gets even more difficult when
  * items are created, destroyed, and modified while the binding runs.
- * 
+ *
  * For the above reasons, devices are only instantiated when they are referenced by binding information.
  * As nice as it would be to discover devices and their properties dynamically, we have abandoned that
  * path because it had led to a complicated and fragile system which due to the technical limitations
  * above was inherently squirrely.
- * 
+ *
  *
  * @author Bernd Pfrommer
  * @author Daniel Pfrommer
@@ -203,7 +203,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
      * Inherited from AbstractActiveBinding.
      * This method is called by the framework whenever there are changes to
      * a binding configuration.
-     * 
+     *
      * @param provider the binding provider where the binding has changed
      * @param itemName the item name for which the binding has changed
      */
@@ -225,6 +225,14 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
             }
             addFeatureListener(dev, itemName, c);
         }
+    }
+
+    protected void addBindingProvider(InsteonPLMBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(InsteonPLMBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -314,7 +322,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
 
     /**
      * Method to find a device by address
-     * 
+     *
      * @param aAddr the insteon address to search for
      * @return reference to the device, or null if not found
      */
@@ -396,7 +404,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
 
     /**
      * Send command to insteon device
-     * 
+     *
      * @param c item binding configuration
      * @param command The command to be sent
      */
@@ -412,7 +420,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
     /**
      * Finds the device that a particular item was bound to, and removes the
      * item as a listener
-     * 
+     *
      * @param aItem The item (FeatureListener) to remove from all devices
      */
     private void removeFeatureListener(String aItem) {
@@ -435,7 +443,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
 
     /**
      * Creates a new insteon device for a given product key
-     * 
+     *
      * @param aConfig The binding configuration parameters, needed to make device.
      * @return Reference to the new device that has been created
      */
@@ -468,7 +476,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
     /**
      * Checks if a device is in the modem link database, and, if the database
      * is complete, logs a warning if the device is not present
-     * 
+     *
      * @param dev The device to search for in the modem database
      * @return number of devices in modem database
      */
@@ -492,7 +500,7 @@ public class InsteonPLMActiveBinding extends AbstractActiveBinding<InsteonPLMBin
 
     /**
      * Adds a feature listener (i.e. item to a feature of a device)
-     * 
+     *
      * @param aDev The device to add the feature listener
      * @param aItemName The name of the item (needed for logging and later lookups)
      * @param aConfig The binding configuration for the item

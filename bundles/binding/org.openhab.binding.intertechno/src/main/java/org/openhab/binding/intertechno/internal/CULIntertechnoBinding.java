@@ -167,8 +167,16 @@ public class CULIntertechnoBinding extends AbstractActiveBinding<CULIntertechnoB
         }
     }
 
+    protected void addBindingProvider(CULIntertechnoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(CULIntertechnoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

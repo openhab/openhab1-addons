@@ -503,10 +503,10 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
      * Find the first matching {@link ExecBindingProvider} according to
      * <code>itemName</code> and <code>command</code>. If no direct match is
      * found, a second match is issued with wilcard-command '*'.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -526,8 +526,16 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
         return firstMatchingProvider;
     }
 
+    protected void addBindingProvider(EpsonProjectorBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EpsonProjectorBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

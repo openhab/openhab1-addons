@@ -336,7 +336,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 
     /**
      * Lookup of the configuration of the named item.
-     * 
+     *
      * @param itemName
      *            The name of the item.
      * @return The configuration, null otherwise.
@@ -350,8 +350,16 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
         return null;
     }
 
+    protected void addBindingProvider(EnergenieBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EnergenieBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

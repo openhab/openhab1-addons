@@ -122,6 +122,14 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
         logger.trace("execute() method is finished!");
     }
 
+    protected void addBindingProvider(DavisBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(DavisBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         logger.trace("update() method is called!");
         if (config != null) {

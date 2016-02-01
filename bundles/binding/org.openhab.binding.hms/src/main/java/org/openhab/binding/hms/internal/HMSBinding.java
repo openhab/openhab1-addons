@@ -86,7 +86,7 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider>impleme
 
     /**
      * Code <s1><s0><t1><t0><f0><t2><f2><f1>
-     * 
+     *
      * similar perl code is:
      * $v[0] = int(substr($val, 5, 1) . substr($val, 2, 2))/10;
      * $v[0] = -$v[0] if($status1 & 8);
@@ -178,6 +178,14 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider>impleme
         // event bus goes here. This method is only called if one of the
         // BindingProviders provide a binding for the given 'itemName'.
         logger.debug("internalReceiveCommand() is called!");
+    }
+
+    protected void addBindingProvider(HMSBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(HMSBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

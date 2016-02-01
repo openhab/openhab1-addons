@@ -73,8 +73,16 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
         }
     }
 
+    protected void addBindingProvider(OpenEnergyMonitorBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OpenEnergyMonitorBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -143,10 +151,10 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
     /**
      * The MessageListener runs as a separate thread.
-     * 
+     *
      * Thread listening message from Open Energy Monitoring devices and send
      * updates to openHAB bus.
-     * 
+     *
      */
     private class MessageListener extends Thread {
 
@@ -280,7 +288,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
     /**
      * Transform received data by Transformation service.
-     * 
+     *
      */
     protected org.openhab.core.types.State transformData(String transformationType, String transformationFunction,
             org.openhab.core.types.State data) {

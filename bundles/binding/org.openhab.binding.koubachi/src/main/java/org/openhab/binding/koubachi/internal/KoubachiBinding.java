@@ -60,7 +60,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * <ol>
      * <li>action type</li>
      * </ol>
-     * 
+     *
      * @see https://labs.koubachi.com/documentations/9
      */
     private static final String TASKS_BODY = "{\"care_action\":{\"action_type\":\"%1$s\"}}";
@@ -196,11 +196,11 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * Gets the list of all configured Devices from the Koubachi server.
-     * 
+     *
      * @param appKey
      * @param credentials
      * @param apiDeviceListUrl
-     * 
+     *
      * @return the list of all configured Devices. Is never {@code null}.
      */
     private List<Device> getDevices(String apiDeviceListUrl, String credentials, String appKey) {
@@ -229,7 +229,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * Gets the list of all configured Plants from the Koubachi server.
-     * 
+     *
      * @return the list of all configured Plants. Is never {@code null}.
      */
     private List<Plant> getPlants(String apiPlantListUrl, String credentials, String appKey) {
@@ -262,7 +262,7 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * Refer to the <a
      * href="https://labs.koubachi.com/documentations/9">Koubachi API
      * documentation</a> for supported actions.
-     * 
+     *
      * @param plantId
      *            the id of the plant the action was performed on
      * @param actionType
@@ -287,10 +287,10 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
 
     /**
      * Maps the given {@code jsonString} to {@code type}.
-     * 
+     *
      * @param type to type to map the given {@code jsonString}
      * @param jsonString the content which should be mapped to {@code type}
-     * 
+     *
      * @return a new instance of {@code type} with content of {@code jsonString}
      */
     private <T> T fromJSON(final TypeReference<T> type, final String jsonString) {
@@ -321,9 +321,9 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
      * <p>
      * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be
      * returned.
-     * 
+     *
      * @param propertyValue
-     * 
+     *
      * @return the new {@link State} in accordance to {@code dataType}. Will
      *         never be {@code null}.
      */
@@ -349,6 +349,14 @@ public class KoubachiBinding extends AbstractActiveBinding<KoubachiBindingProvid
         } else {
             return new StringType(propertyValue.toString());
         }
+    }
+
+    protected void addBindingProvider(KoubachiBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(KoubachiBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

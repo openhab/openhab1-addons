@@ -316,6 +316,14 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider>implements 
         // information out of the above logger call than we get from openHAB.
     }
 
+    protected void addBindingProvider(MiosBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MiosBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -44,7 +44,7 @@ public class RPiRcSwitchBinding extends AbstractBinding<RPiRcSwitchBindingProvid
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#activate()
      */
     @Override
@@ -54,7 +54,7 @@ public class RPiRcSwitchBinding extends AbstractBinding<RPiRcSwitchBindingProvid
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#deactivate()
      */
     @Override
@@ -64,7 +64,7 @@ public class RPiRcSwitchBinding extends AbstractBinding<RPiRcSwitchBindingProvid
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.
      * lang.String, org.openhab.core.types.Command)
@@ -102,7 +102,7 @@ public class RPiRcSwitchBinding extends AbstractBinding<RPiRcSwitchBindingProvid
 
     /**
      * Returns the configuration for the item with the given name.
-     * 
+     *
      * @param itemName
      *            the name of the item
      * @return the configuration to use
@@ -116,9 +116,17 @@ public class RPiRcSwitchBinding extends AbstractBinding<RPiRcSwitchBindingProvid
         return null;
     }
 
+    protected void addBindingProvider(RPiRcSwitchBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(RPiRcSwitchBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override

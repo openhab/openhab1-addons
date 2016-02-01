@@ -242,6 +242,14 @@ public class DaikinBinding extends AbstractActiveBinding<DaikinBindingProvider>i
         }
     }
 
+    protected void addBindingProvider(DaikinBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(DaikinBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

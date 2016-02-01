@@ -66,6 +66,14 @@ public class RWESmarthomeBinding extends AbstractActiveBinding<RWESmarthomeBindi
         setProperlyConfigured(true);
     }
 
+    protected void addBindingProvider(RWESmarthomeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(RWESmarthomeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

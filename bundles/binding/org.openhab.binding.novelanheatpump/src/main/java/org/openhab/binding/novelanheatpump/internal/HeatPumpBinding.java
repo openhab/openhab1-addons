@@ -84,6 +84,14 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
     public void activate() {
     }
 
+    protected void addBindingProvider(HeatPumpBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(HeatPumpBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -247,7 +255,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
     /**
      * generate a readable string containing the time since the heatpump is in
      * the state.
-     * 
+     *
      * @param heatpumpValues
      *            the internal state array of the heatpump
      * @return a human readable time string
@@ -283,7 +291,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
     /**
      * generate a readable state string from internal heatpump values.
-     * 
+     *
      * @param heatpumpValues
      *            the internal state array of the heatpump
      * @return a human readable string, the result displays what the heatpump is
@@ -355,7 +363,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
     /**
      * generate a readable state string from internal heatpump values.
-     * 
+     *
      * @param heatpumpValues
      *            the internal state array of the heatpump
      * @return a human readable string, the result displays what the heatpump is
@@ -538,7 +546,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
     /**
      * Set a parameter on the Novela heatpump.
-     * 
+     *
      * @param param
      * @param value
      */
@@ -562,7 +570,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
     /**
      * Finds the binding provider.
-     * 
+     *
      * @return
      */
     private HeatPumpGenericBindingProvider findFirstProvider() {

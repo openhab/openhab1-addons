@@ -77,7 +77,7 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
     /**
      * Called by the SCR to activate the component with its configuration read
      * from CAS
-     * 
+     *
      * @param bundleContext
      *            BundleContext of the Bundle that defines this component
      * @param configuration
@@ -119,7 +119,7 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
      * Called by the SCR to deactivate the component when either the
      * configuration is removed or mandatory references are no longer satisfied
      * or the component has simply been stopped.
-     * 
+     *
      * @param reason
      *            Reason code for the deactivation:<br>
      *            <ul>
@@ -247,4 +247,13 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
             }
         }
     }
+
+    protected void addBindingProvider(TACmiBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TACmiBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
 }

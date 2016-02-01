@@ -188,6 +188,14 @@ public class InsteonHubBinding extends AbstractActiveBinding<InsteonHubBindingPr
         }
     }
 
+    protected void addBindingProvider(InsteonHubBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(InsteonHubBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public synchronized void updated(Dictionary<String, ?> config) throws ConfigurationException {
         logger.debug(BINDING_NAME + " updated");

@@ -361,6 +361,14 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider>i
         throw new RuntimeException("Could not determine item type for " + itemName);
     }
 
+    protected void addBindingProvider(PifaceBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PifaceBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     @SuppressWarnings("rawtypes")
     public void updated(Dictionary config) throws ConfigurationException {
@@ -526,10 +534,10 @@ public class PifaceBinding extends AbstractActiveBinding<PifaceBindingProvider>i
      * The PifaceInitialiser runs as a separate thread. Whenever new Piface pin bindings are added, it takes care that
      * read
      * requests are sent to initialise the pin state.
-     * 
+     *
      * @author Ben Jones
      * @since 1.3.0
-     * 
+     *
      */
     private class PifaceInitialiser extends Thread {
 

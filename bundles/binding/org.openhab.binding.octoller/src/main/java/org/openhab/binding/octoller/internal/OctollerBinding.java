@@ -117,8 +117,16 @@ public class OctollerBinding extends AbstractActiveBinding<OctollerBindingProvid
         }
     }
 
+    protected void addBindingProvider(OctollerBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OctollerBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Binding that communicates with a Plex Media Server
- * 
+ *
  * {@link http://www.plex.tv/}
- * 
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
@@ -68,6 +68,14 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     @Override
     protected String getName() {
         return "Plex Refresh Service";
+    }
+
+    protected void addBindingProvider(PlexBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PlexBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -241,7 +249,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     /**
      * Player state update received from Plex. Update all items
      * for the machine ID this session is bound to.
-     * 
+     *
      * @param session Plex session
      */
     private void processUpdateRecevied(PlexSession session) {
@@ -261,7 +269,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     /**
      * Update all {@code PlexProperty.POWER} properties according to the
      * list of clients that are currently online.
-     * 
+     *
      * @param container MediaContainer, containing the clients that are currently online
      */
     private void processServerList(MediaContainer container) {
@@ -288,7 +296,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     /**
      * Maps properties from {@code session} to openHAB item {@code config}. Mapping is specified by {@link ItemMapping}
      * annotations.
-     * 
+     *
      * @param config Binding config
      * @param session Plex session
      */

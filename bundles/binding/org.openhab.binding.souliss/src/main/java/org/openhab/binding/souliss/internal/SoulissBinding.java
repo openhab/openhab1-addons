@@ -62,9 +62,17 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
 
     Timers timers = new Timers(4);
 
+    protected void addBindingProvider(SoulissBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SoulissBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Read parameters from cfg file
-     * 
+     *
      * @author Tonino Fazio
      * @since 1.7.0
      */
@@ -116,7 +124,7 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
     @Override
     /**
      * Get the souliss's typical from the hash table and send a command
-     * 
+     *
      * @author Tonino Fazio
      * @since 1.7.0
      */
@@ -235,7 +243,7 @@ public class SoulissBinding<E> extends AbstractActiveBinding<SoulissBindingProvi
 
     /**
      * Convert color format from HSB to RGB
-     * 
+     *
      * @param H
      * @param S
      * @param B

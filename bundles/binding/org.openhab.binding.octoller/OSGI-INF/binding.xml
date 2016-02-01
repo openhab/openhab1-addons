@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.octoller.binding">
-	<implementation class="org.openhab.binding.octoller.internal.octollerBinding" />
+	<implementation class="org.openhab.binding.octoller.internal.OctollerBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
@@ -24,7 +24,7 @@
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="addBindingProvider" cardinality="1..n"
-		interface="org.openhab.binding.octoller.octollerBindingProvider" name="OctollerBindingProvider"
+		interface="org.openhab.binding.octoller.OctollerBindingProvider" name="OctollerBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
 	
 </scr:component>

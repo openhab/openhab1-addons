@@ -198,7 +198,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * Searches for a brickd with the given {@code host} and {@code port} in the Ecosystem. If there
      * is no brickd found a new Brickd object is created, added to the Ecosystem an the IpConnection
      * to the Tinkerforge brickd is established and a device enumeration is triggert.
-     * 
+     *
      * @param host The host name or ip address of the TinkerForge brickd as String.
      * @param port The port of the TinkerForge brickd as int.
      * @param authkey
@@ -226,7 +226,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * {@link #processTFDeviceValues(Notification) processTFDeviceValues}. Furthermore the addition
      * and removal of devices is handled by {@link #initializeTFDevices(Notification)
      * initializeTFDevices}.
-     * 
+     *
      * @param tinkerforgeEcosystem The EMF Ecosystem object.
      */
     private void listen2Model(Ecosystem tinkerforgeEcosystem) {
@@ -272,7 +272,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * device is configurable which is the case for {@link MTFConfigConsumer}. Devices of type
      * {@link IODevice} are only enabled if they are configured in openhab.cfg, all other devices are
      * always enabled.
-     * 
+     *
      * @param device A device object as {@link MBaseDevice}.
      * @param uid The device uid as String.
      * @param subId The device subid as String or <code>null</code> if the device is not a sub device.
@@ -326,9 +326,9 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * Adds or removes a device to / from the Ecosystem. Notifications from {@link MBrickd} are used
      * for adding devices (not sub devices) and removing of devices and their corresponding sub
      * devices.
-     * 
+     *
      * Notifications from {@link MSubDeviceHolder} for adding sub devices.
-     * 
+     *
      * @param notification The {@link Notification} for add and remove events to the {@link Ecosystem}
      *            .
      */
@@ -396,8 +396,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * {@link #processSwitchActorValue(MSwitchActor, Notification) processSwitchActorValue}. (no add
      * or remove events, these are handled in {@link #initializeTFDevices(Notification)
      * initializeTFDevices}).
-     * 
-     * 
+     *
+     *
      * @param notification The {@link Notification} about changes to the {@link Ecosystem}.
      */
     private void processTFDeviceValues(Notification notification) {
@@ -475,7 +475,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * Processes changed device values to post them to the openHAB event bus.
-     * 
+     *
      * @param device The {@link MBaseDevice} device, which has a changed value.
      * @param notification The {@link Notification} about changes to the {@link Ecosystem}.
      */
@@ -494,7 +494,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * Searches the name of an item which is bound to the device with the given uid and subid.
-     * 
+     *
      * @param uid The device uid as {@code String}.
      * @param subId The device subid as {@code String} or {@code null} if it is not a sub device.
      * @return The name of the item which is bound to the device as {@code String} or {@code null} if
@@ -526,7 +526,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * Searches the provider which is bound to the device with the given uid and subid.
-     * 
+     *
      * @param uid The device uid as {@code String}.
      * @param subId The device subid as {@code String} or {@code null} if it is not a sub device.
      * @return The {@code TinkerforgeBindingProvider} which is bound to the device as {@code Item} or
@@ -575,11 +575,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * The working method which is called by the refresh thread.
-     * 
+     *
      * Triggers an update of state values for all devices. The update is propagated through the
      * {@link Ecosystem} listeners. All OutActors are ignored, they may only send updates if the
      * hardware device has updates (think of a pressed switch).
-     * 
+     *
      */
     @Override
     protected void execute() {
@@ -592,7 +592,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * Triggers an update of state values for all devices.
-     * 
+     *
      * @param provider The {@code TinkerforgeBindingProvider} which is bound to the device as
      *            {@code Item}
      * @param itemName The name of the {@code Item} as String
@@ -720,7 +720,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * Gets the uid and the subid of a device from the openhab.cfg, using the device name as input.
-     * 
+     *
      * @param deviceName The symbolic device name as {@code String}.
      * @return A String array with the device uid as first element as {@code String} and the device
      *         subid as second element as {@code String} or {@code null}.
@@ -734,14 +734,14 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Searches the item with the given {@code itemName} in the {@link TinkerforgeBindingProvider}
      * collection and gets the uid and subid of the device. The appropriate device is searched in the
      * ecosystem and the command is executed on the device.
-     * 
+     *
      * {@code OnOffType} commands are executed on {@link MInSwitchActor} objects. {@code StringType}
      * commands are executed on {@link MTextActor} objects.
-     * 
+     *
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
@@ -854,11 +854,19 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         }
     }
 
+    protected void addBindingProvider(TinkerforgeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TinkerforgeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Updates the configuration of the managed service.
-     * 
+     *
      * Extracts the host and port configuration and connects the appropriate brickds.
-     * 
+     *
      * The device configuration from openhab.cfg is parsed into a {@code Map} based (temporary)
      * structure. This structure is used to generate the {@link OHConfig} EMF model configuration
      * store.
@@ -890,7 +898,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     /**
      * Parses the the hosts line from openhab.cfg into hosts and port parts and connects the
      * appropriate brickds by calling {@link #connectBrickd(String, int) connectBrickd}.
-     * 
+     *
      * @param cfgHostsLine The hosts line found in the openhab.cfg as {@code String}.
      */
     private void parseCfgHostsAndConnect(String cfgHostsLine) {
