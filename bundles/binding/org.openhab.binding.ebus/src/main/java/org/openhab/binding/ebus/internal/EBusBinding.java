@@ -69,7 +69,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String,
      * org.openhab.core.types.Command)
      */
@@ -85,7 +85,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
     /**
      * Set the OSGI Admin Service
-     * 
+     *
      * @param configurationAdminService
      */
     public void setConfigurationAdmin(ConfigurationAdmin configurationAdminService) {
@@ -94,7 +94,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
     /**
      * Unset the OSGI Admin Service
-     * 
+     *
      * @param configurationAdminService
      */
     public void unsetConfigurationAdmin(ConfigurationAdmin configurationAdminService) {
@@ -147,9 +147,17 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
         }
     }
 
+    protected void addBindingProvider(EBusBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EBusBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override
@@ -279,7 +287,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#activate()
      */
     @Override
@@ -329,7 +337,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.binding.AbstractBinding#deactivate()
      */
     @Override
@@ -358,7 +366,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.ebus.connection.EBusConnectorEventListener#onTelegramReceived(org.openhab.binding.ebus.
      * EbusTelegram)
      */
