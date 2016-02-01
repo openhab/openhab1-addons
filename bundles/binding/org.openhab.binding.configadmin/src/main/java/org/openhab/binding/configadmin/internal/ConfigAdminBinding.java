@@ -63,10 +63,10 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
      * Returns a {@link State} which is inherited from the {@link Item}s
      * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
      * <code>item</code> is <code>null</code> the {@link StringType} is used.
-     * 
+     *
      * @param item
      * @param stateAsString
-     * 
+     *
      * @return a {@link State} which type is inherited by the {@link TypeParser}
      *         or a {@link StringType} if <code>item</code> is <code>null</code>
      */
@@ -87,7 +87,7 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
      * <p>
      * <b>Note:</b>If there are Configuration items configured for the given pid
      * an empty {@link Configuration} is returned.
-     * 
+     *
      * @param bindingConfig
      * @return a Configuration (which could be empty if there are no entries for
      *         the given pid) or <code>null</code> if the given
@@ -109,7 +109,7 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
      * Gets the given configParameter from the given <code>config</code>
      * transforms the value to a {@link State} and posts this State to openHAB
      * event bus.
-     * 
+     *
      * @param config
      *            the {@link Configuration} which contains the data to post
      * @param bindingConfig
@@ -127,6 +127,14 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
                         bindingConfig.normalizedPid, bindingConfig.configParameter);
             }
         }
+    }
+
+    protected void addBindingProvider(ConfigAdminBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(ConfigAdminBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -198,7 +206,7 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 
     /**
      * @{inheritDoc
-     * 
+     *
      *              Whenever a {@link Configuration} is updated all items for
      *              the given <code>pid</code> are queried and updated. Since
      *              the {@link ConfigurationEvent} contains no information which
@@ -224,7 +232,7 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 
     /**
      * Schedules a task for later execution with the possibility to cancel it.
-     * 
+     *
      * @author Gerhard Riegler
      * @since 1.5.0
      */
