@@ -96,8 +96,16 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider>i
         unregisterAll();
     }
 
+    protected void addBindingProvider(MqttitudeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MqttitudeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
@@ -208,7 +216,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider>i
 
     /**
      * Setter for Declarative Services. Adds the MqttService instance.
-     * 
+     *
      * @param mqttService to set.
      */
     public void setMqttService(MqttService mqttService) {
@@ -217,7 +225,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider>i
 
     /**
      * Unsetter for Declarative Services.
-     * 
+     *
      * @param mqttService to remove.
      */
     public void unsetMqttService(MqttService mqttService) {
