@@ -60,8 +60,16 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider>implements 
         }
     }
 
+    protected void addBindingProvider(TivoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TivoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -75,10 +83,10 @@ public class TivoBinding extends AbstractBinding<TivoBindingProvider>implements 
     /**
      * Find the first matching {@link TivoBindingProvider} according to
      * <code>itemName</code> and <code>command</code>.
-     * 
+     *
      * @param itemName
      * @param command
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
