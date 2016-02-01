@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.exec">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.exec">
    <implementation class="org.openhab.binding.exec.internal.ExecBinding"/>
    <service>
       <provide interface="org.osgi.service.cm.ManagedService" />
