@@ -126,7 +126,7 @@ public class RFXComUVMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[9];
+        byte[] data = new byte[10];
 
         data[0] = 0x09;
         data[1] = RFXComBaseMessage.PacketType.UV.toByte();
