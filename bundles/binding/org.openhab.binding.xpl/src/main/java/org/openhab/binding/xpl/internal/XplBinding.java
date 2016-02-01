@@ -51,6 +51,14 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
         this.eventPublisher = null;
     }
 
+    protected void addBindingProvider(XplBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(XplBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Sends an xPL message upon command received by an Item
      */
@@ -122,7 +130,7 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
 
     /**
      * Setter for Declarative Services. Adds the XplTransportService instance.
-     * 
+     *
      * @param xplTransportService
      *            Service.
      */
@@ -133,7 +141,7 @@ public class XplBinding extends AbstractBinding<XplBindingProvider>implements xP
 
     /**
      * Unsetter for Declarative Services.
-     * 
+     *
      * @param xplTransportService
      *            Service to remove.
      */
