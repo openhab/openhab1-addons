@@ -221,8 +221,16 @@ public class Enigma2Binding extends AbstractActiveBinding<Enigma2BindingProvider
         }
     }
 
+    protected void addBindingProvider(Enigma2BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(Enigma2BindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
