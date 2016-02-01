@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.caldav_personal">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.caldav_personal">
 	<implementation class="org.openhab.binding.caldav_personal.internal.CalDavBinding" />
 
 	<service>
