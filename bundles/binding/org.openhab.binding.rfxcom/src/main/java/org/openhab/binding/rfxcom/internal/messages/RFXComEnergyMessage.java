@@ -139,7 +139,7 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[17];
+        byte[] data = new byte[18];
 
         data[0] = 0x11;
         data[1] = RFXComBaseMessage.PacketType.ENERGY.toByte();
