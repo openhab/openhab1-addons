@@ -88,6 +88,14 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
         this.satelModule.sendCommand(this.newStatesCommand);
     }
 
+    protected void addBindingProvider(SatelBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SatelBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -230,7 +238,7 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider>
     /**
      * Changes <code>forceRefresh</code> flag atomically returning previous
      * value.
-     * 
+     *
      * @param forceRefresh
      *            new value for the flag
      * @return previous value of the flag
