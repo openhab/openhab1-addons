@@ -33,6 +33,14 @@ public class UCPRelayBoardBinding extends AbstractActiveBinding<UCPRelayBoardBin
 
     private long refreshInterval = 60000;
 
+    protected void addBindingProvider(UCPRelayBoardBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(UCPRelayBoardBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
