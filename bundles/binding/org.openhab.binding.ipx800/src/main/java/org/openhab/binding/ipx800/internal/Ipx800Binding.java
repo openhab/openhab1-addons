@@ -114,7 +114,7 @@ public class Ipx800Binding extends AbstractBinding<Ipx800BindingProvider>impleme
 
     /**
      * Create and attach new item to device
-     * 
+     *
      * @param itemName
      * @param provider
      * @throws Ipx800UnknownDeviceException
@@ -231,8 +231,16 @@ public class Ipx800Binding extends AbstractBinding<Ipx800BindingProvider>impleme
         }
     }
 
+    protected void addBindingProvider(Ipx800BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(Ipx800BindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -274,7 +282,7 @@ public class Ipx800Binding extends AbstractBinding<Ipx800BindingProvider>impleme
 
     /**
      * Post the state of an item to the event bus
-     * 
+     *
      * @param item
      */
     public void postUpdate(Ipx800Item item) {
