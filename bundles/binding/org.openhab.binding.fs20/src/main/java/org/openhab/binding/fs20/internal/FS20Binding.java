@@ -137,8 +137,16 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>imple
         }
     }
 
+    protected void addBindingProvider(FS20BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(FS20BindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -150,7 +158,7 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>imple
              * Valid values of the baudRateString
              * "75", "110", "300", "1200", "2400", "4800",
              * "9600", "19200", "38400", "57600", "115200"
-             * 
+             *
              * @see org.openhab.io.transport.cul.internal.CULSerialHandlerImpl
              */
             String baudRateString = (String) config.get(KEY_BAUD_RATE);
@@ -166,7 +174,7 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>imple
              * "EVEN"
              * "MARK"
              * "SPACE"
-             * 
+             *
              * @see org.openhab.io.transport.cul.internal.CULSerialHandlerImpl
              */
             String parityString = (String) config.get(KEY_PARITY);
