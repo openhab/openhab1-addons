@@ -98,7 +98,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
 
     /**
      * Posts update event to OpenHAB bus for "holding" type slaves
-     * 
+     *
      * @param binding ModbusBinding to get item configuration from BindingProviding
      * @param registers data received from slave device in the last pollInterval
      * @param itemName item to update
@@ -170,7 +170,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
 
     /**
      * Posts update event to OpenHAB bus for "coil" type slaves
-     * 
+     *
      * @param binding ModbusBinding to get item configuration from BindingProviding
      * @param registers data received from slave device in the last pollInterval
      * @param item item to update
@@ -193,7 +193,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
 
     /**
      * Returns names of all the items, registered with this binding
-     * 
+     *
      * @return list of item names
      */
     public Collection<String> getItemNames() {
@@ -227,6 +227,14 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             slave.resetConnection();
         }
         modbusSlaves.clear();
+    }
+
+    protected void addBindingProvider(ModbusBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(ModbusBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override
