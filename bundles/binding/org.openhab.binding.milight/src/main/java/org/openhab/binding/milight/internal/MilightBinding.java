@@ -814,6 +814,14 @@ public class MilightBinding extends AbstractBinding<MilightBindingProvider>imple
         return null;
     }
 
+    protected void addBindingProvider(MilightBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MilightBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * @{inheritDoc}
      */
