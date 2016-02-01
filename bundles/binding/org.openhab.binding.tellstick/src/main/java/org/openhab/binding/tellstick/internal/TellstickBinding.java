@@ -134,8 +134,16 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         return dev;
     }
 
+    protected void addBindingProvider(TellstickBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(TellstickBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
