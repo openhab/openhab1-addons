@@ -36,7 +36,7 @@ public class RefreshTokenRequestStub extends RefreshTokenRequest {
     private String content;
 
     private RefreshTokenRequestStub(final String response) throws Exception {
-        super(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN);
+        super(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, true, true);
 
         final URL resource = getClass().getResource(response);
 

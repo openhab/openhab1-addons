@@ -60,6 +60,16 @@ public class OAuthCredentials {
      */
     private String accessToken;
 
+    /**
+     * Indicates if there are weather items for this binding
+     */
+    private boolean weather;
+
+    /**
+     * Indicates if there are weather items for this binding
+     */
+    private boolean camera;
+
     public String getAccessToken() {
         return accessToken;
     }
@@ -92,15 +102,36 @@ public class OAuthCredentials {
         this.refreshToken = refreshToken;
     }
 
-    public boolean noAccessToken() {
+    public boolean getWeather() {
+		return weather;
+	}
+
+	public void setWeather(boolean weather) {
+		this.weather = weather;
+	}
+
+	public boolean getCamera() {
+		return camera;
+	}
+
+	public void setCamera(boolean camera) {
+		this.camera = camera;
+	}
+
+	public boolean noAccessToken() {
         return this.accessToken == null;
     }
 
     public void refreshAccessToken() {
         logger.debug("Refreshing access token.");
 
+        if (this.getWeather() == false && this.getCamera() == false) {
+            logger.debug("There are not any items configured for this binding!");
+            return;
+        }
+
         final RefreshTokenRequest request = new RefreshTokenRequest(this.getClientId(), this.getClientSecret(),
-                this.getRefreshToken());
+                this.getRefreshToken(), this.getWeather(), this.getCamera());
         logger.debug("Request: {}", request);
 
         final RefreshTokenResponse response = request.execute();

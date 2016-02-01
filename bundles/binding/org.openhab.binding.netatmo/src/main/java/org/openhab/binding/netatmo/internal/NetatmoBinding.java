@@ -88,12 +88,6 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
         logger.debug("Querying Netatmo API");
         for (String userid : credentialsCache.keySet()) {
 
-            OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
-            if (oauthCredentials.noAccessToken()) {
-                // initial run after a restart, so get an access token first
-                oauthCredentials.refreshAccessToken();
-            }
-
             // Check if weather and/or camera items are configured
             boolean bWeather = false;
             boolean bCamera = false;
@@ -110,6 +104,14 @@ public class NetatmoBinding extends AbstractActiveBinding<NetatmoBindingProvider
                         break;
                     }
                 }
+            }
+
+            OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+            oauthCredentials.setWeather(bWeather);
+            oauthCredentials.setCamera(bCamera);
+            if (oauthCredentials.noAccessToken()) {
+                // initial run after a restart, so get an access token first
+                oauthCredentials.refreshAccessToken();
             }
 
             // Start the execution of the weather station and/or camera binding
