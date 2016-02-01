@@ -36,7 +36,7 @@ import net.whistlingfish.harmony.config.Activity;
  * The Logitech Harmony Hub is an advanced remote control for various audio, visual
  * and home automation devices.
  * .
- * 
+ *
  * @see <a href="http://www.logitech.com/en-us/harmony-remotes">Logitech Harmony Website</a>
  * @author Dan Cunningham
  * @since 1.7.0
@@ -115,8 +115,16 @@ public class HarmonyHubBinding extends AbstractBinding<HarmonyHubBindingProvider
         }
     }
 
+    protected void addBindingProvider(HarmonyHubBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(HarmonyHubBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
@@ -168,7 +176,7 @@ public class HarmonyHubBinding extends AbstractBinding<HarmonyHubBindingProvider
 
     /**
      * For a given {@link Activity}, update all items who need to know about it
-     * 
+     *
      * @param activity
      */
     private void updateActivity(Activity activity, String qualifier) {
@@ -187,7 +195,7 @@ public class HarmonyHubBinding extends AbstractBinding<HarmonyHubBindingProvider
 
     /**
      * For a given {@link Activity}, update an {@link Item} with its {@link State} state
-     * 
+     *
      * @param item
      * @param state
      * @param activity
@@ -202,7 +210,7 @@ public class HarmonyHubBinding extends AbstractBinding<HarmonyHubBindingProvider
 
     /**
      * Wire up our gateway from the IO bundle
-     * 
+     *
      * @param harmonyHubGateway
      */
     public void setHarmonyHubGateway(HarmonyHubGateway harmonyHubGateway) {
@@ -213,7 +221,7 @@ public class HarmonyHubBinding extends AbstractBinding<HarmonyHubBindingProvider
 
     /**
      * un-wire our gateway from the IO package
-     * 
+     *
      * @param harmonyHubGateway
      */
     public void unsetHarmonyHubGateway(HarmonyHubGateway harmonyHubGateway) {
