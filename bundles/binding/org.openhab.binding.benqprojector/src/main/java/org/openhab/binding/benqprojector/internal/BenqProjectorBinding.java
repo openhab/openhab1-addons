@@ -47,7 +47,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
     /**
      * the refresh interval which is used to poll values from the BenqProjector
      * server (optional, defaults to 60000ms)
-     * 
+     *
      */
     private long refreshInterval = 60000;
 
@@ -126,8 +126,16 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
         }
     }
 
+    protected void addBindingProvider(BenqProjectorBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(BenqProjectorBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -162,7 +170,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 
     /**
      * Run query on the projector
-     * 
+     *
      * @param cfg
      *            Configuration of item to run query on
      */
@@ -174,7 +182,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
     /**
      * Send the command to the projector via configured transport and return the
      * response string
-     * 
+     *
      * @param cfg
      *            Item binding configuration
      * @param c
