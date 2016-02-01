@@ -68,7 +68,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.statuses.ZoneStatus;
 
 /**
  * Omnilink Binding allows full control over a HAI Omni or Lumina system
- * 
+ *
  * @author Dan Cunningham
  * @since 1.5.0
  */
@@ -211,8 +211,16 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
         logger.debug("internalReceiveCommand() is called! {} {}", itemName, newState);
     }
 
+    protected void addBindingProvider(OmniLinkBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OmniLinkBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -243,7 +251,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * Add items to be refreshed by our connection thread
-     * 
+     *
      * @param omniProvider
      */
     private void populateRefreshMapFromProvider(OmniLinkBindingProvider omniProvider) {
@@ -265,7 +273,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * This represents our internal connection thread, to stop set running = false
-     * 
+     *
      * @author daniel
      *
      */
@@ -283,7 +291,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * This initializes, but does not start our main connection thread
-         * 
+         *
          * @param host
          * @param port
          * @param key
@@ -455,7 +463,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * This goes through a map of item names and updates their state's
-         * 
+         *
          * @throws IOException
          * @throws OmniNotConnectedException
          * @throws OmniInvalidResponseException
@@ -605,7 +613,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Iterate through the system units (lights)
-         * 
+         *
          * @param number of the unti
          * @return UnitProperties of unit, null if not found
          * @throws IOException
@@ -625,7 +633,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a thermostat
-         * 
+         *
          * @param number of the thermostat
          * @return ThermostatProperties of thermostat or null if not found
          * @throws IOException
@@ -646,7 +654,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a Auxiliary sensor
-         * 
+         *
          * @param number of Auxiliary sensor
          * @return AuxSensorProperties of Auxiliary sensor or null if not found
          * @throws IOException
@@ -667,7 +675,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a audio zone
-         * 
+         *
          * @param number of audio zone
          * @return AudioZoneProperties of audio zone, or null if not found
          * @throws IOException
@@ -688,7 +696,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a area
-         * 
+         *
          * @param number of area
          * @return AreaProperties of area or null if not found
          * @throws IOException
@@ -709,7 +717,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a zone
-         * 
+         *
          * @param number of zone
          * @return ZoneProperties of zone, or null if not found
          * @throws IOException
@@ -730,7 +738,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Read the properties of a button
-         * 
+         *
          * @param number of button
          * @return ButtonProperties of button, or null if not found
          * @throws IOException
@@ -751,7 +759,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
         /**
          * Populates all know audio sources which are used by known zones
-         * 
+         *
          * @throws IOException
          * @throws OmniNotConnectedException
          * @throws OmniInvalidResponseException
@@ -782,7 +790,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
         /**
          * Update audio zone text fields, this is one of the few
          * things we need to poll for
-         * 
+         *
          * @throws IOException
          * @throws OmniNotConnectedException
          * @throws OmniInvalidResponseException
@@ -829,7 +837,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
     /**
      * Updates a AudioZone's source text fields when a
      * AudioSource changes
-     * 
+     *
      * @param as the audio source that has been updated
      */
     private void updateAudioZoneText(AudioSource as) {
@@ -859,7 +867,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * Update a device based on a status message from the system
-     * 
+     *
      * @param status
      */
     protected void updateDeviceStatus(Status status) {
@@ -897,7 +905,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 
     /**
      * Update any items linked to a Omni device.
-     * 
+     *
      * @param device
      */
     protected void updateItemsForDevice(OmnilinkDevice device) {
