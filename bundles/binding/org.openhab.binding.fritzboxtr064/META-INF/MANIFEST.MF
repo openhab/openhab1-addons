@@ -27,7 +27,7 @@ Import-Package: javax.net.ssl,
  org.slf4j
 Export-Package: org.openhab.binding.fritzboxtr064
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: lib/httpclient-4.4.1.jar,
  lib/httpcore-4.4.1.jar,
