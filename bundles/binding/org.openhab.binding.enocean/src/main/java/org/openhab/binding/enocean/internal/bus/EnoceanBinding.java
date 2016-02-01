@@ -125,6 +125,14 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider>
         // TODO: Set new state on enocean device
     }
 
+    protected void addBindingProvider(EnoceanBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EnoceanBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config == null) {
