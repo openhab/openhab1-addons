@@ -88,8 +88,16 @@ public class MailControlBinding<T extends Command> extends AbstractActiveBinding
         }
     }
 
+    protected void addBindingProvider(MailControlBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MailControlBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
