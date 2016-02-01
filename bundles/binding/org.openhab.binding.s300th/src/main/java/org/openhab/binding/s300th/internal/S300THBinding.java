@@ -117,8 +117,16 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider>i
         // Ignore
     }
 
+    protected void addBindingProvider(S300THBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(S300THBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -174,7 +182,7 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider>i
 
     /**
      * Parse KS 300 data
-     * 
+     *
      * @param data
      */
     private void parseKS300Data(String data) {
@@ -217,7 +225,7 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider>i
 
     /**
      * Parse S300TH data
-     * 
+     *
      * @param data
      */
     private void parseS300THData(String data) {
