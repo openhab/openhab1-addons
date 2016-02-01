@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="false" name="org.openhab.binding.enphaseenergy.binding">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.enphaseenergy.binding">
 
 	<implementation class="org.openhab.binding.enphaseenergy.internal.EnphaseenergyBinding" />
 
