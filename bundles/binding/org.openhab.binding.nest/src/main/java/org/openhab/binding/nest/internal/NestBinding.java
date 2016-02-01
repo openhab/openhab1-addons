@@ -178,7 +178,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
     /**
      * Given the credentials to use and what to select from the Nest API, read any changed information from Nest and
      * update the affected items.
-     * 
+     *
      * @param oauthCredentials
      *            the credentials to use
      */
@@ -221,7 +221,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
     /**
      * Give a binding provider, a data model, and an item name, return the corresponding state object.
-     * 
+     *
      * @param provider
      *            the Nest binding provider
      * @param dataModel
@@ -248,11 +248,11 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
      * {@code dataTypes} are mapped to {@link StringType}.
      * <p>
      * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be returned.
-     * 
+     *
      * Copied/adapted from the Koubachi binding.
-     * 
+     *
      * @param propertyValue
-     * 
+     *
      * @return the new {@link State} in accordance with {@code dataType}. Will never be {@code null}.
      */
     private State createState(Object propertyValue) {
@@ -303,7 +303,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
     /**
      * Perform the given {@code command} against all targets referenced in {@code itemName}.
-     * 
+     *
      * @param command
      *            the command to execute
      * @param the
@@ -328,7 +328,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
     /**
      * Send the {@code newState} for the given {@code itemName} to Nest.
-     * 
+     *
      * @param itemName
      * @param newState
      */
@@ -418,7 +418,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
      * Returns the cached {@link OAuthCredentials} for the given {@code userid}. If their is no such cached
      * {@link OAuthCredentials} element, the cache is searched with the {@code DEFAULT_USER_ID}. If there is still no
      * cached element found {@code NULL} is returned.
-     * 
+     *
      * @param userid
      *            the userid to find the {@link OAuthCredentials}
      * @return the cached {@link OAuthCredentials} or {@code NULL}
@@ -429,6 +429,14 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
         } else {
             return credentialsCache.get(DEFAULT_USER_ID);
         }
+    }
+
+    protected void addBindingProvider(NestBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(NestBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -519,7 +527,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
     /**
      * This internal class holds the credentials necessary for the OAuth2 flow to work. It also provides basic methods
      * to retrieve an access token.
-     * 
+     *
      * @author John Cocula
      * @since 1.7.0
      */
@@ -538,14 +546,14 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
         /**
          * The client_secret needed when authorizing this client to the Nest API.
-         * 
+         *
          * @see AccessTokenRequest
          */
         private String clientSecret;
 
         /**
          * The pincode needed when authorizing this client to the Nest API.
-         * 
+         *
          * @see AccessTokenRequest
          */
         private String pinCode;
@@ -553,7 +561,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
         /**
          * The access token to access the Nest API. Automatically renewed from the API using the refresh token and
          * persisted for use across activations.
-         * 
+         *
          * @see #refreshTokens()
          */
         private String accessToken;
@@ -599,7 +607,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
         /**
          * Determine if we have an access token.
-         * 
+         *
          * @return <code>true</code> if we have an access token; <code>false</code> otherwise.
          */
         public boolean noAccessToken() {
@@ -608,7 +616,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider>imple
 
         /**
          * Retrieve an access token from the Nest API.
-         * 
+         *
          * @return <code>true</code> if we were successful, <code>false</code> otherwise
          */
         public boolean retrieveAccessToken() {
