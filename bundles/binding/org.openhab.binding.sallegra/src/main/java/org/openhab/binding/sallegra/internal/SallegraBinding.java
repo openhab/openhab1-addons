@@ -201,8 +201,16 @@ public class SallegraBinding extends AbstractActiveBinding<SallegraBindingProvid
         logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
     }
 
+    protected void addBindingProvider(SallegraBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SallegraBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
