@@ -132,8 +132,16 @@ public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements 
         logger.debug("internalReceiveCommand() is called!");
     }
 
+    protected void addBindingProvider(EKeyBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EKeyBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
