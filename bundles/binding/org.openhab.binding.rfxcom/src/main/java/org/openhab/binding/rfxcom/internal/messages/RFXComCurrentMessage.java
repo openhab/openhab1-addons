@@ -128,7 +128,7 @@ public class RFXComCurrentMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[13];
+        byte[] data = new byte[14];
 
         data[0] = 0x0D;
         data[1] = RFXComBaseMessage.PacketType.CURRENT.toByte();

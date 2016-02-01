@@ -112,7 +112,7 @@ public class RFXComRainMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[10];
+        byte[] data = new byte[12];
 
         data[0] = 0x0B;
         data[1] = RFXComBaseMessage.PacketType.RAIN.toByte();
