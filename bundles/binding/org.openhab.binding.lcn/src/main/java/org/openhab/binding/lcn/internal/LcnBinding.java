@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.openhab.binding.lcn.LcnBindingProvider;
 import org.openhab.binding.lcn.common.LcnBindingNotification;
 import org.openhab.binding.lcn.connection.Connection;
 import org.openhab.binding.lcn.connection.ConnectionManager;
@@ -36,12 +37,8 @@ import org.slf4j.LoggerFactory;
  * Input data is received through {@link #connections}.
  *
  * @author Tobias J�ttner
- *
- * @param
- *            <P>
- *            {@link LcnGenericBindingProvider}
  */
-public class LcnBinding<P extends LcnGenericBindingProvider> extends AbstractBinding<P>
+public class LcnBinding extends AbstractBinding<LcnGenericBindingProvider>
         implements ManagedService, LcnBindingActiveService.Callback, ConnectionManager.Callback {
 
     /** Logger for this class. */
@@ -73,7 +70,7 @@ public class LcnBinding<P extends LcnGenericBindingProvider> extends AbstractBin
 
     /**
      * Called whenever the configurations are updated.
-     * 
+     *
      * @param config the updated configurations
      */
     @Override
@@ -206,16 +203,12 @@ public class LcnBinding<P extends LcnGenericBindingProvider> extends AbstractBin
         return this.bindingsExist();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void addBindingProvider(BindingProvider provider) {
+    protected void addBindingProvider(LcnBindingProvider provider) {
         super.addBindingProvider(provider);
         this.activeService.start();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void removeBindingProvider(BindingProvider provider) {
+    protected void removeBindingProvider(LcnBindingProvider provider) {
         super.removeBindingProvider(provider);
         // If there are no binding providers left, we can stop the service
         if (this.providers.size() == 0) {
