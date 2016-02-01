@@ -69,7 +69,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     /**
      * If the device name has changed, try to close the old device handler and
      * create a new one
-     * 
+     *
      * @param deviceName
      *            The new deviceName
      */
@@ -113,8 +113,16 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
         // Nothing to do
     }
 
+    protected void addBindingProvider(EMBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EMBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -149,7 +157,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
 
     /**
      * Parse the received line of data and create updates for configured items
-     * 
+     *
      * @param data
      */
     private void parseDataLine(String data) {
@@ -178,7 +186,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     /**
      * Update an item given in the configuration with the given value multiplied
      * by the correction factor
-     * 
+     *
      * @param config
      * @param value
      */
@@ -189,7 +197,7 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
 
     /**
      * Check if we have received a new message to not consume repeated messages
-     * 
+     *
      * @param address
      * @param counter
      * @return
