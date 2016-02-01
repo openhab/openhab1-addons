@@ -134,11 +134,11 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
     }
 
     /**
-     * 
+     *
      * Main function to parse ASCII string received
-     * 
+     *
      * @return
-     * 
+     *
      */
     @Override
     protected void parseBuffer(String itemName, Command aCommand, Direction theDirection, ByteBuffer byteBuffer) {
@@ -162,6 +162,14 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
         } else {
             logger.warn("Can not parse input " + theUpdate + " to match command {} on item {}  ", aCommand, itemName);
         }
+    }
+
+    protected void addBindingProvider(UDPBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(UDPBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @SuppressWarnings("rawtypes")
@@ -238,7 +246,7 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
     /**
      * Splits a transformation configuration string into its two parts - the
      * transformation type and the function/pattern to apply.
-     * 
+     *
      * @param transformation the string to split
      * @return a string array with exactly two entries for the type and the function
      */
