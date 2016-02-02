@@ -10,17 +10,15 @@ package org.openhab.binding.s300th.internal;
 
 import java.util.Dictionary;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.s300th.S300THBindingProvider;
 import org.openhab.binding.s300th.internal.S300THGenericBindingProvider.S300THBindingConfig;
 import org.openhab.binding.s300th.internal.S300THGenericBindingProvider.S300THBindingConfig.Datapoint;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.io.transport.cul.CULDeviceException;
-import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULLifecycleListenerListenerRegisterer;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULListener;
-import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -34,87 +32,27 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider>implements ManagedService, CULListener {
+public class S300THBinding extends AbstractBinding<S300THBindingProvider>implements ManagedService, CULListener {
 
     private static final Logger logger = LoggerFactory.getLogger(S300THBinding.class);
 
     private final static String KS_300_ADDRESS = "ks300";
 
-    /**
-     * the refresh interval which is used to poll values from the S300TH server
-     * (optional, defaults to 60000ms)
-     */
-    private long refreshInterval = 60000;
-
-    private final static String KEY_DEVICE_NAME = "device";
-
-    private String deviceName;
-
-    private CULHandler cul;
+    private final CULLifecycleManager culHandlerLifecycle;
 
     public S300THBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF,
+                new CULLifecycleListenerListenerRegisterer(this));
     }
 
     @Override
     public void activate() {
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
-        closeCUL();
-    }
-
-    private void setNewDeviceName(String deviceName) {
-        if (deviceName == null) {
-            logger.error("Device name was null");
-            return;
-        }
-        if (this.deviceName != null && this.deviceName.equals(deviceName)) {
-            return;
-        }
-        closeCUL();
-        this.deviceName = deviceName;
-        openCUL();
-    }
-
-    private void openCUL() {
-        try {
-            cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
-            cul.registerListener(this);
-        } catch (CULDeviceException e) {
-            logger.error("Can't open CUL handler for device " + deviceName, e);
-        }
-    }
-
-    private void closeCUL() {
-        if (cul != null) {
-            cul.unregisterListener(this);
-            CULManager.close(cul);
-        }
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected long getRefreshInterval() {
-        return refreshInterval;
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected String getName() {
-        return "S300TH Refresh Service";
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void execute() {
-        // Ignore
+        culHandlerLifecycle.close();
     }
 
     protected void addBindingProvider(S300THBindingProvider bindingProvider) {
@@ -130,29 +68,7 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider>i
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        logger.debug("Received new config");
-        if (config != null) {
-
-            // to override the default refresh interval one has to add a
-            // parameter to openhab.cfg like
-            // <bindingName>:refresh=<intervalInMs>
-            String refreshIntervalString = (String) config.get("refresh");
-            if (StringUtils.isNotBlank(refreshIntervalString)) {
-                refreshInterval = Long.parseLong(refreshIntervalString);
-            }
-            String deviceName = (String) config.get(KEY_DEVICE_NAME);
-            if (StringUtils.isEmpty(deviceName)) {
-                logger.error("No device name configured");
-                setProperlyConfigured(false);
-                throw new ConfigurationException(KEY_DEVICE_NAME, "The device name can't be empty");
-            } else {
-                setNewDeviceName(deviceName);
-            }
-
-            setProperlyConfigured(true);
-            // read further config parameters here ...
-
-        }
+        culHandlerLifecycle.config(config);
     }
 
     @Override

@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -30,10 +28,10 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.io.transport.cul.CULCommunicationException;
-import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULLifecycleListener;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULListener;
-import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -68,20 +66,6 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
     private final static SimpleDateFormat configDateFormat = new SimpleDateFormat("mm:HH:dd:MM:yy");
 
     /**
-     * Config key for the device address. i.e. serial:/dev/ttyACM0
-     */
-    private final static String KEY_DEVICE = "device";
-
-    /**
-     * Config key for the device baud rate. i.e. baudrate:38400
-     */
-    private final static String KEY_BAUD_RATE = "baudrate";
-    /**
-     * Config key for the device parity. i.e. parity:0
-     */
-    private final static String KEY_PARITY = "parity";
-
-    /**
      * Our housecode we need to simulate a central device.
      */
     private final static String KEY_HOUSECODE = "housecode";
@@ -102,16 +86,13 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
      */
     private final static String KEY_REPORTS_CRON = "reports.cron";
 
-    private String deviceName;
-    private Map<String, Object> properties = new HashMap<String, Object>();
-
     private String housecode;
     private boolean doTimeUpdate = false;
     private String timeUpdatecronExpression;
     private String reportsCronExpression;
     private boolean requestReports;
 
-    private CULHandler cul;
+    private final CULLifecycleManager culHandlerLifecycle;
 
     private JobKey updateTimeJobKey;
     private JobKey requestReportJobKey;
@@ -126,53 +107,41 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
     private HashMap<String, Integer> valueCache = new HashMap<String, Integer>();
 
     public FHTBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF, new CULLifecycleListener() {
+
+            @Override
+            public void open(CULHandler cul) throws CULCommunicationException {
+                cul.registerListener(FHTBinding.this);
+                cul.send("T01" + housecode);
+            }
+
+            @Override
+            public void close(CULHandler cul) {
+                cul.unregisterListener(FHTBinding.this);
+
+            }
+
+        });
     }
 
     @Override
     public void activate() {
-        bindCULHandler();
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
-        if (cul != null) {
-            CULManager.close(cul);
-        }
+        culHandlerLifecycle.close();
         unscheduleJob(requestReportJobKey);
         unscheduleJob(updateTimeJobKey);
     }
 
-    private void bindCULHandler() {
-        if (!StringUtils.isEmpty(deviceName)) {
-            try {
-                cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF, properties);
-                cul.registerListener(this);
-                cul.send("T01" + housecode);
-            } catch (CULDeviceException e) {
-                logger.error("Can't open CUL", e);
-            } catch (CULCommunicationException e) {
-                logger.error("Can't set our own housecode", e);
-            }
-        }
-    }
-
     private boolean checkCULDevice() {
-        if (cul == null) {
+        if (!culHandlerLifecycle.isCulReady()) {
             logger.error("CUL device is not accessible");
             return false;
         }
         return true;
-    }
-
-    private void setNewDeviceName(String newDeviceName) {
-        if (!StringUtils.isEmpty(newDeviceName)) {
-            if (cul != null) {
-                cul.unregisterListener(this);
-                CULManager.close(cul);
-            }
-            deviceName = newDeviceName;
-            bindCULHandler();
-        }
     }
 
     /**
@@ -209,7 +178,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             FHTDesiredTemperatureCommand waitingCommand = entry.getValue();
             String commandString = "T" + waitingCommand.getAddress() + waitingCommand.getCommand();
             try {
-                cul.send(commandString);
+                culHandlerLifecycle.getCul().send(commandString);
                 temperatureCommandQueue.remove(entry.getKey());
             } catch (CULCommunicationException e) {
                 logger.error("Can't send desired temperature via CUL", e);
@@ -270,6 +239,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        boolean properlyConfigured = false;
         if (config != null) {
 
             // to override the default refresh interval one has to add a
@@ -308,22 +278,11 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
                 unscheduleJob(requestReportJobKey);
             }
 
-            // At last the device, after we received all other config values
-            String deviceName = parseMandatoryValue(KEY_DEVICE, config);
+            culHandlerLifecycle.config(config);
 
-            String baudRateString = parseMandatoryValue(KEY_BAUD_RATE, config);
-            if (StringUtils.isNotBlank(baudRateString)) {
-                properties.put(KEY_BAUD_RATE, baudRateString);
-            }
-
-            String parityString = parseMandatoryValue(KEY_PARITY, config);
-            if (StringUtils.isNotBlank(parityString)) {
-                properties.put(KEY_PARITY, parityString);
-            }
-
-            setNewDeviceName(deviceName);
-            setProperlyConfigured(true);
+            properlyConfigured = true;
         }
+        setProperlyConfigured(properlyConfigured);
     }
 
     private String parseMandatoryValue(String key, Dictionary<String, ?> config) throws ConfigurationException {
@@ -589,7 +548,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
         sendBuffer.append(register); // register to write
         sendBuffer.append(value);
         try {
-            cul.send(sendBuffer.toString());
+            culHandlerLifecycle.getCul().send(sendBuffer.toString());
         } catch (CULCommunicationException e) {
             logger.error("Error while writing register " + register + " on device " + device);
         }
@@ -619,7 +578,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             sendBuffer.append(command.value);
         }
         try {
-            cul.send(sendBuffer.toString());
+            culHandlerLifecycle.getCul().send(sendBuffer.toString());
         } catch (CULCommunicationException e) {
             logger.error("Error while writing multiple write register commands to the CUL", e);
         }

@@ -16,12 +16,11 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.em.EMBindingProvider;
 import org.openhab.binding.em.internal.EMBindingConfig.Datapoint;
 import org.openhab.binding.em.internal.EMBindingConfig.EMType;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.io.transport.cul.CULDeviceException;
-import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULLifecycleListenerListenerRegisterer;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULListener;
-import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -35,82 +34,27 @@ import org.slf4j.LoggerFactory;
  * @author Till Klocke
  * @since 1.4.0
  */
-public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implements ManagedService, CULListener {
+public class EMBinding extends AbstractBinding<EMBindingProvider>implements ManagedService, CULListener {
 
     private static final Logger logger = LoggerFactory.getLogger(EMBinding.class);
 
-    private final static String CONFIG_KEY_DEVICE_NAME = "device";
-    private long refreshInterval = 60000;
-    private String deviceName;
-
-    private CULHandler cul;
+    private final CULLifecycleManager culHandlerLifecycle;
 
     private Map<String, Integer> counterMap = new HashMap<String, Integer>();
 
     public EMBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF,
+                new CULLifecycleListenerListenerRegisterer(this));
     }
 
     @Override
     public void activate() {
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
-        closeCUL();
-    }
-
-    private void closeCUL() {
-        if (cul != null) {
-            cul.unregisterListener(this);
-            CULManager.close(cul);
-        }
-    }
-
-    /**
-     * If the device name has changed, try to close the old device handler and
-     * create a new one
-     *
-     * @param deviceName
-     *            The new deviceName
-     */
-    private void setNewDeviceName(String deviceName) {
-        if (deviceName != null && this.deviceName != null && this.deviceName.equals(deviceName)) {
-            return;
-        }
-        if (this.deviceName != null && cul != null) {
-            closeCUL();
-        }
-        try {
-            cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
-            cul.registerListener(this);
-            this.deviceName = deviceName;
-        } catch (CULDeviceException e) {
-            logger.error("Can't get CULHandler", e);
-        }
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected long getRefreshInterval() {
-        return refreshInterval;
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected String getName() {
-        return "EM Refresh Service";
-    }
-
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void execute() {
-        // Nothing to do
+        culHandlerLifecycle.close();
     }
 
     protected void addBindingProvider(EMBindingProvider bindingProvider) {
@@ -122,29 +66,11 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     }
 
     /**
-     * {@inheritDoc}
+     * @{inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config != null) {
-
-            // to override the default refresh interval one has to add a
-            // parameter to openhab.cfg like
-            // <bindingName>:refresh=<intervalInMs>
-            String refreshIntervalString = (String) config.get("refresh");
-            if (StringUtils.isNotBlank(refreshIntervalString)) {
-                refreshInterval = Long.parseLong(refreshIntervalString);
-            }
-
-            String deviceName = (String) config.get(CONFIG_KEY_DEVICE_NAME);
-            if (!StringUtils.isEmpty(deviceName)) {
-                setNewDeviceName(deviceName);
-            } else {
-                setProperlyConfigured(false);
-                throw new ConfigurationException(CONFIG_KEY_DEVICE_NAME, "Device name not configured");
-            }
-            setProperlyConfigured(true);
-        }
+        culHandlerLifecycle.config(config);
     }
 
     @Override
@@ -152,7 +78,6 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
         if (!StringUtils.isEmpty(data) && data.startsWith("E")) {
             parseDataLine(data);
         }
-
     }
 
     /**
@@ -227,7 +152,6 @@ public class EMBinding extends AbstractActiveBinding<EMBindingProvider>implement
     @Override
     public void error(Exception e) {
         logger.error("Exception instead of new data from CUL", e);
-
     }
 
 }

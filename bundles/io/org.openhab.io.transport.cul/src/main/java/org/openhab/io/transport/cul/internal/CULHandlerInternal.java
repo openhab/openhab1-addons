@@ -10,15 +10,15 @@ package org.openhab.io.transport.cul.internal;
 
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
 
 /**
- * Internal interface for the CULManager. CULHandler should always implement the
- * external and internal interface.
+ * Internal interface for the CULManager. CULHandler should always implement this.
  *
  * @author Till Klocke
  * @since 1.4.0
  */
-public interface CULHandlerInternal {
+public interface CULHandlerInternal<T extends CULConfig> extends CULHandler {
 
     public void open() throws CULDeviceException;
 
@@ -27,5 +27,7 @@ public interface CULHandlerInternal {
     public boolean hasListeners();
 
     public void sendWithoutCheck(String message) throws CULCommunicationException;
+
+    public T getConfig();
 
 }

@@ -10,18 +10,16 @@ package org.openhab.binding.hms.internal;
 
 import java.util.Dictionary;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hms.HMSBindingProvider;
 import org.openhab.binding.hms.internal.HMSGenericBindingProvider.HMSBindingConfig;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.io.transport.cul.CULDeviceException;
-import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULLifecycleListenerListenerRegisterer;
+import org.openhab.io.transport.cul.CULLifecycleManager;
 import org.openhab.io.transport.cul.CULListener;
-import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -34,46 +32,26 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Urmann
  * @since 1.7.0
  */
-public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider>implements ManagedService, CULListener {
+public class HMSBinding extends AbstractBinding<HMSBindingProvider>implements ManagedService, CULListener {
 
     private static final Logger logger = LoggerFactory.getLogger(HMSBinding.class);
 
-    /**
-     * the refresh interval which is used to poll values from the HMS server
-     * (optional, defaults to 60000ms)
-     */
-    private long refreshInterval = 60000;
+    private final CULLifecycleManager culHandlerLifecycle;
 
-    private final static String KEY_DEVICE_NAME = "device";
-
-    private String deviceName;
-
-    private CULHandler cul;
-
-    private void setNewDeviceName(String deviceName) {
-        if (cul != null) {
-            CULManager.close(cul);
-        }
-        this.deviceName = deviceName;
-        getCULHandler();
+    public HMSBinding() {
+        culHandlerLifecycle = new CULLifecycleManager(CULMode.SLOW_RF,
+                new CULLifecycleListenerListenerRegisterer(this));
     }
 
-    private void getCULHandler() {
-        try {
-            logger.debug("Opening CUL device on " + deviceName);
-            cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
-            cul.registerListener(this);
-        } catch (CULDeviceException e) {
-            logger.error("Can't open cul device", e);
-            cul = null;
-        }
+    @Override
+    public void activate() {
+        culHandlerLifecycle.open();
     }
 
     @Override
     public void deactivate() {
         logger.debug("Deactivating HMS binding");
-        cul.unregisterListener(this);
-        CULManager.close(cul);
+        culHandlerLifecycle.close();
     }
 
     @Override
@@ -150,21 +128,6 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider>impleme
     }
 
     @Override
-    protected long getRefreshInterval() {
-        return refreshInterval;
-    }
-
-    @Override
-    protected String getName() {
-        return "HMS Refresh Service";
-    }
-
-    @Override
-    protected void execute() {
-        // has to be overridden since base class method is abstract
-    }
-
-    @Override
     protected void internalReceiveCommand(String itemName, Command command) {
         // the code being executed when a command was sent on the openHAB
         // event bus goes here. This method is only called if one of the
@@ -190,27 +153,7 @@ public class HMSBinding extends AbstractActiveBinding<HMSBindingProvider>impleme
 
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        if (config != null) {
-
-            // to override the default refresh interval one has to add a
-            // parameter to openhab.cfg like
-            // <bindingName>:refresh=<intervalInMs>
-            String refreshIntervalString = (String) config.get("refresh");
-            if (StringUtils.isNotBlank(refreshIntervalString)) {
-                refreshInterval = Long.parseLong(refreshIntervalString);
-            }
-
-            String deviceName = (String) config.get(KEY_DEVICE_NAME);
-            if (StringUtils.isEmpty(deviceName)) {
-                logger.error("No device name configured");
-                setProperlyConfigured(false);
-                throw new ConfigurationException(KEY_DEVICE_NAME, "The device name can't be empty");
-            } else {
-                setNewDeviceName(deviceName);
-            }
-
-            setProperlyConfigured(true);
-        }
+        culHandlerLifecycle.config(config);
     }
 
     @Override

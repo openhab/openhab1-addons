@@ -17,25 +17,22 @@ package org.openhab.io.transport.cul;
  */
 public class CULDeviceException extends Exception {
 
+    private static final long serialVersionUID = 4834148919102194993L;
+
     public CULDeviceException() {
         super();
     }
 
-    public CULDeviceException(String arg0, Throwable arg1) {
-        super(arg0, arg1);
+    public CULDeviceException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public CULDeviceException(String arg0) {
-        super(arg0);
+    public CULDeviceException(String message) {
+        super(message);
     }
 
-    public CULDeviceException(Throwable arg0) {
-        super(arg0);
+    public CULDeviceException(Throwable cause) {
+        super(cause);
     }
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 4834148919102194993L;
 
 }
