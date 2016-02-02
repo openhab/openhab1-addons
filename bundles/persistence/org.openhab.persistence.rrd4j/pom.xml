@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>persistence</artifactId>
-		<version>1.8.1-SNAPSHOT</version>
+		<version>1.8.1</version>
 	</parent>
 
 	<name>openHAB RRD4j Persistence</name>

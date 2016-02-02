@@ -8,7 +8,7 @@
     
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.8.1</version>
     <name>openHAB</name>
     
     <organization>
