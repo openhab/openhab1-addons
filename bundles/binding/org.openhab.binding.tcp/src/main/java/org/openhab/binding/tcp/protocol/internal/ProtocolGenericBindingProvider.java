@@ -190,13 +190,19 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
      */
     private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
 
-        Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
+        if (CHANGED_COMMAND_KEY.equals(commandAsString)) {
+            return CHANGED_COMMAND_KEY;
+        } else if (WILDCARD_COMMAND_KEY.equals(commandAsString)) {
+            return WILDCARD_COMMAND_KEY;
+        } else {
+            Command command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandAsString);
 
-        if (command == null) {
-            throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+            if (command == null) {
+                throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
+            }
+
+            return command;
         }
-
-        return command;
     }
 
     /**
