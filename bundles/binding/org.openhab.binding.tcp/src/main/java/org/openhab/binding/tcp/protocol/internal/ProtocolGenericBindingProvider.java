@@ -59,7 +59,14 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
     private static final Pattern ACTION_CONFIG_PATTERN = Pattern
             .compile("(<|>)\\[(.*?):(.*?):(.*?):(?:'(.*)'|(.*))\\]");
     private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(?:'(.*)'|(.*))\\]");
+    
+    /**
+     * Artificial command to identify that state changes should be taken into account
+     */
+    protected static final Command CHANGED_COMMAND_KEY = StringType.valueOf("CHANGED");
 
+    protected static final Command WILDCARD_COMMAND_KEY = StringType.valueOf("*");
+    
     static int counter = 0;
 
     @Override
