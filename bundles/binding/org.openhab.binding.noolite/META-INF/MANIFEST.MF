@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.noolite.internal
+Ignore-Package: org.openhab.binding.noolite.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Noolite Binding
+Bundle-SymbolicName: org.openhab.binding.noolite
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.0.0.7
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Noolite binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.apache.http.client;version="4.1.3",
+ org.apache.http.client.methods;version="4.1.3",
+ org.apache.http.impl.client;version="4.1.3",
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.noolite
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: lib/usb4java-1.2.0.jar,
+ lib/libusb4java-1.2.0-linux-arm.jar,
+ lib/libusb4java-1.2.0-linux-x86_64.jar,
+ lib/libusb4java-1.2.0-linux-x86.jar,
+ lib/libusb4java-1.2.0-osx-x86_64.jar,
+ lib/libusb4java-1.2.0-osx-x86.jar,
+ lib/libusb4java-1.2.0-windows-x86_64.jar,
+ lib/libusb4java-1.2.0-windows-x86.jar,
+ .
