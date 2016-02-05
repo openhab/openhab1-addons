@@ -104,6 +104,14 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         }
     }
 
+    protected void addBindingProvider(HomematicBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(HomematicBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -137,7 +145,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
     /**
      * Schedules a job with a short delay to populate changed items to openHAB
      * after startup or an item reload.
-     * 
+     *
      * @see BindingChangedDelayedExecutor
      */
     private void informCommunicator(HomematicBindingProvider hmProvider, String itemName) {

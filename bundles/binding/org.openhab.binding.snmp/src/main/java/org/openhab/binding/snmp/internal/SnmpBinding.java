@@ -201,7 +201,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 
     /**
      * Called when a response from a GET is received
-     * 
+     *
      * @see org.snmp4j.event.ResponseListener#onResponse(org.snmp4j.event.ResponseEvent )
      */
     @Override
@@ -359,6 +359,14 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
             }
         }
 
+    }
+
+    protected void addBindingProvider(SnmpBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SnmpBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**

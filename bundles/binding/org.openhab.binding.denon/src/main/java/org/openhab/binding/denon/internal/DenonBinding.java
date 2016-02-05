@@ -116,7 +116,7 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>imp
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
@@ -124,8 +124,16 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>imp
         getConnector(config).sendCommand(config, command);
     }
 
+    protected void addBindingProvider(DenonBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(DenonBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

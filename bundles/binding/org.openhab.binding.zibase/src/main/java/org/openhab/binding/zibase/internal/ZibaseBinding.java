@@ -84,7 +84,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
 
     /**
      * get the associated binding provider
-     * 
+     *
      * @return
      */
     public static ZibaseGenericBindingProvider getBindingProvider() {
@@ -186,8 +186,16 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
         config.sendCommand(zibase, command, -1);
     }
 
+    protected void addBindingProvider(ZibaseBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(ZibaseBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

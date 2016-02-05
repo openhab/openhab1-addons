@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * The mystrom binding class.
  *
  * @author Jordens Christophe
- * @since 1.8.0-SNAPSHOT
+ * @since 1.8.0
  */
 public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowerBindingProvider>
         implements ManagedService {
@@ -269,8 +269,16 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
         logger.debug("internalReceiveCommand() is called!");
     }
 
+    protected void addBindingProvider(MyStromEcoPowerBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MyStromEcoPowerBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -326,7 +334,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
     /**
      * Do a discovery to find all devices on the mystrom server. Logs device's
      * name and id.
-     * 
+     *
      * @throws MalformedURLException
      * @throws IOException
      */

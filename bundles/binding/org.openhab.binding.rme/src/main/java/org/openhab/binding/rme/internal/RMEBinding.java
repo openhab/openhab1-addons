@@ -103,6 +103,14 @@ public class RMEBinding extends AbstractActiveBinding<RMEBindingProvider>impleme
         // Nothing to do here.
     }
 
+    protected void addBindingProvider(RMEBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(RMEBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @SuppressWarnings("rawtypes")
     public void updated(Dictionary config) throws ConfigurationException {
         setProperlyConfigured(true);
@@ -210,7 +218,7 @@ public class RMEBinding extends AbstractActiveBinding<RMEBindingProvider>impleme
 
         /**
          * Initialize this device and open the serial port
-         * 
+         *
          * @throws InitializationException if port can not be opened
          */
         @SuppressWarnings("rawtypes")

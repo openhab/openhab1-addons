@@ -108,6 +108,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     public void deactivate() {
     }
 
+    protected void addBindingProvider(CalDavBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(CalDavBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
         if (properties != null) {

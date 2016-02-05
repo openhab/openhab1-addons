@@ -79,7 +79,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Redistribute an openHAB command to the nikobus binding for that item.
      */
     @Override
@@ -116,7 +116,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
 
     /**
      * Send a status update to the openHab bus.
-     * 
+     *
      * @param itemName
      *            item for which to send update
      * @param state
@@ -136,7 +136,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
 
     /**
      * Send a command via the serial port to the Nikobus.
-     * 
+     *
      * @param nikobusCommand
      *            command to send
      * @throws Exception
@@ -202,7 +202,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
      * Request a status update for the module with the given address. This will
      * trigger a read command being sent to the nikobus if none is already
      * pending. The read command will be send using a separate thread.
-     * 
+     *
      * @param moduleAddress
      *            address of the module for which to request the status update.
      * @param delayedSend
@@ -320,7 +320,7 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
 
     /**
      * Register a new item binding.
-     * 
+     *
      * @param itemBinding
      */
     public void register(NikobusCommandListener itemBinding) {
@@ -329,12 +329,20 @@ public class NikobusBinding extends AbstractBinding<NikobusBindingProvider>imple
 
     /**
      * Unregister a new item binding.
-     * 
+     *
      * @param itemBinding
      */
 
     public void unregister(NikobusCommandListener itemBinding) {
         commandReceiver.unregister(itemBinding);
+    }
+
+    protected void addBindingProvider(NikobusBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(NikobusBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**

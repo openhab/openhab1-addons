@@ -160,6 +160,14 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>implement
         logger.debug("Received update for {}! New state: {}", itemName, newState);
     }
 
+    protected void addBindingProvider(UrtsiBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(UrtsiBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Parses the global configuration file.
      * Expected values:

@@ -161,6 +161,14 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
         return new NeoHubProtocol(new NeoHubConnector(hostname, port));
     }
 
+    protected void addBindingProvider(NeoHubBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(NeoHubBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

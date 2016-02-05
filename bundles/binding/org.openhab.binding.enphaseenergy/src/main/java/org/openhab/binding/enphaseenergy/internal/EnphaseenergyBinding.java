@@ -129,9 +129,17 @@ public class EnphaseenergyBinding extends AbstractActiveBinding<EnphaseenergyBin
         }
     }
 
+    protected void addBindingProvider(EnphaseenergyBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EnphaseenergyBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Convert an enphase energy item type to a openHAB state
-     * 
+     *
      * @param response
      */
     private State createStateFromType(final EnphaseenergyItemType itemType, SystemsResponse response) {

@@ -151,8 +151,16 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>imple
         }
     }
 
+    protected void addBindingProvider(WagoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(WagoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("rawtypes")

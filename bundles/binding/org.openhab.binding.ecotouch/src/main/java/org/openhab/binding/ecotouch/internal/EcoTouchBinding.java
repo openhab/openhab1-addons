@@ -187,6 +187,14 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
         }
     }
 
+    protected void addBindingProvider(EcoTouchBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EcoTouchBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * @{inheritDoc
      */

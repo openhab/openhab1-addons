@@ -536,6 +536,15 @@
 		<Name>GE</Name>
 		<Product>
 			<Reference>
+				<Type>5044</Type>
+				<Id>3031</Id>
+			</Reference>
+			<Model>12718</Model>
+			<Label lang="en">Lighting Lamp Module with Dimmer Control</Label>
+			<ConfigFile>ge/12718.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>5257</Type>
 				<Id>3533</Id>
 			</Reference>
@@ -1270,17 +1279,18 @@
 				<Type>0003</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>NP210</Model>
-			<Label lang="en">Smart PowerNode</Label>
-			<ConfigFile>greenwave/np210.xml</ConfigFile>
+			<Model>NP210/NP310</Model>
+			<Label lang="en">Smart PowerNode (6x)</Label>
+			<ConfigFile VersionMax="3">greenwave/np210.xml</ConfigFile>
+			<ConfigFile VersionMin="4">greenwave/np310.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>NS210</Model>
-			<Label lang="en">Smart PowerNode</Label>
+			<Model>NS210/NS310</Model>
+			<Label lang="en">Smart PowerNode (single)</Label>
 			<ConfigFile VersionMax="3">greenwave/ns210.xml</ConfigFile>
 			<ConfigFile VersionMin="4">greenwave/ns310.xml</ConfigFile>
 		</Product>
@@ -1609,10 +1619,14 @@
 			<ConfigFile>fibaro/fgs222.xml</ConfigFile>
 		</Product>
 		<Product>
-			<Reference>
-				<Type>0700</Type>
-				<Id>1000</Id>
-			</Reference>
+            <Reference>
+                <Type>0700</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Reference>
+                <Type>0700</Type>
+                <Id>2000</Id>
+            </Reference>
 			<Reference>
 				<Type>0700</Type>
 				<Id>3000</Id>
@@ -1696,8 +1710,8 @@
 				<Id>4000</Id>
 			</Reference>
 			<Reference>
-				<Type>3000</Type>
-				<Id>0900</Id>
+				<Type>0900</Type>
+				<Id>3000</Id>
 			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
@@ -1815,6 +1829,15 @@
 			<Model>EZMotion Express</Model>
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>EZMultiPli</Model>
+			<Label lang="en">Multi Sensor</Label>
+			<ConfigFile>homeseer/ezmultipli.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

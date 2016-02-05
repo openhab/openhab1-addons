@@ -73,7 +73,7 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider>imple
     /**
      * Create a new {@link CupsClient} with the given <code>ip</code> and
      * <code>port</code>
-     * 
+     *
      * @param host
      * @param port
      */
@@ -157,6 +157,14 @@ public class CupsBinding extends AbstractActiveBinding<CupsBindingProvider>imple
         } else {
             logger.warn("CupsClient is null => refresh cycle aborted!");
         }
+    }
+
+    protected void addBindingProvider(CupsBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(CupsBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

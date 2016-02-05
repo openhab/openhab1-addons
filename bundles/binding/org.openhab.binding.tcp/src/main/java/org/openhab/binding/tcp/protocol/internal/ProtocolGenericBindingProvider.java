@@ -55,7 +55,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
     static final Logger logger = LoggerFactory.getLogger(ProtocolGenericBindingProvider.class);
 
     /** {@link Pattern} which matches a binding configuration part */
-    private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:\\s|$)");
+    private static final Pattern BASE_CONFIG_PATTERN = Pattern.compile("([<>]\\[.*?\\])(?:[,\\s]|$)");
     private static final Pattern ACTION_CONFIG_PATTERN = Pattern
             .compile("(<|>)\\[(.*?):(.*?):(.*?):(?:'(.*)'|(.*))\\]");
     private static final Pattern STATUS_CONFIG_PATTERN = Pattern.compile("(<|>)\\[(.*?):(.*?):(?:'(.*)'|(.*))\\]");
@@ -104,7 +104,7 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
 
     /**
      * Parses the configuration string and update the provided config
-     * 
+     *
      * @param config - the Configuration that needs to be updated with the parsing results
      * @param item - the Item that this configuration is intented for
      * @param bindingConfig - the configuration string that will be parsed
@@ -176,16 +176,16 @@ abstract class ProtocolGenericBindingProvider extends AbstractGenericBindingProv
     /**
      * Creates a {@link Command} out of the given <code>commandAsString</code>
      * incorporating the {@link TypeParser}.
-     * 
+     *
      * @param item
      * @param commandAsString
-     * 
+     *
      * @return an appropriate Command (see {@link TypeParser} for more
      *         information
-     * 
+     *
      * @throws BindingConfigParseException if the {@link TypeParser} couldn't
      *             create a command appropriately
-     * 
+     *
      * @see {@link TypeParser}
      */
     private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {

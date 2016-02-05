@@ -260,8 +260,16 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
         return distKm * 1000;
     }
 
+    protected void addBindingProvider(OpenPathsBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OpenPathsBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

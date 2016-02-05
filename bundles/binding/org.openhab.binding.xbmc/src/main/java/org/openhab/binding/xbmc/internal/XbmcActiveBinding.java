@@ -370,6 +370,14 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
         }
     }
 
+    protected void addBindingProvider(XbmcBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(XbmcBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

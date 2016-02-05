@@ -60,4 +60,12 @@ public class MqttItemBinding extends AbstractBinding<MqttBindingProvider> {
         }
     }
 
+    protected void addBindingProvider(MqttBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MqttBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
 }

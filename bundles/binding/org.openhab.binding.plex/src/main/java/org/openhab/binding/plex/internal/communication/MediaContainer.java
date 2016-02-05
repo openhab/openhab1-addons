@@ -28,7 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class MediaContainer {
 
     @XmlElement(name = "Server")
-    private List<Server> servers;
+    private List<Server> servers = new ArrayList<Server>();
+
+    @XmlElement(name = "Device")
+    private List<Device> devices = new ArrayList<Device>();
 
     @XmlElement(name = "Video")
     private List<Video> videos = new ArrayList<Video>();
@@ -45,6 +48,14 @@ public class MediaContainer {
 
     public void setServers(List<Server> servers) {
         this.servers = servers;
+    }
+
+    public List<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<Device> devices) {
+        this.devices = devices;
     }
 
     public List<Video> getVideos() {

@@ -83,6 +83,14 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider>imple
         }
     }
 
+    protected void addBindingProvider(WeatherBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(WeatherBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Restart scheduler if all binding changes.
      */

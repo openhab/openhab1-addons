@@ -64,7 +64,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
     private TcpServer debugServer;
 
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
         logger.debug("activate()");
@@ -75,8 +75,16 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
         }
     }
 
+    protected void addBindingProvider(PanStampBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PanStampBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     public void modified(final Map<String, Object> configuration) {
         logger.debug("modified()");
@@ -390,7 +398,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
 
     /**
      * Return all available binding configs for the given item name
-     * 
+     *
      * @param itemName
      *            The item name for which configs are requested.
      * @return The configs found.
@@ -408,7 +416,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
 
     /**
      * Return all available binding configs for the given endpoint
-     * 
+     *
      * @param ep
      *            The endpoint for which configs are requested.
      * @return The configs found.
@@ -431,7 +439,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
 
     /**
      * Update all items associated with an endpoint with it's new value
-     * 
+     *
      * @param ep
      *            The endpoint for which a new value is available
      * @param val

@@ -81,6 +81,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         }
     }
 
+    protected void addBindingProvider(CalDavBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(CalDavBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -56,6 +56,10 @@
                                 <artifact><file>src/main/resources/conf/milight.cfg</file><type>cfg</type><classifier>milight</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mios.cfg</file><type>cfg</type><classifier>mios</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/modbus.cfg</file><type>cfg</type><classifier>modbus</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mqtt.cfg</file><type>cfg</type><classifier>mqtt</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mqtt-eventbus.cfg</file><type>cfg</type><classifier>mqtt-eventbus</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mqtt-persistence.cfg</file><type>cfg</type><classifier>mqtt-persistence</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/myq.cfg</file><type>cfg</type><classifier>myq</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mysql.cfg</file><type>cfg</type><classifier>mysql</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nest.cfg</file><type>cfg</type><classifier>nest</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/netatmo.cfg</file><type>cfg</type><classifier>netatmo</classifier></artifact>
@@ -79,8 +83,38 @@
                                 <artifact><file>src/main/resources/conf/tinkerforge.cfg</file><type>cfg</type><classifier>tinkerforge</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/urtsi.cfg</file><type>cfg</type><classifier>urtsi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/weather.cfg</file><type>cfg</type><classifier>weather</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/xbmc.cfg</file><type>cfg</type><classifier>xbmc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/xmpp.cfg</file><type>cfg</type><classifier>xmpp</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/zwave.cfg</file><type>cfg</type><classifier>zwave</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosArmedCommand.map</file><type>map</type><classifier>mios-armedcommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosContactIn.map</file><type>map</type><classifier>mios-contactin</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosContactOut.map</file><type>map</type><classifier>mios-contactout</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosDeviceStatusUI.map</file><type>map</type><classifier>mios-devicestatusui</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosDimmerCommand.map</file><type>map</type><classifier>mios-dimmercommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosLockCommand.map</file><type>map</type><classifier>mios-lockcommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch1.map</file><type>map</type><classifier>mios-mswitch1</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch2.map</file><type>map</type><classifier>mios-mswitch2</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch3.map</file><type>map</type><classifier>mios-mswitch3</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch4.map</file><type>map</type><classifier>mios-mswitch4</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch5.map</file><type>map</type><classifier>mios-mswitch5</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch6.map</file><type>map</type><classifier>mios-mswitch6</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch7.map</file><type>map</type><classifier>mios-mswitch7</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosMSwitch8.map</file><type>map</type><classifier>mios-mswitch8</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosSceneActiveIn.map</file><type>map</type><classifier>mios-sceneactivein</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosShutterCommand.map</file><type>map</type><classifier>mios-shuttercommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosStatusIn.map</file><type>map</type><classifier>mios-statusin</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosSwitchIn.map</file><type>map</type><classifier>mios-switchin</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosSwitchOut.map</file><type>map</type><classifier>mios-switchout</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosTStatFanOperatingModeCommand.map</file><type>map</type><classifier>mios-tstatfanoperatingmodecommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosTStatModeStatusCommand.map</file><type>map</type><classifier>mios-tstatmodestatuscommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosTStatSetpointCoolCommand.map</file><type>map</type><classifier>mios-tstatsetpointcoolcommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosTStatSetpointHeatCommand.map</file><type>map</type><classifier>mios-tstatsetpointheatcommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosUPnPRenderingControlMuteCommand.map</file><type>map</type><classifier>mios-upnprenderingcontrolmutecommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosUPnPRenderingControlVolumeCommand.map</file><type>map</type><classifier>mios-upnprenderingcontrolvolumecommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosUPnPTransportStatePlayModeCommand.map</file><type>map</type><classifier>mios-upnptransportstateplaymodecommand</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosUnSwitchIn.map</file><type>map</type><classifier>mios-unswitchin</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosWeatherConditionGroupIn.map</file><type>map</type><classifier>mios-weatherconditiongroupin</classifier></artifact>
+                                <artifact><file>src/main/resources/transform/miosZWaveStatusIn.map</file><type>map</type><classifier>mios-zwavestatusin</classifier></artifact>
                             </artifacts>
                         </configuration>
                     </execution>

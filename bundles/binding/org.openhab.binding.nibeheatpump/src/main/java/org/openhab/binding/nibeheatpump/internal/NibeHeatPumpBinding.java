@@ -66,8 +66,16 @@ public class NibeHeatPumpBinding extends AbstractBinding<NibeHeatPumpBindingProv
         messageListener.interrupt();
     }
 
+    protected void addBindingProvider(NibeHeatPumpBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(NibeHeatPumpBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

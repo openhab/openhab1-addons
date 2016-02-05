@@ -60,6 +60,14 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
     private Stick stick;
 
+    protected void addBindingProvider(PlugwiseBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PlugwiseBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @SuppressWarnings("rawtypes")
     @Override
     public void updated(Dictionary config) throws ConfigurationException {
@@ -309,8 +317,8 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
 
     /**
      * Method to post updates to the OH runtime.
-     * 
-     * 
+     *
+     *
      * @param MAC of the Plugwise device concerned
      * @param ctype is the Plugwise Command type
      * @param value is the value (to be converted) to post
@@ -362,9 +370,9 @@ public class PlugwiseBinding extends AbstractActiveBinding<PlugwiseBindingProvid
     /**
      * Find the first matching {@link PlugwiseBindingProvider}
      * according to <code>itemName</code>
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */

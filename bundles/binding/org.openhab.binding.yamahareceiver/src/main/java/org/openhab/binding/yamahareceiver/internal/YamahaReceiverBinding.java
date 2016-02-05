@@ -237,6 +237,14 @@ public class YamahaReceiverBinding extends AbstractActiveBinding<YamahaReceiverB
         // ignore
     }
 
+    protected void addBindingProvider(YamahaReceiverBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(YamahaReceiverBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         logger.debug(BINDING_NAME + " updated");

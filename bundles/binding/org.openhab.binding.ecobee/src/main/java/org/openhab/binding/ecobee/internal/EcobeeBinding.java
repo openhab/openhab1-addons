@@ -293,7 +293,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
     /**
      * Given the credentials to use and what to select from the Ecobee API, read any changed information from Ecobee and
      * update the affected items.
-     * 
+     *
      * @param oauthCredentials
      *            the credentials to use
      * @param selection
@@ -413,7 +413,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
     /**
      * Give a binding provider, a map of thermostats, and an item name, return the corresponding state object.
-     * 
+     *
      * @param provider
      *            the Ecobee binding provider
      * @param thermostats
@@ -446,11 +446,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * {@code dataTypes} are mapped to {@link StringType}.
      * <p>
      * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be returned.
-     * 
+     *
      * Copied/adapted from the Koubachi binding.
-     * 
+     *
      * @param propertyValue
-     * 
+     *
      * @return the new {@link State} in accordance with {@code dataType}. Will never be {@code null}.
      */
     private State createState(Object propertyValue) {
@@ -505,7 +505,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
     /**
      * Perform the given {@code command} against all targets referenced in {@code itemName}.
-     * 
+     *
      * @param command
      *            the command to execute
      * @param the
@@ -530,7 +530,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
     /**
      * Send the {@code newState} for the given {@code itemName} to Ecobee.
-     * 
+     *
      * @param itemName
      * @param newState
      */
@@ -713,7 +713,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * Returns the cached {@link OAuthCredentials} for the given {@code userid}. If their is no such cached
      * {@link OAuthCredentials} element, the cache is searched with the {@code DEFAULT_USER}. If there is still no
      * cached element found {@code NULL} is returned.
-     * 
+     *
      * @param userid
      *            the userid to find the {@link OAuthCredentials}
      * @return the cached {@link OAuthCredentials} or {@code NULL}
@@ -724,6 +724,14 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
         } else {
             return credentialsCache.get(DEFAULT_USER_ID);
         }
+    }
+
+    protected void addBindingProvider(EcobeeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EcobeeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -840,7 +848,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * Return true if the given itemName pertains to the given OAuthCredentials. Since there is a single userid-based
      * mapping of credential objects for the binding, if the credentials object is the same object as the one in the
      * userid-based map, then we know that this item pertains to these credentials.
-     * 
+     *
      * @param provider
      *            the binding provider
      * @param itemName
@@ -858,7 +866,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * Creates the necessary {@link Selection} object to request all information required from the Ecobee API for all
      * thermostats and sub-objects that have a binding, per set of credentials configured in openhab.cfg. One
      * {@link ThermostatRequest} can then query all information in one go.
-     * 
+     *
      * @param oauthCredentials
      *            constrain the resulting Selection object to only select the thermostats which the configuration
      *            indicates can be reached using these credentials.
@@ -877,7 +885,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
                 /*
                  * We are only concerned with inbound items, so there would be no point to including the criteria for
                  * this item.
-                 * 
+                 *
                  * We are also only concerned with items that can be reached by the given credentials.
                  */
 
@@ -945,7 +953,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
     /**
      * This internal class holds the different credentials necessary for the OAuth2 flow to work. It also provides basic
      * methods to refresh the tokens.
-     * 
+     *
      * <p>
      * OAuth States
      * <table>
@@ -983,7 +991,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
      * </tr>
      * </tbody>
      * </table>
-     * 
+     *
      * @author John Cocula
      * @since 1.7.0
      */
@@ -1004,7 +1012,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
         /**
          * The scope needed when authorizing this client to the Ecobee API.
-         * 
+         *
          * @see AuthorizeRequest
          */
         private String scope;
@@ -1012,7 +1020,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
         /**
          * The authorization token needed to request the refresh and access tokens. Obtained and persisted when
          * {@code authorize()} is called.
-         * 
+         *
          * @see AuthorizeRequest
          * @see #authorize()
          */
@@ -1022,7 +1030,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
          * The refresh token to access the Ecobee API. Initial token is received using the <code>authToken</code>,
          * periodically refreshed using the previous refreshToken, and saved in persistent storage so it can be used
          * across activations.
-         * 
+         *
          * @see TokenRequest
          * @see RefreshTokenRequest
          */
@@ -1031,7 +1039,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
         /**
          * The access token to access the Ecobee API. Automatically renewed from the API using the refresh token and
          * persisted for use across activations.
-         * 
+         *
          * @see #refreshTokens()
          */
         private String accessToken;
@@ -1135,7 +1143,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
          * This method requests access and refresh tokens to use the Ecobee API. If there is a <code>refreshToken</code>
          * , it will be used to obtain the tokens, but if there is only an <code>authToken</code>, that will be used
          * instead.
-         * 
+         *
          * @return <code>true</code> if there is reason to believe that an immediately subsequent API call would
          *         succeed.
          */

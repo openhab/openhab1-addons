@@ -198,8 +198,16 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
 
     }
 
+    protected void addBindingProvider(StiebelHeatPumpBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(StiebelHeatPumpBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -270,7 +278,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
      * the configuration file and loads all defined record definitions of sensor
      * data, status information , actual time settings and setting parameter
      * values.
-     * 
+     *
      * @return true if heat pump information could be successfully read
      */
     public boolean getInitialHeatPumpSettings() {
@@ -333,7 +341,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
      * This method sets the time in the heat pump.
      * I case of the time the time is initially verified and set to
      * actual time.
-     * 
+     *
      * @return true if heat pump time could be successfully set
      */
     public boolean setTime() {
@@ -371,7 +379,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
 
     /**
      * This method publishes all values on the event bus
-     * 
+     *
      * @param heatPumpData
      *            as map of provider parameter and value
      */
