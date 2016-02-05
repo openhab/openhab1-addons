@@ -41,7 +41,7 @@ public class PC11xx {
 	private static final Logger logger = LoggerFactory.getLogger(PC11xx.class);
 	private final Context context = new Context();
 	protected byte availableChannels = 8;
-	private byte sendRepeat = 2;
+	private byte sendRepeat = 4;
 	private final ByteBuffer buf = ByteBuffer.allocateDirect(8);
 
 	public void open() throws LibUsbException {
@@ -74,6 +74,8 @@ public class PC11xx {
 
 		buf.position(1);
 		buf.put((byte) CommandType.TURN_ON.getCode());
+		buf.position(2);
+		buf.put((byte) 0);
 		buf.position(4);
 		buf.put(channel);
 
@@ -91,6 +93,8 @@ public class PC11xx {
 		channel -= 1;
 		buf.position(1);
 		buf.put((byte) CommandType.TURN_OFF.getCode());
+		buf.position(2);
+		buf.put((byte) 0);
 		buf.position(4);
 		buf.put(channel);
 
@@ -164,6 +168,8 @@ public class PC11xx {
 
 		buf.position(1);
 		buf.put((byte) CommandType.BIND.getCode());
+		buf.position(2);
+		buf.put((byte) 0);
 		buf.position(4);
 		buf.put((byte) (channel - 1));
 
@@ -181,6 +187,8 @@ public class PC11xx {
 
 		buf.position(1);
 		buf.put((byte) CommandType.UNBIND.getCode());
+		buf.position(2);
+		buf.put((byte) 0);
 		buf.position(4);
 		buf.put((byte) (channel - 1));
 

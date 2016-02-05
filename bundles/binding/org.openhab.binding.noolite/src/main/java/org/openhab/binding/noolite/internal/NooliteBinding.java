@@ -255,6 +255,10 @@ public class NooliteBinding extends AbstractActiveBinding<NooliteBindingProvider
 
 		    if (provider.getType(itemName).equals("Receive")) {
 			rxw.unbindChannel(Byte.parseByte(command.toString()));
+			logger.debug("unbinding Receive " + command.toString() + " channel");
+		    } else {
+			pc.unbindChannel(Byte.parseByte(command.toString()));
+			logger.debug("unbinding Send " + command.toString() + " channel");
 		    }
 		    logger.debug("unbinding " + command.toString() + " channel");
 
