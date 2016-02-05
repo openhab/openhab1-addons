@@ -18,8 +18,9 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
  * @since 1.6.0
  */
 public class YahooProvider extends AbstractWeatherProvider {
-    // SELECT * FROM weather.forecast WHERE woeid='[WOEID]'
-    private static final String URL = "http://query.yahooapis.com/v1/public/yql?format=json&q=SELECT%20*%20FROM%20weather.forecast%20WHERE%20u%3D'c'%20AND%20woeid%20%3D%20'[WOEID]'";
+    // SELECT * FROM weather.forecast WHERE woeid in (SELECT woeid FROM geo.placefinder WHERE
+    // text='[LATITUDE],[LONGITUDE]' and gflags='R')
+    private static final String URL = "http://query.yahooapis.com/v1/public/yql?format=json&q=SELECT%20*%20FROM%20weather.forecast%20WHERE%20u%3D'c'%20AND%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.placefinder%20WHERE%20text%3D'[LATITUDE]%2C[LONGITUDE]'%20and%20gflags%3D'R')";
 
     public YahooProvider() {
         super(new JsonWeatherParser());

@@ -61,15 +61,6 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
         return refreshInterval;
     }
 
-    protected void addBindingProvider(NetworkHealthBindingProvider bindingProvider) {
-        super.addBindingProvider(bindingProvider);
-    }
- 
-    protected void removeBindingProvider(NetworkHealthBindingProvider bindingProvider) {
-        super.removeBindingProvider(bindingProvider);
-    }
-
-
     /**
      * @{inheritDoc}
      */

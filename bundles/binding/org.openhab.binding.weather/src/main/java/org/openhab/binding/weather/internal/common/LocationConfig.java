@@ -23,7 +23,6 @@ public class LocationConfig {
     private String language = "en";
     private Double latitude;
     private Double longitude;
-    private String woeid;
     private Integer updateInterval;
     private String locationId;
     private String name;
@@ -68,20 +67,6 @@ public class LocationConfig {
      */
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
-    }
-
-    /**
-     * Returns the woeid.
-     */
-    public String getWoeid() {
-        return woeid;
-    }
-
-    /**
-     * Sets the woeid.
-     */
-    public void setWoeid(String woeid) {
-        this.woeid = woeid;
     }
 
     /**
@@ -144,13 +129,8 @@ public class LocationConfig {
      * Returns true, if this config is valid.
      */
     public boolean isValid() {
-        boolean valid = providerName != null && language != null && updateInterval != null && locationId != null;
-        if (providerName == ProviderName.YAHOO) {
-            valid = valid && woeid != null;
-        } else {
-            valid = valid && latitude != null && longitude != null;
-        }
-        return valid;
+        return providerName != null && language != null && updateInterval != null && latitude != null
+                && longitude != null && locationId != null;
     }
 
     /**
@@ -160,8 +140,7 @@ public class LocationConfig {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("providerName", providerName)
                 .append("language", language).append("updateInterval", updateInterval).append("latitude", latitude)
-                .append("longitude", longitude).append("woeid", woeid).append("locationId", locationId)
-                .append("name", name).toString();
+                .append("longitude", longitude).append("locationId", locationId).append("name", name).toString();
     }
 
 }

@@ -37,17 +37,15 @@ import org.slf4j.LoggerFactory;
  * #weather:apikey2.Hamweather=
  *
  * # location configuration, you can specify multiple locations
- * #weather:location.<locationId1>.latitude=   (not required for Yahoo provider)
- * #weather:location.<locationId1>.longitude=  (not required for Yahoo provider)
+ * #weather:location.<locationId1>.latitude=
+ * #weather:location.<locationId1>.longitude=
  * #weather:location.<locationId1>.provider=
- * #weather:location.<locationId1>.woeid=      (required for Yahoo provider)
  * #weather:location.<locationId1>.language=
  * #weather:location.<locationId1>.updateInterval=
  *
- * #weather:location.<locationId2>.latitude=   (not required for Yahoo provider)
- * #weather:location.<locationId2>.longitude=  (not required for Yahoo provider)
+ * #weather:location.<locationId2>.latitude=
+ * #weather:location.<locationId2>.longitude=
  * #weather:location.<locationId2>.provider=
- * #weather:location.<locationId2>.woeid=      (required for Yahoo provider)
  * #weather:location.<locationId2>.language=
  * #weather:location.<locationId2>.updateInterval=
  * </pre>
@@ -135,8 +133,6 @@ public class WeatherConfig {
             lc.setLatitude(parseNumber(key, value));
         } else if (StringUtils.equalsIgnoreCase(keyId, "longitude")) {
             lc.setLongitude(parseNumber(key, value));
-        } else if (StringUtils.equalsIgnoreCase(keyId, "woeid")) {
-            lc.setWoeid(value);
         } else if (StringUtils.equalsIgnoreCase(keyId, "language")) {
             lc.setLanguage(value);
         } else if (StringUtils.equalsIgnoreCase(keyId, "name")) {
