@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/usb4java-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-linux-arm.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-linux-x86_64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-linux-x86.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-osx-x86_64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-osx-x86.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-windows-x86_64.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/libusb4java-1.2.0-windows-x86.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
