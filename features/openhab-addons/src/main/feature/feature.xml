@@ -212,6 +212,14 @@
         <configfile finalname="${openhab.conf}/services/insteonplm.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/insteonplm</configfile>
     </feature>
 
+    <feature name="openhab-binding-intertechno" description="Intertechno Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-transport-cul</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.intertechno/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/culintertechno.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/culintertechno</configfile>
+    </feature>
+	
     <feature name="openhab-binding-knx" description="KNX Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
