@@ -347,6 +347,15 @@
 		<Id>0060</Id>
 		<Name>Everspring</Name>
 		<Product>
+            <Reference>
+                <Type>0010</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>HAC01</Model>
+            <Label lang="en">In-Wall Remote Insert</Label>
+            <ConfigFile>everspring/hac01.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
