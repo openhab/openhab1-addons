@@ -3049,6 +3049,15 @@
 			<Label lang="en">PM2.5 Monitor</Label>
 			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
 		</Product>
+		<Product>
+            <Reference>
+                <Type>4102</Type>
+                <Id>0202</Id>
+            </Reference>
+            <Model>MH-S412</Model>
+            <Label lang="en">Z-Wave touch panel switch with two channel</Label>
+            <ConfigFile>mcohome/mhs412.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0010</Id>
@@ -3133,6 +3142,15 @@
 			<Model>EV-100</Model>
 			<Label lang="en">Vent</Label>
 		</Product>
+		<Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>0512</Id>
+            </Reference>
+            <Model>EBV-105</Model>
+            <Label lang="en">Wireless Water Shutoff Valve</Label>
+            <ConfigFile>econet/ebv105.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0165</Id>
