@@ -30,6 +30,8 @@ public enum NetatmoMeasureType {
     LATITUDE("Latitude", NetatmoScale.MAX),
     LONGITUDE("Longitude", NetatmoScale.MAX),
     RFSTATUS("RfStatus", NetatmoScale.MAX),
+    BATTERYPERCENT("BatteryPercent", NetatmoScale.MAX),
+    BATTERYSTATUS("BatteryStatus", NetatmoScale.MAX),
     BATTERYVP("BatteryVp", NetatmoScale.MAX),
     TIMESTAMP("TimeStamp", NetatmoScale.MAX),
     MODULENAME("ModuleName", NetatmoScale.MAX),

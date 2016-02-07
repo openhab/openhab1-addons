@@ -28,7 +28,7 @@ public class DataTypeBarometer implements DavisDataType {
      */
     public State convertToState(byte[] data, DavisValueType valueType) {
         short value = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getShort(valueType.getDataOffset());
-        return new DecimalType(value * 33.86);
+        return new DecimalType(value * 0.0338638);
     }
 
 }
