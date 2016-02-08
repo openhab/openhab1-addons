@@ -218,6 +218,8 @@ public class PlexConnector extends Thread {
             cmd = getVolumeCommand(config, command);
         } else if (property.equals(PlexProperty.PROGRESS.getName())) {
             cmd = getProgressCommand(config, command);
+        } else if (property.equals(PlexProperty.PLAYPAUSE.getName())) {
+            cmd = getPlayPauseCommand(config);
         } else {
             cmd = config.getProperty();
         }
@@ -306,6 +308,19 @@ public class PlexConnector extends Thread {
         }
 
         return url;
+    }
+
+    private String getPlayPauseCommand(PlexBindingConfig config) {
+        String command = PlexProperty.PAUSE.getName();
+
+        PlexSession session = getSessionByMachineId(config.getMachineIdentifier());
+        if (session != null) {
+            if (PlexPlayerState.Paused.equals(session.getState())) {
+                command = PlexProperty.PLAY.getName();
+            }
+        }
+
+        return command;
     }
 
     private WebSocketUpgradeHandler createWebSocketHandler() {

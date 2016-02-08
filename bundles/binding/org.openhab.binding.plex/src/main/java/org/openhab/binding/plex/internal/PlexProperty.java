@@ -24,6 +24,7 @@ public enum PlexProperty {
     END_TIME("playback/endTime"),
     PLAY("playback/play"),
     PAUSE("playback/pause"),
+    PLAYPAUSE("playback/playpause"),
     STOP("playback/stop"),
     STEP_BACK("playback/stepBack"),
     STEP_FORWARD("playback/stepForward"),
