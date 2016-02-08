@@ -40,6 +40,12 @@ public abstract class AbstractSessionItem {
     @XmlAttribute
     private String duration;
 
+    @XmlAttribute
+    private String grandparentThumb;
+
+    @XmlAttribute
+    private String thumb;
+
     @XmlElement(name = "Player")
     private Player player;
 
@@ -89,6 +95,22 @@ public abstract class AbstractSessionItem {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getGrandparentThumb() {
+        return grandparentThumb;
+    }
+
+    public void setGrandparentThumb(String grandparentThumb) {
+        this.grandparentThumb = grandparentThumb;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public Player getPlayer() {
