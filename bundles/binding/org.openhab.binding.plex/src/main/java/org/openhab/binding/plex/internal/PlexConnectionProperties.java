@@ -95,4 +95,8 @@ public class PlexConnectionProperties {
         this.password = password;
     }
 
+    public boolean hasToken() {
+        return !StringUtils.isBlank(getToken());
+    }
+
 }
