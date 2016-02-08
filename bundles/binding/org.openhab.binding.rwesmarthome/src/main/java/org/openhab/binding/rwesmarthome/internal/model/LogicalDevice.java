@@ -65,6 +65,12 @@ public class LogicalDevice {
     public static final String Type_GenericActuator_SMS = "GenericActuator_SMS";
     public static final String Type_GenericActuator_SunriseSunset = "GenericActuator_SunriseSunset";
 
+    public static final String Type_TwoWayMeterEnergyConsumptionSensor = "TwoWayMeterEnergyConsumptionSensor";
+    public static final String Type_TwoWayMeterEnergyFeedSensor = "TwoWayMeterEnergyFeedSensor";
+    public static final String Type_TwoWayMeterPowerConsumptionSensor = "TwoWayMeterPowerConsumptionSensor";
+    public static final String Type_PowerConsumptionSensor = "PowerConsumptionSensor";
+    public static final String Type_EnergyConsumptionSensor = "EnergyConsumptionSensor";
+
     /**
      * Constructor.
      * 
