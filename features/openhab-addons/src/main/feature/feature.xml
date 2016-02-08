@@ -36,6 +36,13 @@
         <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
     </feature>
 
+    <feature name="openhab-action-pebble" description="Pebble Action" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.pebble/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/pebble.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/pebble</configfile>
+    </feature>
+
     <feature name="openhab-action-pushover" description="Pushover Action" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
