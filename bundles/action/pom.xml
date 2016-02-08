@@ -36,6 +36,7 @@
     <module>org.openhab.action.mqtt</module>
     <module>org.openhab.action.dscalarm</module>
     <module>org.openhab.action.telegram</module>
+    <module>org.openhab.action.pebble</module>
   </modules>
 
 </project>

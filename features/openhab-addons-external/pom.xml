@@ -71,6 +71,7 @@
                                 <artifact><file>src/main/resources/conf/onkyo.cfg</file><type>cfg</type><classifier>onkyo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/openenergymonitor.cfg</file><type>cfg</type><classifier>openenergymonitor</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/owserver.cfg</file><type>cfg</type><classifier>owserver</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/pushover.cfg</file><type>cfg</type><classifier>pushover</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rwesmarthome.cfg</file><type>cfg</type><classifier>rwesmarthome</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/rrd4j.cfg</file><type>cfg</type><classifier>rrd4j</classifier></artifact>
