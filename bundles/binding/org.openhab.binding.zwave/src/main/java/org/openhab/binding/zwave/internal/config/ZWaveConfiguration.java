@@ -384,7 +384,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
                     records.add(record);
                 }
 
-                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION) != null) {
+                if ((ZWaveAssociationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION) != null) {
                     record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);
