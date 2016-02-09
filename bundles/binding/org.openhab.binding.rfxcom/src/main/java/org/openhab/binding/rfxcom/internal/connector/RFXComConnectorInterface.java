@@ -56,5 +56,9 @@ public interface RFXComConnectorInterface {
      *            Event listener instance to remove.
      */
     public void removeEventListener(RFXComEventListener listener);
-
+    
+    /**
+     * Ignore any data in the receive buffer
+     */
+    public void clearReceiveBuffer();
 }
