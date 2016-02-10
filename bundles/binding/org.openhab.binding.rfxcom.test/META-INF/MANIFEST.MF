@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for RFXCOM Binding
+Bundle-SymbolicName: org.openhab.binding.rfxcom.test
+Bundle-Version: 1.9.0.qualifier
+Fragment-Host: org.openhab.binding.rfxcom
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: openHAB.org
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-ClassPath: .
+Import-Package: org.openhab.core.library.items
