@@ -9,8 +9,6 @@
 package org.openhab.binding.tacmi.internal.message;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
 import org.openhab.binding.tacmi.internal.TACmiMeasureType;
 import org.slf4j.Logger;
@@ -25,7 +23,6 @@ import org.slf4j.LoggerFactory;
 public final class AnalogValue {
     public BigDecimal value;
     public TACmiMeasureType measureType;
-    public final MathContext mc = new MathContext(6, RoundingMode.HALF_UP);
 
     private static Logger logger = LoggerFactory.getLogger(AnalogValue.class);
 

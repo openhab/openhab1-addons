@@ -9,8 +9,6 @@
 package org.openhab.binding.tacmi.internal;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -211,9 +209,7 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
         } catch (SocketTimeoutException e) {
             logger.info("Receive Timeout on CoE socket");
         } catch (Exception e) {
-            StringWriter w = new StringWriter();
-            e.printStackTrace(new PrintWriter(w));
-            logger.error("Exception in execute: {}", w.toString());
+            logger.warn("Exception in execute:", e);
         }
         logger.trace("TACmi execute() finished");
 
