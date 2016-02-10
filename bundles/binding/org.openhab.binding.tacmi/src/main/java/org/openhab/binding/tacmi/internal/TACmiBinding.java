@@ -213,8 +213,7 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
         } catch (Exception e) {
             StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
-            logger.warn("Error in execute: {}, Message: {}", e.getClass().getName(), e.getMessage());
-            logger.warn(w.toString());
+            logger.error("Exception in execute: {}", w.toString());
         }
         logger.trace("TACmi execute() finished");
 
