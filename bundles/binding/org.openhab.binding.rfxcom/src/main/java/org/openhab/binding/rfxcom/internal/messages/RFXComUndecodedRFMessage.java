@@ -115,14 +115,15 @@ public class RFXComUndecodedRFMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[3 + rawData.length];
+        final int rawLen = Math.min(rawData.length, 33);
+        byte[] data = new byte[4 + rawLen];
 
         data[0] = (byte)(data.length-1);
         data[1] = RFXComBaseMessage.PacketType.UNDECODED_RF_MESSAGE.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
 
-        for (int i = 0; i < rawData.length; i++) {
+        for (int i = 0; i < rawLen; i++) {
             data[i+4] = rawData[i];
         }
         return data;
