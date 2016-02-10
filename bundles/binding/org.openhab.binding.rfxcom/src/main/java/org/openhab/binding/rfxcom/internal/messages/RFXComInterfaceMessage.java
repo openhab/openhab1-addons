@@ -157,7 +157,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         str += "\n - Sub type = " + subType;
         str += "\n - Command = " + command;
         str += "\n - Transceiver type = " + transceiverType;
-        str += "\n - Firmware version = " + (( firmwareVersion > 0 ) ? firmwareVersion : (256 + firmwareVersion));
+        str += "\n - Firmware version = " + (short)(firmwareVersion & 0xff);
         str += "\n - Hardware version = " + hardwareVersion1 + "." + hardwareVersion2;
         str += "\n - Output Power = " + outputPower;
         str += "\n - Undecoded packets = " + enableUndecodedPackets;
@@ -187,7 +187,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         str += "\n - ARC (433.92) packets = " + enableARCPackets;
         str += "\n - X10 (310/433.92) packets = " + enableX10Packets;
         str += "\n - HomeConfort packets = " + enableHomeConfortPackets;
-        str += "\n - KeeLoq packets = " + enableKeeLoqPackets;
+        str += "\n - KeeLoq (433.92) packets = " + enableKeeLoqPackets;
 
         return str;
     }
