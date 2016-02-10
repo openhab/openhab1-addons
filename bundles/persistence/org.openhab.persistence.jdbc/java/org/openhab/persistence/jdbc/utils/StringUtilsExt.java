@@ -126,10 +126,10 @@ public class StringUtilsExt {
 
         URI dbURI = null;
         try {
-            dbURI = new URI(stringAfterSubstr(url, ":", 1));
+            dbURI = new URI(stringAfterSubstr(url, ":", 1).replaceFirst(" ", ""));
             if (dbURI.getScheme() != null) {
                 props.put("scheme", dbURI.getScheme());
-                dbURI = new URI(stringAfterSubstr(url, ":", 2));
+                dbURI = new URI(stringAfterSubstr(url, ":", 2).replaceFirst(" ", ""));
             }
         } catch (URISyntaxException e) {
             logger.error("parseJdbcURL: URI '{}' is not well formated URISyntaxException: {}", url, e);

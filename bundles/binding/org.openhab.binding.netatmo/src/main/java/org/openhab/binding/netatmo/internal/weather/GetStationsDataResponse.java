@@ -155,37 +155,37 @@ public class GetStationsDataResponse extends AbstractResponse {
     /**
      * <code>wifi_status</code> threshold constant: bad signal
      */
-    private static final int WIFI_STATUS_THRESHOLD_0 = 86;
+    private static final int WIFI_STATUS_BAD_SIGNAL = 86;
 
     /**
      * <code>wifi_status</code> threshold constant: middle quality signal
      */
-    private static final int WIFI_STATUS_THRESHOLD_1 = 71;
+    private static final int WIFI_STATUS_MIDDLE_QUALITY_SIGNAL = 71;
 
     /**
      * <code>wifi_status</code> threshold constant: good signal
      */
-    private static final int WIFI_STATUS_THRESHOLD_2 = 56;
+    private static final int WIFI_STATUS_GOOD_SIGNAL = 56;
 
     /**
      * <code>rf_status</code> threshold constant: low signal
      */
-    private static final int RF_STATUS_THRESHOLD_0 = 90;
+    private static final int RF_STATUS_LOW_SIGNAL = 90;
 
     /**
      * <code>rf_status</code> threshold constant: medium signal
      */
-    private static final int RF_STATUS_THRESHOLD_1 = 80;
+    private static final int RF_STATUS_MEDIUM_SIGNAL = 80;
 
     /**
      * <code>rf_status</code> threshold constant: high signal
      */
-    private static final int RF_STATUS_THRESHOLD_2 = 70;
+    private static final int RF_STATUS_HIGH_SIGNAL = 70;
 
     /**
      * <code>rf_status</code> threshold constant: full signal
      */
-    private static final int RF_STATUS_THRESHOLD_3 = 60;
+    private static final int RF_STATUS_FULL_SIGNAL = 60;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule1: full
@@ -438,13 +438,15 @@ public class GetStationsDataResponse extends AbstractResponse {
 
         public int getWifiLevel() {
             int level = this.wifiStatus.intValue();
-            int result = 3;
-            if (level < WIFI_STATUS_THRESHOLD_2) {
+            int result;
+            if (level <= WIFI_STATUS_GOOD_SIGNAL) {
+                result = 4;
+            } else if (level <= WIFI_STATUS_MIDDLE_QUALITY_SIGNAL) {
+                result = 3;
+            } else if (level <= WIFI_STATUS_BAD_SIGNAL) {
                 result = 2;
-            } else if (level < WIFI_STATUS_THRESHOLD_1) {
+            } else {
                 result = 1;
-            } else if (level < WIFI_STATUS_THRESHOLD_0) {
-                result = 0;
             }
 
             return result;
@@ -555,16 +557,18 @@ public class GetStationsDataResponse extends AbstractResponse {
 
         public int getRfLevel() {
             int level = this.rfStatus.intValue();
-            int result = 4; // not found
+            int result;
 
-            if (level < RF_STATUS_THRESHOLD_3) {
+            if (level <= RF_STATUS_FULL_SIGNAL) {
+                result = 5;
+            } else if (level <= RF_STATUS_HIGH_SIGNAL) {
+                result = 4;
+            } else if (level <= RF_STATUS_MEDIUM_SIGNAL) {
                 result = 3;
-            } else if (level < RF_STATUS_THRESHOLD_2) {
+            } else if (level <= RF_STATUS_LOW_SIGNAL) {
                 result = 2;
-            } else if (level < RF_STATUS_THRESHOLD_1) {
+            } else {
                 result = 1;
-            } else if (level < RF_STATUS_THRESHOLD_0) {
-                result = 0;
             }
 
             return result;
