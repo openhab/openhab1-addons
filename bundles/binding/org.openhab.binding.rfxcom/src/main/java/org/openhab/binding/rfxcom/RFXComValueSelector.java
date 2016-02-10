@@ -59,11 +59,8 @@ public enum RFXComValueSelector {
     MOTION("Motion", SwitchItem.class),
     CONTACT("Contact", ContactItem.class),
     VOLTAGE("Voltage", NumberItem.class),
-    SET_POINT("SetPoint", NumberItem.class),
-    CONTACT_1("Contact1", ContactItem.class),
-    CONTACT_2("Contact2", ContactItem.class),
-    CONTACT_3("Contact3", ContactItem.class)
-    ;
+    SET_POINT("SetPoint", NumberItem.class);
+
     private final String text;
     private Class<? extends Item> itemClass;
 
