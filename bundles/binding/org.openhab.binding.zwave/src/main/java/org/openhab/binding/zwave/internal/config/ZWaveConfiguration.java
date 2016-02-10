@@ -390,7 +390,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
                     records.add(record);
                 }
 
-                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.WAKE_UP) != null) {
+                if ((ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP) != null) {
                     record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);
