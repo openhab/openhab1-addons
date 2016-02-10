@@ -137,10 +137,9 @@ public class RFXComSecurity2Message extends RFXComBaseMessage {
     @Override
     public byte[] decodeMessage() {
 
-        final int LEN = 28;
-        byte[] data = new byte[28 + 1];
+        byte[] data = new byte[29];
 
-        data[0] = 28;
+        data[0] = (byte)(data.length-1);
         data[1] = RFXComBaseMessage.PacketType.SECURITY2.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
