@@ -57,6 +57,9 @@ public class PlexSession {
     @ItemMapping(property = END_TIME, type = DateTimeType.class)
     private Date endTime = null;
 
+    @ItemMapping(property = COVER, type = StringType.class)
+    private String cover = "";
+
     private int duration = 0;
 
     private int viewOffset = 0;
@@ -123,6 +126,14 @@ public class PlexSession {
 
     public Date getEndTime() {
         return endTime;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     public int getDuration() {
