@@ -180,13 +180,19 @@ public class NetatmoWeatherBinding {
                                 }
                             }
                                 break;
+                            case BATTERYPERCENT:
+                            case BATTERYSTATUS:
                             case BATTERYVP:
                             case RFSTATUS:
                                 for (Device device : stationsDataResponse.getDevices()) {
                                     for (Module module : device.getModules()) {
                                         if (module.getId().equals(moduleId)) {
                                             switch (measureType) {
+                                                case BATTERYPERCENT:
                                                 case BATTERYVP:
+                                                    state = new DecimalType(module.getBatteryPercentage());
+                                                    break;
+                                                case BATTERYSTATUS:
                                                     state = new DecimalType(module.getBatteryLevel());
                                                     break;
                                                 case RFSTATUS:

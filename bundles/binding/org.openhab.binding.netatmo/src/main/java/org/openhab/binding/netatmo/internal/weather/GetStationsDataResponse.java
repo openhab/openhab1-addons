@@ -188,88 +188,128 @@ public class GetStationsDataResponse extends AbstractResponse {
     private static final int RF_STATUS_FULL_SIGNAL = 60;
 
     /**
+     * <code>battery_vp</code> max value for type NAModule1: 6000
+     */
+    private static final int BATTERY_MODULE_1_RANGE_MAX = 6000;
+
+    /**
+     * <code>battery_vp</code> min value for type NAModule1: 3600
+     */
+    private static final int BATTERY_MODULE_1_RANGE_MIN = 3600;
+
+    /**
      * <code>battery_vp</code> threshold for type NAModule1: full
      */
-    private static final int BATTERY_MODULE_1_THRESHOLD_0 = 5500;
+    private static final int BATTERY_MODULE_1_FULL = 5500;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule1: high
      */
-    private static final int BATTERY_MODULE_1_THRESHOLD_1 = 5000;
+    private static final int BATTERY_MODULE_1_HIGH = 5000;
     /**
      * <code>battery_vp</code> threshold for type NAModule1: medium
      */
 
-    private static final int BATTERY_MODULE_1_THRESHOLD_2 = 4500;
+    private static final int BATTERY_MODULE_1_MEDIUM = 4500;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule1: low, otherwise
      * verylow
      */
-    private static final int BATTERY_MODULE_1_THRESHOLD_3 = 4000;
+    private static final int BATTERY_MODULE_1_LOW = 4000;
+
+    /**
+     * <code>battery_vp</code> max value for type NAModule2: 6000
+     */
+    private static final int BATTERY_MODULE_2_RANGE_MAX = 6000;
+
+    /**
+     * <code>battery_vp</code> min value for type NAModule2: 3950
+     */
+    private static final int BATTERY_MODULE_2_RANGE_MIN = 3950;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule2: full
      */
-    private static final int BATTERY_MODULE_2_THRESHOLD_0 = 5590;
+    private static final int BATTERY_MODULE_2_FULL = 5590;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule2: high
      */
-    private static final int BATTERY_MODULE_2_THRESHOLD_1 = 5180;
+    private static final int BATTERY_MODULE_2_HIGH = 5180;
     /**
      * <code>battery_vp</code> threshold for type NAModule2: medium
      */
 
-    private static final int BATTERY_MODULE_2_THRESHOLD_2 = 4770;
+    private static final int BATTERY_MODULE_2_MEDIUM = 4770;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule2: low, otherwise
      * verylow
      */
-    private static final int BATTERY_MODULE_2_THRESHOLD_3 = 4360;
+    private static final int BATTERY_MODULE_2_LOW = 4360;
+
+    /**
+     * <code>battery_vp</code> max value for type NAModule3: 6000
+     */
+    private static final int BATTERY_MODULE_3_RANGE_MAX = 6000;
+
+    /**
+     * <code>battery_vp</code> min value for type NAModule3: 3600
+     */
+    private static final int BATTERY_MODULE_3_RANGE_MIN = 3600;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule3: full
      */
-    private static final int BATTERY_MODULE_3_THRESHOLD_0 = 5500;
+    private static final int BATTERY_MODULE_3_FULL = 5500;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule3: high
      */
-    private static final int BATTERY_MODULE_3_THRESHOLD_1 = 5000;
+    private static final int BATTERY_MODULE_3_HIGH = 5000;
     /**
      * <code>battery_vp</code> threshold for type NAModule3: medium
      */
 
-    private static final int BATTERY_MODULE_3_THRESHOLD_2 = 4500;
+    private static final int BATTERY_MODULE_3_MEDIUM = 4500;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule3: low, otherwise
      * verylow
      */
-    private static final int BATTERY_MODULE_3_THRESHOLD_3 = 4000;
+    private static final int BATTERY_MODULE_3_LOW = 4000;
+
+    /**
+     * <code>battery_vp</code> max value for type NAModule4: 6000
+     */
+    private static final int BATTERY_MODULE_4_RANGE_MAX = 6000;
+
+    /**
+     * <code>battery_vp</code> min value for type NAModule4: 4200
+     */
+    private static final int BATTERY_MODULE_4_RANGE_MIN = 4200;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule4: full
      */
-    private static final int BATTERY_MODULE_4_THRESHOLD_0 = 5640;
+    private static final int BATTERY_MODULE_4_FULL = 5640;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule4: high
      */
-    private static final int BATTERY_MODULE_4_THRESHOLD_1 = 5280;
+    private static final int BATTERY_MODULE_4_HIGH = 5280;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule4: medium
      */
-    private static final int BATTERY_MODULE_4_THRESHOLD_2 = 4920;
+    private static final int BATTERY_MODULE_4_MEDIUM = 4920;
 
     /**
      * <code>battery_vp</code> threshold for type NAModule4: low, otherwise
      * verylow
      */
-    private static final int BATTERY_MODULE_4_THRESHOLD_3 = 4560;
+    private static final int BATTERY_MODULE_4_LOW = 4560;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Body extends AbstractMessagePart {
@@ -574,42 +614,78 @@ public class GetStationsDataResponse extends AbstractResponse {
             return result;
         }
 
-        public Double getBatteryLevel() {
-            int value;
-            int minima;
-            int spread;
-            int threshold0;
-            int threshold1;
-            int threshold2;
-            int threshold3;
+        public int getBatteryLevel() {
+            int full;
+            int high;
+            int medium;
+            int low;
             if (this.type.equalsIgnoreCase(TYPE_MODULE_1)) {
-                threshold0 = BATTERY_MODULE_1_THRESHOLD_0;
-                threshold1 = BATTERY_MODULE_1_THRESHOLD_1;
-                threshold2 = BATTERY_MODULE_1_THRESHOLD_2;
-                threshold3 = BATTERY_MODULE_1_THRESHOLD_3;
+                full = BATTERY_MODULE_1_FULL;
+                high = BATTERY_MODULE_1_HIGH;
+                medium = BATTERY_MODULE_1_MEDIUM;
+                low = BATTERY_MODULE_1_LOW;
             } else if (this.type.equalsIgnoreCase(TYPE_MODULE_2)) {
-                threshold0 = BATTERY_MODULE_2_THRESHOLD_0;
-                threshold1 = BATTERY_MODULE_2_THRESHOLD_1;
-                threshold2 = BATTERY_MODULE_2_THRESHOLD_2;
-                threshold3 = BATTERY_MODULE_2_THRESHOLD_3;
+                full = BATTERY_MODULE_2_FULL;
+                high = BATTERY_MODULE_2_HIGH;
+                medium = BATTERY_MODULE_2_MEDIUM;
+                low = BATTERY_MODULE_2_LOW;
             } else if (this.type.equalsIgnoreCase(TYPE_MODULE_3)) {
-                threshold0 = BATTERY_MODULE_3_THRESHOLD_0;
-                threshold1 = BATTERY_MODULE_3_THRESHOLD_1;
-                threshold2 = BATTERY_MODULE_3_THRESHOLD_2;
-                threshold3 = BATTERY_MODULE_3_THRESHOLD_3;
+                full = BATTERY_MODULE_3_FULL;
+                high = BATTERY_MODULE_3_HIGH;
+                medium = BATTERY_MODULE_3_MEDIUM;
+                low = BATTERY_MODULE_3_LOW;
             } else {
-                threshold0 = BATTERY_MODULE_4_THRESHOLD_0;
-                threshold1 = BATTERY_MODULE_4_THRESHOLD_1;
-                threshold2 = BATTERY_MODULE_4_THRESHOLD_2;
-                threshold3 = BATTERY_MODULE_4_THRESHOLD_3;
+                full = BATTERY_MODULE_4_FULL;
+                high = BATTERY_MODULE_4_HIGH;
+                medium = BATTERY_MODULE_4_MEDIUM;
+                low = BATTERY_MODULE_4_LOW;
             }
 
-            value = Math.min(this.batteryVp, threshold0);
-            minima = threshold3 + threshold2 - threshold1;
-            spread = threshold0 - minima;
+            int batteryVp = this.batteryVp;
+            int result;
+            if (batteryVp >= full) {
+                result = 5;
+            } else if (batteryVp >= high) {
+                result = 4;
+            } else if (batteryVp >= medium) {
+                result = 3;
+            } else if (batteryVp >= low) {
+                result = 2;
+            } else { /* very low */
+                result = 1;
+            }
 
-            double percent = 100 * (value - minima) / spread;
-            return new Double(percent);
+            return result;
+        }
+
+        public int getBatteryPercentage() {
+            int max;
+            int min;
+            if (this.type.equalsIgnoreCase(TYPE_MODULE_1)) {
+                max = BATTERY_MODULE_1_RANGE_MAX;
+                min = BATTERY_MODULE_1_RANGE_MIN;
+            } else if (this.type.equalsIgnoreCase(TYPE_MODULE_2)) {
+                max = BATTERY_MODULE_2_RANGE_MAX;
+                min = BATTERY_MODULE_2_RANGE_MIN;
+            } else if (this.type.equalsIgnoreCase(TYPE_MODULE_3)) {
+                max = BATTERY_MODULE_3_RANGE_MAX;
+                min = BATTERY_MODULE_3_RANGE_MIN;
+            } else {
+                max = BATTERY_MODULE_4_RANGE_MAX;
+                min = BATTERY_MODULE_4_RANGE_MIN;
+            }
+
+            int percent;
+            int batteryVp = this.batteryVp;
+            if (batteryVp >= max) {
+                percent = 100;
+            } else if (batteryVp <= min) {
+                percent = 0;
+            } else {
+                percent = (int) Math.round(((batteryVp - min) * 100.0) / (max - min));
+            }
+
+            return percent;
         }
 
         @Override
