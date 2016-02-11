@@ -64,6 +64,7 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		}
 		String label = getLabel(cp);
 		String purelabel = label;
+		purelabel = purelabel.replaceAll("\\\"", "\\\\'");
 		if(label.contains("<span>")) {
 			purelabel = purelabel.substring(0, label.indexOf("<span>"));
 		}
