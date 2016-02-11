@@ -60,11 +60,6 @@ public class NetatmoWeatherBinding {
     private NetatmoPressureUnit pressureUnit = NetatmoPressureUnit.DEFAULT_PRESSURE_UNIT;
     private NetatmoUnitSystem unitSystem = NetatmoUnitSystem.DEFAULT_UNIT_SYSTEM;
 
-    private GetStationsDataRequest stationsDataRequest;
-    private GetStationsDataResponse stationsDataResponse;
-
-    private boolean bOAuthCredentialsFirstExecution = true;
-
     /**
      * Execute the weather binding from Netatmo Binding Class
      *
@@ -77,8 +72,10 @@ public class NetatmoWeatherBinding {
         logger.debug("Querying Netatmo Weather API");
 
         try {
-            if (bOAuthCredentialsFirstExecution) {
-                processGetStationsData(oauthCredentials, providers, eventPublisher);
+            GetStationsDataResponse stationsDataResponse = processGetStationsData(
+                    oauthCredentials, providers, eventPublisher);
+            if (stationsDataResponse == null) {
+                return;
             }
 
             DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials, providers,
@@ -319,13 +316,13 @@ public class NetatmoWeatherBinding {
         return deviceMeasureValueMap;
     }
 
-    private void processGetStationsData(OAuthCredentials oauthCredentials, Collection<NetatmoBindingProvider> providers,
+    private GetStationsDataResponse processGetStationsData(OAuthCredentials oauthCredentials, Collection<NetatmoBindingProvider> providers,
             EventPublisher eventPublisher) {
 
-        stationsDataRequest = new GetStationsDataRequest(oauthCredentials.getAccessToken());
+        GetStationsDataRequest stationsDataRequest = new GetStationsDataRequest(oauthCredentials.getAccessToken());
         logger.debug("Request: {}", stationsDataRequest);
 
-        stationsDataResponse = stationsDataRequest.execute();
+        GetStationsDataResponse stationsDataResponse = stationsDataRequest.execute();
         logger.debug("Response: {}", stationsDataResponse);
 
         if (stationsDataResponse.isError()) {
@@ -344,11 +341,12 @@ public class NetatmoWeatherBinding {
                 throw new NetatmoException(error.getMessage());
             }
 
-            return; // abort processing
+            return null; // abort processing
         } else {
             processGetStationsDataResponse(stationsDataResponse, providers);
-            bOAuthCredentialsFirstExecution = false;
         }
+
+        return stationsDataResponse;
     }
 
     /**
