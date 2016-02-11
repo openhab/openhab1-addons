@@ -112,7 +112,7 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[7];
+        byte[] data = new byte[8];
 
         data[0] = 0x07;
         data[1] = RFXComBaseMessage.PacketType.CHIME.toByte();
@@ -179,8 +179,23 @@ public class RFXComChimeMessage extends RFXComBaseMessage {
     public void convertFromState(RFXComValueSelector valueSelector, String id, Object subType, Type type,
             byte seqNumber) throws RFXComException {
 
-        throw new RFXComException("Not supported");
+        this.subType = ((SubType) subType);
+        seqNbr = seqNumber;
+        String[] ids = id.split("\\.");
+        sensorId = Integer.parseInt(ids[0]);
 
+        switch (valueSelector) {
+            case CHIME_SOUND:
+                if (type instanceof DecimalType) {
+                    chimeSound = (int) ((DecimalType) type).intValue();
+                } else {
+                    throw new RFXComException("Can't convert " + type + " to chime sound");
+                }
+                break;
+
+            default:
+                throw new RFXComException("Can't convert " + type + " to " + valueSelector);
+        }
     }
 
     @Override
