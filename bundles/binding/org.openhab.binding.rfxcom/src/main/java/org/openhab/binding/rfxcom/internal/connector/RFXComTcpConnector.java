@@ -56,4 +56,9 @@ public class RFXComTcpConnector implements RFXComConnectorInterface {
         logger.error("removeEventListener not implemented");
     }
 
+    @Override
+    public void clearReceiveBuffer() {
+        logger.error("clearReceiveBuffer not implemented");
+    }
+
 }
