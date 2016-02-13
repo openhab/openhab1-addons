@@ -467,6 +467,20 @@
         <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
     </feature>
 
+    <feature name="openhab-persistence-influxdb" description="InfluxDB (v 1.0) Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
+    </feature>
+
+    <feature name="openhab-persistence-mapdb" description="MapDB Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mapdb/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mapdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mapdb</configfile>
+    </feature>
+
     <feature name="openhab-persistence-mqtt" description="MQTT Persistence" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -481,15 +495,6 @@
         <feature>openhab-runtime-compat1x</feature>
         <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mysql/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/mysql.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mysql</configfile>
-    </feature>
-
-    <feature name="openhab-persistence-logging" description="Logging Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:ch.qos.logback/logback-core/1.1.3</bundle>
-        <bundle start-level="80">mvn:ch.qos.logback/logback-classic/1.1.3</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.logging/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
     </feature>
 
     <feature name="openhab-persistence-jpa" description="JPA Persistence" version="${project.version}">
