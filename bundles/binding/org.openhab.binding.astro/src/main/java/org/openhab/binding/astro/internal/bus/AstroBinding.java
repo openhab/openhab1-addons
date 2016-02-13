@@ -58,6 +58,14 @@ public class AstroBinding extends AbstractBinding<AstroBindingProvider>implement
         context.getJobScheduler().stop();
     }
 
+    protected void addBindingProvider(AstroBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(AstroBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Restart scheduler if config changes.
      */
