@@ -3067,7 +3067,16 @@
             <Label lang="en">Z-Wave touch panel switch with two channel</Label>
             <ConfigFile>mcohome/mhs412.xml</ConfigFile>
         </Product>
-	</Manufacturer>
+        <Product>
+            <Reference>
+                <Type>4102</Type>
+                <Id>0201</Id>
+            </Reference>
+            <Model>MH-S411</Model>
+            <Label lang="en">Touch Panel Switch (Single)</Label>
+            <ConfigFile>mcohome/mhs411.xml</ConfigFile>
+        </Product>
+  	</Manufacturer>
 	<Manufacturer>
 		<Id>0010</Id>
 		<Name>Residential Control Systems</Name>
