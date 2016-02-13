@@ -70,20 +70,20 @@
 
 		<Parameter>
 			<Index>4</Index>
-			<Type>byte</Type>
+			<Type>short</Type>
 			<Default>20</Default>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Relay 1: OFF-delay time (10ms steps)</Label>			
-			<Help lang="en">Automatic turning off relay 1 after set time, in 10ms increments (default: 200ms)</Help>
+			<Help lang="en">Automatic turning off relay 1 after set time, in 100ms increments (default: 2s)</Help>
 		</Parameter>
 
 		<Parameter>
 			<Index>5</Index>
-			<Type>byte</Type>
+			<Type>short</Type>
 			<Default>20</Default>
-			<Size>1</Size>
+			<Size>2</Size>
 			<Label lang="en">Relay 2: OFF-delay time (10ms steps)</Label>			
-			<Help lang="en">Automatic turning off relay 2 after set time, in 10ms increments (default: 200ms)</Help>
+			<Help lang="en">Automatic turning off relay 2 after set time, in 100ms increments (default: 2s)</Help>
 		</Parameter>
 
 		<Parameter>
