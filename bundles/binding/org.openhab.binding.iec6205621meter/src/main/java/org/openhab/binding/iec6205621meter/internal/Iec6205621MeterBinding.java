@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.iec6205621meter.Iec6205621MeterBindingProvider;
@@ -47,9 +48,9 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
     private static final Logger logger = LoggerFactory.getLogger(Iec6205621MeterBinding.class);
 
     // regEx to validate a meter config
-    // <code>'^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$'</code>
+    // <code>'^(.*?)\\.(serialPort|initMessage|baudRateChangeDelay|echoHandling)$'</code>
     private final Pattern METER_CONFIG_PATTERN = Pattern
-            .compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
+            .compile("^(.*?)\\.(serialPort|initMessage|baudRateChangeDelay|echoHandling)$");
 
     private static final long DEFAULT_REFRESH_INTERVAL = 60000;
 
@@ -191,6 +192,10 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
             String value = (String) config.get(name + ".serialPort");
             String serialPort = value != null ? value : MeterConfig.DEFAULT_SERIAL_PORT;
 
+            value = (String) config.get(name + ".initMessage");
+            byte[] initMessage = value != null ? DatatypeConverter.parseHexBinary(value)
+                    : null;
+
             value = (String) config.get(name + ".baudRateChangeDelay");
             int baudRateChangeDelay = value != null ? Integer.valueOf(value)
                     : MeterConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
@@ -199,7 +204,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
             boolean echoHandling = value != null ? Boolean.valueOf(value) : MeterConfig.DEFAULT_ECHO_HANDLING;
 
             Meter meterConfig = createIec6205621MeterConfig(name,
-                    new MeterConfig(serialPort, baudRateChangeDelay, echoHandling));
+                    new MeterConfig(serialPort, initMessage, baudRateChangeDelay, echoHandling));
 
             if (meterDeviceConfigurtions.put(meterConfig.getName(), meterConfig) != null) {
                 logger.info("Recreated reader {} with  {}!", meterConfig.getName(), meterConfig.getConfig());
