@@ -23,12 +23,13 @@ public class MeterConfig {
 	static final String DEFAULT_SERIAL_PORT = "COM1";
 
 	private final String serialPort;
+        private final byte[] initMessage;
 	private final int baudRateChangeDelay;
 	private final boolean echoHandling;
 
-	public MeterConfig(String serialPort, int baudRateChangeDelay,
-			boolean echoHandling) {
+	public MeterConfig(String serialPort, byte[] initMessage,int baudRateChangeDelay,boolean echoHandling) {
 		this.serialPort = serialPort;
+                this.initMessage = initMessage;
 		this.baudRateChangeDelay = baudRateChangeDelay;
 		this.echoHandling = echoHandling;
 	}
@@ -37,6 +38,10 @@ public class MeterConfig {
 		return this.serialPort;
 	}
 
+        public byte[] getInitMessage() {
+            return this.initMessage;
+        }
+        
 	public int getBaudRateChangeDelay() {
 		return this.baudRateChangeDelay;
 	}
@@ -48,6 +53,7 @@ public class MeterConfig {
 	@Override
 	public String toString() {
 		return "IEC 62056-21Meter DeviceConfig [serialPort=" + serialPort
+				+ ", initMessage=" + initMessage
 				+ ", baudRateChangeDelay=" + baudRateChangeDelay
 				+ ", echoHandling=" + echoHandling + "]";
 	}

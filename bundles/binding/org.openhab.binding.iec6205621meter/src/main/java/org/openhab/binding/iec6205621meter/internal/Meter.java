@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import javax.xml.bind.DatatypeConverter;
 
 import org.openmuc.j62056.Connection;
 import org.openmuc.j62056.DataSet;
@@ -66,7 +67,7 @@ public class Meter {
 		// the frequently executed code (polling) goes here ...
 		Map<String, DataSet> dataSetMap = new HashMap<String, DataSet>();
 
-		Connection connection = new Connection(config.getSerialPort(),
+                Connection connection = new Connection(config.getSerialPort(),config.getInitMessage(),
 				config.getEchoHandling(), config.getBaudRateChangeDelay());
 		try {
 			try {
