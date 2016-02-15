@@ -182,6 +182,12 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fs20/${project.version}</bundle>
     </feature>
 
+    <feature name="openhab-binding-garadget" description="Garadget Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.garadget/${project.version}</bundle>
+    </feature>
+
     <feature name="openhab-binding-heatmiser" description="Heatmiser Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
