@@ -899,6 +899,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
                     selection.setIncludeSettings(true);
                 } else if (property.startsWith("runtime")) {
                     selection.setIncludeRuntime(true);
+                } else if (property.startsWith("alerts")) {
+                    selection.setIncludeAlerts(true);
                 } else if (property.startsWith("extendedRuntime")) {
                     selection.setIncludeExtendedRuntime(true);
                 } else if (property.startsWith("electricity")) {
