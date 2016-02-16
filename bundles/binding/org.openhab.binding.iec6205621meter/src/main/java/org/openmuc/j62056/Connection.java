@@ -33,6 +33,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -41,6 +42,7 @@ public class Connection {
 	private final String serialPortName;
 	private SerialPort serialPort;
 
+	private final byte[] initMessage;
 	private final boolean handleEcho;
 	private final int baudRateChangeDelay;
 	private int timeout = 5000;
@@ -49,15 +51,15 @@ public class Connection {
 	private DataInputStream is;
 	
 	private static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
+        private static int[] baudRates = new int[]{300,600,1200,2400,4800,9600,19200};
+		
 	private static final byte[] REQUEST_MESSAGE = new byte[] { (byte) 0x2F,
 			(byte) 0x3F, (byte) 0x21, (byte) 0x0D, (byte) 0x0A };
 
 	private static final byte[] ACKNOWLEDGE = new byte[] { (byte) 0x06,
 			(byte) 0x30, (byte) 0x30, (byte) 0x30, (byte) 0x0D, (byte) 0x0A };
 
-	private static final int INPUT_BUFFER_LENGTH = 1024;
-	private final byte[] buffer = new byte[INPUT_BUFFER_LENGTH];
+	private byte[] buffer = new byte[1024];
 
 	private static final Charset charset = Charset.forName("US-ASCII");
 
@@ -71,6 +73,8 @@ public class Connection {
 	 * @param serialPort
 	 *            examples for serial port identifiers are on Linux "/dev/ttyS0"
 	 *            or "/dev/ttyUSB0" and on Windows "COM1"
+         * @param initMessage
+         *              extra pre init bytes
 	 * @param handleEcho
 	 *            tells the connection to throw away echos of outgoing messages.
 	 *            Echos are caused by some optical transceivers.
@@ -83,13 +87,15 @@ public class Connection {
 	 *            the previous message (i.e. the acknowledgment) has been
 	 *            completely sent.
 	 */
-	public Connection(String serialPort, boolean handleEcho,
+	public Connection(String serialPort, byte[] initMessage,
+                        boolean handleEcho,
 			int baudRateChangeDelay) {
 		if (serialPort == null) {
 			throw new IllegalArgumentException("serialPort may not be NULL");
 		}
 
 		serialPortName = serialPort;
+                this.initMessage = initMessage;
 		this.handleEcho = handleEcho;
 		this.baudRateChangeDelay = baudRateChangeDelay;
 	}
@@ -103,7 +109,7 @@ public class Connection {
 	 *            or "/dev/ttyUSB0" and on Windows "COM1"
 	 */
 	public Connection(String serialPort) {
-		this(serialPort, false, 0);
+		this(serialPort, null,false, 0);
 	}
 
 	/**
@@ -217,10 +223,14 @@ public class Connection {
 			throw new IOException(
 					"Unable to set the given serial comm parameters", e);
 		}
-
+                if(initMessage != null){
+                    os.write(initMessage);
+                    os.flush();
+		}
 		os.write(REQUEST_MESSAGE);
 		os.flush();
 		int baudRateSetting;
+                char protocolMode;
 		int baudRate;
 
 		boolean readSuccessful = false;
@@ -230,8 +240,7 @@ public class Connection {
 		while (timeout == 0 || timeval < timeout) {
 			if (is.available() > 0) {
 
-				int numBytesRead = is.read(buffer, numBytesReadTotal,
-						INPUT_BUFFER_LENGTH - numBytesReadTotal);
+				int numBytesRead = is.read(buffer, numBytesReadTotal,is.available());
 				numBytesReadTotal += numBytesRead;
 
 				if (numBytesRead > 0) {
@@ -291,22 +300,42 @@ public class Connection {
 		System.arraycopy(buffer, startPosition, bytes, 0, numBytesReadTotal
 				- startPosition);
 
+                /* baudrate identification http://manuals.lian98.biz/doc.en/html/u_iec62056_struct.htm
+                * Protocol mode A : no baudrate change 
+                * Protocol mode B : char from A to I; no acknowledgement
+                * Protocol mode C : char from 0 to 9; with acknowledgement
+                */
 		baudRateSetting = bytes[offset + 4];
-		baudRate = getBaudRate(baudRateSetting);
-
-		String identification = new String(buffer, offset + 5,
+                if (baudRateSetting >= 0x41 && baudRateSetting <= 0x49) {
+                    protocolMode = 'B';//Mode B
+                    baudRate = baudRates[baudRateSetting-0x40];//search with index (start with baudrate 600)
+                } else if (baudRateSetting >= 0x30 && baudRateSetting <= 0x39) {
+                    protocolMode = 'C';//Mode C or E
+                    baudRate = baudRates[baudRateSetting-0x30];//search with index
+                } else if (baudRateSetting >= 0x32) {
+                    protocolMode = 'D';//Mode D no baudrate change
+                    baudRate = -1;
+                } else {
+                    protocolMode = 'A';//Mode A no baudrate change
+                    baudRate = -1;
+                }
+                
+                String identification = new String(buffer, offset + 5,
 				numBytesReadTotal - offset - 7, charset);
+                if(protocolMode == 'B'|| protocolMode=='C'){
+                    if (baudRate == -1) {
+                            throw new IOException(
+                                            "Syntax error in identification message received: unknown baud rate received." + bytesToHex(bytes));
+                    }
+                }
+                
+		if(protocolMode=='C'){
+                    ACKNOWLEDGE[2] = (byte) baudRateSetting;
 
-		if (baudRate == -1) {
-			throw new IOException(
-					"Syntax error in identification message received: unknown baud rate received." + bytesToHex(bytes));
-		}
-
-		ACKNOWLEDGE[2] = (byte) baudRateSetting;
-
-		os.write(ACKNOWLEDGE);
-		os.flush();
-
+                    os.write(ACKNOWLEDGE);
+                    os.flush();
+                }
+                
 		if (handleEcho) {
 			readSuccessful = false;
 			numBytesReadTotal = 0;
@@ -361,18 +390,24 @@ public class Connection {
 
 		readSuccessful = false;
 		numBytesReadTotal = 0;
+                int etxIndex=-1;
 
 		while (timeout == 0 || timeval < timeout) {
-			if (is.available() > 0) {
-				int numBytesRead = is.read(buffer, numBytesReadTotal,
-						INPUT_BUFFER_LENGTH - numBytesReadTotal);
-				numBytesReadTotal += numBytesRead;
+                        int available = is.available();
+			if (available > 0) {
+                                if(buffer.length < (numBytesReadTotal +available)){
+                                    //grow buffer
+                                    buffer = Arrays.copyOf(buffer, numBytesReadTotal +available);
+                                }
+				int numBytesRead = is.read(buffer, numBytesReadTotal, available);
+                                numBytesReadTotal += numBytesRead;
 
 				if (numBytesRead > 0) {
 					timeval = 0;
 				}
 
-				if ((numBytesReadTotal > 4 && buffer[numBytesReadTotal - 3] == 0x21)
+				if ((etxIndex = findEtx(buffer,numBytesRead,numBytesReadTotal)) != -1|| 
+                                        (numBytesReadTotal > 4 && buffer[numBytesReadTotal - 3] == 0x21)
 						|| (numBytesReadTotal > 7 && buffer[numBytesReadTotal - 5] == 0x21)) {
 					readSuccessful = true;
 					break;
@@ -388,7 +423,7 @@ public class Connection {
 		}
 
 		if (!readSuccessful) {
-			throw new IOException("Timeout while listening for Data Message");
+                	throw new IOException("Timeout while listening for Data Message"+ bytesToHex(buffer));
 		}
 
 		// System.out.println("Got the following data message: " +
@@ -397,13 +432,13 @@ public class Connection {
 		int index;
 		int endIndex;
 		// if 2nd last character is ETX
-		if (buffer[numBytesReadTotal - 2] == 0x03) {
+		if (etxIndex != -1) {
 			if (numBytesReadTotal < 8) {
 				throw new IOException(
 						"Data message does not have minimum length of 8.");
 			}
 			index = 1;
-			endIndex = numBytesReadTotal - 5;
+			endIndex = etxIndex-3;
 			if (buffer[0] != 0x02) {
 
 				startPosition = 0;
@@ -502,7 +537,7 @@ public class Connection {
 		return dataSets;
 
 	}
-
+    
 	/**
 	 * Returns the baud rate chosen by the server for this communication
 	 * 
@@ -537,7 +572,16 @@ public class Connection {
 		}
 		return result;
 	}
-	
+
+        private int findEtx(byte[] buffer, int numBytesRead, int numBytesReadTotal) {
+            for (int i = numBytesReadTotal-1; i > numBytesRead; i--) {
+                if(buffer[i] == 0x03){
+                    return i;
+                }
+            }
+            return -1;
+        }
+
 	/**
 	 * Converts a byte array to good readable string.
 	 * 
@@ -557,7 +601,7 @@ public class Connection {
 				for (char character : charArray) {
 					hexChars[position] = character;
 					position++;
-				}
+}
 			}
 			hexChars[position] = hexArray[v >>> 4];
 			position++;
