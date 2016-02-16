@@ -34,6 +34,6 @@ Service-Component: OSGI-INF/persistenceextension.xml,
 Export-Package: org.joda.time,org.joda.time.base,org.joda.time.chrono,
  org.joda.time.field,org.joda.time.format,org.openhab.core.persistence
  ,org.openhab.core.persistence.extensions
-Bundle-ClassPath: lib/joda-time-2.3.jar,
+Bundle-ClassPath: lib/joda-time-2.8.2.jar,
  .
 Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4"
