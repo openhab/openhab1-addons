@@ -10,17 +10,17 @@ package org.openhab.binding.smarthomatic.internal;
 
 /**
  * Interface for serial events
- * 
+ *
  * @author arohde
  * @since 1.9.0
  */
 public interface SerialEventWorker {
 
-	/**
-	 * fired is a event on the serial line has occured
-	 * 
-	 * @param message
-	 */
-	public void eventOccured(String message);
+    /**
+     * fired is a event on the serial line has occured
+     * 
+     * @param message
+     */
+    public void eventOccured(String message);
 
 }
