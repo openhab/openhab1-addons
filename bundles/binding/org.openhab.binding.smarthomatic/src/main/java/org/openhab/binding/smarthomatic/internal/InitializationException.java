@@ -10,40 +10,40 @@ package org.openhab.binding.smarthomatic.internal;
 
 /**
  * these exception is thrown if problems with the initialization occurs
- * 
+ *
  * @author mcjobo
  * @since 1.9.0
  */
 public class InitializationException extends Exception {
 
-	private static final long serialVersionUID = 3215690312124168361L;
+    private static final long serialVersionUID = 3215690312124168361L;
 
-	/**
-	 * constructor for simple string exceptions
-	 * 
-	 * @param msg
-	 */
-	public InitializationException(String msg) {
-		super(msg);
-	}
+    /**
+     * constructor for simple string exceptions
+     * 
+     * @param msg
+     */
+    public InitializationException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * constructor for wrapping other exceptions
-	 * 
-	 * @param cause
-	 */
-	public InitializationException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * constructor for wrapping other exceptions
+     * 
+     * @param cause
+     */
+    public InitializationException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * constructor for individual problems + the wrapped exception
-	 * 
-	 * @param msg
-	 * @param cause
-	 */
-	public InitializationException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    /**
+     * constructor for individual problems + the wrapped exception
+     * 
+     * @param msg
+     * @param cause
+     */
+    public InitializationException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

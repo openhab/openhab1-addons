@@ -13,68 +13,68 @@ import org.openhab.core.items.Item;
 
 /**
  * these is smarthomatic specific interface of the binding provider
- * 
+ *
  * @author arohde
  * @author mcjobo
  * @since 1.9.0
  */
 public interface SmarthomaticBindingProvider extends BindingProvider {
 
-	/**
-	 * returns the message group id
-	 * 
-	 * @param itemName
-	 * @return
-	 */
-	public int getMessageGroupId(String itemName);
+    /**
+     * returns the message group id
+     * 
+     * @param itemName
+     * @return
+     */
+    public int getMessageGroupId(String itemName);
 
-	/**
-	 * returns the message id
-	 * 
-	 * @param itemName
-	 * @return
-	 */
-	public int getMessageId(String itemName);
+    /**
+     * returns the message id
+     * 
+     * @param itemName
+     * @return
+     */
+    public int getMessageId(String itemName);
 
-	/**
-	 * returns the device id
-	 * 
-	 * @param itemName
-	 * @return
-	 */
-	public int getDeviceId(String itemName);
+    /**
+     * returns the device id
+     * 
+     * @param itemName
+     * @return
+     */
+    public int getDeviceId(String itemName);
 
-	/**
-	 * returns the message part id
-	 * 
-	 * @param itemName
-	 * @return
-	 */
-	public int getMessagePartId(String itemName);
+    /**
+     * returns the message part id
+     * 
+     * @param itemName
+     * @return
+     */
+    public int getMessagePartId(String itemName);
 
-	/**
-	 * returns the message item id
-	 * 
-	 * @param itemName
-	 * @return
-	 */
-	public int getMessageItemId(String itemName);
+    /**
+     * returns the message item id
+     * 
+     * @param itemName
+     * @return
+     */
+    public int getMessageItemId(String itemName);
 
-	/**
-	 * returns the item
-	 * 
-	 * @param itemName
-	 * @return
-	 */
-	public Item getItem(String itemName);
+    /**
+     * returns the item
+     * 
+     * @param itemName
+     * @return
+     */
+    public Item getItem(String itemName);
 
-	/**
-	 * returns the config parameters
-	 * 
-	 * @param itemName
-	 * @param paramName
-	 * @return
-	 */
-	public String getConfigParam(String itemName, String paramName);
+    /**
+     * returns the config parameters
+     * 
+     * @param itemName
+     * @param paramName
+     * @return
+     */
+    public String getConfigParam(String itemName, String paramName);
 
 }
