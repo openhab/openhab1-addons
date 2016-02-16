@@ -156,7 +156,7 @@ public class Connection {
 		// fixed issue as rxtx library originally used in j62056 does use
 		// different version of rxtx
 		// com port in their version is using gnu.io.CommPort
-		CommPort commPort;
+		RXTXPort commPort;
 		try {
 			commPort = portIdentifier.open(this.getClass().getName(), 2000);
 		} catch (PortInUseException e) {
