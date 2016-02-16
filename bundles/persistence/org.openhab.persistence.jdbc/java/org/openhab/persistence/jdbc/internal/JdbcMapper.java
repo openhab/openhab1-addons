@@ -160,7 +160,7 @@ public class JdbcMapper {
     protected boolean openConnection() {
         logger.debug("JDBC::openConnection isDriverAvailable: {}", conf.isDriverAvailable());
         if (conf.isDriverAvailable() && !conf.isDbConnected()) {
-            logger.warn("JDBC::openConnection: setupDataSource.");
+            logger.info("JDBC::openConnection: Driver is available::Yank setupDataSource");
             Yank.setupDataSource(conf.getHikariConfiguration());
             conf.setDbConnected(true);
             return true;
@@ -187,10 +187,13 @@ public class JdbcMapper {
         // first
         boolean p = pingDB();
         if (p) {
+            logger.debug("JDBC::checkDBAcessability, first try connection: {}", p);
             return (p && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
         } else {
             // second
-            return (pingDB() && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
+            p = pingDB();
+            logger.debug("JDBC::checkDBAcessability, second try connection: {}", p);
+            return (p && !(conf.getErrReconnectThreshold() > 0 && errCnt <= conf.getErrReconnectThreshold()));
         }
     }
 
