@@ -175,14 +175,14 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
                 logger.debug("NODE {} : Node Name is encoded with standard ASCII codes", this.getNode().getNodeId());
                 break;
             case ENCODING_EXTENDED_ASCII:
-                logger.debug("NODE {} : Node Name is encoded with Using standard and OEM Extended ASCII codes",
+                logger.debug("NODE {} : Node Name is encoded with standard and OEM Extended ASCII codes",
                         this.getNode().getNodeId());
                 break;
             case ENCODING_UTF16:
                 logger.debug("NODE {} : Node Name is encoded with Unicode UTF-16", this.getNode().getNodeId());
                 break;
             default:
-                logger.error("NODE {} : Node Name encodeding is unsupported. Encoding code {}",
+                logger.error("NODE {} : Node Name encoding is unsupported. Encoding code {}",
                         this.getNode().getNodeId(), charPresentation);
                 return null;
         }
@@ -196,7 +196,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
         // Maximum length is 16 bytes
         if (numBytes > MAX_STRING_LENGTH) {
-            logger.warn("NODE {} : Node Name is too big maximum is {} characters {}", this.getNode().getNodeId(),
+            logger.warn("NODE {} : Node Name is too big; maximum is {} characters {}", this.getNode().getNodeId(),
                     MAX_STRING_LENGTH, numBytes);
             numBytes = MAX_STRING_LENGTH;
         }
