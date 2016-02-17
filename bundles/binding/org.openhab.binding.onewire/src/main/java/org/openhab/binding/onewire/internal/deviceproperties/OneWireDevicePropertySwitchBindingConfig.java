@@ -40,7 +40,7 @@ public class OneWireDevicePropertySwitchBindingConfig extends AbstractOneWireDev
         parseBindingConfig(pvBindingConfig);
     }
 
-    private void parseBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
+    protected void parseBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
         String[] lvConfigParts = pvBindingConfig.trim().split(";");
 
         for (String lvConfigPart : lvConfigParts) {
