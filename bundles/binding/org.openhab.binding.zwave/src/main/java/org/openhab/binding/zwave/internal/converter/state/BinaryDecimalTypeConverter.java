@@ -12,7 +12,7 @@ import org.openhab.core.library.types.DecimalType;
 
 /**
  * Converts from a binary Z-Wave value to a {@link DecimalType}
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

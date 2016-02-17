@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * on or off and report their status as on (0xFF) or off (0x00).
  * The commands include the possibility to set a given level, get a given
  * level and report a level.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -53,7 +53,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveBinarySwitchCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -104,7 +104,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a SWITCH_BINARY_REPORT / SWITCH_BINARY_SET message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -119,7 +119,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SWITCH_BINARY_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -136,7 +136,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SWITCH_BINARY_SET command
-     * 
+     *
      * @param the level to set. 0 is mapped to off, > 0 is mapped to on.
      * @return the serial message
      */

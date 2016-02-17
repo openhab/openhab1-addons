@@ -57,7 +57,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveIndicatorCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -105,7 +105,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a INDICATOR_REPORT / INDICATOR_SET message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -125,7 +125,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the INDICATOR GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -155,7 +155,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the INDICATOR SET command
-     * 
+     *
      * @param the level to set.
      * @return the serial message
      */
@@ -172,7 +172,7 @@ public class ZWaveIndicatorCommandClass extends ZWaveCommandClass
 
     /**
      * Get current indicator value
-     * 
+     *
      * @return indicator
      */
     public int getValue() {

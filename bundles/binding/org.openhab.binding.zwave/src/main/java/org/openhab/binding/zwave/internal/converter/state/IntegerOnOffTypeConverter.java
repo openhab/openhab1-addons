@@ -12,7 +12,7 @@ import org.openhab.core.library.types.OnOffType;
 
 /**
  * Converts from integer Z-Wave value to a {@link OnOffType}
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

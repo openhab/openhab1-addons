@@ -22,6 +22,9 @@ import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -92,6 +95,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /** the binding type to register for as a binding config reader */
     public static final String KNX_BINDING_TYPE = "knx";
+
+    //Logger
+    private static Logger logger = LoggerFactory.getLogger(KNXGenericBindingProvider.class);
 
     /**
      * {@inheritDoc}
@@ -380,10 +386,18 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                     throw new BindingConfigParseException("Only one readable GA allowed.");
                 }
 
-                Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size() > 0
-                        ? item.getAcceptedCommandTypes().get(i)
-                        : item.getAcceptedDataTypes().size() > 1 ? item.getAcceptedDataTypes().get(i)
-                                : item.getAcceptedDataTypes().get(0);
+                Class<? extends Type> typeClass = null;
+                if( item.getAcceptedCommandTypes().size() > i ) {
+                  typeClass = item.getAcceptedCommandTypes().get(i);
+                }
+                else {
+                  if( item.getAcceptedDataTypes().size() > i ) {
+                    typeClass = item.getAcceptedDataTypes().get(i);
+                  }
+                  else {
+                    typeClass = item.getAcceptedDataTypes().get(0);
+                  }
+                }
 
                 String[] dataPoints = datapointConfig.split("\\+");
                 for (int j = 0; j < dataPoints.length; ++j) {

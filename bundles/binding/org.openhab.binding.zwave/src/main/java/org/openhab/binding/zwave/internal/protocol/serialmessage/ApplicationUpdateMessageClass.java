@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a Node Information Frame (NIF) message from the zwave controller
- * 
+ *
  * @author Chris Jackson
  * @since 1.5.0
  */
@@ -90,12 +90,19 @@ public class ApplicationUpdateMessageClass extends ZWaveCommandProcessor {
                             break;
                         }
                         logger.trace(String.format("NODE %d: Command class 0x%02X is supported.", nodeId, data));
-                        ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, zController);
-                        if (commandClass != null) {
-                            node.addCommandClass(commandClass);
+                        // See if the command class already exists on the node
+                        CommandClass commandClass = CommandClass.getCommandClass(data);
+                        if (node.getCommandClass(commandClass) == null) { // add it
+                            ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(data, node,
+                                    zController);
+                            if (zwaveCommandClass != null) {
+                                logger.trace(
+                                        String.format("NODE %d: Application update request. Adding Command class %s.",
+                                                nodeId, commandClass));
+                                node.addCommandClass(zwaveCommandClass);
+                            }
                         }
                     }
-
                     node.updateNIF(nif);
                 }
 
@@ -147,7 +154,7 @@ public class ApplicationUpdateMessageClass extends ZWaveCommandProcessor {
 
     /**
      * Update state enumeration. Indicates the type of application update state that was sent.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @ since 1.3.0
      */
@@ -184,7 +191,7 @@ public class ApplicationUpdateMessageClass extends ZWaveCommandProcessor {
         /**
          * Lookup function based on the update state code.
          * Returns null when there is no update state with code i.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the update state.
          */

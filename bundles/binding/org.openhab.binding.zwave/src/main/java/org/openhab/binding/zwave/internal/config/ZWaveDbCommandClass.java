@@ -15,7 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 /**
  * Implements a commandclass for the XML product database
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *

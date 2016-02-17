@@ -83,7 +83,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveMultiInstanceCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -111,7 +111,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Gets the endpoint object using it's endpoint ID as key.
      * Returns null if the endpoint is not found.
-     * 
+     *
      * @param endpointId the endpoint ID of the endpoint to get.
      * @return Endpoint object
      * @throws IllegalArgumentException thrown when the endpoint is not found.
@@ -123,7 +123,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 
     /**
      * Gets the collection of endpoints attached to this node.
-     * 
+     *
      * @return the collection of endpoints.
      */
     public Collection<ZWaveEndpoint> getEndpoints() {
@@ -171,7 +171,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
      * Handles Multi Instance Report message. Handles Report on
      * the number of instances for the command class.
      * This is for Version 1 of the command class.
-     * 
+     *
      * @param serialMessage the serial message to process.
      * @param offset the offset at which to start processing.
      */
@@ -210,7 +210,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
      * Handles Multi Instance Encapsulation message. Decapsulates
      * an Application Command message and handles it using the right
      * instance.
-     * 
+     *
      * @param serialMessage the serial message to process.
      * @param offset the offset at which to start procesing.
      */
@@ -264,7 +264,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
      * the number of endpoints and whether they are dynamic and/or have the
      * same command classes.
      * This is for Version 2 of the command class.
-     * 
+     *
      * @param serialMessage the serial message to process.
      * @param offset the offset at which to start processing.
      */
@@ -299,7 +299,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
      * Handles Multi Channel Capability Report message. Handles Report on
      * an endpoint and adds command classes to the endpoint.
      * This is for Version 2 of the command class.
-     * 
+     *
      * @param serialMessage the serial message to process.
      * @param offset the offset at which to start processing.
      */
@@ -358,7 +358,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 
     /**
      * Determines the device class properties of the endpoint.
-     * 
+     *
      * @param endpoint The endpoint to update.
      * @param genericDeviceClass The generic device class of the parent device of the endpoint
      * @param specificDeviceClass The specific device class of the parent device of the endpoint
@@ -402,7 +402,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 
     /**
      * Adds command classes to the endpoint based on the message from the device.
-     * 
+     *
      * @param serialMessage The message to get command classes from.
      * @param offset The offset in the message.
      * @param endpoint The endpoint
@@ -443,7 +443,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
      * Handles Multi Channel Encapsulation message. Decapsulates
      * an Application Command message and handles it using the right
      * endpoint.
-     * 
+     *
      * @param serialMessage the serial message to process.
      * @param offset the offset at which to start processing.
      */
@@ -501,7 +501,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Gets a SerialMessage with the MULTI_INSTANCE_GET command.
      * Returns the number of instances for this command class.
-     * 
+     *
      * @param the command class to return the number of instances for.
      * @return the serial message.
      */
@@ -519,7 +519,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Gets a SerialMessage with the MULTI_INSTANCE_ENCAP command.
      * Encapsulates a message for a specific instance.
-     * 
+     *
      * @param serialMessage the serial message to encapsulate
      * @param instance the number of the instance to encapsulate the message for.
      * @return the encapsulated serial message.
@@ -544,7 +544,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Gets a SerialMessage with the MULTI CHANNEL ENDPOINT GET command.
      * Returns the endpoints for this node.
-     * 
+     *
      * @return the serial message.
      */
     public SerialMessage getMultiChannelEndpointGetMessage() {
@@ -561,7 +561,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Gets a SerialMessage with the MULTI_CHANNEL_CAPABILITY_GET command.
      * Gets the capabilities for a specific endpoint.
-     * 
+     *
      * @param the number of the endpoint to get the
      * @return the serial message.
      */
@@ -579,7 +579,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Gets a SerialMessage with the MULTI_INSTANCE_ENCAP command.
      * Encapsulates a message for a specific instance.
-     * 
+     *
      * @param serialMessage the serial message to encapsulate
      * @param endpoint the endpoint to encapsulate the message for.
      * @return the encapsulated serial message.
@@ -605,7 +605,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
     /**
      * Initializes the Multi instance / endpoint command class by setting the number of instances
      * or getting the endpoints.
-     * 
+     *
      * @return SerialMessage message to send
      */
     public ArrayList<SerialMessage> initEndpoints(boolean refresh) {

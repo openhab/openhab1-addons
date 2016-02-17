@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Handles the Alarm command class.
  * The event is reported as occurs (0xFF) or does not occur (0x00).
- * 
+ *
  * @author Chris Jackson
  * @since 1.6.0
  */
@@ -56,7 +56,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveAlarmCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -128,7 +128,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the ALARM_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -145,7 +145,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the ALARM_GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getMessage(AlarmType alarmType) {
@@ -207,7 +207,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the alarm type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the alarm type.
          */
@@ -236,7 +236,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 
     /**
      * Class to hold alarm state
-     * 
+     *
      * @author Chris Jackson
      */
     @XStreamAlias("alarmState")
@@ -271,7 +271,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a instance of the ZWaveAlarmValueEvent class.
-         * 
+         *
          * @param nodeId the nodeId of the event
          * @param endpoint the endpoint of the event.
          * @param alarmType the alarm type that triggered the event;

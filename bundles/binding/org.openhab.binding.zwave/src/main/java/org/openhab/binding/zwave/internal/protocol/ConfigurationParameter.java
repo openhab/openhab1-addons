@@ -13,7 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * This class provides a storage class for zwave configuration parameters
  * within the configuration command class. This is then serialized to XML.
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *
@@ -29,7 +29,7 @@ public class ConfigurationParameter {
 
     /***
      * Constructor. Creates a new instance of the {@link ConfigurationParameter} class.
-     * 
+     *
      * @param index. The parameter index.
      * @param value. The parameter value;
      * @throws IllegalArgumentException thrown when the index or size arguments are out of range.
@@ -51,7 +51,7 @@ public class ConfigurationParameter {
 
     /**
      * Gets the configuration parameter value
-     * 
+     *
      * @return the value
      */
     public Integer getValue() {
@@ -60,7 +60,7 @@ public class ConfigurationParameter {
 
     /**
      * Sets the configuration parameter value.
-     * 
+     *
      * @param value the value to set
      */
     public void setValue(Integer value) throws IllegalArgumentException {
@@ -69,7 +69,7 @@ public class ConfigurationParameter {
 
     /**
      * Returns the parameter index.
-     * 
+     *
      * @return the index
      */
     public Integer getIndex() {
@@ -78,7 +78,7 @@ public class ConfigurationParameter {
 
     /**
      * Returns the parameter size.
-     * 
+     *
      * @return the size
      */
     public Integer getSize() {
@@ -87,7 +87,7 @@ public class ConfigurationParameter {
 
     /**
      * Sets the parameter as a WriteOnly parameter
-     * 
+     *
      * @param write true if the parameter should not be read
      */
     public void setWriteOnly(boolean write) {
@@ -96,7 +96,7 @@ public class ConfigurationParameter {
 
     /**
      * Returns true if this parameter is write only
-     * 
+     *
      * @return true if the parameter should not be read back
      */
     public boolean getWriteOnly() {
@@ -105,7 +105,7 @@ public class ConfigurationParameter {
 
     /**
      * Sets the parameter as a ReadOnly parameter
-     * 
+     *
      * @param read true if the parameters is readonly
      */
     public void setReadOnly(boolean read) {
@@ -114,7 +114,7 @@ public class ConfigurationParameter {
 
     /**
      * Returns true if this parameter is read only
-     * 
+     *
      * @return true if the parameter should not be written to
      */
     public boolean getReadOnly() {

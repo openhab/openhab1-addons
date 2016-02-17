@@ -132,7 +132,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
     /**
      * Set the hour that a daily network heal is performed
-     * 
+     *
      * @param time
      *            the hour of the heal (0-23)
      */
@@ -162,7 +162,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
     /**
      * Sets the polling period (in milliseconds) between each network health
      * ping.
-     * 
+     *
      * @param time period in seconds
      */
     public void setPollPeriod(Integer time) {
@@ -176,7 +176,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
     /**
      * Configures the binding to perform a soft reset during the heal
-     * 
+     *
      * @param doReset true to enable performing a soft reset on error or heal
      */
     public void resetOnError(boolean doReset) {
@@ -212,7 +212,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
     /**
      * Returns true if the node is currently in a healing state or scheduled for
      * a heal.
-     * 
+     *
      * @param nodeId
      *            node to check
      * @return true if healing is ongoing. false if waiting or failed.
@@ -238,7 +238,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
     /**
      * Perform an immediate heal on the specified node
-     * 
+     *
      * @param nodeId
      *            Node to perform the heal on
      * @return true if the heal is scheduled
@@ -282,7 +282,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
     /**
      * Start a full network heal manually.
-     * 
+     *
      * @return true if the heal is started otherwise false
      */
     public boolean rescheduleHeal() {
@@ -410,7 +410,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
      * retries. Each time through the loop it increments the retry counter. If
      * the max retries is exceeded then the failed state is saved and we return
      * to allow other nodes to continue.
-     * 
+     *
      * @param healing
      *            The node on which to perform the heal
      */
@@ -602,7 +602,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
     /**
      * Calculates the time (milliseconds) to start the next network
      * heal
-     * 
+     *
      * @return time in milliseconds for next heal.
      */
     private long calculateNextHeal() {

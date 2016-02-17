@@ -40,7 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Z-Wave node class. Represents a node in the Z-Wave network.
- * 
+ *
  * @author Brian Crosby
  * @author Chris Jackson
  * @since 1.3.0
@@ -113,7 +113,7 @@ public class ZWaveNode {
 
     /**
      * Constructor. Creates a new instance of the ZWaveNode class.
-     * 
+     *
      * @param homeId the home ID to use.
      * @param nodeId the node ID to use.
      * @param controller the wave controller instance
@@ -132,7 +132,7 @@ public class ZWaveNode {
      * NOTE: XStream doesn't run any default constructor. So, any initialisation
      * made in a constructor, or statically, won't be performed!!!
      * Set defaults here if it's important!!!
-     * 
+     *
      * @param controller the wave controller instance
      */
     public void setRestoredFromConfigfile(ZWaveController controller) {
@@ -148,7 +148,7 @@ public class ZWaveNode {
 
     /**
      * Gets the node ID.
-     * 
+     *
      * @return the node id
      */
     public int getNodeId() {
@@ -157,7 +157,7 @@ public class ZWaveNode {
 
     /**
      * Gets whether the node is listening.
-     * 
+     *
      * @return boolean indicating whether the node is listening or not.
      */
     public boolean isListening() {
@@ -166,7 +166,7 @@ public class ZWaveNode {
 
     /**
      * Sets whether the node is listening.
-     * 
+     *
      * @param listening
      */
     public void setListening(boolean listening) {
@@ -178,7 +178,7 @@ public class ZWaveNode {
      * Frequently listening is responding to a beam signal. Apart from
      * increased latency, nothing else is noticeable from the serial api
      * side.
-     * 
+     *
      * @return boolean indicating whether the node is frequently
      *         listening or not.
      */
@@ -191,7 +191,7 @@ public class ZWaveNode {
      * Frequently listening is responding to a beam signal. Apart from
      * increased latency, nothing else is noticeable from the serial api
      * side.
-     * 
+     *
      * @param frequentlyListening indicating whether the node is frequently
      *            listening or not.
      */
@@ -201,7 +201,7 @@ public class ZWaveNode {
 
     /**
      * Gets the Heal State of the node.
-     * 
+     *
      * @return String indicating the node Heal State.
      */
     public String getHealState() {
@@ -210,7 +210,7 @@ public class ZWaveNode {
 
     /**
      * Sets the Heal State of the node.
-     * 
+     *
      * @param healState
      */
     public void setHealState(String healState) {
@@ -219,7 +219,7 @@ public class ZWaveNode {
 
     /**
      * Gets whether the node is dead.
-     * 
+     *
      * @return
      */
     public boolean isDead() {
@@ -274,7 +274,7 @@ public class ZWaveNode {
 
     /**
      * Gets the home ID
-     * 
+     *
      * @return the homeId
      */
     public Integer getHomeId() {
@@ -285,7 +285,7 @@ public class ZWaveNode {
      * Gets the node name.
      * If Node Naming Command Class is supported get name from device,
      * else return the name stored in binding
-     * 
+     *
      * @return the name
      */
     public String getName() {
@@ -303,7 +303,7 @@ public class ZWaveNode {
      * Sets the node name.
      * If Node Naming Command Class is supported set name in the device,
      * else set it in locally in the binding
-     * 
+     *
      * @param name the name to set
      */
     public void setName(String name) {
@@ -323,7 +323,7 @@ public class ZWaveNode {
      * Gets the node location.
      * If Node Naming Command Class is supported get location from device,
      * else return the location stored in binding
-     * 
+     *
      * @return the location
      */
     public String getLocation() {
@@ -341,7 +341,7 @@ public class ZWaveNode {
      * Sets the node location.
      * If Node Naming Command Class is supported set location in the device,
      * else set it in locally in the binding
-     * 
+     *
      * @param location the location to set
      */
     public void setLocation(String location) {
@@ -359,7 +359,7 @@ public class ZWaveNode {
 
     /**
      * Gets the manufacturer of the node.
-     * 
+     *
      * @return the manufacturer
      */
     public int getManufacturer() {
@@ -368,7 +368,7 @@ public class ZWaveNode {
 
     /**
      * Sets the manufacturer of the node.
-     * 
+     *
      * @param tempMan the manufacturer to set
      */
     public void setManufacturer(int tempMan) {
@@ -377,7 +377,7 @@ public class ZWaveNode {
 
     /**
      * Gets the device id of the node.
-     * 
+     *
      * @return the deviceId
      */
     public int getDeviceId() {
@@ -386,7 +386,7 @@ public class ZWaveNode {
 
     /**
      * Sets the device id of the node.
-     * 
+     *
      * @param tempDeviceId the device to set
      */
     public void setDeviceId(int tempDeviceId) {
@@ -395,7 +395,7 @@ public class ZWaveNode {
 
     /**
      * Gets the device type of the node.
-     * 
+     *
      * @return the deviceType
      */
     public int getDeviceType() {
@@ -404,7 +404,7 @@ public class ZWaveNode {
 
     /**
      * Sets the device type of the node.
-     * 
+     *
      * @param tempDeviceType the deviceType to set
      */
     public void setDeviceType(int tempDeviceType) {
@@ -413,7 +413,7 @@ public class ZWaveNode {
 
     /**
      * Get the date/time the node was last updated (ie a frame was received from it).
-     * 
+     *
      * @return the lastUpdated time
      */
     public Date getLastReceived() {
@@ -422,7 +422,7 @@ public class ZWaveNode {
 
     /**
      * Get the date/time we last sent a frame to the node.
-     * 
+     *
      * @return the lastSent
      */
     public Date getLastSent() {
@@ -431,7 +431,7 @@ public class ZWaveNode {
 
     /**
      * Gets the node state.
-     * 
+     *
      * @return the nodeState
      */
     public ZWaveNodeState getNodeState() {
@@ -440,7 +440,7 @@ public class ZWaveNode {
 
     /**
      * Gets the node stage.
-     * 
+     *
      * @return the nodeStage
      */
     public ZWaveNodeInitStage getNodeInitializationStage() {
@@ -449,7 +449,7 @@ public class ZWaveNode {
 
     /**
      * Gets the initialization state
-     * 
+     *
      * @return true if initialization has been completed
      */
     public boolean isInitializationComplete() {
@@ -458,7 +458,7 @@ public class ZWaveNode {
 
     /**
      * Sets the node stage.
-     * 
+     *
      * @param nodeStage the nodeStage to set
      */
     public void setNodeStage(ZWaveNodeInitStage nodeStage) {
@@ -467,7 +467,7 @@ public class ZWaveNode {
 
     /**
      * Gets the node version
-     * 
+     *
      * @return the version
      */
     public int getVersion() {
@@ -476,7 +476,7 @@ public class ZWaveNode {
 
     /**
      * Sets the node version.
-     * 
+     *
      * @param version the version to set
      */
     public void setVersion(int version) {
@@ -485,7 +485,7 @@ public class ZWaveNode {
 
     /**
      * Gets the node application firmware version
-     * 
+     *
      * @return the version
      */
     public String getApplicationVersion() {
@@ -506,7 +506,7 @@ public class ZWaveNode {
 
     /**
      * Gets whether the node is routing messages.
-     * 
+     *
      * @return the routing
      */
     public boolean isRouting() {
@@ -515,7 +515,7 @@ public class ZWaveNode {
 
     /**
      * Sets whether the node is routing messages.
-     * 
+     *
      * @param routing the routing to set
      */
     public void setRouting(boolean routing) {
@@ -524,7 +524,7 @@ public class ZWaveNode {
 
     /**
      * Gets the time stamp the node was last queried.
-     * 
+     *
      * @return the queryStageTimeStamp
      */
     public Date getQueryStageTimeStamp() {
@@ -559,7 +559,7 @@ public class ZWaveNode {
 
     /**
      * Returns the device class of the node.
-     * 
+     *
      * @return the deviceClass
      */
     public ZWaveDeviceClass getDeviceClass() {
@@ -568,7 +568,7 @@ public class ZWaveNode {
 
     /**
      * Returns the Command classes this node implements.
-     * 
+     *
      * @return the command classes.
      */
     public Collection<ZWaveCommandClass> getCommandClasses() {
@@ -578,7 +578,7 @@ public class ZWaveNode {
     /**
      * Returns a commandClass object this node implements.
      * Returns null if command class is not supported by this node.
-     * 
+     *
      * @param commandClass The command class to get.
      * @return the command class.
      */
@@ -588,7 +588,7 @@ public class ZWaveNode {
 
     /**
      * Returns whether a node supports this command class.
-     * 
+     *
      * @param commandClass the command class to check
      * @return true if the command class is supported, false otherwise.
      */
@@ -599,7 +599,7 @@ public class ZWaveNode {
     /**
      * Adds a command class to the list of supported command classes by this node.
      * Does nothing if command class is already added.
-     * 
+     *
      * @param commandClass the command class instance to add.
      */
     public void addCommandClass(ZWaveCommandClass commandClass) {
@@ -620,7 +620,7 @@ public class ZWaveNode {
      * Removes a command class from the node.
      * This is used to remove classes that a node may report it supports
      * but it doesn't respond to.
-     * 
+     *
      * @param commandClass The command class key
      */
     public void removeCommandClass(CommandClass commandClass) {
@@ -635,7 +635,7 @@ public class ZWaveNode {
      * first try command classes of endpoints. If not found the return a
      * supported command class on the node itself.
      * Returns null if a command class is not found.
-     * 
+     *
      * @param commandClass The command class to resolve.
      * @param endpointId the endpoint / instance to resolve this command class for.
      * @return the command class.
@@ -686,7 +686,7 @@ public class ZWaveNode {
      * Encapsulates a serial message for sending to a
      * multi-instance instance/ multi-channel endpoint on
      * a node.
-     * 
+     *
      * @param serialMessage the serial message to encapsulate
      * @param commandClass the command class used to generate the message.
      * @param endpointId the instance / endpoint to encapsulate the message for
@@ -735,7 +735,7 @@ public class ZWaveNode {
 
     /**
      * Return a list with the nodes neighbors
-     * 
+     *
      * @return list of node IDs
      */
     public List<Integer> getNeighbors() {
@@ -752,7 +752,7 @@ public class ZWaveNode {
     /**
      * Updates a nodes routing information
      * Generation of routes uses associations
-     * 
+     *
      * @param nodeId
      */
     public ArrayList<Integer> getRoutingList() {
@@ -803,7 +803,7 @@ public class ZWaveNode {
 
     /**
      * Add a node ID to the neighbor list
-     * 
+     *
      * @param nodeId the node to add
      */
     public void addNeighbor(Integer nodeId) {
@@ -812,7 +812,7 @@ public class ZWaveNode {
 
     /**
      * Gets the number of times the node has been determined as DEAD
-     * 
+     *
      * @return dead count
      */
     public int getDeadCount() {
@@ -821,7 +821,7 @@ public class ZWaveNode {
 
     /**
      * Gets the number of times the node has been determined as DEAD
-     * 
+     *
      * @return dead count
      */
     public Date getDeadTime() {
@@ -830,7 +830,7 @@ public class ZWaveNode {
 
     /**
      * Gets the number of packets that have been resent to the node
-     * 
+     *
      * @return retry count
      */
     public int getRetryCount() {
@@ -859,7 +859,7 @@ public class ZWaveNode {
 
     /**
      * Gets the number of packets sent to the node
-     * 
+     *
      * @return send count
      */
     public int getSendCount() {
@@ -869,7 +869,7 @@ public class ZWaveNode {
     /**
      * Gets the applicationUpdateReceived flag.
      * This is set to indicate that we have received the required information from the device
-     * 
+     *
      * @return true if information received
      */
     public boolean getApplicationUpdateReceived() {
@@ -879,7 +879,7 @@ public class ZWaveNode {
     /**
      * Sets the applicationUpdateReceived flag.
      * This is set to indicate that we have received the required information from the device
-     * 
+     *
      * @param received true if received
      */
     public void setApplicationUpdateReceived(boolean received) {

@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveThermostatSetpointConverter class. Converter for communication with the
  * {@link ZWaveThermostatSetpointCommandClass}. Implements polling of the setpoint
  * status and receiving of setpoint events.
- * 
+ *
  * @author Matthew Bowman
  * @author Dave Hock
  * @author Chris Jackson
@@ -46,7 +46,7 @@ public class ZWaveThermostatSetpointConverter extends ZWaveCommandClassConverter
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveThermostatSetpointConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

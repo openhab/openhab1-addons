@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.smarthomatic.SmarthomaticBindingProvider;
 import org.openhab.binding.smarthomatic.internal.SHCMessage.SHCData;
 import org.openhab.binding.smarthomatic.internal.SHCMessage.SHCHeader;
+import org.openhab.binding.smarthomatic.internal.packetData.Packet;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
@@ -39,8 +40,6 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.xml.internal.ws.api.message.Packet;
 
 /**
  * These class processes data that is send on the event bus and destined for a
@@ -67,7 +66,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
     /**
      * the refresh interval which is used to poll values from the Smarthomatic
      * server (optional, defaults to 60000ms)
-     * 
+     *
      */
     private long refreshInterval = 60000;
 
@@ -76,7 +75,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * activate binding
-     * 
+     *
      */
     @Override
     public void activate() {
@@ -104,7 +103,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * deactivate binding
-     * 
+     *
      */
     @Override
     public void deactivate() {
@@ -114,7 +113,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * @{inheritDoc
-     * 
+     *
      */
     @Override
     protected long getRefreshInterval() {
@@ -123,7 +122,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * @{inheritDoc
-     * 
+     *
      */
     @Override
     protected String getName() {
@@ -132,7 +131,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * @{inheritDoc
-     * 
+     *
      */
     @Override
     protected void execute() {
@@ -142,7 +141,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * @{inheritDoc
-     * 
+     *
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
@@ -166,7 +165,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * @{inheritDoc
-     * 
+     *
      */
     @Override
     protected void internalReceiveUpdate(String itemName, State newState) {
@@ -179,7 +178,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
 
     /**
      * @{inheritDoc
-     * 
+     *
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -276,7 +275,7 @@ public class SmarthomaticBinding extends AbstractActiveBinding<SmarthomaticBindi
     /**
      * Splits a transformation configuration string into its two parts - the
      * transformation type and the function/pattern to apply.
-     * 
+     *
      * @param transformation
      *            the string to split
      * @return a string array with exactly two entries for the type and the

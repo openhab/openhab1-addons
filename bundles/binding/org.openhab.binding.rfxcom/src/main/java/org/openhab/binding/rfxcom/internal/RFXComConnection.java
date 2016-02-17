@@ -120,6 +120,8 @@ public class RFXComConnection implements ManagedService {
         // controller does not response immediately after reset,
         // so wait a while
         Thread.sleep(1000);
+        // Clear received buffers
+        connector.clearReceiveBuffer();        
 
         if (setMode != null) {
             try {

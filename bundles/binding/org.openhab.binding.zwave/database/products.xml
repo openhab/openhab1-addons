@@ -30,6 +30,17 @@
 			<Label lang="en">Scene Switch</Label>
 			<ConfigFile>devolo/mt2652.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2004</Type>
+				<Id>04a4</Id>
+			</Reference>
+			<Model>ZS6101</Model>
+			<Label lang="en">Smoke Detector</Label>
+			<Label lang="de">Rauchmelder</Label>
+			<!--Use the Configuration for the Vision ZS6101 -->
+			<ConfigFile>vision/zs6101.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -1563,10 +1574,14 @@
 				<Type>0400</Type>
 				<Id>100A</Id>
 			</Reference>
-			<Reference>
-				<Type>0400</Type>
-				<Id>300A</Id>
-			</Reference>
+            <Reference>
+                <Type>0400</Type>
+                <Id>300A</Id>
+            </Reference>
+            <Reference>
+                <Type>0400</Type>
+                <Id>400A</Id>
+            </Reference>
 			<Model>FGS211</Model>
 			<Label lang="en">Relay Switch 1x3kW</Label>
 			<ConfigFile>fibaro/fgs211.xml</ConfigFile>
@@ -2100,6 +2115,15 @@
 		<Id>0002</Id>
 		<Name>Danfoss</Name>
 		<Product>
+            <Reference>
+                <Type>0005</Type>
+                <Id>0175</Id>
+            </Reference>
+            <Model>MT02650</Model>
+            <Label lang="en">Devolo Thermostat (09356)</Label>
+            <ConfigFile>danfoss/mt02650.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>0005</Type>
 				<Id>0003</Id>
@@ -2107,6 +2131,16 @@
 			<Model>LCZ251</Model>
 			<Label lang="en">Living Connect Z Thermostat 2.51</Label>
 			<Label lang="de">Living Connect Z Thermostat 2.51</Label>
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference> <!-- This Type and Id are know to be used by the Devolo badged device --> 
+				<Type>0005</Type>
+				<Id>0175</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat (Devolo)</Label>
+			<Label lang="de">Living Connect Z Thermostat (Devolo)</Label>
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -3183,14 +3217,23 @@
 			<ConfigFile>nodon/crc3100.xml</ConfigFile>
 		</Product>
 		<Product>
-            <Reference>
-                <Type>0002</Type>
-                <Id>0002</Id>
-            </Reference>
-            <Model>Soft Remote</Model>
-            <Label lang="en">Remote Control</Label>
-            <ConfigFile>nodon/crc3605.xml</ConfigFile>
-        </Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>Soft Remote</Model>
+			<Label lang="en">Remote Control</Label>
+			<ConfigFile>nodon/crc3605.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>CRW-310x</Model>
+			<Label lang="en">Wall Switch</Label>
+			<ConfigFile>nodon/crw310x.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 	  <Id>019a</Id>
@@ -3217,7 +3260,16 @@
 			<Label lang="en">Door &amp; Window Sensor</Label>
 			<ConfigFile>dlink/dch-z110.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>000D</Id>
+            </Reference>
+            <Model>DCH-Z120</Model>
+            <Label lang="en">Battery Motion Sensor</Label>
+            <ConfigFile>dlink/dch-z120.xml</ConfigFile>
+        </Product>
+  	</Manufacturer>
 	<Manufacturer>
 		<Id>020e</Id>
 		<Name>Domitech</Name>

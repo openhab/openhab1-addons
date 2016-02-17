@@ -14,7 +14,7 @@ import org.openhab.core.library.types.OpenClosedType;
 
 /**
  * Converts from a Z-Wave big decimal value to a {@link OpenClosedType}
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

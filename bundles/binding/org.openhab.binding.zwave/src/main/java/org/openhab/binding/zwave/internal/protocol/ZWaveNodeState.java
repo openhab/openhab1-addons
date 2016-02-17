@@ -10,7 +10,7 @@ package org.openhab.binding.zwave.internal.protocol;
 
 /**
  * Represents the state that the node is in.
- * 
+ *
  * @author Chris Jackson
  * @since 1.7.0
  */

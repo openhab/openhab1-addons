@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /***
  * ZWaveConfigurationConverter class. Converter for communication with the
  * {@link ZWaveConfigurationCommandClass}.
- * 
+ *
  * @author Chris Jackson
  * @since 1.7.0
  */
@@ -48,7 +48,7 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveConfigurationConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

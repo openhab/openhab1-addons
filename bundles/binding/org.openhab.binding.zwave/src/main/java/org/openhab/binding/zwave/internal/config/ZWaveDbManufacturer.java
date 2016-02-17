@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Implements the manufacturer class for the XML product database
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *

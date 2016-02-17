@@ -10,7 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.event;
 
 /**
  * This event signals a node information frame.
- * 
+ *
  * @author Chris Jackson
  * @since 1.8.0
  */
@@ -19,7 +19,7 @@ public class ZWaveNodeInfoEvent extends ZWaveEvent {
     /**
      * Constructor. Creates a new instance of the ZWaveInclusionEvent
      * class.
-     * 
+     *
      * @param nodeId the nodeId of the event.
      */
     public ZWaveNodeInfoEvent(int nodeId) {
