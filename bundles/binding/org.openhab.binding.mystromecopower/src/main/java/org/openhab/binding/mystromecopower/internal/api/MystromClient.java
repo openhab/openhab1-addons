@@ -101,6 +101,17 @@ public class MystromClient implements IMystromClient {
 			}
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openhab.binding.mystromecopower.internal.api.IMystromClient#getDevicesState
+	 * ()
+	 */
+	public List<MystromDevice> getDevicesState(){
+		return this.getDevices(true);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -110,53 +121,7 @@ public class MystromClient implements IMystromClient {
 	 * ()
 	 */
 	public List<MystromDevice> getDevices() {
-		Reader reader = null;
-
-		logger.info("get devices...");
-
-		try {
-			String url = API_URL + "devices" + "?authToken=" + this.authToken;
-			HttpURLConnection httpURLConnection;
-			httpURLConnection = (HttpURLConnection) new URL(url)
-					.openConnection();
-
-			httpURLConnection.connect();
-
-			int responseCode = httpURLConnection.getResponseCode();
-
-			if (responseCode != HttpURLConnection.HTTP_OK) {
-				logger.error("Get devices http code: '{}'", responseCode);
-				return new ArrayList<MystromDevice>();
-			}
-
-			InputStream inputStream = httpURLConnection.getInputStream();
-			reader = new InputStreamReader(inputStream, "UTF-8");
-			JsonObject jsonObject = (JsonObject) jsonParser.parse(reader);
-
-			String status = jsonObject.get("status").getAsString();
-			if (!status.equals("ok")) {
-				logger.error("Error while getting devices: '{}'", status);
-				return new ArrayList<MystromDevice>();
-			}
-
-			GetDevicesResult result = gson.fromJson(jsonObject,
-					GetDevicesResult.class);
-			logger.info("Devices discovery sucessfull, found '{}' devices",
-					result.devices.size());
-
-			return result.devices;
-		} catch (Exception ex) {
-			logger.error("Error getting devices: '{}'", ex.toString());
-			return new ArrayList<MystromDevice>();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException ignored) {
-
-				}
-			}
-		}
+		return this.getDevices(false);
 	}
 
 	/*
@@ -307,7 +272,61 @@ public class MystromClient implements IMystromClient {
 			}
 		}
 	}
+	
+	private List<MystromDevice> getDevices(boolean minimalMode){
+		Reader reader = null;
 
+		logger.debug("get all devices state");
+
+		try {
+			String url = API_URL + "devices" + "?authToken=" + this.authToken;
+			if(minimalMode){
+				url = url + "&minimal=true";
+			}
+			
+			HttpURLConnection httpURLConnection;
+			httpURLConnection = (HttpURLConnection) new URL(url)
+					.openConnection();
+
+			httpURLConnection.connect();
+
+			int responseCode = httpURLConnection.getResponseCode();
+
+			if (responseCode != HttpURLConnection.HTTP_OK) {
+				logger.error("Get devices http code: '{}'", responseCode);
+				return new ArrayList<MystromDevice>();
+			}
+
+			InputStream inputStream = httpURLConnection.getInputStream();
+			reader = new InputStreamReader(inputStream, "UTF-8");
+			JsonObject jsonObject = (JsonObject) jsonParser.parse(reader);
+
+			String status = jsonObject.get("status").getAsString();
+			if (!status.equals("ok")) {
+				logger.error("Error while getting devices: '{}'", status);
+				return new ArrayList<MystromDevice>();
+			}
+
+			GetDevicesResult result = gson.fromJson(jsonObject,
+					GetDevicesResult.class);
+			logger.debug("Devices discovery sucessfull, found '{}' devices",
+					result.devices.size());
+
+			return result.devices;
+		} catch (Exception ex) {
+			logger.error("Error getting devices: '{}'", ex.toString());
+			return new ArrayList<MystromDevice>();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ignored) {
+
+				}
+			}
+		}
+	}
+	
 	private GsonBuilder createGsonBuilder() {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 

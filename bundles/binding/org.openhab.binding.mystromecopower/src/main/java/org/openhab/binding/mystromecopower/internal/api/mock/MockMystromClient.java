@@ -82,4 +82,10 @@ public class MockMystromClient implements IMystromClient {
 	public void RestartMaster(String deviceId) {
 	}
 
+	@Override
+	public List<MystromDevice> getDevicesState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

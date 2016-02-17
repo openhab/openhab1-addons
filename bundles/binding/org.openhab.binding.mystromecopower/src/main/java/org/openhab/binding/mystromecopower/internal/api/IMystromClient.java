@@ -31,6 +31,14 @@ public interface IMystromClient {
 	 * @return List of devices.
 	 */
 	public List<MystromDevice> getDevices();
+	
+	/**
+	 * Get all devices's state on the connected account, needs to call login method
+	 * before.
+	 * 
+	 * @return List of devices.
+	 */
+	public List<MystromDevice> getDevicesState();
 
 	/**
 	 * Returns information about a device by the id.

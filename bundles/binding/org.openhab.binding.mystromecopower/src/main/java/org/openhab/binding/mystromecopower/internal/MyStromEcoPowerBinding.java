@@ -144,7 +144,9 @@ public class MyStromEcoPowerBinding extends
 		if (this.devicesMap.isEmpty()) {
 			return;
 		}
-
+		
+		List<MystromDevice> devices = this.mystromClient.getDevicesState();
+		
 		for (MyStromEcoPowerBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
 				logger.debug(
@@ -155,8 +157,14 @@ public class MyStromEcoPowerBinding extends
 				String id = this.devicesMap.get(friendlyName);
 
 				if (id != null) {
-					MystromDevice device;
-					device = this.mystromClient.getDeviceInfo(id);
+					MystromDevice device = null;
+					
+					for(MystromDevice searchDevice : devices){
+						if(searchDevice.id.equals(id)){
+							device = searchDevice;
+							break;
+						}
+					}
 
 					if (device != null) {
 						if (provider.getIsSwitch(itemName)) {
