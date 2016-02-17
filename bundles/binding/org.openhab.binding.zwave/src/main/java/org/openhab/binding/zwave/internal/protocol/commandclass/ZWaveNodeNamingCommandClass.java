@@ -75,7 +75,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveNameLocationCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -159,7 +159,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Get a string from the serial message
-     * 
+     *
      * @param serialMessage
      * @param offset
      * @return String
@@ -189,9 +189,14 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
         int numBytes = serialMessage.getMessagePayload().length - (offset + 2);
 
-        if (numBytes <= 0) {
-            logger.error("NODE {} : Node Name report error in message length", this.getNode().getNodeId());
+        if (numBytes < 0) {
+            logger.error("NODE {} : Node Name report error in message length ({})", this.getNode().getNodeId(),
+                    serialMessage.getMessagePayload().length);
             return null;
+        }
+
+        if (numBytes == 0) {
+            return new String();
         }
 
         // Maximum length is 16 bytes
@@ -199,6 +204,14 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
             logger.warn("NODE {} : Node Name is too big; maximum is {} characters {}", this.getNode().getNodeId(),
                     MAX_STRING_LENGTH, numBytes);
             numBytes = MAX_STRING_LENGTH;
+        }
+
+        // Check for null terminations - ignore anything after the first null
+        for (int c = offset + 2; c < numBytes; c++) {
+            if (serialMessage.getMessagePayloadByte(c + offset + 2) == 0) {
+                numBytes = c;
+                break;
+            }
         }
 
         byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, offset + 2 + numBytes);
@@ -221,15 +234,19 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a NAME_REPORT / NAME_SET message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
      */
     protected void processNameReport(SerialMessage serialMessage, int offset, int endpoint) {
-        name = getString(serialMessage, offset);
+        String name = getString(serialMessage, offset);
+        if (name == null) {
+            return;
+        }
 
-        logger.info("NODE {}: Node name: {}", this.getNode().getNodeId(), name);
+        this.name = name;
+        logger.debug("NODE {}: Node name: {}", this.getNode().getNodeId(), name);
         ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint,
                 this.getCommandClass(), name);
         this.getController().notifyEventListeners(zEvent);
@@ -237,15 +254,19 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a LOCATION_REPORT / LOCATION_SET message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
      */
     protected void processLocationReport(SerialMessage serialMessage, int offset, int endpoint) {
-        location = getString(serialMessage, offset);
+        String location = getString(serialMessage, offset);
+        if (name == null) {
+            return;
+        }
 
-        logger.info("NODE {}: Node location: {}", this.getNode().getNodeId(), location);
+        this.location = location;
+        logger.debug("NODE {}: Node location: {}", this.getNode().getNodeId(), location);
         ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint,
                 this.getCommandClass(), location);
         this.getController().notifyEventListeners(zEvent);
@@ -253,7 +274,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the NAME GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getNameMessage() {
@@ -268,7 +289,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the NAME GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getLocationMessage() {
@@ -283,7 +304,7 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the Name or Location SET command
-     * 
+     *
      * @param the level to set.
      * @return the serial message
      */
