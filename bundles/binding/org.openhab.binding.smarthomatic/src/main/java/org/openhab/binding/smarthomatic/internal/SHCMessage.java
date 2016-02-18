@@ -20,14 +20,19 @@ import java.util.zip.CRC32;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.openhab.binding.smarthomatic.internal.packetData.Array;
+import org.openhab.binding.smarthomatic.internal.packetData.BoolValue;
+import org.openhab.binding.smarthomatic.internal.packetData.IntValue;
+import org.openhab.binding.smarthomatic.internal.packetData.Packet;
+import org.openhab.binding.smarthomatic.internal.packetData.Packet.MessageGroup;
+import org.openhab.binding.smarthomatic.internal.packetData.Packet.MessageGroup.Message;
+import org.openhab.binding.smarthomatic.internal.packetData.UIntValue;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.xml.internal.ws.api.message.Packet;
 
 /**
  * class represents a complete smarthomatic message it also includes the
@@ -45,7 +50,7 @@ public class SHCMessage {
 
     /**
      * constants
-     * 
+     *
      */
 
     public static final String DATA_FLAG = "PKT:";
@@ -78,7 +83,7 @@ public class SHCMessage {
      * the smarthomatic header class represents the part of a message that is
      * common to all messages for details of header format see
      * {@link https://www.smarthomatic.org/basics/communication_protocol.html}
-     * 
+     *
      * @author mcjobo
      * @author arohde
      * @since 1.9.0
@@ -98,7 +103,7 @@ public class SHCMessage {
 
         /**
          * getter for the parsed sender id
-         * 
+         *
          * @return
          */
         public int getSenderID() {
@@ -107,7 +112,7 @@ public class SHCMessage {
 
         /**
          * getter for the parsed message type
-         * 
+         *
          * @return
          */
         public int getMessageType() {
@@ -116,7 +121,7 @@ public class SHCMessage {
 
         /**
          * getter for the parsed message group id
-         * 
+         *
          * @return
          */
         public long getMessageGroupID() {
@@ -125,7 +130,7 @@ public class SHCMessage {
 
         /**
          * getter for the parsed message id
-         * 
+         *
          * @return
          */
         public int getMessageID() {
@@ -134,7 +139,7 @@ public class SHCMessage {
 
         /**
          * getter for the parsed message data
-         * 
+         *
          * @return
          */
         public byte[] getMessageData() {
@@ -143,7 +148,7 @@ public class SHCMessage {
 
         /**
          * constructor to create a new smarthomatic header with the given data
-         * 
+         *
          * @param data
          */
         public SHCHeader(String data) {
@@ -201,7 +206,7 @@ public class SHCMessage {
      * these part represent the message data of the different smarthomatic
      * messages details of a messages data is described here:
      * {@link https://www.smarthomatic.org/basics/message_catalog.html}
-     * 
+     *
      * @author mcjobo
      * @author arohde
      * @since 1.9.0
@@ -298,7 +303,7 @@ public class SHCMessage {
 
         /**
          * returns the openhab types found
-         * 
+         *
          * @return
          */
         public List<Type> getOpenHABTypes() {
@@ -322,7 +327,7 @@ public class SHCMessage {
 
     /**
      * constructor to create a new smarthomatic message
-     * 
+     *
      * @param message
      * @param packet
      */
@@ -335,7 +340,7 @@ public class SHCMessage {
 
     /**
      * getter to return the parsed header
-     * 
+     *
      * @return
      */
     public SHCHeader getHeader() {
@@ -344,7 +349,7 @@ public class SHCMessage {
 
     /**
      * getter to return the parsed data object
-     * 
+     *
      * @return
      */
     public SHCData getData() {
@@ -353,7 +358,7 @@ public class SHCMessage {
 
     /**
      * getter to return the openhab states parsed from the smarthomtic message
-     * 
+     *
      * @param object
      * @return
      */
