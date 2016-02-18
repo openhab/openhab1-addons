@@ -39,7 +39,7 @@ public class ResponseParser {
 
     /**
      * See if the response from the air conditioner contains a token-
-     * 
+     *
      * @param response The response from the air conditioner
      * @return true if the response contains a token, otherwise false
      */
@@ -49,7 +49,7 @@ public class ResponseParser {
 
     /**
      * Parses the token in the response.
-     * 
+     *
      * @param response The response from the AC
      * @return the token
      */
@@ -102,7 +102,7 @@ public class ResponseParser {
      * @return true if it is the first line, otherwise false
      */
     public static boolean isFirstLine(String response) {
-        return response.contains("DRC-1.00");
+        return response.contains("DRC-1.00") || response.contains("DPLUG-1.6");
     }
 
     /**
@@ -158,7 +158,7 @@ public class ResponseParser {
      * @throws SAXException If we cannot read the response from the AC
      */
     public static Map<CommandEnum, String> parseStatusResponse(String response) throws SAXException {
-        logger.info("Response is: " + response);
+        logger.debug("Response is: " + response);
         Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
