@@ -19,11 +19,10 @@ import javax.xml.bind.Unmarshaller;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.smarthomatic.internal.SHCMessage;
+import org.openhab.binding.smarthomatic.internal.packetData.Packet;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Type;
-
-import com.sun.xml.internal.ws.api.message.Packet;
 
 /**
  * test of the different smarthomatic messages to make sure they are parsed
@@ -38,7 +37,7 @@ public class TestSHCMessage {
 
     /**
      * common setup
-     * 
+     *
      * @throws Exception
      */
     @Before
