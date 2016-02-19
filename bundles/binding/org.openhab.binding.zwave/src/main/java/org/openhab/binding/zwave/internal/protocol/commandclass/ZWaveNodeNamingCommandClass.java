@@ -309,9 +309,6 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
      * @return the serial message
      */
     private SerialMessage setValueMessage(String str, int command) {
-        logger.debug("NODE {}: Creating new message for application command NAME_SET to {}", this.getNode().getNodeId(),
-                str);
-
         byte[] nameBuffer = null;
         try {
             nameBuffer = str.getBytes("UTF-8");
@@ -340,11 +337,16 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
     }
 
     public SerialMessage setNameMessage(String name) {
+        logger.debug("NODE {}: Creating new message for application command NAME_SET to {}", this.getNode().getNodeId(),
+                name);
+
         return setValueMessage(name, NAME_SET);
     }
 
     public SerialMessage setLocationMessage(String location) {
-        return setValueMessage(location, NAME_SET);
+        logger.debug("NODE {}: Creating new message for application command LOCATION_SET to {}",
+                this.getNode().getNodeId(), location);
+        return setValueMessage(location, LOCATION_SET);
     }
 
     /**
