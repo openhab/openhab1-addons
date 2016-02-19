@@ -134,8 +134,12 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
     public boolean enableARCPackets = false; // 0x02 - ARC (433.92)
     public boolean enableX10Packets = false; // 0x01 - X10 (310/433.92)
 
+    public boolean enableHomeConfortPackets = false; // 0x02 - HomeConfort (433.92) 
+    public boolean enableKeeLoqPackets = false; // 0x01 - KeeLoq (433.92) 
+
     public byte hardwareVersion1 = 0;
     public byte hardwareVersion2 = 0;
+    public byte outputPower = 0;
 
     public RFXComInterfaceMessage() {
 
@@ -153,8 +157,9 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         str += "\n - Sub type = " + subType;
         str += "\n - Command = " + command;
         str += "\n - Transceiver type = " + transceiverType;
-        str += "\n - Firmware version = " + firmwareVersion;
+        str += "\n - Firmware version = " + (short)(firmwareVersion & 0xff);
         str += "\n - Hardware version = " + hardwareVersion1 + "." + hardwareVersion2;
+        str += "\n - Output Power = " + outputPower;
         str += "\n - Undecoded packets = " + enableUndecodedPackets;
         str += "\n - RFU6 packets = " + enableRFU6Packets;
         str += "\n - RFU5 packets = " + enableRFU5Packets;
@@ -181,6 +186,8 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         str += "\n - AC (433.92) packets = " + enableACPackets;
         str += "\n - ARC (433.92) packets = " + enableARCPackets;
         str += "\n - X10 (310/433.92) packets = " + enableX10Packets;
+        str += "\n - HomeConfort packets = " + enableHomeConfortPackets;
+        str += "\n - KeeLoq (433.92) packets = " + enableKeeLoqPackets;
 
         return str;
     }
@@ -239,9 +246,13 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         enableARCPackets = (data[9] & 0x02) != 0 ? true : false;
         enableX10Packets = (data[9] & 0x01) != 0 ? true : false;
 
-        hardwareVersion1 = data[10];
-        hardwareVersion2 = data[11];
+        enableHomeConfortPackets = (data[10] & 0x02) != 0 ? true : false;
+        enableKeeLoqPackets = (data[10] & 0x01) != 0 ? true : false;
 
+        hardwareVersion1 = data[11];
+        hardwareVersion2 = data[12];
+        
+        outputPower = data[13];
     }
 
     @Override
@@ -284,10 +295,12 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         data[9] |= enableARCPackets ? 0x02 : 0x00;
         data[9] |= enableX10Packets ? 0x01 : 0x00;
 
-        data[10] = hardwareVersion1;
-        data[11] = hardwareVersion2;
-        data[12] = 0;
-        data[13] = 0;
+        data[10] |= enableHomeConfortPackets ? 0x02 : 0x00;
+        data[10] |= enableKeeLoqPackets ? 0x01 : 0x00;
+
+        data[11] = hardwareVersion1;
+        data[12] = hardwareVersion2;
+        data[13] = outputPower;
 
         return data;
     }
