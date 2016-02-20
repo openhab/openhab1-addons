@@ -40,6 +40,7 @@ public class RFXComMessageFactory {
                     put(PacketType.BLINDS1, "RFXComBlinds1Message");
                     put(PacketType.RFY, "RFXComRfyMessage");
                     put(PacketType.SECURITY1, "RFXComSecurity1Message");
+                    put(PacketType.SECURITY2, "RFXComSecurity2Message");
                     put(PacketType.CAMERA1, "RFXComCamera1Message");
                     put(PacketType.REMOTE_CONTROL, "RFXComRemoteControlMessage");
                     put(PacketType.THERMOSTAT1, "RFXComThermostat1Message");
@@ -117,7 +118,7 @@ public class RFXComMessageFactory {
             return (RFXComMessageInterface) c.newInstance(packet);
 
         } catch (ClassNotFoundException e) {
-            throw new RFXComException("Message " + packetType + " not implemented", e);
+            throw new RFXComException("Message " + packetType + "(" + packet[1] + ") not implemented", e);
 
         } catch (Exception e) {
             throw new RFXComException(e);
