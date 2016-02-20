@@ -10,7 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.event;
 
 /**
  * This event signals a node being included or excluded into the network.
- * 
+ *
  * @author Chris Jackson
  * @since 1.5.0
  */
@@ -20,7 +20,7 @@ public class ZWaveInclusionEvent extends ZWaveEvent {
     /**
      * Constructor. Creates a new instance of the ZWaveInclusionEvent
      * class.
-     * 
+     *
      * @param nodeId the nodeId of the event.
      */
     public ZWaveInclusionEvent(Type type, int nodeId) {

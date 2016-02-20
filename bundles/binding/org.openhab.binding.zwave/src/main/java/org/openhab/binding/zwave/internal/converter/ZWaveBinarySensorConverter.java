@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveBinarySensorConverter class. Converter for communication with the
  * {@link ZWaveBinarySensorConverter}. Implements polling of the binary sensor
  * status and receiving of binary sensor events.
- * 
+ *
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.4.0
@@ -46,7 +46,7 @@ public class ZWaveBinarySensorConverter extends ZWaveCommandClassConverter<ZWave
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveBinarySensorConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * ZWaveSceneConverter class. Converters between binding items
  * and the Z-Wave API for scene controllers.
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  */
@@ -40,7 +40,7 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneAc
     /**
      * Constructor. Creates a new instance of the {@link ZWaveConverterBase}
      * class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use to send messages.
      * @param eventPublisher the {@link EventPublisher} that can be used to send updates.
      */

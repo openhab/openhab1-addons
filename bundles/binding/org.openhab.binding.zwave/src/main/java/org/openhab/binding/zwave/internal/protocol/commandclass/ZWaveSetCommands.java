@@ -13,14 +13,14 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 /**
  * Interface to implement for all command classes that implement the SET
  * commands like SET value.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
 public interface ZWaveSetCommands {
     /**
      * Gets a SerialMessage with the SET command
-     * 
+     *
      * @param value the value to set.
      * @return the serial message
      */

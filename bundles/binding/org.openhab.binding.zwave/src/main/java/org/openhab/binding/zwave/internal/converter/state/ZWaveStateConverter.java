@@ -14,7 +14,7 @@ import org.openhab.core.types.State;
 
 /**
  * Converts raw Z-Wave values to openHAB states.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  * @param <ZWAVE_TYPE> the type of the raw Z-Wave value.
@@ -24,7 +24,7 @@ public abstract class ZWaveStateConverter<ZWAVE_TYPE, OPENHAB_TYPE extends State
 
     /**
      * Returns the type of the openHAB {@link State} that this {@link ZWaveStateConverter} converts to.
-     * 
+     *
      * @return the supported {@link State}
      */
     @SuppressWarnings("unchecked")
@@ -35,7 +35,7 @@ public abstract class ZWaveStateConverter<ZWAVE_TYPE, OPENHAB_TYPE extends State
 
     /**
      * Returns the type the state converter converts from.
-     * 
+     *
      * @return the supported Z-Wave type
      */
     public Class<?> getType() {
@@ -44,7 +44,7 @@ public abstract class ZWaveStateConverter<ZWAVE_TYPE, OPENHAB_TYPE extends State
 
     /**
      * Converts a Z-Wave value to an OpenHab state.
-     * 
+     *
      * @param value the Z-Wave value to convert.
      * @return the openHAB state to convert to.
      */
@@ -52,7 +52,7 @@ public abstract class ZWaveStateConverter<ZWAVE_TYPE, OPENHAB_TYPE extends State
 
     /**
      * Converts a Z-Wave value to an OpenHab state.
-     * 
+     *
      * @param value the Z-Wave value to convert.
      * @return the openHAB state to convert to.
      */

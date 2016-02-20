@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat Setpoint command class.
- * 
+ *
  * @author Matthew Bowman
  * @author Jan-Willem Spuij
  * @author Dave Hock
@@ -66,7 +66,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveThermostatSetpointCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -148,7 +148,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a THERMOSTAT_SETPOINT_REPORT message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -251,7 +251,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the THERMOSTAT_SETPOINT_GET command
-     * 
+     *
      * @param setpointType the setpoint type to get
      * @return the serial message
      */
@@ -272,7 +272,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the THERMOSTAT_SETPOINT_SUPPORTED_GET command
-     * 
+     *
      * @return the serial message, or null if the supported command is not supported.
      */
     public SerialMessage getSupportedMessage() {
@@ -297,7 +297,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the THERMOSTAT_SETPOINT_SET command
-     * 
+     *
      * @param setpoint the setpoint to set.
      * @return the serial message
      */
@@ -312,7 +312,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the THERMOSTAT_SETPOINT_SET command
-     * 
+     *
      * @param scale the scale (DegC or DegF)
      * @param setpointType the setpoint type to set
      * @param setpoint the setpoint to set.
@@ -346,7 +346,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave SetpointType enumeration. The setpoint type indicates the type
      * of setpoint that is reported.
-     * 
+     *
      * @author Matthew Bowman
      * @since 1.4.0
      */
@@ -386,7 +386,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the setpoint type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the setpoint type.
          */
@@ -414,7 +414,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
     /**
      * Class to hold setpoint state
-     * 
+     *
      * @author Chris Jackson
      */
     private class Setpoint {
@@ -452,7 +452,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave Thermostat Setpoint Event class. Indicates that a setpoint value
      * changed.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.4.0
      */
@@ -463,7 +463,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a instance of the ZWaveThermostatSetpointValueEvent class.
-         * 
+         *
          * @param nodeId the nodeId of the event
          * @param endpoint the endpoint of the event.
          * @param setpointType the setpoint type that triggered the event;

@@ -15,7 +15,7 @@ import org.openhab.core.library.types.DateTimeType;
 
 /**
  * Converts from a {@link Date} to a {@link DateTimeType}
- * 
+ *
  * @author Ben Jones
  * @since 1.4.0
  */

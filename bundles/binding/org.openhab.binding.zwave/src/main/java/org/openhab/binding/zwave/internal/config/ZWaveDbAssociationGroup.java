@@ -14,7 +14,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * This implements the configuration group for the XML product database.
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *
