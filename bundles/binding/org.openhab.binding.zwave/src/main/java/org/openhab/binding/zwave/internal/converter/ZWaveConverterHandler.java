@@ -53,7 +53,7 @@ public class ZWaveConverterHandler {
     /**
      * Constructor. Creates a new instance of the @ link ZWaveConverterHandler}
      * class.
-     * 
+     *
      * @param controller
      *            the {@link ZWaveController} to use to send messages.
      * @param eventPublisher
@@ -117,7 +117,7 @@ public class ZWaveConverterHandler {
 
     /**
      * Returns a converter to convert between the Z-Wave API and the binding.
-     * 
+     *
      * @param commandClass
      *            the {@link CommandClass} to create a converter for.
      * @return a {@link ZWaveCommandClassConverter} or null if a converter is
@@ -130,7 +130,7 @@ public class ZWaveConverterHandler {
     /**
      * Returns the command class that provides the best suitable converter to
      * convert between the Z-Wave API and the binding.
-     * 
+     *
      * @param item
      *            the {@link item} to resolve a converter for.
      * @param node
@@ -166,7 +166,7 @@ public class ZWaveConverterHandler {
     /**
      * Execute refresh method. This method is called every time a binding item
      * is refreshed and the corresponding node should be sent a message.
-     * 
+     *
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName
@@ -268,7 +268,7 @@ public class ZWaveConverterHandler {
 
     /**
      * Get the refresh interval for an item binding
-     * 
+     *
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName
@@ -338,7 +338,7 @@ public class ZWaveConverterHandler {
      * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement this
      * message in derived classes to convert the value and post an update on the
      * openHAB bus.
-     * 
+     *
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName
@@ -381,7 +381,7 @@ public class ZWaveConverterHandler {
     /**
      * Receives a command from openHAB and translates it to an operation on the
      * Z-Wave network.
-     * 
+     *
      * @param provider
      *            the {@link ZWaveBindingProvider} that provides the item
      * @param itemName

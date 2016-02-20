@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Victor Belov
  * @author Brian Crosby
  * @author Chris Jackson
@@ -125,7 +125,7 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 
     /**
      * Returns the binding configuration for a string.
-     * 
+     *
      * @return the binding configuration.
      */
     @Override

@@ -17,7 +17,7 @@ import org.openhab.core.binding.BindingConfig;
 /**
  * Binding Configuration class. Represents a binding configuration in
  * the items file to a Z-Wave node.
- * 
+ *
  * @author Victor Belov
  * @author Brian Crosby
  * @author Jan-Willem Spuij
@@ -26,7 +26,7 @@ import org.openhab.core.binding.BindingConfig;
 public class ZWaveBindingConfig implements BindingConfig {
     /**
      * Constructor. Creates a new instance of the ZWaveBindingConfig class.
-     * 
+     *
      * @param nodeId the NodeId the item is bound to
      * @param endpoint the end point in a multi channel node the item is bound to
      * @param arguments the arguments for the binding as a {@link HashMap} of key-value pairs
@@ -46,7 +46,7 @@ public class ZWaveBindingConfig implements BindingConfig {
 
     /**
      * Returns NodeId of bound node.
-     * 
+     *
      * @return the NodeId the item is bound to.
      */
     public int getNodeId() {
@@ -55,7 +55,7 @@ public class ZWaveBindingConfig implements BindingConfig {
 
     /**
      * Returns Multi channel Endpoint of a bound node.
-     * 
+     *
      * @return endpoint the end point in a multi channel node the item is bound to.
      */
     public int getEndpoint() {
@@ -64,7 +64,7 @@ public class ZWaveBindingConfig implements BindingConfig {
 
     /**
      * Returns the arguments entered in the binding string.
-     * 
+     *
      * @return a map of arguments
      */
     public Map<String, String> getArguments() {
@@ -75,7 +75,7 @@ public class ZWaveBindingConfig implements BindingConfig {
      * Returns the interval at which the item should be refreshed.
      * 0 (zero) indicates that the item should not be refreshed.
      * null indicates that the default should be used.
-     * 
+     *
      * @return the refreshInterval
      */
     public Integer getRefreshInterval() {
@@ -86,7 +86,7 @@ public class ZWaveBindingConfig implements BindingConfig {
      * Sets the interval at which the item should be refreshed.
      * 0 (zero) indicates that the item should not be refreshed.
      * null indicates that the default should be used.
-     * 
+     *
      * @param refreshInterval the refreshInterval to set
      */
     public void setRefreshInterval(Integer refreshInterval) {
@@ -95,7 +95,7 @@ public class ZWaveBindingConfig implements BindingConfig {
 
     /**
      * Returns the date when the item was last refreshed.
-     * 
+     *
      * @return the lastRefreshed
      */
     public Date getLastRefreshed() {
@@ -104,7 +104,7 @@ public class ZWaveBindingConfig implements BindingConfig {
 
     /**
      * Sets the date when the item was last refreshed.
-     * 
+     *
      * @param lastRefreshed the lastRefreshed to set
      */
     public void setLastRefreshed(Date lastRefreshed) {

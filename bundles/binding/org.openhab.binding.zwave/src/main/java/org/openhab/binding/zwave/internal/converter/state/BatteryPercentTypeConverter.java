@@ -13,7 +13,7 @@ import org.openhab.core.library.types.PercentType;
 /**
  * Converts from a {@link Integer} to a {@link PercentType}
  * Only processes for the BATTERY command class.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

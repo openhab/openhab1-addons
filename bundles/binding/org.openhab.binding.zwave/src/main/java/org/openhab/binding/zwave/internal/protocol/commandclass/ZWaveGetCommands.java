@@ -12,14 +12,14 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 
 /**
  * Interface to implement for all command classes that implement the Get command.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
 public interface ZWaveGetCommands {
     /**
      * Gets a SerialMessage with the GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getValueMessage();

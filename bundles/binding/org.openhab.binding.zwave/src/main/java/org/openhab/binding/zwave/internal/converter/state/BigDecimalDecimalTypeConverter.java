@@ -14,7 +14,7 @@ import org.openhab.core.library.types.DecimalType;
 
 /**
  * Converts from an {@link BigDecimal} to a {@link DecimalType}
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

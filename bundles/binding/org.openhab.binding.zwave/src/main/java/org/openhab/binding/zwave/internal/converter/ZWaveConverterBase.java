@@ -28,7 +28,7 @@ import org.openhab.core.types.State;
  * ZWaveConverterBase class. Base class for all converters
  * that convert between the Z-Wave API and openHAB
  * items.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -42,7 +42,7 @@ public abstract class ZWaveConverterBase {
     /**
      * Constructor. Creates a new instance of the {@link ZWaveConverterBase}
      * class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use to send messages.
      * @param eventPublisher the {@link EventPublisher} that can be used to send updates.
      */
@@ -54,7 +54,7 @@ public abstract class ZWaveConverterBase {
     /**
      * Returns the {@link EventPublisher} that can be used
      * inside the converter to publish event updates.
-     * 
+     *
      * @return the eventPublisher
      */
     protected EventPublisher getEventPublisher() {
@@ -63,7 +63,7 @@ public abstract class ZWaveConverterBase {
 
     /**
      * Returns the {@link ZWaveController} that is used to send messages.
-     * 
+     *
      * @return the controller to use to send messages.
      */
     protected ZWaveController getController() {
@@ -72,7 +72,7 @@ public abstract class ZWaveConverterBase {
 
     /**
      * Add a {@link ZWaveStateConverter} to the map of converters for fast lookup.
-     * 
+     *
      * @param converter the {@link ZWaveStateConverter} to add.
      */
     protected void addStateConverter(ZWaveStateConverter<?, ?> converter) {
@@ -81,7 +81,7 @@ public abstract class ZWaveConverterBase {
 
     /**
      * Add a {@link ZWaveStateConverter} to the map of converters for fast lookup.
-     * 
+     *
      * @param converter the {@link ZWaveStateConverter} to add.
      */
     protected void addCommandConverter(ZWaveCommandConverter<?, ?> converter) {
@@ -91,7 +91,7 @@ public abstract class ZWaveConverterBase {
     /**
      * Returns the default Refresh interval for the converter to use.
      * 0 (zero) indicates that the converter does not refresh by default or does not support it.
-     * 
+     *
      * @return the refresh interval for this converter.
      */
     abstract int getRefreshInterval();
@@ -99,7 +99,7 @@ public abstract class ZWaveConverterBase {
     /**
      * Gets a {@link ZWaveStateConverter} that is suitable for this {@link CommandClass} and the data types supported by
      * the {@link Item}
-     * 
+     *
      * @param commandClass the {@link CommandClass} that sent the value.
      * @param item the {@link Item} that has to receive the State;
      * @return a converter object that converts between the value and the state;
@@ -127,7 +127,7 @@ public abstract class ZWaveConverterBase {
 
     /**
      * Gets a {@link ZWaveCommandConverter} that is suitable for this {@link CommandClass}
-     * 
+     *
      * @param commandClass the {@link CommandClass} that sent the value.
      * @return a converter object that converts between the value and the state;
      */

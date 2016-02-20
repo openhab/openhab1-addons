@@ -33,7 +33,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * status or event as on (0xFF) or off (0x00).
  * The commands include the possibility to get a given
  * value and report a value.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -56,7 +56,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveBinarySensorCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -118,7 +118,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_BINARY_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -176,7 +176,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave SensorType enumeration. The sensor type indicates the type
      * of sensor that is reported.
-     * 
+     *
      * @author Chris Jackson
      * @since 1.5.0
      */
@@ -221,7 +221,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the sensor type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the sensor type.
          */
@@ -250,7 +250,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
 
     /**
      * Z-Wave Binary Sensor Event class. Indicates that an sensor value changed.
-     * 
+     *
      * @author Chris Jackson
      * @since 1.5.0
      */
@@ -260,7 +260,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a instance of the ZWaveBinarySensorValueEvent class.
-         * 
+         *
          * @param nodeId the nodeId of the event
          * @param endpoint the endpoint of the event.
          * @param sensorType the sensor type that triggered the event;

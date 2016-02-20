@@ -12,7 +12,7 @@ import org.openhab.core.library.types.OpenClosedType;
 
 /**
  * Converts from a Z-Wave boolean value to a {@link OpenClosedType}
- * 
+ *
  * @author Ben Jones
  * @since 1.4.0
  */

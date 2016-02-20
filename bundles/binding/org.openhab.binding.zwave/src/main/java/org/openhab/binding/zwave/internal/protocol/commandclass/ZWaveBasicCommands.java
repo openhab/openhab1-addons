@@ -11,7 +11,7 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 /**
  * Interface to implement for all command classes that implement the basic
  * commands like GET/SET value.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */

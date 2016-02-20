@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a serial message from the zwave controller
- * 
+ *
  * @author Chris Jackson
  * @since 1.7.0
  */

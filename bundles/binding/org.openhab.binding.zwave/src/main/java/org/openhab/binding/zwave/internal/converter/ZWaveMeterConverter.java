@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveMultiLevelSensorConverter class. Converter for communication with the
  * {@link ZWaveMultiLevelSensorCommandClass}. Implements polling of the sensor
  * status and receiving of sensor events.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -46,7 +46,7 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveMeterConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

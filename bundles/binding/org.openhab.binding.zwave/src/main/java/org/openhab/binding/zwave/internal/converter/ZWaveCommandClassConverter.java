@@ -23,7 +23,7 @@ import org.openhab.core.types.Command;
  * ZWaveCommandClassConverter class. Base class for all converters
  * that convert between Z-Wave command classes and openHAB
  * items.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  * @param <COMMAND_CLASS_TYPE> the {@link ZWaveCommandClass} that this converter converts for.
@@ -34,7 +34,7 @@ public abstract class ZWaveCommandClassConverter<COMMAND_CLASS_TYPE extends ZWav
     /**
      * Constructor. Creates a new instance of the {@link ZWaveCommandClassConverter}
      * class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use to send messages.
      * @param eventPublisher the {@link EventPublisher} that can be used to send updates.
      */
@@ -45,7 +45,7 @@ public abstract class ZWaveCommandClassConverter<COMMAND_CLASS_TYPE extends ZWav
     /**
      * Execute refresh method. This method is called every time a binding item is
      * refreshed and the corresponding node should be sent a message.
-     * 
+     *
      * @param node the {@link ZWaveNode} that is bound to the item.
      * @param commandClass the {@link ZWaveCommandClass} that will be used to send a polling message.
      * @param endpointId the endpoint id to send the message.
@@ -57,7 +57,7 @@ public abstract class ZWaveCommandClassConverter<COMMAND_CLASS_TYPE extends ZWav
      * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement
      * this message in derived classes to convert the value and post an
      * update on the openHAB bus.
-     * 
+     *
      * @param event the received {@link ZWaveCommandClassValueEvent}.
      * @param item the {@link Item} that should receive the event.
      */
@@ -66,7 +66,7 @@ public abstract class ZWaveCommandClassConverter<COMMAND_CLASS_TYPE extends ZWav
     /**
      * Receives a command from openHAB and translates it to an operation
      * on the Z-Wave network.
-     * 
+     *
      * @param command the received command
      * @param node the {@link ZWaveNode} to send the command to
      * @param commandClass the {@link ZWaveCommandClass} to send the command to.
