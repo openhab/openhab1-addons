@@ -2100,6 +2100,15 @@
 		<Id>0002</Id>
 		<Name>Danfoss</Name>
 		<Product>
+            <Reference>
+                <Type>0005</Type>
+                <Id>0175</Id>
+            </Reference>
+            <Model>MT02650</Model>
+            <Label lang="en">Devolo Thermostat (09356)</Label>
+            <ConfigFile>danfoss/mt02650.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>0005</Type>
 				<Id>0003</Id>
