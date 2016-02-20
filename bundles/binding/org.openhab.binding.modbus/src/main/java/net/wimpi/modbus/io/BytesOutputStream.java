@@ -27,106 +27,106 @@ import java.io.IOException;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class BytesOutputStream
-    extends FastByteArrayOutputStream
-    implements DataOutput {
+public class BytesOutputStream extends FastByteArrayOutputStream implements DataOutput {
 
-  private DataOutputStream m_Dout;
+    private DataOutputStream m_Dout;
 
- /**
-  * Constructs a new <tt>BytesOutputStream</tt> instance with
-   * a new output buffer of the given size.
-  *
-  * @param size the size of the output buffer as <tt>int</tt>.
-  */
-  public BytesOutputStream(int size) {
-    super(size);
-    m_Dout = new DataOutputStream(this);
-  }//BytesOutputStream
+    /**
+     * Constructs a new <tt>BytesOutputStream</tt> instance with
+     * a new output buffer of the given size.
+     *
+     * @param size the size of the output buffer as <tt>int</tt>.
+     */
+    public BytesOutputStream(int size) {
+        super(size);
+        m_Dout = new DataOutputStream(this);
+    }// BytesOutputStream
 
-  /**
-   * Constructs a new <tt>BytesOutputStream</tt> instance with
-   * a given output buffer.
-   *
-   * @param buffer the output buffer as <tt>byte[]</tt>.
-   */
-  public BytesOutputStream(byte[] buffer) {
-    buf = buffer;
-    count = 0;
-    m_Dout = new DataOutputStream(this);
-  }//BytesOutputStream
+    /**
+     * Constructs a new <tt>BytesOutputStream</tt> instance with
+     * a given output buffer.
+     *
+     * @param buffer the output buffer as <tt>byte[]</tt>.
+     */
+    public BytesOutputStream(byte[] buffer) {
+        buf = buffer;
+        count = 0;
+        m_Dout = new DataOutputStream(this);
+    }// BytesOutputStream
 
-  /**
-   * Returns the reference to the output buffer.
-   *
-   * @return the reference to the <tt>byte[]</tt> output buffer.
-   */
-  public byte[] getBuffer() {
-    return buf;
-  }//getBuffer
+    /**
+     * Returns the reference to the output buffer.
+     *
+     * @return the reference to the <tt>byte[]</tt> output buffer.
+     */
+    @Override
+    public byte[] getBuffer() {
+        return buf;
+    }// getBuffer
 
-  public void reset() {
-    count = 0;
-  }//reset
+    @Override
+    public void reset() {
+        count = 0;
+    }// reset
 
-  public void writeBoolean(boolean v)
-      throws IOException {
-    m_Dout.writeBoolean(v);
-  }//writeBoolean
+    @Override
+    public void writeBoolean(boolean v) throws IOException {
+        m_Dout.writeBoolean(v);
+    }// writeBoolean
 
-  public void writeByte(int v)
-      throws IOException {
-    m_Dout.writeByte(v);
-  }//writeByte
+    @Override
+    public void writeByte(int v) throws IOException {
+        m_Dout.writeByte(v);
+    }// writeByte
 
-  public void writeShort(int v)
-      throws IOException {
-    m_Dout.writeShort(v);
-  }//writeShort
+    @Override
+    public void writeShort(int v) throws IOException {
+        m_Dout.writeShort(v);
+    }// writeShort
 
-  public void writeChar(int v)
-      throws IOException {
-    m_Dout.writeChar(v);
-  }//writeChar
+    @Override
+    public void writeChar(int v) throws IOException {
+        m_Dout.writeChar(v);
+    }// writeChar
 
-  public void writeInt(int v)
-      throws IOException {
-    m_Dout.writeInt(v);
-  }//writeInt
+    @Override
+    public void writeInt(int v) throws IOException {
+        m_Dout.writeInt(v);
+    }// writeInt
 
-  public void writeLong(long v)
-      throws IOException {
-    m_Dout.writeLong(v);
-  }//writeLong
+    @Override
+    public void writeLong(long v) throws IOException {
+        m_Dout.writeLong(v);
+    }// writeLong
 
-  //@commentstart@
-  public void writeFloat(float v)
-      throws IOException {
-    m_Dout.writeFloat(v);
-  }//writeFloat
+    // @commentstart@
+    @Override
+    public void writeFloat(float v) throws IOException {
+        m_Dout.writeFloat(v);
+    }// writeFloat
 
-  public void writeDouble(double v)
-      throws IOException {
-    m_Dout.writeDouble(v);
-  }//writeDouble
-  //@commentend@
+    @Override
+    public void writeDouble(double v) throws IOException {
+        m_Dout.writeDouble(v);
+    }// writeDouble
+     // @commentend@
 
-  public void writeBytes(String s)
-      throws IOException {
-    int len = s.length();
-    for (int i = 0; i < len; i++) {
-      this.write((byte) s.charAt(i));
-    }
-  }//writeBytes
+    @Override
+    public void writeBytes(String s) throws IOException {
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            this.write((byte) s.charAt(i));
+        }
+    }// writeBytes
 
-  public void writeChars(String s)
-      throws IOException {
-    m_Dout.writeChars(s);
-  }//writeChars
+    @Override
+    public void writeChars(String s) throws IOException {
+        m_Dout.writeChars(s);
+    }// writeChars
 
-  public void writeUTF(String str)
-      throws IOException {
-    m_Dout.writeUTF(str);
-  }//writeUTF
+    @Override
+    public void writeUTF(String str) throws IOException {
+        m_Dout.writeUTF(str);
+    }// writeUTF
 
-}//class BytesOutputStream
+}// class BytesOutputStream

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,93 +21,92 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Bundle activator for xPL transport bundle. 
- * 
+ * Bundle activator for xPL transport bundle.
+ *
  * @author clinique
  * @since 1.6.0
  */
 public class XplTransportService implements ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(XplTransportService.class);
-	private static final String vendor = "clinique";
-	private static final String device = "openhab";
-	private static xPL_IdentifierI sourceIdentifier = null;
-	private static xPL_Manager theManager = null;
-	public xPL_DeviceI loggerDevice = null;
+    private static final Logger logger = LoggerFactory.getLogger(XplTransportService.class);
+    private static final String vendor = "clinique";
+    private static final String device = "openhab";
+    private static xPL_IdentifierI sourceIdentifier = null;
+    private static xPL_Manager theManager = null;
+    public xPL_DeviceI loggerDevice = null;
 
-	/**
-	 * Start service.
-	 */
-	public void activate() {
-		try {
-			theManager = xPL_Manager.getManager();
-			theManager.createAndStartNetworkHandler();
-			loggerDevice = theManager.getDeviceManager().createDevice(vendor, device, getInstance());
-						
-			// Enable the device and start logging
-			loggerDevice.setEnabled(true);
-			
-			logger.info("xPL transport has been started");
+    /**
+     * Start service.
+     */
+    public void activate() {
+        try {
+            theManager = xPL_Manager.getManager();
+            theManager.createAndStartNetworkHandler();
+            loggerDevice = theManager.getDeviceManager().createDevice(vendor, device, getInstance());
 
-		} catch (xPL_MediaHandlerException startError) {
-			logger.error("Unable to start xPL transport" + startError.getMessage());
-		}
-	}
+            // Enable the device and start logging
+            loggerDevice.setEnabled(true);
 
-	/**
-	 * Stop service.
-	 */
-	public void deactivate() {		
-		theManager.stopAllMediaHandlers();
-		logger.debug("xPL transport has been stopped");
-	}
+            logger.info("xPL transport has been started");
 
-	@Override
-	public void updated(Dictionary<String, ?> config) {
-		logger.info("xPL transport configuration");
-		if (config != null) {
-			String instancename = (String) config.get("instance");
-			logger.info("Received new config : " + instancename);
-			setInstance(instancename);
-		}	
-	}
-	
-	protected void setInstance(String instance) {
-		sourceIdentifier = xPL_Manager.getManager().getIdentifierManager()
-				.parseNamedIdentifier(vendor + "-" + device + "." + instance);
-		logger.info("xPL Manager source address set to " + sourceIdentifier.toString());
-	}
-	
-	protected String getInstance() {
-		if (sourceIdentifier == null) {
-			setInstance("openhab");
-		}
-		return sourceIdentifier.getInstanceID();
-	}
-	
-	public void addMessageListener(xPL_MessageListenerI theListener) {
-		theManager.addMessageListener(theListener);
-	}
+        } catch (xPL_MediaHandlerException startError) {
+            logger.error("Unable to start xPL transport" + startError.getMessage());
+        }
+    }
 
-		  
-	public void removeMessageListener(xPL_MessageListenerI theListener) {
-		theManager.removeMessageListener(theListener);
-	}
+    /**
+     * Stop service.
+     */
+    public void deactivate() {
+        theManager.stopAllMediaHandlers();
+        logger.debug("xPL transport has been stopped");
+    }
 
-	public xPL_IdentifierI getSourceIdentifier() {
-		return sourceIdentifier;
-	}
+    @Override
+    public void updated(Dictionary<String, ?> config) {
+        logger.info("xPL transport configuration");
+        if (config != null) {
+            String instancename = (String) config.get("instance");
+            logger.info("Received new config : " + instancename);
+            setInstance(instancename);
+        }
+    }
 
-	public void sendMessage(xPL_MutableMessageI message) {
-		if (message.getSource() == null) {
-			message.setSource(sourceIdentifier);
-		}
-	    logger.debug(message.toString());
-		theManager.sendMessage(message);		
-	}
+    protected void setInstance(String instance) {
+        sourceIdentifier = xPL_Manager.getManager().getIdentifierManager()
+                .parseNamedIdentifier(vendor + "-" + device + "." + instance);
+        logger.info("xPL Manager source address set to " + sourceIdentifier.toString());
+    }
 
-	public xPL_IdentifierI parseNamedIdentifier(String target) {
-		return theManager.getIdentifierManager().parseNamedIdentifier(target);
-	}
+    protected String getInstance() {
+        if (sourceIdentifier == null) {
+            setInstance("openhab");
+        }
+        return sourceIdentifier.getInstanceID();
+    }
+
+    public void addMessageListener(xPL_MessageListenerI theListener) {
+        theManager.addMessageListener(theListener);
+    }
+
+    public void removeMessageListener(xPL_MessageListenerI theListener) {
+        theManager.removeMessageListener(theListener);
+    }
+
+    public xPL_IdentifierI getSourceIdentifier() {
+        return sourceIdentifier;
+    }
+
+    public void sendMessage(xPL_MutableMessageI message) {
+        if (message.getSource() == null) {
+            message.setSource(sourceIdentifier);
+        }
+        logger.debug(message.toString());
+        theManager.sendMessage(message);
+    }
+
+    public xPL_IdentifierI parseNamedIdentifier(String target) {
+        return theManager.getIdentifierManager().parseNamedIdentifier(target);
+    }
 
 }

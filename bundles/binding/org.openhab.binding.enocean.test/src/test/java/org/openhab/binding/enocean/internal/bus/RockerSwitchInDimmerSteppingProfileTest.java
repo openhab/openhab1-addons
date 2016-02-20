@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,17 +8,16 @@
  */
 package org.openhab.binding.enocean.internal.bus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.opencean.core.address.EnoceanId;
 import org.opencean.core.address.EnoceanParameterAddress;
 import org.opencean.core.common.EEPId;
 import org.opencean.core.common.Parameter;
 import org.opencean.core.common.values.ButtonState;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -31,7 +30,8 @@ public class RockerSwitchInDimmerSteppingProfileTest extends BasicBindingTest {
 
     @Before
     public void setUpDefaultDevice() {
-        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID), CHANNEL);
+        parameterAddress = new EnoceanParameterAddress(EnoceanId.fromString(EnoceanBindingProviderMock.DEVICE_ID),
+                CHANNEL);
         provider.setParameterAddress(parameterAddress);
         provider.setItem(new DimmerItem("dummie"));
         provider.setEep(EEPId.EEP_F6_02_01);

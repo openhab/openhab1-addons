@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,29 +13,29 @@ import org.openhab.core.library.types.OnOffType;
 
 /**
  * Implementation of the X10 Off command
- * 
+ *
  * @author Jack Sleuters
- * @since  1.7.0
+ * @since 1.7.0
  *
  */
 public class MochadX10OffCommand extends MochadX10Command {
-	/**
-	 * Constructor
-	 * 
-	 * @param eventPublisher	Required to post the command on the openhab bus
-	 * @param address			The address for which this command was received
-	 */
-	public MochadX10OffCommand(EventPublisher eventPublisher, MochadX10Address address) {
-		super(eventPublisher, address);
-	}
-	
-	@Override
-	public void postCommand(String itemName, int currentLevel) {
-		eventPublisher.postCommand(itemName, OnOffType.OFF);
-	}
+    /**
+     * Constructor
+     * 
+     * @param eventPublisher Required to post the command on the openhab bus
+     * @param address The address for which this command was received
+     */
+    public MochadX10OffCommand(EventPublisher eventPublisher, MochadX10Address address) {
+        super(eventPublisher, address);
+    }
 
-	@Override
-	public int getLevel() {
-		return 0;
-	}
+    @Override
+    public void postCommand(String itemName, int currentLevel) {
+        eventPublisher.postCommand(itemName, OnOffType.OFF);
+    }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -201,6 +201,39 @@ public class PointType implements ComplexType, Command, State {
 		if (longitude.compareTo(BigDecimal.ZERO) <= 0)
 			longitude = longitude.add(circle);
 		longitude = longitude.subtract(flat);
+	}
+
+	@Override
+	public int hashCode() {
+		int tmp = 10000 * (getLatitude() == null ? 0 : getLatitude().hashCode());
+		tmp += 100 * (getLongitude() == null ? 0 : getLongitude().hashCode());
+		tmp += (getAltitude() == null ? 0 : getAltitude().hashCode());
+		return tmp;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof PointType))
+			return false;
+		PointType other = (PointType) obj;
+		if ((getLatitude() != null && other.getLatitude() == null)
+				|| (getLatitude() == null && other.getLatitude() != null)
+				|| (getLongitude() != null && other.getLongitude() == null)
+				|| (getLongitude() == null && other.getLongitude() != null)
+				|| (getAltitude() != null && other.getAltitude() == null)
+				|| (getAltitude() == null && other.getAltitude() != null)) {
+			return false;
+		}
+		if (!getLatitude().equals(other.getLatitude())
+				|| !getLongitude().equals(other.getLongitude())
+				|| !getAltitude().equals(other.getAltitude())) {
+			return false;
+		}
+		return true;
 	}
 
 }

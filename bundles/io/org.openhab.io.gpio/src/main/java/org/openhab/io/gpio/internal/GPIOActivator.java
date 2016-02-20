@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,39 +21,43 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of OSGi bundle activator.
- * 
+ *
  * @author Dancho Penev
  * @since 1.5.0
  */
 public class GPIOActivator implements BundleActivator {
 
-	private static final Logger logger = LoggerFactory.getLogger(GPIOActivator.class);
+    private static final Logger logger = LoggerFactory.getLogger(GPIOActivator.class);
 
-	/**
-	 * Called when this bundle is started by OSGi Framework.
-	 * Determines underlying platform and loads the relevant service
-	 * which implements <code>GPIO</code> interface.
-	 */
-	public void start(BundleContext context) throws Exception {
+    /**
+     * Called when this bundle is started by OSGi Framework.
+     * Determines underlying platform and loads the relevant service
+     * which implements <code>GPIO</code> interface.
+     */
+    public void start(BundleContext context) throws Exception {
 
-		/* Linux user space GPIO implementation, "sysfs" based */
-		if (System.getProperty("os.name").toLowerCase().startsWith("linux")) {
+        /* Linux user space GPIO implementation, "sysfs" based */
+        if (System.getProperty("os.name").toLowerCase().startsWith("linux")) {
 
-			GPIOLinux gpioLinux = new GPIOLinux();
+            GPIOLinux gpioLinux = new GPIOLinux();
 
-			Dictionary<String, String> properties = new Hashtable<String, String>();
-			properties.put("service.pid", "org.openhab.gpio");
+            Dictionary<String, String> properties = new Hashtable<String, String>();
+            properties.put("service.pid", "org.openhab.gpio");
 
-			context.registerService(GPIO.class, gpioLinux, null);
-			context.registerService(ManagedService.class, gpioLinux, properties);
-		} else {
-			/* Throwing exception is not implemented because it's causing Equinox to constantly trying to start the bundle */
-			logger.error("No supported operating system was found, GPIO service won't be available");
-		}
-	}
+            context.registerService(GPIO.class, gpioLinux, null);
+            context.registerService(ManagedService.class, gpioLinux, properties);
+        } else {
+            /*
+             * Throwing exception is not implemented because it's causing Equinox to constantly trying to start the
+             * bundle
+             */
+            logger.error("No supported operating system was found, GPIO service won't be available");
+        }
+    }
 
-	/**
-	 * Called when this bundle is stopped by OSGi Framework.
-	 */
-	public void stop(BundleContext context) throws Exception {}
+    /**
+     * Called when this bundle is stopped by OSGi Framework.
+     */
+    public void stop(BundleContext context) throws Exception {
+    }
 }

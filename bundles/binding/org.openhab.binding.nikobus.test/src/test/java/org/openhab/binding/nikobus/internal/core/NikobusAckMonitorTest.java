@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,8 +8,7 @@
  */
 package org.openhab.binding.nikobus.internal.core;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.concurrent.TimeoutException;
 
@@ -26,46 +25,46 @@ import org.openhab.binding.nikobus.internal.NikobusBinding;
 @RunWith(MockitoJUnitRunner.class)
 public class NikobusAckMonitorTest {
 
-	@Mock
-	private NikobusCommandReceiver receiver;
+    @Mock
+    private NikobusCommandReceiver receiver;
 
-	@Mock
-	private NikobusBinding binding;
-	
-	private NikobusCommandSender sender;
+    @Mock
+    private NikobusBinding binding;
 
-	private void testForAck(String ack, String command, boolean expected) {
+    private NikobusCommandSender sender;
 
-		NikobusCommand expectedAck = new NikobusCommand("", ack, 100);
-		NikobusCommand receivedCommand = new NikobusCommand(command);
-		NikobusAckMonitor mon = new NikobusAckMonitor(expectedAck);
+    private void testForAck(String ack, String command, boolean expected) {
 
-		try {
-			mon.processNikobusCommand(receivedCommand, binding);
-			mon.waitForAck(sender);
-			assertTrue(expected);
-		} catch (TimeoutException e) {
-			assertFalse(expected);
-		}
+        NikobusCommand expectedAck = new NikobusCommand("", ack, 100);
+        NikobusCommand receivedCommand = new NikobusCommand(command);
+        NikobusAckMonitor mon = new NikobusAckMonitor(expectedAck);
 
-	}
+        try {
+            mon.processNikobusCommand(receivedCommand, binding);
+            mon.waitForAck(sender);
+            assertTrue(expected);
+        } catch (TimeoutException e) {
+            assertFalse(expected);
+        }
 
-	@Test
-	public void canDetectAck() {
+    }
 
-		sender = new NikobusCommandSender(null) {
+    @Test
+    public void canDetectAck() {
 
-			@Override
-			public void sendCommand(NikobusCommand cmd) {
-				cmd.incrementSentCount();
-			}
-		};
+        sender = new NikobusCommandSender(null) {
 
-		testForAck("mytest", "ADFADFMYTE", false);
-		testForAck("mytest", "MYTESTTT", true);
-		testForAck("mytest", "ADFADFMYTE", false);
-		testForAck("mytest1", "MYTEST1", true);
+            @Override
+            public void sendCommand(NikobusCommand cmd) {
+                cmd.incrementSentCount();
+            }
+        };
 
-	}
+        testForAck("mytest", "ADFADFMYTE", false);
+        testForAck("mytest", "MYTESTTT", true);
+        testForAck("mytest", "ADFADFMYTE", false);
+        testForAck("mytest1", "MYTEST1", true);
+
+    }
 
 }

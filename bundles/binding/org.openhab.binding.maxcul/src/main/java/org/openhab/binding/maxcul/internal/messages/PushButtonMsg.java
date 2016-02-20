@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,48 +13,68 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Message from Push Button devices
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
 public class PushButtonMsg extends BaseMsg {
 
-	final static private int PUSH_BUTTON_PAYLOAD_LEN = 2; /* in bytes */
+    final static private int PUSH_BUTTON_PAYLOAD_LEN = 2; /* in bytes */
 
-	public enum PushButtonMode {
-		AUTO, ECO, UNKNOWN;
-	}
+    public enum PushButtonMode {
+        AUTO,
+        ECO,
+        UNKNOWN;
+    }
 
-	private PushButtonMode mode = PushButtonMode.UNKNOWN;
-	private boolean isRetransmission = false;
+    private PushButtonMode mode = PushButtonMode.UNKNOWN;
+    private boolean isRetransmission = false;
+    private boolean batteryLow;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(PushButtonMsg.class);
+    private boolean rfError;
 
-	public PushButtonMsg(String rawMsg) {
-		super(rawMsg);
-		logger.debug(this.msgType + " Payload Len -> " + this.payload.length);
+    private static final Logger logger = LoggerFactory.getLogger(PushButtonMsg.class);
 
-		if (this.payload.length == PUSH_BUTTON_PAYLOAD_LEN) {
-			if (this.payload[0] == 0x50) // this is assumed from observed
-											// behaviour
-				isRetransmission = true;
+    public PushButtonMsg(String rawMsg) {
+        super(rawMsg);
+        logger.debug(this.msgType + " Payload Len -> " + this.payload.length);
 
-			if (this.payload[1] == 0x0)
-				mode = PushButtonMode.ECO;
-			else if (this.payload[1] == 0x1)
-				mode = PushButtonMode.AUTO;
-		} else {
-			logger.error("Got " + this.msgType
-					+ " message with incorrect length!");
-		}
-	}
+        if (this.payload.length == PUSH_BUTTON_PAYLOAD_LEN) {
+            if (this.payload[0] == 0x50) {
+                // behaviour
+                isRetransmission = true;
+            }
 
-	public PushButtonMode getMode() {
-		return mode;
-	}
+            if (this.payload[1] == 0x0) {
+                mode = PushButtonMode.ECO;
+            } else if (this.payload[1] == 0x1) {
+                mode = PushButtonMode.AUTO;
+            }
+        } else {
+            logger.error("Got " + this.msgType + " message with incorrect length!");
+        }
+        rfError = extractBitFromByte(this.payload[0], 6);
+        /* extract battery status */
+        batteryLow = extractBitFromByte(this.payload[0], 7);
+    }
 
-	public boolean isRetransmission() {
-		return isRetransmission;
-	}
+    public PushButtonMode getMode() {
+        return mode;
+    }
+
+    public boolean isRetransmission() {
+        return isRetransmission;
+    }
+
+    public boolean getBatteryLow() {
+        return batteryLow;
+    }
+
+    @Override
+    protected void printFormattedPayload() {
+        super.printFormattedPayload();
+        logger.debug("\tMode 				=> " + mode);
+        logger.debug("\tRF Error            => " + rfError);
+        logger.debug("\tBattery Low         => " + batteryLow);
+    }
 }

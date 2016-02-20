@@ -247,7 +247,7 @@ The device type can be normally open (NO) or normally close (NC).</Help>
 			</Item>
 			<Item>
 				<Value>9</Value>
-				<Label lang="en">Sensor binary. /Label>
+				<Label lang="en">Sensor binary.</Label>
 			</Item>
 			<Help lang="en">Enabling I2 means that Endpoint (I2) will be present on UI. 
 Disabling it will result in hiding the endpoint according to the parameter set value. 
@@ -294,7 +294,7 @@ NOTE: After parameter change, module has to be re included into the network in o
 			</Item>
 			<Item>
 				<Value>9</Value>
-				<Label lang="en">Sensor binary. /Label>
+				<Label lang="en">Sensor binary.</Label>
 			</Item>
 			<Help lang="en">Enabling I3 means that Endpoint (I3) will be present on UI. 
 Disabling it will result in hiding the endpoint according to the parameter set value. 

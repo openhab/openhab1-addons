@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Packet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="packet_metamodel.xsd">
+	<Header>
+		<UIntValue>
+			<ID>CRC32</ID>
+			<Description>CRC32 value of byte 4..n</Description>
+			<Bits>32</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>4294967295</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>SenderID</ID>
+			<Description>The SenderID is the DeviceID of the sending device. It's only allowed to send packets with the own DeviceID. 0 = base station, others are arbitrary.</Description>
+			<Bits>12</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>4095</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>PacketCounter</ID>
+			<Description>The PacketCounter is counted up throughout the whole lifetime of the device and is used to make the encrypted packets differently from each other every time. Packets received with the same or lower number must be ignored per SenderID.</Description>
+			<Bits>24</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>16777215</MaxVal>
+		</UIntValue>
+		<EnumValue>
+			<ID>MessageType</ID>
+			<Description>The message type influences the behaviour with sending the packet. E.g. requests are acknowledged.</Description>
+			<Bits>4</Bits>
+			<Element>
+				<Value>0</Value>
+				<Name>Get</Name>
+			</Element>
+			<Element>
+				<Value>1</Value>
+				<Name>Set</Name>
+			</Element>
+			<Element>
+				<Value>2</Value>
+				<Name>SetGet</Name>
+			</Element>
+			<Element>
+				<Value>8</Value>
+				<Name>Status</Name>
+			</Element>
+			<Element>
+				<Value>9</Value>
+				<Name>Ack</Name>
+			</Element>
+			<Element>
+				<Value>10</Value>
+				<Name>AckStatus</Name>
+			</Element>
+		</EnumValue>
+	</Header>
+	<HeaderExtension>
+		<MessageType>0</MessageType>
+		<UIntValue>
+			<ID>ReceiverID</ID>
+			<Description>The ID of the device to process the request. Use 4095 for broadcasts.</Description>
+			<Bits>12</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>4095</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>MessageGroupID</ID>
+			<Description>0 = Generic, 1..9 = Reserved, others are arbitrary</Description>
+			<Bits>7</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>127</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>MessageID</ID>
+			<Description/>
+			<Bits>4</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>15</MaxVal>
+		</UIntValue>
+		<ContainsMessageData>false</ContainsMessageData>
+	</HeaderExtension>
+	<HeaderExtension>
+		<MessageType>1</MessageType>
+		<MessageType>2</MessageType>
+		<UIntValue>
+			<ID>ReceiverID</ID>
+			<Description>The ID of the device to process the request. Use 4095 for broadcasts.</Description>
+			<Bits>12</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>4095</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>MessageGroupID</ID>
+			<Description>0 = Generic, 1..9 = Reserved, others are arbitrary</Description>
+			<Bits>7</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>127</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>MessageID</ID>
+			<Description/>
+			<Bits>4</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>15</MaxVal>
+		</UIntValue>
+		<ContainsMessageData>true</ContainsMessageData>
+	</HeaderExtension>
+	<HeaderExtension>
+		<MessageType>8</MessageType>
+		<UIntValue>
+			<ID>MessageGroupID</ID>
+			<Description>0 = Generic, 1..9 = Reserved, others are arbitrary</Description>
+			<Bits>7</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>127</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>MessageID</ID>
+			<Description/>
+			<Bits>4</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>15</MaxVal>
+		</UIntValue>
+		<ContainsMessageData>true</ContainsMessageData>
+	</HeaderExtension>
+	<HeaderExtension>
+		<MessageType>9</MessageType>
+		<UIntValue>
+			<ID>AckSenderID</ID>
+			<Description>The ID of the requestor whose request is acknowledged.</Description>
+			<Bits>12</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>4095</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>AckPacketCounter</ID>
+			<Description>The PacketCounter of the request that is acknowledged.</Description>
+			<Bits>24</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>16777215</MaxVal>
+		</UIntValue>
+		<BoolValue>
+			<ID>Error</ID>
+			<Description>Tells if there was an error fulfilling the request or not.</Description>
+		</BoolValue>
+		<ContainsMessageData>false</ContainsMessageData>
+	</HeaderExtension>
+	<HeaderExtension>
+		<MessageType>10</MessageType>
+		<UIntValue>
+			<ID>AckSenderID</ID>
+			<Description>The ID of the requestor whose request is acknowledged.</Description>
+			<Bits>12</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>4095</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>AckPacketCounter</ID>
+			<Description>The PacketCounter of the request that is acknowledged.</Description>
+			<Bits>24</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>16777215</MaxVal>
+		</UIntValue>
+		<BoolValue>
+			<ID>Error</ID>
+			<Description>Tells if there was an error fulfilling the request or not.</Description>
+		</BoolValue>
+		<UIntValue>
+			<ID>MessageGroupID</ID>
+			<Description>0 = Generic, 1..9 = Reserved, others are arbitrary</Description>
+			<Bits>7</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>127</MaxVal>
+		</UIntValue>
+		<UIntValue>
+			<ID>MessageID</ID>
+			<Description/>
+			<Bits>4</Bits>
+			<MinVal>0</MinVal>
+			<MaxVal>15</MaxVal>
+		</UIntValue>
+		<ContainsMessageData>true</ContainsMessageData>
+	</HeaderExtension>
+	<MessageGroup>
+		<Name>Generic</Name>
+		<Description>This group contains messages useful for different devices.</Description>
+		<MessageGroupID>0</MessageGroupID>
+		<Message>
+			<Name>Version</Name>
+			<Description>Reports the current firmware version. Version information is only available when set in source code, which is usually only done for official builds by the build robot.</Description>
+			<MessageID>1</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>deprecated</Validity>
+			<UIntValue>
+				<ID>Major</ID>
+				<Description>Different major version means incompatible changes.</Description>
+				<Bits>8</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>255</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>Minor</ID>
+				<Description>Different minor number means new functionality without breaking compatibility.</Description>
+				<Bits>8</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>255</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>Patch</ID>
+				<Description>The patch version is changed when backwards-compatible bug fixes are made.</Description>
+				<Bits>8</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>255</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>Hash</ID>
+				<Description>The beginning of the revision ID hash (as reported by Git).</Description>
+				<Bits>32</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>4294967295</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>DeviceInfo</Name>
+			<Description>Reports DeviceType and current firmware version. Version information is only available when set in source code, which is usually only done for official builds by the build robot.</Description>
+			<MessageID>2</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<EnumValue>
+				<ID>DeviceType</ID>
+				<Description>The DeviceType can be used to adapt the behavior or representation of the SHC device at the server software (e.g. FHEM).</Description>
+				<Bits>8</Bits>
+				<Element>
+					<Value>0</Value>
+					<Name>BaseStation</Name>
+				</Element>
+				<Element>
+					<Value>20</Value>
+					<Name>EnvSensor</Name>
+				</Element>
+				<Element>
+					<Value>40</Value>
+					<Name>PowerSwitch</Name>
+				</Element>
+				<Element>
+					<Value>50</Value>
+					<Name>RGBDimmer</Name>
+				</Element>
+				<Element>
+					<Value>60</Value>
+					<Name>Dimmer</Name>
+				</Element>
+				<Element>
+					<Value>70</Value>
+					<Name>SoilMoistureMeter</Name>
+				</Element>
+				<Element>
+					<Value>80</Value>
+					<Name>Thermostat</Name>
+				</Element>
+			</EnumValue>
+			<UIntValue>
+				<ID>VersionMajor</ID>
+				<Description>Different major version means incompatible changes.</Description>
+				<Bits>8</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>255</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>VersionMinor</ID>
+				<Description>Different minor number means new functionality without breaking compatibility.</Description>
+				<Bits>8</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>255</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>VersionPatch</ID>
+				<Description>The patch version is changed when backwards-compatible bug fixes are made.</Description>
+				<Bits>8</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>255</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>VersionHash</ID>
+				<Description>The beginning of the revision ID hash (as reported by Git).</Description>
+				<Bits>32</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>4294967295</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>BatteryStatus</Name>
+			<Description>Tells the current battery status in percent. Please note that the "Get" may not be answered because a device does not listen to requests.</Description>
+			<MessageID>5</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Percentage</ID>
+				<Description>The remaining capacity of the battery from 0 (empty) to 100 (full).</Description>
+				<Bits>7</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>100</MaxVal>
+			</UIntValue>
+		</Message>
+	</MessageGroup>
+	<MessageGroup>
+		<Name>GPIO</Name>
+		<Description>This group contains messages for general I/O functions. The meaning of the values is not known to the SHC devices. It depends on the connected parts (e.g. switches). The values have to be processed by the user/server software appropriately.</Description>
+		<MessageGroupID>1</MessageGroupID>
+		<Message>
+			<Name>DigitalPort</Name>
+			<Description>This is the state of the complete digital port, containing up to 8 pins.</Description>
+			<MessageID>1</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<Array>
+				<Length>8</Length>
+				<BoolValue>
+					<ID>On</ID>
+					<Description>Tells if the pin is on (at high level) or not (low level).</Description>
+				</BoolValue>
+			</Array>
+		</Message>
+		<Message>
+			<Name>DigitalPortTimeout</Name>
+			<Description>This is the state of the complete digital port, containing up to 8 pins, including a timeout value per pin.</Description>
+			<MessageID>2</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<Array>
+				<Length>8</Length>
+				<BoolValue>
+					<ID>On</ID>
+					<Description>Tells if the pin is on (at high level) or not (low level).</Description>
+				</BoolValue>
+				<UIntValue>
+					<ID>TimeoutSec</ID>
+					<Description>The time after which the switch is automatically toggled again. Use 0 to disable this.</Description>
+					<Bits>16</Bits>
+					<MinVal>0</MinVal>
+					<MaxVal>65535</MaxVal>
+				</UIntValue>
+			</Array>
+		</Message>
+		<Message>
+			<Name>DigitalPin</Name>
+			<Description>This represents the state of one pin of the digital port.</Description>
+			<MessageID>5</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Pos</ID>
+				<Description>The number of the pin in the port.</Description>
+				<Bits>3</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>7</MaxVal>
+			</UIntValue>
+			<BoolValue>
+				<ID>On</ID>
+				<Description>Tells if the pin is on (at high level) or not (low level).</Description>
+			</BoolValue>
+		</Message>
+		<Message>
+			<Name>DigitalPinTimeout</Name>
+			<Description>This represents the state of one pin of the digital port, including a timeout value.</Description>
+			<MessageID>6</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Pos</ID>
+				<Description>The number of the pin in the port.</Description>
+				<Bits>3</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>7</MaxVal>
+			</UIntValue>
+			<BoolValue>
+				<ID>On</ID>
+				<Description>Tells if the pin is on (at high level) or not (low level).</Description>
+			</BoolValue>
+			<UIntValue>
+				<ID>TimeoutSec</ID>
+				<Description>The time after which the switch is automatically toggled again. Use 0 to disable this.</Description>
+				<Bits>16</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>65535</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>AnalogPort</Name>
+			<Description>This is the voltage of up to 8 ADC channels. The ATMega328 in the PDIP package has only 6 ADCs and one ADC may be blocked by the battery voltage measurement, so there may be less than 8 ADC values reported depending on the device and configuration.</Description>
+			<MessageID>10</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<Array>
+				<Length>8</Length>
+				<BoolValue>
+					<ID>On</ID>
+					<Description>Tells if the pin is on (voltage over trigger threshold) or not.</Description>
+				</BoolValue>
+				<UIntValue>
+					<ID>Voltage</ID>
+					<Description>This is the voltage level in mV.</Description>
+					<Bits>11</Bits>
+					<MinVal>0</MinVal>
+					<MaxVal>1100</MaxVal>
+				</UIntValue>
+			</Array>
+		</Message>
+	</MessageGroup>
+	<MessageGroup>
+		<Name>Weather</Name>
+		<Description>This message group contains messages for weather data.</Description>
+		<MessageGroupID>10</MessageGroupID>
+		<Message>
+			<Name>Temperature</Name>
+			<Description>This is a message containing temperature only.</Description>
+			<MessageID>1</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<IntValue>
+				<ID>Temperature</ID>
+				<Description>temperature [1/100 degree celsius], -50°C = -5000, 50°C = 5000</Description>
+				<Bits>16</Bits>
+				<MinVal>-32768</MinVal>
+				<MaxVal>32767</MaxVal>
+			</IntValue>
+		</Message>
+		<Message>
+			<Name>HumidityTemperature</Name>
+			<Description>This is a message containing humidity and temperature.</Description>
+			<MessageID>2</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Humidity</ID>
+				<Description>relative humidity permill, 0..1000 (other values not defined)</Description>
+				<Bits>10</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>1000</MaxVal>
+			</UIntValue>
+			<IntValue>
+				<ID>Temperature</ID>
+				<Description>temperature [1/100 degree celsius], -50°C = -5000, 50°C = 5000</Description>
+				<Bits>16</Bits>
+				<MinVal>-32768</MinVal>
+				<MaxVal>32767</MaxVal>
+			</IntValue>
+		</Message>
+		<Message>
+			<Name>BarometricPressureTemperature</Name>
+			<Description>This is a message containing barometric pressure and temperature.</Description>
+			<MessageID>3</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>BarometricPressure</ID>
+				<Description>barometric pressure in pascal</Description>
+				<Bits>17</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>131071</MaxVal>
+			</UIntValue>
+			<IntValue>
+				<ID>Temperature</ID>
+				<Description>temperature [1/100 degree celsius], -50°C = -5000, 50°C = 5000</Description>
+				<Bits>16</Bits>
+				<MinVal>-32768</MinVal>
+				<MaxVal>32767</MaxVal>
+			</IntValue>
+		</Message>
+		<Message>
+			<Name>Humidity</Name>
+			<Description>This is a message containing humidity.</Description>
+			<MessageID>4</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Humidity</ID>
+				<Description>relative humidity permill, 0..1000 (other values not defined)</Description>
+				<Bits>10</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>1000</MaxVal>
+			</UIntValue>
+		</Message>
+	</MessageGroup>
+	<MessageGroup>
+		<Name>Environment</Name>
+		<Description>This message group contains messages for environmental data except weather data.</Description>
+		<MessageGroupID>11</MessageGroupID>
+		<Message>
+			<Name>Brightness</Name>
+			<Description/>
+			<MessageID>1</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Brightness</ID>
+				<Description>brightness in percent</Description>
+				<Bits>7</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>100</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>Distance</Name>
+			<Description/>
+			<MessageID>2</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Distance</ID>
+				<Description>distance in cm</Description>
+				<Bits>14</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>16383</MaxVal>
+			</UIntValue>
+		</Message>
+	</MessageGroup>
+	<MessageGroup>
+		<Name>PowerSwitch</Name>
+		<Description/>
+		<MessageGroupID>20</MessageGroupID>
+		<Message>
+			<Name>SwitchState</Name>
+			<Description>This is the state of the relais and its timeout value.</Description>
+			<MessageID>1</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>deprecated</Validity>
+			<BoolValue>
+				<ID>On</ID>
+				<Description>Tells if the switch is on (active).</Description>
+			</BoolValue>
+			<UIntValue>
+				<ID>TimeoutSec</ID>
+				<Description>The time after which the switch is automatically toggled again. Use 0 to disable this.</Description>
+				<Bits>16</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>65535</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>SwitchStateExt</Name>
+			<Description>This is the state of up to 8 relais and its timeout values.</Description>
+			<MessageID>2</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>deprecated</Validity>
+			<Array>
+				<Length>8</Length>
+				<BoolValue>
+					<ID>On</ID>
+					<Description/>
+				</BoolValue>
+			</Array>
+			<Array>
+				<Length>8</Length>
+				<UIntValue>
+					<ID>TimeoutSec</ID>
+					<Description>The time after which the switch is automatically toggled again. Use 0 to disable this.</Description>
+					<Bits>16</Bits>
+					<MinVal>0</MinVal>
+					<MaxVal>65535</MaxVal>
+				</UIntValue>
+			</Array>
+		</Message>
+	</MessageGroup>
+	<MessageGroup>
+		<Name>Dimmer</Name>
+		<Description/>
+		<MessageGroupID>60</MessageGroupID>
+		<Message>
+			<Name>Brightness</Name>
+			<Description>This is to set a fixed brightness.</Description>
+			<MessageID>1</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Brightness</ID>
+				<Description>The brightness in percent. 0 = Off.</Description>
+				<Bits>7</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>100</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>Animation</Name>
+			<Description>This is the state of the dimmer output voltage and its timeout value.</Description>
+			<MessageID>2</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<EnumValue>
+				<ID>AnimationMode</ID>
+				<Description>If a time is set, use this animation mode to change the brightness over time (none = leave at start state for the whole time and switch to end state at the end).</Description>
+				<Bits>2</Bits>
+				<Element>
+					<Value>0</Value>
+					<Name>none</Name>
+				</Element>
+				<Element>
+					<Value>1</Value>
+					<Name>linear</Name>
+				</Element>
+			</EnumValue>
+			<UIntValue>
+				<ID>TimeoutSec</ID>
+				<Description>The time for the animation. Use 0 to disable this.</Description>
+				<Bits>16</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>65535</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>StartBrightness</ID>
+				<Description>The brightness in percent at the beginning of the animation.</Description>
+				<Bits>7</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>100</MaxVal>
+			</UIntValue>
+			<UIntValue>
+				<ID>EndBrightness</ID>
+				<Description>The brightness in percent at the end of the animation.</Description>
+				<Bits>7</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>100</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>Color</Name>
+			<Description>This is to set a fixed color.</Description>
+			<MessageID>10</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Color</ID>
+				<Description>The color is according to the 6 bit color palette used in SHC.</Description>
+				<Bits>6</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>63</MaxVal>
+			</UIntValue>
+		</Message>
+		<Message>
+			<Name>ColorAnimation</Name>
+			<Description>This is to set a color animation.</Description>
+			<MessageID>11</MessageID>
+			<MessageType>0</MessageType>
+			<MessageType>1</MessageType>
+			<MessageType>2</MessageType>
+			<MessageType>8</MessageType>
+			<MessageType>9</MessageType>
+			<MessageType>10</MessageType>
+			<Validity>test</Validity>
+			<UIntValue>
+				<ID>Repeat</ID>
+				<Description>The number of times the animation will be repeated. 0 means infinitely.</Description>
+				<Bits>4</Bits>
+				<MinVal>0</MinVal>
+				<MaxVal>15</MaxVal>
+			</UIntValue>
+			<BoolValue>
+				<ID>AutoReverse</ID>
+				<Description>If true, the animation will be played back in the normal direction and then in reverse order.</Description>
+			</BoolValue>
+			<Array>
+				<Length>10</Length>
+				<UIntValue>
+					<ID>Time</ID>
+					<Description>The time for the animation between the current color and the next one. The number of seconds used is 0.05 * 1.3 ^ Time and covers the range from 0.03s to 170s. Use 0 to mark the end of the animation. Further values will be ignored.</Description>
+					<Bits>5</Bits>
+					<MinVal>0</MinVal>
+					<MaxVal>31</MaxVal>
+				</UIntValue>
+				<UIntValue>
+					<ID>Color</ID>
+					<Description>The color is according to the 6 bit color palette used in SHC. The last color (or the first when AutoReverse is true) of the animation will remain visible after the animation is completed.</Description>
+					<Bits>6</Bits>
+					<MinVal>0</MinVal>
+					<MaxVal>63</MaxVal>
+				</UIntValue>
+			</Array>
+		</Message>
+	</MessageGroup>
+</Packet>

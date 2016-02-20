@@ -16,14 +16,14 @@
 
 package net.wimpi.modbus.msg;
 
-import net.wimpi.modbus.procimg.InputRegister;
-import net.wimpi.modbus.procimg.ProcessImageFactory;
-import net.wimpi.modbus.ModbusCoupler;
-import net.wimpi.modbus.Modbus;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
+import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.ModbusCoupler;
+import net.wimpi.modbus.procimg.InputRegister;
+import net.wimpi.modbus.procimg.ProcessImageFactory;
 
 /**
  * Class implementing a <tt>ReadInputRegistersRequest</tt>.
@@ -34,148 +34,143 @@ import java.io.IOException;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public final class ReadInputRegistersResponse
-    extends ModbusResponse {
+public final class ReadInputRegistersResponse extends ModbusResponse {
 
-  //instance attributes
-  private int m_ByteCount;
-  //private int[] m_RegisterValues;
-  private InputRegister[] m_Registers;
+    // instance attributes
+    private int m_ByteCount;
+    // private int[] m_RegisterValues;
+    private InputRegister[] m_Registers;
 
-  /**
-   * Constructs a new <tt>ReadInputRegistersResponse</tt>
-   * instance.
-   */
-  public ReadInputRegistersResponse() {
-    super();
-    setFunctionCode(Modbus.READ_INPUT_REGISTERS);
-  }//constructor
+    /**
+     * Constructs a new <tt>ReadInputRegistersResponse</tt>
+     * instance.
+     */
+    public ReadInputRegistersResponse() {
+        super();
+        setFunctionCode(Modbus.READ_INPUT_REGISTERS);
+    }// constructor
 
+    /**
+     * Constructs a new <tt>ReadInputRegistersResponse</tt>
+     * instance.
+     *
+     * @param registers the InputRegister[] holding response input registers.
+     */
+    public ReadInputRegistersResponse(InputRegister[] registers) {
+        super();
+        setFunctionCode(Modbus.READ_INPUT_REGISTERS);
+        m_ByteCount = registers.length * 2;
+        m_Registers = registers;
+        // set correct data length excluding unit id and fc
+        setDataLength(m_ByteCount + 1);
+    }// constructor
 
-  /**
-   * Constructs a new <tt>ReadInputRegistersResponse</tt>
-   * instance.
-   *
-   * @param registers the InputRegister[] holding response input registers.
-   */
-  public ReadInputRegistersResponse(InputRegister[] registers) {
-    super();
-    setFunctionCode(Modbus.READ_INPUT_REGISTERS);
-    m_ByteCount = registers.length * 2;
-    m_Registers = registers;
-    //set correct data length excluding unit id and fc
-    setDataLength(m_ByteCount + 1);
-  }//constructor
+    /**
+     * Returns the number of bytes that have been read.
+     * <p/>
+     *
+     * @return the number of bytes that have been read
+     *         as <tt>int</tt>.
+     */
+    public int getByteCount() {
+        return m_ByteCount;
+    }// getByteCount
 
+    /**
+     * Returns the number of words that have been read.
+     * The returned value should be twice as much as
+     * the byte count of the response.
+     * <p/>
+     *
+     * @return the number of words that have been read
+     *         as <tt>int</tt>.
+     */
+    public int getWordCount() {
+        return m_ByteCount / 2;
+    }// getWordCount
 
-  /**
-   * Returns the number of bytes that have been read.
-   * <p/>
-   *
-   * @return the number of bytes that have been read
-   *         as <tt>int</tt>.
-   */
-  public int getByteCount() {
-    return m_ByteCount;
-  }//getByteCount
+    /**
+     * Sets the number of bytes that have been returned.
+     * <p/>
+     *
+     * @param count the number of bytes as <tt>int</tt>.
+     */
+    private void setByteCount(int count) {
+        m_ByteCount = count;
+    }// setByteCount
 
-  /**
-   * Returns the number of words that have been read.
-   * The returned value should be twice as much as
-   * the byte count of the response.
-   * <p/>
-   *
-   * @return the number of words that have been read
-   *         as <tt>int</tt>.
-   */
-  public int getWordCount() {
-    return m_ByteCount / 2;
-  }//getWordCount
+    /**
+     * Returns the <tt>InputRegister</tt> at
+     * the given position (relative to the reference
+     * used in the request).
+     * <p/>
+     *
+     * @param index the relative index of the <tt>InputRegister</tt>.
+     * @return the register as <tt>InputRegister</tt>.
+     * @throws IndexOutOfBoundsException if
+     *             the index is out of bounds.
+     */
+    public InputRegister getRegister(int index) throws IndexOutOfBoundsException {
 
-  /**
-   * Sets the number of bytes that have been returned.
-   * <p/>
-   *
-   * @param count the number of bytes as <tt>int</tt>.
-   */
-  private void setByteCount(int count) {
-    m_ByteCount = count;
-  }//setByteCount
+        if (index >= getWordCount()) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            return m_Registers[index];
+        }
+    }// getRegister
 
-  /**
-   * Returns the <tt>InputRegister</tt> at
-   * the given position (relative to the reference
-   * used in the request).
-   * <p/>
-   *
-   * @param index the relative index of the <tt>InputRegister</tt>.
-   * @return the register as <tt>InputRegister</tt>.
-   * @throws IndexOutOfBoundsException if
-   *                                   the index is out of bounds.
-   */
-  public InputRegister getRegister(int index)
-      throws IndexOutOfBoundsException {
+    /**
+     * Returns the value of the register at
+     * the given position (relative to the reference
+     * used in the request) interpreted as usigned
+     * short.
+     * <p/>
+     *
+     * @param index the relative index of the register
+     *            for which the value should be retrieved.
+     * @return the value as <tt>int</tt>.
+     * @throws IndexOutOfBoundsException if
+     *             the index is out of bounds.
+     */
+    public int getRegisterValue(int index) throws IndexOutOfBoundsException {
 
-    if (index >= getWordCount()) {
-      throw new IndexOutOfBoundsException();
-    } else {
-      return m_Registers[index];
-    }
-  }//getRegister
+        if (index >= getWordCount()) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            return m_Registers[index].toUnsignedShort();
+        }
+    }// getRegisterValue
 
-  /**
-   * Returns the value of the register at
-   * the given position (relative to the reference
-   * used in the request) interpreted as usigned
-   * short.
-   * <p/>
-   *
-   * @param index the relative index of the register
-   *              for which the value should be retrieved.
-   * @return the value as <tt>int</tt>.
-   * @throws IndexOutOfBoundsException if
-   *                                   the index is out of bounds.
-   */
-  public int getRegisterValue(int index)
-      throws IndexOutOfBoundsException {
+    /**
+     * Returns a reference to the array of input
+     * registers read.
+     *
+     * @return a <tt>InputRegister[]</tt> instance.
+     */
+    public InputRegister[] getRegisters() {
+        return m_Registers;
+    }// getRegisters
 
-    if (index >= getWordCount()) {
-      throw new IndexOutOfBoundsException();
-    } else {
-      return m_Registers[index].toUnsignedShort();
-    }
-  }//getRegisterValue
+    @Override
+    public void writeData(DataOutput dout) throws IOException {
+        dout.writeByte(m_ByteCount);
+        for (int k = 0; k < getWordCount(); k++) {
+            dout.write(m_Registers[k].toBytes());
+        }
+    }// writeData
 
-  /**
-   * Returns a reference to the array of input
-   * registers read.
-   *
-   * @return a <tt>InputRegister[]</tt> instance.
-   */
-  public InputRegister[] getRegisters() {
-    return m_Registers;
-  }//getRegisters
+    @Override
+    public void readData(DataInput din) throws IOException {
+        setByteCount(din.readUnsignedByte());
 
-  public void writeData(DataOutput dout)
-      throws IOException {
-    dout.writeByte(m_ByteCount);
-    for (int k = 0; k < getWordCount(); k++) {
-      dout.write(m_Registers[k].toBytes());
-    }
-  }//writeData
+        InputRegister[] registers = new InputRegister[getWordCount()];
+        ProcessImageFactory pimf = ModbusCoupler.getReference().getProcessImageFactory();
+        for (int k = 0; k < getWordCount(); k++) {
+            registers[k] = pimf.createInputRegister(din.readByte(), din.readByte());
+        }
+        m_Registers = registers;
+        // update data length
+        setDataLength(getByteCount() + 1);
+    }// readData
 
-  public void readData(DataInput din)
-      throws IOException {
-    setByteCount(din.readUnsignedByte());
-
-    InputRegister[] registers = new InputRegister[getWordCount()];
-    ProcessImageFactory pimf = ModbusCoupler.getReference().getProcessImageFactory();
-    for (int k = 0; k < getWordCount(); k++) {
-      registers[k] = pimf.createInputRegister(din.readByte(), din.readByte());
-    }
-    m_Registers = registers;
-    //update data length
-    setDataLength(getByteCount() + 1);
-  }//readData
-
-}//class ReadInputRegistersResponse
+}// class ReadInputRegistersResponse

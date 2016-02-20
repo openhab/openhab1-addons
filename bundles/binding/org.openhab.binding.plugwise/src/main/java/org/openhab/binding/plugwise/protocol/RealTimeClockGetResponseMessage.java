@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
 /**
  * Real time clock response message. The Circle+ is the only device to hold a real real-time clock
  *
@@ -21,47 +22,48 @@ import org.joda.time.DateTimeZone;
  */
 public class RealTimeClockGetResponseMessage extends Message {
 
-	private int seconds;
-	private int minutes;
-	private int hour;
-	@SuppressWarnings("unused")
-	private int weekday;
-	private int day;
-	private int month;
-	private int year;
+    private int seconds;
+    private int minutes;
+    private int hour;
+    @SuppressWarnings("unused")
+    private int weekday;
+    private int day;
+    private int month;
+    private int year;
 
-	public RealTimeClockGetResponseMessage(int sequenceNumber, String payLoad) {
-		super(sequenceNumber, payLoad);
-		type = MessageType.REALTIMECLOCK_GET_RESPONSE;	}
+    public RealTimeClockGetResponseMessage(int sequenceNumber, String payLoad) {
+        super(sequenceNumber, payLoad);
+        type = MessageType.REALTIMECLOCK_GET_RESPONSE;
+    }
 
-	@Override
-	protected String payLoadToHexString() {
-		return payLoad;
-	}
+    @Override
+    protected String payLoadToHexString() {
+        return payLoad;
+    }
 
-	@Override
-	protected void parsePayLoad() {
-		
-		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})");
-		
-		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()) {
-			MAC = matcher.group(1);
-			seconds =  Integer.parseInt(matcher.group(2));
-			minutes =  Integer.parseInt(matcher.group(3));	
-			hour = Integer.parseInt(matcher.group(4));
-			weekday =  Integer.parseInt(matcher.group(5));
-			day = Integer.parseInt(matcher.group(6));
-			month = Integer.parseInt(matcher.group(7));
-			year = Integer.parseInt(matcher.group(8)) + 2000;
-		}
-		else {
-			logger.debug("Plugwise protocol RealTimeClockGetResponseMessage error: {} does not match", payLoad);
-		}
-	}
+    @Override
+    protected void parsePayLoad() {
 
-	public DateTime getTime() {
-		return new DateTime(year, month, day, hour, minutes, seconds, DateTimeZone.UTC).toDateTime(DateTimeZone.getDefault());
-	}
+        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})");
+
+        Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
+        if (matcher.matches()) {
+            MAC = matcher.group(1);
+            seconds = Integer.parseInt(matcher.group(2));
+            minutes = Integer.parseInt(matcher.group(3));
+            hour = Integer.parseInt(matcher.group(4));
+            weekday = Integer.parseInt(matcher.group(5));
+            day = Integer.parseInt(matcher.group(6));
+            month = Integer.parseInt(matcher.group(7));
+            year = Integer.parseInt(matcher.group(8)) + 2000;
+        } else {
+            logger.debug("Plugwise protocol RealTimeClockGetResponseMessage error: {} does not match", payLoad);
+        }
+    }
+
+    public DateTime getTime() {
+        return new DateTime(year, month, day, hour, minutes, seconds, DateTimeZone.UTC)
+                .toDateTime(DateTimeZone.getDefault());
+    }
 
 }

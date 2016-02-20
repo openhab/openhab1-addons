@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,18 +16,18 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
- * Serializer to map boolean values to an integer (1 and 0). 
- * 
+ * Serializer to map boolean values to an integer (1 and 0).
+ *
  * @author Jeroen Idserda
  * @since 1.7
  */
 public class BooleanToIntegerSerializer extends JsonSerializer<Boolean> {
 
-	@Override
-	public void serialize(Boolean bool, JsonGenerator jsonGenerator,
-			SerializerProvider serializerProvider) throws IOException,
-			JsonProcessingException {
-		if (bool != null)
-			jsonGenerator.writeObject(bool ? 1 : 0);
-	}
+    @Override
+    public void serialize(Boolean bool, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+            throws IOException, JsonProcessingException {
+        if (bool != null) {
+            jsonGenerator.writeObject(bool ? 1 : 0);
+        }
+    }
 }

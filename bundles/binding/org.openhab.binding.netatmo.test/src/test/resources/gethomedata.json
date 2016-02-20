@@ -1,0 +1,95 @@
+{
+  "body":  {
+    "homes":  [
+      {
+        "id":  "55817b8da88d1fb55d8b4689",
+        "name":  "Home Tom",
+        "place":  {
+          "country":  "SE",
+          "timezone":  "Europe/Stockholm"
+        },
+        "persons":  [
+           {
+            "id":  "0c08eedb-cc6b-4299-8b8f-1fbb939536c8",
+             "last_seen":  1441110023,
+            "out_of_sight":  false,
+             "face":  {
+               "id":  "55e598250a6e6e6170cf7cfb",
+               "version":  1,
+              "key":  "f06de130500990d5286a11d9b9c83eeaa530d984b0a2f6bca433472827f3f25c"
+            }
+          },
+          {
+            "id":  "0e52b4da-2d5a-42f5-be6e-85d8db7adfe8",
+            "last_seen":  1441112288,
+            "out_of_sight":  false,
+            "face":  {
+              "id":  "55e5a1240a6e6e5e70cf7e0a",
+              "version":  1,
+              "key":  "2c24b42ee7b87a47d16a046a6d0c0821523c5474b30c0b142ffc3510beddd67f"
+            }
+          },
+          {
+            "id":  "13e843a4-2bcb-4d52-855c-1c5570663f76",
+            "last_seen":  1441114497,
+            "out_of_sight":  false,
+            "face":  {
+              "id":  "55e5a98d0a6e6e6170cf7d4c",
+              "version":  1,
+              "key":  "42d2c1dd175c9128b2188537551680c3fc2c8d14eb1126c82342007db6b52848"
+            }
+          },
+          {
+            "id":  "3550700b-36cd-4c92-8b97-b64dba19f62e",
+            "last_seen":  1441120682,
+            "out_of_sight":  false,
+            "face":  {
+              "id":  "559b9b3f0a6e6ed8668b466b",
+              "key":  "311e4ca310587a1ac0ffb2f31e7d2fc99ef5f7a7ca85cbe59242aaafacd82c25",
+              "version":  1
+            },
+            "pseudo":  "Tom"
+          }
+        ],
+        "events":  [
+           {
+            "id":  "55e5c1c50a6e6e5f70cf7e4e",
+            "type":  "person",
+            "time":  1441120682,
+            "camera_id":  "70:ee:50:13:8b:35",
+            "person_id":  "3550700b-36cd-4c92-8b97-b64dba19f62e",
+            "snapshot":  {
+              "id":  "55e5c1c50a6e6e5f70cf7e50",
+              "version":  1,
+              "key":  "8bbbe58c7b4fba061e8c29c2b7a57e6d16956b06c6ebd992e01267e755f7df72"
+            },
+            "is_arrival":  false,
+            "message":  "Tom seen"
+          }
+        ],
+        "cameras":  [
+          {
+            "id":  "70:ee:50:13:8b:35",
+            "status":  "on",
+            "sd_status":  "on",
+            "alim_status":  "on",
+            "name":  "Tom's"
+          },
+          {
+             "id":  "70:ee:50:13:eb:35",
+            "status":  "disconnected",
+            "sd_status":  "on",
+            "alim_status":  "on"
+          }
+        ]
+      }
+    ],
+    "user":  {
+      "reg_locale":  "en-US",
+      "lang":  "en-US"
+    }
+  },
+  "status": "ok",
+  "time_exec":  0.015316009521484,
+  "time_server":  1441120797
+}

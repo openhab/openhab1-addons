@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,58 +22,55 @@ import org.openhab.binding.plugwise.internal.Energy;
  * @since 1.1.0
  */
 public class PowerInformationResponseMessage extends Message {
-	
-	private Energy oneSecond;
-	private Energy eightSecond;
-	private Energy allSeconds;
-	@SuppressWarnings("unused")
-	private int unknown1;
-	@SuppressWarnings("unused")
-	private int unknown2;
-	@SuppressWarnings("unused")
-	private int unknown3;
 
-	public PowerInformationResponseMessage(int sequenceNumber, String payLoad) {
-		super(sequenceNumber, payLoad);
-		type = MessageType.POWER_INFORMATION_RESPONSE;
-	}
+    private Energy oneSecond;
+    private Energy eightSecond;
+    private Energy allSeconds;
+    @SuppressWarnings("unused")
+    private int unknown1;
+    @SuppressWarnings("unused")
+    private int unknown2;
+    @SuppressWarnings("unused")
+    private int unknown3;
 
-	@Override
-	protected String payLoadToHexString() {
-		return payLoad;
-	}
+    public PowerInformationResponseMessage(int sequenceNumber, String payLoad) {
+        super(sequenceNumber, payLoad);
+        type = MessageType.POWER_INFORMATION_RESPONSE;
+    }
 
-	@Override
-	protected void parsePayLoad() {
-		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{4})(\\w{4})(\\w{8})(\\w{4})(\\w{4})(\\w{4})");
+    @Override
+    protected String payLoadToHexString() {
+        return payLoad;
+    }
 
-		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()) {
-			MAC = matcher.group(1);
-			oneSecond = new Energy(DateTime.now(), Integer.parseInt(matcher.group(2), 16), 1);
-			eightSecond = new Energy(DateTime.now(), Integer.parseInt(matcher.group(3), 16), 8);
-			allSeconds = new Energy(DateTime.now(), Integer.parseInt(matcher.group(4), 16), 0);
-			unknown1 = Integer.parseInt(matcher.group(5), 16);
-			unknown2 = Integer.parseInt(matcher.group(6), 16);
-			unknown3 = Integer.parseInt(matcher.group(7), 16);
+    @Override
+    protected void parsePayLoad() {
+        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{4})(\\w{4})(\\w{8})(\\w{4})(\\w{4})(\\w{4})");
 
-		}
-		else {
-			logger.debug("Plugwise protocol PowerInformationResponseMessage error: {} does not match", payLoad);
-		}
-	}
+        Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
+        if (matcher.matches()) {
+            MAC = matcher.group(1);
+            oneSecond = new Energy(DateTime.now(), Integer.parseInt(matcher.group(2), 16), 1);
+            eightSecond = new Energy(DateTime.now(), Integer.parseInt(matcher.group(3), 16), 8);
+            allSeconds = new Energy(DateTime.now(), Integer.parseInt(matcher.group(4), 16), 0);
+            unknown1 = Integer.parseInt(matcher.group(5), 16);
+            unknown2 = Integer.parseInt(matcher.group(6), 16);
+            unknown3 = Integer.parseInt(matcher.group(7), 16);
 
-	public Energy getOneSecond() {
-		return oneSecond;
-	}
+        } else {
+            logger.debug("Plugwise protocol PowerInformationResponseMessage error: {} does not match", payLoad);
+        }
+    }
 
-	public Energy getEightSecond() {
-		return eightSecond;
-	}
+    public Energy getOneSecond() {
+        return oneSecond;
+    }
 
-	public Energy getAllSeconds() {
-		return allSeconds;
-	}
+    public Energy getEightSecond() {
+        return eightSecond;
+    }
+
+    public Energy getAllSeconds() {
+        return allSeconds;
+    }
 }
-
-

@@ -41,7 +41,7 @@
 			<Default>0</Default>
 			<Minimum>1</Minimum>
 			<Maximum>255</Maximum>
-			<Size>2</Size>
+			<Size>1</Size>
 			<Label lang="en">Re-trigger Wait Time</Label>
 			<Help lang="en">By default, to conserve battery life, after the WAPIRZ-1 detects motion it cannot
 be re-triggered by motion again for 3 minutes. Each time motion is detected

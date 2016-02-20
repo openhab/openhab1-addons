@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,57 +20,57 @@ import org.joda.time.LocalTime;
  * @since 1.1.0
  */
 public class ClockGetResponseMessage extends Message {
-	
-	private int hour;
-	private int minutes;
-	private int seconds;
-	private int weekday;
 
-	public int getHour() {
-		return hour;
-	}
+    private int hour;
+    private int minutes;
+    private int seconds;
+    private int weekday;
 
-	public int getMinutes() {
-		return minutes;
-	}
+    public int getHour() {
+        return hour;
+    }
 
-	public int getSeconds() {
-		return seconds;
-	}
+    public int getMinutes() {
+        return minutes;
+    }
 
-	public int getWeekday() {
-		return weekday;
-	}
-	
-	public LocalTime getTime() {
-		return new LocalTime(hour,minutes,seconds);
-	}
+    public int getSeconds() {
+        return seconds;
+    }
 
-	public ClockGetResponseMessage(int sequenceNumber, String payLoad) {
-		super(sequenceNumber, payLoad);
-		type = MessageType.CLOCK_GET_RESPONSE;	}
+    public int getWeekday() {
+        return weekday;
+    }
 
-	@Override
-	protected String payLoadToHexString() {
-		return payLoad;
-	}
+    public LocalTime getTime() {
+        return new LocalTime(hour, minutes, seconds);
+    }
 
-	@Override
-	protected void parsePayLoad() {
-		
-		Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})");
+    public ClockGetResponseMessage(int sequenceNumber, String payLoad) {
+        super(sequenceNumber, payLoad);
+        type = MessageType.CLOCK_GET_RESPONSE;
+    }
 
-		Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
-		if(matcher.matches()){
-			MAC = matcher.group(1);
-			hour = Integer.parseInt(matcher.group(2),16);
-			minutes =  Integer.parseInt(matcher.group(3),16);	
-			seconds =  Integer.parseInt(matcher.group(4),16);
-			weekday =  Integer.parseInt(matcher.group(5),16);
-		}
-		else {
-			logger.debug("Plugwise protocol ClockGetResponseMessage error: {} does not match", payLoad);
-		}
-	}
+    @Override
+    protected String payLoadToHexString() {
+        return payLoad;
+    }
+
+    @Override
+    protected void parsePayLoad() {
+
+        Pattern RESPONSE_PATTERN = Pattern.compile("(\\w{16})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})(\\w{2})");
+
+        Matcher matcher = RESPONSE_PATTERN.matcher(payLoad);
+        if (matcher.matches()) {
+            MAC = matcher.group(1);
+            hour = Integer.parseInt(matcher.group(2), 16);
+            minutes = Integer.parseInt(matcher.group(3), 16);
+            seconds = Integer.parseInt(matcher.group(4), 16);
+            weekday = Integer.parseInt(matcher.group(5), 16);
+        } else {
+            logger.debug("Plugwise protocol ClockGetResponseMessage error: {} does not match", payLoad);
+        }
+    }
 
 }

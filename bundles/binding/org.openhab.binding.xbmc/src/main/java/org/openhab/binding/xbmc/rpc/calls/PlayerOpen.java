@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,48 +17,46 @@ import com.ning.http.client.AsyncHttpClient;
 
 /**
  * Player.Open RPC
- * 
+ *
  * @author Ard van der Leeuw
  * @since 1.6.0
  */
 public class PlayerOpen extends RpcCall {
-	
-	private String file;
-	private Integer channelId;
 
+    private String file;
+    private Integer channelId;
 
-	public void setChannelId(Integer channelId) {
-		this.channelId = channelId;
-	}
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
+    }
 
-	public PlayerOpen(AsyncHttpClient client, String uri) {
-		super(client, uri);
-	}
-	
-	public void setFile(String file) {
-		this.file = file;
-	}
+    public PlayerOpen(AsyncHttpClient client, String uri) {
+        super(client, uri);
+    }
 
+    public void setFile(String file) {
+        this.file = file;
+    }
 
-	
-	@Override
-	protected String getName() {
-		return "Player.Open";
-	}
-	
-	@Override
-	protected Map<String, Object> getParams() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> item = new HashMap<String, Object>();
-		if(channelId!=null)
-			item.put("channelid", channelId);
-		else
-			item.put("file", file);
-		params.put("item", item);
-		return params;
-	}
-	
-	@Override
-	protected void processResponse(Map<String, Object> response) {
-	}
+    @Override
+    protected String getName() {
+        return "Player.Open";
+    }
+
+    @Override
+    protected Map<String, Object> getParams() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> item = new HashMap<String, Object>();
+        if (channelId != null) {
+            item.put("channelid", channelId);
+        } else {
+            item.put("file", file);
+        }
+        params.put("item", item);
+        return params;
+    }
+
+    @Override
+    protected void processResponse(Map<String, Object> response) {
+    }
 }

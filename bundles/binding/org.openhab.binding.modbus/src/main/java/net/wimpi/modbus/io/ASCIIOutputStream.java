@@ -16,9 +16,9 @@
 
 package net.wimpi.modbus.io;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.FilterOutputStream;
 
 import net.wimpi.modbus.util.ModbusUtil;
 
@@ -36,71 +36,71 @@ import net.wimpi.modbus.util.ModbusUtil;
  * @see net.wimpi.modbus.io.ModbusASCIITransport#FRAME_START
  * @see net.wimpi.modbus.io.ModbusASCIITransport#FRAME_END
  */
-public class ASCIIOutputStream
-    extends FilterOutputStream {
+public class ASCIIOutputStream extends FilterOutputStream {
 
-  /**
-   * Constructs a new <tt>ASCIIOutputStream</tt> instance
-   * writing to the given <tt>OutputStream</tt>.
-   *
-   * @param out a base output stream instance to be wrapped.
-   */
-  public ASCIIOutputStream(OutputStream out) {
-    super(out);
-  }//constructor
+    /**
+     * Constructs a new <tt>ASCIIOutputStream</tt> instance
+     * writing to the given <tt>OutputStream</tt>.
+     *
+     * @param out a base output stream instance to be wrapped.
+     */
+    public ASCIIOutputStream(OutputStream out) {
+        super(out);
+    }// constructor
 
-  /**
-   * Writes a byte encoded as two hexadecimal characters to
-   * the raw output stream.
-   *
-   * @param b the byte to be written as <tt>int</tt>.
-   * @throws IOException if an I/O error occurs.
-   */
-  public void write(int b) throws IOException {
-    if (b == ModbusASCIITransport.FRAME_START) {
-      out.write(58);
-      //System.out.println("Wrote FRAME_START");
-      return;
-    } else if (b == ModbusASCIITransport.FRAME_END) {
-      out.write(13);
-      out.write(10);
-      //System.out.println("Wrote FRAME_END");
-      return;
-    } else {
-      out.write(ModbusUtil.toHex(b));
-      //System.out.println("Wrote byte "+b+"="+new String(ModbusUtil.toHex(b)));
-    }
-  }//write
+    /**
+     * Writes a byte encoded as two hexadecimal characters to
+     * the raw output stream.
+     *
+     * @param b the byte to be written as <tt>int</tt>.
+     * @throws IOException if an I/O error occurs.
+     */
+    @Override
+    public void write(int b) throws IOException {
+        if (b == ModbusASCIITransport.FRAME_START) {
+            out.write(58);
+            // System.out.println("Wrote FRAME_START");
+            return;
+        } else if (b == ModbusASCIITransport.FRAME_END) {
+            out.write(13);
+            out.write(10);
+            // System.out.println("Wrote FRAME_END");
+            return;
+        } else {
+            out.write(ModbusUtil.toHex(b));
+            // System.out.println("Wrote byte "+b+"="+new String(ModbusUtil.toHex(b)));
+        }
+    }// write
 
+    /**
+     * Writes an array of bytes encoded as two hexadecimal
+     * characters to the raw output stream.
+     *
+     * @param data the <tt>byte[]</tt> to be written.
+     * @throws IOException if an I/O error occurs.
+     */
+    @Override
+    public void write(byte[] data) throws IOException {
+        for (int i = 0; i < data.length; i++) {
+            write(data[i]);
+        }
+    }// write(byte[])
 
-  /**
-   * Writes an array of bytes encoded as two hexadecimal
-   * characters to the raw output stream.
-   *
-   * @param data the <tt>byte[]</tt> to be written.
-   * @throws IOException if an I/O error occurs.
-   */
-  public void write(byte[] data) throws IOException {
-    for (int i = 0; i < data.length; i++) {
-      write(data[i]);
-    }
-  }//write(byte[])
+    /**
+     * Writes an array of bytes encoded as two hexadecimal
+     * characters to the raw output stream.
+     *
+     * @param data the <tt>byte[]</tt> to be written.
+     * @param off the offset into the data to start writing from.
+     * @param len the number of bytes to be written from off.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    @Override
+    public void write(byte[] data, int off, int len) throws IOException {
+        for (int i = off; i < len; i++) {
+            write(data[i]);
+        }
+    }// write(byte[])
 
-  /**
-   * Writes an array of bytes encoded as two hexadecimal
-   * characters to the raw output stream.
-   *
-   * @param data the <tt>byte[]</tt> to be written.
-   * @param off the offset into the data to start writing from.
-   * @param len the number of bytes to be written from off.
-   *
-   * @throws IOException if an I/O error occurs.
-   */
-  public void write(byte[] data, int off, int len) throws IOException {
-    for (int i = off; i < len; i++) {
-      write(data[i]);
-    }
-  }//write(byte[])
-
-
-}//class ASCIIOutputStream
+}// class ASCIIOutputStream

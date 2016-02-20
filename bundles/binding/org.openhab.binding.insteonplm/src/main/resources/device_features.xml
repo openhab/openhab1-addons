@@ -18,6 +18,23 @@
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 
+<feature name="RampDimmer">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- cmd1 defaults to 0x2E, 0x2F -->
+	<!-- default dispatcher uses 0x19 for lookup key instead of cmd1 -->
+	<message-handler cmd="0x19">RampDimmerHandler</message-handler>
+	<command-handler command="PercentType">RampPercentHandler</command-handler>
+	<command-handler command="OnOffType">RampOnOffCommandHandler</command-handler>
+</feature>
+
+<feature name="RampDimmer_3435">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- default dispatcher uses 0x19 for lookup key instead of cmd1 -->
+	<message-handler cmd="0x19" on="0x34" off="0x35">RampDimmerHandler</message-handler>
+	<command-handler command="PercentType"  on="0x34" off="0x35">RampPercentHandler</command-handler>
+	<command-handler command="OnOffType" on="0x34" off="0x35">RampOnOffCommandHandler</command-handler>
+</feature>
+
 <feature name="ManualChange">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x17">StartManualChangeHandler</message-handler>
@@ -108,6 +125,15 @@
 	<message-handler cmd="0x18" group="1">StopManualChangeHandler</message-handler>
 	<command-handler command="DecimalType">ManualChangeCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+
+<feature name="LoadDimmerRamp">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<!-- cmd1 defaults to 0x2E, 0x2F -->
+	<!-- default dispatcher uses 0x19 for lookup key instead of cmd1 -->
+	<message-handler cmd="0x19" group="1">RampDimmerHandler</message-handler>
+	<command-handler command="PercentType">RampPercentHandler</command-handler>
+	<command-handler command="OnOffType">RampOnOffCommandHandler</command-handler>
 </feature>
 
 <feature name="KeyPadButtonGroup">
@@ -605,4 +631,10 @@
 	<command-handler command="DecimalType" ext="1" cmd1="0x11" d1="0x02" value="command2">FanLincFanCommandHandler</command-handler>
 	<poll-handler ext="0" cmd1="0x19" cmd2="0x03" >FlexPollHandler</poll-handler>
 </feature>     
+<feature name="BottomOutlet">
+        <message-dispatcher>DefaultDispatcher</message-dispatcher>
+        <message-handler cmd="0x19" button="2" group="1">SwitchRequestReplyHandler</message-handler>
+        <command-handler d1="0x02" ext="1" command="OnOffType">LightOnOffCommandHandler</command-handler>
+        <poll-handler ext="0" cmd1="0x19" cmd2="0x01">FlexPollHandler</poll-handler>
+</feature>
 </xml>

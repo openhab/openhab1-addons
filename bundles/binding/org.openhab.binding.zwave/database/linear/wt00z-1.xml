@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WT00Z-1</Model>
+	<Label lang="en">3-Way Wall Accessory Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x25</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x87</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Dim Start Level</Label>
+			<Help lang="en">A dimmer receiving this command will start dimming
+				from that start level if this bit is set to 0. If the bit is set to
+				1, the dimmer will ignore the start level and instead start dimming
+				from its current level.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Use Start Level</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore Start Level</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Suspend Group 4</Label>
+			<Help lang="en">Setting parameter to 1 will stop the WT00Z-1 from transmitting
+				to devices that are associated in group 4.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Enable Group 4</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Disable Group 4</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Night Light</Label>
+			<Help lang="en">The LED will turn ON when the status of the devices in group 1
+				is ON. To make the LED turn ON when the status of the devices is OFF set
+				this parameter to 1.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">On when load is on</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On when load is off</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Help lang="en">To change the top of the switch to OFF and the bottom
+				to ON change parameter to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Top-ON, Bottom-OFF </Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Bottom-ON, Top-OFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore start level when recieving dim commands</Label>
+			<Help lang="en">By default the WT00Z-1 sends the dim command so that the
+				dimmer will start dimming from its current dim level rather then the
+				start level embedded in the command. To change this set the configuration
+				parameter to 0.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Use start level</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore start level</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">ON/OFF dim rate</Label>
+			<Help lang="en">dim step parameter valid values: 1-99</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">ON/OFF dim rate</Label>
+			<Help lang="en">dim timer parameter valid values: 1-255</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Local control dim rate</Label>
+			<Help lang="en">dim step parameter valid values: 1-99</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Local control dim rate</Label>
+			<Help lang="en">dim timer parameter valid values: 1-255</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>1</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">ALL ON/ ALL OFF dim rate</Label>
+			<Help lang="en">dim step parameter valid values: 1-99</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">ALL ON/ ALL OFF dim rate</Label>
+			<Help lang="en">dim timer parameter valid values: 1-255</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Disable group 4 during a dim command</Label>
+			<Help lang="en">Prevent the WT00Z-1 from commanding the devices in group
+				4 during the DIM START command, set parameter 13 to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 1</Label>
+			<Help lang="en">The switch can control shade control devices if this
+				parameter is set to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 2</Label>
+			<Help lang="en">The switch can control shade control devices if this
+				parameter is set to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 3</Label>
+			<Help lang="en">The switch can control shade control devices if this
+				parameter is set to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Transmission Indication</Label>
+			<Help lang="en">The WT00Z-1 will flicker its LED when it is
+				transmitting to any of its groups. Parameter set to 0 = not flicker
+				Parameter set to 1 = flicker the entire time of transmitting
+				Parameter set to 2 = flicker for only 1 second.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable Flicker</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flicker while transmitting</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Flicker for 1 second</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>byte</Type>
+			<Default>2</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Poll: minutes</Label>
+			<Help lang="en">Will poll the first node in group 1in order to
+				keep itself synchronized with the group if this configuration
+				parameter is set to 1. How often it will poll is configured
+				with this parameter. Valid values: 1-255</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Poll first node in group 1</Label>
+			<Help lang="en">Will poll the first node in group 1 in order to keep
+				itself synchronized with the group if this configuration parameter
+				is set to 1</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Do not poll first node in group</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Poll first node in group</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Turn devices on and off by tapping the top or the bottom
+				of the switch once. Brighten or dim devices by tapping and then hold
+				the top or the bottom of the switch.</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Turn devices on and off by tapping the top or the bottom
+				of the switch twice. Brighten or dim devices by tapping and then hold
+				the top or the bottom of the switch.</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Turn devices on and off by tapping the top or the bottom
+				of the switch three times. Brighten or dim devices by tapping and then
+				hold the top or the bottom of the switch.</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Nodes in this group are turned ON or OFF or set to a
+				specific dim level when the WT00Z-1 is controlled remotely.</Label>
+		</Group>
+	</Associations>
+</Product>

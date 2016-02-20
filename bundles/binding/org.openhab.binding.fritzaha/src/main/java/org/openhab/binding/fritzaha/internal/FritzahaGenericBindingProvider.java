@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,115 +27,120 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Christian Brauers
  * @since 1.3.0
  */
-public class FritzahaGenericBindingProvider extends AbstractGenericBindingProvider implements BindingConfigReader,
-		FritzahaBindingProvider {
-	private static final Logger logger = LoggerFactory.getLogger(FritzahaGenericBindingProvider.class);
+public class FritzahaGenericBindingProvider extends AbstractGenericBindingProvider
+        implements BindingConfigReader, FritzahaBindingProvider {
+    private static final Logger logger = LoggerFactory.getLogger(FritzahaGenericBindingProvider.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getBindingType() {
-		return "fritzaha";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getBindingType() {
+        return "fritzaha";
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof NumberItem)) {
-			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-					+ item.getClass().getSimpleName()
-					+ "', only Switch- and NumberItems are allowed - please check your *.items configuration");
-		}
-	}
+    /**
+     * @{inheritDoc
+     */
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        if (!(item instanceof SwitchItem || item instanceof NumberItem)) {
+            throw new BindingConfigParseException(
+                    "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
+                            + "', only Switch- and NumberItems are allowed - please check your *.items configuration");
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-		FritzahaDevice config = null;
-		TimeDef timedef = null;
-		String[] configParts = bindingConfig.trim().split(",");
-		if (configParts.length < 2) {
-			throw new BindingConfigParseException("FritzAHA items must start with <hostID>,<deviceID/AIN>");
-		}
-		if (item instanceof SwitchItem) {
-			if (configParts.length != 2) {
-				throw new BindingConfigParseException("FritzAHA switches must be of format <hostID>,<deviceID/AIN>");
-			}
-			if (configParts[1].length() > 8) {
-				config = new FritzahaWebserviceSwitch(configParts[0], configParts[1]);
-			} else {
-				config = new FritzahaQueryscriptSwitch(configParts[0], configParts[1]);
-			}
-		} else if (item instanceof NumberItem) {
-			if (configParts.length < 3 || configParts.length > 4) {
-				throw new BindingConfigParseException(
-						"FritzAHA meters must be of format <hostID>,<deviceID/AIN>,<valueToMeasure>[,timespec]");
-			} else if (configParts.length == 4 &&  ! "energy".equalsIgnoreCase(configParts[2])) {
-					throw new BindingConfigParseException(
-							"FritzAHA non-energy meters must be of format <hostID>,<deviceID/AIN>,<valueToMeasure>");
-			} else if (configParts[1].length() > 8) {
-				if ("power".equalsIgnoreCase(configParts[2])) {
-					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.POWER);
-				} else if ("energy".equalsIgnoreCase(configParts[2])) {
-					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.ENERGY);
-				} else if ("temperature".equalsIgnoreCase(configParts[2])) {
-					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.TEMPERATURE);
-				} else {
-					logger.warn("Could not configure item " + item + " - Unsupported meter type for webservice");
-					return;
-				}
-			} else {
-				if ("voltage".equalsIgnoreCase(configParts[2])) {
-					config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.VOLTAGE);
-				} else if ("current".equalsIgnoreCase(configParts[2])) {
-					config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.CURRENT);
-				} else if ("power".equalsIgnoreCase(configParts[2])) {
-					config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.POWER);
-				} else if ("energy".equalsIgnoreCase(configParts[2])) {
-					if(configParts.length > 3) {
-						if("mins".equalsIgnoreCase(configParts[3])) timedef = TimeDef.MINUTES;
-						else if ("day".equalsIgnoreCase(configParts[3])) timedef = TimeDef.DAY;
-						else if ("month".equalsIgnoreCase(configParts[3])) timedef = TimeDef.MONTH;
-						else if ("year".equalsIgnoreCase(configParts[3])) timedef = TimeDef.YEAR;
-						else { 
-							timedef = TimeDef.YEAR;
-							logger.warn("Timedef of item " + item + "is set to default YEAR. " + 
-									"Please check your syntax. Shall be year, month, day or mins.");
-						}
-					} else { 
-						timedef = TimeDef.YEAR;
-						logger.debug("Timedef of item " + item + "is set to default YEAR because no timespec was given.");
-					}
-					config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.ENERGY, timedef);
-				} else {
-					logger.warn("Could not configure item " + item + " - Unsupported meter type for query script");
-					return;
-				}
-			}
-		} else {
-			logger.warn("Could not configure item " + item + " - Unsupported item type");
-		}
-		if (config != null)
-			addBindingConfig(item, config);
-		else {
-			logger.error("Could not configure item " + item + " - An error occurred");
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        super.processBindingConfiguration(context, item, bindingConfig);
+        FritzahaDevice config = null;
+        TimeDef timedef = null;
+        String[] configParts = bindingConfig.trim().split(",");
+        if (configParts.length < 2) {
+            throw new BindingConfigParseException("FritzAHA items must start with <hostID>,<deviceID/AIN>");
+        }
+        if (item instanceof SwitchItem) {
+            if (configParts.length != 2) {
+                throw new BindingConfigParseException("FritzAHA switches must be of format <hostID>,<deviceID/AIN>");
+            }
+            if (configParts[1].length() > 8) {
+                config = new FritzahaWebserviceSwitch(configParts[0], configParts[1]);
+            } else {
+                config = new FritzahaQueryscriptSwitch(configParts[0], configParts[1]);
+            }
+        } else if (item instanceof NumberItem) {
+            if (configParts.length < 3 || configParts.length > 4) {
+                throw new BindingConfigParseException(
+                        "FritzAHA meters must be of format <hostID>,<deviceID/AIN>,<valueToMeasure>[,timespec]");
+            } else if (configParts.length == 4 && !"energy".equalsIgnoreCase(configParts[2])) {
+                throw new BindingConfigParseException(
+                        "FritzAHA non-energy meters must be of format <hostID>,<deviceID/AIN>,<valueToMeasure>");
+            } else if (configParts[1].length() > 8) {
+                if ("power".equalsIgnoreCase(configParts[2])) {
+                    config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.POWER);
+                } else if ("energy".equalsIgnoreCase(configParts[2])) {
+                    config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.ENERGY);
+                } else if ("temperature".equalsIgnoreCase(configParts[2])) {
+                    config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.TEMPERATURE);
+                } else {
+                    logger.warn("Could not configure item " + item + " - Unsupported meter type for webservice");
+                    return;
+                }
+            } else {
+                if ("voltage".equalsIgnoreCase(configParts[2])) {
+                    config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.VOLTAGE);
+                } else if ("current".equalsIgnoreCase(configParts[2])) {
+                    config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.CURRENT);
+                } else if ("power".equalsIgnoreCase(configParts[2])) {
+                    config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.POWER);
+                } else if ("energy".equalsIgnoreCase(configParts[2])) {
+                    if (configParts.length > 3) {
+                        if ("mins".equalsIgnoreCase(configParts[3])) {
+                            timedef = TimeDef.MINUTES;
+                        } else if ("day".equalsIgnoreCase(configParts[3])) {
+                            timedef = TimeDef.DAY;
+                        } else if ("month".equalsIgnoreCase(configParts[3])) {
+                            timedef = TimeDef.MONTH;
+                        } else if ("year".equalsIgnoreCase(configParts[3])) {
+                            timedef = TimeDef.YEAR;
+                        } else {
+                            timedef = TimeDef.YEAR;
+                            logger.warn("Timedef of item " + item + "is set to default YEAR. "
+                                    + "Please check your syntax. Shall be year, month, day or mins.");
+                        }
+                    } else {
+                        timedef = TimeDef.YEAR;
+                        logger.debug(
+                                "Timedef of item " + item + "is set to default YEAR because no timespec was given.");
+                    }
+                    config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.ENERGY, timedef);
+                } else {
+                    logger.warn("Could not configure item " + item + " - Unsupported meter type for query script");
+                    return;
+                }
+            }
+        } else {
+            logger.warn("Could not configure item " + item + " - Unsupported item type");
+        }
+        if (config != null) {
+            addBindingConfig(item, config);
+        } else {
+            logger.error("Could not configure item " + item + " - An error occurred");
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public FritzahaDevice getDeviceConfig(String itemName) {
-		FritzahaDevice config = (FritzahaDevice) bindingConfigs.get(itemName);
-		return config;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public FritzahaDevice getDeviceConfig(String itemName) {
+        FritzahaDevice config = (FritzahaDevice) bindingConfigs.get(itemName);
+        return config;
+    }
 }

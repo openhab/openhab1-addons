@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,15 +16,15 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface JointSpaceBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns the TV Command string that is stored for given @code itemName in
-	 * response to a given @code command
-	 * 
-	 * @param itemName
-	 * @param command
-	 * @return Stored string, or null if unknown combination of itemName and
-	 *         command
-	 */
-	String getTVCommand(String itemName, String command);
+    /**
+     * Returns the TV Command string that is stored for given @code itemName in
+     * response to a given @code command
+     * 
+     * @param itemName
+     * @param command
+     * @return Stored string, or null if unknown combination of itemName and
+     *         command
+     */
+    String getTVCommand(String itemName, String command);
 
 }

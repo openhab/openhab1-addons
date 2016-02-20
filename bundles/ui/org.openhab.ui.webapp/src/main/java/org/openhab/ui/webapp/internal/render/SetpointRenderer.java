@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -88,7 +88,7 @@ public class SetpointRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%newlowerstate%", newLowerState);
 		snippet = StringUtils.replace(snippet, "%newhigherstate%", newHigherState);
 		snippet = StringUtils.replace(snippet, "%label%", getLabel(w));
-		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_PATH);
 		snippet = StringUtils.replace(snippet, "%minValue%", minValue.toString());
 		snippet = StringUtils.replace(snippet, "%maxValue%", maxValue.toString());
 		snippet = StringUtils.replace(snippet, "%step%", step.toString());

@@ -158,6 +158,7 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:MenuNavigation1'"      >MenuNavigation1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:MiosUpdater1'"         >MiosUpdater1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Misc1'"                >Misc1</xsl:when>
+<xsl:when test="@service = 'urn:dcineco-com:serviceId:MSwitch1'"                 >MSwitch1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:NumericEntry1'"        >NumericEntry1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:PIP1'"                 >PIP1</xsl:when>
 <xsl:when test="@service = 'urn:micasaverde-com:serviceId:Scene1'"               >Scene1</xsl:when>

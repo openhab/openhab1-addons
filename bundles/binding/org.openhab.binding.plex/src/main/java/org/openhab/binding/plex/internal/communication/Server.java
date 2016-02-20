@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,134 +14,134 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Part of {@link MediaContainer}. Strangely, this object contains information about a Plex client.  
- * 
+ * Part of {@link MediaContainer}. Strangely, this object contains information about a Plex client.
+ *
  * @author Jeroen Idserda
  * @since 1.7.0
  */
 @XmlRootElement(name = "Server")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Server {
-	
-	@XmlAttribute
-	private String name;
-	
-	@XmlAttribute
-	private String host;
-	
-	@XmlAttribute
-	private String address;
-	
-	@XmlAttribute
-	private String port;
-	
-	@XmlAttribute
-	private String machineIdentifier;
-	
-	@XmlAttribute
-	private String version;
-	
-	@XmlAttribute
-	private String protocol;
 
-	@XmlAttribute
-	private String product;
-	
-	@XmlAttribute
-	private String deviceClass;
-	
-	@XmlAttribute
-	private String protocolVersion;
-	
-	@XmlAttribute
-	private String protocolCapabilities;
+    @XmlAttribute
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    @XmlAttribute
+    private String host;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @XmlAttribute
+    private String address;
 
-	public String getHost() {
-		return host;
-	}
+    @XmlAttribute
+    private String port = "80";
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    @XmlAttribute
+    private String machineIdentifier;
 
-	public String getAddress() {
-		return address;
-	}
+    @XmlAttribute
+    private String version;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    @XmlAttribute
+    private String protocol;
 
-	public String getPort() {
-		return port;
-	}
+    @XmlAttribute
+    private String product;
 
-	public void setPort(String port) {
-		this.port = port;
-	}
+    @XmlAttribute
+    private String deviceClass;
 
-	public String getMachineIdentifier() {
-		return machineIdentifier;
-	}
+    @XmlAttribute
+    private String protocolVersion;
 
-	public void setMachineIdentifier(String machineIdentifier) {
-		this.machineIdentifier = machineIdentifier;
-	}
+    @XmlAttribute
+    private String protocolCapabilities;
 
-	public String getVersion() {
-		return version;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getProtocol() {
-		return protocol;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public String getProduct() {
-		return product;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setProduct(String product) {
-		this.product = product;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public String getDeviceClass() {
-		return deviceClass;
-	}
+    public String getPort() {
+        return port;
+    }
 
-	public void setDeviceClass(String deviceClass) {
-		this.deviceClass = deviceClass;
-	}
+    public void setPort(String port) {
+        this.port = port;
+    }
 
-	public String getProtocolVersion() {
-		return protocolVersion;
-	}
+    public String getMachineIdentifier() {
+        return machineIdentifier;
+    }
 
-	public void setProtocolVersion(String protocolVersion) {
-		this.protocolVersion = protocolVersion;
-	}
+    public void setMachineIdentifier(String machineIdentifier) {
+        this.machineIdentifier = machineIdentifier;
+    }
 
-	public String getProtocolCapabilities() {
-		return protocolCapabilities;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public void setProtocolCapabilities(String protocolCapabilities) {
-		this.protocolCapabilities = protocolCapabilities;
-	}
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public String getDeviceClass() {
+        return deviceClass;
+    }
+
+    public void setDeviceClass(String deviceClass) {
+        this.deviceClass = deviceClass;
+    }
+
+    public String getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    public void setProtocolVersion(String protocolVersion) {
+        this.protocolVersion = protocolVersion;
+    }
+
+    public String getProtocolCapabilities() {
+        return protocolCapabilities;
+    }
+
+    public void setProtocolCapabilities(String protocolCapabilities) {
+        this.protocolCapabilities = protocolCapabilities;
+    }
 
 }
