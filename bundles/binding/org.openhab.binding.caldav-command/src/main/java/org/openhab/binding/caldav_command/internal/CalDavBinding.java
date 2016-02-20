@@ -95,7 +95,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         this.calDavLoader.addListener(this);
     }
 
-    public void unsetCalDavLoader() {
+    public void unsetCalDavLoader(CalDavLoader calDavLoader) {
         this.calDavLoader.removeListener(this);
         this.calDavLoader = null;
     }
