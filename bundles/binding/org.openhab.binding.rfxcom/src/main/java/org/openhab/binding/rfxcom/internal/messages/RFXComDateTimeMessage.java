@@ -163,9 +163,9 @@ public class RFXComDateTimeMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[13];
+        byte[] data = new byte[14];
 
-        data[0] = 0x0D;
+        data[0] = (byte)(data.length-1);
         data[1] = RFXComBaseMessage.PacketType.DATE_TIME.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;

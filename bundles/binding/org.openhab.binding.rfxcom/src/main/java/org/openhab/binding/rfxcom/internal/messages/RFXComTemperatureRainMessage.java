@@ -108,9 +108,9 @@ public class RFXComTemperatureRainMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[10];
+        byte[] data = new byte[11];
 
-        data[0] = 0x0B;
+        data[0] = (byte)(data.length-1);
         data[1] = RFXComBaseMessage.PacketType.TEMPERATURE_RAIN.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
