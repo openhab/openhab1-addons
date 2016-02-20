@@ -13,6 +13,7 @@
    <implementation class="org.openhab.binding.satel.internal.SatelBinding"/>
    
    <service>
+      <provide interface="org.openhab.binding.satel.SatelCommModule"/>
       <provide interface="org.osgi.service.event.EventHandler"/>
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>

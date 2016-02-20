@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.satel.internal.types;
 
+import java.util.BitSet;
+
 /**
  * Available output control types:
  * <ul>
@@ -23,6 +25,13 @@ public enum OutputControl implements ControlType {
     ON(0x88),
     OFF(0x89),
     TOGGLE(0x91);
+
+    private static final BitSet stateBits;
+
+    static {
+        stateBits = new BitSet();
+        stateBits.set(OutputState.OUTPUT.getRefreshCommand());
+    }
 
     private byte controlCommand;
 
@@ -45,4 +54,13 @@ public enum OutputControl implements ControlType {
     public ObjectType getObjectType() {
         return ObjectType.OUTPUT;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BitSet getControlledStates() {
+        return stateBits;
+    }
+
 }

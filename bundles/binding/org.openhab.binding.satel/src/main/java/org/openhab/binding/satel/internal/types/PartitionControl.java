@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.satel.internal.types;
 
+import java.util.BitSet;
+
 /**
  * Available zone control types.
  *
@@ -25,6 +27,16 @@ public enum PartitionControl implements ControlType {
     FORCE_ARM_MODE_1(0xa1),
     FORCE_ARM_MODE_2(0xa2),
     FORCE_ARM_MODE_3(0xa3);
+
+    private static final BitSet stateBits;
+
+    static {
+        // for simplicity we just add all partition states here
+        stateBits = new BitSet();
+        for (PartitionState state : PartitionState.values()) {
+            stateBits.set(state.getRefreshCommand());
+        }
+    }
 
     private byte controlCommand;
 
@@ -47,4 +59,13 @@ public enum PartitionControl implements ControlType {
     public ObjectType getObjectType() {
         return ObjectType.PARTITION;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BitSet getControlledStates() {
+        return stateBits;
+    }
+
 }
