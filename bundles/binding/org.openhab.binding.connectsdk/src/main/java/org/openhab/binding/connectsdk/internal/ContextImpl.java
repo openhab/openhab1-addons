@@ -1,31 +1,20 @@
 package org.openhab.binding.connectsdk.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import android.content.BroadcastReceiver;
+//import android.content.ComponentName;
+//import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
-//import android.content.ComponentName;
-//import android.content.ContentResolver;
 //import android.content.IntentSender;
 //import android.content.ServiceConnection;
 //import android.content.SharedPreferences;
 //import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 //import android.content.pm.FeatureInfo;
 //import android.content.pm.InstrumentationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 //import android.content.pm.PermissionGroupInfo;
 //import android.content.pm.PermissionInfo;
 //import android.content.pm.ProviderInfo;
@@ -37,13 +26,24 @@ import android.net.wifi.WifiManager;
 //import android.database.DatabaseErrorHandler;
 //import android.database.sqlite.SQLiteDatabase;
 //import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 //import android.net.Uri;
+import android.net.wifi.WifiManager;
 //import android.os.Bundle;
 //import android.os.Handler;
 //import android.os.Looper;
+import android.view.Display;
 //import android.view.View;
 //import android.view.ViewGroup;
 //import android.view.WindowManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  *
