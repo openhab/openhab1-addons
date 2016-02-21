@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public final class Log {
 
-	private static final Logger l = LoggerFactory.getLogger("org.openhab.binding.connectsdk.Log");
+	private static final Logger l = LoggerFactory.getLogger(Log.class);
 
 	public static int v(java.lang.String tag, java.lang.String msg) {
 		l.trace(String.format("%s - %s", tag, msg));
