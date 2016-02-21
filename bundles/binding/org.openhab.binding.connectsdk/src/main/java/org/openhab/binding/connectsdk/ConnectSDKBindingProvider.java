@@ -17,6 +17,15 @@ import org.openhab.core.binding.BindingProvider;
 public interface ConnectSDKBindingProvider extends BindingProvider {
 
 	/**
+	 * Returns the property for this binding.
+	 * 
+	 * @param itemName
+	 *            must match one of the registered items. Otherwise an
+	 *            IllegalStateException will be thrown.
+	 * @return the property configured for this item in your *.item config file
+	 */String getPropertyForItem(String itemName);
+
+	/**
 	 * Returns the name for this binding.
 	 * 
 	 * @param itemName
@@ -25,7 +34,7 @@ public interface ConnectSDKBindingProvider extends BindingProvider {
 	 * @return the device name configured for this item in your *.item config file
 	 */
 	String getDeviceForItem(String itemName);
-	
+
 	/**
 	 * Returns the class for this binding.
 	 * 
@@ -36,15 +45,6 @@ public interface ConnectSDKBindingProvider extends BindingProvider {
 	 */
 	String getClassForItem(String itemName);
 	
-	/**
-	 * Returns the property for this binding.
-	 * 
-	 * @param itemName
-	 *            must match one of the registered items. Otherwise an
-	 *            IllegalStateException will be thrown.
-	 * @return the property configured for this item in your *.item config file
-	 */
-	String getPropertyForItem(String itemName);
-
+	
 
 }

@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2010-2015, openHAB.org and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
 package org.openhab.binding.connectsdk.internal.bridges;
 
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -17,11 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.connectsdk.device.ConnectableDevice;
 import com.connectsdk.service.capability.VolumeControl;
 // this class is only an experiment - it seems difficult to setup an item in the gui that sends Increase decrease commands
-
-/**
- * @author Sebastian Prehn
- * @since 1.8.0
- */
 public class VolumeControlUpDown extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
 	private static final Logger logger = LoggerFactory.getLogger(VolumeControlUpDown.class);
 	

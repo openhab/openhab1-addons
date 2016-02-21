@@ -16,7 +16,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 
 /**
- * This class parses the binding configuration.
+ * This class is responsible for parsing the binding configuration.
  * 
  * @author Sebastian Prehn
  * @since 1.8.0

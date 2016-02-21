@@ -49,6 +49,8 @@ import com.connectsdk.service.DeviceService.PairingType;
 import com.connectsdk.service.command.ServiceCommandError;
 
 /**
+ * 
+ * 
  * @author Sebastian Prehn
  * @since 1.8.0
  */
