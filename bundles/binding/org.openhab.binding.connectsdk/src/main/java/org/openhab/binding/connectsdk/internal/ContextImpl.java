@@ -39,11 +39,6 @@ import android.net.wifi.WifiManager;
 class ContextImpl extends Context {
 	private final String CONFIG_PROPERTIES_BASE = "etc" + File.separator + "connect_sdk";
 	private static final Logger logger = LoggerFactory.getLogger(ContextImpl.class);
-	private final ConnectSDKBinding binding;
-	
-	public ContextImpl(ConnectSDKBinding binding) {
-		this.binding = binding;
-	}
     @Override
     public PackageManager getPackageManager() {
         
@@ -334,7 +329,7 @@ class ContextImpl extends Context {
     @Override
     public Object getSystemService(String string) {
         if(Context.WIFI_SERVICE.equals(string)) {
-            return new WifiManager(binding);
+            return new WifiManager();
         }
         if(Context.CONNECTIVITY_SERVICE.equals(string)) {
         	return new ConnectivityManager();
