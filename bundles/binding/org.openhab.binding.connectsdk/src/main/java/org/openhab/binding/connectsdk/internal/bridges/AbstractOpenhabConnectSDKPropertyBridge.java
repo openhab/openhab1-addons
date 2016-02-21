@@ -17,7 +17,7 @@ import com.connectsdk.service.command.ServiceSubscription;
 public abstract class AbstractOpenhabConnectSDKPropertyBridge<T> implements OpenhabConnectSDKPropertyBridge {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractOpenhabConnectSDKPropertyBridge.class);
 
-	private Map<String, ServiceSubscription<T>> subscriptions = new ConcurrentHashMap<String, ServiceSubscription<T>>(); 
+	public Map<String, ServiceSubscription<T>> subscriptions = new ConcurrentHashMap<String, ServiceSubscription<T>>();
 
 
 	@Override

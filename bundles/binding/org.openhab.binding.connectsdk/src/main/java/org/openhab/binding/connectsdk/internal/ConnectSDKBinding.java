@@ -21,7 +21,6 @@ import javax.imageio.ImageIO;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
 import org.openhab.binding.connectsdk.internal.bridges.OpenhabConnectSDKPropertyBridge;
-import org.openhab.binding.connectsdk.internal.bridges.PowerControlPower;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlChannel;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlChannelName;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlDown;
@@ -59,8 +58,8 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 	private static OpenhabConnectSDKPropertyBridge[] bridges = new OpenhabConnectSDKPropertyBridge[] {
 			new VolumeControlVolume(), new VolumeControlMute(), new VolumeControlUp(), new VolumeControlDown(),
-			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new TVControlChannelName(), new TVControlProgram(),
-			new PowerControlPower()
+			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new TVControlChannelName(), new TVControlProgram()
+			
 	};
 
 	@Override
