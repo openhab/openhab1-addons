@@ -24,7 +24,6 @@ import org.openhab.binding.connectsdk.internal.bridges.ExternalInputControlInput
 import org.openhab.binding.connectsdk.internal.bridges.MediaControlForward;
 import org.openhab.binding.connectsdk.internal.bridges.MediaControlPause;
 import org.openhab.binding.connectsdk.internal.bridges.MediaControlPlay;
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlPlayState;
 import org.openhab.binding.connectsdk.internal.bridges.MediaControlRewind;
 import org.openhab.binding.connectsdk.internal.bridges.MediaControlStop;
 import org.openhab.binding.connectsdk.internal.bridges.OpenhabConnectSDKPropertyBridge;
@@ -34,7 +33,6 @@ import org.openhab.binding.connectsdk.internal.bridges.TVControlChannelName;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlDown;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlProgram;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlUp;
-import org.openhab.binding.connectsdk.internal.bridges.ToastControlToast;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlDown;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlMute;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlUp;
@@ -70,8 +68,7 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 			new VolumeControlVolume(), new VolumeControlMute(), new VolumeControlUp(), new VolumeControlDown(),
 			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new VolumeControlUpDown(), new TVControlChannelName(), new TVControlProgram(),
 			new PowerControlPower(), new ExternalInputControlInput(),
-			new MediaControlForward(), new MediaControlPause(), new MediaControlPlay(), new MediaControlRewind(), new MediaControlStop(), new MediaControlPlayState(),
-			new ToastControlToast()
+			new MediaControlForward(), new MediaControlPause(), new MediaControlPlay(), new MediaControlRewind(), new MediaControlStop()
 			
 	};
 
@@ -267,6 +264,5 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 		}
 	}
-
 
 }
