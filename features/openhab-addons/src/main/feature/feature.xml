@@ -463,7 +463,7 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.xbmc/${project.version}</bundle>
     </feature>
 
-    <feature name="openhab-binding-zwave" description="Z-Wave Binding" version="${project.version}">
+    <feature name="openhab-binding-zwave1" description="Z-Wave1 Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
         <feature>openhab-transport-serial</feature>
