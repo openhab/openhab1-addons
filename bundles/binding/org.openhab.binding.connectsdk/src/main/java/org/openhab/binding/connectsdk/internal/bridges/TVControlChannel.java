@@ -94,7 +94,8 @@ public class TVControlChannel extends AbstractOpenhabConnectSDKPropertyBridge<Ch
 							for (ConnectSDKBindingProvider provider : providers) {
 								for (String itemName : provider.getItemNames()) {
 									try {
-										if (matchClassAndProperty(provider.getClassForItem(itemName),provider.getPropertyForItem(itemName))
+										if ("TVControl".equals(provider.getClassForItem(itemName))
+												&& "channel".equals(provider.getPropertyForItem(itemName))
 												&& device.getIpAddress().equals(
 														InetAddress.getByName(provider.getDeviceForItem(itemName))
 																.getHostAddress())) {

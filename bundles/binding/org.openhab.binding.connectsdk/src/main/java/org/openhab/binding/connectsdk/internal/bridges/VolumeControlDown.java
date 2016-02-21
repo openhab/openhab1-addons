@@ -11,7 +11,7 @@ import com.connectsdk.service.capability.VolumeControl;
 import com.connectsdk.service.capability.VolumeControl.MuteListener;
 import com.connectsdk.service.command.ServiceSubscription;
 
-public class VolumeControlDown extends AbstractOpenhabConnectSDKPropertyBridge<Void> {
+public class VolumeControlDown extends AbstractOpenhabConnectSDKPropertyBridge<MuteListener> {
 	
 	@Override
 	protected String getItemProperty() {
@@ -36,7 +36,7 @@ public class VolumeControlDown extends AbstractOpenhabConnectSDKPropertyBridge<V
 	}
 
 	@Override
-	protected ServiceSubscription<Void> getSubscription(final ConnectableDevice device,
+	protected ServiceSubscription<MuteListener> getSubscription(final ConnectableDevice device,
 			final Collection<ConnectSDKBindingProvider> providers, final EventPublisher eventPublisher) {
 		return null;
 	}
