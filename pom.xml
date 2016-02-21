@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <prerequisites>
@@ -73,8 +73,25 @@
     <modules>
         <module>bundles</module>
         <module>features</module>
+<<<<<<< HEAD
     </modules>
 
+=======
+        <module>products</module>
+        <module>targetplatform</module>
+        <module>distribution</module>
+    </modules>
+        
+    <!-- dependencies, which are not available in a p2-repository -->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.fileinstall</artifactId>
+            <version>3.2.6</version>
+        </dependency>
+    </dependencies>
+    
+>>>>>>> parent of 59e5a1f... Initial version of connect sdk binding. POC implementation on Channel and Volume selection.
     <build>
         <plugins>
             <plugin>
@@ -336,6 +353,11 @@
             </build>
         </profile>
     </profiles>
+<<<<<<< HEAD
 
 </project>
 
+=======
+    
+</project>
+>>>>>>> parent of 59e5a1f... Initial version of connect sdk binding. POC implementation on Channel and Volume selection.
