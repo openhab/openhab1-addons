@@ -64,6 +64,7 @@
                                 <artifact><file>src/main/resources/conf/mqtt-persistence.cfg</file><type>cfg</type><classifier>mqtt-persistence</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/myq.cfg</file><type>cfg</type><classifier>myq</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mysql.cfg</file><type>cfg</type><classifier>mysql</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/neohub.cfg</file><type>cfg</type><classifier>neohub</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nest.cfg</file><type>cfg</type><classifier>nest</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/netatmo.cfg</file><type>cfg</type><classifier>netatmo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/networkhealth.cfg</file><type>cfg</type><classifier>networkhealth</classifier></artifact>
