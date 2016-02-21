@@ -20,12 +20,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.openhab.binding.connectsdk.ConnectSDKBindingProvider;
-import org.openhab.binding.connectsdk.internal.bridges.ExternalInputControlInput;
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlForward;
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlPause;
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlPlay;
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlRewind;
-import org.openhab.binding.connectsdk.internal.bridges.MediaControlStop;
 import org.openhab.binding.connectsdk.internal.bridges.OpenhabConnectSDKPropertyBridge;
 import org.openhab.binding.connectsdk.internal.bridges.PowerControlPower;
 import org.openhab.binding.connectsdk.internal.bridges.TVControlChannel;
@@ -36,7 +30,6 @@ import org.openhab.binding.connectsdk.internal.bridges.TVControlUp;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlDown;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlMute;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlUp;
-import org.openhab.binding.connectsdk.internal.bridges.VolumeControlUpDown;
 import org.openhab.binding.connectsdk.internal.bridges.VolumeControlVolume;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
@@ -55,7 +48,7 @@ import com.connectsdk.service.capability.listeners.ResponseListener;
 import com.connectsdk.service.command.ServiceCommandError;
 
 /**
- * 
+ * Implement this class if you are going create an actively polling service like querying a Website/Device.
  * 
  * @author Sebastian Prehn
  * @since 1.8.0
@@ -66,10 +59,8 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 
 	private static OpenhabConnectSDKPropertyBridge[] bridges = new OpenhabConnectSDKPropertyBridge[] {
 			new VolumeControlVolume(), new VolumeControlMute(), new VolumeControlUp(), new VolumeControlDown(),
-			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new VolumeControlUpDown(), new TVControlChannelName(), new TVControlProgram(),
-			new PowerControlPower(), new ExternalInputControlInput(),
-			new MediaControlForward(), new MediaControlPause(), new MediaControlPlay(), new MediaControlRewind(), new MediaControlStop()
-			
+			new TVControlChannel(), new TVControlUp(), new TVControlDown(), new TVControlChannelName(), new TVControlProgram(),
+			new PowerControlPower()
 	};
 
 	@Override
