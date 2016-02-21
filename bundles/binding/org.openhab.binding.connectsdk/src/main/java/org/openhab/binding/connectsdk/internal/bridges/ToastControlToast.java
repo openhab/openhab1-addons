@@ -71,13 +71,13 @@ public class ToastControlToast extends AbstractOpenhabConnectSDKPropertyBridge<V
 		}
 	}
 
-//	@Override
-//	public void onDeviceReady(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
-//			EventPublisher eventPublisher) {
-//		super.onDeviceReady(device, providers, eventPublisher);
-//		if(!findMatchingItemNames(device, providers).isEmpty()) { // only send hello world, if at least one toast Control item is configured
-//			onReceiveCommand(device, getItemClass(), getItemProperty(), new StringType("Welcome to Openhab!"));
-//		}
-//	}
+	@Override
+	public void onDeviceReady(ConnectableDevice device, Collection<ConnectSDKBindingProvider> providers,
+			EventPublisher eventPublisher) {
+		super.onDeviceReady(device, providers, eventPublisher);
+		if(!findMatchingItemNames(device, providers).isEmpty()) { // only send hello world, if at least one toast Control item is configured
+			onReceiveCommand(device, getItemClass(), getItemProperty(), new StringType("Welcome to Openhab!"));
+		}
+	}
 		
 }
