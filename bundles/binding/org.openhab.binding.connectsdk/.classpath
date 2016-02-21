@@ -8,6 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-20140107.jar" sourcepath="/Users/sprehn/.m2/repository/org/json/json/20140107/json-20140107-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jmdns-3.4.1.jar" sourcepath="/Users/sprehn/.m2/repository/javax/jmdns/jmdns/3.4.1/jmdns-3.4.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/android-4.1.1.4.jar" sourcepath="/Users/sprehn/.m2/repository/com/google/android/android/4.1.1.4/android-4.1.1.4-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>

@@ -1,6 +1,6 @@
 package android.net;
 public class NetworkInfo
-//  implements android.os.Parcelable
+  implements android.os.Parcelable
 {
 public static enum State
 {
@@ -42,5 +42,5 @@ public  java.lang.String getReason() { throw new RuntimeException("Stub!"); }
 public  java.lang.String getExtraInfo() { throw new RuntimeException("Stub!"); }
 public  java.lang.String toString() { throw new RuntimeException("Stub!"); }
 public  int describeContents() { throw new RuntimeException("Stub!"); }
-//public  void writeToParcel(android.os.Parcel dest, int flags) { throw new RuntimeException("Stub!"); }
+public  void writeToParcel(android.os.Parcel dest, int flags) { throw new RuntimeException("Stub!"); }
 }

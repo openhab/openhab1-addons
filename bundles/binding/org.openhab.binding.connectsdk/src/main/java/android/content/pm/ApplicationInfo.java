@@ -1,7 +1,7 @@
 package android.content.pm;
 public class ApplicationInfo
   extends android.content.pm.PackageItemInfo
-//  implements android.os.Parcelable
+  implements android.os.Parcelable
 {
 public static class DisplayNameComparator
   implements java.util.Comparator<android.content.pm.ApplicationInfo>
@@ -11,10 +11,10 @@ public final  int compare(android.content.pm.ApplicationInfo aa, android.content
 }
 public  ApplicationInfo() { /*throw new RuntimeException("Stub!");*/ }
 public  ApplicationInfo(android.content.pm.ApplicationInfo orig) { throw new RuntimeException("Stub!"); }
-//public  void dump(android.util.Printer pw, java.lang.String prefix) { throw new RuntimeException("Stub!"); }
+public  void dump(android.util.Printer pw, java.lang.String prefix) { throw new RuntimeException("Stub!"); }
 public  java.lang.String toString() { throw new RuntimeException("Stub!"); }
 public  int describeContents() { throw new RuntimeException("Stub!"); }
-//public  void writeToParcel(android.os.Parcel dest, int parcelableFlags) { throw new RuntimeException("Stub!"); }
+public  void writeToParcel(android.os.Parcel dest, int parcelableFlags) { throw new RuntimeException("Stub!"); }
 public  java.lang.CharSequence loadDescription(android.content.pm.PackageManager pm) { throw new RuntimeException("Stub!"); }
 public java.lang.String taskAffinity;
 public java.lang.String permission;
@@ -59,7 +59,7 @@ public java.lang.String nativeLibraryDir;
 public int uid;
 public int targetSdkVersion;
 public boolean enabled;
-//public static final android.os.Parcelable.Creator<android.content.pm.ApplicationInfo> CREATOR;
-//static { CREATOR = null; }
+public static final android.os.Parcelable.Creator<android.content.pm.ApplicationInfo> CREATOR;
+static { CREATOR = null; }
 }
 
