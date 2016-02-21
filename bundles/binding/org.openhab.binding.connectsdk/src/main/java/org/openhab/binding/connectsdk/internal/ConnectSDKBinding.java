@@ -180,47 +180,40 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 			@Override
 			public void onDeviceReady(ConnectableDevice device) {
 				logger.info("Device ready: {}", device);
-				for (OpenhabConnectSDKPropertyBridge b : bridges) {
-					b.removeAnySubscription(device); // ensure all old subscriptions are cleaned out
-					b.addSubscription(device, providers, eventPublisher);
-				}
-				sendHelloWorld(device);
+				handleSubscriptions(device);
+
 			}
 
 			@Override
 			public void onDeviceDisconnected(ConnectableDevice device) {
-				logger.debug("Device disconnected: {}", device);
-				// nothing to do here, we disconnect bridges in onDeviceRemoved method
+				logger.info("Device disconnected: {}", device);
+
 			}
 
 			@Override
 			public void onConnectionFailed(ConnectableDevice device, ServiceCommandError error) {
-				logger.debug("Connection failed: {} - error: {}", device, error.getMessage());
-				// nothing to do here, only called when pairing fails...
+				logger.warn("Connection failed: {} - error: {}", device, error.getMessage());
+
 			}
 
 			@Override
 			public void onCapabilityUpdated(ConnectableDevice device, List<String> added, List<String> removed) {
 				logger.debug("Capabilities updated: {} - added: {} - removed: {}", device, added, removed);
-				device.connect(); // ensure all services are connected, can be called even if some of the services are already connected
-				for (OpenhabConnectSDKPropertyBridge b : bridges) {
-					b.removeAnySubscription(device); // ensure all old subscriptions are cleaned out
-					b.addSubscription(device, providers, eventPublisher);
-				}				
+				handleSubscriptions(device);
 			}
 		});
-		device.connect(); // ensure all services are connected, can be called even if some of the services are already connected
-		//logger.debug("Capabilities: " + device.getFriendlyName() + " : " + device.getCapabilities().toString());
+
+		handleSubscriptions(device);
+		logger.debug("Capabilities: " + device.getFriendlyName() + " : " + device.getCapabilities().toString());
+
+		sendHelloWorld(device);
+
 	}
 
 	@Override
 	public void onDeviceUpdated(DiscoveryManager manager, ConnectableDevice device) {
 		logger.info("Device updated: {}", device);
-		for (OpenhabConnectSDKPropertyBridge b : bridges) {
-			b.removeAnySubscription(device);
-			b.addSubscription(device, providers, eventPublisher);
-		}
-		device.connect(); // ensure all services are connected, can be called even if some of the services are already connected
+		handleSubscriptions(device);
 	}
 
 	@Override
@@ -229,12 +222,17 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 		for (OpenhabConnectSDKPropertyBridge b : bridges) {
 			b.removeAnySubscription(device);
 		}
-		// no need to call device.disconnect this is done by connect sdk framework for us
 	}
 
 	@Override
 	public void onDiscoveryFailed(DiscoveryManager manager, ServiceCommandError error) {
 		logger.warn("Discovery failed: {}", error.getMessage());
+	}
+
+	private void handleSubscriptions(ConnectableDevice device) {
+		for (OpenhabConnectSDKPropertyBridge b : bridges) {
+			b.updateSubscription(device, providers, eventPublisher);
+		}
 	}
 
 	private void sendHelloWorld(ConnectableDevice device) {
@@ -246,7 +244,9 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 				OutputStream b64 = Base64.getEncoder().wrap(os);
 				ImageIO.write(bi, "png", b64);
 				String result = os.toString("UTF-8");
-				
+				if (!device.isConnected()) {
+					device.connect();
+				}
 				device.getCapability(ToastControl.class).showToast("Welcome to Openhab!", result, "png",
 						new ResponseListener<Object>() {
 
@@ -264,7 +264,9 @@ public class ConnectSDKBinding extends AbstractBinding<ConnectSDKBindingProvider
 			} catch (IOException ex) {
 				logger.error(ex.getMessage(), ex);
 			}
+
 		}
 	}
+
 
 }

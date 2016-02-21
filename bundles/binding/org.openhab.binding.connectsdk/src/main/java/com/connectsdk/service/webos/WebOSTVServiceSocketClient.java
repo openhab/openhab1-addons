@@ -1,7 +1,6 @@
 package com.connectsdk.service.webos;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,8 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 
 import org.java_websocket.WebSocket;
-//2016-01-01: Moved from 1.3.0 to 1.3.1-snapshot
-//import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
+import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
@@ -680,15 +678,8 @@ public class WebOSTVServiceSocketClient extends WebSocketClient implements Servi
         }
     }
 
-   // 2016-01-01: Moved from 1.3.0 to 1.3.1-snapshot
     private void setSSLContext(SSLContext sslContext) {
-        //setWebSocketFactory(new DefaultSSLWebSocketClientFactory(sslContext));
-    	try {
-			super.setSocket(sslContext.getSocketFactory().createSocket());
-		} catch (IOException e) {
-			Log.e("SSL Setup", "failed to setup ssl socket",e);
-		}
-        
+        setWebSocketFactory(new DefaultSSLWebSocketClientFactory(sslContext));
     }
 
     protected void setupSSL() {
