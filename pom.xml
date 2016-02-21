@@ -73,8 +73,25 @@
     <modules>
         <module>bundles</module>
         <module>features</module>
+<<<<<<< HEAD
     </modules>
 
+=======
+        <module>products</module>
+        <module>targetplatform</module>
+        <module>distribution</module>
+    </modules>
+        
+    <!-- dependencies, which are not available in a p2-repository -->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.fileinstall</artifactId>
+            <version>3.2.6</version>
+        </dependency>
+    </dependencies>
+    
+>>>>>>> parent of 59e5a1f... Initial version of connect sdk binding. POC implementation on Channel and Volume selection.
     <build>
         <plugins>
             <plugin>
@@ -336,5 +353,11 @@
             </build>
         </profile>
     </profiles>
+<<<<<<< HEAD
 
 </project>
+
+=======
+    
+</project>
+>>>>>>> parent of 59e5a1f... Initial version of connect sdk binding. POC implementation on Channel and Volume selection.
