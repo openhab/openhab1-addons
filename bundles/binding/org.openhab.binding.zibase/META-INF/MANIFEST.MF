@@ -28,4 +28,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath:  .,
- lib/jzapi-0.0.5.jar
+ lib/jzapi-0.0.6.jar
