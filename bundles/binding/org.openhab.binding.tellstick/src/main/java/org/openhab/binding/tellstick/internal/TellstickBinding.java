@@ -10,9 +10,12 @@ package org.openhab.binding.tellstick.internal;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.openhab.binding.tellstick.TellstickBindingConfig;
 import org.openhab.binding.tellstick.TellstickBindingProvider;
@@ -64,14 +67,20 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
      */
     private long refreshInterval = 60000;
 
-    private TellstickController controller = new TellstickController();
+    private TellstickController controller;
+    private Thread controllerThread;
+    private SortedMap<TellstickDevice, TellstickSendEvent> messageQue;
 
     public TellstickBinding() {
+        messageQue = Collections.synchronizedSortedMap(new TreeMap<TellstickDevice, TellstickSendEvent>());
+        controller = new TellstickController(messageQue);
+        controllerThread = new Thread(controller);
     }
 
     @Override
     public void activate() {
         logger.info("Activate " + Thread.currentThread());
+        controllerThread.start();
     }
 
     @Override
@@ -114,11 +123,11 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         logger.debug("internalReceiveCommand() is called! for " + itemName + " with " + command);
         TellstickBindingConfig config = findTellstickBindingConfig(itemName);
         if (config != null) {
-            try {
-                TellstickDevice dev = findDevice(config);
-                controller.handleSendEvent(config, dev, command);
-            } catch (Exception e) {
-                logger.error("Failed to send msg to " + config, e);
+            TellstickDevice dev = findDevice(config);
+            Long eventTime = System.currentTimeMillis();
+            synchronized (messageQue) {
+                messageQue.put(dev, new TellstickSendEvent(config, dev, command, eventTime));
+                messageQue.notify();
             }
         }
     }

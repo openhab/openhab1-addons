@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.tellstick.internal;
 
+import java.util.SortedMap;
+
 import org.openhab.binding.tellstick.TellstickBindingConfig;
 import org.openhab.binding.tellstick.TellstickValueSelector;
 import org.openhab.binding.tellstick.internal.device.TellstickDevice;
@@ -29,13 +31,45 @@ import org.slf4j.LoggerFactory;
  * @author jarlebh
  *
  */
-public class TellstickController {
+public class TellstickController implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TellstickController.class);
     private long lastSend = 0;
+
     public static final long DEFAULT_INTERVAL_BETWEEN_SEND = 250;
 
-    public void handleSendEvent(TellstickBindingConfig config, TellstickDevice dev, Command command)
+    private SortedMap<TellstickDevice, TellstickSendEvent> messageQue;
+
+    public TellstickController(SortedMap<TellstickDevice, TellstickSendEvent> m) {
+        messageQue = m;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                TellstickSendEvent sendEvent;
+                // GET EVENT TO SEND
+                synchronized (messageQue) {
+                    while (messageQue.isEmpty()) {
+                        messageQue.wait();
+                    }
+                    sendEvent = messageQue.remove(messageQue.firstKey());
+                }
+                // SEND EVENT
+                try {
+                    handleSendEvent(sendEvent.getConfig(), sendEvent.getDev(), sendEvent.getCommand());
+                } catch (TellstickException e) {
+                    logger.error("Failed to send msg to " + sendEvent.getConfig(), e);
+                }
+
+            } catch (InterruptedException ie) {
+                break; // Terminate
+            }
+        }
+    }
+
+    private void handleSendEvent(TellstickBindingConfig config, TellstickDevice dev, Command command)
             throws TellstickException {
 
         int resend = config.getResend();
@@ -71,7 +105,6 @@ public class TellstickController {
                     break;
             }
         }
-
     }
 
     private void increaseDecrease(TellstickDevice dev, IncreaseDecreaseType increaseDecreaseType)
@@ -142,4 +175,5 @@ public class TellstickController {
     public void setLastSend(long currentTimeMillis) {
         lastSend = currentTimeMillis;
     }
+
 }
