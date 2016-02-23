@@ -237,6 +237,10 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
 
         for (final String deviceId : pollMap.keySet()) {
             final GaradgetDevice device = devices.get(deviceId);
+            if (device == null) {
+                logger.warn("Unable to poll variables for deviceId {}; skipping.", deviceId);
+                continue;
+            }
             final TreeSet<String> varNames = pollMap.get(deviceId);
             for (final String varName : varNames) {
                 connection.sendCommand(device, varName, null, new HttpResponseHandler() {
