@@ -385,15 +385,6 @@ public class PersistenceExtensions implements ManagedService {
 			}
 		}
 		
-		// If the current value has not been persisted it should be included in the average as well.
-		// Assume that any current value different from the last historical value has not been 
-		// persisted and include it.
-		DecimalType currentValue = (DecimalType) item.getStateAs(DecimalType.class);
-		if (currentValue != null && currentValue != histValue ) {
-			total += currentValue.doubleValue();
-			quantity++;
-		}
-
 		if (quantity == 0 ){
 			return null;
 		}
@@ -449,15 +440,6 @@ public class PersistenceExtensions implements ManagedService {
 				total += Math.pow(histValue.doubleValue()- average.doubleValue(), 2);
 				quantity++;
 			}
-		}
-
-		// If the current value has not been persisted it should be included in the average as well.
-		// Assume that any current value different from the last historical value has not been 
-		// persisted and include it.
-		DecimalType currentValue = (DecimalType) item.getStateAs(DecimalType.class);
-		if (currentValue != null && currentValue != histValue ) {
-			total += Math.pow(currentValue.doubleValue()- average.doubleValue(), 2);
-			quantity++;
 		}
 
 		if (quantity == 0 ){
