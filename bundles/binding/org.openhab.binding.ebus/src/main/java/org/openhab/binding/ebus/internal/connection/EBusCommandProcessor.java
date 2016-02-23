@@ -127,8 +127,8 @@ public class EBusCommandProcessor implements BindingChangeListener {
                 futureMap.remove(itemName).cancel(true);
             }
 
-            if (scheduler == null) {
-                scheduler = Executors.newScheduledThreadPool(2);
+            if(scheduler == null) {
+                scheduler = Executors.newScheduledThreadPool(2, new WorkerThreadFactory("ebus-scheduler"));
             }
 
             logger.debug("Add polling item {} with refresh rate {} to scheduler ...", itemName, refreshRate);
