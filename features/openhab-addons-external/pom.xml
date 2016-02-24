@@ -39,6 +39,7 @@
                                 <artifact><file>src/main/resources/conf/culintertechno.cfg</file><type>cfg</type><classifier>culintertechno</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/denon.cfg</file><type>cfg</type><classifier>denon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/dmx.cfg</file><type>cfg</type><classifier>dmx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ebus.cfg</file><type>cfg</type><classifier>ebus</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ecobee.cfg</file><type>cfg</type><classifier>ecobee</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enphaseenergy.cfg</file><type>cfg</type><classifier>enphaseenergy</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enocean.cfg</file><type>cfg</type><classifier>enocean</classifier></artifact>
