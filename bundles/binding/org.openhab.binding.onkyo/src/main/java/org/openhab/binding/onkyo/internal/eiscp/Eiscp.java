@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen (Refactoring)
  * @author Pauli Anttila (Simplified, rewritten and added status update listener functionality)
  */
-public class Eiscp {
+public class Eiscp implements EiscpInterface {
 
     private static final Logger logger = LoggerFactory.getLogger(Eiscp.class);
 
