@@ -9,6 +9,8 @@
 package org.openhab.binding.ebus.internal;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Dictionary;
@@ -16,12 +18,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.ebus.Activator;
 import org.openhab.binding.ebus.EBusBindingProvider;
 import org.openhab.binding.ebus.internal.connection.AbstractEBusWriteConnector;
 import org.openhab.binding.ebus.internal.connection.EBusCommandProcessor;
 import org.openhab.binding.ebus.internal.connection.EBusConnectorEventListener;
-import org.openhab.binding.ebus.internal.connection.EBusSerialConnector;
 import org.openhab.binding.ebus.internal.connection.EBusTCPConnector;
 import org.openhab.binding.ebus.internal.parser.EBusConfigurationProvider;
 import org.openhab.binding.ebus.internal.parser.EBusTelegramCSVWriter;
@@ -33,8 +33,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.Bundle;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -60,9 +59,6 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
     // The parser to converts received bytes to key/value maps
     private EBusTelegramParser parser;
 
-    // Used to check binding configuration
-    private ConfigurationAdmin configurationAdminService;
-
     private EBusConfigurationProvider configurationProvider;
 
     private EBusTelegramCSVWriter debugWriter;
@@ -81,24 +77,6 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
             connector.addToSendQueue(data);
         }
-    }
-
-    /**
-     * Set the OSGI Admin Service
-     *
-     * @param configurationAdminService
-     */
-    public void setConfigurationAdmin(ConfigurationAdmin configurationAdminService) {
-        this.configurationAdminService = configurationAdminService;
-    }
-
-    /**
-     * Unset the OSGI Admin Service
-     *
-     * @param configurationAdminService
-     */
-    public void unsetConfigurationAdmin(ConfigurationAdmin configurationAdminService) {
-        this.configurationAdminService = null;
     }
 
     /**
@@ -124,6 +102,16 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
     }
 
     private void stopConnector() {
+
+        if (debugWriter != null) {
+            try {
+                debugWriter.close();
+                debugWriter = null;
+            } catch (IOException e) {
+                logger.error("error!", e);
+            }
+        }
+
         // stop last thread if active
         if (connector != null && connector.isAlive()) {
 
@@ -205,7 +193,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
                     logger.debug("Load eBus Parser Configuration \"{}\" ...", elem.trim());
                     String filename = "src/main/resources/" + elem.trim() + "-configuration.json";
 
-                    Bundle bundle = Activator.getInstance().getBundle();
+                    Bundle bundle = FrameworkUtil.getBundle(EBusBinding.class);
                     configurationUrl = bundle.getResource(filename);
 
                     if (configurationUrl == null) {
@@ -223,10 +211,37 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
                 throw new ConfigurationException("hostname", "Set property serialPort or hostname, not both!");
             }
 
+            // use the serial connector
             if (StringUtils.isNotEmpty((String) properties.get("serialPort"))) {
 
-                // use the serial connector
-                connector = new EBusSerialConnector((String) properties.get("serialPort"));
+                try {
+                    // load class by reflection to keep gnu.io (serial) optional. Declarative Services causes an
+                    // class not found exception, also if serial is not used!
+                    // FIXME: Is there a better way to avoid that a class not found exception?
+                    @SuppressWarnings("unchecked")
+                    Class<AbstractEBusWriteConnector> _tempClass = (Class<AbstractEBusWriteConnector>) EBusBinding.class
+                            .getClassLoader()
+                            .loadClass("org.openhab.binding.ebus.internal.connection.EBusSerialConnector");
+
+                    Constructor<AbstractEBusWriteConnector> constructor = _tempClass
+                            .getDeclaredConstructor(String.class);
+                    connector = constructor.newInstance((String) properties.get("serialPort"));
+
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.toString(), e);
+                } catch (NoSuchMethodException e) {
+                    logger.error(e.toString(), e);
+                } catch (SecurityException e) {
+                    logger.error(e.toString(), e);
+                } catch (InstantiationException e) {
+                    logger.error(e.toString(), e);
+                } catch (IllegalAccessException e) {
+                    logger.error(e.toString(), e);
+                } catch (IllegalArgumentException e) {
+                    logger.error(e.toString(), e);
+                } catch (InvocationTargetException e) {
+                    logger.error(e.toString(), e);
+                }
 
             } else if (StringUtils.isNotEmpty((String) properties.get("hostname"))) {
 
@@ -297,42 +312,6 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider>
 
         // check to ensure that it is available
         checkConfigurationProvider();
-
-        // observe connection, if not started 15 sec. later than start it manually
-        // replacing a bundle doesn't recall update function, more
-        // a bug/enhancement in openhab
-        new Thread() {
-            @Override
-            public void run() {
-
-                try {
-                    sleep(15000);
-
-                    if (connector == null) {
-                        logger.warn("eBus connector still not started, started it yet!");
-
-                        Configuration configuration = configurationAdminService.getConfiguration("org.openhab.ebus",
-                                null);
-                        if (configuration != null) {
-                            updated(configuration.getProperties());
-
-                            for (EBusBindingProvider provider : EBusBinding.this.providers) {
-                                commandProcessor.allBindingsChanged(provider);
-                            }
-                        }
-                    }
-
-                } catch (InterruptedException e) {
-                    logger.error(e.toString(), e);
-                } catch (ConfigurationException e) {
-                    logger.error(e.toString(), e);
-                } catch (IOException e) {
-                    logger.error(e.toString(), e);
-                }
-
-            }
-        }.start();
-
     }
 
     /*
