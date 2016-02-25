@@ -333,6 +333,12 @@ public class EBusTelegramParser {
                 // Extract the value from byte buffer
                 Object value = getValue(byteBuffer, entry.getValue());
 
+                if(value == null) {
+                    // its okay if the value is null, maybe out of range min/max or replace value found
+                    logger.trace("Returned value is null, skip ...");
+                    continue;
+                }
+
                 // If compiled script available for this key, execute it now
                 if (settings.getCsript() != null) {
                     try {
