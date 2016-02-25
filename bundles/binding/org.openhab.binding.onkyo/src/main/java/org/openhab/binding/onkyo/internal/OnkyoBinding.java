@@ -252,8 +252,8 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
                 Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
                 if (!matcher.matches()) {
-                    logger.debug(
-                            "given config key '" + key + "' does not follow the expected pattern '<id>.<host|port|serialPortName>'");
+                    logger.debug("given config key '" + key
+                            + "' does not follow the expected pattern '<id>.<host|port|serialPortName>'");
                     continue;
                 }
 
@@ -323,8 +323,8 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
         for (String device : deviceConfigCache.keySet()) {
             DeviceConfig deviceConfig = deviceConfigCache.get(device);
             if (deviceConfig != null) {
-                if ((deviceConfig.getSerialPortName()!=null && deviceConfig.getSerialPortName().equals(ipOrSerial)) || 
-                    (deviceConfig.getHost()!=null && deviceConfig.getHost().equals(ipOrSerial))) {
+                if ((deviceConfig.getSerialPortName() != null && deviceConfig.getSerialPortName().equals(ipOrSerial))
+                        || (deviceConfig.getHost() != null && deviceConfig.getHost().equals(ipOrSerial))) {
                     return deviceConfig;
                 }
             }
@@ -339,7 +339,8 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
         DeviceConfig deviceConfig = findDevice(iporSerialPort);
 
         if (deviceConfig != null) {
-            logger.debug("Received status update '{}' from device {}", data, (deviceConfig.serialPortName!=null)?deviceConfig.serialPortName:deviceConfig.host);
+            logger.debug("Received status update '{}' from device {}", data,
+                    (deviceConfig.serialPortName != null) ? deviceConfig.serialPortName : deviceConfig.host);
             for (OnkyoBindingProvider provider : providers) {
                 for (String itemName : provider.getItemNames()) {
                     // Update all items which refer to command
@@ -352,10 +353,10 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
                         boolean match = false;
 
-                        if (!deviceConfig.deviceId.equals(deviceName)){
+                        if (!deviceConfig.deviceId.equals(deviceName)) {
                             continue; // skip this device as it does not match
                         }
-                        
+
                         if (deviceCmd.startsWith(ADVANCED_COMMAND_KEY)) {
                             // skip advanced command key and compare 3 first character
                             if (data.startsWith(deviceCmd.substring(1, 4))) {
@@ -471,7 +472,7 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
     static class DeviceConfig {
 
         String host;
-        String serialPortName;        
+        String serialPortName;
         int port = DEFAULT_PORT;
 
         OnkyoConnection connection = null;
@@ -485,9 +486,9 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
             return host;
         }
 
-        public String getSerialPortName(){
+        public String getSerialPortName() {
             return serialPortName;
-        }    
+        }
 
         public int getPort() {
             return port;
@@ -495,18 +496,20 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
         @Override
         public String toString() {
-            if (serialPortName!=null)
+            if (serialPortName != null) {
                 return "Device [id=" + deviceId + ", serialPort=" + serialPortName + "]";
-            else
+            } else {
                 return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + "]";
+            }
         }
 
         OnkyoConnection getConnection() {
             if (connection == null) {
-                if (serialPortName!=null)
+                if (serialPortName != null) {
                     connection = new OnkyoConnection(serialPortName);
-                else
+                } else {
                     connection = new OnkyoConnection(host, port);
+                }
             }
             return connection;
         }
