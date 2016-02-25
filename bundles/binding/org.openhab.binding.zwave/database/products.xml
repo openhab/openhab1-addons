@@ -3213,14 +3213,23 @@
 			<ConfigFile>nodon/crc3100.xml</ConfigFile>
 		</Product>
 		<Product>
-            <Reference>
-                <Type>0002</Type>
-                <Id>0002</Id>
-            </Reference>
-            <Model>Soft Remote</Model>
-            <Label lang="en">Remote Control</Label>
-            <ConfigFile>nodon/crc3605.xml</ConfigFile>
-        </Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>Soft Remote</Model>
+			<Label lang="en">Remote Control</Label>
+			<ConfigFile>nodon/crc3605.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>CRW-310x</Model>
+			<Label lang="en">Wall Switch</Label>
+			<ConfigFile>nodon/crw310x.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 	  <Id>019a</Id>
