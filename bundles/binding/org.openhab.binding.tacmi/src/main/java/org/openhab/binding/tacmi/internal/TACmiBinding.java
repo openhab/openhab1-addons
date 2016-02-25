@@ -13,6 +13,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
@@ -161,7 +162,7 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
         logger.trace("execute() method is called!");
         try {
             clientSocket.setBroadcast(true);
-            clientSocket.setSoTimeout(10000);
+            clientSocket.setSoTimeout(30000);
             byte[] receiveData = new byte[14];
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             clientSocket.receive(receivePacket);
@@ -205,8 +206,10 @@ public class TACmiBinding extends AbstractActiveBinding<TACmiBindingProvider> {
                 }
             }
 
+        } catch (SocketTimeoutException e) {
+            logger.info("Receive Timeout on CoE socket");
         } catch (Exception e) {
-            logger.warn("Error in execute: {}, Message: {}", e.getClass().getName(), e.getMessage());
+            logger.warn("Exception in execute:", e);
         }
         logger.trace("TACmi execute() finished");
 
