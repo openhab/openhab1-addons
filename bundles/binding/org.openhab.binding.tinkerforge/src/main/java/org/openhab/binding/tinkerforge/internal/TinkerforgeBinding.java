@@ -780,7 +780,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                         } else if (command instanceof StringType) {
                             logger.trace("{} found string command", LoggerConstants.COMMAND);
                             if (mDevice instanceof MTextActor) {
-                                ((MTextActor) mDevice).setText(command.toString());
+                                ((MTextActor) mDevice).write(command.toString());
                             }
                         } else if (command instanceof DecimalType) {
                             logger.debug("{} found number command", LoggerConstants.COMMAND);
