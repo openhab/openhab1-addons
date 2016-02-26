@@ -14,6 +14,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.OLEDBricklet;
 import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,19 +148,45 @@ public class TinkerforgeContextImpl implements TinkerforgeContext {
             return false;
         }
         MBaseDevice mDevice = ecosystem.getDevice(uid, null);
-        return true;
+        if (mDevice instanceof OLEDBricklet) {
+            ((OLEDBricklet) mDevice).clear();
+            return true;
+        } else {
+            logger.error("no OLED Bricklet found for uid {}", uid);
+            return false;
+        }
     }
 
     @Override
     public boolean tfOLEDClear(String uid, short columnFrom, short columnTo, short rowFrom, short rowTo) {
-        // TODO Auto-generated method stub
-        return false;
+        if (ecosystem == null) {
+            logger.error("tfOLEDClear action failed ecosystem is null");
+            return false;
+        }
+        MBaseDevice mDevice = ecosystem.getDevice(uid, null);
+        if (mDevice instanceof OLEDBricklet) {
+            ((OLEDBricklet) mDevice).clear(columnFrom, columnTo, rowFrom, rowTo);
+            return true;
+        } else {
+            logger.error("no OLED Bricklet found for uid {}", uid);
+            return false;
+        }
     }
 
     @Override
     public boolean tfOLEDWriteLine(String uid, short line, short position, String text) {
-        // TODO Auto-generated method stub
-        return false;
+        if (ecosystem == null) {
+            logger.error("tfOLEDClear action failed ecosystem is null");
+            return false;
+        }
+        MBaseDevice mDevice = ecosystem.getDevice(uid, null);
+        if (mDevice instanceof OLEDBricklet) {
+            ((OLEDBricklet) mDevice).writeLine(line, position, text);
+            return true;
+        } else {
+            logger.error("no OLED Bricklet found for uid {}", uid);
+            return false;
+        }
     }
 
 }

@@ -942,9 +942,7 @@ class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor,
 	op boolean clear()
 }
 
-class MBrickletOLED128x64 extends MDevice<TinkerBrickletOLED128x64>, MTextActor,
-    MTFConfigConsumer<BrickletOLEDConfiguration> {
-    readonly String deviceType = "bricklet_oled128x64"
+interface OLEDBricklet {
     String positionPrefix = "TFNUM<"
     String positionSuffix = ">"
     short contrast = "143"
@@ -954,16 +952,14 @@ class MBrickletOLED128x64 extends MDevice<TinkerBrickletOLED128x64>, MTextActor,
     op void writeLine(short line, short position, String text)
 }
 
-class MBrickletOLE64x48 extends MDevice<TinkerBrickletOLED64x48>, MTextActor,
+class MBrickletOLED128x64 extends OLEDBricklet, MDevice<TinkerBrickletOLED128x64>, MTextActor,
+    MTFConfigConsumer<BrickletOLEDConfiguration> {
+    readonly String deviceType = "bricklet_oled128x64"
+}
+
+class MBrickletOLE64x48 extends OLEDBricklet, MDevice<TinkerBrickletOLED64x48>, MTextActor,
     MTFConfigConsumer<BrickletOLEDConfiguration> {
     readonly String deviceType = "bricklet_oled64x48"
-    String positionPrefix = "TFNUM<"
-    String positionSuffix = ">"
-    short contrast = "143"
-    boolean invert = "false"
-    op void clear()
-    op void clear(short columnFrom, short columnTo, short rowFrom, short rowTo)
-    op void writeLine(short line, short position, String text)
 }
 
 class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{

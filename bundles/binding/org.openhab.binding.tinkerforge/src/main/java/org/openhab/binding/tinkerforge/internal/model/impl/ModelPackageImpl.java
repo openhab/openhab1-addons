@@ -24,6 +24,215 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerLed;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ColorColor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
+import org.openhab.binding.tinkerforge.internal.model.ColorLed;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
+import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.Electrode;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
+import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
+import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderLaser;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
+import org.openhab.binding.tinkerforge.internal.model.MActor;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
+import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.OLEDBricklet;
+import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
+import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.Proximity;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
+import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
+import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -1437,6 +1646,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass mBrickletLCD20x4EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass oledBrickletEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -8293,6 +8510,86 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getOLEDBricklet() {
+        return oledBrickletEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getOLEDBricklet_PositionPrefix() {
+        return (EAttribute) oledBrickletEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getOLEDBricklet_PositionSuffix() {
+        return (EAttribute) oledBrickletEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getOLEDBricklet_Contrast() {
+        return (EAttribute) oledBrickletEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getOLEDBricklet_Invert() {
+        return (EAttribute) oledBrickletEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getOLEDBricklet__Clear() {
+        return oledBrickletEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getOLEDBricklet__Clear__short_short_short_short() {
+        return oledBrickletEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getOLEDBricklet__WriteLine__short_short_String() {
+        return oledBrickletEClass.getEOperations().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getMBrickletOLED128x64() {
         return mBrickletOLED128x64EClass;
     }
@@ -8313,76 +8610,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    public EAttribute getMBrickletOLED128x64_PositionPrefix() {
-        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLED128x64_PositionSuffix() {
-        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLED128x64_Contrast() {
-        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLED128x64_Invert() {
-        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMBrickletOLED128x64__Clear() {
-        return mBrickletOLED128x64EClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMBrickletOLED128x64__Clear__short_short_short_short() {
-        return mBrickletOLED128x64EClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMBrickletOLED128x64__WriteLine__short_short_String() {
-        return mBrickletOLED128x64EClass.getEOperations().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
     public EClass getMBrickletOLE64x48() {
         return mBrickletOLE64x48EClass;
     }
@@ -8395,76 +8622,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      */
     public EAttribute getMBrickletOLE64x48_DeviceType() {
         return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLE64x48_PositionPrefix() {
-        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLE64x48_PositionSuffix() {
-        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLE64x48_Contrast() {
-        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletOLE64x48_Invert() {
-        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMBrickletOLE64x48__Clear() {
-        return mBrickletOLE64x48EClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMBrickletOLE64x48__Clear__short_short_short_short() {
-        return mBrickletOLE64x48EClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMBrickletOLE64x48__WriteLine__short_short_String() {
-        return mBrickletOLE64x48EClass.getEOperations().get(2);
     }
 
     /**
@@ -10201,25 +10358,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___INIT);
         createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___CLEAR);
 
+        oledBrickletEClass = createEClass(OLED_BRICKLET);
+        createEAttribute(oledBrickletEClass, OLED_BRICKLET__POSITION_PREFIX);
+        createEAttribute(oledBrickletEClass, OLED_BRICKLET__POSITION_SUFFIX);
+        createEAttribute(oledBrickletEClass, OLED_BRICKLET__CONTRAST);
+        createEAttribute(oledBrickletEClass, OLED_BRICKLET__INVERT);
+        createEOperation(oledBrickletEClass, OLED_BRICKLET___CLEAR);
+        createEOperation(oledBrickletEClass, OLED_BRICKLET___CLEAR__SHORT_SHORT_SHORT_SHORT);
+        createEOperation(oledBrickletEClass, OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING);
+
         mBrickletOLED128x64EClass = createEClass(MBRICKLET_OLED12_8X64);
         createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__DEVICE_TYPE);
-        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__POSITION_PREFIX);
-        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__POSITION_SUFFIX);
-        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__CONTRAST);
-        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__INVERT);
-        createEOperation(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64___CLEAR);
-        createEOperation(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64___CLEAR__SHORT_SHORT_SHORT_SHORT);
-        createEOperation(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING);
 
         mBrickletOLE64x48EClass = createEClass(MBRICKLET_OLE6_4X48);
         createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__DEVICE_TYPE);
-        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__POSITION_PREFIX);
-        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__POSITION_SUFFIX);
-        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__CONTRAST);
-        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__INVERT);
-        createEOperation(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48___CLEAR);
-        createEOperation(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48___CLEAR__SHORT_SHORT_SHORT_SHORT);
-        createEOperation(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48___WRITE_LINE__SHORT_SHORT_STRING);
 
         mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
         createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
@@ -11534,6 +11686,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getMLCDSubDevice());
         g1.getETypeArguments().add(g2);
         mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getOLEDBricklet());
+        mBrickletOLED128x64EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getTinkerBrickletOLED128x64());
         g1.getETypeArguments().add(g2);
@@ -11544,6 +11698,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getBrickletOLEDConfiguration());
         g1.getETypeArguments().add(g2);
         mBrickletOLED128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getOLEDBricklet());
+        mBrickletOLE64x48EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getTinkerBrickletOLED64x48());
         g1.getETypeArguments().add(g2);
@@ -12888,71 +13044,47 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEOperation(getMBrickletLCD20x4__Clear(), theEcorePackage.getEBoolean(), "clear", 0, 1, !IS_UNIQUE,
                 IS_ORDERED);
 
-        initEClass(mBrickletOLED128x64EClass, MBrickletOLED128x64.class, "MBrickletOLED128x64", !IS_ABSTRACT,
-                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getMBrickletOLED128x64_DeviceType(), theEcorePackage.getEString(), "deviceType",
-                "bricklet_oled128x64", 0, 1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
-                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLED128x64_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix",
-                "TFNUM<", 0, 1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
-                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLED128x64_PositionSuffix(), theEcorePackage.getEString(), "positionSuffix", ">", 0,
-                1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLED128x64_Contrast(), theEcorePackage.getEShort(), "contrast", "143", 0, 1,
-                MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLED128x64_Invert(), theEcorePackage.getEBoolean(), "invert", "false", 0, 1,
-                MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEClass(oledBrickletEClass, OLEDBricklet.class, "OLEDBricklet", IS_ABSTRACT, IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getOLEDBricklet_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix", "TFNUM<", 0, 1,
+                OLEDBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOLEDBricklet_PositionSuffix(), theEcorePackage.getEString(), "positionSuffix", ">", 0, 1,
+                OLEDBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOLEDBricklet_Contrast(), theEcorePackage.getEShort(), "contrast", "143", 0, 1,
+                OLEDBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOLEDBricklet_Invert(), theEcorePackage.getEBoolean(), "invert", "false", 0, 1,
+                OLEDBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
 
-        initEOperation(getMBrickletOLED128x64__Clear(), null, "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        initEOperation(getOLEDBricklet__Clear(), null, "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-        op = initEOperation(getMBrickletOLED128x64__Clear__short_short_short_short(), null, "clear", 0, 1, !IS_UNIQUE,
+        op = initEOperation(getOLEDBricklet__Clear__short_short_short_short(), null, "clear", 0, 1, !IS_UNIQUE,
                 IS_ORDERED);
         addEParameter(op, theEcorePackage.getEShort(), "columnFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEShort(), "columnTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEShort(), "rowFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEShort(), "rowTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-        op = initEOperation(getMBrickletOLED128x64__WriteLine__short_short_String(), null, "writeLine", 0, 1,
-                !IS_UNIQUE, IS_ORDERED);
+        op = initEOperation(getOLEDBricklet__WriteLine__short_short_String(), null, "writeLine", 0, 1, !IS_UNIQUE,
+                IS_ORDERED);
         addEParameter(op, theEcorePackage.getEShort(), "line", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEShort(), "position", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEString(), "text", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        initEClass(mBrickletOLED128x64EClass, MBrickletOLED128x64.class, "MBrickletOLED128x64", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletOLED128x64_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_oled128x64", 0, 1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(mBrickletOLE64x48EClass, MBrickletOLE64x48.class, "MBrickletOLE64x48", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMBrickletOLE64x48_DeviceType(), theEcorePackage.getEString(), "deviceType",
                 "bricklet_oled64x48", 0, 1, MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
                 !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLE64x48_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix", "TFNUM<",
-                0, 1, MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLE64x48_PositionSuffix(), theEcorePackage.getEString(), "positionSuffix", ">", 0, 1,
-                MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-                !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLE64x48_Contrast(), theEcorePackage.getEShort(), "contrast", "143", 0, 1,
-                MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-                !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMBrickletOLE64x48_Invert(), theEcorePackage.getEBoolean(), "invert", "false", 0, 1,
-                MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-                !IS_DERIVED, IS_ORDERED);
-
-        initEOperation(getMBrickletOLE64x48__Clear(), null, "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-        op = initEOperation(getMBrickletOLE64x48__Clear__short_short_short_short(), null, "clear", 0, 1, !IS_UNIQUE,
-                IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEShort(), "columnFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEShort(), "columnTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEShort(), "rowFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEShort(), "rowTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-        op = initEOperation(getMBrickletOLE64x48__WriteLine__short_short_String(), null, "writeLine", 0, 1, !IS_UNIQUE,
-                IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEShort(), "line", 0, 1, !IS_UNIQUE, IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEShort(), "position", 0, 1, !IS_UNIQUE, IS_ORDERED);
-        addEParameter(op, theEcorePackage.getEString(), "text", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
         initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
