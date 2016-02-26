@@ -19,6 +19,7 @@ import com.tinkerforge.BrickletLaserRangeFinder;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getDeviceType
  * <em>Device Type</em>}</li>
@@ -30,7 +31,6 @@ import com.tinkerforge.BrickletLaserRangeFinder;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder#getEnableLaserOnStartup
  * <em>Enable Laser On Startup</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLaserRangeFinder()
  * @model superTypes=

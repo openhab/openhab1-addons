@@ -18,6 +18,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getVelocity <em>Velocity</em>}
  *        </li>
@@ -33,7 +34,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration#getOutputVoltage
  *        <em>Output Voltage</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFServoConfiguration()
  * @model

@@ -20,6 +20,7 @@ import com.tinkerforge.BrickletRemoteSwitch;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getDeviceType
  *        <em>Device Type</em>}</li>
@@ -30,7 +31,6 @@ import com.tinkerforge.BrickletRemoteSwitch;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch#getTypeCDevices
  *        <em>Type CDevices</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletRemoteSwitch()
  * @model superTypes=

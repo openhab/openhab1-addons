@@ -20,6 +20,7 @@ import com.tinkerforge.BrickletLCD20x4;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getDeviceType <em>Device Type</em>}
  *        </li>
@@ -32,7 +33,6 @@ import com.tinkerforge.BrickletLCD20x4;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#getErrorPrefix
  *        <em>Error Prefix</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4()
  * @model superTypes=

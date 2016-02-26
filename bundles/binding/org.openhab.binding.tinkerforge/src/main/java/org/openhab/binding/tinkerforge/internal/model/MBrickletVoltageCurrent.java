@@ -20,6 +20,7 @@ import com.tinkerforge.BrickletVoltageCurrent;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent#getDeviceType
  *        <em>Device Type</em>}</li>
@@ -30,7 +31,6 @@ import com.tinkerforge.BrickletVoltageCurrent;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent#getCurrentConversionTime
  *        <em>Current Conversion Time</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletVoltageCurrent()
  * @model superTypes=

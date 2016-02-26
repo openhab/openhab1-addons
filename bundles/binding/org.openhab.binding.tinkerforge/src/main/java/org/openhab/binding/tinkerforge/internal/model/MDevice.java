@@ -23,6 +23,7 @@ import com.tinkerforge.IPConnection;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
@@ -34,7 +35,6 @@ import com.tinkerforge.IPConnection;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getName <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getBrickd <em>Brickd</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMDevice()
  * @model interface="true" abstract="true" TFBounds="org.openhab.binding.tinkerforge.internal.model.MTinkerforgeDevice"

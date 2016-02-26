@@ -20,6 +20,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#getDeviceType <em>Device Type</em>}
  *        </li>
@@ -29,7 +30,6 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#isKeepOnReconnect
  *        <em>Keep On Reconnect</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActorIO4()
  * @model

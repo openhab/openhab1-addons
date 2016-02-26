@@ -18,6 +18,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getVelocity <em>Velocity</em>
  *        }</li>
@@ -28,7 +29,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getDriveMode
  *        <em>Drive Mode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBrickDCConfiguration()
  * @model

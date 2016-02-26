@@ -18,6 +18,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getAveraging
  *        <em>Averaging</em>}</li>
@@ -28,7 +29,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        {@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getCurrentConversionTime
  *        <em>Current Conversion Time</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFVoltageCurrentConfiguration()
  * @model

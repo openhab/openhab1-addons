@@ -103,6 +103,7 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getLogger <em>Logger</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getIpConnection
@@ -123,7 +124,6 @@ import com.tinkerforge.TimeoutException;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem <em>Ecosystem</em>}
  *        </li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -404,9 +404,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
@@ -430,10 +429,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__IP_CONNECTION, oldIpConnection,
                     ipConnection));
-        }
     }
 
     /**
@@ -457,9 +455,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setHost(String newHost) {
         String oldHost = host;
         host = newHost;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__HOST, oldHost, host));
-        }
     }
 
     /**
@@ -483,9 +480,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setPort(int newPort) {
         int oldPort = port;
         port = newPort;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__PORT, oldPort, port));
-        }
     }
 
     /**
@@ -509,9 +505,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setAuthkey(String newAuthkey) {
         String oldAuthkey = authkey;
         authkey = newAuthkey;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__AUTHKEY, oldAuthkey, authkey));
-        }
     }
 
     /**
@@ -535,10 +530,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setIsConnected(HighLowValue newIsConnected) {
         HighLowValue oldIsConnected = isConnected;
         isConnected = newIsConnected;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__IS_CONNECTED, oldIsConnected,
                     isConnected));
-        }
     }
 
     /**
@@ -562,10 +556,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setAutoReconnect(boolean newAutoReconnect) {
         boolean oldAutoReconnect = autoReconnect;
         autoReconnect = newAutoReconnect;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__AUTO_RECONNECT,
                     oldAutoReconnect, autoReconnect));
-        }
     }
 
     /**
@@ -589,10 +582,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setReconnected(boolean newReconnected) {
         boolean oldReconnected = reconnected;
         reconnected = newReconnected;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__RECONNECTED, oldReconnected,
                     reconnected));
-        }
     }
 
     /**
@@ -616,10 +608,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setConnectedCounter(DecimalValue newConnectedCounter) {
         DecimalValue oldConnectedCounter = connectedCounter;
         connectedCounter = newConnectedCounter;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__CONNECTED_COUNTER,
                     oldConnectedCounter, connectedCounter));
-        }
     }
 
     /**
@@ -643,9 +634,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setTimeout(int newTimeout) {
         int oldTimeout = timeout;
         timeout = newTimeout;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__TIMEOUT, oldTimeout, timeout));
-        }
     }
 
     /**
@@ -671,10 +661,21 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      */
     @Override
     public Ecosystem getEcosystem() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM)
             return null;
-        }
         return (Ecosystem) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public Ecosystem basicGetEcosystem() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM)
+            return null;
+        return (Ecosystem) eInternalContainer();
     }
 
     /**
@@ -698,25 +699,20 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     public void setEcosystem(Ecosystem newEcosystem) {
         if (newEcosystem != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKD__ECOSYSTEM && newEcosystem != null)) {
-            if (EcoreUtil.isAncestor(this, newEcosystem)) {
+            if (EcoreUtil.isAncestor(this, newEcosystem))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newEcosystem != null) {
+            if (newEcosystem != null)
                 msgs = ((InternalEObject) newEcosystem).eInverseAdd(this, ModelPackage.ECOSYSTEM__MBRICKDS,
                         Ecosystem.class, msgs);
-            }
             msgs = basicSetEcosystem(newEcosystem, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__ECOSYSTEM, newEcosystem,
                     newEcosystem));
-        }
     }
 
     /**
@@ -1211,9 +1207,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
             case ModelPackage.MBRICKD__MDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMdevices()).basicAdd(otherEnd, msgs);
             case ModelPackage.MBRICKD__ECOSYSTEM:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetEcosystem((Ecosystem) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1284,7 +1279,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
             case ModelPackage.MBRICKD__MDEVICES:
                 return getMdevices();
             case ModelPackage.MBRICKD__ECOSYSTEM:
-                return getEcosystem();
+                if (resolve)
+                    return getEcosystem();
+                return basicGetEcosystem();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -1423,7 +1420,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
             case ModelPackage.MBRICKD__MDEVICES:
                 return mdevices != null && !mdevices.isEmpty();
             case ModelPackage.MBRICKD__ECOSYSTEM:
-                return getEcosystem() != null;
+                return basicGetEcosystem() != null;
         }
         return super.eIsSet(featureID);
     }
@@ -1460,9 +1457,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

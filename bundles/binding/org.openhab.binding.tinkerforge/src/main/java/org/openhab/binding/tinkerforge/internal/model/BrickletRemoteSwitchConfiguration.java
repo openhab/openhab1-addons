@@ -18,6 +18,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeADevices
  *        <em>Type ADevices</em>}</li>
@@ -26,7 +27,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration#getTypeCDevices
  *        <em>Type CDevices</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletRemoteSwitchConfiguration()
  * @model

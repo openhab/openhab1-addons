@@ -20,6 +20,7 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getDeviceType <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getVelocity <em>Velocity</em>}</li>
@@ -36,7 +37,6 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}
  *        </li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo()
  * @model superTypes=

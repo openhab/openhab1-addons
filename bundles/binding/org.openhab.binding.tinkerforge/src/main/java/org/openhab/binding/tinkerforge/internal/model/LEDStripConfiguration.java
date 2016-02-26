@@ -15,6 +15,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getChiptype <em>Chiptype</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getFrameduration
@@ -26,7 +27,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getSubDevices <em>Sub Devices</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLEDStripConfiguration()
  * @model

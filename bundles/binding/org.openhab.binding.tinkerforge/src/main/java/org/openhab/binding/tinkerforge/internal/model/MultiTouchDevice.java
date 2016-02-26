@@ -20,12 +20,12 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getPin <em>Pin</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getDisableElectrode
  *        <em>Disable Electrode</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMultiTouchDevice()
  * @model superTypes=

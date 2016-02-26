@@ -6,7 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false")
+
+
+@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false", updateClasspath="false", codeFormatting="true", commentFormatting="true", modelDirectory="/org.openhab.binding.tinkerforge/src/main/java")
 package org.openhab.binding.tinkerforge.internal.model
 
 import com.tinkerforge.Device
