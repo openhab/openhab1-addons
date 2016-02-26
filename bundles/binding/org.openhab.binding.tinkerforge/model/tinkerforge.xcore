@@ -65,6 +65,8 @@ import com.tinkerforge.BrickletAnalogIn
 import com.tinkerforge.BrickletAnalogInV2
 import com.tinkerforge.BrickletLaserRangeFinder
 import com.tinkerforge.BrickletAccelerometer
+import com.tinkerforge.BrickletOLED128x64
+import com.tinkerforge.BrickletOLED64x48
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -130,6 +132,8 @@ type TinkerBrickletAnalogInV2 wraps BrickletAnalogInV2
 type TinkerBrickletAnalogIn wraps BrickletAnalogIn
 type TinkerBrickletLaserRangeFinder wraps BrickletLaserRangeFinder
 type TinkerBrickletAccelerometer wraps BrickletAccelerometer
+type TinkerBrickletOLED128x64 wraps BrickletOLED128x64
+type TinkerBrickletOLED64x48 wraps BrickletOLED64x48
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -252,7 +256,8 @@ interface ProgrammableActor {
 }
 
 interface MTextActor{
-	String text   
+	String text
+	op void write(String text)
 }
 interface MLCDSubDevice extends MSubDevice<MBrickletLCD20x4> {
 }
@@ -937,6 +942,30 @@ class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor,
 	op boolean clear()
 }
 
+class MBrickletOLED128x64 extends MDevice<TinkerBrickletOLED128x64>, MTextActor,
+    MTFConfigConsumer<BrickletOLEDConfiguration> {
+    readonly String deviceType = "bricklet_oled128x64"
+    String positionPrefix = "TFNUM<"
+    String positionSuffix = ">"
+    short contrast = "143"
+    boolean invert = "false"
+    op void clear()
+    op void clear(short columnFrom, short columnTo, short rowFrom, short rowTo)
+    op void writeLine(short line, short position, String text)
+}
+
+class MBrickletOLE64x48 extends MDevice<TinkerBrickletOLED64x48>, MTextActor,
+    MTFConfigConsumer<BrickletOLEDConfiguration> {
+    readonly String deviceType = "bricklet_oled64x48"
+    String positionPrefix = "TFNUM<"
+    String positionSuffix = ">"
+    short contrast = "143"
+    boolean invert = "false"
+    op void clear()
+    op void clear(short columnFrom, short columnTo, short rowFrom, short rowTo)
+    op void writeLine(short line, short position, String text)
+}
+
 class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 	readonly String deviceType = "backlight"
 }
@@ -1146,6 +1175,11 @@ class BrickletAccelerometerConfiguration extends TFConfig {
 	Short dataRate
 	Short fullScale
 	Short filterBandwidth
+}
+
+class BrickletOLEDConfiguration extends TFConfig {
+    Short contrast
+    boolean invert
 }
 
 enum NoSubIds {

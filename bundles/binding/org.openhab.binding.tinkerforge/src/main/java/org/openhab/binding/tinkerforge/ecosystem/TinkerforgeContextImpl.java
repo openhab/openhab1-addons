@@ -140,4 +140,26 @@ public class TinkerforgeContextImpl implements TinkerforgeContext {
         }
     }
 
+    @Override
+    public boolean tfOLEDClear(String uid) {
+        if (ecosystem == null) {
+            logger.error("tfOLEDClear action failed ecosystem is null");
+            return false;
+        }
+        MBaseDevice mDevice = ecosystem.getDevice(uid, null);
+        return true;
+    }
+
+    @Override
+    public boolean tfOLEDClear(String uid, short columnFrom, short columnTo, short rowFrom, short rowTo) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean tfOLEDWriteLine(String uid, short line, short position, String text) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

@@ -65,6 +65,8 @@ import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletOLED128x64;
+import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
@@ -308,6 +310,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletDistanceUS();
             case ModelPackage.MBRICKLET_LCD2_0X4:
                 return createMBrickletLCD20x4();
+            case ModelPackage.MBRICKLET_OLED12_8X64:
+                return createMBrickletOLED128x64();
+            case ModelPackage.MBRICKLET_OLE6_4X48:
+                return createMBrickletOLE64x48();
             case ModelPackage.MLCD2_0X4_BACKLIGHT:
                 return createMLCD20x4Backlight();
             case ModelPackage.MLCD2_0X4_BUTTON:
@@ -384,6 +390,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createBrickletColorConfiguration();
             case ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION:
                 return createBrickletAccelerometerConfiguration();
+            case ModelPackage.BRICKLET_OLED_CONFIGURATION:
+                return createBrickletOLEDConfiguration();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -570,6 +578,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletLaserRangeFinderFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
                 return createTinkerBrickletAccelerometerFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_OLED12_8X64:
+                return createTinkerBrickletOLED128x64FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
+                return createTinkerBrickletOLED64x48FromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -773,6 +785,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletLaserRangeFinderToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_ACCELEROMETER:
                 return convertTinkerBrickletAccelerometerToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_OLED12_8X64:
+                return convertTinkerBrickletOLED128x64ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
+                return convertTinkerBrickletOLED64x48ToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -1762,6 +1778,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public BrickletOLEDConfiguration createBrickletOLEDConfiguration() {
+        BrickletOLEDConfigurationImpl brickletOLEDConfiguration = new BrickletOLEDConfigurationImpl();
+        return brickletOLEDConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public AccelerometerCoordinate createAccelerometerCoordinateFromString(EDataType eDataType, String initialValue) {
         AccelerometerCoordinate result = AccelerometerCoordinate.get(initialValue);
         if (result == null)
@@ -2342,6 +2369,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickletLCD20x4 createMBrickletLCD20x4() {
         MBrickletLCD20x4Impl mBrickletLCD20x4 = new MBrickletLCD20x4Impl();
         return mBrickletLCD20x4;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletOLED128x64 createMBrickletOLED128x64() {
+        MBrickletOLED128x64Impl mBrickletOLED128x64 = new MBrickletOLED128x64Impl();
+        return mBrickletOLED128x64;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletOLE64x48 createMBrickletOLE64x48() {
+        MBrickletOLE64x48Impl mBrickletOLE64x48 = new MBrickletOLE64x48Impl();
+        return mBrickletOLE64x48;
     }
 
     /**
@@ -4126,6 +4175,46 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletAccelerometerToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletOLED128x64 createTinkerBrickletOLED128x64FromString(EDataType eDataType, String initialValue) {
+        return (BrickletOLED128x64) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletOLED128x64ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletOLED64x48 createTinkerBrickletOLED64x48FromString(EDataType eDataType, String initialValue) {
+        return (BrickletOLED64x48) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletOLED64x48ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

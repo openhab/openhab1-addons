@@ -1017,6 +1017,18 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public void write(String text) {
+        // TODO: implement this method
+        // Ensure that you remove @generated or mark it @generated NOT
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
      * @generated NOT
@@ -1378,6 +1390,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
         if (baseClass == MTextActor.class) {
             switch (baseOperationID) {
+                case ModelPackage.MTEXT_ACTOR___WRITE__STRING:
+                    return ModelPackage.MBRICKLET_LCD2_0X4___WRITE__STRING;
                 default:
                     return -1;
             }
@@ -1408,6 +1422,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
                 return clear();
             case ModelPackage.MBRICKLET_LCD2_0X4___INIT_SUB_DEVICES:
                 initSubDevices();
+                return null;
+            case ModelPackage.MBRICKLET_LCD2_0X4___WRITE__STRING:
+                write((String) arguments.get(0));
                 return null;
             case ModelPackage.MBRICKLET_LCD2_0X4___ENABLE:
                 enable();

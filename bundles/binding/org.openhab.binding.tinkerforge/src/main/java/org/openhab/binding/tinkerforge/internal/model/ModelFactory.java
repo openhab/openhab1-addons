@@ -835,6 +835,16 @@ public interface ModelFactory extends EFactory {
     BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration();
 
     /**
+     * Returns a new object of class '<em>Bricklet OLED Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Bricklet OLED Configuration</em>'.
+     * @generated
+     */
+    BrickletOLEDConfiguration createBrickletOLEDConfiguration();
+
+    /**
      * Returns a new object of class '<em>MServo</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1303,6 +1313,26 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     MBrickletLCD20x4 createMBrickletLCD20x4();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * @generated
+     */
+    MBrickletOLED128x64 createMBrickletOLED128x64();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLE6 4x48</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLE6 4x48</em>'.
+     * @generated
+     */
+    MBrickletOLE64x48 createMBrickletOLE64x48();
 
     /**
      * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
