@@ -252,8 +252,9 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
                 Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
                 if (!matcher.matches()) {
-                    logger.debug("given config key '" + key
-                            + "' does not follow the expected pattern '<id>.<host|port|serialPortName>'");
+                    logger.debug(
+                            "given config key '{}' does not follow the expected pattern '<id>.<host|port|serialPortName>'",
+                            key);
                     continue;
                 }
 
