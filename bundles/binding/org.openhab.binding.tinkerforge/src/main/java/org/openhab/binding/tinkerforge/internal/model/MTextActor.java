@@ -59,4 +59,13 @@ public interface MTextActor extends EObject {
      */
     void setText(String value);
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model textUnique="false"
+     * @generated
+     */
+    void write(String text);
+
 } // MTextActor

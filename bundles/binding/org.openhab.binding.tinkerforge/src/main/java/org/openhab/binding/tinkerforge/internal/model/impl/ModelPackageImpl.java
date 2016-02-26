@@ -70,6 +70,8 @@ import com.tinkerforge.BrickletLoadCell;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletOLED128x64;
+import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
 import com.tinkerforge.BrickletRemoteSwitch;
@@ -986,6 +988,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass brickletOLEDConfigurationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EEnum accelerometerCoordinateEEnum = null;
 
     /**
@@ -1427,6 +1437,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass mBrickletLCD20x4EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletOLED128x64EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletOLE64x48EClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2075,6 +2101,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletAccelerometerEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletOLED128x64EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletOLED64x48EDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -6175,6 +6217,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getBrickletOLEDConfiguration() {
+        return brickletOLEDConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletOLEDConfiguration_Contrast() {
+        return (EAttribute) brickletOLEDConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletOLEDConfiguration_Invert() {
+        return (EAttribute) brickletOLEDConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EEnum getAccelerometerCoordinate() {
         return accelerometerCoordinateEEnum;
@@ -8221,6 +8293,186 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletOLED128x64() {
+        return mBrickletOLED128x64EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLED128x64_DeviceType() {
+        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLED128x64_PositionPrefix() {
+        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLED128x64_PositionSuffix() {
+        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLED128x64_Contrast() {
+        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLED128x64_Invert() {
+        return (EAttribute) mBrickletOLED128x64EClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletOLED128x64__Clear() {
+        return mBrickletOLED128x64EClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletOLED128x64__Clear__short_short_short_short() {
+        return mBrickletOLED128x64EClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletOLED128x64__WriteLine__short_short_String() {
+        return mBrickletOLED128x64EClass.getEOperations().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletOLE64x48() {
+        return mBrickletOLE64x48EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLE64x48_DeviceType() {
+        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLE64x48_PositionPrefix() {
+        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLE64x48_PositionSuffix() {
+        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLE64x48_Contrast() {
+        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLE64x48_Invert() {
+        return (EAttribute) mBrickletOLE64x48EClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletOLE64x48__Clear() {
+        return mBrickletOLE64x48EClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletOLE64x48__Clear__short_short_short_short() {
+        return mBrickletOLE64x48EClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletOLE64x48__WriteLine__short_short_String() {
+        return mBrickletOLE64x48EClass.getEOperations().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getMTextActor() {
         return mTextActorEClass;
@@ -8235,6 +8487,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     @Override
     public EAttribute getMTextActor_Text() {
         return (EAttribute) mTextActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMTextActor__Write__String() {
+        return mTextActorEClass.getEOperations().get(0);
     }
 
     /**
@@ -9200,6 +9462,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletOLED128x64() {
+        return tinkerBrickletOLED128x64EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getTinkerBrickletOLED64x48() {
+        return tinkerBrickletOLED64x48EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
@@ -9452,6 +9734,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         mTextActorEClass = createEClass(MTEXT_ACTOR);
         createEAttribute(mTextActorEClass, MTEXT_ACTOR__TEXT);
+        createEOperation(mTextActorEClass, MTEXT_ACTOR___WRITE__STRING);
 
         mlcdSubDeviceEClass = createEClass(MLCD_SUB_DEVICE);
 
@@ -9918,6 +10201,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___INIT);
         createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___CLEAR);
 
+        mBrickletOLED128x64EClass = createEClass(MBRICKLET_OLED12_8X64);
+        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__DEVICE_TYPE);
+        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__POSITION_PREFIX);
+        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__POSITION_SUFFIX);
+        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__CONTRAST);
+        createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__INVERT);
+        createEOperation(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64___CLEAR);
+        createEOperation(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64___CLEAR__SHORT_SHORT_SHORT_SHORT);
+        createEOperation(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING);
+
+        mBrickletOLE64x48EClass = createEClass(MBRICKLET_OLE6_4X48);
+        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__DEVICE_TYPE);
+        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__POSITION_PREFIX);
+        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__POSITION_SUFFIX);
+        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__CONTRAST);
+        createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__INVERT);
+        createEOperation(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48___CLEAR);
+        createEOperation(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48___CLEAR__SHORT_SHORT_SHORT_SHORT);
+        createEOperation(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48___WRITE_LINE__SHORT_SHORT_STRING);
+
         mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
         createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
 
@@ -10087,6 +10390,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEAttribute(brickletAccelerometerConfigurationEClass,
                 BRICKLET_ACCELEROMETER_CONFIGURATION__FILTER_BANDWIDTH);
 
+        brickletOLEDConfigurationEClass = createEClass(BRICKLET_OLED_CONFIGURATION);
+        createEAttribute(brickletOLEDConfigurationEClass, BRICKLET_OLED_CONFIGURATION__CONTRAST);
+        createEAttribute(brickletOLEDConfigurationEClass, BRICKLET_OLED_CONFIGURATION__INVERT);
+
         // Create enums
         accelerometerCoordinateEEnum = createEEnum(ACCELEROMETER_COORDINATE);
         noSubIdsEEnum = createEEnum(NO_SUB_IDS);
@@ -10176,6 +10483,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletAnalogInEDataType = createEDataType(TINKER_BRICKLET_ANALOG_IN);
         tinkerBrickletLaserRangeFinderEDataType = createEDataType(TINKER_BRICKLET_LASER_RANGE_FINDER);
         tinkerBrickletAccelerometerEDataType = createEDataType(TINKER_BRICKLET_ACCELEROMETER);
+        tinkerBrickletOLED128x64EDataType = createEDataType(TINKER_BRICKLET_OLED12_8X64);
+        tinkerBrickletOLED64x48EDataType = createEDataType(TINKER_BRICKLET_OLED6_4X48);
         hsbTypeEDataType = createEDataType(HSB_TYPE);
         upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
         percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -11225,6 +11534,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getMLCDSubDevice());
         g1.getETypeArguments().add(g2);
         mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletOLED128x64());
+        g1.getETypeArguments().add(g2);
+        mBrickletOLED128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTextActor());
+        mBrickletOLED128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getBrickletOLEDConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickletOLED128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletOLED64x48());
+        g1.getETypeArguments().add(g2);
+        mBrickletOLE64x48EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTextActor());
+        mBrickletOLE64x48EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getBrickletOLEDConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickletOLE64x48EClass.getEGenericSuperTypes().add(g1);
         mlcd20x4BacklightEClass.getESuperTypes().add(this.getMInSwitchActor());
         mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
         g1 = createEGenericType(this.getMSensor());
@@ -11277,6 +11606,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         ledGroupConfigurationEClass.getESuperTypes().add(this.getTFConfig());
         brickletColorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
         brickletAccelerometerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+        brickletOLEDConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
         // Initialize classes, features, and operations; add parameters
         initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE,
@@ -11503,6 +11833,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEAttribute(getMTextActor_Text(), theEcorePackage.getEString(), "text", null, 0, 1, MTextActor.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
+
+        op = initEOperation(getMTextActor__Write__String(), null, "write", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEString(), "text", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
         initEClass(mlcdSubDeviceEClass, MLCDSubDevice.class, "MLCDSubDevice", IS_ABSTRACT, IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
@@ -12555,6 +12888,72 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEOperation(getMBrickletLCD20x4__Clear(), theEcorePackage.getEBoolean(), "clear", 0, 1, !IS_UNIQUE,
                 IS_ORDERED);
 
+        initEClass(mBrickletOLED128x64EClass, MBrickletOLED128x64.class, "MBrickletOLED128x64", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletOLED128x64_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_oled128x64", 0, 1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLED128x64_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix",
+                "TFNUM<", 0, 1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLED128x64_PositionSuffix(), theEcorePackage.getEString(), "positionSuffix", ">", 0,
+                1, MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLED128x64_Contrast(), theEcorePackage.getEShort(), "contrast", "143", 0, 1,
+                MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLED128x64_Invert(), theEcorePackage.getEBoolean(), "invert", "false", 0, 1,
+                MBrickletOLED128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEOperation(getMBrickletOLED128x64__Clear(), null, "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletOLED128x64__Clear__short_short_short_short(), null, "clear", 0, 1, !IS_UNIQUE,
+                IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "columnFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "columnTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "rowFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "rowTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletOLED128x64__WriteLine__short_short_String(), null, "writeLine", 0, 1,
+                !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "line", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "position", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEString(), "text", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        initEClass(mBrickletOLE64x48EClass, MBrickletOLE64x48.class, "MBrickletOLE64x48", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletOLE64x48_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_oled64x48", 0, 1, MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLE64x48_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix", "TFNUM<",
+                0, 1, MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLE64x48_PositionSuffix(), theEcorePackage.getEString(), "positionSuffix", ">", 0, 1,
+                MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLE64x48_Contrast(), theEcorePackage.getEShort(), "contrast", "143", 0, 1,
+                MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletOLE64x48_Invert(), theEcorePackage.getEBoolean(), "invert", "false", 0, 1,
+                MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEOperation(getMBrickletOLE64x48__Clear(), null, "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletOLE64x48__Clear__short_short_short_short(), null, "clear", 0, 1, !IS_UNIQUE,
+                IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "columnFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "columnTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "rowFrom", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "rowTo", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletOLE64x48__WriteLine__short_short_String(), null, "writeLine", 0, 1, !IS_UNIQUE,
+                IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "line", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEShort(), "position", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, theEcorePackage.getEString(), "text", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
         initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMLCD20x4Backlight_DeviceType(), theEcorePackage.getEString(), "deviceType", "backlight", 0, 1,
@@ -12941,6 +13340,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 "filterBandwidth", null, 0, 1, BrickletAccelerometerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE,
                 IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(brickletOLEDConfigurationEClass, BrickletOLEDConfiguration.class, "BrickletOLEDConfiguration",
+                !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getBrickletOLEDConfiguration_Contrast(), theEcorePackage.getEShortObject(), "contrast", null, 0,
+                1, BrickletOLEDConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getBrickletOLEDConfiguration_Invert(), theEcorePackage.getEBoolean(), "invert", null, 0, 1,
+                BrickletOLEDConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         // Initialize enums and add enum literals
         initEEnum(accelerometerCoordinateEEnum, AccelerometerCoordinate.class, "AccelerometerCoordinate");
         addEEnumLiteral(accelerometerCoordinateEEnum, AccelerometerCoordinate.X);
@@ -13254,6 +13662,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(tinkerBrickletLaserRangeFinderEDataType, BrickletLaserRangeFinder.class,
                 "TinkerBrickletLaserRangeFinder", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletAccelerometerEDataType, BrickletAccelerometer.class, "TinkerBrickletAccelerometer",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletOLED128x64EDataType, BrickletOLED128x64.class, "TinkerBrickletOLED128x64",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletOLED64x48EDataType, BrickletOLED64x48.class, "TinkerBrickletOLED64x48",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE,
