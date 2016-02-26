@@ -33,7 +33,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml,
   OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/tinkerforge-2.1.6.jar
+ lib/org.eclipse.emf.ecore.xcore.lib_1.1.100.v20150806-0546.jar,
+ lib/tinkerforge-2.1.8.jar
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.8.0";visibility:=reexport,
  org.eclipse.xtext.xbase.lib;bundle-version="2.3.0"
 Bundle-ActivationPolicy: lazy
