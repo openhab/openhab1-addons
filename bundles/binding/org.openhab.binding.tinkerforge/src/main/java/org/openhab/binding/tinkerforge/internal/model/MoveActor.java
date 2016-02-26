@@ -20,10 +20,10 @@ import org.openhab.core.library.types.UpDownType;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MoveActor#getDirection <em>Direction</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMoveActor()
  * @model interface="true" abstract="true"

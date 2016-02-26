@@ -24,6 +24,7 @@ import com.tinkerforge.BrickletMoisture;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getDeviceType <em>Device Type</em>
  *        }</li>
@@ -32,7 +33,6 @@ import com.tinkerforge.BrickletMoisture;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletMoisture()
  * @model superTypes=

@@ -20,11 +20,11 @@ import com.tinkerforge.BrickletIndustrialQuadRelay;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMIndustrialQuadRelayBricklet()
  * @model superTypes=

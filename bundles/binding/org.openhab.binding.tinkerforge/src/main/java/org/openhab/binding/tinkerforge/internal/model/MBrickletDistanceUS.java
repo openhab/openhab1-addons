@@ -24,6 +24,7 @@ import com.tinkerforge.BrickletDistanceUS;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS#getDeviceType
  *        <em>Device Type</em>}</li>
@@ -32,7 +33,6 @@ import com.tinkerforge.BrickletDistanceUS;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletDistanceUS()
  * @model superTypes=

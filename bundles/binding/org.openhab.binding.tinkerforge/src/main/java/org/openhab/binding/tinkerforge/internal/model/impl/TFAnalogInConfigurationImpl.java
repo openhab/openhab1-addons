@@ -22,13 +22,13 @@ import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFAnalogInConfigurationImpl#getMovingAverage
  * <em>Moving Average</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFAnalogInConfigurationImpl#getRange <em>Range</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -119,10 +119,9 @@ public class TFAnalogInConfigurationImpl extends TFBaseConfigurationImpl impleme
     public void setMovingAverage(Short newMovingAverage) {
         Short oldMovingAverage = movingAverage;
         movingAverage = newMovingAverage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_ANALOG_IN_CONFIGURATION__MOVING_AVERAGE, oldMovingAverage, movingAverage));
-        }
     }
 
     /**
@@ -146,10 +145,9 @@ public class TFAnalogInConfigurationImpl extends TFBaseConfigurationImpl impleme
     public void setRange(Short newRange) {
         Short oldRange = range;
         range = newRange;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_ANALOG_IN_CONFIGURATION__RANGE,
                     oldRange, range));
-        }
     }
 
     /**
@@ -233,9 +231,8 @@ public class TFAnalogInConfigurationImpl extends TFBaseConfigurationImpl impleme
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (movingAverage: ");

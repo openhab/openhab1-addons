@@ -17,6 +17,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getDataRate
  * <em>Data Rate</em>}</li>
@@ -25,7 +26,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration#getFilterBandwidth
  * <em>Filter Bandwidth</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getBrickletAccelerometerConfiguration()
  * @model

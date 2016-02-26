@@ -105,6 +105,8 @@ public enum TemperatureIRSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param literal the literal.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static TemperatureIRSubIds get(String literal) {
@@ -122,6 +124,8 @@ public enum TemperatureIRSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param name the name.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static TemperatureIRSubIds getByName(String name) {
@@ -139,6 +143,8 @@ public enum TemperatureIRSubIds implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param value the integer value.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static TemperatureIRSubIds get(int value) {

@@ -24,6 +24,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl#getRecalibrate
@@ -32,7 +33,6 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl#getSensitivity
  *        <em>Sensitivity</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -122,10 +122,9 @@ public class BrickletMultiTouchConfigurationImpl extends MinimalEObjectImpl.Cont
     public void setRecalibrate(Boolean newRecalibrate) {
         Boolean oldRecalibrate = recalibrate;
         recalibrate = newRecalibrate;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION__RECALIBRATE, oldRecalibrate, recalibrate));
-        }
     }
 
     /**
@@ -149,10 +148,9 @@ public class BrickletMultiTouchConfigurationImpl extends MinimalEObjectImpl.Cont
     public void setSensitivity(Short newSensitivity) {
         Short oldSensitivity = sensitivity;
         sensitivity = newSensitivity;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION__SENSITIVITY, oldSensitivity, sensitivity));
-        }
     }
 
     /**
@@ -235,9 +233,8 @@ public class BrickletMultiTouchConfigurationImpl extends MinimalEObjectImpl.Cont
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (recalibrate: ");

@@ -96,8 +96,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public static ModelFactory init() {
         try {
-            ModelFactory theModelFactory = (ModelFactory) EPackage.Registry.INSTANCE
-                    .getEFactory("org.openhab.binding.tinkerforge.internal.model");
+            ModelFactory theModelFactory = (ModelFactory) EPackage.Registry.INSTANCE.getEFactory(ModelPackage.eNS_URI);
             if (theModelFactory != null) {
                 return theModelFactory;
             }
@@ -1765,10 +1764,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public AccelerometerCoordinate createAccelerometerCoordinateFromString(EDataType eDataType, String initialValue) {
         AccelerometerCoordinate result = AccelerometerCoordinate.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2458,10 +2456,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DCDriveMode createDCDriveModeFromString(EDataType eDataType, String initialValue) {
         DCDriveMode result = DCDriveMode.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2483,10 +2480,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsServo createConfigOptsServoFromString(EDataType eDataType, String initialValue) {
         ConfigOptsServo result = ConfigOptsServo.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2508,10 +2504,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualButtonDevicePosition createDualButtonDevicePositionFromString(EDataType eDataType, String initialValue) {
         DualButtonDevicePosition result = DualButtonDevicePosition.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2533,10 +2528,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualButtonLedSubIds createDualButtonLedSubIdsFromString(EDataType eDataType, String initialValue) {
         DualButtonLedSubIds result = DualButtonLedSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2558,10 +2552,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualButtonButtonSubIds createDualButtonButtonSubIdsFromString(EDataType eDataType, String initialValue) {
         DualButtonButtonSubIds result = DualButtonButtonSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2583,10 +2576,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public JoystickSubIds createJoystickSubIdsFromString(EDataType eDataType, String initialValue) {
         JoystickSubIds result = JoystickSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2608,10 +2600,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public PTCSubIds createPTCSubIdsFromString(EDataType eDataType, String initialValue) {
         PTCSubIds result = PTCSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2634,10 +2625,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDual020mASubIds createIndustrialDual020mASubIdsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDual020mASubIds result = IndustrialDual020mASubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2659,10 +2649,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public RotaryEncoderSubIds createRotaryEncoderSubIdsFromString(EDataType eDataType, String initialValue) {
         RotaryEncoderSubIds result = RotaryEncoderSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2684,10 +2673,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ColorBrickletSubIds createColorBrickletSubIdsFromString(EDataType eDataType, String initialValue) {
         ColorBrickletSubIds result = ColorBrickletSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2709,10 +2697,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LoadCellSubIds createLoadCellSubIdsFromString(EDataType eDataType, String initialValue) {
         LoadCellSubIds result = LoadCellSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2735,10 +2722,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDualAnalogInSubIds createIndustrialDualAnalogInSubIdsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDualAnalogInSubIds result = IndustrialDualAnalogInSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2760,10 +2746,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LaserRangeFinderSubIds createLaserRangeFinderSubIdsFromString(EDataType eDataType, String initialValue) {
         LaserRangeFinderSubIds result = LaserRangeFinderSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2785,10 +2770,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public AccelerometerSubIds createAccelerometerSubIdsFromString(EDataType eDataType, String initialValue) {
         AccelerometerSubIds result = AccelerometerSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2810,10 +2794,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public NoSubIds createNoSubIdsFromString(EDataType eDataType, String initialValue) {
         NoSubIds result = NoSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2836,10 +2819,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDigitalInSubIDs createIndustrialDigitalInSubIDsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDigitalInSubIDs result = IndustrialDigitalInSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2862,10 +2844,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public IndustrialDigitalOutSubIDs createIndustrialDigitalOutSubIDsFromString(EDataType eDataType,
             String initialValue) {
         IndustrialDigitalOutSubIDs result = IndustrialDigitalOutSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2887,10 +2868,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public IndustrialQuadRelayIDs createIndustrialQuadRelayIDsFromString(EDataType eDataType, String initialValue) {
         IndustrialQuadRelayIDs result = IndustrialQuadRelayIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2912,10 +2892,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ServoSubIDs createServoSubIDsFromString(EDataType eDataType, String initialValue) {
         ServoSubIDs result = ServoSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2937,10 +2916,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public BarometerSubIDs createBarometerSubIDsFromString(EDataType eDataType, String initialValue) {
         BarometerSubIDs result = BarometerSubIDs.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2962,10 +2940,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public IO16SubIds createIO16SubIdsFromString(EDataType eDataType, String initialValue) {
         IO16SubIds result = IO16SubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -2987,10 +2964,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public IO4SubIds createIO4SubIdsFromString(EDataType eDataType, String initialValue) {
         IO4SubIds result = IO4SubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3012,10 +2988,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public DualRelaySubIds createDualRelaySubIdsFromString(EDataType eDataType, String initialValue) {
         DualRelaySubIds result = DualRelaySubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3037,10 +3012,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LCDButtonSubIds createLCDButtonSubIdsFromString(EDataType eDataType, String initialValue) {
         LCDButtonSubIds result = LCDButtonSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3062,10 +3036,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public LCDBacklightSubIds createLCDBacklightSubIdsFromString(EDataType eDataType, String initialValue) {
         LCDBacklightSubIds result = LCDBacklightSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3087,10 +3060,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public MultiTouchSubIds createMultiTouchSubIdsFromString(EDataType eDataType, String initialValue) {
         MultiTouchSubIds result = MultiTouchSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3112,10 +3084,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public TemperatureIRSubIds createTemperatureIRSubIdsFromString(EDataType eDataType, String initialValue) {
         TemperatureIRSubIds result = TemperatureIRSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3137,10 +3108,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public VoltageCurrentSubIds createVoltageCurrentSubIdsFromString(EDataType eDataType, String initialValue) {
         VoltageCurrentSubIds result = VoltageCurrentSubIds.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3162,10 +3132,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsMove createConfigOptsMoveFromString(EDataType eDataType, String initialValue) {
         ConfigOptsMove result = ConfigOptsMove.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3187,10 +3156,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsDimmable createConfigOptsDimmableFromString(EDataType eDataType, String initialValue) {
         ConfigOptsDimmable result = ConfigOptsDimmable.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3212,10 +3180,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsSetPoint createConfigOptsSetPointFromString(EDataType eDataType, String initialValue) {
         ConfigOptsSetPoint result = ConfigOptsSetPoint.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 
@@ -3237,10 +3204,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      */
     public ConfigOptsSwitchSpeed createConfigOptsSwitchSpeedFromString(EDataType eDataType, String initialValue) {
         ConfigOptsSwitchSpeed result = ConfigOptsSwitchSpeed.get(initialValue);
-        if (result == null) {
+        if (result == null)
             throw new IllegalArgumentException(
                     "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        }
         return result;
     }
 

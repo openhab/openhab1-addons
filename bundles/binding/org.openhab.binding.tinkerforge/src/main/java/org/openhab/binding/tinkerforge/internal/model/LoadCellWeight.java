@@ -21,13 +21,13 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getDeviceType <em>Device Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getThreshold <em>Threshold</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getMovingAverage <em>Moving Average</em>}
  * </li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLoadCellWeight()
  * @model superTypes=

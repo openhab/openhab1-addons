@@ -26,6 +26,7 @@ import com.tinkerforge.BrickletTemperature;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getDeviceType
  *        <em>Device Type</em>}</li>
@@ -34,7 +35,6 @@ import com.tinkerforge.BrickletTemperature;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#isSlowI2C <em>Slow I2C</em>}
  *        </li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletTemperature()
  * @model superTypes=

@@ -23,6 +23,7 @@ import com.tinkerforge.BrickletAmbientLightV2;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getDeviceType <em>Device Type</em>}
  * </li>
@@ -33,7 +34,6 @@ import com.tinkerforge.BrickletAmbientLightV2;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLightV2()
  * @model superTypes=

@@ -23,13 +23,13 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorConfigurationImpl#getGain <em>Gain</em>}
  * </li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorConfigurationImpl#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -120,10 +120,9 @@ public class BrickletColorConfigurationImpl extends MinimalEObjectImpl.Container
     public void setGain(Short newGain) {
         Short oldGain = gain;
         gain = newGain;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.BRICKLET_COLOR_CONFIGURATION__GAIN,
                     oldGain, gain));
-        }
     }
 
     /**
@@ -147,10 +146,9 @@ public class BrickletColorConfigurationImpl extends MinimalEObjectImpl.Container
     public void setIntegrationTime(Short newIntegrationTime) {
         Short oldIntegrationTime = integrationTime;
         integrationTime = newIntegrationTime;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_COLOR_CONFIGURATION__INTEGRATION_TIME, oldIntegrationTime, integrationTime));
-        }
     }
 
     /**
@@ -234,9 +232,8 @@ public class BrickletColorConfigurationImpl extends MinimalEObjectImpl.Container
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (gain: ");

@@ -240,6 +240,8 @@ public enum ServoSubIDs implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param literal the literal.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static ServoSubIDs get(String literal) {
@@ -257,6 +259,8 @@ public enum ServoSubIDs implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param name the name.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static ServoSubIDs getByName(String name) {
@@ -274,6 +278,8 @@ public enum ServoSubIDs implements Enumerator {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @param value the integer value.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static ServoSubIDs get(int value) {

@@ -24,13 +24,13 @@ import com.tinkerforge.BrickletAmbientLight;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getDeviceType
  *        <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getThreshold
  *        <em>Threshold</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLight()
  * @model superTypes=

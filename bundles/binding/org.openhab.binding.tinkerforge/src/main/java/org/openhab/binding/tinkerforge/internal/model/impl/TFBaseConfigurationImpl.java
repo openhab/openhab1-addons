@@ -26,13 +26,13 @@ import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBaseConfigurationImpl#getThreshold
  *        <em>Threshold</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBaseConfigurationImpl#getCallbackPeriod
  *        <em>Callback Period</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -123,10 +123,9 @@ public class TFBaseConfigurationImpl extends MinimalEObjectImpl.Container implem
     public void setThreshold(BigDecimal newThreshold) {
         BigDecimal oldThreshold = threshold;
         threshold = newThreshold;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BASE_CONFIGURATION__THRESHOLD,
                     oldThreshold, threshold));
-        }
     }
 
     /**
@@ -150,10 +149,9 @@ public class TFBaseConfigurationImpl extends MinimalEObjectImpl.Container implem
     public void setCallbackPeriod(int newCallbackPeriod) {
         int oldCallbackPeriod = callbackPeriod;
         callbackPeriod = newCallbackPeriod;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BASE_CONFIGURATION__CALLBACK_PERIOD,
                     oldCallbackPeriod, callbackPeriod));
-        }
     }
 
     /**
@@ -236,9 +234,8 @@ public class TFBaseConfigurationImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (threshold: ");

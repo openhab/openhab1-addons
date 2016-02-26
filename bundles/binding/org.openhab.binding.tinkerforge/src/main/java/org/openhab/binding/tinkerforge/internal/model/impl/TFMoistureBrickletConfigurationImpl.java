@@ -23,12 +23,12 @@ import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfigur
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>
  *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFMoistureBrickletConfigurationImpl#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -98,10 +98,9 @@ public class TFMoistureBrickletConfigurationImpl extends TFBaseConfigurationImpl
     public void setMovingAverage(Short newMovingAverage) {
         Short oldMovingAverage = movingAverage;
         movingAverage = newMovingAverage;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION__MOVING_AVERAGE, oldMovingAverage, movingAverage));
-        }
     }
 
     /**
@@ -175,9 +174,8 @@ public class TFMoistureBrickletConfigurationImpl extends TFBaseConfigurationImpl
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (movingAverage: ");

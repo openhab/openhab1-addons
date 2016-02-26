@@ -19,6 +19,7 @@ import com.tinkerforge.BrickletAccelerometer;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDeviceType <em>Device Type</em>}
  * </li>
@@ -28,7 +29,6 @@ import com.tinkerforge.BrickletAccelerometer;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFilterBandwidth
  * <em>Filter Bandwidth</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAccelerometer()
  * @model superTypes=

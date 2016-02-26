@@ -24,6 +24,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl#getSystemCode
  *        <em>System Code</em>}</li>
@@ -32,7 +33,6 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCConfigurationImpl#getRepeats
  *        <em>Repeats</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -141,10 +141,9 @@ public class RemoteSwitchCConfigurationImpl extends MinimalEObjectImpl.Container
     public void setSystemCode(String newSystemCode) {
         String oldSystemCode = systemCode;
         systemCode = newSystemCode;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.REMOTE_SWITCH_CCONFIGURATION__SYSTEM_CODE, oldSystemCode, systemCode));
-        }
     }
 
     /**
@@ -168,10 +167,9 @@ public class RemoteSwitchCConfigurationImpl extends MinimalEObjectImpl.Container
     public void setDeviceCode(Short newDeviceCode) {
         Short oldDeviceCode = deviceCode;
         deviceCode = newDeviceCode;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.REMOTE_SWITCH_CCONFIGURATION__DEVICE_CODE, oldDeviceCode, deviceCode));
-        }
     }
 
     /**
@@ -195,10 +193,9 @@ public class RemoteSwitchCConfigurationImpl extends MinimalEObjectImpl.Container
     public void setRepeats(Short newRepeats) {
         Short oldRepeats = repeats;
         repeats = newRepeats;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REMOTE_SWITCH_CCONFIGURATION__REPEATS,
                     oldRepeats, repeats));
-        }
     }
 
     /**
@@ -291,9 +288,8 @@ public class RemoteSwitchCConfigurationImpl extends MinimalEObjectImpl.Container
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (systemCode: ");

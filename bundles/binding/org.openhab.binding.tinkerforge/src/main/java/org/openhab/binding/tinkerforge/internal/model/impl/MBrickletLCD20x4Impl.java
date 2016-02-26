@@ -51,6 +51,7 @@ import com.tinkerforge.TimeoutException;
  *        <!-- end-user-doc -->
  *        <p>
  *        The following features are implemented:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getLogger <em>Logger</em>}
  *        </li>
@@ -87,7 +88,6 @@ import com.tinkerforge.TimeoutException;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getErrorPrefix
  *        <em>Error Prefix</em>}</li>
  *        </ul>
- *        </p>
  *
  * @generated
  */
@@ -468,10 +468,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
@@ -493,9 +492,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__UID, oldUid, uid));
-        }
     }
 
     /**
@@ -519,10 +517,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
@@ -544,10 +541,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
@@ -569,10 +565,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setTinkerforgeDevice(BrickletLCD20x4 newTinkerforgeDevice) {
         BrickletLCD20x4 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
@@ -594,10 +589,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
@@ -619,10 +613,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
@@ -644,10 +637,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
@@ -669,10 +661,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
@@ -694,10 +685,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__NAME, oldName,
                     name));
-        }
     }
 
     /**
@@ -707,10 +697,21 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickd basicGetBrickd() {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD)
+            return null;
+        return (MBrickd) eInternalContainer();
     }
 
     /**
@@ -732,25 +733,20 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_LCD2_0X4__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
@@ -863,8 +859,15 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     @Override
     public EList<MLCDSubDevice> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<MLCDSubDevice>(MSubDevice.class, this,
-                    ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+            msubdevices = new EObjectContainmentWithInverseEList<MLCDSubDevice>(MLCDSubDevice.class, this,
+                    ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Class<?> getInverseFeatureClass() {
+                    return MSubDevice.class;
+                }
+            };
         }
         return msubdevices;
     }
@@ -899,10 +902,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setPositionPrefix(String newPositionPrefix) {
         String oldPositionPrefix = positionPrefix;
         positionPrefix = newPositionPrefix;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITION_PREFIX,
                     oldPositionPrefix, positionPrefix));
-        }
     }
 
     /**
@@ -924,10 +926,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setPositonSuffix(String newPositonSuffix) {
         String oldPositonSuffix = positonSuffix;
         positonSuffix = newPositonSuffix;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POSITON_SUFFIX,
                     oldPositonSuffix, positonSuffix));
-        }
     }
 
     /**
@@ -949,10 +950,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public void setDisplayErrors(boolean newDisplayErrors) {
         boolean oldDisplayErrors = displayErrors;
         displayErrors = newDisplayErrors;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__DISPLAY_ERRORS,
                     oldDisplayErrors, displayErrors));
-        }
     }
 
     /**
@@ -1053,9 +1053,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_LCD2_0X4__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
             case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
@@ -1122,7 +1121,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MBRICKLET_LCD2_0X4__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_LCD2_0X4__BRICKD:
-                return getBrickd();
+                if (resolve)
+                    return getBrickd();
+                return basicGetBrickd();
             case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
                 return getText();
             case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
@@ -1294,7 +1295,7 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
             case ModelPackage.MBRICKLET_LCD2_0X4__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MBRICKLET_LCD2_0X4__BRICKD:
-                return getBrickd() != null;
+                return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_LCD2_0X4__TEXT:
                 return TEXT_EDEFAULT == null ? text != null : !TEXT_EDEFAULT.equals(text);
             case ModelPackage.MBRICKLET_LCD2_0X4__MSUBDEVICES:
@@ -1425,9 +1426,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (logger: ");

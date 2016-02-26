@@ -23,6 +23,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl#getDataRate
  * <em>Data Rate</em>}</li>
@@ -32,7 +33,6 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl#getFilterBandwidth
  * <em>Filter Bandwidth</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -146,10 +146,9 @@ public class BrickletAccelerometerConfigurationImpl extends MinimalEObjectImpl.C
     public void setDataRate(Short newDataRate) {
         Short oldDataRate = dataRate;
         dataRate = newDataRate;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION__DATA_RATE, oldDataRate, dataRate));
-        }
     }
 
     /**
@@ -173,10 +172,9 @@ public class BrickletAccelerometerConfigurationImpl extends MinimalEObjectImpl.C
     public void setFullScale(Short newFullScale) {
         Short oldFullScale = fullScale;
         fullScale = newFullScale;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION__FULL_SCALE, oldFullScale, fullScale));
-        }
     }
 
     /**
@@ -200,11 +198,10 @@ public class BrickletAccelerometerConfigurationImpl extends MinimalEObjectImpl.C
     public void setFilterBandwidth(Short newFilterBandwidth) {
         Short oldFilterBandwidth = filterBandwidth;
         filterBandwidth = newFilterBandwidth;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.BRICKLET_ACCELEROMETER_CONFIGURATION__FILTER_BANDWIDTH, oldFilterBandwidth,
                     filterBandwidth));
-        }
     }
 
     /**
@@ -298,9 +295,8 @@ public class BrickletAccelerometerConfigurationImpl extends MinimalEObjectImpl.C
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (dataRate: ");

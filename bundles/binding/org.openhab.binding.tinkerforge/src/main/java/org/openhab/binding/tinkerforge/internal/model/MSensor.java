@@ -23,10 +23,10 @@ import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MSensor#getSensorValue <em>Sensor Value</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMSensor()
  * @model interface="true" abstract="true"

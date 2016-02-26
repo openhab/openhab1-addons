@@ -20,6 +20,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensor#getDeviceType <em>Device Type</em>}
  *        </li>
@@ -28,7 +29,6 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensor#getPort <em>Port</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensor#getPin <em>Pin</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalSensor()
  * @model superTypes=

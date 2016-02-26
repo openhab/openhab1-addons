@@ -20,6 +20,7 @@ import org.openhab.binding.tinkerforge.internal.types.PercentValue;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getDeviceType <em>Device Type</em>}
  *        </li>
@@ -29,7 +30,6 @@ import org.openhab.binding.tinkerforge.internal.types.PercentValue;
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getAbsDimmValue
  *        <em>Abs Dimm Value</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB()
  * @model superTypes=

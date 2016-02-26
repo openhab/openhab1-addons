@@ -23,6 +23,7 @@ import com.tinkerforge.BrickletAnalogInV2;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2#getDeviceType <em>Device Type</em>}
  * </li>
@@ -30,7 +31,6 @@ import com.tinkerforge.BrickletAnalogInV2;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2#getMovingAverage
  * <em>Moving Average</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAnalogInV2()
  * @model superTypes=

@@ -24,13 +24,13 @@ import com.tinkerforge.BrickletSoundIntensity;
  *
  *        <p>
  *        The following features are supported:
+ *        </p>
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity#getDeviceType
  *        <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity#getThreshold
  *        <em>Threshold</em>}</li>
  *        </ul>
- *        </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletSoundIntensity()
  * @model superTypes=

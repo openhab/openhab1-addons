@@ -17,6 +17,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getDistanceAverageLength
  * <em>Distance Average Length</em>}</li>
@@ -26,7 +27,6 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration#getEnableLaserOnStartup
  * <em>Enable Laser On Startup</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLaserRangeFinderConfiguration()
  * @model

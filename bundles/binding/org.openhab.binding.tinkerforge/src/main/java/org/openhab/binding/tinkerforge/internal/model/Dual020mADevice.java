@@ -19,12 +19,12 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.Dual020mADevice#getDeviceType <em>Device Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.Dual020mADevice#getThreshold <em>Threshold</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.Dual020mADevice#getSensorNum <em>Sensor Num</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDual020mADevice()
  * @model superTypes=
