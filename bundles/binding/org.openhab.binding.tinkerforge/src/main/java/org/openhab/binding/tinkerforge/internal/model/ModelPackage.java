@@ -94,7 +94,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFConfig()
      * @generated
      */
-    int TF_CONFIG = 135;
+    int TF_CONFIG = 136;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl
@@ -106,7 +106,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFDevice()
      * @generated
      */
-    int OHTF_DEVICE = 136;
+    int OHTF_DEVICE = 137;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.OHConfigImpl
@@ -118,7 +118,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHConfig()
      * @generated
      */
-    int OH_CONFIG = 138;
+    int OH_CONFIG = 139;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.EcosystemImpl
@@ -214,7 +214,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBrickDCConfiguration()
      * @generated
      */
-    int TF_BRICK_DC_CONFIGURATION = 154;
+    int TF_BRICK_DC_CONFIGURATION = 155;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl
@@ -347,7 +347,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIOActorConfiguration()
      * @generated
      */
-    int TFIO_ACTOR_CONFIGURATION = 155;
+    int TFIO_ACTOR_CONFIGURATION = 156;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl
@@ -396,7 +396,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFInterruptListenerConfiguration()
      * @generated
      */
-    int TF_INTERRUPT_LISTENER_CONFIGURATION = 156;
+    int TF_INTERRUPT_LISTENER_CONFIGURATION = 157;
 
     /**
      * The meta object id for the '
@@ -409,7 +409,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIOSensorConfiguration()
      * @generated
      */
-    int TFIO_SENSOR_CONFIGURATION = 157;
+    int TFIO_SENSOR_CONFIGURATION = 158;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl
@@ -433,7 +433,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFNullConfiguration()
      * @generated
      */
-    int TF_NULL_CONFIGURATION = 139;
+    int TF_NULL_CONFIGURATION = 140;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.TFServoConfigurationImpl
@@ -445,7 +445,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFServoConfiguration()
      * @generated
      */
-    int TF_SERVO_CONFIGURATION = 158;
+    int TF_SERVO_CONFIGURATION = 159;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl <em>MServo</em>
@@ -541,7 +541,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFBaseConfiguration()
      * @generated
      */
-    int TF_BASE_CONFIGURATION = 142;
+    int TF_BASE_CONFIGURATION = 143;
 
     /**
      * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -22395,156 +22395,16 @@ public interface ModelPackage extends EPackage {
     int MBRICKLET_LCD2_0X4_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 4;
 
     /**
-     * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl
-     * <em>MBricklet OLED12 8x64</em>}' class.
+     * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+     * <em>OLED Bricklet</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @see org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl
-     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletOLED128x64()
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOLEDBricklet()
      * @generated
      */
-    int MBRICKLET_OLED12_8X64 = 131;
-
-    /**
-     * The feature id for the '<em><b>Logger</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__LOGGER = MDEVICE__LOGGER;
-
-    /**
-     * The feature id for the '<em><b>Uid</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__UID = MDEVICE__UID;
-
-    /**
-     * The feature id for the '<em><b>Poll</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__POLL = MDEVICE__POLL;
-
-    /**
-     * The feature id for the '<em><b>Enabled A</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__ENABLED_A = MDEVICE__ENABLED_A;
-
-    /**
-     * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__TINKERFORGE_DEVICE = MDEVICE__TINKERFORGE_DEVICE;
-
-    /**
-     * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__IP_CONNECTION = MDEVICE__IP_CONNECTION;
-
-    /**
-     * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__CONNECTED_UID = MDEVICE__CONNECTED_UID;
-
-    /**
-     * The feature id for the '<em><b>Position</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__POSITION = MDEVICE__POSITION;
-
-    /**
-     * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__DEVICE_IDENTIFIER = MDEVICE__DEVICE_IDENTIFIER;
-
-    /**
-     * The feature id for the '<em><b>Name</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__NAME = MDEVICE__NAME;
-
-    /**
-     * The feature id for the '<em><b>Brickd</b></em>' container reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__BRICKD = MDEVICE__BRICKD;
-
-    /**
-     * The feature id for the '<em><b>Text</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__TEXT = MDEVICE_FEATURE_COUNT + 0;
-
-    /**
-     * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
-
-    /**
-     * The feature id for the '<em><b>Device Type</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 2;
+    int OLED_BRICKLET = 131;
 
     /**
      * The feature id for the '<em><b>Position Prefix</b></em>' attribute.
@@ -22554,7 +22414,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64__POSITION_PREFIX = MDEVICE_FEATURE_COUNT + 3;
+    int OLED_BRICKLET__POSITION_PREFIX = 0;
 
     /**
      * The feature id for the '<em><b>Position Suffix</b></em>' attribute.
@@ -22564,7 +22424,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64__POSITION_SUFFIX = MDEVICE_FEATURE_COUNT + 4;
+    int OLED_BRICKLET__POSITION_SUFFIX = 1;
 
     /**
      * The feature id for the '<em><b>Contrast</b></em>' attribute.
@@ -22574,7 +22434,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64__CONTRAST = MDEVICE_FEATURE_COUNT + 5;
+    int OLED_BRICKLET__CONTRAST = 2;
 
     /**
      * The feature id for the '<em><b>Invert</b></em>' attribute.
@@ -22584,57 +22444,17 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64__INVERT = MDEVICE_FEATURE_COUNT + 6;
+    int OLED_BRICKLET__INVERT = 3;
 
     /**
-     * The number of structural features of the '<em>MBricklet OLED12 8x64</em>' class.
+     * The number of structural features of the '<em>OLED Bricklet</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 7;
-
-    /**
-     * The operation id for the '<em>Init</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64___INIT = MDEVICE___INIT;
-
-    /**
-     * The operation id for the '<em>Enable</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64___ENABLE = MDEVICE___ENABLE;
-
-    /**
-     * The operation id for the '<em>Disable</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64___DISABLE = MDEVICE___DISABLE;
-
-    /**
-     * The operation id for the '<em>Write</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLED12_8X64___WRITE__STRING = MDEVICE_OPERATION_COUNT + 0;
+    int OLED_BRICKLET_FEATURE_COUNT = 4;
 
     /**
      * The operation id for the '<em>Clear</em>' operation.
@@ -22644,7 +22464,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64___CLEAR = MDEVICE_OPERATION_COUNT + 1;
+    int OLED_BRICKLET___CLEAR = 0;
 
     /**
      * The operation id for the '<em>Clear</em>' operation.
@@ -22654,7 +22474,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64___CLEAR__SHORT_SHORT_SHORT_SHORT = MDEVICE_OPERATION_COUNT + 2;
+    int OLED_BRICKLET___CLEAR__SHORT_SHORT_SHORT_SHORT = 1;
 
     /**
      * The operation id for the '<em>Write Line</em>' operation.
@@ -22664,7 +22484,289 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING = MDEVICE_OPERATION_COUNT + 3;
+    int OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING = 2;
+
+    /**
+     * The number of operations of the '<em>OLED Bricklet</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int OLED_BRICKLET_OPERATION_COUNT = 3;
+
+    /**
+     * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl
+     * <em>MBricklet OLED12 8x64</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletOLED128x64()
+     * @generated
+     */
+    int MBRICKLET_OLED12_8X64 = 132;
+
+    /**
+     * The feature id for the '<em><b>Position Prefix</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__POSITION_PREFIX = OLED_BRICKLET__POSITION_PREFIX;
+
+    /**
+     * The feature id for the '<em><b>Position Suffix</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__POSITION_SUFFIX = OLED_BRICKLET__POSITION_SUFFIX;
+
+    /**
+     * The feature id for the '<em><b>Contrast</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__CONTRAST = OLED_BRICKLET__CONTRAST;
+
+    /**
+     * The feature id for the '<em><b>Invert</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__INVERT = OLED_BRICKLET__INVERT;
+
+    /**
+     * The feature id for the '<em><b>Logger</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__LOGGER = OLED_BRICKLET_FEATURE_COUNT + 0;
+
+    /**
+     * The feature id for the '<em><b>Uid</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__UID = OLED_BRICKLET_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>Poll</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__POLL = OLED_BRICKLET_FEATURE_COUNT + 2;
+
+    /**
+     * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__ENABLED_A = OLED_BRICKLET_FEATURE_COUNT + 3;
+
+    /**
+     * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__TINKERFORGE_DEVICE = OLED_BRICKLET_FEATURE_COUNT + 4;
+
+    /**
+     * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__IP_CONNECTION = OLED_BRICKLET_FEATURE_COUNT + 5;
+
+    /**
+     * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__CONNECTED_UID = OLED_BRICKLET_FEATURE_COUNT + 6;
+
+    /**
+     * The feature id for the '<em><b>Position</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__POSITION = OLED_BRICKLET_FEATURE_COUNT + 7;
+
+    /**
+     * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__DEVICE_IDENTIFIER = OLED_BRICKLET_FEATURE_COUNT + 8;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__NAME = OLED_BRICKLET_FEATURE_COUNT + 9;
+
+    /**
+     * The feature id for the '<em><b>Brickd</b></em>' container reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__BRICKD = OLED_BRICKLET_FEATURE_COUNT + 10;
+
+    /**
+     * The feature id for the '<em><b>Text</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__TEXT = OLED_BRICKLET_FEATURE_COUNT + 11;
+
+    /**
+     * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__TF_CONFIG = OLED_BRICKLET_FEATURE_COUNT + 12;
+
+    /**
+     * The feature id for the '<em><b>Device Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64__DEVICE_TYPE = OLED_BRICKLET_FEATURE_COUNT + 13;
+
+    /**
+     * The number of structural features of the '<em>MBricklet OLED12 8x64</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64_FEATURE_COUNT = OLED_BRICKLET_FEATURE_COUNT + 14;
+
+    /**
+     * The operation id for the '<em>Clear</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___CLEAR = OLED_BRICKLET___CLEAR;
+
+    /**
+     * The operation id for the '<em>Clear</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___CLEAR__SHORT_SHORT_SHORT_SHORT = OLED_BRICKLET___CLEAR__SHORT_SHORT_SHORT_SHORT;
+
+    /**
+     * The operation id for the '<em>Write Line</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING = OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING;
+
+    /**
+     * The operation id for the '<em>Init</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___INIT = OLED_BRICKLET_OPERATION_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>Enable</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___ENABLE = OLED_BRICKLET_OPERATION_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>Disable</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___DISABLE = OLED_BRICKLET_OPERATION_COUNT + 2;
+
+    /**
+     * The operation id for the '<em>Write</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___WRITE__STRING = OLED_BRICKLET_OPERATION_COUNT + 3;
 
     /**
      * The number of operations of the '<em>MBricklet OLED12 8x64</em>' class.
@@ -22674,7 +22776,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLED12_8X64_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 4;
+    int MBRICKLET_OLED12_8X64_OPERATION_COUNT = OLED_BRICKLET_OPERATION_COUNT + 4;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl
@@ -22686,147 +22788,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMBrickletOLE64x48()
      * @generated
      */
-    int MBRICKLET_OLE6_4X48 = 132;
-
-    /**
-     * The feature id for the '<em><b>Logger</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__LOGGER = MDEVICE__LOGGER;
-
-    /**
-     * The feature id for the '<em><b>Uid</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__UID = MDEVICE__UID;
-
-    /**
-     * The feature id for the '<em><b>Poll</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__POLL = MDEVICE__POLL;
-
-    /**
-     * The feature id for the '<em><b>Enabled A</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__ENABLED_A = MDEVICE__ENABLED_A;
-
-    /**
-     * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__TINKERFORGE_DEVICE = MDEVICE__TINKERFORGE_DEVICE;
-
-    /**
-     * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__IP_CONNECTION = MDEVICE__IP_CONNECTION;
-
-    /**
-     * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__CONNECTED_UID = MDEVICE__CONNECTED_UID;
-
-    /**
-     * The feature id for the '<em><b>Position</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__POSITION = MDEVICE__POSITION;
-
-    /**
-     * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__DEVICE_IDENTIFIER = MDEVICE__DEVICE_IDENTIFIER;
-
-    /**
-     * The feature id for the '<em><b>Name</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__NAME = MDEVICE__NAME;
-
-    /**
-     * The feature id for the '<em><b>Brickd</b></em>' container reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__BRICKD = MDEVICE__BRICKD;
-
-    /**
-     * The feature id for the '<em><b>Text</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__TEXT = MDEVICE_FEATURE_COUNT + 0;
-
-    /**
-     * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
-
-    /**
-     * The feature id for the '<em><b>Device Type</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 2;
+    int MBRICKLET_OLE6_4X48 = 133;
 
     /**
      * The feature id for the '<em><b>Position Prefix</b></em>' attribute.
@@ -22836,7 +22798,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48__POSITION_PREFIX = MDEVICE_FEATURE_COUNT + 3;
+    int MBRICKLET_OLE6_4X48__POSITION_PREFIX = OLED_BRICKLET__POSITION_PREFIX;
 
     /**
      * The feature id for the '<em><b>Position Suffix</b></em>' attribute.
@@ -22846,7 +22808,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48__POSITION_SUFFIX = MDEVICE_FEATURE_COUNT + 4;
+    int MBRICKLET_OLE6_4X48__POSITION_SUFFIX = OLED_BRICKLET__POSITION_SUFFIX;
 
     /**
      * The feature id for the '<em><b>Contrast</b></em>' attribute.
@@ -22856,7 +22818,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48__CONTRAST = MDEVICE_FEATURE_COUNT + 5;
+    int MBRICKLET_OLE6_4X48__CONTRAST = OLED_BRICKLET__CONTRAST;
 
     /**
      * The feature id for the '<em><b>Invert</b></em>' attribute.
@@ -22866,7 +22828,147 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48__INVERT = MDEVICE_FEATURE_COUNT + 6;
+    int MBRICKLET_OLE6_4X48__INVERT = OLED_BRICKLET__INVERT;
+
+    /**
+     * The feature id for the '<em><b>Logger</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__LOGGER = OLED_BRICKLET_FEATURE_COUNT + 0;
+
+    /**
+     * The feature id for the '<em><b>Uid</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__UID = OLED_BRICKLET_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>Poll</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__POLL = OLED_BRICKLET_FEATURE_COUNT + 2;
+
+    /**
+     * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__ENABLED_A = OLED_BRICKLET_FEATURE_COUNT + 3;
+
+    /**
+     * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__TINKERFORGE_DEVICE = OLED_BRICKLET_FEATURE_COUNT + 4;
+
+    /**
+     * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__IP_CONNECTION = OLED_BRICKLET_FEATURE_COUNT + 5;
+
+    /**
+     * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__CONNECTED_UID = OLED_BRICKLET_FEATURE_COUNT + 6;
+
+    /**
+     * The feature id for the '<em><b>Position</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__POSITION = OLED_BRICKLET_FEATURE_COUNT + 7;
+
+    /**
+     * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__DEVICE_IDENTIFIER = OLED_BRICKLET_FEATURE_COUNT + 8;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__NAME = OLED_BRICKLET_FEATURE_COUNT + 9;
+
+    /**
+     * The feature id for the '<em><b>Brickd</b></em>' container reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__BRICKD = OLED_BRICKLET_FEATURE_COUNT + 10;
+
+    /**
+     * The feature id for the '<em><b>Text</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__TEXT = OLED_BRICKLET_FEATURE_COUNT + 11;
+
+    /**
+     * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__TF_CONFIG = OLED_BRICKLET_FEATURE_COUNT + 12;
+
+    /**
+     * The feature id for the '<em><b>Device Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48__DEVICE_TYPE = OLED_BRICKLET_FEATURE_COUNT + 13;
 
     /**
      * The number of structural features of the '<em>MBricklet OLE6 4x48</em>' class.
@@ -22876,47 +22978,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 7;
-
-    /**
-     * The operation id for the '<em>Init</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48___INIT = MDEVICE___INIT;
-
-    /**
-     * The operation id for the '<em>Enable</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48___ENABLE = MDEVICE___ENABLE;
-
-    /**
-     * The operation id for the '<em>Disable</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48___DISABLE = MDEVICE___DISABLE;
-
-    /**
-     * The operation id for the '<em>Write</em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     * @ordered
-     */
-    int MBRICKLET_OLE6_4X48___WRITE__STRING = MDEVICE_OPERATION_COUNT + 0;
+    int MBRICKLET_OLE6_4X48_FEATURE_COUNT = OLED_BRICKLET_FEATURE_COUNT + 14;
 
     /**
      * The operation id for the '<em>Clear</em>' operation.
@@ -22926,7 +22988,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48___CLEAR = MDEVICE_OPERATION_COUNT + 1;
+    int MBRICKLET_OLE6_4X48___CLEAR = OLED_BRICKLET___CLEAR;
 
     /**
      * The operation id for the '<em>Clear</em>' operation.
@@ -22936,7 +22998,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48___CLEAR__SHORT_SHORT_SHORT_SHORT = MDEVICE_OPERATION_COUNT + 2;
+    int MBRICKLET_OLE6_4X48___CLEAR__SHORT_SHORT_SHORT_SHORT = OLED_BRICKLET___CLEAR__SHORT_SHORT_SHORT_SHORT;
 
     /**
      * The operation id for the '<em>Write Line</em>' operation.
@@ -22946,7 +23008,47 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48___WRITE_LINE__SHORT_SHORT_STRING = MDEVICE_OPERATION_COUNT + 3;
+    int MBRICKLET_OLE6_4X48___WRITE_LINE__SHORT_SHORT_STRING = OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING;
+
+    /**
+     * The operation id for the '<em>Init</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48___INIT = OLED_BRICKLET_OPERATION_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>Enable</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48___ENABLE = OLED_BRICKLET_OPERATION_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>Disable</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48___DISABLE = OLED_BRICKLET_OPERATION_COUNT + 2;
+
+    /**
+     * The operation id for the '<em>Write</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48___WRITE__STRING = OLED_BRICKLET_OPERATION_COUNT + 3;
 
     /**
      * The number of operations of the '<em>MBricklet OLE6 4x48</em>' class.
@@ -22956,7 +23058,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MBRICKLET_OLE6_4X48_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 4;
+    int MBRICKLET_OLE6_4X48_OPERATION_COUNT = OLED_BRICKLET_OPERATION_COUNT + 4;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl
@@ -22968,7 +23070,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Backlight()
      * @generated
      */
-    int MLCD2_0X4_BACKLIGHT = 133;
+    int MLCD2_0X4_BACKLIGHT = 134;
 
     /**
      * The feature id for the '<em><b>Switch State</b></em>' attribute.
@@ -23130,7 +23232,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLCD20x4Button()
      * @generated
      */
-    int MLCD2_0X4_BUTTON = 134;
+    int MLCD2_0X4_BUTTON = 135;
 
     /**
      * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -23413,7 +23515,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOHTFSubDeviceAdminDevice()
      * @generated
      */
-    int OHTF_SUB_DEVICE_ADMIN_DEVICE = 137;
+    int OHTF_SUB_DEVICE_ADMIN_DEVICE = 138;
 
     /**
      * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -23586,7 +23688,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFPTCBrickletConfiguration()
      * @generated
      */
-    int TFPTC_BRICKLET_CONFIGURATION = 140;
+    int TFPTC_BRICKLET_CONFIGURATION = 141;
 
     /**
      * The feature id for the '<em><b>Noise Rejection Filter</b></em>' attribute.
@@ -23639,7 +23741,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFIndustrialDual020mAConfiguration()
      * @generated
      */
-    int TF_INDUSTRIAL_DUAL020M_ACONFIGURATION = 141;
+    int TF_INDUSTRIAL_DUAL020M_ACONFIGURATION = 142;
 
     /**
      * The feature id for the '<em><b>Sample Rate</b></em>' attribute.
@@ -23721,7 +23823,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellConfiguration()
      * @generated
      */
-    int LOAD_CELL_CONFIGURATION = 143;
+    int LOAD_CELL_CONFIGURATION = 144;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -23784,7 +23886,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderConfiguration()
      * @generated
      */
-    int LASER_RANGE_FINDER_CONFIGURATION = 144;
+    int LASER_RANGE_FINDER_CONFIGURATION = 145;
 
     /**
      * The feature id for the '<em><b>Distance Average Length</b></em>' attribute.
@@ -23857,7 +23959,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAmbientLightV2Configuration()
      * @generated
      */
-    int AMBIENT_LIGHT_V2_CONFIGURATION = 145;
+    int AMBIENT_LIGHT_V2_CONFIGURATION = 146;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -23930,7 +24032,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletIndustrialDualAnalogInConfiguration()
      * @generated
      */
-    int BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION = 146;
+    int BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN_CONFIGURATION = 147;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -23993,7 +24095,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFTemperatureConfiguration()
      * @generated
      */
-    int TF_TEMPERATURE_CONFIGURATION = 147;
+    int TF_TEMPERATURE_CONFIGURATION = 148;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -24056,7 +24158,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFObjectTemperatureConfiguration()
      * @generated
      */
-    int TF_OBJECT_TEMPERATURE_CONFIGURATION = 148;
+    int TF_OBJECT_TEMPERATURE_CONFIGURATION = 149;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -24119,7 +24221,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFMoistureBrickletConfiguration()
      * @generated
      */
-    int TF_MOISTURE_BRICKLET_CONFIGURATION = 149;
+    int TF_MOISTURE_BRICKLET_CONFIGURATION = 150;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -24182,7 +24284,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFAnalogInConfiguration()
      * @generated
      */
-    int TF_ANALOG_IN_CONFIGURATION = 150;
+    int TF_ANALOG_IN_CONFIGURATION = 151;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -24255,7 +24357,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFAnalogInV2Configuration()
      * @generated
      */
-    int TF_ANALOG_IN_V2_CONFIGURATION = 151;
+    int TF_ANALOG_IN_V2_CONFIGURATION = 152;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -24318,7 +24420,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFDistanceUSBrickletConfiguration()
      * @generated
      */
-    int TF_DISTANCE_US_BRICKLET_CONFIGURATION = 152;
+    int TF_DISTANCE_US_BRICKLET_CONFIGURATION = 153;
 
     /**
      * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -24381,7 +24483,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTFVoltageCurrentConfiguration()
      * @generated
      */
-    int TF_VOLTAGE_CURRENT_CONFIGURATION = 153;
+    int TF_VOLTAGE_CURRENT_CONFIGURATION = 154;
 
     /**
      * The feature id for the '<em><b>Averaging</b></em>' attribute.
@@ -24444,7 +24546,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletRemoteSwitchConfiguration()
      * @generated
      */
-    int BRICKLET_REMOTE_SWITCH_CONFIGURATION = 159;
+    int BRICKLET_REMOTE_SWITCH_CONFIGURATION = 160;
 
     /**
      * The meta object id for the '
@@ -24457,7 +24559,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchAConfiguration()
      * @generated
      */
-    int REMOTE_SWITCH_ACONFIGURATION = 160;
+    int REMOTE_SWITCH_ACONFIGURATION = 161;
 
     /**
      * The meta object id for the '
@@ -24470,7 +24572,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchBConfiguration()
      * @generated
      */
-    int REMOTE_SWITCH_BCONFIGURATION = 161;
+    int REMOTE_SWITCH_BCONFIGURATION = 162;
 
     /**
      * The meta object id for the '
@@ -24483,7 +24585,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRemoteSwitchCConfiguration()
      * @generated
      */
-    int REMOTE_SWITCH_CCONFIGURATION = 162;
+    int REMOTE_SWITCH_CCONFIGURATION = 163;
 
     /**
      * The meta object id for the '
@@ -24496,7 +24598,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchDeviceConfiguration()
      * @generated
      */
-    int MULTI_TOUCH_DEVICE_CONFIGURATION = 163;
+    int MULTI_TOUCH_DEVICE_CONFIGURATION = 164;
 
     /**
      * The meta object id for the '
@@ -24509,7 +24611,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletMultiTouchConfiguration()
      * @generated
      */
-    int BRICKLET_MULTI_TOUCH_CONFIGURATION = 164;
+    int BRICKLET_MULTI_TOUCH_CONFIGURATION = 165;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DimmableConfigurationImpl
@@ -24521,7 +24623,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDimmableConfiguration()
      * @generated
      */
-    int DIMMABLE_CONFIGURATION = 165;
+    int DIMMABLE_CONFIGURATION = 166;
 
     /**
      * The feature id for the '<em><b>Min Value</b></em>' attribute.
@@ -25173,7 +25275,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getButtonConfiguration()
      * @generated
      */
-    int BUTTON_CONFIGURATION = 166;
+    int BUTTON_CONFIGURATION = 167;
 
     /**
      * The feature id for the '<em><b>Tactile</b></em>' attribute.
@@ -25216,7 +25318,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonLEDConfiguration()
      * @generated
      */
-    int DUAL_BUTTON_LED_CONFIGURATION = 167;
+    int DUAL_BUTTON_LED_CONFIGURATION = 168;
 
     /**
      * The feature id for the '<em><b>Autotoggle</b></em>' attribute.
@@ -25258,7 +25360,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLEDStripConfiguration()
      * @generated
      */
-    int LED_STRIP_CONFIGURATION = 168;
+    int LED_STRIP_CONFIGURATION = 169;
 
     /**
      * The feature id for the '<em><b>Chiptype</b></em>' attribute.
@@ -25340,7 +25442,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLEDGroupConfiguration()
      * @generated
      */
-    int LED_GROUP_CONFIGURATION = 169;
+    int LED_GROUP_CONFIGURATION = 170;
 
     /**
      * The feature id for the '<em><b>Leds</b></em>' attribute.
@@ -25383,7 +25485,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletColorConfiguration()
      * @generated
      */
-    int BRICKLET_COLOR_CONFIGURATION = 170;
+    int BRICKLET_COLOR_CONFIGURATION = 171;
 
     /**
      * The feature id for the '<em><b>Gain</b></em>' attribute.
@@ -25436,7 +25538,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletAccelerometerConfiguration()
      * @generated
      */
-    int BRICKLET_ACCELEROMETER_CONFIGURATION = 171;
+    int BRICKLET_ACCELEROMETER_CONFIGURATION = 172;
 
     /**
      * The feature id for the '<em><b>Data Rate</b></em>' attribute.
@@ -25499,7 +25601,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletOLEDConfiguration()
      * @generated
      */
-    int BRICKLET_OLED_CONFIGURATION = 172;
+    int BRICKLET_OLED_CONFIGURATION = 173;
 
     /**
      * The feature id for the '<em><b>Contrast</b></em>' attribute.
@@ -25551,7 +25653,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerCoordinate()
      * @generated
      */
-    int ACCELEROMETER_COORDINATE = 173;
+    int ACCELEROMETER_COORDINATE = 174;
 
     /**
      * The meta object id for the '<em>Switch State</em>' data type.
@@ -25562,7 +25664,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
      * @generated
      */
-    int SWITCH_STATE = 216;
+    int SWITCH_STATE = 217;
 
     /**
      * The meta object id for the '<em>Digital Value</em>' data type.
@@ -25573,7 +25675,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
      * @generated
      */
-    int DIGITAL_VALUE = 217;
+    int DIGITAL_VALUE = 218;
 
     /**
      * The meta object id for the '<em>HSB Value</em>' data type.
@@ -25584,7 +25686,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBValue()
      * @generated
      */
-    int HSB_VALUE = 218;
+    int HSB_VALUE = 219;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -25595,7 +25697,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
      * @generated
      */
-    int TINKER_BRICKLET_IO16 = 219;
+    int TINKER_BRICKLET_IO16 = 220;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode
@@ -25607,7 +25709,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
      * @generated
      */
-    int DC_DRIVE_MODE = 192;
+    int DC_DRIVE_MODE = 193;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo
@@ -25619,7 +25721,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsServo()
      * @generated
      */
-    int CONFIG_OPTS_SERVO = 193;
+    int CONFIG_OPTS_SERVO = 194;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition
@@ -25631,7 +25733,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonDevicePosition()
      * @generated
      */
-    int DUAL_BUTTON_DEVICE_POSITION = 194;
+    int DUAL_BUTTON_DEVICE_POSITION = 195;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds
@@ -25643,7 +25745,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonLedSubIds()
      * @generated
      */
-    int DUAL_BUTTON_LED_SUB_IDS = 195;
+    int DUAL_BUTTON_LED_SUB_IDS = 196;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds
@@ -25655,7 +25757,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualButtonButtonSubIds()
      * @generated
      */
-    int DUAL_BUTTON_BUTTON_SUB_IDS = 196;
+    int DUAL_BUTTON_BUTTON_SUB_IDS = 197;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.JoystickSubIds
@@ -25667,7 +25769,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getJoystickSubIds()
      * @generated
      */
-    int JOYSTICK_SUB_IDS = 197;
+    int JOYSTICK_SUB_IDS = 198;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.PTCSubIds <em>PTC Sub Ids</em>}
@@ -25679,7 +25781,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPTCSubIds()
      * @generated
      */
-    int PTC_SUB_IDS = 198;
+    int PTC_SUB_IDS = 199;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds
@@ -25691,7 +25793,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDual020mASubIds()
      * @generated
      */
-    int INDUSTRIAL_DUAL020M_ASUB_IDS = 199;
+    int INDUSTRIAL_DUAL020M_ASUB_IDS = 200;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds
@@ -25703,7 +25805,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getRotaryEncoderSubIds()
      * @generated
      */
-    int ROTARY_ENCODER_SUB_IDS = 200;
+    int ROTARY_ENCODER_SUB_IDS = 201;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds
@@ -25715,7 +25817,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getColorBrickletSubIds()
      * @generated
      */
-    int COLOR_BRICKLET_SUB_IDS = 201;
+    int COLOR_BRICKLET_SUB_IDS = 202;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds
@@ -25727,7 +25829,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLoadCellSubIds()
      * @generated
      */
-    int LOAD_CELL_SUB_IDS = 202;
+    int LOAD_CELL_SUB_IDS = 203;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds
@@ -25739,7 +25841,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDualAnalogInSubIds()
      * @generated
      */
-    int INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS = 203;
+    int INDUSTRIAL_DUAL_ANALOG_IN_SUB_IDS = 204;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds
@@ -25751,7 +25853,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLaserRangeFinderSubIds()
      * @generated
      */
-    int LASER_RANGE_FINDER_SUB_IDS = 204;
+    int LASER_RANGE_FINDER_SUB_IDS = 205;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds
@@ -25763,7 +25865,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getAccelerometerSubIds()
      * @generated
      */
-    int ACCELEROMETER_SUB_IDS = 205;
+    int ACCELEROMETER_SUB_IDS = 206;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}'
@@ -25775,7 +25877,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getNoSubIds()
      * @generated
      */
-    int NO_SUB_IDS = 174;
+    int NO_SUB_IDS = 175;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs
@@ -25787,7 +25889,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalInSubIDs()
      * @generated
      */
-    int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 175;
+    int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 176;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs
@@ -25799,7 +25901,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalOutSubIDs()
      * @generated
      */
-    int INDUSTRIAL_DIGITAL_OUT_SUB_IDS = 176;
+    int INDUSTRIAL_DIGITAL_OUT_SUB_IDS = 177;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs
@@ -25811,7 +25913,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialQuadRelayIDs()
      * @generated
      */
-    int INDUSTRIAL_QUAD_RELAY_IDS = 177;
+    int INDUSTRIAL_QUAD_RELAY_IDS = 178;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs
@@ -25823,7 +25925,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getServoSubIDs()
      * @generated
      */
-    int SERVO_SUB_IDS = 178;
+    int SERVO_SUB_IDS = 179;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs
@@ -25835,7 +25937,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBarometerSubIDs()
      * @generated
      */
-    int BAROMETER_SUB_IDS = 179;
+    int BAROMETER_SUB_IDS = 180;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds
@@ -25847,7 +25949,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO16SubIds()
      * @generated
      */
-    int IO16_SUB_IDS = 180;
+    int IO16_SUB_IDS = 181;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO4SubIds <em>IO4 Sub Ids</em>}
@@ -25859,7 +25961,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO4SubIds()
      * @generated
      */
-    int IO4_SUB_IDS = 181;
+    int IO4_SUB_IDS = 182;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds
@@ -25871,7 +25973,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualRelaySubIds()
      * @generated
      */
-    int DUAL_RELAY_SUB_IDS = 182;
+    int DUAL_RELAY_SUB_IDS = 183;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds
@@ -25883,7 +25985,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDButtonSubIds()
      * @generated
      */
-    int LCD_BUTTON_SUB_IDS = 183;
+    int LCD_BUTTON_SUB_IDS = 184;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds
@@ -25895,7 +25997,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDBacklightSubIds()
      * @generated
      */
-    int LCD_BACKLIGHT_SUB_IDS = 184;
+    int LCD_BACKLIGHT_SUB_IDS = 185;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds
@@ -25907,7 +26009,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchSubIds()
      * @generated
      */
-    int MULTI_TOUCH_SUB_IDS = 185;
+    int MULTI_TOUCH_SUB_IDS = 186;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds
@@ -25919,7 +26021,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTemperatureIRSubIds()
      * @generated
      */
-    int TEMPERATURE_IR_SUB_IDS = 186;
+    int TEMPERATURE_IR_SUB_IDS = 187;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds
@@ -25931,7 +26033,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getVoltageCurrentSubIds()
      * @generated
      */
-    int VOLTAGE_CURRENT_SUB_IDS = 187;
+    int VOLTAGE_CURRENT_SUB_IDS = 188;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove
@@ -25943,7 +26045,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsMove()
      * @generated
      */
-    int CONFIG_OPTS_MOVE = 188;
+    int CONFIG_OPTS_MOVE = 189;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable
@@ -25955,7 +26057,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsDimmable()
      * @generated
      */
-    int CONFIG_OPTS_DIMMABLE = 189;
+    int CONFIG_OPTS_DIMMABLE = 190;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint
@@ -25967,7 +26069,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsSetPoint()
      * @generated
      */
-    int CONFIG_OPTS_SET_POINT = 190;
+    int CONFIG_OPTS_SET_POINT = 191;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed
@@ -25979,7 +26081,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsSwitchSpeed()
      * @generated
      */
-    int CONFIG_OPTS_SWITCH_SPEED = 191;
+    int CONFIG_OPTS_SWITCH_SPEED = 192;
 
     /**
      * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -25990,7 +26092,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
      * @generated
      */
-    int MIP_CONNECTION = 206;
+    int MIP_CONNECTION = 207;
 
     /**
      * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -26001,7 +26103,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
      * @generated
      */
-    int MTINKER_DEVICE = 207;
+    int MTINKER_DEVICE = 208;
 
     /**
      * The meta object id for the '<em>MLogger</em>' data type.
@@ -26012,7 +26114,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
      * @generated
      */
-    int MLOGGER = 208;
+    int MLOGGER = 209;
 
     /**
      * The meta object id for the '<em>MAtomic Boolean</em>' data type.
@@ -26023,7 +26125,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
      * @generated
      */
-    int MATOMIC_BOOLEAN = 209;
+    int MATOMIC_BOOLEAN = 210;
 
     /**
      * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -26034,7 +26136,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
      * @generated
      */
-    int MTINKERFORGE_DEVICE = 210;
+    int MTINKERFORGE_DEVICE = 211;
 
     /**
      * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -26045,7 +26147,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
      * @generated
      */
-    int MTINKER_BRICK_DC = 211;
+    int MTINKER_BRICK_DC = 212;
 
     /**
      * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -26056,7 +26158,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
      * @generated
      */
-    int MTINKER_BRICK_SERVO = 220;
+    int MTINKER_BRICK_SERVO = 221;
 
     /**
      * The meta object id for the '<em>MTinkerforge Value</em>' data type.
@@ -26067,7 +26169,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
      * @generated
      */
-    int MTINKERFORGE_VALUE = 221;
+    int MTINKERFORGE_VALUE = 222;
 
     /**
      * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -26078,7 +26180,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
      * @generated
      */
-    int MDECIMAL_VALUE = 222;
+    int MDECIMAL_VALUE = 223;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -26089,7 +26191,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
      * @generated
      */
-    int MTINKER_BRICKLET_HUMIDITY = 223;
+    int MTINKER_BRICKLET_HUMIDITY = 224;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -26100,7 +26202,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
      * @generated
      */
-    int MTINKER_BRICKLET_DISTANCE_IR = 224;
+    int MTINKER_BRICKLET_DISTANCE_IR = 225;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -26111,7 +26213,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
      * @generated
      */
-    int MTINKER_BRICKLET_TEMPERATURE = 225;
+    int MTINKER_BRICKLET_TEMPERATURE = 226;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -26122,7 +26224,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
      * @generated
      */
-    int MTINKER_BRICKLET_BAROMETER = 226;
+    int MTINKER_BRICKLET_BAROMETER = 227;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -26133,7 +26235,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
      * @generated
      */
-    int MTINKER_BRICKLET_AMBIENT_LIGHT = 227;
+    int MTINKER_BRICKLET_AMBIENT_LIGHT = 228;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -26144,7 +26246,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
      * @generated
      */
-    int MTINKER_BRICKLET_LCD2_0X4 = 228;
+    int MTINKER_BRICKLET_LCD2_0X4 = 229;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Remote Switch</em>' data type.
@@ -26155,7 +26257,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
      * @generated
      */
-    int TINKER_BRICKLET_REMOTE_SWITCH = 229;
+    int TINKER_BRICKLET_REMOTE_SWITCH = 230;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Motion Detector</em>' data type.
@@ -26166,7 +26268,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMotionDetector()
      * @generated
      */
-    int TINKER_BRICKLET_MOTION_DETECTOR = 230;
+    int TINKER_BRICKLET_MOTION_DETECTOR = 231;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Multi Touch</em>' data type.
@@ -26177,7 +26279,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMultiTouch()
      * @generated
      */
-    int TINKER_BRICKLET_MULTI_TOUCH = 231;
+    int TINKER_BRICKLET_MULTI_TOUCH = 232;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Temperature IR</em>' data type.
@@ -26188,7 +26290,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTemperatureIR()
      * @generated
      */
-    int TINKER_BRICKLET_TEMPERATURE_IR = 232;
+    int TINKER_BRICKLET_TEMPERATURE_IR = 233;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Sound Intensity</em>' data type.
@@ -26199,7 +26301,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSoundIntensity()
      * @generated
      */
-    int TINKER_BRICKLET_SOUND_INTENSITY = 233;
+    int TINKER_BRICKLET_SOUND_INTENSITY = 234;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Moisture</em>' data type.
@@ -26210,7 +26312,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMoisture()
      * @generated
      */
-    int TINKER_BRICKLET_MOISTURE = 234;
+    int TINKER_BRICKLET_MOISTURE = 235;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Distance US</em>' data type.
@@ -26221,7 +26323,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDistanceUS()
      * @generated
      */
-    int TINKER_BRICKLET_DISTANCE_US = 235;
+    int TINKER_BRICKLET_DISTANCE_US = 236;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Voltage Current</em>' data type.
@@ -26232,7 +26334,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletVoltageCurrent()
      * @generated
      */
-    int TINKER_BRICKLET_VOLTAGE_CURRENT = 236;
+    int TINKER_BRICKLET_VOLTAGE_CURRENT = 237;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Tilt</em>' data type.
@@ -26243,7 +26345,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTilt()
      * @generated
      */
-    int TINKER_BRICKLET_TILT = 237;
+    int TINKER_BRICKLET_TILT = 238;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet IO4</em>' data type.
@@ -26254,7 +26356,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO4()
      * @generated
      */
-    int TINKER_BRICKLET_IO4 = 238;
+    int TINKER_BRICKLET_IO4 = 239;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Hall Effect</em>' data type.
@@ -26265,7 +26367,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletHallEffect()
      * @generated
      */
-    int TINKER_BRICKLET_HALL_EFFECT = 239;
+    int TINKER_BRICKLET_HALL_EFFECT = 240;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Segment Display4x7</em>' data type.
@@ -26276,7 +26378,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSegmentDisplay4x7()
      * @generated
      */
-    int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 240;
+    int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 241;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet LED Strip</em>' data type.
@@ -26287,7 +26389,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLEDStrip()
      * @generated
      */
-    int TINKER_BRICKLET_LED_STRIP = 241;
+    int TINKER_BRICKLET_LED_STRIP = 242;
 
     /**
      * The meta object id for the '<em>Bricklet Joystick</em>' data type.
@@ -26298,7 +26400,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletJoystick()
      * @generated
      */
-    int BRICKLET_JOYSTICK = 242;
+    int BRICKLET_JOYSTICK = 243;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Linear Poti</em>' data type.
@@ -26309,7 +26411,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLinearPoti()
      * @generated
      */
-    int TINKER_BRICKLET_LINEAR_POTI = 243;
+    int TINKER_BRICKLET_LINEAR_POTI = 244;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Dual Button</em>' data type.
@@ -26320,7 +26422,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDualButton()
      * @generated
      */
-    int TINKER_BRICKLET_DUAL_BUTTON = 244;
+    int TINKER_BRICKLET_DUAL_BUTTON = 245;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet PTC</em>' data type.
@@ -26331,7 +26433,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletPTC()
      * @generated
      */
-    int TINKER_BRICKLET_PTC = 245;
+    int TINKER_BRICKLET_PTC = 246;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Industrial Dual020m A</em>' data type.
@@ -26342,7 +26444,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIndustrialDual020mA()
      * @generated
      */
-    int TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A = 246;
+    int TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A = 247;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Solid State Relay</em>' data type.
@@ -26353,7 +26455,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSolidStateRelay()
      * @generated
      */
-    int TINKER_BRICKLET_SOLID_STATE_RELAY = 247;
+    int TINKER_BRICKLET_SOLID_STATE_RELAY = 248;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Piezo Speaker</em>' data type.
@@ -26364,7 +26466,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletPiezoSpeaker()
      * @generated
      */
-    int TINKER_BRICKLET_PIEZO_SPEAKER = 248;
+    int TINKER_BRICKLET_PIEZO_SPEAKER = 249;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Rotary Encoder</em>' data type.
@@ -26375,7 +26477,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRotaryEncoder()
      * @generated
      */
-    int TINKER_BRICKLET_ROTARY_ENCODER = 249;
+    int TINKER_BRICKLET_ROTARY_ENCODER = 250;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Ambient Light V2</em>' data type.
@@ -26386,7 +26488,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAmbientLightV2()
      * @generated
      */
-    int TINKER_BRICKLET_AMBIENT_LIGHT_V2 = 250;
+    int TINKER_BRICKLET_AMBIENT_LIGHT_V2 = 251;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Dust Detector</em>' data type.
@@ -26397,7 +26499,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDustDetector()
      * @generated
      */
-    int TINKER_BRICKLET_DUST_DETECTOR = 251;
+    int TINKER_BRICKLET_DUST_DETECTOR = 252;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Load Cell</em>' data type.
@@ -26408,7 +26510,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLoadCell()
      * @generated
      */
-    int TINKER_BRICKLET_LOAD_CELL = 252;
+    int TINKER_BRICKLET_LOAD_CELL = 253;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Color</em>' data type.
@@ -26419,7 +26521,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletColor()
      * @generated
      */
-    int TINKER_BRICKLET_COLOR = 253;
+    int TINKER_BRICKLET_COLOR = 254;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Industrial Dual Analog In</em>' data type.
@@ -26430,7 +26532,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIndustrialDualAnalogIn()
      * @generated
      */
-    int TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN = 254;
+    int TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN = 255;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Analog In V2</em>' data type.
@@ -26441,7 +26543,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAnalogInV2()
      * @generated
      */
-    int TINKER_BRICKLET_ANALOG_IN_V2 = 255;
+    int TINKER_BRICKLET_ANALOG_IN_V2 = 256;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Analog In</em>' data type.
@@ -26452,7 +26554,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAnalogIn()
      * @generated
      */
-    int TINKER_BRICKLET_ANALOG_IN = 256;
+    int TINKER_BRICKLET_ANALOG_IN = 257;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Laser Range Finder</em>' data type.
@@ -26463,7 +26565,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLaserRangeFinder()
      * @generated
      */
-    int TINKER_BRICKLET_LASER_RANGE_FINDER = 257;
+    int TINKER_BRICKLET_LASER_RANGE_FINDER = 258;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet Accelerometer</em>' data type.
@@ -26474,7 +26576,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletAccelerometer()
      * @generated
      */
-    int TINKER_BRICKLET_ACCELEROMETER = 258;
+    int TINKER_BRICKLET_ACCELEROMETER = 259;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet OLED12 8x64</em>' data type.
@@ -26485,7 +26587,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletOLED128x64()
      * @generated
      */
-    int TINKER_BRICKLET_OLED12_8X64 = 259;
+    int TINKER_BRICKLET_OLED12_8X64 = 260;
 
     /**
      * The meta object id for the '<em>Tinker Bricklet OLED6 4x48</em>' data type.
@@ -26496,7 +26598,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletOLED64x48()
      * @generated
      */
-    int TINKER_BRICKLET_OLED6_4X48 = 260;
+    int TINKER_BRICKLET_OLED6_4X48 = 261;
 
     /**
      * The meta object id for the '<em>HSB Type</em>' data type.
@@ -26507,7 +26609,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBType()
      * @generated
      */
-    int HSB_TYPE = 261;
+    int HSB_TYPE = 262;
 
     /**
      * The meta object id for the '<em>Up Down Type</em>' data type.
@@ -26518,7 +26620,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getUpDownType()
      * @generated
      */
-    int UP_DOWN_TYPE = 262;
+    int UP_DOWN_TYPE = 263;
 
     /**
      * The meta object id for the '<em>Percent Value</em>' data type.
@@ -26529,7 +26631,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentValue()
      * @generated
      */
-    int PERCENT_VALUE = 263;
+    int PERCENT_VALUE = 264;
 
     /**
      * The meta object id for the '<em>Device Options</em>' data type.
@@ -26540,7 +26642,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
      * @generated
      */
-    int DEVICE_OPTIONS = 264;
+    int DEVICE_OPTIONS = 265;
 
     /**
      * The meta object id for the '<em>Percent Type</em>' data type.
@@ -26551,7 +26653,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentType()
      * @generated
      */
-    int PERCENT_TYPE = 265;
+    int PERCENT_TYPE = 266;
 
     /**
      * The meta object id for the '<em>Increase Decrease Type</em>' data type.
@@ -26562,7 +26664,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIncreaseDecreaseType()
      * @generated
      */
-    int INCREASE_DECREASE_TYPE = 266;
+    int INCREASE_DECREASE_TYPE = 267;
 
     /**
      * The meta object id for the '<em>Direction Value</em>' data type.
@@ -26573,7 +26675,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDirectionValue()
      * @generated
      */
-    int DIRECTION_VALUE = 267;
+    int DIRECTION_VALUE = 268;
 
     /**
      * The meta object id for the '<em>Enum</em>' data type.
@@ -26584,7 +26686,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
      * @generated
      */
-    int ENUM = 268;
+    int ENUM = 269;
 
     /**
      * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig
@@ -26786,7 +26888,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
      * @generated
      */
-    int MTINKER_BRICKLET_DUAL_RELAY = 212;
+    int MTINKER_BRICKLET_DUAL_RELAY = 213;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Industrial Quad Relay</em>' data type.
@@ -26797,7 +26899,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
      * @generated
      */
-    int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 213;
+    int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 214;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -26808,7 +26910,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
      * @generated
      */
-    int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 214;
+    int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 215;
 
     /**
      * The meta object id for the '<em>MTinker Bricklet Industrial Digital Out4</em>' data type.
@@ -26819,7 +26921,7 @@ public interface ModelPackage extends EPackage {
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalOut4()
      * @generated
      */
-    int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 215;
+    int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 216;
 
     /**
      * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem
@@ -33627,6 +33729,108 @@ public interface ModelPackage extends EPackage {
     EOperation getMBrickletLCD20x4__Clear();
 
     /**
+     * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+     * <em>OLED Bricklet</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for class '<em>OLED Bricklet</em>'.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+     * @generated
+     */
+    EClass getOLEDBricklet();
+
+    /**
+     * Returns the meta object for the attribute '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionPrefix <em>Position Prefix</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the attribute '<em>Position Prefix</em>'.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionPrefix()
+     * @see #getOLEDBricklet()
+     * @generated
+     */
+    EAttribute getOLEDBricklet_PositionPrefix();
+
+    /**
+     * Returns the meta object for the attribute '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionSuffix <em>Position Suffix</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the attribute '<em>Position Suffix</em>'.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionSuffix()
+     * @see #getOLEDBricklet()
+     * @generated
+     */
+    EAttribute getOLEDBricklet_PositionSuffix();
+
+    /**
+     * Returns the meta object for the attribute '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getContrast <em>Contrast</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the attribute '<em>Contrast</em>'.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getContrast()
+     * @see #getOLEDBricklet()
+     * @generated
+     */
+    EAttribute getOLEDBricklet_Contrast();
+
+    /**
+     * Returns the meta object for the attribute '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#isInvert <em>Invert</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the attribute '<em>Invert</em>'.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#isInvert()
+     * @see #getOLEDBricklet()
+     * @generated
+     */
+    EAttribute getOLEDBricklet_Invert();
+
+    /**
+     * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#clear()
+     * <em>Clear</em>}' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the '<em>Clear</em>' operation.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#clear()
+     * @generated
+     */
+    EOperation getOLEDBricklet__Clear();
+
+    /**
+     * Returns the meta object for the '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#clear(short, short, short, short)
+     * <em>Clear</em>}' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the '<em>Clear</em>' operation.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#clear(short, short, short, short)
+     * @generated
+     */
+    EOperation getOLEDBricklet__Clear__short_short_short_short();
+
+    /**
+     * Returns the meta object for the '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#writeLine(short, short, java.lang.String)
+     * <em>Write Line</em>}' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the '<em>Write Line</em>' operation.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#writeLine(short, short, java.lang.String)
+     * @generated
+     */
+    EOperation getOLEDBricklet__WriteLine__short_short_String();
+
+    /**
      * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64
      * <em>MBricklet OLED12 8x64</em>}'.
      * <!-- begin-user-doc -->
@@ -33652,98 +33856,6 @@ public interface ModelPackage extends EPackage {
     EAttribute getMBrickletOLED128x64_DeviceType();
 
     /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getPositionPrefix
-     * <em>Position Prefix</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Position Prefix</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getPositionPrefix()
-     * @see #getMBrickletOLED128x64()
-     * @generated
-     */
-    EAttribute getMBrickletOLED128x64_PositionPrefix();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getPositionSuffix
-     * <em>Position Suffix</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Position Suffix</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getPositionSuffix()
-     * @see #getMBrickletOLED128x64()
-     * @generated
-     */
-    EAttribute getMBrickletOLED128x64_PositionSuffix();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getContrast <em>Contrast</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Contrast</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getContrast()
-     * @see #getMBrickletOLED128x64()
-     * @generated
-     */
-    EAttribute getMBrickletOLED128x64_Contrast();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#isInvert <em>Invert</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Invert</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#isInvert()
-     * @see #getMBrickletOLED128x64()
-     * @generated
-     */
-    EAttribute getMBrickletOLED128x64_Invert();
-
-    /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#clear() <em>Clear</em>}' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the '<em>Clear</em>' operation.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#clear()
-     * @generated
-     */
-    EOperation getMBrickletOLED128x64__Clear();
-
-    /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#clear(short, short, short, short)
-     * <em>Clear</em>}' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the '<em>Clear</em>' operation.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#clear(short, short, short, short)
-     * @generated
-     */
-    EOperation getMBrickletOLED128x64__Clear__short_short_short_short();
-
-    /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#writeLine(short, short, java.lang.String)
-     * <em>Write Line</em>}' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the '<em>Write Line</em>' operation.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#writeLine(short, short, java.lang.String)
-     * @generated
-     */
-    EOperation getMBrickletOLED128x64__WriteLine__short_short_String();
-
-    /**
      * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48
      * <em>MBricklet OLE6 4x48</em>}'.
      * <!-- begin-user-doc -->
@@ -33767,98 +33879,6 @@ public interface ModelPackage extends EPackage {
      * @generated
      */
     EAttribute getMBrickletOLE64x48_DeviceType();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#getPositionPrefix
-     * <em>Position Prefix</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Position Prefix</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#getPositionPrefix()
-     * @see #getMBrickletOLE64x48()
-     * @generated
-     */
-    EAttribute getMBrickletOLE64x48_PositionPrefix();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#getPositionSuffix
-     * <em>Position Suffix</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Position Suffix</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#getPositionSuffix()
-     * @see #getMBrickletOLE64x48()
-     * @generated
-     */
-    EAttribute getMBrickletOLE64x48_PositionSuffix();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#getContrast <em>Contrast</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Contrast</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#getContrast()
-     * @see #getMBrickletOLE64x48()
-     * @generated
-     */
-    EAttribute getMBrickletOLE64x48_Contrast();
-
-    /**
-     * Returns the meta object for the attribute '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#isInvert <em>Invert</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the attribute '<em>Invert</em>'.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#isInvert()
-     * @see #getMBrickletOLE64x48()
-     * @generated
-     */
-    EAttribute getMBrickletOLE64x48_Invert();
-
-    /**
-     * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#clear()
-     * <em>Clear</em>}' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the '<em>Clear</em>' operation.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#clear()
-     * @generated
-     */
-    EOperation getMBrickletOLE64x48__Clear();
-
-    /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#clear(short, short, short, short)
-     * <em>Clear</em>}' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the '<em>Clear</em>' operation.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#clear(short, short, short, short)
-     * @generated
-     */
-    EOperation getMBrickletOLE64x48__Clear__short_short_short_short();
-
-    /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#writeLine(short, short, java.lang.String)
-     * <em>Write Line</em>}' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return the meta object for the '<em>Write Line</em>' operation.
-     * @see org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48#writeLine(short, short, java.lang.String)
-     * @generated
-     */
-    EOperation getMBrickletOLE64x48__WriteLine__short_short_String();
 
     /**
      * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MTextActor
@@ -40738,6 +40758,83 @@ public interface ModelPackage extends EPackage {
         EOperation MBRICKLET_LCD2_0X4___CLEAR = eINSTANCE.getMBrickletLCD20x4__Clear();
 
         /**
+         * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+         * <em>OLED Bricklet</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
+         * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getOLEDBricklet()
+         * @generated
+         */
+        EClass OLED_BRICKLET = eINSTANCE.getOLEDBricklet();
+
+        /**
+         * The meta object literal for the '<em><b>Position Prefix</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EAttribute OLED_BRICKLET__POSITION_PREFIX = eINSTANCE.getOLEDBricklet_PositionPrefix();
+
+        /**
+         * The meta object literal for the '<em><b>Position Suffix</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EAttribute OLED_BRICKLET__POSITION_SUFFIX = eINSTANCE.getOLEDBricklet_PositionSuffix();
+
+        /**
+         * The meta object literal for the '<em><b>Contrast</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EAttribute OLED_BRICKLET__CONTRAST = eINSTANCE.getOLEDBricklet_Contrast();
+
+        /**
+         * The meta object literal for the '<em><b>Invert</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EAttribute OLED_BRICKLET__INVERT = eINSTANCE.getOLEDBricklet_Invert();
+
+        /**
+         * The meta object literal for the '<em><b>Clear</b></em>' operation.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EOperation OLED_BRICKLET___CLEAR = eINSTANCE.getOLEDBricklet__Clear();
+
+        /**
+         * The meta object literal for the '<em><b>Clear</b></em>' operation.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EOperation OLED_BRICKLET___CLEAR__SHORT_SHORT_SHORT_SHORT = eINSTANCE
+                .getOLEDBricklet__Clear__short_short_short_short();
+
+        /**
+         * The meta object literal for the '<em><b>Write Line</b></em>' operation.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EOperation OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING = eINSTANCE
+                .getOLEDBricklet__WriteLine__short_short_String();
+
+        /**
          * The meta object literal for the '
          * {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl
          * <em>MBricklet OLED12 8x64</em>}' class.
@@ -40760,71 +40857,6 @@ public interface ModelPackage extends EPackage {
         EAttribute MBRICKLET_OLED12_8X64__DEVICE_TYPE = eINSTANCE.getMBrickletOLED128x64_DeviceType();
 
         /**
-         * The meta object literal for the '<em><b>Position Prefix</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLED12_8X64__POSITION_PREFIX = eINSTANCE.getMBrickletOLED128x64_PositionPrefix();
-
-        /**
-         * The meta object literal for the '<em><b>Position Suffix</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLED12_8X64__POSITION_SUFFIX = eINSTANCE.getMBrickletOLED128x64_PositionSuffix();
-
-        /**
-         * The meta object literal for the '<em><b>Contrast</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLED12_8X64__CONTRAST = eINSTANCE.getMBrickletOLED128x64_Contrast();
-
-        /**
-         * The meta object literal for the '<em><b>Invert</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLED12_8X64__INVERT = eINSTANCE.getMBrickletOLED128x64_Invert();
-
-        /**
-         * The meta object literal for the '<em><b>Clear</b></em>' operation.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EOperation MBRICKLET_OLED12_8X64___CLEAR = eINSTANCE.getMBrickletOLED128x64__Clear();
-
-        /**
-         * The meta object literal for the '<em><b>Clear</b></em>' operation.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EOperation MBRICKLET_OLED12_8X64___CLEAR__SHORT_SHORT_SHORT_SHORT = eINSTANCE
-                .getMBrickletOLED128x64__Clear__short_short_short_short();
-
-        /**
-         * The meta object literal for the '<em><b>Write Line</b></em>' operation.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EOperation MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING = eINSTANCE
-                .getMBrickletOLED128x64__WriteLine__short_short_String();
-
-        /**
          * The meta object literal for the '
          * {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl <em>MBricklet OLE6 4x48</em>
          * }' class.
@@ -40845,71 +40877,6 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EAttribute MBRICKLET_OLE6_4X48__DEVICE_TYPE = eINSTANCE.getMBrickletOLE64x48_DeviceType();
-
-        /**
-         * The meta object literal for the '<em><b>Position Prefix</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLE6_4X48__POSITION_PREFIX = eINSTANCE.getMBrickletOLE64x48_PositionPrefix();
-
-        /**
-         * The meta object literal for the '<em><b>Position Suffix</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLE6_4X48__POSITION_SUFFIX = eINSTANCE.getMBrickletOLE64x48_PositionSuffix();
-
-        /**
-         * The meta object literal for the '<em><b>Contrast</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLE6_4X48__CONTRAST = eINSTANCE.getMBrickletOLE64x48_Contrast();
-
-        /**
-         * The meta object literal for the '<em><b>Invert</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EAttribute MBRICKLET_OLE6_4X48__INVERT = eINSTANCE.getMBrickletOLE64x48_Invert();
-
-        /**
-         * The meta object literal for the '<em><b>Clear</b></em>' operation.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EOperation MBRICKLET_OLE6_4X48___CLEAR = eINSTANCE.getMBrickletOLE64x48__Clear();
-
-        /**
-         * The meta object literal for the '<em><b>Clear</b></em>' operation.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EOperation MBRICKLET_OLE6_4X48___CLEAR__SHORT_SHORT_SHORT_SHORT = eINSTANCE
-                .getMBrickletOLE64x48__Clear__short_short_short_short();
-
-        /**
-         * The meta object literal for the '<em><b>Write Line</b></em>' operation.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * 
-         * @generated
-         */
-        EOperation MBRICKLET_OLE6_4X48___WRITE_LINE__SHORT_SHORT_STRING = eINSTANCE
-                .getMBrickletOLE64x48__WriteLine__short_short_String();
 
         /**
          * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.MTextActor
