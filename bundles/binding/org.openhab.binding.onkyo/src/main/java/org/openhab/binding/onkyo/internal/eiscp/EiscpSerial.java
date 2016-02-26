@@ -145,13 +145,13 @@ public class EiscpSerial implements EiscpInterface, SerialPortEventListener {
     }
 
     private StringBuilder getEiscpMessage(String eiscpCmd) {
-        logger.debug("Requested Command is " + eiscpCmd);
+        logger.debug("Requested Command is '{}' ", eiscpCmd);
         StringBuilder sb = new StringBuilder();
         sb.append("!");
         sb.append("1");
         sb.append(eiscpCmd);
         sb.append((char) 0x0D);
-        logger.debug("Serial command is " + sb);
+        logger.debug("Serial command is '{}'", sb);
         return sb;
     }
 
@@ -183,7 +183,7 @@ public class EiscpSerial implements EiscpInterface, SerialPortEventListener {
                 }
             }
 
-            String response = sendMmsg(data, timeout);
+            String response = sendMessage(data, timeout);
             if (response != null) {
                 notifier.notifyMessage(new OnkyoStatusUpdateEvent(this), response.getBytes(), 8);
             }
@@ -195,26 +195,26 @@ public class EiscpSerial implements EiscpInterface, SerialPortEventListener {
             connectSocket();
 
             try {
-                String response = sendMmsg(data, timeout);
+                String response = sendMessage(data, timeout);
                 if (response != null) {
                     notifier.notifyMessage(new OnkyoStatusUpdateEvent(this), response.getBytes(), 8);
                 }
 
             } catch (IOException e1) {
-                logger.error("Send failed.." + e1);
+                logger.error("Send failed..{}", e1);
             } catch (EiscpException ee) {
-                logger.error("Unable to notify " + ee);
+                logger.error("Unable to notify {}", ee);
             }
 
         } catch (Exception e) {
-            logger.error("Send failed.." + e);
+            logger.error("Send failed..{}", e);
         }
     }
 
     @Override
     public void serialEvent(SerialPortEvent portEvent) {
         try {
-            logger.debug("Received serial port event " + portEvent.toString() + ":" + portEvent.getEventType());
+            logger.debug("Received serial port event '{}':'{}'", portEvent.toString(), portEvent.getEventType());
             logger.trace("RXTX library CPU load workaround, sleep forever");
             Thread.sleep(Long.MAX_VALUE);
         } catch (InterruptedException e) {
@@ -222,8 +222,8 @@ public class EiscpSerial implements EiscpInterface, SerialPortEventListener {
         }
     }
 
-    private String sendMmsg(String data, int timeout) throws IOException {
-        logger.debug("Sent request... " + data);
+    private String sendMessage(String data, int timeout) throws IOException {
+        logger.debug("Sent request...'{}'", data);
         out.write(data.getBytes());
         out.flush();
 
