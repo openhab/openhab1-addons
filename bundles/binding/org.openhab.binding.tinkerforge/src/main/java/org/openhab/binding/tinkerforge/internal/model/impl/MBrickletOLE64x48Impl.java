@@ -1049,6 +1049,14 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      */
     @Override
     public void writeLine(short line, short position, String text) {
+        if (position < 0 || position > maxColumn) {
+            logger.error("position must have a value from 0 to {}", maxColumn);
+            return;
+        }
+        if (line < 0 || line > maxLine) {
+            logger.error("line must have a value from 0 to {}", maxLine);
+            return;
+        }
         try {
             tinkerforgeDevice.writeLine(line, position, text);
         } catch (TimeoutException e) {
