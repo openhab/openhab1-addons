@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,73 +22,65 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li>devices: LinkedList of Devices</li>
  * </ul>
- * 
+ *
  * @author Scott Hanson
  * @since 1.8.0
  */
 public class GarageDoorData {
-	static final Logger logger = LoggerFactory.getLogger(GarageDoorData.class);
+    static final Logger logger = LoggerFactory.getLogger(GarageDoorData.class);
 
-	/**
-	 * Matching pattern for door device types, some models have spaces in them,
-	 * some don't
-	 *
-	 * "VGDO"
-	 * "Garage Door Opener WGDO"
-	 * "GarageDoorOpener"
-	 */
-	private static final Pattern DEVICE_TYPE_PATTERN = Pattern
-			.compile("Garage\\s?Door\\s?Opener|VGDO");
+    /**
+     * Matching pattern for door device types, some models have spaces in them,
+     * some don't
+     *
+     * "VGDO"
+     * "Garage Door Opener WGDO"
+     * "GarageDoorOpener"
+     */
+    private static final Pattern DEVICE_TYPE_PATTERN = Pattern.compile("Garage\\s?Door\\s?Opener|VGDO");
 
-	LinkedList<GarageDoorDevice> devices = new LinkedList<GarageDoorDevice>();
+    LinkedList<GarageDoorDevice> devices = new LinkedList<GarageDoorDevice>();
 
-	/**
-	 * Constructor of the GarageDoorData.
-	 * 
-	 * @param rootNode
-	 *            The Json node returned from the myq website.
-	 */
-	public GarageDoorData(JsonNode rootNode) throws IOException {
-		if (rootNode.has("Devices")) {
-			JsonNode node = rootNode.get("Devices");
-			if (node.isArray()) {
-				logger.trace("Chamberlain MyQ Devices:");
-				int arraysize = node.size();
-				for (int i = 0; i < arraysize; i++) {
-					int deviceId = node.get(i).get("MyQDeviceId").asInt();
-					String deviceName = node.get(i).get("SerialNumber")
-							.asText();
-					String deviceType = node.get(i).get("MyQDeviceTypeName")
-							.asText();
+    /**
+     * Constructor of the GarageDoorData.
+     * 
+     * @param rootNode
+     *            The Json node returned from the myq website.
+     */
+    public GarageDoorData(JsonNode rootNode) throws IOException {
+        if (rootNode.has("Devices")) {
+            JsonNode node = rootNode.get("Devices");
+            if (node.isArray()) {
+                logger.trace("Chamberlain MyQ Devices:");
+                int arraysize = node.size();
+                for (int i = 0; i < arraysize; i++) {
+                    int deviceId = node.get(i).get("MyQDeviceId").asInt();
+                    String deviceName = node.get(i).get("SerialNumber").asText();
+                    String deviceType = node.get(i).get("MyQDeviceTypeName").asText();
 
-					if (DEVICE_TYPE_PATTERN.matcher(deviceType).matches()) {
-						JsonNode attributes = node.get(i).get("Attributes");
-						if (attributes.isArray()) {
-							int attributesSize = attributes.size();
-							for (int j = 0; j < attributesSize; j++) {
-								String attributeName = attributes.get(j)
-										.get("AttributeDisplayName").asText();
-								if (attributeName.contains("doorstate")) {
-									int doorstate = attributes.get(j)
-											.get("Value").asInt();
-									logger.trace(
-											"DeviceID: {} DeviceName: {} DeviceType: {} Doorstate : {}",
-											deviceId, deviceName, deviceType,
-											doorstate);
+                    if (DEVICE_TYPE_PATTERN.matcher(deviceType).find()) {
+                        JsonNode attributes = node.get(i).get("Attributes");
+                        if (attributes.isArray()) {
+                            int attributesSize = attributes.size();
+                            for (int j = 0; j < attributesSize; j++) {
+                                String attributeName = attributes.get(j).get("AttributeDisplayName").asText();
+                                if (attributeName.contains("doorstate")) {
+                                    int doorstate = attributes.get(j).get("Value").asInt();
+                                    logger.trace("DeviceID: {} DeviceName: {} DeviceType: {} Doorstate : {}", deviceId,
+                                            deviceName, deviceType, doorstate);
 
-									devices.add(new GarageDoorDevice(deviceId,
-											deviceType, deviceName, doorstate));
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                                    devices.add(new GarageDoorDevice(deviceId, deviceType, deviceName, doorstate));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	public GarageDoorDevice getDevice(int index) {
-		return index >= devices.size() ? null : devices.get(index);
-	}
+    public GarageDoorDevice getDevice(int index) {
+        return index >= devices.size() ? null : devices.get(index);
+    }
 }
