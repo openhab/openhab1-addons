@@ -99,7 +99,14 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
      */
     @Override
     public State getOpenhabStateFromZibaseValue(Zibase zibase, String zbResponseStr) {
-        return OnOffType.valueOf(zibase.getState(this.getId()) ? "ON" : "OFF");
+
+        Boolean zibaseValue = zibase.getState(this.getId());
+		
+        if (zibaseValue != null) {
+            return OnOffType.valueOf(zibaseValue ? "ON":"OFF");
+        } else {
+            return null;
+        }
     }
 
 }
