@@ -43,10 +43,8 @@ public class ImageRenderer extends AbstractWidgetRenderer {
 				getSnippet("image_link") : getSnippet("image");			
 
 		if(image.getRefresh()>0) {
-			snippet = StringUtils.replace(snippet, "%setrefresh%", "<script type=\"text/javascript\">OH.imagesToRefreshOnPage=1</script>");
-			snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" onload=\"setTimeout('OH.reloadImage(\\'%url%\\', \\'%id%\\')', " + image.getRefresh() + ")\"");
+			snippet = StringUtils.replace(snippet, "%refresh%", "id=\"%id%\" data-timeout=\"" + image.getRefresh() + "\" onload=\"OH.startReloadImage('%url%', '%id%')\"");
 		} else {
-			snippet = StringUtils.replace(snippet, "%setrefresh%", "");
 			snippet = StringUtils.replace(snippet, "%refresh%", "");
 		}
 		

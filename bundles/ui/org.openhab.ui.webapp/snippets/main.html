@@ -50,8 +50,6 @@
         search = search + "sitemap=%sitemap%&w=" + hash.substring(2) + "&poll=true";
         url = path + search;
         WA.Request(url, null, -1, true, null); 
-        OH.imageRefresh = OH.imagesToRefreshOnPage;
-        OH.imagesToRefreshOnPage = 0;
       });
 
       WA.AddEventListener("load", function () {
@@ -105,13 +103,29 @@
         WA.Request(request, null, null, true);
       };
 
-      // Functions for image refresh
-      OH.imageRefresh = 0;
-      OH.imagesToRefreshOnPage = 0;
+      // Functions for image and chart support
+
+      OH.imageTimers = {};
+
+      OH.startReloadImage = function startReloadImage(url, id) {
+        var img = document.getElementById(id);
+        if (img && OH.imageTimers[id] === undefined) {
+          OH.imageTimers[id] = setTimeout('OH.reloadImage(\''+url+'\', \''+id+'\')', img.dataset.timeout);
+        }
+      }
 
       OH.reloadImage = function reloadImage(url, id) {
-        if (OH.imageRefresh) {
-          document.getElementById(id).src = url + new Date().getMilliseconds();
+        OH.imageTimers[id] = undefined;
+        var img = document.getElementById(id);
+        if (img) {
+          // if image is currently visible
+          if (img.offsetWidth > 0 && img.offsetHeight > 0) { 
+            // load the specified URL with cache busting
+            img.src = url.replace( /&t=\d+/g , '&t=' + new Date().getTime());
+          } else {
+            // load a blank image (a data URI does not work in Safari)
+            img.src = "images/none.png";
+          }
         }
       };
 
