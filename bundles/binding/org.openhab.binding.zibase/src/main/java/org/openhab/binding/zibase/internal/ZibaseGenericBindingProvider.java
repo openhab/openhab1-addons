@@ -49,6 +49,11 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
     static final HashMap<String, Vector<String>> itemIdNameMap = new HashMap<String, Vector<String>>();
 
     /**
+     * Map that allows to get registered item by name
+     */
+    static final HashMap<String, Item> itemMap = new HashMap<String, Item>();
+	
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -86,6 +91,7 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
 
         itemNameMap.put(item.getName(), config);
         itemUniqueIdMap.put(item.getName() + "_" + id, config);
+        itemMap.put(item.getName(), item);
 
         if (itemIdNameMap.containsKey(id)) {
             if (!itemIdNameMap.get(id).contains(item.getName())) {
@@ -137,5 +143,14 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
      */
     public Vector<String> getItemNamesById(String rfId) {
         return itemIdNameMap.get(rfId);
+    }
+    
+    /**
+     * get registered item by its name
+     * @param name of item
+     * @return
+     */
+    public Item getItemByName(String itemName) {
+        return itemMap.get(itemName);
     }
 }

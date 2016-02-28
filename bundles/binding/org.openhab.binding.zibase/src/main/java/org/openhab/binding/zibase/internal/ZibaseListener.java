@@ -17,7 +17,9 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.core.items.Item;
 import org.openhab.core.events.EventPublisher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +52,10 @@ public class ZibaseListener extends Thread {
      * Regex pattern to extact Radio ID from zibase log
      */
     private static final Pattern RADIODIDPATTERM = Pattern.compile(": (<id>)([A-Z]{2}[0-9]*)");
+    /**
+     * Regex pattern to extact Radio ID from zibase log
+     */
+    private static final Pattern CHACONPATTERN 	= Pattern.compile(": (<id>)([A-Z][0-9]{1,2})");
     /**
      * Regex pattern to extact Scenario id from zibase log
      */
@@ -155,6 +161,7 @@ public class ZibaseListener extends Thread {
                     publishEvents(zbResponse);
                 }
                 zibase.hostUnregistering(listenerHost, listenerPort);
+                serverSocket.close();
 
             } catch (SocketException ex) {
                 logger.error("Could not open socket to zibase : " + ex);
@@ -186,6 +193,11 @@ public class ZibaseListener extends Thread {
         if (matcher.find()) {
             return matcher.group(1);
         }
+        
+        matcher = ZibaseListener.CHACONPATTERN.matcher(zbResponseStr);
+        if(matcher.find()) {
+            return matcher.group(2);
+        }
 
         matcher = ZibaseListener.RADIODIDPATTERM.matcher(zbResponseStr);
         if (matcher.find()) {
@@ -207,6 +219,7 @@ public class ZibaseListener extends Thread {
         logger.debug("Found event from ID " + id);
 
         if (id == null) {
+            logger.debug("    => ignoring null ID");
             return;
         }
 
@@ -220,14 +233,21 @@ public class ZibaseListener extends Thread {
 
         // then post update for all items that use this id
         for (String itemName : listOfItemNames) {
-            ZibaseBindingConfig config = ZibaseBinding.getBindingProvider()
-                    .getItemConfigByUniqueId(itemName + "_" + id);
-            logger.debug("Getting config for " + itemName + " (id = " + id + ") ");
+            Item item = ZibaseBinding.getBindingProvider().getItemByName(itemName);
+            
+            if(item!=null) {
+            
+                ZibaseBindingConfig config = ZibaseBinding.getBindingProvider()
+                        .getItemConfigByUniqueId(itemName + "_" + id);
+                logger.debug("Getting config for " + itemName + " (id = " + id + ") ");
 
-            if (config != null) {
-                org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase, zbResponseStr);
-                logger.debug("publishing update for " + itemName + " : " + value);
-                eventPubisher.postUpdate(itemName, value);
+                if (config != null) {
+                    synchronized(item) {
+                        org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase, zbResponseStr);
+                        logger.debug("publishing update for " + itemName + " : " + value);
+                        eventPubisher.postUpdate(itemName, value);
+                    }
+                }
             }
         }
     }
