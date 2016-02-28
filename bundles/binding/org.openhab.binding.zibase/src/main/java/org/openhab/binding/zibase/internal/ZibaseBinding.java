@@ -153,20 +153,28 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
 
     /**
      * @{inheritDoc}
-     *               TODO : handle all states (variables, calendars...)
+     * TODO : handle all states (variables, calendars...)
      */
     @Override
     protected void execute() {
         Collection<ZibaseBindingConfig> configs = ZibaseGenericBindingProvider.itemNameMap.values();
+       
+        // Zibase may not yet be ready, or may be disconnected
+        if(zibase == null) return;
+        
         for (ZibaseBindingConfig config : configs) {
 
             // Update receivers state
-            if (config.getClass() == ZibaseBindingConfigReceiver.class) {
+            if (config.getClass() == ZibaseBindingConfigReceiver.class || 
+                config.getClass() == ZibaseBindingConfigVariable.class) {
+                
                 State state = config.getOpenhabStateFromZibaseValue(zibase, null);
-                eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
-            } else if (config.getClass() == ZibaseBindingConfigVariable.class) {
-                State state = config.getOpenhabStateFromZibaseValue(zibase, null);
-                eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
+                
+                if(state != null) {
+                    eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
+                } else {
+                    logger.info("got null value from zibase for ID: " + config.getId());
+                }
             }
         }
     }
