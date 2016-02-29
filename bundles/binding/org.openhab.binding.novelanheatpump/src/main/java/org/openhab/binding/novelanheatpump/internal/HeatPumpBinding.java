@@ -193,7 +193,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             handleEventType(new StringType(formatHours(heatpumpValues[63])), HeatpumpCommandType.TYPE_HOURS_HETPUMP);
             handleEventType(new StringType(formatHours(heatpumpValues[64])), HeatpumpCommandType.TYPE_HOURS_HEATING);
             handleEventType(new StringType(formatHours(heatpumpValues[65])), HeatpumpCommandType.TYPE_HOURS_WARMWATER);
-            handleEventType(new StringType(formatHours(heatpumpValues[65])), HeatpumpCommandType.TYPE_HOURS_COOLING);
+            handleEventType(new StringType(formatHours(heatpumpValues[66])), HeatpumpCommandType.TYPE_HOURS_COOLING);
             handleEventType(new DecimalType((double) heatpumpValues[151] / 10),
                     HeatpumpCommandType.TYPE_THERMALENERGY_HEATING);
             handleEventType(new DecimalType((double) heatpumpValues[152] / 10),
