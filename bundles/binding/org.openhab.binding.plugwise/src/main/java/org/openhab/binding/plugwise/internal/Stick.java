@@ -189,7 +189,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
 
     /**
      * Initialize this device and open the serial port
-     * 
+     *
      * @throws PlugwiseInitializationException if port can not be opened
      */
     @SuppressWarnings("rawtypes")
@@ -252,7 +252,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 }
             }
             throw new PlugwiseInitializationException(
-                    "Serial port '" + port + "' could not be found. Available ports are:\n" + sb.toString());
+                    "Serial port '" + port + "' could not be found. Available ports are:\n" + sb);
         }
 
         // set up the Quartz jobs
@@ -367,7 +367,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                         readBuffer = null;
                     }
                 } catch (IOException e) {
-                    logger.debug("Error receiving data on serial port {}: {}", new String[] { port, e.getMessage() });
+                    logger.debug("Error receiving data on serial port {}: {}", port, e.getMessage());
                 }
                 break;
         }
@@ -376,10 +376,10 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     public void sendMessage(Message message) {
         if (message != null && isInitialised()) {
             try {
-                logger.debug("sendMessage: Stick send message: {}", message.toString());
+                logger.debug("Adding to sendQueue: {}", message);
                 sendQueue.put(message);
             } catch (InterruptedException e) {
-                logger.error("Error sending Plugwise message: {}", message.toString());
+                logger.error("Interrupted while adding to sendQueue: {}", message);
             }
         }
     }
@@ -396,7 +396,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
 
     /**
      * Parse a buffer into a Message and put it in the appropriate queue for further processing
-     * 
+     *
      * @param readBuffer - the string to parse
      */
     private void parseAndQueue(ByteBuffer readBuffer) {
@@ -421,10 +421,9 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                     String calculatedCRC = getCRCFromString(command + sequence + payload);
                     if (calculatedCRC.equals(CRC)) {
 
-                        logger.debug(
-                                "parseAndQueue: Parsing Plugwise protocol data unit: command:{} sequence:{} payload:{}",
-                                new String[] { MessageType.forValue(Integer.parseInt(command, 16)).toString(),
-                                        Integer.toString(Integer.parseInt(sequence, 16)), payload });
+                        logger.debug("Received message: command:{} sequence:{} payload:{}",
+                                MessageType.forValue(Integer.parseInt(command, 16)), Integer.parseInt(sequence, 16),
+                                payload);
 
                         Message theMessage = null;
 
@@ -462,10 +461,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                                         payload);
                                 break;
                             default:
-                                logger.debug(
-                                        "parseAndQueue: Received unrecognized Plugwise protocol data unit: command:{} sequence:{} payload:{}",
-                                        new String[] { command, Integer.toString(Integer.parseInt(sequence, 16)),
-                                                payload });
+                                logger.debug("Received unrecognized command:{}", command);
                                 break;
                         }
                         ;
@@ -473,24 +469,21 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                         if (theMessage != null) {
                             try {
                                 receiveLock.lock();
-                                logger.debug("parseAndQueue: {} messages before the message ({}) put in the receiveQ",
-                                        receivedQueue.size(), theMessage.toString());
                                 receivedQueue.put(theMessage);
                                 receiveLock.unlock();
                             } catch (InterruptedException e) {
                                 logger.error(
                                         "Error queueing Plugwise protocol data unit: command:{} sequence:{} payload:{}",
-                                        new String[] { MessageType.forValue(Integer.parseInt(command, 16)).toString(),
-                                                Integer.toString(Integer.parseInt(sequence, 16)), payload });
+                                        MessageType.forValue(Integer.parseInt(command, 16)),
+                                        Integer.parseInt(sequence, 16), payload);
                             }
                         }
                     } else {
-                        logger.error("Plugwise protocol CRC error: {} does not match {} in message",
-                                new String[] { calculatedCRC, CRC });
+                        logger.error("Plugwise protocol CRC error: {} does not match {} in message", calculatedCRC,
+                                CRC);
                     }
                 } else {
-                    logger.debug("parseAndQueue: Plugwise protocol header error: {} in message {}",
-                            new String[] { protocolHeader, response });
+                    logger.debug("Plugwise protocol header error: {} in message {}", protocolHeader, response);
                 }
             } else {
                 if (!response.contains("APSRequestNodeInfo")) {
@@ -535,8 +528,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                             case TIMEOUT:
 
                                 // we put the message back in the queue, without tagging it
-                                logger.error("Timeout sending Plugwise message : {}",
-                                        ((AcknowledgeMessage) message).toString());
+                                logger.error("Timeout while sending: {}", message);
 
                                 // traverse the sent Q for the
                                 Iterator<Message> messageIterator = sentQueue.iterator();
@@ -544,8 +536,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                                 while (messageIterator.hasNext()) {
                                     aMessage = messageIterator.next();
                                     if (aMessage.getSequenceNumber() == message.getSequenceNumber()) {
-                                        logger.debug("processMessage: timeout : removing a msg from the senTq: {}",
-                                                aMessage.toString());
+                                        logger.debug("Timeout: removing from the sentQueue: {}", aMessage);
                                         sentQueue.remove(aMessage);
                                         break;
                                     }
@@ -699,21 +690,16 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
             JobDataMap dataMap = context.getJobDetail().getJobDataMap();
             theStick = (Stick) dataMap.get("Stick");
 
-            // logger.debug("SendJob: Executing Quartz Send Job");
-
             if (theStick.isInitialised()) {
                 // loop through the send queue and send out all messages
-                logger.debug("SendJob: {} messages in the sendQ ", theStick.sendQueue.size());
                 Message message = theStick.sendQueue.poll();
                 while (message != null) {
                     sendMessage(message);
                     try {
                         Thread.sleep(theStick.interval);
                     } catch (InterruptedException e) {
-                        logger.debug("An exception occurred while putting the Plugwise SendJob thread to sleep : {}",
-                                e.getMessage());
+                        logger.debug("SendJob interrupted while sleeping");
                     }
-                    logger.debug("SendJob: in loop: {} messages in the sendQ ", theStick.sendQueue.size());
                     message = theStick.sendQueue.poll();
                 }
             }
@@ -724,38 +710,27 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                 if (message.getAttempts() < theStick.maxRetries) {
                     message.increaseAttempts();
 
-                    logger.debug(
-                            "sendMessage: Sending Plugwise protocol data unit: attempts: {} MAC:{} command:{} sequence:{} full HEX:{}",
-                            new String[] { Integer.toString(message.getAttempts()), message.getMAC(),
-                                    message.getType().toString(), Integer.toString(message.getSequenceNumber()),
-                                    message.toHexString() });
-
                     String packedString = PROTOCOL_HEADER + message.toHexString() + PROTOCOL_TRAILER;
                     ByteBuffer bytebuffer = ByteBuffer.allocate(packedString.length());
                     bytebuffer.put(packedString.getBytes());
 
                     bytebuffer.rewind();
-                    logger.debug("sendMessage: Locking the queues");
                     theStick.queueLock.lock();
 
                     try {
-                        logger.debug("sendMessage: Writing message to the outputchannel of the stick : {}",
-                                message.toString());
+                        logger.debug("Sending: {} as {}", message, message.toHexString());
                         theStick.outputChannel.write(bytebuffer);
                     } catch (IOException e) {
-                        logger.error("Error writing '{}' to serial port {}: {}",
-                                new String[] { packedString, theStick.port, e.getMessage() });
+                        logger.error("Error writing '{}' to serial port {}: {}", packedString, theStick.port,
+                                e.getMessage());
                     }
 
                     // wait for the confirmation message by inspecting the received Q
 
                     Message lastMessage = null;
 
-                    logger.debug("sendMessage: Entering loop for lastMessage");
-
                     while (lastMessage == null) {
 
-                        // logger.debug("sendMessage: Locking the Receive queues");
                         theStick.receiveLock.lock();
                         Iterator<Message> messageIterator = theStick.receivedQueue.iterator();
                         while (messageIterator.hasNext()) {
@@ -764,23 +739,20 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                             if (aMessage.getType().equals(MessageType.ACKNOWLEDGEMENT)) {
                                 if (!((AcknowledgeMessage) aMessage).isExtended()) {
                                     lastMessage = aMessage;
-                                    logger.debug("sendMessage: Removing an ACK from the RecQ: {}",
-                                            lastMessage.toString());
+                                    logger.debug("Removing from receivedQueue: {}", lastMessage);
                                     theStick.receivedQueue.remove(lastMessage);
                                     break;
                                 }
                             }
                         }
-                        // logger.debug("sendMessage: Unlocking the Receive queues");
                         theStick.receiveLock.unlock();
                     }
-                    logger.debug("sendMessage: Exiting loop for lastMessage");
 
                     AcknowledgeMessage ack = (AcknowledgeMessage) lastMessage;
 
                     if (!ack.isSuccess()) {
                         if (ack.isError()) {
-                            logger.error("Error sending Plugwise message: Negative ACK: {}", packedString);
+                            logger.error("Error sending: Negative ACK: {}", packedString);
                         }
 
                     } else {
@@ -789,23 +761,20 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
 
                         // place the sent message in the sent Q
                         try {
-                            logger.debug("sendMessage: putting message in the senTq : {}", message.toString());
+                            logger.debug("Adding to sentQueue: {}", message);
                             if (theStick.sentQueue.size() == maxBufferSize) {
                                 // For some @#$@#$ reason plugwise devices, or the Stick, does not send responses
                                 // to Requests. They clog the sentQueue. Let's flush some part of the queue
                                 Message someMessage = theStick.sentQueue.poll();
-                                logger.debug("Flushing a message from the sentQueue: {}", someMessage);
+                                logger.debug("Flushing from sentQueue: {}", someMessage);
 
                             }
                             theStick.sentQueue.put(message);
-                            logger.debug("sendMessage: there are now {} msg in the senTq", theStick.sentQueue.size());
-                            // logger.debug("senTq is now {}",theStick.sentQueue);
                         } catch (InterruptedException e) {
-                            logger.error("Error storing Plugwise message in the sent queue: {}", message.toString());
+                            logger.error("Interrupted while adding to sentQueue: {}", message);
                         }
                     }
 
-                    logger.debug("sendMessage: Unlocking the queues");
                     theStick.queueLock.unlock();
                     return true;
 
@@ -814,9 +783,8 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                     // we give up, and to a network reset
                     logger.error(
                             "Giving finally up on Plugwise protocol data unit after attempts: {} MAC:{} command:{} sequence:{} payload:{}",
-                            new String[] { Integer.toString(message.getAttempts()), message.getMAC(),
-                                    message.getType().toString(), Integer.toString(message.getSequenceNumber()),
-                                    message.getPayLoad() });
+                            message.getAttempts(), message.getMAC(), message.getType(), message.getSequenceNumber(),
+                            message.getPayLoad());
                 }
             }
             return false;
@@ -900,11 +868,8 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
             theStick = (Stick) dataMap.get("Stick");
 
             if (theStick.isInitialised()) {
-                logger.debug("ProcessMessageJob: Locking the queues");
                 theStick.queueLock.lock();
-                logger.debug("ProcessMessageJob: there are {} msg in the receivedQ", theStick.receivedQueue.size());
                 Message message = theStick.receivedQueue.poll();
-                logger.debug("ProcessMessageJob: Unlocking the queues");
                 theStick.queueLock.unlock();
 
                 if (message != null) {
@@ -929,7 +894,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
                         while (messageIterator.hasNext()) {
                             Message aMessage = messageIterator.next();
                             if (aMessage.getSequenceNumber() == message.getSequenceNumber()) {
-                                logger.debug("execute: removing a msg from the senTq: {}", aMessage.toString());
+                                logger.debug("Removing from sentQueue: {}", aMessage);
                                 theStick.sentQueue.remove(aMessage);
                                 break;
                             }
