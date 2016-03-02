@@ -3226,7 +3226,16 @@
 			<Label lang="en">Door &amp; Window Sensor</Label>
 			<ConfigFile>dlink/dch-z110.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>000D</Id>
+            </Reference>
+            <Model>DCH-Z120</Model>
+            <Label lang="en">Battery Motion Sensor</Label>
+            <ConfigFile>dlink/dchz120.xml</ConfigFile>
+        </Product>
+  	</Manufacturer>
 	<Manufacturer>
 		<Id>020e</Id>
 		<Name>Domitech</Name>
