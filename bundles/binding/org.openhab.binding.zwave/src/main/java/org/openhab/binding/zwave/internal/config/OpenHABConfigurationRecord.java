@@ -65,7 +65,7 @@ public class OpenHABConfigurationRecord {
 
     /**
      * Constructor for a record.
-     * 
+     *
      * @param domain
      *            Domain in which this record sits. The domain allows the system
      *            to identify a record in a multitierd array. If the domain
@@ -88,7 +88,7 @@ public class OpenHABConfigurationRecord {
 
     /**
      * Constructor for top level domain. This constructor is intended for use with top level domains
-     * 
+     *
      * @param domain
      *            Domain in which this record sits. The domain allows the system
      *            to identify a record in a multitierd array. If the domain
@@ -105,7 +105,7 @@ public class OpenHABConfigurationRecord {
     /**
      * Adds an action to the record. An action will be displayed in the GUI with
      * a button that the user can press.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -119,7 +119,7 @@ public class OpenHABConfigurationRecord {
 
     /**
      * Adds the value to the record
-     * 
+     *
      * @param key
      * @param value
      */

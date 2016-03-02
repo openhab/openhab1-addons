@@ -13,7 +13,7 @@ import org.openhab.core.library.types.UpDownType;
 
 /**
  * Converts from {@link UpDownType} command to a Z-Wave value.
- * 
+ *
  * @author Ben Jones
  * @since 1.4.0
  */

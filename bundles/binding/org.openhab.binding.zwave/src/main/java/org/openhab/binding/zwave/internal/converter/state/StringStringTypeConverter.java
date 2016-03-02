@@ -12,7 +12,7 @@ import org.openhab.core.library.types.StringType;
 
 /**
  * Converts from a {@link String} to a {@link StringType}
- * 
+ *
  * @author Ben Jones
  * @since 1.4.0
  */

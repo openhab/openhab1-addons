@@ -13,7 +13,7 @@ import org.openhab.core.library.types.DecimalType;
 /**
  * Converts from a {@link Integer} to a {@link DecimalType}
  * Only processes for the BATTERY command class.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

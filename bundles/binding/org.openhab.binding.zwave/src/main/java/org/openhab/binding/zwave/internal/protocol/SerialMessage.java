@@ -84,7 +84,7 @@ public class SerialMessage {
      * to indicate that a transaction is complete. The priority indicates the
      * priority to send the message with. Higher priority messages are taken from
      * the send queue earlier than lower priority messages.
-     * 
+     *
      * @param messageClass the message class to use
      * @param messageType the message type to use
      * @param expectedReply the expected Reply for this messaage
@@ -101,7 +101,7 @@ public class SerialMessage {
      * to indicate that a transaction is complete. The priority indicates the
      * priority to send the message with. Higher priority messages are taken from
      * the send queue earlier than lower priority messages.
-     * 
+     *
      * @param nodeId the node the message is destined for
      * @param messageClass the message class to use
      * @param messageType the message type to use
@@ -124,7 +124,7 @@ public class SerialMessage {
     /**
      * Constructor. Creates a new instance of the SerialMessage class from a
      * specified buffer.
-     * 
+     *
      * @param buffer the buffer to create the SerialMessage from.
      */
     public SerialMessage(byte[] buffer) {
@@ -134,7 +134,7 @@ public class SerialMessage {
     /**
      * Constructor. Creates a new instance of the SerialMessage class from a
      * specified buffer, and subsequently sets the node ID.
-     * 
+     *
      * @param nodeId the node the message is destined for
      * @param buffer the buffer to create the SerialMessage from.
      */
@@ -162,7 +162,7 @@ public class SerialMessage {
 
     /**
      * Converts a byte array to a hexadecimal string representation
-     * 
+     *
      * @param bb the byte array to convert
      * @return string the string representation
      */
@@ -176,7 +176,7 @@ public class SerialMessage {
 
     /**
      * Calculates a checksum for the specified buffer.
-     * 
+     *
      * @param buffer the buffer to calculate.
      * @return the checksum value.
      */
@@ -203,7 +203,7 @@ public class SerialMessage {
 
     /**
      * Gets the SerialMessage as a byte array.
-     * 
+     *
      * @return the message
      */
     public byte[] getMessageBuffer() {
@@ -252,7 +252,7 @@ public class SerialMessage {
      * - the message type is equal
      * - the expected reply is equal
      * - the payload is equal
-     * 
+     *
      * @param obj the object to compare this message with.
      */
     @Override
@@ -284,7 +284,7 @@ public class SerialMessage {
 
     /**
      * Gets the message type (Request / Response).
-     * 
+     *
      * @return the message type
      */
     public SerialMessageType getMessageType() {
@@ -293,7 +293,7 @@ public class SerialMessage {
 
     /**
      * Gets the message class. This is the function it represents.
-     * 
+     *
      * @return
      */
     public SerialMessageClass getMessageClass() {
@@ -302,7 +302,7 @@ public class SerialMessage {
 
     /**
      * Returns the Node Id for / from this message.
-     * 
+     *
      * @return the messageNode
      */
     public int getMessageNode() {
@@ -311,7 +311,7 @@ public class SerialMessage {
 
     /**
      * Gets the message payload.
-     * 
+     *
      * @return the message payload
      */
     public byte[] getMessagePayload() {
@@ -321,7 +321,7 @@ public class SerialMessage {
     /**
      * Gets a byte of the message payload at the specified index.
      * The byte is returned as an integer between 0x00 (0) and 0xFF (255).
-     * 
+     *
      * @param index the index of the byte to return.
      * @return an integer between 0x00 (0) and 0xFF (255).
      */
@@ -331,7 +331,7 @@ public class SerialMessage {
 
     /**
      * Sets the message payload.
-     * 
+     *
      * @param messagePayload
      */
     public void setMessagePayload(byte[] messagePayload) {
@@ -340,7 +340,7 @@ public class SerialMessage {
 
     /**
      * Gets the transmit options for this SendData Request.
-     * 
+     *
      * @return the transmitOptions
      */
     public int getTransmitOptions() {
@@ -349,7 +349,7 @@ public class SerialMessage {
 
     /**
      * Sets the transmit options for this SendData Request.
-     * 
+     *
      * @param transmitOptions the transmitOptions to set
      */
     public void setTransmitOptions(int transmitOptions) {
@@ -358,7 +358,7 @@ public class SerialMessage {
 
     /**
      * Gets the callback ID for this SendData Request.
-     * 
+     *
      * @return the callbackId
      */
     public int getCallbackId() {
@@ -367,7 +367,7 @@ public class SerialMessage {
 
     /**
      * Sets the callback ID for this SendData Request
-     * 
+     *
      * @param callbackId the callbackId to set
      */
     public void setCallbackId(int callbackId) {
@@ -376,7 +376,7 @@ public class SerialMessage {
 
     /**
      * Gets the expected reply for this message.
-     * 
+     *
      * @return the expectedReply
      */
     public SerialMessageClass getExpectedReply() {
@@ -385,7 +385,7 @@ public class SerialMessage {
 
     /**
      * Returns the priority of this Serial message.
-     * 
+     *
      * @return the priority
      */
     public SerialMessagePriority getPriority() {
@@ -394,7 +394,7 @@ public class SerialMessage {
 
     /**
      * Sets the priority of this Serial message.
-     * 
+     *
      * @param p the new priority
      */
     public void setPriority(SerialMessagePriority p) {
@@ -410,7 +410,7 @@ public class SerialMessage {
 
     /**
      * Indicates that the transaction for the incoming message is canceled by a command class
-     * 
+     *
      * @return the transactionCanceled
      */
     public boolean isTransactionCanceled() {
@@ -434,7 +434,7 @@ public class SerialMessage {
 
     /**
      * Returns true is there is an ack pending from the controller
-     * 
+     *
      * @return true if still waiting on the ack
      */
     public boolean isAckPending() {
@@ -457,7 +457,7 @@ public class SerialMessage {
     /**
      * Serial message type enumeration. Indicates whether the message
      * is a request or a response.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -487,7 +487,7 @@ public class SerialMessage {
      * Normally these are GET commands, but the system overrides the
      * priority to the lowest so they don't cause any impact on the
      * system.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @author Chris Jackson
      * @since 1.3.0
@@ -504,7 +504,7 @@ public class SerialMessage {
     /**
      * Serial message class enumeration. Enumerates the different messages
      * that can be exchanged with the controller.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -607,7 +607,7 @@ public class SerialMessage {
 
         /**
          * Lookup function based on the generic device class code.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the generic device class.
          */
@@ -620,7 +620,7 @@ public class SerialMessage {
 
         /**
          * Returns the enumeration key.
-         * 
+         *
          * @return the key
          */
         public int getKey() {
@@ -629,7 +629,7 @@ public class SerialMessage {
 
         /**
          * Returns the enumeration label.
-         * 
+         *
          * @return the label
          */
         public String getLabel() {
@@ -640,7 +640,7 @@ public class SerialMessage {
     /**
      * Comparator Class. Compares two serial messages with each other based on
      * node status (awake / sleep), priority and sequence number.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -650,7 +650,7 @@ public class SerialMessage {
 
         /**
          * Constructor. Creates a new instance of the SerialMessageComparator class.
-         * 
+         *
          * @param controller the {@link ZWaveController to use}
          */
         public SerialMessageComparator(ZWaveController controller) {
@@ -660,7 +660,7 @@ public class SerialMessage {
         /**
          * Compares a serial message to another serial message.
          * Used by the priority queue to order messages.
-         * 
+         *
          * @param arg0 the first serial message to compare the other to.
          * @param arg1 the other serial message to compare the first one to.
          */

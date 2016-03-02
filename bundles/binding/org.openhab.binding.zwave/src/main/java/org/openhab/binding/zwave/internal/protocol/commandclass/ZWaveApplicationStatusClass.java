@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Application Status command class.
- * 
+ *
  * @author Dan Cunningham
  * @since 1.6.0
  */
@@ -49,7 +49,7 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveApplicationStatusClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to

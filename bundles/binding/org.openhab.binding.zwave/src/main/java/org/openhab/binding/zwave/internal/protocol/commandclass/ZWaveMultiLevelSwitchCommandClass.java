@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * Z-Wave dimmers have a range from 0 (off) to 99 (on). 255 (0xFF) means restore
  * to previous level. We translate 99 to 100%, so it's impossible to set
  * the level to 99%.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -62,7 +62,7 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveMultiLevelSwitchCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -127,7 +127,7 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SWITCH_MULTILEVEL_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -157,7 +157,7 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SWITCH_MULTILEVEL_SET command
-     * 
+     *
      * @param the level to set. 0 is mapped to off, > 0 is mapped to on.
      * @return the serial message
      */
@@ -174,7 +174,7 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage stopLevelChangeMessage() {

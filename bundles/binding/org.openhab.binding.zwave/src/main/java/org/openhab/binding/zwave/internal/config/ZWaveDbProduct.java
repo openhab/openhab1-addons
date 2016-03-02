@@ -18,7 +18,7 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
  * Implements the product class for the XML product database
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *

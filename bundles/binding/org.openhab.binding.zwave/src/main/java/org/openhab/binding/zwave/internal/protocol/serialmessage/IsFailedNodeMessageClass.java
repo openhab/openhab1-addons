@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class processes a serial message from the zwave controller.
  * It queries the controller to see if the node is on its 'failed nodes' list.
- * 
+ *
  * @author Wez Hunter
  * @since 1.6.0
  */

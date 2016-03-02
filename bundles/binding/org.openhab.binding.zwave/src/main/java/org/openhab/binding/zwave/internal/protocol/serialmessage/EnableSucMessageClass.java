@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class processes a serial message to enable or disable the controller
  * SUC/SIS functionality
- * 
+ *
  * @author Chris Jackson
  * @since 1.5.0
  */

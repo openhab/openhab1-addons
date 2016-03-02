@@ -14,7 +14,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
  * ZWave Command Class event. This event is fired when a command class
  * receives a value from the node. The event can be subclasses to add
  * additional information to the event.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -25,7 +25,7 @@ public class ZWaveCommandClassValueEvent extends ZWaveEvent {
 
     /**
      * Constructor. Creates a new instance of the ZWaveCommandClassValueEvent class.
-     * 
+     *
      * @param nodeId the nodeId of the event
      * @param endpoint the endpoint of the event.
      * @param commandClass the command class that fired the ZWaveCommandClassValueEvent;
@@ -40,7 +40,7 @@ public class ZWaveCommandClassValueEvent extends ZWaveEvent {
 
     /**
      * Gets the command class that fired the ZWaveCommandClassValueEvent;
-     * 
+     *
      * @return the command class.
      */
     public CommandClass getCommandClass() {
@@ -49,7 +49,7 @@ public class ZWaveCommandClassValueEvent extends ZWaveEvent {
 
     /**
      * Gets the value for the event.
-     * 
+     *
      * @return the value.
      */
     public Object getValue() {
