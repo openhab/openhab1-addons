@@ -180,8 +180,16 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
         return null;
     }
 
+    protected void addBindingProvider(SamsungAcBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SamsungAcBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         Enumeration<String> keys = config.keys();

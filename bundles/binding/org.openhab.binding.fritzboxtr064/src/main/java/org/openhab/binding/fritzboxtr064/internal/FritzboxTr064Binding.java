@@ -75,7 +75,7 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
 
     /**
      * Called by the SCR to activate the component with its configuration read from CAS
-     * 
+     *
      * @param bundleContext BundleContext of the Bundle that defines this component
      * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
      */
@@ -218,6 +218,14 @@ public class FritzboxTr064Binding extends AbstractActiveBinding<FritzboxTr064Bin
                                                                           // needed for finding item map
             }
         }
+    }
+
+    protected void addBindingProvider(FritzboxTr064BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(FritzboxTr064BindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
 }

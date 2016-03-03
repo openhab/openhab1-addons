@@ -159,10 +159,10 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Convert OpenHAB commmand to onkyo receiver command.
-     * 
+     *
      * @param command
      * @param cmdTemplate
-     * 
+     *
      * @return
      */
     private String convertOpenHabCommandToDeviceCommand(Command command, String cmdTemplate) {
@@ -187,9 +187,9 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
     /**
      * Find the first matching {@link OnkyoBindingProvider} according to
      * <code>itemName</code>.
-     * 
+     *
      * @param itemName
-     * 
+     *
      * @return the matching binding provider or <code>null</code> if no binding
      *         provider could be found
      */
@@ -218,8 +218,16 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
         return firstMatchingProvider;
     }
 
+    protected void addBindingProvider(OnkyoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OnkyoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -307,7 +315,7 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Find receiver from device caache by ip address.
-     * 
+     *
      * @param ip
      * @return
      */
@@ -375,10 +383,10 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Convert receiver value to OpenHAB state.
-     * 
+     *
      * @param itemType
      * @param data
-     * 
+     *
      * @return
      */
     private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, String data) {
@@ -417,9 +425,9 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
 
     /**
      * Initialize item value. Method send query to receiver if init query is configured to binding item configuration
-     * 
+     *
      * @param itemType
-     * 
+     *
      */
     private void initializeItem(String itemName) {
         for (OnkyoBindingProvider provider : providers) {

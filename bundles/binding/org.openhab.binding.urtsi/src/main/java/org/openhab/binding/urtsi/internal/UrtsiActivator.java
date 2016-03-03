@@ -28,9 +28,7 @@ public final class UrtsiActivator implements BundleActivator {
      */
     @Override
     public void start(BundleContext bc) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Somfy URTSI II binding has been started.");
-        }
+        logger.debug("Somfy URTSI II binding has been started.");
     }
 
     /**
@@ -38,9 +36,7 @@ public final class UrtsiActivator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext bc) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Somfy URTSI II binding has been stopped.");
-        }
+        logger.debug("Somfy URTSI II binding has been stopped.");
     }
 
 }

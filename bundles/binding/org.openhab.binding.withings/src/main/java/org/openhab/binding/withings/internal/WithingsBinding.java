@@ -174,6 +174,14 @@ public class WithingsBinding extends AbstractActiveBinding<WithingsBindingProvid
         }
     }
 
+    protected void addBindingProvider(WithingsBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(WithingsBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config != null) {

@@ -29,7 +29,6 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.exec.ExecBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
@@ -386,10 +385,14 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider>imple
 
     }
 
-    @Override
-    public void addBindingProvider(BindingProvider provider) {
+    protected void addBindingProvider(ExecBindingProvider provider) {
         super.addBindingProvider(provider);
 
         setProperlyConfigured(true);
     }
+
+    protected void removeBindingProvider(ExecBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
 }

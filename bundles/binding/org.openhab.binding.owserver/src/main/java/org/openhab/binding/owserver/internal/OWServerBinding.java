@@ -242,10 +242,10 @@ public class OWServerBinding extends AbstractActiveBinding<OWServerBindingProvid
      * Returns a {@link State} which is inherited from the {@link Item}s
      * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
      * <code>item</code> is <code>null</code> the {@link StringType} is used.
-     * 
+     *
      * @param itemType
      * @param transformedResponse
-     * 
+     *
      * @return a {@link State} which type is inherited by the {@link TypeParser}
      *         or a {@link StringType} if <code>item</code> is <code>null</code>
      */
@@ -266,6 +266,14 @@ public class OWServerBinding extends AbstractActiveBinding<OWServerBindingProvid
             logger.debug("Couldn't create state of type '{}' for value '{}'", itemType, transformedResponse);
             return StringType.valueOf(transformedResponse);
         }
+    }
+
+    protected void addBindingProvider(OWServerBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(OWServerBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**

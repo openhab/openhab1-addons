@@ -95,7 +95,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         this.calDavLoader.addListener(this);
     }
 
-    public void unsetCalDavLoader() {
+    public void unsetCalDavLoader(CalDavLoader calDavLoader) {
         this.calDavLoader.removeListener(this);
         this.calDavLoader = null;
     }
@@ -106,6 +106,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     @Override
     public void deactivate() {
+    }
+
+    protected void addBindingProvider(CalDavBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(CalDavBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     @Override

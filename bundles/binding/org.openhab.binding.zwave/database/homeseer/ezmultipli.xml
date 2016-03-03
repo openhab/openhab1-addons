@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>EZMultiPli</Model>
+	<Label lang="en">Multi Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x5E</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x33</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x5A</id></Class>
+		<Class><id>0x7A</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x20</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">OnTime</Label>
+			<Help lang="en"><![CDATA[
+OnTime sets the number of minutes that the lights stay on when motion has not been detected.<BR/>
+A value of 0 is a special mode where the lights are constantly sent a command to turn them on whenever motion is detected. EZMultiPli will NOT turn the lights off in this mode.<BR/>
+Recommended values:<BR />
+5 min for hallways<BR/>
+20 min for an office environment<BR/>
+60 min for a library, office or other room where someone may be sitting still for a long time.
+			]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>int</Type>
+			<Minimum>-1</Minimum>
+			<Maximum>99</Maximum>
+			<Default>-1</Default>
+			<Size>1</Size>
+			<Label lang="en">OnLevel</Label>
+			<Help lang="en"><![CDATA[
+OnLevel is the value sent by the Z-Wave BASIC_SET command to all Association Group 2 nodes when motion is detected.<BR/>
+A value of 0 will turn the lights off (not recommended).<BR/>
+A value between 1 and 99 will set the dim level to between 1% and 99% (99% is full on).<BR/>
+A value of -1 will turn the light “on” which depends on the device but most will set the dim level to the last dim setting.<BR/>
+			]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>60</Default>
+			<Size>1</Size>
+			<Label lang="en">LiteMin</Label>
+			<Help lang="en"><![CDATA[
+A Luminance report is sent to the system controller every LiteMin minutes.<BR/>
+A value of zero turns this mode off. Luminance values can still be obtained at any time by the home control application in this mode.
+			]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>4</Index>
+			<Type>int</Type>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Default>60</Default>
+			<Size>1</Size>
+			<Label lang="en">TempMin</Label>
+			<Help lang="en"><![CDATA[
+A Temperature report is sent to the controller every TempMin minutes.<BR/>
+A value of zero turns this mode off. Temperature values can still be obtained at any time by polling the status of the temperature sensor.
+			]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>int</Type>
+			<Minimum>-127</Minimum>
+			<Maximum>128</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">TempAdj</Label>
+			<Help lang="en"><![CDATA[
+TempAdj is a twos-complement number that is used to adjust the temperature reading to make it more accurate. The value is in tenths of degree Fahrenheit. The temperature reading can be adjusted by +12.7F to -12.8F. A value of 1 will adjust the temperature reading by +0.1F. A value of -1 will adjust the temperature by -0.1F. A value of 123 will adjust the temperature by +12.3F. 
+			]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">LIFELINE</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en"><![CDATA[
+This group is normally automatically assigned to the Z-Wave system controller when EZMultiPli is added to the ZWave network. All Notification command class reports (motion detection) are sent to the node assigned to this group. Advanced lighting control should be handled by a home control application based on these reports.			
+			]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">BASIC</Label>
+			<SetToController>true</SetToController>
+			<Help lang="en"><![CDATA[
+This group is used to directly turn lights on or off when motion is detected. Up to four (4) Z-Wave devices can be associated in this group. EZMultiPli will send a BASIC ON command to all devices that are associated in this group. Note that the Z-Wave devices in this group must be within direct range (about 30’) of EZMultiPli. Control of nodes that are further away or blocked by metal or concrete walls should rely on the Z-Wave system controller and the home-control application for reliable operation.
+			]]></Help>
+		</Group>
+	</Associations>
+</Product>
+

@@ -44,6 +44,14 @@ public class AKM868Binding extends AbstractActiveBinding<AKM868BindingProvider>
         packetlistener = new AKM868PacketReceiver(this);
     }
 
+    protected void addBindingProvider(AKM868BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(AKM868BindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void activate() {
 

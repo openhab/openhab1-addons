@@ -19,16 +19,16 @@ import org.openhab.binding.ecobee.messages.AbstractFunction;
 public interface EcobeeActionProvider {
     /**
      * Call the specified Ecobee function.
-     * 
+     *
      * Requests the named Ecobee function, associated with the Item be invoked. Callers can pass an AbstractFunction to
      * be
      * called.
-     * 
-     * @param itemName
-     *            the name of of the openHAB Item to which the Action invocation should be delivered.
+     *
+     * @param selection
+     *            the selection of thermostat(s) against which the Action invocation should be performed.
      * @param function
      *            the function to call using the specified itemName.
      * @return true if the function call was performed.
      */
-    public boolean callEcobee(String itemName, AbstractFunction function);
+    public boolean callEcobee(String selection, AbstractFunction function);
 }

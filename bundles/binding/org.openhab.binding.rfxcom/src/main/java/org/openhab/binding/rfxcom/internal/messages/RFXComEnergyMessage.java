@@ -53,8 +53,8 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
     private static float WATTS_TO_AMPS_CONVERSION_FACTOR = 230F;
 
     public enum SubType {
-        ELEC1(0),
-        ELEC2(1),
+        ELEC2(1), // CM119/160
+        ELEC3(2), // CM180
 
         UNKNOWN(255);
 
@@ -77,7 +77,7 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
             RFXComValueSelector.SIGNAL_LEVEL, RFXComValueSelector.BATTERY_LEVEL, RFXComValueSelector.COMMAND,
             RFXComValueSelector.INSTANT_AMPS, RFXComValueSelector.TOTAL_AMP_HOURS);
 
-    public SubType subType = SubType.ELEC1;
+    public SubType subType = SubType.ELEC2;
     public int sensorId = 0;
     public byte count = 0;
     public double instantAmps = 0;
@@ -139,7 +139,7 @@ public class RFXComEnergyMessage extends RFXComBaseMessage {
 
     @Override
     public byte[] decodeMessage() {
-        byte[] data = new byte[17];
+        byte[] data = new byte[18];
 
         data[0] = 0x11;
         data[1] = RFXComBaseMessage.PacketType.ENERGY.toByte();

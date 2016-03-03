@@ -233,8 +233,16 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
         updateCreditMonitors();
     }
 
+    protected void addBindingProvider(MaxCulBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(MaxCulBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

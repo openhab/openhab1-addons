@@ -20,5 +20,5 @@
    <property name="event.topics" type="String" value="openhab/command/*"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
-   <reference bind="addBindingProvider" cardinality="1..1" interface="org.openhab.binding.maxcube.MaxCubeBindingProvider" name="MaxCubeBindingProvider" policy="static" unbind="removeBindingProvider"/>
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.maxcube.MaxCubeBindingProvider" name="MaxCubeBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>

@@ -89,7 +89,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
 
     /**
      * For the given item, get the bticino binding configuration
-     * 
+     *
      * @param itemName
      * @return
      * @throws Exception
@@ -113,7 +113,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
     /**
      * Returns the BticinoBindingConfig(s) associated with the who / where
      * config
-     * 
+     *
      * @param who
      * @param where
      * @return
@@ -161,8 +161,16 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>imple
         }
     }
 
+    protected void addBindingProvider(BticinoBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(BticinoBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
         if (!m_binding_initialized) {

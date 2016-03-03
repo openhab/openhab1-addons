@@ -257,8 +257,16 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
         }
     }
 
+    protected void addBindingProvider(FHTBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(FHTBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -590,7 +598,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
     /**
      * It possible to chain up to 8 commands together to send to the CUL. Lists
      * with more than 8 commands will be discarded silently.
-     * 
+     *
      * @param deviceAddress
      * @param commands
      */

@@ -18,5 +18,5 @@
    <property name="service.pid" type="String" value="org.openhab.nibeheatpump"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
-   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider" name="nibeheatpumpBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.nibeheatpump.NibeHeatPumpBindingProvider" name="NibeHeatPumpBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>

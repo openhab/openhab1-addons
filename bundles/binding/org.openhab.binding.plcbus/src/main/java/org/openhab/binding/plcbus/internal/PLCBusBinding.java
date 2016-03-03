@@ -129,6 +129,14 @@ public class PLCBusBinding extends AbstractBinding<PLCBusBindingProvider>impleme
         return null;
     }
 
+    protected void addBindingProvider(PLCBusBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(PLCBusBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 

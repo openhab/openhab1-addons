@@ -136,10 +136,10 @@ public abstract class AbstractEBusConnector extends Thread {
     public void run() {
 
         // create new thread pool to send received telegrams
-        threadPool = Executors.newCachedThreadPool();
+        threadPool = Executors.newCachedThreadPool(new WorkerThreadFactory("ebus-send-receive"));
 
         int read = -1;
-
+        
         // loop until interrupt or reconnector count is -1 (to many retries)
         while (!isInterrupted() || reConnectCounter == -1) {
             try {

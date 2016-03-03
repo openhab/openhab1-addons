@@ -11,6 +11,7 @@
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0"
 	activate="activate" deactivate="deactivate" 
+	immediate="true"
 	name="org.openhab.binding.anel.binding">
 	<implementation class="org.openhab.binding.anel.internal.AnelBinding" />
 

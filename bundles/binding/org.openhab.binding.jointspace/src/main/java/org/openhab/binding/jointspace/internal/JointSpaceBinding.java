@@ -95,7 +95,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 
     /**
      * @{inheritDoc
-     * 
+     *
      *              Calls @see updateItemState() for all items with a "POLL"
      *              command in the configuration
      */
@@ -137,7 +137,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
     /**
      * Parses an ambilight command and extracts the layers. for example
      * "ambilight[layer1[left]]" will return a list {"layer1","left"}
-     * 
+     *
      * @param command
      *            ambilight command string. For example "ambilight[layer1].color
      * @return a stringlist containing all the layers present in the command
@@ -162,7 +162,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
      * ambilight pixel specified in [...] - "volume" returning a DecimalType -
      * "volume.mute" returning 'On' or 'Off' - "source" returning a String with
      * selected source (e.g. "hdmi1", "tv", etc)
-     * 
+     *
      * @param itemName
      * @param tvCommand
      */
@@ -280,7 +280,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
     /**
      * Gets the color for a specified ambilight pixel from the host and tries to
      * parse the returned json value
-     * 
+     *
      * @param host
      *            hostname including port to query the jointspace api.
      * @param layers
@@ -327,7 +327,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 
     /**
      * Polls the source from the tv and returns it as a string
-     * 
+     *
      * @param host
      * @return a string containig the "source" returned by the TV, or null if
      *         unsuccesfull
@@ -354,7 +354,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 
     /**
      * Sets the current source at the TV
-     * 
+     *
      * @param host
      * @param source
      *            string identifying the desired source. valid values are
@@ -379,7 +379,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
      * (mute will not be affected) For commands of type IncreaseDecreaseType,
      * the current value (polled from TV( for volume will be
      * incremented/decremented
-     * 
+     *
      * @param host
      * @param command
      */
@@ -419,7 +419,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
     /**
      * Sets the ambilight color specified in command (which must be an HSBType
      * until now) for the pixel(s) specified with @see layers.
-     * 
+     *
      * @param host
      * @param command
      *            HSBType command to set the color
@@ -472,7 +472,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
      * http
      * ://jointspace.sourceforge.net/projectdata/documentation/jasonApi/1/doc
      * /API-Method-input-key-POST.html
-     * 
+     *
      * @param key
      * @param host
      */
@@ -491,7 +491,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 
     /**
      * Function to query the TV Volume
-     * 
+     *
      * @param host
      * @return struct containing all given information about current volume
      *         settings (volume, mute, min, max) @see volumeConfig
@@ -523,11 +523,11 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
     /**
      * Sets the mode of the ambilight processing mode. Manipulation the pixel
      * values cannot be done in "internal" mode
-     * 
+     *
      * For more details see:
      * http://jointspace.sourceforge.net/projectdata/documentation
      * /jasonApi/1/doc/API-Method-ambilight-mode-POST.html
-     * 
+     *
      * @param mode
      *            possible modes are: "internal", "manual", "expert".
      * @param host
@@ -542,8 +542,16 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
         HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
     }
 
+    protected void addBindingProvider(JointSpaceBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(JointSpaceBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

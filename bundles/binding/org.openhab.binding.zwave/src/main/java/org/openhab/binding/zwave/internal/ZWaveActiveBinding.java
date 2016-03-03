@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveActiveBinding Class. Polls Z-Wave nodes frequently,
  * responds to item commands, and also handles events coming
  * from the Z-Wave controller.
- * 
+ *
  * @author Victor Belov
  * @author Brian Crosby
  * @author Jan-Willem Spuij
@@ -127,7 +127,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
     /**
      * Called, if a single binding has changed. The given item could have been
      * added or removed. We refresh the binding in case it's in the done stage.
-     * 
+     *
      * @param provider the binding provider where the binding has changed
      * @param itemName the item name for which the binding has changed
      */
@@ -278,7 +278,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
     /**
      * Initialises the binding. This is called after the 'updated' method
      * has been called and all configuration has been passed.
-     * 
+     *
      * @throws ConfigurationException
      */
     private void initialise() throws ConfigurationException {
@@ -310,6 +310,14 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
             this.setProperlyConfigured(false);
             throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
         }
+    }
+
+    protected void addBindingProvider(ZWaveBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(ZWaveBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
     }
 
     /**
@@ -408,7 +416,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
     /**
      * Returns the port value.
-     * 
+     *
      * @return
      */
     public String getPort() {
@@ -417,7 +425,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
     /**
      * Event handler method for incoming Z-Wave events.
-     * 
+     *
      * @param event the incoming Z-Wave event.
      */
     @Override
@@ -449,7 +457,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
     /**
      * Handle an incoming Command class value event
-     * 
+     *
      * @param event the incoming Z-Wave event.
      */
     private void handleZWaveCommandClassValueEvent(ZWaveCommandClassValueEvent event) {

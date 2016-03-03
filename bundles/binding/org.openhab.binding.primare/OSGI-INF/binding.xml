@@ -24,7 +24,7 @@
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="addBindingProvider" cardinality="1..n"
-		interface="org.openhab.binding.primare.PrimareBindingProvider" name="primareBindingProvider"
+		interface="org.openhab.binding.primare.PrimareBindingProvider" name="PrimareBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
 	
 </scr:component>

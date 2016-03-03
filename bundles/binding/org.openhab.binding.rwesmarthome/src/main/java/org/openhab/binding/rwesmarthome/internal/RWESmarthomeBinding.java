@@ -66,6 +66,14 @@ public class RWESmarthomeBinding extends AbstractActiveBinding<RWESmarthomeBindi
         setProperlyConfigured(true);
     }
 
+    protected void addBindingProvider(RWESmarthomeBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(RWESmarthomeBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -170,9 +178,14 @@ public class RWESmarthomeBinding extends AbstractActiveBinding<RWESmarthomeBindi
      */
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
-        communicator.sendCommand(itemName, command);
-        context.getIgnoreEventList().put(itemName + command.toString(), System.currentTimeMillis());
-        logger.debug("Added event (item='{}', command='{}') to the ignore event list", itemName, command.toString());
+        if (communicator.isRunning()) {
+            logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+            communicator.sendCommand(itemName, command);
+            context.getIgnoreEventList().put(itemName + command.toString(), System.currentTimeMillis());
+            logger.debug("Added event (item='{}', command='{}') to the ignore event list", itemName,
+                    command.toString());
+        } else {
+            logger.info("Command '{}' for item '{}' not executed: communicator not running.", command, itemName);
+        }
     }
 }

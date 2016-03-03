@@ -111,7 +111,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     /**
      * Parses and stores the tcp configuration string of the binding configuration.
      * Expected form is tcp:hostname:port
-     * 
+     *
      * @param parts config string, split on ':'
      * @throws ConfigurationException
      */
@@ -131,7 +131,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
     /**
      * Parses and stores the serial configuration string of the binding configuration.
      * Expected form is serial@portspeed:devicename, where @portspeed is optional.
-     * 
+     *
      * @param parts config string, split on ':'
      * @throws ConfigurationException
      */
@@ -499,6 +499,14 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
         return l;
     }
 
+    protected void addBindingProvider(AlarmDecoderBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(AlarmDecoderBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
         super.bindingChanged(provider, itemName);
@@ -549,7 +557,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * The relay and expander messages have identical format
-     * 
+     *
      * @param mt message type of incoming message
      * @param msg string containing incoming message
      * @throws MessageParseException
@@ -610,7 +618,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Updates item on the openhab bus
-     * 
+     *
      * @param bc binding config
      * @param state new state of item
      */
@@ -631,7 +639,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Finds all items that refer to a given message type, address, and feature
-     * 
+     *
      * @param mt message type (or null for all messages)
      * @param addr address to match (or all addresses if null)
      * @param feature feature to match (or all features if null)
@@ -647,7 +655,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Find binding configurations for a given item
-     * 
+     *
      * @param itemName name of item to look for
      * @return array with binding configurations
      */
@@ -662,7 +670,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
     /**
      * Extract message type from message
-     * 
+     *
      * @param s message string
      * @return message type
      */

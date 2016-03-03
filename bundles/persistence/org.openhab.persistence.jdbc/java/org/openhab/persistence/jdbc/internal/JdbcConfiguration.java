@@ -235,7 +235,6 @@ public class JdbcConfiguration {
             dBDAO.databaseProps.setProperty("jdbcUrl", url);
         }
 
-        logger.warn("JDBC::updateConfig: try to load JDBC-driverClass: '{}'", dn);
         try {
             Class.forName(dn);
             logger.debug("JDBC::updateConfig: load JDBC-driverClass was successful: '{}'", dn);

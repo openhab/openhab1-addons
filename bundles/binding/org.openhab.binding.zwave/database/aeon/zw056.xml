@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>ZW056-A</Model>
+    <Label lang="en">Doorbell</Label>
+    <CommandClasses>
+        <Class>
+            <id>0x20</id>
+        </Class>
+        <Class>
+            <id>0x70</id>
+        </Class>
+        <Class>
+            <id>0x72</id>
+        </Class>
+        <Class>
+            <id>0x80</id>
+        </Class>
+        <Class>
+            <id>0x85</id>
+        </Class>
+        <Class>
+            <id>0x86</id>
+        </Class>
+     </CommandClasses>
+
+     <Configuration>
+                <Parameter>
+                        <Index>0</Index>
+                        <Type>long</Type>
+                        <Default>2</Default>
+                        <Size>1</Size>
+                        <Minimum>0</Minimum>
+                        <Maximum>100</Maximum>
+                        <Label lang="en">Repetitions of ringtone</Label>
+                        <Help lang="en">If the time of playing doorbell ringtone is more than 20s, the volume of ringtone will reduce to silence no matter how many repetitions of doorbell ringtone are set. Default=2</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>5</Index>
+                        <Type>long</Type>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Minimum>1</Minimum>
+                        <Maximum>100</Maximum>
+                        <Label lang="en">Default ringtone</Label>
+                        <Help lang="en">Set the default doorbell ringtone. Default=1</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>6</Index>
+                        <Type>long</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Minimum>0</Minimum>
+                        <Maximum>100</Maximum>
+                        <Label lang="en">Ringtone to play</Label>
+                        <Help lang="en">Set a ringtone to play. Default=0</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>7</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Ignore</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Play</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">Stop</Label>
+                        </Item>
+                        <Item>
+                                <Value>3</Value>
+                                <Label lang="en">Pause</Label>
+                        </Item>
+                        <Item>
+                                <Value>4</Value>
+                                <Label lang="en">Next</Label>
+                        </Item>
+                        <Item>
+                                <Value>5</Value>
+                                <Label lang="en">Previous</Label>
+                        </Item>
+                        <Label lang="en">Send Basic Set on open/close event</Label>
+                        <Help lang="en">Default=0</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>8</Index>
+                        <Type>long</Type>
+                        <Default>10</Default>
+                        <Size>1</Size>
+                        <Minimum>0</Minimum>
+                        <Maximum>10</Maximum>
+                        <Label lang="en">Ringtone volume</Label>
+                        <Help lang="en">Default=10</Help>
+                </Parameter>
+                <Parameter>
+                    <Index>80</Index>
+                    <Type>byte</Type>
+                    <Default>25</Default>
+                    <Minimum>0</Minimum>
+                    <Maximum>60000</Maximum>
+                    <Size>1</Size>
+                    <Label lang="en">Enable Notifications</Label>
+                    <Help lang="en">Enable to send notifications to associated devices (Group1) when the state of Siren changed (0=nothing,1=hailCC,2=basic CC report).</Help>
+                </Parameter>
+    </Configuration>
+    
+    <Associations>
+        <Group>
+            <Index>1</Index>
+            <Maximum>5</Maximum>
+            <Label lang="en">Group 1</Label>
+            <SetToController>true</SetToController>
+        </Group>
+    </Associations>
+</Product>

@@ -29,6 +29,14 @@ public class DmxBinding extends AbstractBinding<DmxBindingProvider> {
 
     private DmxService dmxService;
 
+    protected void addBindingProvider(DmxBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(DmxBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * {@inheritDoc}
      */

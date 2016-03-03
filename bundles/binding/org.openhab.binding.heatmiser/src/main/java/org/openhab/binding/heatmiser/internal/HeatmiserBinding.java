@@ -208,8 +208,16 @@ public class HeatmiserBinding extends AbstractActiveBinding<HeatmiserBindingProv
         }
     }
 
+    protected void addBindingProvider(HeatmiserBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(HeatmiserBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {

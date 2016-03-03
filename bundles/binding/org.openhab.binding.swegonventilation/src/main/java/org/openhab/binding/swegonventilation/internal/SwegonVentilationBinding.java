@@ -84,8 +84,16 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
         this.eventPublisher = null;
     }
 
+    protected void addBindingProvider(SwegonVentilationBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(SwegonVentilationBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -126,10 +134,10 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
 
     /**
      * Convert device value to OpenHAB state.
-     * 
+     *
      * @param itemType
      * @param value
-     * 
+     *
      * @return a {@link State}
      */
     private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, Integer value) {
@@ -152,10 +160,10 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
 
     /**
      * The MessageListener runs as a separate thread.
-     * 
+     *
      * Thread listening message from Swegon ventilation system and send updates
      * to openHAB bus.
-     * 
+     *
      */
     private class MessageListener extends Thread {
 

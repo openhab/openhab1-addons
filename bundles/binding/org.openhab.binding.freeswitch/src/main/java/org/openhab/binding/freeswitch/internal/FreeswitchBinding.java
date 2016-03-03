@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * FreeswitchBinding connects to a Freeswitch instance using a ESL Client
  * connection. From this connection we listen for call life cycle events, message
  * waiting (MWI) events as well as send generic API commands.
- * 
+ *
  * @author Dan Cunningham
  * @since 1.4.0
  */
@@ -122,8 +122,16 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
         }
     }
 
+    protected void addBindingProvider(FreeswitchBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(FreeswitchBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -201,7 +209,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Connect inbound client to freeswitch
-     * 
+     *
      * @throws InboundConnectionFailure
      */
     private void connect() throws InboundConnectionFailure {
@@ -237,7 +245,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Handle Answer or Media (ringing) events and add an entry to our cache
-     * 
+     *
      * @param event
      */
     private void handleNewCallEvent(EslEvent event) {
@@ -282,7 +290,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
      * against the headers in a Channel. If all filters are satisfied
      * (matched) then we return true, if any filter fails we will stop
      * processing and return false.
-     * 
+     *
      * @param channel
      * @param filterString
      * @return true if all filters match, false if any one does not.
@@ -331,7 +339,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Check if this channel is an inbound call
-     * 
+     *
      * @param channel
      * @return true if the channel is inbound
      */
@@ -342,7 +350,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Handle channel destroy events and remove entries from our cache
-     * 
+     *
      * @param event
      */
     private void handleHangupCallEvent(EslEvent event) {
@@ -362,7 +370,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Update items for new calls
-     * 
+     *
      * @param config
      * @param channel
      */
@@ -385,7 +393,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * update items on call end
-     * 
+     *
      * @param config
      */
     private void endCallItemUpdate(FreeswitchBindingConfig config) {
@@ -438,16 +446,16 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Handle message waiting indicator events (MWI)
-     * 
+     *
      * A MWI looks has the following format
-     * 
+     *
      * MWI-Messages-Waiting: yes
      * MWI-Message-Account: jonas@gauffin.com
      * MWI-Voice-Message: 2/1 (1/1)
-     * 
+     *
      * The voice message line format translates to:
      * total_new_messages / total_saved_messages (total_new_urgent_messages / total_saved_urgent_messages)
-     * 
+     *
      * @param event to parse
      */
     private void handleMessageWaiting(EslEvent event) {
@@ -515,7 +523,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * update items for message waiting types
-     * 
+     *
      * @param itemName
      * @param config
      */
@@ -569,7 +577,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
     /**
      * Execute a api command and return the body as a
      * single comma delimited String
-     * 
+     *
      * @param command
      * @return Each line of the response will be appended to the string,
      *         delimited by a comma
@@ -609,7 +617,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     /**
      * Get a header from a esl event object
-     * 
+     *
      * @param event
      * @param name
      * @return
@@ -680,7 +688,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
      * The Freeswitch ESL library we are using does not tell us when
      * a connection dies, we need to poll and reconnect, which is what the
      * WatchDog class does.
-     * 
+     *
      * @author daniel
      *
      */

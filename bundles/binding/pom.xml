@@ -162,6 +162,7 @@
     <module>org.openhab.binding.lightwaverf.test</module>
     <module>org.openhab.binding.souliss</module>
     <module>org.openhab.binding.isy</module>
+    <!--module>org.openhab.binding.sagercaster</module-->
     <module>org.openhab.binding.ipx800</module>
     <module>org.openhab.binding.tacmi</module>
     <module>org.openhab.binding.rwesmarthome</module>
@@ -177,5 +178,9 @@
     <module>org.openhab.binding.stiebelheatpump</module>
     <module>org.openhab.binding.stiebelheatpump.test</module>
     <module>org.openhab.binding.sallegra</module>
+    <module>org.openhab.binding.garadget</module>
+    <!--module>org.openhab.binding.fritzboxtr064</module-->
+    <module>org.openhab.binding.smarthomatic</module>
+    <module>org.openhab.binding.gc100ir</module>
   </modules>
 </project>

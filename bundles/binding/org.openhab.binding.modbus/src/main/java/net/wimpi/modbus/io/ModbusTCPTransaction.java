@@ -212,12 +212,7 @@ public class ModbusTCPTransaction implements ModbusTransaction {
                 throw new ModbusSlaveException(((ExceptionResponse) m_Response).getExceptionCode());
             }
 
-            // 6. close connection if reconnecting
-            if (isReconnecting()) {
-                m_Connection.close();
-            }
-
-            // 7. Check transaction validity
+            // 6. Check transaction validity
             if (isCheckingValidity()) {
                 checkValidity();
             }
@@ -225,6 +220,11 @@ public class ModbusTCPTransaction implements ModbusTransaction {
         } catch (InterruptedException ex) {
             throw new ModbusIOException("Thread acquiring lock was interrupted.");
         } finally {
+            // Finally: close connection if reconnecting
+            if (isReconnecting() && m_Connection != null) {
+                m_Connection.close();
+            }
+
             m_TransactionLock.release();
         }
     }// execute

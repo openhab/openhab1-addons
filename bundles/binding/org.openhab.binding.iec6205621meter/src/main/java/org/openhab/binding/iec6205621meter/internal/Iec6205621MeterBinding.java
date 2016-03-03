@@ -165,8 +165,16 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
         logger.debug("internalReceiveCommand() is called!");
     }
 
+    protected void addBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -213,7 +221,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
 
     /**
      * Analyze configuration to get meter names
-     * 
+     *
      * @return set of String of meter names
      */
     private Set<String> getNames(Dictionary<String, ?> config) {

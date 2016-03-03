@@ -280,8 +280,16 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider>imp
         logger.debug("internalReceiveUpdate() is called!");
     }
 
+    protected void addBindingProvider(k8055BindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(k8055BindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
-     * @{inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
@@ -321,7 +329,7 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider>imp
 
     /**
      * Lookup of the configuration of the named item.
-     * 
+     *
      * @param itemName
      *            The name of the item.
      * @return The configuration, null otherwise.
@@ -337,9 +345,9 @@ public class k8055Binding extends AbstractActiveBinding<k8055BindingProvider>imp
 
     /**
      * Describes the interface of the K8055 C Library. (Used by JNA)
-     * 
+     *
      * @author anthony
-     * 
+     *
      */
 
     public interface LibK8055 extends Library {

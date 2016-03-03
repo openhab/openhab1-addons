@@ -62,7 +62,7 @@ public class LightwaveRfBinding extends AbstractBinding<LightwaveRfBindingProvid
     /**
      * Called by the SCR to activate the component with its configuration read
      * from CAS
-     * 
+     *
      * @param bundleContext
      *            BundleContext of the Bundle that defines this component
      * @param configuration
@@ -188,10 +188,18 @@ public class LightwaveRfBinding extends AbstractBinding<LightwaveRfBindingProvid
         }
     }
 
+    protected void addBindingProvider(LightwaveRfBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(LightwaveRfBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     /**
      * Called by the SCR when the configuration of a binding has been changed
      * through the ConfigAdmin service.
-     * 
+     *
      * @param configuration
      *            Updated configuration properties
      */
@@ -203,7 +211,7 @@ public class LightwaveRfBinding extends AbstractBinding<LightwaveRfBindingProvid
      * Called by the SCR to deactivate the component when either the
      * configuration is removed or mandatory references are no longer satisfied
      * or the component has simply been stopped.
-     * 
+     *
      * @param reason
      *            Reason code for the deactivation:<br>
      *            <ul>
@@ -374,7 +382,7 @@ public class LightwaveRfBinding extends AbstractBinding<LightwaveRfBindingProvid
 
     /**
      * Visible for testing only to allow us to add a mock Convertor
-     * 
+     *
      * @param mockLightwaveRfConvertor
      */
     void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
@@ -383,7 +391,7 @@ public class LightwaveRfBinding extends AbstractBinding<LightwaveRfBindingProvid
 
     /**
      * Visible for testing only to allow us to add a mock Wifi Link
-     * 
+     *
      * @param mockWifiLink
      */
     void setWifiLink(LightwaveRfWifiLink mockWifiLink) {

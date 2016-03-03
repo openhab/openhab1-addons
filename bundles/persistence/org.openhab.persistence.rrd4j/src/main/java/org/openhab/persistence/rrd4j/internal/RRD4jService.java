@@ -29,17 +29,18 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
-import org.osgi.framework.BundleContext;
 import org.rrd4j.ConsolFun;
 import org.rrd4j.DsType;
 import org.rrd4j.core.FetchData;
@@ -318,6 +319,10 @@ public class RRD4jService implements QueryablePersistenceService {
                     return value == 0.0d ? OnOffType.OFF : OnOffType.ON;
                 } else if (item instanceof ContactItem) {
                     return value == 0.0d ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+                } else if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+                    // make sure Items that need PercentTypes instead of DecimalTypes
+                    // do receive the right information
+                    return new PercentType((int) Math.round(value * 100));
                 }
             } catch (ItemNotFoundException e) {
                 logger.debug("Could not find item '{}' in registry", itemName);
@@ -339,7 +344,7 @@ public class RRD4jService implements QueryablePersistenceService {
     /**
      * @{inheritDoc
      */
-    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+    public void activate(final Map<String, Object> config) {
 
         // add default configurations
         RrdDefConfig defaultNumeric = new RrdDefConfig("default_numeric");
@@ -364,7 +369,7 @@ public class RRD4jService implements QueryablePersistenceService {
 
             String key = keys.next();
 
-            if (key.equals("service.pid")) { // ignore servioce.pid
+            if (key.equals("service.pid") || key.equals("component.name")) { // ignore service.pid and name
                 continue;
             }
 
@@ -413,7 +418,7 @@ public class RRD4jService implements QueryablePersistenceService {
             if (rrdDef.isValid()) {
                 logger.debug("Created {}", rrdDef.toString());
             } else {
-                logger.info("Removing invalid defintion {}", rrdDef.toString());
+                logger.info("Removing invalid definition {}", rrdDef.toString());
                 rrdDefs.remove(rrdDef.name);
             }
         }
