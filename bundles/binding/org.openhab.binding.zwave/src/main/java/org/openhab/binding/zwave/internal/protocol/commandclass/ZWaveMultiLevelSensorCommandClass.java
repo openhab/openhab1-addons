@@ -128,6 +128,11 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
                 break;
             case SENSOR_MULTI_LEVEL_REPORT:
                 logger.debug("NODE {}: Sensor Multi Level REPORT received", this.getNode().getNodeId());
+                if (serialMessage.getMessagePayload().length < offset + 2) {
+                    logger.debug("NODE {}: Sensor Multi Level REPORT received with incorrect length ({})",
+                            this.getNode().getNodeId(), serialMessage.getMessagePayload().length);
+                    return;
+                }
 
                 int sensorTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
                 int sensorScale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;

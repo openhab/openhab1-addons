@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -87,6 +88,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     @XStreamOmitField
     private boolean initialiseDone = false;
+
+    private boolean isGetSupported = true;
 
     /**
      * Creates a new instance of the ZWaveWakeUpCommandClass class.
@@ -268,6 +271,11 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
      * @return the serial message
      */
     public SerialMessage getIntervalMessage() {
+        if (isGetSupported == false) {
+            logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+            return null;
+        }
+
         logger.debug("NODE {}: Creating new message for application command WAKE_UP_INTERVAL_GET",
                 this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -284,6 +292,11 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
      * @return the serial message
      */
     public SerialMessage getIntervalCapabilitiesMessage() {
+        if (isGetSupported == false) {
+            logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+            return null;
+        }
+
         logger.debug("NODE {}: Creating new message for application command WAKE_UP_INTERVAL_CAPABILITIES_GET",
                 this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -550,6 +563,15 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
             timerTask.cancel();
         }
         timerTask = null;
+    }
+
+    @Override
+    public boolean setOptions(ZWaveDbCommandClass options) {
+        if (options.isGetSupported != null) {
+            isGetSupported = options.isGetSupported;
+        }
+
+        return true;
     }
 
     /**
