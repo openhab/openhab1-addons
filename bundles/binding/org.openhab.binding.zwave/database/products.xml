@@ -3263,7 +3263,7 @@
             </Reference>
             <Model>DCH-Z120</Model>
             <Label lang="en">Battery Motion Sensor</Label>
-            <ConfigFile>dlink/dchz120.xml</ConfigFile>
+            <ConfigFile>dlink/dch-z120.xml</ConfigFile>
         </Product>
   	</Manufacturer>
 	<Manufacturer>
