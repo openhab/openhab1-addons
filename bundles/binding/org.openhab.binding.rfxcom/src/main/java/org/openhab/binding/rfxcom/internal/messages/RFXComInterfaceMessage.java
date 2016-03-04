@@ -134,8 +134,13 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
     public boolean enableARCPackets = false; // 0x02 - ARC (433.92)
     public boolean enableX10Packets = false; // 0x01 - X10 (310/433.92)
 
+    public boolean enableHomeConfortPackets = false; // 0x02 - HomeConfort (433.92) 
+    public boolean enableKeeLoqPackets = false; // 0x01 - KeeLoq (433.92) 
+
     public byte hardwareVersion1 = 0;
     public byte hardwareVersion2 = 0;
+    public byte outputPower = 0;
+
 
     public RFXComInterfaceMessage() {
 
@@ -181,8 +186,27 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         str += "\n - AC (433.92) packets = " + enableACPackets;
         str += "\n - ARC (433.92) packets = " + enableARCPackets;
         str += "\n - X10 (310/433.92) packets = " + enableX10Packets;
+        str += "\n - HomeConfort packets = " + enableHomeConfortPackets;
+        str += "\n - KeeLoq (433.92) packets = " + enableKeeLoqPackets;
 
         return str;
+    }
+
+    /**
+     * The new and old firmwares have different message formats
+     * The firmware version is different for each hardware, 
+     *  and the hardware version are in different position depending of message format
+     * Actually we dont know how to detect correctly for all hardwares
+     *
+     * Apparently we can consider this versions are using new format
+     * RFXtrx433 version 1 (HW version=1.0 ou 1.1 ?) : 95
+     * RFXtrx433 version 2 (HW version 1.2??) : 195
+     * RFXtrx433E (HW version 1.3??) : 251
+     *
+     */
+    private boolean isNewFormat() {
+        final short fv = (short)(firmwareVersion & 0xff);
+        return  (fv >= 95 && fv <= 100) || (fv >= 195 && fv <= 200) || (fv >= 251);
     }
 
     @Override
@@ -239,17 +263,27 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         enableARCPackets = (data[9] & 0x02) != 0 ? true : false;
         enableX10Packets = (data[9] & 0x01) != 0 ? true : false;
 
-        hardwareVersion1 = data[10];
-        hardwareVersion2 = data[11];
+        if (isNewFormat()) {
+            enableHomeConfortPackets = (data[10] & 0x02) != 0 ? true : false;
+            enableKeeLoqPackets = (data[10] & 0x01) != 0 ? true : false;
+
+            hardwareVersion1 = data[11];
+            hardwareVersion2 = data[12];
+        
+            outputPower = data[13];
+        } else {
+            hardwareVersion1 = data[10];
+            hardwareVersion2 = data[11];
+        }
 
     }
 
     @Override
     public byte[] decodeMessage() {
 
-        byte[] data = new byte[13];
+        byte[] data = new byte[14];
 
-        data[0] = 0x0D;
+        data[0] = (byte)(data.length-1);
         data[1] = RFXComBaseMessage.PacketType.INTERFACE_MESSAGE.toByte();
         data[2] = subType.toByte();
         data[3] = seqNbr;
@@ -284,10 +318,17 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
         data[9] |= enableARCPackets ? 0x02 : 0x00;
         data[9] |= enableX10Packets ? 0x01 : 0x00;
 
-        data[10] = hardwareVersion1;
-        data[11] = hardwareVersion2;
-        data[12] = 0;
-        data[13] = 0;
+        if (isNewFormat()) {
+            data[10] |= enableHomeConfortPackets ? 0x02 : 0x00;
+            data[10] |= enableKeeLoqPackets ? 0x01 : 0x00;
+
+            data[11] = hardwareVersion1;
+            data[12] = hardwareVersion2;
+            data[13] = outputPower;
+        } else {
+            data[10] = hardwareVersion1;
+            data[11] = hardwareVersion2;
+        }
 
         return data;
     }
