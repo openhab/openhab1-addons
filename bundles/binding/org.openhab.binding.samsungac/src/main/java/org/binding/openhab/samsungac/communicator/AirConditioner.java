@@ -10,6 +10,7 @@ package org.binding.openhab.samsungac.communicator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -27,6 +28,9 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.ssl.KeyMaterial;
+import org.apache.commons.ssl.SSLClient;
+import org.apache.commons.ssl.TrustMaterial;
 import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +54,8 @@ public class AirConditioner {
     private String IP;
     private String MAC;
     private String TOKEN_STRING;
+    private String CERTIFICATE_FILE_NAME;
+    private String CERTIFICATE_PASSWORD = "";
     private final Integer PORT = 2878;
     private Map<CommandEnum, String> statusMap = new HashMap<CommandEnum, String>();
     private SSLSocket socket;
@@ -58,10 +64,10 @@ public class AirConditioner {
      * This is the method to call first, it will try to connect to the given IP-, and MAC-
      * address. If no token is specified, it will try to ask the air conditioner to give
      * it a token.
-     * 
+     *
      * When a token has been received from the air conditioner, we will try to login with this token.
      * If a connection is established, the method will return itself.
-     * 
+     *
      * @return An instance of itself, which holds the state of the air conditioner
      * @throws Exception If something goes wrong while trying to connect
      */
@@ -71,7 +77,7 @@ public class AirConditioner {
             getToken();
             loginWithToken();
         } catch (Exception e) {
-            logger.info("Disconneting...", e);
+            logger.debug("Disconneting...", e);
             disconnect();
             throw e;
         }
@@ -81,7 +87,7 @@ public class AirConditioner {
     /**
      * Method should be called when all communication has finished.
      * For example when OpenHAB is being shut down.
-     * 
+     *
      * Will only disconnect if we are already connected.
      */
     public void disconnect() {
@@ -90,7 +96,7 @@ public class AirConditioner {
                 socket.close();
             }
             socket = null;
-            logger.info("Disconnected from AC: " + IP);
+            logger.debug("Disconnected from AC: " + IP);
         } catch (IOException e) {
             logger.warn("Could not disconnect from Air Conditioner with IP: " + IP, e);
         } finally {
@@ -99,7 +105,7 @@ public class AirConditioner {
     }
 
     /**
-     * 
+     *
      * @return true if connected to air conditioner, otherwise false
      */
     public boolean isConnected() {
@@ -126,7 +132,7 @@ public class AirConditioner {
 
     /**
      * Handle response when we are not waiting for a specific answer.
-     * 
+     *
      * @throws Exception
      */
     private void handleResponse() throws Exception {
@@ -138,7 +144,7 @@ public class AirConditioner {
      * until there's no more responses to read. This is because the air conditioner will
      * send us messages each time some presses the remote or some state of the air conditioner
      * changes.
-     * 
+     *
      * @param commandId An id of the command we are waiting for a response on. Not mandatory
      * @throws Exception Is thrown if we cannot parse the response from the air conditioner
      */
@@ -170,11 +176,11 @@ public class AirConditioner {
 
             if (ResponseParser.isResponseWithToken(line)) {
                 TOKEN_STRING = ResponseParser.parseTokenFromResponse(line);
-                logger.warn("Received TOKEN from AC: '" + TOKEN_STRING + "'");
+                logger.info("Received TOKEN from AC: '" + TOKEN_STRING + "'");
                 return;
             }
             if (ResponseParser.isReadyForTokenResponse(line)) {
-                logger.warn("NO TOKEN SET! Please switch off and on the air conditioner within 30 seconds");
+                logger.info("NO TOKEN SET! Please switch off and on the air conditioner within 30 seconds");
                 return;
             }
 
@@ -250,31 +256,49 @@ public class AirConditioner {
         if (isConnected()) {
             return;
         } else {
-            logger.info("Disconnected so we'll try again");
+            logger.debug("Disconnected so we'll try again");
             disconnect();
         }
 
-        try {
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
+        if (CERTIFICATE_FILE_NAME != null && new File(CERTIFICATE_FILE_NAME).isFile()) {
+            if (CERTIFICATE_PASSWORD == null) {
+                CERTIFICATE_PASSWORD = "";
+            }
+            try {
+                SSLClient client = new SSLClient();
 
-                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                }
+                client.addTrustMaterial(TrustMaterial.DEFAULT);
+                client.setCheckHostname(false);
+                client.setKeyMaterial(new KeyMaterial(CERTIFICATE_FILE_NAME, CERTIFICATE_PASSWORD.toCharArray()));
+                client.setConnectTimeout(10000);
+                socket = (SSLSocket) client.createSocket(IP, PORT);
+                socket.setSoTimeout(30000);
+                socket.startHandshake();
+            } catch (Exception e) {
+                throw new Exception("Could not connect using certificate: " + CERTIFICATE_FILE_NAME, e);
+            }
+        } else {
+            try {
+                SSLContext ctx = SSLContext.getInstance("TLS");
+                final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
 
-                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                }
-            } };
+                    public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    }
 
-            ctx.init(null, trustAllCerts, null);
-            socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
-            socket.setSoTimeout(10000);
-            socket.startHandshake();
-            logger.debug("Connected again...");
-        } catch (Exception e) {
-            throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
+                    public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    }
+                } };
+
+                ctx.init(null, trustAllCerts, null);
+                socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
+                socket.setSoTimeout(10000);
+                socket.startHandshake();
+            } catch (Exception e) {
+                throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
+            }
         }
         handleResponse();
     }
@@ -282,14 +306,14 @@ public class AirConditioner {
     /**
      * Method to send a command to the air conditioner. Will generate a "unique" id for each
      * command we send, so that we can wait and check the return value of our sent command.
-     * 
+     *
      * @param command The command to send to the air conditioner
      * @param value Value to change to
      * @return the generated command id
      * @throws Exception If we cannot write to the air conditioner or if we cannot handle the response
      */
     public String sendCommand(CommandEnum command, String value) throws Exception {
-        logger.info("Sending command: '" + command.toString() + "' with value: '" + value + "'");
+        logger.debug("Sending command: '" + command.toString() + "' with value: '" + value + "'");
         String id = "cmd" + Math.round(Math.random() * 10000);
         writeLine("<Request Type=\"DeviceControl\"><Control CommandID=\"" + id + "\" DUID=\"" + MAC + "\"><Attr ID=\""
                 + command + "\" Value=\"" + value + "\" /></Control></Request>");
@@ -299,7 +323,7 @@ public class AirConditioner {
 
     /**
      * Get the status for each of the commands in {@link CommandEnum}
-     * 
+     *
      * @return A Map of the current air conditioner status
      * @throws Exception If we cannot send a command or if there is a problem parsing the results
      */
@@ -314,7 +338,7 @@ public class AirConditioner {
     }
 
     /**
-     * 
+     *
      * @return the configured IP-address of the air conditioner
      */
     public String getIpAddress() {
@@ -322,7 +346,7 @@ public class AirConditioner {
     }
 
     /**
-     * 
+     *
      * @param ipAddress The IP-address of the air conditioner
      */
     public void setIpAddress(String ipAddress) {
@@ -330,7 +354,7 @@ public class AirConditioner {
     }
 
     /**
-     * 
+     *
      * @param macAddress The MAC-address of the air conditioner
      */
     public void setMacAddress(String macAddress) {
@@ -338,11 +362,27 @@ public class AirConditioner {
     }
 
     /**
-     * 
+     *
      * @param token The token to use when connecting to the air conditioner
      */
     public void setToken(String token) {
         TOKEN_STRING = token;
+    }
+
+    /**
+     *
+     * @param fileName for the certificate to use
+     */
+    public void setCertificateFileName(String fileName) {
+        CERTIFICATE_FILE_NAME = fileName;
+    }
+
+    /**
+     *
+     * @param password for the certificate
+     */
+    public void setCertificatePassword(String password) {
+        CERTIFICATE_PASSWORD = password;
     }
 
     @Override
