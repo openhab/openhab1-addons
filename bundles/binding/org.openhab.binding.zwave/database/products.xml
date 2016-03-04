@@ -1574,10 +1574,14 @@
 				<Type>0400</Type>
 				<Id>100A</Id>
 			</Reference>
-			<Reference>
-				<Type>0400</Type>
-				<Id>300A</Id>
-			</Reference>
+            <Reference>
+                <Type>0400</Type>
+                <Id>300A</Id>
+            </Reference>
+            <Reference>
+                <Type>0400</Type>
+                <Id>400A</Id>
+            </Reference>
 			<Model>FGS211</Model>
 			<Label lang="en">Relay Switch 1x3kW</Label>
 			<ConfigFile>fibaro/fgs211.xml</ConfigFile>
