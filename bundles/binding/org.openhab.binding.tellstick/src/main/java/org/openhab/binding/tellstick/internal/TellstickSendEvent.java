@@ -1,8 +1,23 @@
+/**
+ * Copyright (c) 2010-2016, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.tellstick.internal;
 
 import org.openhab.binding.tellstick.TellstickBindingConfig;
 import org.openhab.binding.tellstick.internal.device.TellstickDevice;
 import org.openhab.core.types.Command;
+
+/**
+ * This is a wrapper class for handle the send queue to the Tellstick device.
+ *
+ * @author Elias Gabrielsson
+ * @since 1.9.0
+ */
 
 public class TellstickSendEvent implements Comparable<TellstickSendEvent> {
     private TellstickBindingConfig config;

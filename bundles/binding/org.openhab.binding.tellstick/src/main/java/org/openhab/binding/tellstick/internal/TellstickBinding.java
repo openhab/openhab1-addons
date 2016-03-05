@@ -46,6 +46,7 @@ import com.sun.jna.Platform;
  * device. It uses a JNA bridge to talk to the C api of the tellstick.
  *
  * @author jarlebh
+ * @author Elias Gabrielsson
  * @since 1.5.0
  */
 public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProvider>implements ManagedService {

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.5.0
  * @author jarlebh
+ * @author Elias Gabrielsson
  *
  */
 public class TellstickController implements Runnable {
