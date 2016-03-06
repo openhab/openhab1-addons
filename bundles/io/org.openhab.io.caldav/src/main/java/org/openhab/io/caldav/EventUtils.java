@@ -188,6 +188,12 @@ public final class EventUtils {
             return scope;
         }
 
+        @Override
+        public String toString() {
+            return "EventContent [item=" + item + ", state=" + state
+                    + ", command=" + command + ", time=" + time + ", scope="
+                    + scope + "]";
+        }
     }
 
     public static String createBetween(String itemName, State state) {
