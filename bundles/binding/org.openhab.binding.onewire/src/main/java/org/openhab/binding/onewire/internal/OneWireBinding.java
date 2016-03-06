@@ -78,6 +78,14 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
         super.deactivate();
         ivOneWireReaderScheduler.stop();
     }
+    
+    protected void addBindingProvider(OneWireBindingProvider bindingProvider) {		
+        super.addBindingProvider(bindingProvider);		
+    }		
+ 		
+    protected void removeBindingProvider(OneWireBindingProvider bindingProvider) {		
+        super.removeBindingProvider(bindingProvider);		
+    }
 
     /*
      * (non-Javadoc)
