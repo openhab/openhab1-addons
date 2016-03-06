@@ -47,7 +47,7 @@ public class TellstickController implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 TellstickSendEvent sendEvent;
                 // GET EVENT TO SEND

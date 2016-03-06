@@ -88,6 +88,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         logger.info("Deactivate " + this);
         try {
             deRegisterListeners();
+            controllerThread.interrupt();
         } catch (Exception e) {
             logger.error("Failed to deactivate", e);
         }
