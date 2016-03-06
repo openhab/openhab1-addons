@@ -122,6 +122,11 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
     private MochadX10Address previousX10Address;
 
     /**
+     * Used to prevent reconnection when shutting down
+     */
+    private boolean isShuttingDown = false;
+
+    /**
      * The regular expression to check whether the ip address of the host is correct
      */
     private static final String IPADDRESS_PATTERN = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
@@ -212,6 +217,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
     }
 
     protected void removeBindingProvider(MochadX10BindingProvider bindingProvider) {
+        logger.trace("Mochad X10 Binding removeBindingProvider called");
         super.removeBindingProvider(bindingProvider);
     }
 
@@ -245,6 +251,8 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
     @Override
     public void deactivate() {
         // Close the connection with the Mochad X10 Server
+        logger.trace("Mochad X10 deactivate called");
+        isShuttingDown = true;
         disconnectFromMochadX10Server();
 
         super.deactivate();
@@ -267,6 +275,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * Connect to the Mochad X10 host
      */
     private void connectToMochadX10Server() {
+        logger.trace("Mochad X10 - connectToMochadX10Server called");
         try {
             client = new Socket(hostIp, hostPort);
 
@@ -287,11 +296,14 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * after the binding was disconnected from the host.
      */
     private void disconnectFromMochadX10Server() {
+        logger.trace("disconnectFromMochadX10Server called");
         try {
-            in.close();
-            out.close();
+            logger.trace("Closing socket");
             client.close();
-
+            logger.trace("Closing BufferedReader");
+            in.close();
+            logger.trace("Closing DataOutputStream");
+            out.close();
             logger.debug("Disconnected from Mochad X10 server");
         } catch (IOException e) {
             logger.error("IOException: " + e.getMessage() + " while trying to disconnect from Mochad X10 host: "
@@ -303,9 +315,14 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider>i
      * Reconnect to the Mochad X10 host after the connection to it was lost.
      */
     private void reconnectToMochadX10Server() {
-        disconnectFromMochadX10Server();
-        connectToMochadX10Server();
-        logger.debug("Reconnected to Mochad X10 server");
+        if (!isShuttingDown) {
+            logger.trace("reconnectToMochadX10Server called");
+            disconnectFromMochadX10Server();
+            connectToMochadX10Server();
+            logger.trace("Reconnected to Mochad X10 server");
+        } else {
+            logger.trace("Aborting reconnect to Mochad X10 server as deactivate in progress");
+        }
     }
 
     /**
