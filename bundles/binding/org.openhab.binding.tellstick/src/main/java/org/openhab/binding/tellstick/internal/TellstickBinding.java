@@ -81,7 +81,6 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
     @Override
     public void activate() {
         logger.info("Activate " + Thread.currentThread());
-        controllerThread.start();
     }
 
     @Override
@@ -124,6 +123,9 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
         logger.debug("internalReceiveCommand() is called! for " + itemName + " with " + command);
         TellstickBindingConfig config = findTellstickBindingConfig(itemName);
         if (config != null) {
+            if(!controllerThread.isAlive()){
+                controllerThread.start();
+            }
             TellstickDevice dev = findDevice(config);
             Long eventTime = System.currentTimeMillis();
             synchronized (messageQue) {
