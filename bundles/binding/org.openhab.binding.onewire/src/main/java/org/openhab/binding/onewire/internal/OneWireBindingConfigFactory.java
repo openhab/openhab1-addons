@@ -11,6 +11,7 @@ package org.openhab.binding.onewire.internal;
 import org.openhab.binding.onewire.internal.control.OneWireClearCacheControlBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertyContactBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertyNumberBindingConfig;
+import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertyPushButtonBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertyStringBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertySwitchBindingConfig;
 import org.openhab.binding.onewire.internal.deviceproperties.OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig;
@@ -37,7 +38,8 @@ public class OneWireBindingConfigFactory {
     /**
      * @param pvItem
      * @param pvBindingConfig
-     * @return a new BindingConfig, corresponding to the given <code><pvItem/code> and <code><pvBindingConfig/code>
+     * @return a new BindingConfig, corresponding to the given
+     *         <code><pvItem/code> and <code><pvBindingConfig/code>
      * @throws BindingConfigParseException
      */
     public static OneWireBindingConfig createOneWireDeviceProperty(Item pvItem, String pvBindingConfig)
@@ -47,6 +49,8 @@ public class OneWireBindingConfigFactory {
         OneWireBindingConfig lvNewBindingConfig = null;
         if (OneWireClearCacheControlBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {
             lvNewBindingConfig = new OneWireClearCacheControlBindingConfig(pvBindingConfig);
+        } else if (OneWireDevicePropertyPushButtonBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {
+            lvNewBindingConfig = new OneWireDevicePropertyPushButtonBindingConfig(pvBindingConfig);
         } else if (OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig.isBindingConfigToCreate(pvItem,
                 pvBindingConfig)) {
             lvNewBindingConfig = new OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig(pvBindingConfig);
@@ -69,10 +73,11 @@ public class OneWireBindingConfigFactory {
     }
 
     /**
-     * 
+     *
      * @param pvItem
      * @param pvBindingConfig
-     * @return is the given Item a valid one, which can be used for a OneWireBinding?
+     * @return is the given Item a valid one, which can be used for a
+     *         OneWireBinding?
      * @throws BindingConfigParseException
      */
     public static boolean isValidItemType(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {

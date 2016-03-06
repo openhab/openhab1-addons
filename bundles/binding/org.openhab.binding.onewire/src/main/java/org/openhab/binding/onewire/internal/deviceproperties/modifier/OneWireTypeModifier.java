@@ -17,7 +17,7 @@ import org.openhab.core.types.Type;
  * @since 1.7.0
  *
  */
-public interface InterfaceOneWireTypeModifier {
+public interface OneWireTypeModifier {
 
     /**
      * @return name of the modifier
