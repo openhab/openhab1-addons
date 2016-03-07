@@ -25,24 +25,25 @@ public enum ZWaveNodeInitStage {
     FAILED_CHECK(3, true, "Checking if node is failed"),
     WAIT(4, true, "Waiting"),
     PING(5, true, "Ping Node"),
-    DETAILS(6, true, "Node Information"),
-    MANUFACTURER(7, true, "Manufacture Name and Product Identification"),
-    VERSION(8, true, "Command Class Versions"),
-    APP_VERSION(9, true, "Application Version"),
-    ENDPOINTS(10, true, "Command Class Endpoints"),
-    UPDATE_DATABASE(11, true, "Updating database"),
-    STATIC_VALUES(12, true, "Static Information"),
-    ASSOCIATIONS(13, false, "Associations"),
-    SET_WAKEUP(14, false, "Wakeup Target"),
-    SET_ASSOCIATION(15, false, "Wakeup Target"),
-    GET_CONFIGURATION(16, false, "Getting configuration"),
-    STATIC_END(17, false, "Static Initialisation Finished"),
+    SECURITY_REPORT(6, true, "Security Report"),
+    DETAILS(7, true, "Node Information"),
+    MANUFACTURER(8, true, "Manufacture Name and Product Identification"),
+    VERSION(9, true, "Command Class Versions"),
+    APP_VERSION(10, true, "Application Version"),
+    ENDPOINTS(11, true, "Command Class Endpoints"),
+    UPDATE_DATABASE(12, true, "Updating database"),
+    STATIC_VALUES(13, true, "Static Information"),
+    ASSOCIATIONS(14, false, "Associations"),
+    SET_WAKEUP(15, false, "Wakeup Target"),
+    SET_ASSOCIATION(16, false, "Wakeup Target"),
+    GET_CONFIGURATION(17, false, "Getting configuration"),
+    STATIC_END(18, false, "Static Initialisation Finished"),
 
     // States below are not restored from the configuration files
-    SESSION_START(18, false, "Restore Marker"),
-    DYNAMIC_VALUES(19, false, "Frequently Changed Information"),
+    SESSION_START(19, false, "Restore Marker"),
+    DYNAMIC_VALUES(20, false, "Frequently Changed Information"),
 
-    DONE(20, false, "Node Complete");
+    DONE(21, false, "Node Complete");
 
     private int stage;
     private boolean mandatory;

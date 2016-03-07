@@ -55,4 +55,12 @@ public class ZWaveTransactionCompletedEvent extends ZWaveEvent {
     public boolean getState() {
         return state;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ZWaveTransactionCompletedEvent [completedMessage=").append(completedMessage).append(", state=")
+                .append(state).append("]");
+        return builder.toString();
+    }
 }

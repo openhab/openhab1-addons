@@ -87,6 +87,7 @@ public class ZWaveConverterHandler {
         converters.put(CommandClass.CONFIGURATION, new ZWaveConfigurationConverter(controller, eventPublisher));
         converters.put(CommandClass.INDICATOR, new ZWaveIndicatorConverter(controller, eventPublisher));
         converters.put(CommandClass.WAKE_UP, new ZWaveWakeUpConverter(controller, eventPublisher));
+        converters.put(CommandClass.DOOR_LOCK, new ZWaveDoorLockConverter(controller, eventPublisher));
 
         infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 
@@ -95,7 +96,7 @@ public class ZWaveConverterHandler {
                 .put(SwitchItem.class,
                         new CommandClass[] { CommandClass.SWITCH_BINARY, CommandClass.SWITCH_MULTILEVEL,
                                 CommandClass.METER, CommandClass.BASIC, CommandClass.SENSOR_BINARY,
-                                CommandClass.SENSOR_ALARM });
+                                CommandClass.SENSOR_ALARM, CommandClass.DOOR_LOCK });
         preferredCommandClasses
                 .put(DimmerItem.class,
                         new CommandClass[] { CommandClass.SWITCH_MULTILEVEL, CommandClass.SWITCH_BINARY,

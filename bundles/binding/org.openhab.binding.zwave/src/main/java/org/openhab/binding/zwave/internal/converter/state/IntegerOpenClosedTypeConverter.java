@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.converter.state;
 
+import org.openhab.binding.zwave.internal.converter.ZWaveDoorLockConverter;
 import org.openhab.core.library.types.OpenClosedType;
 
 /**
@@ -17,13 +18,40 @@ import org.openhab.core.library.types.OpenClosedType;
  * @since 1.4.0
  */
 public class IntegerOpenClosedTypeConverter extends ZWaveStateConverter<Integer, OpenClosedType> {
+    /**
+     * This value can vary, it will be set accordingly by the constructor
+     */
+    private int notOpenValue = 0x00;
+
+    /**
+     * Default constructor which retains pre 1.8 behavior of
+     * <code>value != 0x00 ? OpenClosedType.OPEN</code>
+     *
+     * @author Dave Badia
+     * @since TODO
+     */
+    public IntegerOpenClosedTypeConverter() {
+        super();
+    }
+
+    /**
+     * constructor which allows overriding of default behavior
+     * required for {@link ZWaveDoorLockConverter}
+     *
+     * @author Dave Badia
+     * @since TODO
+     */
+    public IntegerOpenClosedTypeConverter(int notOpenValue) {
+        super();
+        this.notOpenValue = notOpenValue;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected OpenClosedType convert(Integer value) {
-        return value != 0x00 ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+        return value != notOpenValue ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
     }
 
 }
