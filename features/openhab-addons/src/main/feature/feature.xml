@@ -493,38 +493,13 @@
 
     <!-- persistence -->
 
-    <feature name="openhab-persistence-rrd4j" description="RRD4j Persistence" version="${project.version}">
+    <feature name="openhab-persistence-influxdb" description="InfluxDB (v 1.0) Persistence" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.rrd4j/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
     </feature>
 
-    <feature name="openhab-persistence-mqtt" description="MQTT Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mqtt/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
-        <configfile finalname="${openhab.conf}/services/mqtt-persistence.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-persistence</configfile>
-    </feature>
-
-    <feature name="openhab-persistence-mysql" description="MySQL Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mysql/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/mysql.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mysql</configfile>
-    </feature>
-
-    <feature name="openhab-persistence-logging" description="Logging Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:ch.qos.logback/logback-core/1.1.3</bundle>
-        <bundle start-level="80">mvn:ch.qos.logback/logback-classic/1.1.3</bundle>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.logging/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
-    </feature>
-    
     <!-- JDBC Persistence for: Apache Derby, H2, HSQLDB, MariaDB, MySQL, PostgreSQL, SQLite -->
     <feature name="openhab-persistence-jdbc-derby" description="JDBC Persistence Apache Derby" version="${project.version}">
         <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
@@ -588,7 +563,48 @@
         <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jpa/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/jpa.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jpa</configfile>
     </feature>
+    
+    <feature name="openhab-persistence-mapdb" description="MapDB Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mapdb/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mapdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mapdb</configfile>
+    </feature>
 
+    <feature name="openhab-persistence-mqtt" description="MQTT Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mqtt/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
+        <configfile finalname="${openhab.conf}/services/mqtt-persistence.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-persistence</configfile>
+    </feature>
+
+    <feature name="openhab-persistence-mysql" description="MySQL Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mysql/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mysql.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mysql</configfile>
+    </feature>
+
+    <feature name="openhab-persistence-rrd4j" description="RRD4j Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.rrd4j/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
+    </feature>
+
+<!--
+    <feature name="openhab-persistence-logging" description="Logging Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:ch.qos.logback/logback-core/1.1.3</bundle>
+        <bundle start-level="80">mvn:ch.qos.logback/logback-classic/1.1.3</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.logging/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
+    </feature>
+-->
+    
     <!-- text-to-speech -->   
 
     <feature name="openhab-tts-marytts" description="MaryTTS" version="${project.version}">
