@@ -51,12 +51,14 @@
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/logging.cfg</file><type>cfg</type><classifier>logging</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mapdb.cfg</file><type>cfg</type><classifier>mapdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/marytts.cfg</file><type>cfg</type><classifier>marytts</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/milight.cfg</file><type>cfg</type><classifier>milight</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mios.cfg</file><type>cfg</type><classifier>mios</classifier></artifact>
