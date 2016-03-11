@@ -415,16 +415,16 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                                         }
                                     } catch (NumberFormatException nfe) {
                                         throw new BindingConfigParseException(
-                                                "Autorefresh time must be a number, bust was '"
+                                                "Autorefresh time must be a number, but was '"
                                                         + dataPoint.substring(1, endIndex) + "'.");
                                     }
                                 } else {
                                     throw new BindingConfigParseException(
-                                            "Autorefresh time paramter: missing time. Empty brackets are not allowed.");
+                                            "Autorefresh time parameter: missing time. Empty brackets are not allowed.");
                                 }
                             } else {
                                 throw new BindingConfigParseException(
-                                        "Closing ')' missing on autorefresh time paramter.");
+                                        "Closing ')' missing on autorefresh time parameter.");
                             }
                         }
                     }
