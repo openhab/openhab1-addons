@@ -19,6 +19,14 @@ setPermRecursive () {
 	fi
 }
 
+setOwnerRecursive () {
+	sorohdir="$1"
+	if [ x"${sorohdir}" != x ] && [ x"${sorohdir}" != x/ ]; then
+		echo "setting owner ${USER_AND_GROUP} recursively for ${sorohdir}"
+		chown -Rh ${USER_AND_GROUP} "${sorohdir}"
+	fi
+}
+
 setPerm () {
 	spmode=$1
 	spfile="$2" # may be a dir
@@ -27,7 +35,9 @@ setPerm () {
 	chmod $spmode "${spfile}"
 }
 
-for ohdir in "${OPENHAB_HOME_DIR}" "${OPENHAB_LOG_DIR}" "${OPENHAB_CONFIGURATIONS_DIR}"; do
+setOwnerRecursive "${OPENHAB_HOME_DIR}"
+
+for ohdir in "${OPENHAB_LOG_DIR}" "${OPENHAB_CONFIGURATIONS_DIR}"; do
 	setPermRecursive "${ohdir}"
 done
 
