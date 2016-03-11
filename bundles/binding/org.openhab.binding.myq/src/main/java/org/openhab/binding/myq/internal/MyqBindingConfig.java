@@ -28,6 +28,8 @@ import org.openhab.core.types.State;
  */
 public class MyqBindingConfig implements BindingConfig {
 
-    int deviceIndex;
-    List<Class<? extends State>> acceptedDataTypes;
+	int deviceIndex;
+	List<Class<? extends State>> acceptedDataTypes;
+
+	String attribute;
 }
