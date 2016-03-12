@@ -162,7 +162,7 @@ class AnelConnectorThread extends Thread {
 
         // check whether IO is of direction output
         if (isInput == null || !isInput) {
-            logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF") + " but it's direction is "
+            logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF") + " but its direction is "
                     + (isInput == null ? "unknown" : "input"));
             return; // better not send anything if direction is not
                     // 'out'
@@ -280,7 +280,7 @@ class AnelConnectorThread extends Thread {
         try {
             connector.disconnect();
         } catch (Exception e) {
-            logger.error("Error occured when disconnecting form Anel device: " + state.host, e);
+            logger.error("Error occured when disconnecting from Anel device: " + state.host, e);
         }
     }
 

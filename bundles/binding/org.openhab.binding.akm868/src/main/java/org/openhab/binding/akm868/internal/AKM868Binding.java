@@ -64,7 +64,7 @@ public class AKM868Binding extends AbstractActiveBinding<AKM868BindingProvider>
     }
 
     private void stopListener() {
-        logger.debug("Stoppig AKM868 listener...");
+        logger.debug("Stopping AKM868 listener...");
         if (packetlistener != null) {
             packetlistener.stopListener();
         }
