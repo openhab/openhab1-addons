@@ -245,7 +245,7 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.intertechno/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/culintertechno.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/culintertechno</configfile>
     </feature>
-	
+
     <feature name="openhab-binding-knx" description="KNX Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -389,6 +389,14 @@
         <feature>openhab-runtime-compat1x</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.owserver/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/owserver.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/owserver</configfile>
+    </feature>
+
+    <feature name="openhab-binding-powermax" description="Visonic PowerMax Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-transport-serial</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.powermax/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/powermax.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/powermax</configfile>
     </feature>
 
     <feature name="openhab-binding-rwesmarthome" description="RWE SmartHome Binding" version="${project.version}">
