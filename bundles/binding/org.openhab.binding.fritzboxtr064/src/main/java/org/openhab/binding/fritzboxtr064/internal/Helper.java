@@ -18,6 +18,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -32,6 +34,7 @@ import org.w3c.dom.ls.LSSerializer;
  * @since 1.8.0
  */
 public class Helper {
+    private static final Logger logger = LoggerFactory.getLogger(FritzboxTr064Binding.class);
 
     /***
      * Helper method which converts XML Document into pretty formatted string
@@ -55,7 +58,7 @@ public class Helper {
             lsSerializer.write(doc, lsOutput);
             strMsg = stringWriter.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Error occured when converting document to string", e);
         }
         return strMsg;
     }
@@ -73,7 +76,7 @@ public class Helper {
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
         } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
+            logger.warn("nodeToString Transformer Exception", te);
         }
         return sw.toString();
     }
