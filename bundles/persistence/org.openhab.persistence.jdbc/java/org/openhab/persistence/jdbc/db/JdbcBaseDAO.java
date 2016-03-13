@@ -203,7 +203,7 @@ public class JdbcBaseDAO {
     public boolean doIfTableExists(ItemsVO vo) {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_IF_TABLE_EXISTS, new String[] { "#searchTable#" },
                 new String[] { vo.getItemsManageTable() });
-        logger.debug("JDBC::doCreateNewEntryInItemsTable sql={}", sql);
+        logger.debug("JDBC::doIfTableExists sql={}", sql);
         return Yank.queryScalar(sql, String.class, null) != null;
     }
 

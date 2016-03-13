@@ -121,7 +121,7 @@ public class JdbcPersistenceService extends JdbcMapper implements QueryablePersi
     public void store(Item item, String alias) {
         // Don not store undefined/uninitialised data
         if (item.getState() instanceof UnDefType) {
-            logger.warn("JDBC::store: ignore Item because it is UnDefType");
+            logger.warn("JDBC::store: ignore Item '{}' because it is UnDefType", item.getName());
             return;
         }
         if (!checkDBAcessability()) {
@@ -184,7 +184,9 @@ public class JdbcPersistenceService extends JdbcMapper implements QueryablePersi
 
         String table = sqlTables.get(itemName);
         if (table == null) {
-            logger.warn("JDBC::query: unable to find table for query, no Data in Database for Item '{}'", itemName);
+            logger.warn(
+                    "JDBC::query: unable to find table for query, no Data in Database for Item '{}'. Current number of tables in the database: {}",
+                    itemName, sqlTables.size());
             // if enabled, table will be created immediately
             if (item != null) {
                 logger.warn("JDBC::query: try to generate the table for item '{}'", itemName);
