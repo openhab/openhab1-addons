@@ -289,7 +289,7 @@ public abstract class AbstractEBusWriteConnector extends AbstractEBusConnector {
                         byte crc = EBusUtils.crc8_tab(nn2, (byte) 0);
 
                         if (nn2 > 16) {
-                            logger.warn("slave data to long, invalid!");
+                            logger.warn("slave data too long, invalid!");
 
                             // resend telegram (max. once)
                             if (!resend(secondTry)) {
