@@ -8,12 +8,13 @@
  */
 package org.openhab.action.mail.internal;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailAttachment;
@@ -30,6 +31,8 @@ import org.slf4j.LoggerFactory;
  * for sending emails via SMTP.
  *
  * @author Kai Kreuzer
+ * @author John Cocula
+ *         added multiple attachments, set attachment name, brought up to Apache Commons Email 1.4
  * @since 0.4.0
  *
  */
@@ -43,17 +46,18 @@ public class Mail {
     static String password;
     static String from;
 
-    static boolean tls;
+    static boolean startTLSEnabled;
+    static boolean sslOnConnect;
     static boolean popBeforeSmtp = false;
     static String charset;
 
     /**
      * Sends an email via SMTP
-     * 
+     *
      * @param to the email address of the recipient
      * @param subject the subject of the email
      * @param message the body of the email
-     * 
+     *
      * @return <code>true</code>, if sending the email has been successful and
      *         <code>false</code> in all other cases.
      */
@@ -65,12 +69,12 @@ public class Mail {
 
     /**
      * Sends an email with attachment via SMTP
-     * 
+     *
      * @param to the email address of the recipient
      * @param subject the subject of the email
      * @param message the body of the email
      * @param attachmentUrl a URL string of the content to send as an attachment
-     * 
+     *
      * @return <code>true</code>, if sending the email has been successful and
      *         <code>false</code> in all other cases.
      */
@@ -78,7 +82,7 @@ public class Mail {
     static public boolean sendMail(@ParamDoc(name = "to") String to, @ParamDoc(name = "subject") String subject,
             @ParamDoc(name = "message") String message, @ParamDoc(name = "attachmentUrl") String attachmentUrl) {
         List<String> attachmentUrlList = null;
-        if (StringUtils.isNotBlank(attachmentUrl)) {
+        if (isNotBlank(attachmentUrl)) {
             attachmentUrlList = new ArrayList<String>();
             attachmentUrlList.add(attachmentUrl);
         }
@@ -87,12 +91,12 @@ public class Mail {
 
     /**
      * Sends an email with attachment(s) via SMTP
-     * 
+     *
      * @param to the email address of the recipient
      * @param subject the subject of the email
      * @param message the body of the email
      * @param attachmentUrlList a list of URL strings of the contents to send as attachments
-     * 
+     *
      * @return <code>true</code>, if sending the email has been successful and
      *         <code>false</code> in all other cases.
      */
@@ -112,7 +116,7 @@ public class Mail {
                         attachment.setURL(new URL(attachmentUrl));
                         attachment.setDisposition(EmailAttachment.ATTACHMENT);
                         String fileName = attachmentUrl.replaceFirst(".*/([^/?]+).*", "$1");
-                        attachment.setName(StringUtils.isNotBlank(fileName) ? fileName : "Attachment");
+                        attachment.setName(isNotBlank(fileName) ? fileName : "Attachment");
                         ((MultiPartEmail) email).attach(attachment);
                     } catch (MalformedURLException e) {
                         logger.error("Invalid attachment url.", e);
@@ -124,9 +128,10 @@ public class Mail {
 
             email.setHostName(hostname);
             email.setSmtpPort(port);
-            email.setTLS(tls);
+            email.setStartTLSEnabled(startTLSEnabled);
+            email.setSSLOnConnect(sslOnConnect);
 
-            if (StringUtils.isNotBlank(username)) {
+            if (isNotBlank(username)) {
                 if (popBeforeSmtp) {
                     email.setPopBeforeSmtp(true, hostname, username, password);
                 } else {
@@ -135,7 +140,7 @@ public class Mail {
             }
 
             try {
-                if (StringUtils.isNotBlank(charset)) {
+                if (isNotBlank(charset)) {
                     email.setCharset(charset);
                 }
                 email.setFrom(from);
@@ -143,10 +148,10 @@ public class Mail {
                 for (String toAddress : toList) {
                     email.addTo(toAddress);
                 }
-                if (!StringUtils.isEmpty(subject)) {
+                if (!isEmpty(subject)) {
                     email.setSubject(subject);
                 }
-                if (!StringUtils.isEmpty(message)) {
+                if (!isEmpty(message)) {
                     email.setMsg(message);
                 }
                 email.send();
@@ -158,8 +163,9 @@ public class Mail {
         } else {
             logger.error(
                     "Cannot send e-mail because of missing configuration settings. The current settings are: "
-                            + "Host: '{}', port '{}', from '{}', useTLS: {}, username: '{}', password '{}'",
-                    new Object[] { hostname, String.valueOf(port), from, String.valueOf(tls), username, password });
+                            + "Host: '{}', port '{}', from '{}', startTLSEnabled: {}, sslOnConnect: {}, username: '{}', password '{}'",
+                    new Object[] { hostname, String.valueOf(port), from, String.valueOf(startTLSEnabled),
+                            String.valueOf(sslOnConnect), username, password });
         }
 
         return success;
