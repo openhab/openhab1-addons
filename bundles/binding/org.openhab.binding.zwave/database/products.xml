@@ -3296,4 +3296,15 @@
 			<ConfigFile>telldus/tzdw-100.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+        <Product>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>STZW402</Model>
+            <Label lang="en">4000W Thermostat</Label>
+            <ConfigFile>stelpro/stzw402.xml</ConfigFile>
+        </Product>
+    </Manufacturer> 
 </Manufacturers>
