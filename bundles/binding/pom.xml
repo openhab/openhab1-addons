@@ -52,6 +52,7 @@
     <module>org.openhab.binding.dmx.test</module>
 	<module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
+    <!--module>org.openhab.binding.rfxcom.test</module-->
     <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungac.test</module>
     <module>org.openhab.binding.samsungtv</module>
@@ -178,7 +179,7 @@
     <module>org.openhab.binding.stiebelheatpump.test</module>
     <module>org.openhab.binding.sallegra</module>
     <module>org.openhab.binding.garadget</module>
-    <!--module>org.openhab.binding.fritzboxtr064</module-->
+    <module>org.openhab.binding.fritzboxtr064</module>
     <module>org.openhab.binding.smarthomatic</module>
     <module>org.openhab.binding.gc100ir</module>
   </modules>
