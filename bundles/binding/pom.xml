@@ -177,5 +177,6 @@
     <module>org.openhab.binding.stiebelheatpump</module>
     <module>org.openhab.binding.stiebelheatpump.test</module>
     <module>org.openhab.binding.sallegra</module>
+    <module>org.openhab.binding.fritzboxtr064</module>
   </modules>
 </project>
