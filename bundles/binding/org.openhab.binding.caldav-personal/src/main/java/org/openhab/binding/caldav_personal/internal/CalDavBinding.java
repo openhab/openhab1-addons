@@ -294,7 +294,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
             logger.debug("sending command {} for item {}", command, itemName);
             eventPublisher.postUpdate(itemName, command);
-            logger.trace("command {} successfuly send", command);
+            logger.trace("command {} successfully sent", command);
         }
     }
 
