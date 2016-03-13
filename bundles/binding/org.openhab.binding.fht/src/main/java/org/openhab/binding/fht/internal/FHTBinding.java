@@ -393,7 +393,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
 
                 }
             } else {
-                logger.warn("Received unkown FHT command: ", command);
+                logger.warn("Received unknown FHT command: ", command);
             }
         } else if (data.length() == 11) {
             // is FHT8b frame
@@ -491,7 +491,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             DecimalType state = new DecimalType(valve);
             eventPublisher.postUpdate(config.getItem().getName(), state);
         } else {
-            logger.debug("Received valve opening of unkown actuator with address " + fullAddress);
+            logger.debug("Received valve opening of unknown actuator with address " + fullAddress);
         }
     }
 
@@ -503,7 +503,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider>impleme
             DecimalType state = new DecimalType(temperature);
             eventPublisher.postUpdate(config.getItem().getName(), state);
         } else {
-            logger.debug("Received new measured temp for unkown device with address " + deviceAddress);
+            logger.debug("Received new measured temp for unknown device with address " + deviceAddress);
         }
     }
 

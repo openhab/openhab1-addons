@@ -144,7 +144,7 @@ public class TCPConnector implements DSCAlarmConnector {
 	  */
 	 public synchronized void handleIncomingMessage(String incomingMessage) {
 		APIMessage Message = new APIMessage(incomingMessage);
-		logger.debug("handleIncomingMessage(): Message recieved: {} - {}",incomingMessage,Message.toString());
+		logger.debug("handleIncomingMessage(): Message received: {} - {}",incomingMessage,Message.toString());
 
 		DSCAlarmEvent event = new DSCAlarmEvent(this);
 		event.dscAlarmEventMessage(Message);

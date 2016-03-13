@@ -94,7 +94,7 @@ public class OBISMsgFactory {
 
                     return msg;
                 } catch (ParseException pe) {
-                    logger.debug("Failed to parse OBIS identifer " + obisId + ", values:" + cosemStringValues
+                    logger.debug("Failed to parse OBIS identifier " + obisId + ", values:" + cosemStringValues
                             + " for type" + msgType, pe);
                 }
             }
