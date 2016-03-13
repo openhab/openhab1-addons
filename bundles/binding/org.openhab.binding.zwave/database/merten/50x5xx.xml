@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>50x5xx</Model>
+	<Label lang="en">Window Blind Control Insert Button Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x50</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8E</id></Class>
+		<Class><id>0x9E</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>176</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Break (motor protection)</Label>
+			<Help lang="en"><![CDATA[VBreak = value * 0.1 sec]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>177</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Travel time UP, Byte 1</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>178</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Travel time UP, Byte 2</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>179</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Travel time DOWN, Byte 1</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>180</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Travel time DOWN, Byte 2</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Other device to be switched</Label>
+		</Group>
+	</Associations>
+</Product>

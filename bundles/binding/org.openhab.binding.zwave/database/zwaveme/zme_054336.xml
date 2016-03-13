@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_00021000</Model>
+	<Label lang="en">One paddle dimmer</Label>
+	<Label lang="ru">Диммер с одной клавишей</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x8E</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x2B</id></Class>
+		<Class><id>0x2C</id></Class>
+		<Class><id>0x2D</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">LED mode</Label>
+			<Label lang="ru">Режим световой индикации</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="ru">Отключен</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+				<Label lang="ru">Индикация состояния реле</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Night mode (inverted switch state)</Label>
+				<Label lang="ru">Ночной режим (противоположно состоянию реле)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Operated by Indicator Command Class</Label>
+				<Label lang="ru">Управляется классом комманд Indicator</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatically switch off after, sec</Label>
+			<Label lang="ru">Авто отключение через, секунд</Label>
+			<Help lang="en"><![CDATA[If not zero, automatically switch off after a user defined time]]></Help>
+			<Help lang="ru"><![CDATA[Если не 0, автоматически отключает реле после определённого пользователем времени]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">What to do on RF off command</Label>
+			<Label lang="ru">Что делать при получении радиокоманды выключения</Label>
+			<Help lang="en"><![CDATA[Defines how to interpret RF Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).]]></Help>
+			<Help lang="ru"><![CDATA[Определяет поведение при получении радио команды выключения. Может использоваться совместно с функцией авто отключения: Игнорирование - для включения света по детектору движения и отключения по прошествии определённого времени: в случае использования нескольких детекторов движения каждый будет пытаться выключить свет сам, что приведёт к неправильной логике работы; Включть нагрузку - для включения света при нажатии на кнопки Вкл и Выкл на пульте управления и отключения по прошествии определённого времени. Выключение по кнопке будет продолжать работать (если не отключено).]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off</Label>
+				<Label lang="ru">Выключить нарузку</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+				<Label lang="ru">Игнорировать</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on</Label>
+				<Label lang="ru">Включить нарузку</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off else switch off</Label>
+				<Label lang="ru">Включить, если нагрузка выключена, иначе выключить</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">What to do on button Down press</Label>
+			<Label lang="ru">Что делать при нажатии вниз</Label>
+			<Help lang="en"><![CDATA[Defines how to interpret button Down press. Depends on "Switch by buttons" parameter. If not Disabled this parameter will affect the action selected by the latter parameter. Can be used in conjunction with Auto Off function.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет поведение при нажатии клавиши вниз. Зависит от параметра "Включать/выключать нагрузку кнопками". Если не "Нет", данный параметр будет применён к выбранному упомянутым параметром действию. Может использоваться совместно с функцией авто отключения.]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off</Label>
+				<Label lang="ru">Выключить нарузку</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On if load is Off, else switch Off</Label>
+				<Label lang="ru">Включить, если нагрузка выключена, иначе выключить.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on</Label>
+				<Label lang="ru">Включить нарузку</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Ignore start level</Label>
+			<Label lang="ru">Игнорировать начальный уровень</Label>
+			<Help lang="en"><![CDATA[Defines if the dimmer shall ignore start level in StartLevelChange command despite it is specified or not]]></Help>
+			<Help lang="ru"><![CDATA[Определяет игнорировать ли начальный уровень димминга в коммандах StartLevelChange (начать изменение яркости) даже если он указан или нет]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+				<Label lang="ru">Да</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>short</Type>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming speed, in 10ms units</Label>
+			<Label lang="ru">Время диммирования, в единицах 10мс</Label>
+			<Help lang="en"><![CDATA[Time to dim on button presses and Set command (if it has no duration specified). If not 0, dimming will be done smoothly to preserv bulb life.]]></Help>
+			<Help lang="ru"><![CDATA[Время димирования при нажатии на кнопки и при получении команды Set (если она не содержит времени включения). Если не 0, то диммирование будет плавным, что сбережёт лампочку дольше.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming long speed, seconds</Label>
+			<Label lang="ru">Время долгого диммирования, секунды</Label>
+			<Help lang="en"><![CDATA[Time to dim on button holds and StartLevelChange command (if it has no duration specified).]]></Help>
+			<Help lang="ru"><![CDATA[Время димирования при удержании кнопок и при получении команды StartLevelChange (начать изменение яркости; если она не содержит времени включения).]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Set maximum light level on On click</Label>
+			<Label lang="ru">Устанавливать максимальный уровень яркости при включении</Label>
+			<Help lang="en"><![CDATA[Defines if the dimmer shall set maximum light level on On command. By default on On command dimmer restores last level. This parameter allows to configure to set maximum level on second On command (if already On) or to always switch on to maximum level]]></Help>
+			<Help lang="ru"><![CDATA[Определяет устанавливать ли максимальную яркость при получении команды Включить. По умолчанию по команде Включить диммер восстанавливает последний уровень яркости. Настройка этого параметра позволяет устанавливать максимальную яркость по второй команде Включить (если уже включен) или всегда включать диммер на максимальную яркость]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">If already On</Label>
+				<Label lang="ru">Если уже включен</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Always</Label>
+				<Label lang="ru">Всегда</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Baby Dimming time, in minutes</Label>
+			<Label lang="ru">Время диммирования Баю-бай, в минутах</Label>
+			<Help lang="en"><![CDATA[Time to dim on double click Off button for Baby-Dim function. This function works only if the load is operated by single press and hold button action. If enabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands]]></Help>
+			<Help lang="ru"><![CDATA[Время димирования при двойном нажатии на кнопку выключения для функции Баю-бай. Данная функция работает только если нагрузка управляется одинарным нажатием или удержанием кнопок. Если включено, устройство будет ждать характерное время нажатия второго нажатия. Данная функция приведёт к небольшой задержке при одинарном нажатии]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Target dimming level for Baby Dimming, %</Label>
+			<Label lang="ru">Конечный уровень диммирования функции Баю-бай, %</Label>
+			<Help lang="en"><![CDATA[Target level on which to stop while executing Baby Dimming. Can be 0 to completely switch off the light.]]></Help>
+			<Help lang="ru"><![CDATA[Конечный уровень, до которого диммировать функции Баю-бай. Используйте 0 для полного выключения света.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>short</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical click timeout, in 10ms units</Label>
+			<Label lang="ru">Характерное время нажатия, в единицах 10мс</Label>
+			<Help lang="en"><![CDATA[Typical time used to differenciate click, hold, double and triple clicks]]></Help>
+			<Help lang="ru"><![CDATA[Харакерное время для отличия нажатия, удержания, двойного и тройного нажатий]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert buttons</Label>
+			<Label lang="ru">Инвертировать кнопки</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+				<Label lang="ru">Да</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch by buttons</Label>
+			<Label lang="ru">Включать/выключать нагрузку кнопками</Label>
+			<Help lang="en"><![CDATA[If disabled, the local operations by buttons will not switch the load, but only send commands to On/Off association group. In this mode buttons are not linked with the switch anymore. They can be used separately: buttons to control remote device, switch will operate by RF commands only.]]></Help>
+			<Help lang="ru"><![CDATA[Если отключено, нажатия на кнопки не будут включать реле, а только отправлят команды группе ассоциаций Включит/Выключить. В данном режиме кнопки не связаны с реле. Они могут быть использованы отдельно: кнопки для управления удалённой нагрузкой, реле будет управляться только по радио.]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+				<Label lang="ru">Нет</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">By single press and hold</Label>
+				<Label lang="ru">Одинарным нажатием и удержанием</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">By double press and press-hold</Label>
+				<Label lang="ru">Двойным нажатием и нажатием-удержанием</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button single press or hold</Label>
+			<Label lang="ru">Действия при одинарном нажатии или удержании клавиши</Label>
+			<Help lang="en"><![CDATA[Defines which command should be sent on button single press or hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast.]]></Help>
+			<Help lang="ru"><![CDATA[Определяет вид команд, которые отправляюся при одинарном нажатии или удержании кнопок. Команды Basic и Активация сцен отправляются группе ассоциаций. Используйте Scene Controller Conf для задания номера сцены для Scene Activation. Команда Включить/Выключить всё отправляется на широковещательный адрес (всем).]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="ru">Отключено</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+				<Label lang="ru">Только Включать/Выключать (отправлять Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+				<Label lang="ru">Выключать/Выключать всё</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Send Scenes</Label>
+				<Label lang="ru">Отправлять Сцены</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+				<Label lang="ru">Включать/Выключать и Диммировать (отправлять Basic Set и Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+				<Label lang="ru">Отправлять преднастроенные Сцены</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Action on button double press or hold</Label>
+			<Label lang="ru">Действия при двойном нажатии или удержании клавиши</Label>
+			<Help lang="en"><![CDATA[Defines which command should be sent on button double press or press-hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast. If not disabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands]]></Help>
+			<Help lang="ru"><![CDATA[Определяет вид команд, которые отправляются при двойном нажатии или нажатии-удержании кнопок. Команды Basic и Активация сцен отправляются группе ассоциаций. Используйте Scene Controller Conf для задания номера сцены для Scene Activation. Команда Включить/Выключить всё отправляется на широковещательный адрес (всем). Если не отключено, устройство будет ждать характерное время нажатия второго нажатия. Данная функция приведёт к небольшой задержке при одинарном нажатии]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+				<Label lang="ru">Отключено</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+				<Label lang="ru">Только Включать/Выключать (отправлять Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+				<Label lang="ru">Выключать/Выключать всё</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Send Scenes</Label>
+				<Label lang="ru">Отправлять Сцены</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+				<Label lang="ru">Включать/Выключать и Диммировать (отправлять Basic Set и Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+				<Label lang="ru">Отправлять преднастроенные Сцены</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Send the following Switch All commands</Label>
+			<Label lang="ru">Отправлять следующие команды включить/выключит всё</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch off only</Label>
+				<Label lang="ru">Только выключить всё</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on only</Label>
+				<Label lang="ru">Только включить всё</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">Switch all on and off</Label>
+				<Label lang="ru">Включить и выключить всё</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>short</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Limit minimal light level, Level limit</Label>
+			<Label lang="ru">Ограничивать минимальный уровень яркости, Ограничить уровнем</Label>
+		</Parameter>
+		<Parameter>
+			<Index>18</Index>
+			<Type>short</Type>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Limit maximal light level</Label>
+			<Label lang="ru">Ограничивать максимальный уровень яркости</Label>
+			<Help lang="en"><![CDATA[0 -   Work as switch: use off and maximal level, 1 - 99 	  -   Define light level]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch On on a defined level</Label>
+			<Label lang="ru">Включаться на заданном уровне яркости</Label>
+			<Help lang="ru"><![CDATA[Эта функция работает, только если в параметре "Устанавливать максимальный уровень яркости при включении" выбрано "Нет" или "Если уже включен", иначе этот параметр игнорируется и свет всегда будет включаться на 100%]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>51</Index>
+			<Type>short</Type>
+			<Default>28</Default>
+			<Size>1</Size>
+			<Label lang="en">Pause before pulse, 10/156 ms</Label>
+			<Label lang="ru">Пауза до импульса, 10/156 ms</Label>
+			<Help lang="en"><![CDATA[NB: Do not touch these settings if you are not sure what they mean! For dimmable LEDs and CFL with bypass use value 1. For other bulbs use default value.]]></Help>
+			<Help lang="ru"><![CDATA[Важно: не трогайте эти параметры, если вы не уверены, что они значат! Для диммируемых светодиодных и энергосберегающих газоразрядных ламп используйте значение по умолчанию.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>52</Index>
+			<Type>short</Type>
+			<Default>28</Default>
+			<Size>1</Size>
+			<Label lang="en">Pause after pulse, 10/156 ms</Label>
+			<Label lang="ru">Пауза после импульса, 10/156 ms</Label>
+			<Help lang="en"><![CDATA[NB: Do not touch these settings if you are not sure what they mean! For dimmable LEDs and CFL with bypass use value 40. For other bulbs use default value.]]></Help>
+			<Help lang="ru"><![CDATA[Важно: не трогайте эти параметры, если вы не уверены, что они значат! Для диммируемых светодиодных и энергосберегающих газоразрядных ламп используйте значение по умолчанию.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>53</Index>
+			<Type>short</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Pulse width, 10/156 ms</Label>
+			<Label lang="ru">Ширина импульса, 10/156 ms</Label>
+			<Help lang="en"><![CDATA[NB: Do not touch these settings if you are not sure what they mean! For dimmable LEDs and CFL with bypass use value 20. For other bulbs use default value.]]></Help>
+			<Help lang="ru"><![CDATA[Важно: не трогайте эти параметры, если вы не уверены, что они значат! Для диммируемых светодиодных и энергосберегающих газоразрядных ламп используйте значение по умолчанию.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>54</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Pulse type</Label>
+			<Label lang="ru">Тип импульса</Label>
+			<Help lang="en"><![CDATA[NB: Do not touch these settings if you are not sure what they mean!]]></Help>
+			<Help lang="ru"><![CDATA[Важно: не трогайте эти параметры, если вы не уверены, что они значат!]]></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Long pulse</Label>
+				<Label lang="ru">Длинный импульс</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Short pulse</Label>
+				<Label lang="ru">Короткий импульс</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>14</Maximum>
+			<Label lang="en">Single press and hold of up/down buttons</Label>
+			<Label lang="ru">Одиночное нажатие или удержание клавиш вверх/вниз</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>14</Maximum>
+			<Label lang="en">Double press and press-hold of up/down buttons</Label>
+			<Label lang="ru">Двойное нажатие или нажатие-удержание клавиш вверх/вниз</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>14</Maximum>
+			<Label lang="en">Send Reports on blind state change</Label>
+			<Label lang="ru">Отправлять отчёты при изменение уровня открытия</Label>
+		</Group>
+	</Associations>
+</Product>

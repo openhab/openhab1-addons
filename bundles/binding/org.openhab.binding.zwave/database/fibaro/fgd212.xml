@@ -170,7 +170,11 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">force auto-calibration of the load using advanced parameter</Label>
+				<Label lang="en">force auto-calibration of the load without Fibaro Bypass</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">force auto-calibration of the load with Fibaro Bypass</Label>
 			</Item>
 			<Help lang="en">Changing the value of this parameter to 1 will force the calibration process. During the calibration parameter is set to 1 and switched to 0 upon completion.</Help>
 		</Parameter>

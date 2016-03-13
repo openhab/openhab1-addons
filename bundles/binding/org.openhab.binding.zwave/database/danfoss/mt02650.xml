@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>MT02650</Model>
+    <Label lang="en">Devolo Thermostat (09356)</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x56</id>             <!-- CRC_16_ENCAP -->
+        </Class>
+        <Class>
+            <id>0x8F</id>             <!-- MULTI_CMD -->
+        </Class>
+        <Class>
+            <id>0x31</id>             <!-- SENSOR_MULTILEVEL -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x43</id>             <!-- THERMOSTAT_SETPOINT -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
+        </Class>
+        <Class>
+            <id>0x80</id>             <!-- BATTERY -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x75</id>             <!-- PROTECTION -->
+        </Class>
+    </CommandClasses>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Target for Wakeup and Override Notifications</Label>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+    </Associations>
+
+</Product>
