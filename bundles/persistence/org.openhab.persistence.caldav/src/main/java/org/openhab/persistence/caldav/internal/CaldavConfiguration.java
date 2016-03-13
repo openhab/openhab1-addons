@@ -32,6 +32,7 @@ public class CaldavConfiguration implements ManagedService {
 
     public static boolean singleEvents = true;
 
+    public static int futureOffset = 0;
     /**
      * {@inheritDoc}
      */
@@ -56,7 +57,13 @@ public class CaldavConfiguration implements ManagedService {
             if (StringUtils.isNotBlank(singleEventsString)) {
                 singleEvents = Boolean.parseBoolean(singleEventsString);
             }
+            
+            String futureOffsetString = (String) config.get("futureOffset");
+            if (StringUtils.isNotBlank(futureOffsetString)) {
+                futureOffset = Integer.parseInt(futureOffsetString);
+            }
         }
     }
-
+    
+    
 }

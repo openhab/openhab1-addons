@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /***
  * ZWaveIndicatorConverter class. Converter for communication with the
  * {@link ZWaveIndicatorCommandClass}.
- * 
+ *
  * @author Pedro Paixao
  * @since 1.8.0
  */
@@ -57,7 +57,7 @@ public class ZWaveIndicatorConverter extends ZWaveCommandClassConverter<ZWaveInd
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveIndicatorConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */
@@ -89,7 +89,7 @@ public class ZWaveIndicatorConverter extends ZWaveCommandClassConverter<ZWaveInd
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Process Z-Wave Indicator Report events. Apply any pending changes (see receiveCommand) and if
      * indicator is changed in any way issue an INDICATOR_SET message to update the node's indicator value
      */
@@ -206,15 +206,15 @@ public class ZWaveIndicatorConverter extends ZWaveCommandClassConverter<ZWaveInd
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * The node's indicator status can change at any time, and without the knowledge of the Z-Wave binding so
      * before any changes are made to the indicator we need to get it's actual value from the device.
      * Hence the receiveCommand method adds the desired command to a "pending" list, and issues an INDICATOR_GET
      * it does not change the actual device Indicator value.
-     * 
+     *
      * When the node responds with the INDICATOR_REPORT pending commands are applied to the indicator value
      * and the result is then sent to the node. This is performed in the handleEvent() method.
-     * 
+     *
      * Pending changes are stored in a hash of hashes with the following keys "ItemName" and "bit" value is 1
      * for turn bit ON, -1 to turn the bound bit OFF, 0 no change.
      *

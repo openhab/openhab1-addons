@@ -365,7 +365,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
                 ZWaveSwitchAllCommandClass switchAllCommandClass = (ZWaveSwitchAllCommandClass) node
                         .getCommandClass(ZWaveCommandClass.CommandClass.SWITCH_ALL);
-                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.SWITCH_ALL) != null) {
+                if (node.getCommandClass(CommandClass.SWITCH_ALL) != null) {
                     record = new OpenHABConfigurationRecord(domain, "SwitchAll", "Switch All", false);
                     record.type = OpenHABConfigurationRecord.TYPE.LIST;
                     record.addValue("0", "Exclude from All On and All Off groups");
@@ -378,19 +378,19 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
                 // Add links to configuration if the node supports the various command classes
                 // Get the configuration command class for this node if it's supported
-                if ((ZWaveConfigurationCommandClass) node.getCommandClass(CommandClass.CONFIGURATION) != null) {
+                if (node.getCommandClass(CommandClass.CONFIGURATION) != null) {
                     record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);
                 }
 
-                if ((ZWaveAssociationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION) != null) {
+                if (node.getCommandClass(CommandClass.ASSOCIATION) != null) {
                     record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);
                 }
 
-                if ((ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP) != null) {
+                if (node.getCommandClass(CommandClass.WAKE_UP) != null) {
                     record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
                     record.addAction("Refresh", "Refresh");
                     records.add(record);

@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * commands that can be used to control the basic functionality of a device.
  * The commands include the possibility to set a given level, get a given
  * level and report a level.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -48,7 +48,7 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 
     /**
      * Creates a new instance of the ZWaveBasicCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -96,7 +96,7 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 
     /**
      * Processes a BASIC_REPORT / BASIC_SET message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -111,7 +111,7 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 
     /**
      * Gets a SerialMessage with the BASIC GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -141,7 +141,7 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 
     /**
      * Gets a SerialMessage with the BASIC SET command
-     * 
+     *
      * @param the level to set.
      * @return the serial message
      */

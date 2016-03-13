@@ -13,6 +13,7 @@ import java.io.InvalidClassException;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -39,7 +40,7 @@ public enum RFXComValueSelector {
     CHIME_SOUND("ChimeSound", NumberItem.class),
     BATTERY_LEVEL("BatteryLevel", NumberItem.class),
     PRESSURE("Pressure", NumberItem.class),
-    FORECAST("Forecast", NumberItem.class),
+    FORECAST("Forecast", StringItem.class),
     RAIN_RATE("RainRate", NumberItem.class),
     RAIN_TOTAL("RainTotal", NumberItem.class),
     WIND_DIRECTION("WindDirection", NumberItem.class),
@@ -52,14 +53,22 @@ public enum RFXComValueSelector {
     TOTAL_USAGE("TotalUsage", NumberItem.class),
     INSTANT_AMPS("InstantAmps", NumberItem.class),
     TOTAL_AMP_HOURS("TotalAmpHours", NumberItem.class),
+    INSTANT_ENERGY("InstantEnergy", NumberItem.class),
     CHANNEL1_AMPS("Channel1Amps", NumberItem.class),
     CHANNEL2_AMPS("Channel2Amps", NumberItem.class),
     CHANNEL3_AMPS("Channel3Amps", NumberItem.class),
+    POWER_FACTOR("PowerFactor", NumberItem.class),
     STATUS("Status", StringItem.class),
+    WEIGHT("Weight", NumberItem.class),
     MOTION("Motion", SwitchItem.class),
     CONTACT("Contact", ContactItem.class),
+    CONTACT_1("Contact1", ContactItem.class),
+    CONTACT_2("Contact2", ContactItem.class),
+    CONTACT_3("Contact3", ContactItem.class),
     VOLTAGE("Voltage", NumberItem.class),
-    SET_POINT("SetPoint", NumberItem.class);
+    SET_POINT("SetPoint", NumberItem.class),
+    DATE_TIME("DateTime", DateTimeItem.class),
+    FREQUENCY("Frequency", NumberItem.class);
 
     private final String text;
     private Class<? extends Item> itemClass;

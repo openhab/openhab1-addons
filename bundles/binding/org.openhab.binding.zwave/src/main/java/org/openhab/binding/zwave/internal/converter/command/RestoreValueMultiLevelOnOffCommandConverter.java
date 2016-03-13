@@ -14,7 +14,7 @@ import org.openhab.core.library.types.OnOffType;
 /**
  * Converts from {@link OnOffType} command to a Z-Wave value.
  * Restores the dimmer to the last value it had.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

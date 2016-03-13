@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * warnings.
  * The commands include the possibility to get a given
  * battery level and report a battery level.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -56,7 +56,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveBatteryCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -124,7 +124,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the BATTERY_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -172,7 +172,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the current battery level. If the battery level is unknown, returns null
-     * 
+     *
      * @return battery level
      */
     public Integer getBatteryLevel() {
@@ -181,7 +181,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the current battery warning state.
-     * 
+     *
      * @return true if device is saying battery is low
      */
     public Boolean getBatteryLow() {

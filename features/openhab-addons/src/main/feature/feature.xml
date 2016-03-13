@@ -126,6 +126,13 @@
         <configfile finalname="${openhab.conf}/services/dmx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dmx</configfile>
     </feature>
 
+    <feature name="openhab-binding-ebus" description="eBUS Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ebus/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/ebus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ebus</configfile>
+    </feature>
+
     <feature name="openhab-binding-ecobee" description="Ecobee Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -180,6 +187,18 @@
         <feature>openhab-runtime-compat1x</feature>
         <feature>openhab-transport-cul</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fs20/${project.version}</bundle>
+    </feature>
+
+    <feature name="openhab-binding-garadget" description="Garadget Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.garadget/${project.version}</bundle>
+    </feature>
+
+    <feature name="openhab-binding-gc100ir" description="GC100IR Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.gc100ir/${project.version}</bundle>
     </feature>
 
     <feature name="openhab-binding-heatmiser" description="Heatmiser Binding" version="${project.version}">
@@ -308,6 +327,13 @@
         <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
     </feature>
 
+    <feature name="openhab-binding-neohub" description="Neohub Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.neohub/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/neohub.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/neohub</configfile>
+    </feature>
+
     <feature name="openhab-binding-nest" description="Nest Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -394,6 +420,13 @@
         <configfile finalname="${openhab.conf}/services/satel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/satel</configfile>
     </feature>
 
+    <feature name="openhab-binding-serial" description="Serial Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <feature>openhab-transport-serial</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.serial/${project.version}</bundle>
+    </feature>
+
     <feature name="openhab-binding-snmp" description="SNMP Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -450,7 +483,7 @@
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.xbmc/${project.version}</bundle>
     </feature>
 
-    <feature name="openhab-binding-zwave" description="Z-Wave Binding" version="${project.version}">
+    <feature name="openhab-binding-zwave1" description="Z-Wave1 Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
         <feature>openhab-transport-serial</feature>
@@ -460,11 +493,82 @@
 
     <!-- persistence -->
 
-    <feature name="openhab-persistence-rrd4j" description="RRD4j Persistence" version="${project.version}">
+    <feature name="openhab-persistence-influxdb" description="InfluxDB (v 1.0) Persistence" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.rrd4j/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.influxdb/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/influxdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/influxdb</configfile>
+    </feature>
+
+    <!-- JDBC Persistence for: Apache Derby, H2, HSQLDB, MariaDB, MySQL, PostgreSQL, SQLite -->
+    <feature name="openhab-persistence-jdbc-derby" description="JDBC Persistence Apache Derby" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.apache.derby/derbyclient/${derby.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jdbc-h2" description="JDBC Persistence H2" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:com.h2database/h2/${h2.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jdbc-hsqldb" description="JDBC Persistence HSQLDB" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.hsqldb/hsqldb/${hsqldb.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jdbc-mariadb" description="JDBC Persistence MariaDB" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jdbc-mysql" description="JDBC Persistence MySQL" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:mysql/mysql-connector-java/${mysql.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jdbc-postgresql" description="JDBC Persistence PostgreSQL" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jdbc-sqlite" description="JDBC Persistence SQLite" version="${project.version}">
+        <configfile finalname="${openhab.conf}/services/jdbc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jdbc</configfile>
+        <feature prerequisite="false" dependency="false">openhab-runtime-base</feature>
+        <feature prerequisite="false" dependency="false">openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.xerial/sqlite-jdbc/${sqlite.version}</bundle>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jdbc/${project.version}</bundle>
+    </feature>
+    
+    <feature name="openhab-persistence-jpa" description="JPA Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jpa/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/jpa.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jpa</configfile>
+    </feature>
+    
+    <feature name="openhab-persistence-mapdb" description="MapDB Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.mapdb/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/mapdb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mapdb</configfile>
     </feature>
 
     <feature name="openhab-persistence-mqtt" description="MQTT Persistence" version="${project.version}">
@@ -483,6 +587,14 @@
         <configfile finalname="${openhab.conf}/services/mysql.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mysql</configfile>
     </feature>
 
+    <feature name="openhab-persistence-rrd4j" description="RRD4j Persistence" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.rrd4j/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/rrd4j.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/rrd4j</configfile>
+    </feature>
+
+<!--
     <feature name="openhab-persistence-logging" description="Logging Persistence" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
@@ -491,14 +603,8 @@
         <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.logging/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/logging.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/logging</configfile>
     </feature>
-
-    <feature name="openhab-persistence-jpa" description="JPA Persistence" version="${project.version}">
-        <feature>openhab-runtime-base</feature>
-        <feature>openhab-runtime-compat1x</feature>
-        <bundle start-level="80">mvn:org.openhab.persistence/org.openhab.persistence.jpa/${project.version}</bundle>
-        <configfile finalname="${openhab.conf}/services/jpa.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jpa</configfile>
-    </feature>
-
+-->
+    
     <!-- text-to-speech -->   
 
     <feature name="openhab-tts-marytts" description="MaryTTS" version="${project.version}">

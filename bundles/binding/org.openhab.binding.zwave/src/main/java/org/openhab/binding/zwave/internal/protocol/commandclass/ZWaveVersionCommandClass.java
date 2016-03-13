@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * used by the node, the individual command class versions
  * used by the node and the vendor specific application
  * version from a device.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.3.0
  */
@@ -51,7 +51,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveVersionCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -151,7 +151,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
     /**
      * Gets a SerialMessage with the VERSION_GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getVersionMessage() {
@@ -168,7 +168,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
      * Gets a SerialMessage with the VERSION COMMAND CLASS GET command.
      * This version is used to differentiate between multiple versions of a command
      * and to enable extra functionality.
-     * 
+     *
      * @param commandClass The command class to get the version for.
      * @return the serial message
      */
@@ -185,7 +185,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
     /**
      * Check the version of a command class by sending a VERSION_COMMAND_CLASS_GET message to the node.
-     * 
+     *
      * @param commandClass the command class to check the version for.
      * @return serial message to be sent
      */
@@ -214,7 +214,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
     /**
      * Returns the version of the protocol used by the device
-     * 
+     *
      * @return Protocol version as double (version . subversion)
      */
     public String getProtocolVersion() {
@@ -223,7 +223,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
     /**
      * Returns the version of the firmware used by the device
-     * 
+     *
      * @return Application version as double (version . subversion)
      */
     public String getApplicationVersion() {
@@ -265,7 +265,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
         /**
          * Lookup function based on the sensor type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the sensor type.
          */

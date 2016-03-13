@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * through the BASIC command class. Note that some devices report their
  * status as BASIC Report messages as well. We try to handle these devices
  * as best as possible.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -49,7 +49,7 @@ public class ZWaveBasicConverter extends ZWaveCommandClassConverter<ZWaveBasicCo
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveBasicConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

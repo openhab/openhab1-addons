@@ -34,7 +34,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * The event is reported as occurs (0xFF) or does not occur (0x00).
  * The commands include the possibility to get a given
  * value and report a value.
- * 
+ *
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.3.0
@@ -60,7 +60,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveAlarmSensorCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -182,7 +182,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_ALARM_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -198,7 +198,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_ALARM_GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getMessage(AlarmType alarmType) {
@@ -228,7 +228,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_ALARM_SUPPORTED_GET command
-     * 
+     *
      * @return the serial message, or null if the supported command is not supported.
      */
     public SerialMessage getSupportedMessage() {
@@ -306,7 +306,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave AlarmType enumeration. The alarm type indicates the type
      * of alarm that is reported.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @author Chris Jackson
      * @since 1.3.0
@@ -350,7 +350,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the alarm type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the alarm type.
          */
@@ -379,7 +379,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Class to hold alarm state
-     * 
+     *
      * @author Chris Jackson
      */
     @XStreamAlias("alarmSensor")
@@ -412,7 +412,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave Alarm Sensor Event class. Indicates that an alarm value
      * changed.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.4.0
      */
@@ -422,7 +422,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a instance of the ZWaveAlarmSensorValueEvent class.
-         * 
+         *
          * @param nodeId the nodeId of the event
          * @param endpoint the endpoint of the event.
          * @param alarmType the alarm type that triggered the event;

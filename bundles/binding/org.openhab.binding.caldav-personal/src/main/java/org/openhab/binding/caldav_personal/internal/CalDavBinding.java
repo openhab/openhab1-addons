@@ -64,7 +64,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         this.calDavLoader.addListener(this);
     }
 
-    public void unsetCalDavLoader() {
+    public void unsetCalDavLoader(CalDavLoader calDavLoader) {
         this.calDavLoader.removeListener(this);
         this.calDavLoader = null;
     }
@@ -132,6 +132,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
     @Override
     public void allBindingsChanged(BindingProvider provider) {
         this.updateItemsForEvent();
+        super.allBindingsChanged(provider);
     }
 
     @Override
@@ -143,8 +144,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
         if (config == null) {
             return;
         }
-        final List<CalDavEvent> events = this.calDavLoader
-                .getEvents(new CalDavQuery(this.calendars, DateTime.now(), Sort.ASCENDING));
+        final List<CalDavEvent> events = this.calDavLoader.getEvents(getQueryForConfig(config));
         this.updateItem(itemName, config, events);
     }
 
@@ -219,16 +219,22 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
         for (String item : bindingProvider.getItemNames()) {
             CalDavConfig config = bindingProvider.getConfig(item);
-            List<CalDavEvent> events = eventCache.get(config.getCalendar().hashCode());
+            List<CalDavEvent> events = eventCache.get(config.getUniqueEventListKey());
             if (events == null) {
-                events = this.calDavLoader
-                        .getEvents(new CalDavQuery(config.getCalendar(), DateTime.now(), Sort.ASCENDING));
-                eventCache.put(config.getCalendar().hashCode(), events);
+                CalDavQuery query = getQueryForConfig(config);
+                events = this.calDavLoader.getEvents(query);
+                eventCache.put(config.getUniqueEventListKey(), events);
             }
             this.updateItem(item, config, events);
         }
     }
 
+    private CalDavQuery getQueryForConfig(CalDavConfig config) {
+        CalDavQuery query = new CalDavQuery(config.getCalendar(), DateTime.now(), Sort.ASCENDING);
+        query.setFilterName(config.getFilterName());
+        query.setFilterCategory(config.getFilterCategory());
+        return query;
+    }
     private synchronized void updateItem(String itemName, CalDavConfig config, List<CalDavEvent> events) {
         if (config.getType() == Type.PRESENCE) {
             List<CalDavEvent> subList = getActiveEvents(events);

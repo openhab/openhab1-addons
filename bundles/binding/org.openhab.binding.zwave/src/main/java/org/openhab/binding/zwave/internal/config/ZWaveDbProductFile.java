@@ -15,7 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Implements the top level class for the product file
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *

@@ -15,7 +15,7 @@ import java.util.List;
  * This is designed to interface between the REST services, and bindings.
  * The interface uses a domain string to identify different levels of configuration
  * data.
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *
@@ -23,35 +23,35 @@ import java.util.List;
 public interface OpenHABConfigurationService {
     /**
      * Returns the name of this bundle
-     * 
+     *
      * @return String with the name of the bundle.
      */
     public String getBundleName();
 
     /**
      * Returns the name of this bundle
-     * 
+     *
      * @return String with the name of the bundle.
      */
     public String getCommonName();
 
     /**
      * Returns the name of this bundle
-     * 
+     *
      * @return String with the name of the bundle.
      */
     public String getDescription();
 
     /**
      * Returns the version of this bundle
-     * 
+     *
      * @return String with the name of the bundle.
      */
     public String getVersion();
 
     /**
      * Gets the configuration items for a domain.
-     * 
+     *
      * @param domain
      * @returns
      */
@@ -59,7 +59,7 @@ public interface OpenHABConfigurationService {
 
     /**
      * Sets the configuration items for a domain.
-     * 
+     *
      * @param domain
      * @param records
      */
@@ -67,7 +67,7 @@ public interface OpenHABConfigurationService {
 
     /**
      * Requests an action be performed on a domain.
-     * 
+     *
      * @param domain
      * @param action
      */
@@ -75,7 +75,7 @@ public interface OpenHABConfigurationService {
 
     /**
      * Requests an action be performed on a domain.
-     * 
+     *
      * @param domain
      * @param name
      * @param action

@@ -13,7 +13,7 @@ import org.openhab.core.library.types.DecimalType;
 
 /**
  * Converts from {@link DecimalType} command to a Z-Wave value.
- * 
+ *
  * @author Chris Jackson
  * @since 1.7.0
  */

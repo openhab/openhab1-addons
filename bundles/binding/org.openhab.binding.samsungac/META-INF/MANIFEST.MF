@@ -27,5 +27,7 @@ Import-Package: org.apache.commons.codec.binary;version="1.3.0",
 Export-Package: org.openhab.binding.samsungac
 Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/bcprov-jdk16-1.45-mini.jar,
+ lib/not-yet-commons-ssl-0.3.16.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main/java/"/>
 	<classpathentry kind="src" path="src/main/resources/"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk16-1.45-mini.jar"/>
+    <classpathentry kind="lib" path="lib/not-yet-commons-ssl-0.3.16.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

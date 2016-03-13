@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveAlarmConverter class. Converter for communication with the
  * {@link ZWaveAlarmCommandClass}. Implements polling of the alarm
  * status and receiving of alarm events.
- * 
+ *
  * @author Chris Jackson
  * @since 1.6.0
  */
@@ -45,7 +45,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCo
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveAlarmConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

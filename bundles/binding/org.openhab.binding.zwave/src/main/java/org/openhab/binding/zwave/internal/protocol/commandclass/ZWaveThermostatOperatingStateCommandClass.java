@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat OperatingState command class.
- * 
+ *
  * @author Dan Cunningham
  * @since 1.6.0
  */
@@ -52,7 +52,7 @@ public class ZWaveThermostatOperatingStateCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveThermostatOperatingStateCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -98,7 +98,7 @@ public class ZWaveThermostatOperatingStateCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a THERMOSTAT_OPERATING_STATE_REPORT message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -173,7 +173,7 @@ public class ZWaveThermostatOperatingStateCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave OperatingStateType enumeration. The operating state type indicates the type
      * of operating state that is reported from the thermostat.
-     * 
+     *
      * @author Dan Cunningham
      * @since 1.6.0
      */
@@ -220,7 +220,7 @@ public class ZWaveThermostatOperatingStateCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the operating state type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the operatingState type.
          */

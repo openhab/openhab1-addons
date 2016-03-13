@@ -39,20 +39,26 @@
                                 <artifact><file>src/main/resources/conf/culintertechno.cfg</file><type>cfg</type><classifier>culintertechno</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/denon.cfg</file><type>cfg</type><classifier>denon</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/dmx.cfg</file><type>cfg</type><classifier>dmx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/ebus.cfg</file><type>cfg</type><classifier>ebus</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ecobee.cfg</file><type>cfg</type><classifier>ecobee</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enphaseenergy.cfg</file><type>cfg</type><classifier>enphaseenergy</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/enocean.cfg</file><type>cfg</type><classifier>enocean</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/epsonprojector.cfg</file><type>cfg</type><classifier>epsonprojector</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/freeswitch.cfg</file><type>cfg</type><classifier>freeswitch</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/garadget.cfg</file><type>cfg</type><classifier>garadget</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/gc100ir.cfg</file><type>cfg</type><classifier>gc100ir</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/heatmiser.cfg</file><type>cfg</type><classifier>heatmiser</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/homematic.cfg</file><type>cfg</type><classifier>homematic</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/http.cfg</file><type>cfg</type><classifier>http</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/ihc.cfg</file><type>cfg</type><classifier>ihc</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/influxdb.cfg</file><type>cfg</type><classifier>influxdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/insteonplm.cfg</file><type>cfg</type><classifier>insteonplm</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/logging.cfg</file><type>cfg</type><classifier>logging</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/mapdb.cfg</file><type>cfg</type><classifier>mapdb</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/marytts.cfg</file><type>cfg</type><classifier>marytts</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/milight.cfg</file><type>cfg</type><classifier>milight</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mios.cfg</file><type>cfg</type><classifier>mios</classifier></artifact>
@@ -62,6 +68,7 @@
                                 <artifact><file>src/main/resources/conf/mqtt-persistence.cfg</file><type>cfg</type><classifier>mqtt-persistence</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/myq.cfg</file><type>cfg</type><classifier>myq</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mysql.cfg</file><type>cfg</type><classifier>mysql</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/neohub.cfg</file><type>cfg</type><classifier>neohub</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/nest.cfg</file><type>cfg</type><classifier>nest</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/netatmo.cfg</file><type>cfg</type><classifier>netatmo</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/networkhealth.cfg</file><type>cfg</type><classifier>networkhealth</classifier></artifact>
