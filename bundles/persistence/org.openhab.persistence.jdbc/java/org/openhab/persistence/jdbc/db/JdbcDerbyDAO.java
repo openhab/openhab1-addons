@@ -90,15 +90,32 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
     }
 
     @Override
+    public boolean doIfTableExists(ItemsVO vo) {
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_IF_TABLE_EXISTS, new String[] { "#searchTable#" },
+                new String[] { vo.getItemsManageTable().toUpperCase() });
+        logger.debug("JDBC::doIfTableExists sql={}", sql);
+        return Yank.queryScalar(sql, String.class, null) != null;
+    }
+
+    @Override
+    public Long doCreateNewEntryInItemsTable(ItemsVO vo) {
+        String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_NEW_ENTRY_IN_ITEMS_TABLE,
+                new String[] { "#itemsManageTable#", "#itemname#" },
+                new String[] { vo.getItemsManageTable().toUpperCase(), vo.getItemname() });
+        logger.debug("JDBC::doCreateNewEntryInItemsTable sql={}", sql);
+        return Yank.insert(sql, null);
+    }
+
+    @Override
     public ItemsVO doCreateItemsTableIfNot(ItemsVO vo) {
         // boolean tableExists = Yank.queryScalar(SQL_IF_TABLE_EXISTS.replace("#searchTable#",
         // vo.getItemsManageTable().toUpperCase()), String.class, null) == null;
         boolean tableExists = doIfTableExists(vo);
-        if (tableExists) {
+        if (!tableExists) {
             String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEMS_TABLE_IF_NOT,
                     new String[] { "#itemsManageTable#", "#colname#", "#coltype#" },
                     new String[] { vo.getItemsManageTable().toUpperCase(), vo.getColname(), vo.getColtype() });
-            logger.debug("JDBC::doCreateItemsTableIfNot tableExists={} therefore sql={}", sql);
+            logger.debug("JDBC::doCreateItemsTableIfNot tableExists={} therefore sql={}", tableExists, sql);
             Yank.execute(sql, null);
         } else {
             logger.debug("JDBC::doCreateItemsTableIfNot tableExists={}, did no CREATE TABLE", tableExists);
@@ -130,11 +147,13 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
     public List<HistoricItem> doGetHistItemFilterQuery(Item item, FilterCriteria filter, int numberDecimalcount,
             String table, String name) {
         String sql = histItemFilterQueryProvider(filter, numberDecimalcount, table, name);
-        logger.debug("JDBC::doGetHistItemFilterQuery sql={}", sql);
         List<Object[]> m = Yank.queryObjectArrays(sql, null);
+
+        logger.debug("JDBC::doGetHistItemFilterQuery gor Array length={}", m.size());
 
         List<HistoricItem> items = new ArrayList<HistoricItem>();
         for (int i = 0; i < m.size(); i++) {
+            logger.debug("JDBC::doGetHistItemFilterQuery 0='{}' 1='{}'", m.get(i)[0], m.get(i)[1]);
             items.add(new JdbcItem(item.getName(), getState(item, m.get(i)[1]), objectAsDate(m.get(i)[0])));
         }
         return items;
@@ -155,7 +174,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
             String simpleName) {
         logger.debug(
                 "JDBC::getHistItemFilterQueryProvider filter = {}, numberDecimalcount = {}, table = {}, simpleName = {}",
-                filter.toString(), numberDecimalcount, table, simpleName);
+                StringUtilsExt.filterToString(filter), numberDecimalcount, table, simpleName);
 
         String filterString = "";
         if (filter.getBeginDate() != null) {
@@ -164,7 +183,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
         }
         if (filter.getEndDate() != null) {
             filterString += filterString.isEmpty() ? " WHERE" : " AND";
-            filterString += " TIME>'" + jdbcDateFormat.print(new DateTime(filter.getEndDate().getTime())) + "'";
+            filterString += " TIME<'" + jdbcDateFormat.print(new DateTime(filter.getEndDate().getTime())) + "'";
         }
         filterString += (filter.getOrdering() == Ordering.ASCENDING) ? " ORDER BY time ASC" : " ORDER BY time DESC";
         if (filter.getPageSize() != 0x7fffffff) {
@@ -194,7 +213,7 @@ public class JdbcDerbyDAO extends JdbcBaseDAO {
             queryString += "5 AS DECIMAL(31," + numberDecimalcount + "))"; // 31 is DECIMAL max precision
                                                                            // https://db.apache.org/derby/docs/10.0/manuals/develop/develop151.html
         } else {
-            queryString += "SELECT time, value FROM " + table;
+            queryString += " value FROM " + table.toUpperCase();
         }
 
         if (!filterString.isEmpty()) {
