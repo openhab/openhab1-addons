@@ -30,6 +30,17 @@
 			<Label lang="en">Scene Switch</Label>
 			<ConfigFile>devolo/mt2652.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2004</Type>
+				<Id>04a4</Id>
+			</Reference>
+			<Model>ZS6101</Model>
+			<Label lang="en">Smoke Detector</Label>
+			<Label lang="de">Rauchmelder</Label>
+			<!--Use the Configuration for the Vision ZS6101 -->
+			<ConfigFile>vision/zs6101.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -130,6 +141,15 @@
 			<Model>WO15Z-1</Model>
 			<Label lang="en">Single Wall Outlet</Label>
 			<ConfigFile>linear/wo15z-1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5457</Type>
+				<Id>3033</Id>
+			</Reference>
+			<Model>WT00Z-1</Model>
+			<Label lang="en">3-Way Wall Accessory Switch</Label>
+			<ConfigFile>linear/wt00z-1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -338,6 +358,15 @@
 		<Id>0060</Id>
 		<Name>Everspring</Name>
 		<Product>
+            <Reference>
+                <Type>0010</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>HAC01</Model>
+            <Label lang="en">In-Wall Remote Insert</Label>
+            <ConfigFile>everspring/hac01.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
@@ -525,6 +554,15 @@
 	<Manufacturer>
 		<Id>0063</Id>
 		<Name>GE</Name>
+		<Product>
+			<Reference>
+				<Type>5044</Type>
+				<Id>3031</Id>
+			</Reference>
+			<Model>12718</Model>
+			<Label lang="en">Lighting Lamp Module with Dimmer Control</Label>
+			<ConfigFile>ge/12718.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>5257</Type>
@@ -717,7 +755,8 @@
 				<Type>8001</Type>
 				<Id>0001</Id>
 			</Reference>
-			<Model>50x5xx</Model>
+			<Model>508519</Model>
+			<ConfigFile>merten/508519.xml</ConfigFile>
 			<Label lang="en">Switch Plug</Label>
 		</Product>
 		<Product>
@@ -728,6 +767,15 @@
 			<Model>5082xx</Model>
 			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
 			<ConfigFile>merten/5082xx.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>506119</Model>
+			<Label lang="en">Battery Powered Wall Controller</Label>
+			<ConfigFile>merten/506119.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -779,6 +827,15 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+        <Product>
+            <Reference>
+                <Type>0104</Type>
+                <Id>0038</Id>
+            </Reference>
+            <Model>ZW056-A</Model>
+            <Label lang="en">Doorbell</Label>
+            <ConfigFile>aeon/zw056.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
@@ -1242,17 +1299,18 @@
 				<Type>0003</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>NP210</Model>
-			<Label lang="en">Smart PowerNode</Label>
-			<ConfigFile>greenwave/np210.xml</ConfigFile>
+			<Model>NP210/NP310</Model>
+			<Label lang="en">Smart PowerNode (6x)</Label>
+			<ConfigFile VersionMax="3">greenwave/np210.xml</ConfigFile>
+			<ConfigFile VersionMin="4">greenwave/np310.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>NS210</Model>
-			<Label lang="en">Smart PowerNode</Label>
+			<Model>NS210/NS310</Model>
+			<Label lang="en">Smart PowerNode (single)</Label>
 			<ConfigFile VersionMax="3">greenwave/ns210.xml</ConfigFile>
 			<ConfigFile VersionMin="4">greenwave/ns310.xml</ConfigFile>
 		</Product>
@@ -1423,10 +1481,14 @@
 			<ConfigFile>fibaro/fgs212.xml</ConfigFile>
 		</Product>
 		<Product>
-			<Reference>
-				<Type>0800</Type>
-				<Id>1001</Id>
-			</Reference>
+            <Reference>
+                <Type>0800</Type>
+                <Id>1001</Id>
+            </Reference>
+            <Reference>
+                <Type>0801</Type>
+                <Id>1001</Id>
+            </Reference>
 			<Reference>
 				<Type>0800</Type>
 				<Id>2001</Id>
@@ -1516,10 +1578,14 @@
 				<Type>0400</Type>
 				<Id>100A</Id>
 			</Reference>
-			<Reference>
-				<Type>0400</Type>
-				<Id>300A</Id>
-			</Reference>
+            <Reference>
+                <Type>0400</Type>
+                <Id>300A</Id>
+            </Reference>
+            <Reference>
+                <Type>0400</Type>
+                <Id>400A</Id>
+            </Reference>
 			<Model>FGS211</Model>
 			<Label lang="en">Relay Switch 1x3kW</Label>
 			<ConfigFile>fibaro/fgs211.xml</ConfigFile>
@@ -1581,10 +1647,14 @@
 			<ConfigFile>fibaro/fgs222.xml</ConfigFile>
 		</Product>
 		<Product>
-			<Reference>
-				<Type>0700</Type>
-				<Id>1000</Id>
-			</Reference>
+            <Reference>
+                <Type>0700</Type>
+                <Id>1000</Id>
+            </Reference>
+            <Reference>
+                <Type>0700</Type>
+                <Id>2000</Id>
+            </Reference>
 			<Reference>
 				<Type>0700</Type>
 				<Id>3000</Id>
@@ -1668,8 +1738,8 @@
 				<Id>4000</Id>
 			</Reference>
 			<Reference>
-				<Type>3000</Type>
-				<Id>0900</Id>
+				<Type>0900</Type>
+				<Id>3000</Id>
 			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
@@ -1788,19 +1858,55 @@
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>EZMultiPli</Model>
+			<Label lang="en">Multi Sensor</Label>
+			<ConfigFile>homeseer/ezmultipli.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0115</Id>
 		<Name>ZWave.me</Name>
+        <Product>
+            <Reference>
+                <Type>1000</Type>
+                <Id>0002</Id>
+            </Reference>
+            <Model>ZME_054336</Model>
+            <Label lang="en">Flush-Mountable Dimmer v1.8</Label>
+            <ConfigFile>zwaveme/zme_054336.xml</ConfigFile>
+        </Product>
+         <Product>
+            <Reference>
+                <Type>0024</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>ZME_10024</Model>
+            <Label lang="en">Floor thermostat 1.2</Label>
+            <ConfigFile>zwaveme/zme_10024.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>1000</Type>
+                <Id>0100</Id>
+            </Reference>
+            <Model>ZME_05461</Model>
+            <Label lang="en">Double switch</Label>
+            <Label lang="de">Doppeltaster</Label>
+            <ConfigFile>zwaveme/zme_05461.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
-				<Type>1000</Type>
-				<Id>0100</Id>
+				<Type>0100</Type>
+				<Id>0400</Id>
 			</Reference>
-			<Model>ZME_05461</Model>
-			<Label lang="en">Double switch</Label>
-			<Label lang="de">Doppeltaster</Label>
-			<ConfigFile>zwaveme/zme_05461.xml</ConfigFile>
+			<Model>Z-Weather</Model>
+			<Label lang="en">Z-Weather</Label>
+			<ConfigFile>popp/zweather.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1915,6 +2021,18 @@
 			<Label lang="en">Wall Switch Set for Busch Jaeger</Label>
 			<ConfigFile>zwaveme/zme_05457.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0024</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_FT</Model>
+			<Label lang="en">Floor Thermostat</Label>
+			<ConfigFile>zwaveme/zme_ft11.xml</ConfigFile>
+			<ConfigFile VersionMax="1.2">zwaveme/zme_ftll.xml</ConfigFile> <!-- VersionMin="1.1" -->
+			<ConfigFile VersionMin="1.3" VersionMax="1.3">zwaveme/zme_ftl3.xml</ConfigFile> 
+			<ConfigFile VersionMin="1.4">zwaveme/zme_ftl4.xml</ConfigFile> 
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
@@ -1979,6 +2097,10 @@
 				<Type>0001</Type>
 				<Id>0001</Id>
 			</Reference>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0011</Id>
+            </Reference>
 			<Model>TZ88</Model>
 			<Label lang="en">Energy Monitoring Wall Plug</Label>
 			<ConfigFile>tkb/tz88.xml</ConfigFile>
@@ -1997,6 +2119,15 @@
 		<Id>0002</Id>
 		<Name>Danfoss</Name>
 		<Product>
+            <Reference>
+                <Type>0005</Type>
+                <Id>0175</Id>
+            </Reference>
+            <Model>MT02650</Model>
+            <Label lang="en">Devolo Thermostat (09356)</Label>
+            <ConfigFile>danfoss/mt02650.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>0005</Type>
 				<Id>0003</Id>
@@ -2004,6 +2135,16 @@
 			<Model>LCZ251</Model>
 			<Label lang="en">Living Connect Z Thermostat 2.51</Label>
 			<Label lang="de">Living Connect Z Thermostat 2.51</Label>
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference> <!-- This Type and Id are know to be used by the Devolo badged device --> 
+				<Type>0005</Type>
+				<Id>0175</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat (Devolo)</Label>
+			<Label lang="de">Living Connect Z Thermostat (Devolo)</Label>
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -2165,6 +2306,25 @@
 			<Model>PAN11-1B</Model>
 			<Label lang="en">Smart Energy Plug In Switch</Label>
 			<ConfigFile>philio/pan11_1b.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0021</Id>
+			</Reference>
+			<Model>PAT02-C</Model>
+			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>philio/pat02c.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>001f</Id>
+			</Reference>
+			<Model>PAT02-A/B/C</Model>
+			<Label lang="en">Flood Multisensor (incl. humidty and temperature)</Label>
+			<Label lang="de">Überschwemmungssensor inkl. Luftfeuchtigkeit und Temperatur</Label>
+			<ConfigFile>philio/pat02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -2343,6 +2503,15 @@
 			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
 			<ConfigFile>leviton/vrmx1-1lz.xml</ConfigFile>
 		</Product>
+                <Product>
+                        <Reference>
+                                <Type>0e01</Type>
+                                <Id>0334</Id>
+                        </Reference>
+                        <Model>VRE06-1LZ</Model>
+                        <Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+                        <ConfigFile>leviton/vre06-1lz.xml</ConfigFile>
+                </Product>
 		<Product>
 			<Reference>
 				<Type>1902</Type>
@@ -2483,15 +2652,24 @@
 	<Manufacturer>
 		<Id>159</Id>
 		<Name>Qubino</Name>
-		<Product>
-			<Reference>
-				<Type>2</Type>
-				<Id>2</Id>
-			</Reference>
-			<Model>ZMNHAA</Model>
-			<Label lang="en">Flush 1 relay</Label>
-			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
-		</Product>
+        <Product>
+            <Reference>
+                <Type>2</Type>
+                <Id>2</Id>
+            </Reference>
+            <Model>ZMNHAA</Model>
+            <Label lang="en">Flush 1 relay</Label>
+            <ConfigFile>qubino/zmnhaa.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>1</Type>
+                <Id>52</Id>
+            </Reference>
+            <Model>ZMNHSD</Model>
+            <Label lang="en">DIN dimmer</Label>
+            <ConfigFile>qubino/zmnhsd.xml</ConfigFile>
+        </Product>
 		<Product>
 			<Reference>
 				<Type>2</Type>
@@ -2743,6 +2921,16 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>100</Type>
+				<Id>201</Id>
+			</Reference>
+			<Model>004001</Model>
+			<Label lang="en">Smoke Detector and Siren</Label>
+			<Label lang="de">Rauchwarnmelder mit integrierter Innensirene</Label>
+			<ConfigFile>popp/004001.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>3</Type>
 				<Id>1</Id>
 			</Reference>
@@ -2908,7 +3096,25 @@
 			<Label lang="en">PM2.5 Monitor</Label>
 			<ConfigFile>mcohome/mh10-pm25.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+		<Product>
+            <Reference>
+                <Type>4102</Type>
+                <Id>0202</Id>
+            </Reference>
+            <Model>MH-S412</Model>
+            <Label lang="en">Z-Wave touch panel switch with two channel</Label>
+            <ConfigFile>mcohome/mhs412.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4102</Type>
+                <Id>0201</Id>
+            </Reference>
+            <Model>MH-S411</Model>
+            <Label lang="en">Touch Panel Switch (Single)</Label>
+            <ConfigFile>mcohome/mhs411.xml</ConfigFile>
+        </Product>
+  	</Manufacturer>
 	<Manufacturer>
 		<Id>0010</Id>
 		<Name>Residential Control Systems</Name>
@@ -2992,6 +3198,15 @@
 			<Model>EV-100</Model>
 			<Label lang="en">Vent</Label>
 		</Product>
+		<Product>
+            <Reference>
+                <Type>0003</Type>
+                <Id>0512</Id>
+            </Reference>
+            <Model>EBV-105</Model>
+            <Label lang="en">Wireless Water Shutoff Valve</Label>
+            <ConfigFile>econet/ebv105.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0165</Id>
@@ -3006,14 +3221,23 @@
 			<ConfigFile>nodon/crc3100.xml</ConfigFile>
 		</Product>
 		<Product>
-            <Reference>
-                <Type>0002</Type>
-                <Id>0002</Id>
-            </Reference>
-            <Model>Soft Remote</Model>
-            <Label lang="en">Remote Control</Label>
-            <ConfigFile>nodon/crc3605.xml</ConfigFile>
-        </Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>Soft Remote</Model>
+			<Label lang="en">Remote Control</Label>
+			<ConfigFile>nodon/crc3605.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>CRW-310x</Model>
+			<Label lang="en">Wall Switch</Label>
+			<ConfigFile>nodon/crw310x.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 	  <Id>019a</Id>
@@ -3040,7 +3264,16 @@
 			<Label lang="en">Door &amp; Window Sensor</Label>
 			<ConfigFile>dlink/dch-z110.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+        <Product>
+            <Reference>
+                <Type>0002</Type>
+                <Id>000D</Id>
+            </Reference>
+            <Model>DCH-Z120</Model>
+            <Label lang="en">Battery Motion Sensor</Label>
+            <ConfigFile>dlink/dch-z120.xml</ConfigFile>
+        </Product>
+  	</Manufacturer>
 	<Manufacturer>
 		<Id>020e</Id>
 		<Name>Domitech</Name>
@@ -3080,4 +3313,28 @@
  			<ConfigFile>lscontrol/e861c.xml</ConfigFile>
  		</Product>
  	</Manufacturer>
+ 	<Manufacturer>
+		<Id>0176</Id>
+		<Name>Telldus</Name>
+		<Product>
+			<Reference>
+				<Type>0005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>TZDW-100</Model>
+			<Label lang="en">Door Sensor</Label>
+			<ConfigFile>telldus/tzdw-100.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+        <Product>
+            <Reference>
+                <Type>0001</Type>
+                <Id>0001</Id>
+            </Reference>
+            <Model>STZW402</Model>
+            <Label lang="en">4000W Thermostat</Label>
+            <ConfigFile>stelpro/stzw402.xml</ConfigFile>
+        </Product>
+    </Manufacturer> 
 </Manufacturers>
