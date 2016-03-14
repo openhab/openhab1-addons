@@ -3280,8 +3280,12 @@
 		<Product>
 			<Reference>
 				<Type>4c42</Type>
-				<Id>3135</Id>
+				<Id>3134</Id>
 			</Reference>
+            <Reference>
+                <Type>4c42</Type>
+                <Id>3135</Id>
+            </Reference>
 			<Model>ZB22UK</Model>
 			<Label lang="en">Smart LED Light Bulb</Label>
 			<ConfigFile>domitech/domezbulb.xml</ConfigFile>
