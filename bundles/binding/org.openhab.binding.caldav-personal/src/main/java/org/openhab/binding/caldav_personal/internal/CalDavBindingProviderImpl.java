@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
  *
  * caldavPresence="calendar:my type:presence"
  * caldavPresence="calendar:my type:event eventNr:0 value:name"
- * caldavPresence="calendar:my type:active eventNr:0 value:name"
+ * caldavPresence="calendar:my type:active eventNr:0 value:name filter-name:'.*Biotonne.*'"
+ * caldavPresence="calendar:my type:active eventNr:0 value:name filter-category:'Arbeit'"
  * caldavPresence="calendar:my type:upcoming eventNr:0 value:place"
  *
  * valid values: name, description, place, start, end
@@ -42,11 +43,13 @@ import org.slf4j.LoggerFactory;
 public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider implements CalDavBindingProvider {
     private static final Logger logger = LoggerFactory.getLogger(CalDavBindingProviderImpl.class);
 
-    private static final String REGEX_CALENDAR = "calendar:([A-Za-z-_]+(,[A-Za-z-_]+)*)";
-    private static final String REGEX_TYPE = "type:([A-Za-z]+)";
-    private static final String REGEX_EVENT_NR = "eventNr:([0-9]+)";
-    private static final String REGEX_VALUE = "value:([A-Za-z]+)";
-
+    private static final String REGEX_CALENDAR = "calendar:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
+    private static final String REGEX_TYPE = "type:'?([A-Za-z]+)'?";
+    private static final String REGEX_EVENT_NR = "eventNr:'?([0-9]+)'?"; 
+    private static final String REGEX_VALUE = "value:'?([A-Za-z]+)'?";
+    private static final String REGEX_FILTER_NAME = "filter-name:'?([A-Za-z\\.\\*\\+\\- \\|]+)'?";
+    private static final String REGEX_FILTER_CATEGORY = "filter-category:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
+    
     /**
      * {@inheritDoc}
      */
@@ -82,41 +85,31 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 
         logger.trace("handling config: {}", bindingConfig);
 
+        // calendar
+        String calendarString = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_CALENDAR);
         List<String> calendar = new ArrayList<String>();
-        ;
-        String type = null;
-        Type typeEnum = null;
-        String eventNr = null;
-        String value = null;
-        Value valueEnum = null;
-
-        String[] splits = bindingConfig.split(" ");
-        for (String split : splits) {
-            logger.trace("handling config part: {}", split);
-            Matcher mCalendar = Pattern.compile(REGEX_CALENDAR).matcher(split);
-            if (mCalendar.matches()) {
-                for (String str : mCalendar.group(1).split(",")) {
-                    calendar.add(str);
-                }
-            }
-
-            Matcher mType = Pattern.compile(REGEX_TYPE).matcher(split);
-            if (mType.matches()) {
-                type = mType.group(1);
-            }
-
-            Matcher mEventNr = Pattern.compile(REGEX_EVENT_NR).matcher(split);
-            if (mEventNr.matches()) {
-                eventNr = mEventNr.group(1);
-            }
-
-            Matcher mValue = Pattern.compile(REGEX_VALUE).matcher(split);
-            if (mValue.matches()) {
-                value = mValue.group(1);
+        if (calendarString != null) {
+            for (String str : calendarString.split(",")) {
+                calendar.add(str.trim());
             }
         }
-
-        logger.trace("found values: calendar={}, type={}, eventNr={}, value={}", calendar, type, eventNr, value);
+        
+        String type = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_TYPE);
+        Type typeEnum = null;
+        String eventNr = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_EVENT_NR);
+        String value = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_VALUE);
+        Value valueEnum = null;
+        String filterName = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_FILTER_NAME);
+        String filterCategoryString = CalDavBindingProviderImpl.getConfigValue(bindingConfig, REGEX_FILTER_CATEGORY);
+        List<String> filterCategory = new ArrayList<String>();
+        if (filterCategoryString != null) {
+            for (String str : filterCategoryString.split(",")) {
+                filterCategory.add(str.trim());
+            }
+        }
+        
+        logger.trace("found values: calendar={}, type={}, eventNr={}, value={}, filterName={}, filterCategory={}", 
+                calendar, type, eventNr, value, filterName, filterCategory);
 
         if (calendar == null || calendar.size() == 0) {
             throw new BindingConfigParseException("missing attribute 'calendar'");
@@ -156,8 +149,17 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
         }
 
         logger.debug("adding item: {}", item.getName());
-        this.addBindingConfig(item,
-                new CalDavConfig(calendar, typeEnum, NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum));
+        this.addBindingConfig(item, new CalDavConfig(
+                calendar, typeEnum, NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum, filterName, filterCategory)
+        );
+    }
+    
+    public static String getConfigValue(String input, String regex) {
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 
     @Override

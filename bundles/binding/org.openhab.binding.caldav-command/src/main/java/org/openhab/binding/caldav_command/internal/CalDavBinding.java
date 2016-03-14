@@ -29,6 +29,7 @@ import org.openhab.core.types.Command;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
 import org.openhab.io.caldav.CalDavQuery;
+import org.openhab.io.caldav.CalDavQuery.Sort;
 import org.openhab.io.caldav.EventNotifier;
 import org.openhab.io.caldav.EventUtils;
 import org.osgi.service.cm.ConfigurationException;
@@ -270,7 +271,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     private void doActionInitial() {
         List<CalDavEvent> events = calDavLoader
-                .getEvents(new CalDavQuery(this.readCalendars, DateTime.now(), DateTime.now()));
+                .getEvents(new CalDavQuery(this.readCalendars, DateTime.now(), Sort.ASCENDING));
         Map<String, EventUtils.EventContent> map = new HashMap<String, EventUtils.EventContent>();
         for (CalDavEvent calDavEvent : events) {
             final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(calDavEvent, this.itemRegistry,
@@ -298,11 +299,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
 
     private void doAction(CalDavEvent event, String scope) {
         final List<EventUtils.EventContent> parseContent = EventUtils.parseContent(event, this.itemRegistry, scope);
-        for (EventUtils.EventContent eventContent : parseContent) {
-            if (disabledItems.contains(eventContent.getItem().getName())) {
-                continue;
+        outer: for (EventUtils.EventContent eventContent : parseContent) {
+            logger.trace("checking for disabled for item '{}' and groups '{}'", eventContent.getItem().getName(), eventContent.getItem().getGroupNames());
+            for (String groupName : eventContent.getItem().getGroupNames()) {
+                if (disabledItems.contains(groupName)) {
+                    continue outer;
+                }    
             }
-
+            if (disabledItems.contains(eventContent.getItem().getName())) {
+                continue outer;
+            }
+            
+            logger.info("sending command '{}' to item '{}' from event '{}'", eventContent.getCommand(), eventContent.getItem().getName(), event.getShortName());
             eventPublisher.sendCommand(eventContent.getItem().getName(), eventContent.getCommand());
         }
     }
@@ -337,7 +345,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider>impleme
             }
         }
 
-        if (time == null) {
+        if (time == null && config.getType() != CalDavType.DISABLE) {
             // no item found
             eventPublisher.postUpdate(itemNamePreview, org.openhab.core.types.UnDefType.UNDEF);
             return;

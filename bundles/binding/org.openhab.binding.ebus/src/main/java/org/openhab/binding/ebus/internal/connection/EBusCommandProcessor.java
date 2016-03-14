@@ -177,7 +177,7 @@ public class EBusCommandProcessor implements BindingChangeListener {
             }
 
             if (dst == null) {
-                logger.error("Unable to send command, destination adress is missing. Set \"dst\" in item.cfg ...");
+                logger.error("Unable to send command, destination address is missing. Set \"dst\" in item.cfg ...");
                 return null;
             }
 

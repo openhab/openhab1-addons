@@ -25,6 +25,8 @@ public class CalDavQuery {
     private DateTime from;
     private DateTime to;
     private Sort sort;
+    private String filterName;
+    private List<String> filterCategory;
 
     public CalDavQuery() {
         super();
@@ -90,10 +92,29 @@ public class CalDavQuery {
         this.sort = sort;
     }
 
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
+    
+    public List<String> getFilterCategory() {
+        return filterCategory;
+    }
+
+    public void setFilterCategory(List<String> filterCategory) {
+        this.filterCategory = filterCategory;
+    }
+
     @Override
     public String toString() {
-        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from + ", to=" + to + ", sort=" + sort + "]";
+        return "CalDavQuery [calendarIds=" + calendarIds + ", from=" + from
+                + ", to=" + to + ", sort=" + sort + ", filterName=" + filterName + "]";
     }
+
+
 
     public enum Sort {
         ASCENDING,

@@ -1481,10 +1481,14 @@
 			<ConfigFile>fibaro/fgs212.xml</ConfigFile>
 		</Product>
 		<Product>
-			<Reference>
-				<Type>0800</Type>
-				<Id>1001</Id>
-			</Reference>
+            <Reference>
+                <Type>0800</Type>
+                <Id>1001</Id>
+            </Reference>
+            <Reference>
+                <Type>0801</Type>
+                <Id>1001</Id>
+            </Reference>
 			<Reference>
 				<Type>0800</Type>
 				<Id>2001</Id>

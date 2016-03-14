@@ -10,9 +10,10 @@ package org.openhab.binding.stiebelheatpump.internal;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -41,7 +42,7 @@ public class ConfigParser {
 
     /**
      * This method saves List of Request objects into xml file
-     * 
+     *
      * @param requests
      *            object to be saved
      * @param xmlFileLocation
@@ -52,7 +53,7 @@ public class ConfigParser {
         JAXBContext context;
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(xmlFileLocation));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xmlFileLocation), "UTF-8"));
         } catch (IOException e) {
             throw new StiebelHeatPumpException(e.toString());
         }
@@ -86,7 +87,7 @@ public class ConfigParser {
 
     /**
      * This method loads a List of Request objects from xml file
-     * 
+     *
      * @param importFile
      *            file object to load the object from
      * @return List of Requests
@@ -100,7 +101,7 @@ public class ConfigParser {
             Unmarshaller um = context.createUnmarshaller();
             requests = (Requests) um.unmarshal(importFile);
         } catch (JAXBException e) {
-            new StiebelHeatPumpException(e.toString());
+            throw new StiebelHeatPumpException(e.toString(), e);
         }
 
         return requests.getRequests();
@@ -108,7 +109,7 @@ public class ConfigParser {
 
     /**
      * This method loads a List of Request objects from xml file
-     * 
+     *
      * @param fileName
      *            file object to load the object from
      * @return List of Requests
