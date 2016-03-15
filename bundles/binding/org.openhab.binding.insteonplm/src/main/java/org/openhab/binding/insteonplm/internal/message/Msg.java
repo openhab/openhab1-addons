@@ -414,7 +414,7 @@ public class Msg {
             setByte("userData13", data[12]);
             setByte("userData14", data[13]);
         } catch (FieldException e) {
-            logger.error("got field exception for msg {}:", e);
+            logger.error("got field exception on msg {}:", e);
         }
     }
 

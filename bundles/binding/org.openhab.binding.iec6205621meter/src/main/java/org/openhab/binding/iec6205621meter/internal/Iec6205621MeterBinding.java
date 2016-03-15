@@ -125,7 +125,7 @@ public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621Mete
                         if (obis != null && dataSets.containsKey(obis)) {
                             DataSet dataSet = dataSets.get(obis);
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Updateing item " + itemName + " with OBIS code " + obis + " and value "
+                                logger.debug("Updating item " + itemName + " with OBIS code " + obis + " and value "
                                         + dataSet.getValue());
                             }
                             Class<? extends Item> itemType = provider.getItemType(itemName);

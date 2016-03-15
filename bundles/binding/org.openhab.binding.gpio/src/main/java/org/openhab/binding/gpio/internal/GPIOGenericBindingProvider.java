@@ -107,7 +107,7 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
         String[] properties = bindingConfig.split(" ");
 
         if (properties.length > 3) {
-            logger.error("Wrong number of agruments (" + properties.length + ") in configuration string '"
+            logger.error("Wrong number of arguments (" + properties.length + ") in configuration string '"
                     + bindingConfig + "'");
             throw new BindingConfigParseException("Wrong number of agruments (" + properties.length
                     + ") in configuration string '" + bindingConfig + "'");
@@ -185,9 +185,9 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 
         /* Pin number wasn't configured */
         if (config.pinNumber == GPIOBindingProvider.PINNUMBER_UNDEFINED) {
-            logger.error("Mandatory paratemer (pin) is missing in configuration string '" + bindingConfig + "'");
+            logger.error("Mandatory parameter (pin) is missing in configuration string '" + bindingConfig + "'");
             throw new BindingConfigParseException(
-                    "Mandatory paratemer (pin) is missing in configuration string '" + bindingConfig + "'");
+                    "Mandatory parameter (pin) is missing in configuration string '" + bindingConfig + "'");
         }
 
         if (item instanceof ContactItem) {
