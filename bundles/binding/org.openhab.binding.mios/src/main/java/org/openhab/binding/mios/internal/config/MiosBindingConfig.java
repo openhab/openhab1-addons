@@ -388,7 +388,7 @@ public abstract class MiosBindingConfig implements BindingConfig {
      * If the <code>in:</code> parameter is missing, then no transformation will occur, and the source-value will be
      * returned (as a <code>StringType</code>).
      * <p>
-     * If the <code>in:</code> parameter is present, then it's value is used to determine which openHAB
+     * If the <code>in:</code> parameter is present, then its value is used to determine which openHAB
      * TransformationService should be used to transform the value.
      * 
      * @return the transformed value, or the input (<code>value</code>) if no transformation has been specified in the
@@ -441,7 +441,7 @@ public abstract class MiosBindingConfig implements BindingConfig {
      * Transform data in an openHAB Item into a form suitable for use in calls made to a MiOS Unit.
      * <p>
      * 
-     * In order to calls a MiOS Unit, we may need to transform an Item's current value from it's openHAB State to a form
+     * In order to calls a MiOS Unit, we may need to transform an Item's current value from its openHAB State to a form
      * suitable for transmission to remote MiOS Unit.
      * <p>
      * This method is responsible for transforming an Item's State value, using metadata supplied by the user, via the
@@ -450,7 +450,7 @@ public abstract class MiosBindingConfig implements BindingConfig {
      * If the <code>out:</code> parameter is missing, then no transformation will occur, and the source-value will be
      * returned.
      * <p>
-     * If the <code>out:</code> parameter is present, then it's value is used to determine which openHAB
+     * If the <code>out:</code> parameter is present, then its value is used to determine which openHAB
      * TransformationService should be used to transform the value.
      * 
      * @return the transformed value, or the input (<code>value</code>) if no transformation has been specified in the

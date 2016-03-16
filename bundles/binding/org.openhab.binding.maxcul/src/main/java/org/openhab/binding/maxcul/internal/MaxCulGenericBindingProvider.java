@@ -215,7 +215,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
      * -> B,C B -> C,D
      */
     private void buildAssociationMap() {
-        // TODO refactor into it's own class e.g. AssociationMap extends HashMap
+        // TODO refactor into its own class e.g. AssociationMap extends HashMap
         if (super.bindingConfigs.values().isEmpty() == false) {
             logger.debug(
                     "Found " + super.bindingConfigs.values().size() + " binding configs to process in association map");
@@ -249,7 +249,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
                         }
                     }
                 } else if (config.getAssociatedSerialNum().isEmpty() == false) {
-                    /* new serial number, add it and it's associations */
+                    /* new serial number, add it and its associations */
                     HashSet<MaxCulBindingConfig> set = new HashSet<MaxCulBindingConfig>();
                     for (String serial : config.getAssociatedSerialNum()) {
                         /*

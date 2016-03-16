@@ -178,11 +178,11 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
 
     /**
      * Executes the given <code>playerCommandLine</code> on the MPD. The
-     * <code>playerCommandLine</code> is split into it's properties
+     * <code>playerCommandLine</code> is split into its properties
      * <code>playerId</code> and <code>playerCommand</code>.
      *
      * @param playerCommandLine the complete commandLine which gets splitted into
-     *            it's properties.
+     *            its properties.
      */
     private void executePlayerCommand(String playerCommandLine, Object commandParams) {
         String[] commandParts = playerCommandLine.split(":");
@@ -266,7 +266,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             } catch (MPDPlayerException pe) {
                 logger.error("error while executing {} command: " + pe.getMessage(), pCommand);
             } catch (Exception e) {
-                logger.warn("unknow playerCommand '{}'", playerCommand);
+                logger.warn("unknown playerCommand '{}'", playerCommand);
             }
         } else {
             logger.warn("didn't find player configuration instance for playerId '{}'", playerId);
@@ -619,7 +619,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider>implements Ma
             Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(MPD_SCHEDULER_GROUP));
             if (jobKeys.size() > 0) {
                 sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-                logger.debug("Found {} jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+                logger.debug("Found {} jobs to delete from DefaultScheduler (keys={})", jobKeys.size(), jobKeys);
             }
         } catch (SchedulerException e) {
             logger.warn("Couldn't remove job: {}", e.getMessage());
