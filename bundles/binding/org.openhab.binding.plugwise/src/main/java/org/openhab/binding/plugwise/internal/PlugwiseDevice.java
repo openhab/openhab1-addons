@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,75 +21,82 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("rawtypes")
 public class PlugwiseDevice implements Comparable {
-	
-	private static final Logger logger = LoggerFactory.getLogger(PlugwiseDevice.class);
 
-	public enum DeviceType { Stick, Circle, CirclePlus };
-	
-	protected String MAC;
-	protected DeviceType type;
-	protected String friendlyName;
-	
-	
-	public PlugwiseDevice(String mac,DeviceType typed,String friendly) {
-		MAC = mac;
-		type = typed;
-		friendlyName = friendly;
-	}
-	
-	
-	public String getMAC() {
-		return MAC;
-	}
+    private static final Logger logger = LoggerFactory.getLogger(PlugwiseDevice.class);
 
-	public DeviceType getType() {
-		return type;
-	}
+    public enum DeviceType {
+        Stick,
+        Circle,
+        CirclePlus
+    };
 
-	public String getFriendlyName() {
-		return friendlyName;
-	}
+    protected String MAC;
+    protected DeviceType type;
+    protected String friendlyName;
 
-	public int compareTo(Object arg0) {
-		  return getMAC().compareTo(((PlugwiseDevice)arg0).getMAC());
-	}
+    public PlugwiseDevice(String mac, DeviceType typed, String friendly) {
+        MAC = mac;
+        type = typed;
+        friendlyName = friendly;
+    }
 
-	/**
-	 * 
-	 * Each Plugwise device needs to know how process the message that are meant for it. Extending classes therefore have to Override this
-	 * method and extend it to include new message types that are relevant for that device class
-	 * 
-	 * @param message to process
-	 * @return
-	 */
-	public boolean processMessage(Message message) {
-		if(message!=null) {
-			logger.debug("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}", new Object[] { message.getMAC(),message.getType().toString(), Integer.toString(message.getSequenceNumber()), message.getPayLoad()});
-			return true;	
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Each Plugwise device should be to post updates to the OH runtime. However, devices can choose to defer or delegate this posting to another more superior class
-	 * For example, Circle(+) will pass this on to the Stick, and the Stick will pass it on to the Plugwise Binding
-	 * Each device class has to override this method to make it specific for that device class
-	 * 
-	 * 
-	 * @param MAC of the Plugwise device
-	 * @param type of Plugwise Command 
-	 * @param value to be posted
-	 * @return
-	 */
-	public boolean postUpdate(String MAC, PlugwiseCommandType type, Object value) {
-		if(MAC != null && type != null && value != null) {
-			logger.debug("Passing on an update to the openHAB bus: MAC: {} Type:{} value:{}", new Object[] { MAC,type.toString(), value.toString()});
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
+    public String getMAC() {
+        return MAC;
+    }
+
+    public DeviceType getType() {
+        return type;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    @Override
+    public int compareTo(Object arg0) {
+        return getMAC().compareTo(((PlugwiseDevice) arg0).getMAC());
+    }
+
+    /**
+     * 
+     * Each Plugwise device needs to know how process the message that are meant for it. Extending classes therefore
+     * have to Override this
+     * method and extend it to include new message types that are relevant for that device class
+     * 
+     * @param message to process
+     * @return
+     */
+    public boolean processMessage(Message message) {
+        if (message != null) {
+            logger.debug("Received unrecognized Plugwise protocol data unit: MAC:{} command:{} sequence:{} payload:{}",
+                    new Object[] { message.getMAC(), message.getType().toString(),
+                            Integer.toString(message.getSequenceNumber()), message.getPayLoad() });
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Each Plugwise device should be to post updates to the OH runtime. However, devices can choose to defer or
+     * delegate this posting to another more superior class
+     * For example, Circle(+) will pass this on to the Stick, and the Stick will pass it on to the Plugwise Binding
+     * Each device class has to override this method to make it specific for that device class
+     * 
+     * 
+     * @param MAC of the Plugwise device
+     * @param type of Plugwise Command
+     * @param value to be posted
+     * @return
+     */
+    public boolean postUpdate(String MAC, PlugwiseCommandType type, Object value) {
+        if (MAC != null && type != null && value != null) {
+            logger.debug("Passing on an update to the openHAB bus: MAC: {} Type:{} value:{}",
+                    new Object[] { MAC, type.toString(), value.toString() });
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

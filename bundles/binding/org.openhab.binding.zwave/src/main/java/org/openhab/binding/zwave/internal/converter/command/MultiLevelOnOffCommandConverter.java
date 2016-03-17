@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,18 +13,18 @@ import org.openhab.core.library.types.OnOffType;
 
 /**
  * Converts from {@link OnOffType} command to a Z-Wave value.
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
-public class MultiLevelOnOffCommandConverter extends
-		ZWaveCommandConverter<OnOffType, Integer> {
+public class MultiLevelOnOffCommandConverter extends ZWaveCommandConverter<OnOffType, Integer> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Integer convert(Item item, OnOffType command) {
-		return command == OnOffType.ON ? 0x63 : 0x00;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Integer convert(Item item, OnOffType command) {
+        return command == OnOffType.ON ? 0x63 : 0x00;
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,9 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.enocean.internal.bus;
-
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
 
 import java.lang.reflect.Constructor;
 import java.util.Dictionary;
@@ -51,14 +48,18 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+
 /**
  * Enocean binding implementation.
- * 
+ *
  * @author Thomas Letsch (contact@thomas-letsch.de)
  * @author Kai Kreuzer
  * @since 1.3.0
  */
-public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> implements ManagedService, ParameterValueChangeListener, EnoceanReceiver {
+public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider>
+        implements ManagedService, ParameterValueChangeListener, EnoceanReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(EnoceanBinding.class);
 
@@ -124,6 +125,14 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
         // TODO: Set new state on enocean device
     }
 
+    protected void addBindingProvider(EnoceanBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
+
+    protected void removeBindingProvider(EnoceanBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
+
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
         if (config == null) {
@@ -147,8 +156,8 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
                     }
                 }
                 sb.deleteCharAt(sb.length() - 1);
-                throw new ConfigurationException(CONFIG_KEY_SERIAL_PORT, "Serial port '" + serialPort + "' could not be opened. "
-                        + sb.toString());
+                throw new ConfigurationException(CONFIG_KEY_SERIAL_PORT,
+                        "Serial port '" + serialPort + "' could not be opened. " + sb.toString());
             } else {
                 throw e;
             }
@@ -308,7 +317,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
 
     /**
      * Used for testing purposes.
-     * 
+     *
      * @param esp3Host
      */
     public void setEsp3Host(ESP3Host esp3Host) {

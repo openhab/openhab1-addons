@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.iec6205621meter.Iec6205621MeterBindingProvider;
@@ -36,221 +37,226 @@ import org.slf4j.LoggerFactory;
 
 /**
  * iec 62056-21 meter binding implementation
- * 
+ *
  * @author Peter Kreutzer
  * @author Günter Speckhofer
  * @since 1.5.0
  */
-public class Iec6205621MeterBinding extends
-		AbstractActiveBinding<Iec6205621MeterBindingProvider> implements
-		ManagedService {
+public class Iec6205621MeterBinding extends AbstractActiveBinding<Iec6205621MeterBindingProvider>
+        implements ManagedService {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(Iec6205621MeterBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(Iec6205621MeterBinding.class);
 
-	// regEx to validate a meter config
-	// <code>'^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$'</code>
-	private final Pattern METER_CONFIG_PATTERN = Pattern
-			.compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
+    // regEx to validate a meter config
+    // <code>'^(.*?)\\.(serialPort|initMessage|baudRateChangeDelay|echoHandling)$'</code>
+    private final Pattern METER_CONFIG_PATTERN = Pattern
+            .compile("^(.*?)\\.(serialPort|initMessage|baudRateChangeDelay|echoHandling)$");
 
-	private static final long DEFAULT_REFRESH_INTERVAL = 60000;
+    private static final long DEFAULT_REFRESH_INTERVAL = 60000;
 
-	/**
-	 * the refresh interval which is used to poll values from the IEC 62056-21 Meter
-	 * server (optional, defaults to 10 minutes)
-	 */
-	private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
+    /**
+     * the refresh interval which is used to poll values from the IEC 62056-21 Meter
+     * server (optional, defaults to 10 minutes)
+     */
+    private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
-	// configured meter devices - keyed by meter device name
-	private final Map<String, Meter> meterDeviceConfigurtions = new HashMap<String, Meter>();
+    // configured meter devices - keyed by meter device name
+    private final Map<String, Meter> meterDeviceConfigurtions = new HashMap<String, Meter>();
 
-	public Iec6205621MeterBinding() {
-	}
+    public Iec6205621MeterBinding() {
+    }
 
-	public void activate() {
+    @Override
+    public void activate() {
 
-	}
+    }
 
-	public void deactivate() {
-		meterDeviceConfigurtions.clear();
-	}
+    @Override
+    public void deactivate() {
+        meterDeviceConfigurtions.clear();
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected long getRefreshInterval() {
+        return refreshInterval;
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected String getName() {
-		return "iec6205621meter Refresh Service";
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected String getName() {
+        return "iec6205621meter Refresh Service";
+    }
 
-	private final Meter createIec6205621MeterConfig(String name,
-			MeterConfig config) {
+    private final Meter createIec6205621MeterConfig(String name, MeterConfig config) {
 
-		Meter reader = null;
-		reader = new Meter(name, config);
-		return reader;
-	}
+        Meter reader = null;
+        reader = new Meter(name, config);
+        return reader;
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		Map<String, Map<String, DataSet>> cache = new HashMap<String, Map<String,DataSet>>();
-		for (Iec6205621MeterBindingProvider provider : providers) {
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void execute() {
+        // the frequently executed code (polling) goes here ...
+        Map<String, Map<String, DataSet>> cache = new HashMap<String, Map<String, DataSet>>();
+        for (Iec6205621MeterBindingProvider provider : providers) {
 
-			for (String itemName : provider.getItemNames()) {
-				for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
-					Meter reader = entry.getValue();
-					String meterName = provider.getMeterName(itemName);
-					if(meterName != null && meterName.equals(entry.getKey())) {
-						Map<String, DataSet> dataSets;
-						if((dataSets = cache.get(meterName)) == null) {
-							if(logger.isDebugEnabled())
-								logger.debug("Read meter: " + meterName + "; " + reader.getConfig().getSerialPort());
-							dataSets = reader.read();
-							cache.put(meterName, dataSets);
-						}
-						String obis = provider.getObis(itemName);
-						if (obis != null && dataSets.containsKey(obis)) {
-							DataSet dataSet = dataSets.get(obis);
-							if(logger.isDebugEnabled())
-								logger.debug("Updateing item " + itemName + " with OBIS code " + obis + " and value " + dataSet.getValue());
-							Class<? extends Item> itemType = provider
-									.getItemType(itemName);
-							if (itemType.isAssignableFrom(NumberItem.class)) {
-								eventPublisher.postUpdate(itemName,
-										new DecimalType(dataSet.getValue()));
-							}
-							if (itemType.isAssignableFrom(StringItem.class)) {
-								String value = dataSet.getValue();
-								eventPublisher.postUpdate(itemName, new StringType(
-										value));
-							}
-						}
-					}
-				}
-			}
+            for (String itemName : provider.getItemNames()) {
+                for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
+                    Meter reader = entry.getValue();
+                    String meterName = provider.getMeterName(itemName);
+                    if (meterName != null && meterName.equals(entry.getKey())) {
+                        Map<String, DataSet> dataSets;
+                        if ((dataSets = cache.get(meterName)) == null) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Read meter: " + meterName + "; " + reader.getConfig().getSerialPort());
+                            }
+                            dataSets = reader.read();
+                            cache.put(meterName, dataSets);
+                        }
+                        String obis = provider.getObis(itemName);
+                        if (obis != null && dataSets.containsKey(obis)) {
+                            DataSet dataSet = dataSets.get(obis);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Updating item " + itemName + " with OBIS code " + obis + " and value "
+                                        + dataSet.getValue());
+                            }
+                            Class<? extends Item> itemType = provider.getItemType(itemName);
+                            if (itemType.isAssignableFrom(NumberItem.class)) {
+                                eventPublisher.postUpdate(itemName, new DecimalType(dataSet.getValue()));
+                            }
+                            if (itemType.isAssignableFrom(StringItem.class)) {
+                                String value = dataSet.getValue();
+                                eventPublisher.postUpdate(itemName, new StringType(value));
+                            }
+                        }
+                    }
+                }
+            }
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        // the code being executed when a command was sent on the openHAB
+        // event bus goes here. This method is only called if one of the
+        // BindingProviders provide a binding for the given 'itemName'.
+        logger.debug("internalReceiveCommand() is called!");
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void internalReceiveUpdate(String itemName, State newState) {
+        // the code being executed when a state was sent on the openHAB
+        // event bus goes here. This method is only called if one of the
+        // BindingProviders provide a binding for the given 'itemName'.
+        logger.debug("internalReceiveCommand() is called!");
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
+    protected void addBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-		if (config == null || config.isEmpty()) {
-			logger.warn("Empty or null configuration. Ignoring.");
-			return;
-		}
+    protected void removeBindingProvider(Iec6205621MeterBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-		Set<String> names = getNames(config);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
-		for (String name : names) {
+        if (config == null || config.isEmpty()) {
+            logger.warn("Empty or null configuration. Ignoring.");
+            return;
+        }
 
-			String value = (String) config.get(name + ".serialPort");
-			String serialPort = value != null ? value
-					: MeterConfig.DEFAULT_SERIAL_PORT;
+        Set<String> names = getNames(config);
 
-			value = (String) config.get(name + ".baudRateChangeDelay");
-			int baudRateChangeDelay = value != null ? Integer.valueOf(value)
-					: MeterConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
+        for (String name : names) {
 
-			value = (String) config.get(name + ".echoHandling");
-			boolean echoHandling = value != null ? Boolean.valueOf(value)
-					: MeterConfig.DEFAULT_ECHO_HANDLING;
+            String value = (String) config.get(name + ".serialPort");
+            String serialPort = value != null ? value : MeterConfig.DEFAULT_SERIAL_PORT;
 
-			Meter meterConfig = createIec6205621MeterConfig(name,
-					new MeterConfig(serialPort, baudRateChangeDelay,
-							echoHandling));
+            value = (String) config.get(name + ".initMessage");
+            byte[] initMessage = value != null ? DatatypeConverter.parseHexBinary(value)
+                    : null;
 
-			if (meterDeviceConfigurtions.put(meterConfig.getName(), meterConfig) != null) {
-				logger.info("Recreated reader {} with  {}!", meterConfig.getName(),
-						meterConfig.getConfig());
-			} else {
-				logger.info("Created reader {} with  {}!", meterConfig.getName(),
-						meterConfig.getConfig());
-			}
-		}
+            value = (String) config.get(name + ".baudRateChangeDelay");
+            int baudRateChangeDelay = value != null ? Integer.valueOf(value)
+                    : MeterConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
 
-		if (config != null) {
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
-			if (StringUtils.isNotBlank((String) config.get("refresh"))) {
-				refreshInterval = Long
-						.parseLong((String) config.get("refresh"));
-			}
-			setProperlyConfigured(true);
-		}
-	}
+            value = (String) config.get(name + ".echoHandling");
+            boolean echoHandling = value != null ? Boolean.valueOf(value) : MeterConfig.DEFAULT_ECHO_HANDLING;
 
-	/**
-	 * Analyze configuration to get meter names
-	 * 
-	 * @return set of String of meter names
-	 */
-	private Set<String> getNames(Dictionary<String, ?> config) {
-		Set<String> set = new HashSet<String>();
+            Meter meterConfig = createIec6205621MeterConfig(name,
+                    new MeterConfig(serialPort, initMessage, baudRateChangeDelay, echoHandling));
 
-		Enumeration<String> keys = config.keys();
-		while (keys.hasMoreElements()) {
+            if (meterDeviceConfigurtions.put(meterConfig.getName(), meterConfig) != null) {
+                logger.info("Recreated reader {} with  {}!", meterConfig.getName(), meterConfig.getConfig());
+            } else {
+                logger.info("Created reader {} with  {}!", meterConfig.getName(), meterConfig.getConfig());
+            }
+        }
 
-			String key = (String) keys.nextElement();
+        if (config != null) {
+            // to override the default refresh interval one has to add a
+            // parameter to openhab.cfg like
+            // <bindingName>:refresh=<intervalInMs>
+            if (StringUtils.isNotBlank((String) config.get("refresh"))) {
+                refreshInterval = Long.parseLong((String) config.get("refresh"));
+            }
+            setProperlyConfigured(true);
+        }
+    }
 
-			// the config-key enumeration contains additional keys that we
-			// don't want to process here ...
-			if ("service.pid".equals(key) || "refresh".equals(key)) {
-				continue;
-			}
+    /**
+     * Analyze configuration to get meter names
+     *
+     * @return set of String of meter names
+     */
+    private Set<String> getNames(Dictionary<String, ?> config) {
+        Set<String> set = new HashSet<String>();
 
-			Matcher meterMatcher = METER_CONFIG_PATTERN.matcher(key);
+        Enumeration<String> keys = config.keys();
+        while (keys.hasMoreElements()) {
 
-			if (!meterMatcher.matches()) {
-				logger.debug("given config key '"
-						+ key
-						+ "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
-				continue;
-			}
+            String key = keys.nextElement();
 
-			meterMatcher.reset();
-			meterMatcher.find();
+            // the config-key enumeration contains additional keys that we
+            // don't want to process here ...
+            if ("service.pid".equals(key) || "refresh".equals(key)) {
+                continue;
+            }
 
-			set.add(meterMatcher.group(1));
-		}
-		return set;
-	}
+            Matcher meterMatcher = METER_CONFIG_PATTERN.matcher(key);
+
+            if (!meterMatcher.matches()) {
+                logger.debug("given config key '" + key
+                        + "' does not follow the expected pattern '<meterName>.<serialPort|baudRateChangeDelay|echoHandling>'");
+                continue;
+            }
+
+            meterMatcher.reset();
+            meterMatcher.find();
+
+            set.add(meterMatcher.group(1));
+        }
+        return set;
+    }
 
 }

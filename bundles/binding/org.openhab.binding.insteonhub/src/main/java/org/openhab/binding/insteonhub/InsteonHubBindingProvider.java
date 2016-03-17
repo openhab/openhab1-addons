@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,36 +16,36 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * Insteon Hub BindingProvider interface
- * 
+ *
  * @author Eric Thill
  * @since 1.4.0
  */
 public interface InsteonHubBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns the openhab Item Configuration identified by {@code itemName}.
-	 * 
-	 * @param itemName
-	 *            the name of the Item.
-	 * @return The Item Configuration identified by {@code itemName}
-	 * 
-	 */
-	public InsteonHubBindingConfig getItemConfig(String itemName);
+    /**
+     * Returns the openhab Item Configuration identified by {@code itemName}.
+     * 
+     * @param itemName
+     *            the name of the Item.
+     * @return The Item Configuration identified by {@code itemName}
+     * 
+     */
+    public InsteonHubBindingConfig getItemConfig(String itemName);
 
-	/**
-	 * Get all hubId+devices
-	 * 
-	 * return Set of devices
-	 */
-	public Set<InsteonHubBindingDeviceInfo> getConfiguredDevices();
+    /**
+     * Get all hubId+devices
+     * 
+     * return Set of devices
+     */
+    public Set<InsteonHubBindingDeviceInfo> getConfiguredDevices();
 
-	/**
-	 * Returns the openhab Item Names configured for {@code deviceInfo}
-	 * 
-	 * @param deviceInfo
-	 *            device info (hubId+deviceId)
-	 * return Set of Item Names
-	 */
-	public Set<String> getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo);
+    /**
+     * Returns the openhab Item Names configured for {@code deviceInfo}
+     * 
+     * @param deviceInfo
+     *            device info (hubId+deviceId)
+     *            return Set of Item Names
+     */
+    public Set<String> getDeviceItemNames(InsteonHubBindingDeviceInfo deviceInfo);
 
 }

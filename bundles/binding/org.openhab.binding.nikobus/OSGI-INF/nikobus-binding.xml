@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2015, openHAB.org and others.
+    Copyright (c) 2010-2016, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -24,5 +24,5 @@
 	<reference bind="setEventPublisher" cardinality="1..1"
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="static" unbind="unsetEventPublisher" />	
-   <reference bind="addBindingProvider" cardinality="1..1" interface="org.openhab.binding.nikobus.NikobusBindingProvider" name="NikobusBindingProvider" policy="static" unbind="removeBindingProvider"/>		
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.nikobus.NikobusBindingProvider" name="NikobusBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>		
 </scr:component>

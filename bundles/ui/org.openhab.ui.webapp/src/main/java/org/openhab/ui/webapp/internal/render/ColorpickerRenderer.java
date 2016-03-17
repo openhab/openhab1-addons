@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.openhab.core.library.types.HSBType;
 import org.openhab.core.types.State;
 import org.openhab.model.sitemap.Colorpicker;
 import org.openhab.model.sitemap.Widget;
+import org.openhab.ui.webapp.internal.servlet.BaseServlet;
 import org.openhab.ui.webapp.internal.servlet.WebAppServlet;
 import org.openhab.ui.webapp.render.RenderException;
 import org.openhab.ui.webapp.render.WidgetRenderer;
@@ -63,6 +64,7 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		}
 		String label = getLabel(cp);
 		String purelabel = label;
+		purelabel = purelabel.replaceAll("\\\"", "\\\\'");
 		if(label.contains("<span>")) {
 			purelabel = purelabel.substring(0, label.indexOf("<span>"));
 		}
@@ -74,7 +76,7 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%purelabel%", purelabel);
 		snippet = StringUtils.replace(snippet, "%state%", hexValue);
 		snippet = StringUtils.replace(snippet, "%frequency%", frequency);
-		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_PATH);
 
 		String style = "";
 		String color = itemUIRegistry.getLabelColor(w);

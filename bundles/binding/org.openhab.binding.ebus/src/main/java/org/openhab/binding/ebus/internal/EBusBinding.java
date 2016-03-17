@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,8 @@
 package org.openhab.binding.ebus.internal;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Dictionary;
@@ -17,20 +19,21 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.ebus.EBusBindingProvider;
-import org.openhab.binding.ebus.internal.connection.AbstractEBusConnector;
+import org.openhab.binding.ebus.internal.connection.AbstractEBusWriteConnector;
 import org.openhab.binding.ebus.internal.connection.EBusCommandProcessor;
 import org.openhab.binding.ebus.internal.connection.EBusConnectorEventListener;
-import org.openhab.binding.ebus.internal.connection.EBusSerialConnector;
 import org.openhab.binding.ebus.internal.connection.EBusTCPConnector;
 import org.openhab.binding.ebus.internal.parser.EBusConfigurationProvider;
+import org.openhab.binding.ebus.internal.parser.EBusTelegramCSVWriter;
 import org.openhab.binding.ebus.internal.parser.EBusTelegramParser;
 import org.openhab.binding.ebus.internal.utils.EBusUtils;
 import org.openhab.binding.ebus.internal.utils.StateUtils;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -38,298 +41,349 @@ import org.slf4j.LoggerFactory;
 
 /**
  * eBus binding implementation.
- * 
+ *
  * @author Christian Sowada
  * @since 1.7.0
  */
-public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements ManagedService, EBusConnectorEventListener {
+public class EBusBinding extends AbstractBinding<EBusBindingProvider>
+        implements ManagedService, EBusConnectorEventListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(EBusBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(EBusBinding.class);
 
-	// Used to process the commands incl. polling
-	private EBusCommandProcessor commandProcessor;
-	
-	// The connector to serial or ethernet
-	private AbstractEBusConnector connector;
-	
-	// The parser to converts received bytes to key/value maps
-	private EBusTelegramParser parser;
+    // Used to process the commands incl. polling
+    private EBusCommandProcessor commandProcessor;
 
-	// Used to check binding configuration
-	private ConfigurationAdmin configurationAdminService;
-	
-	// 
-	private EBusConfigurationProvider configurationProvider;
+    // The connector to serial or ethernet
+    private AbstractEBusWriteConnector connector;
 
-	/* (non-Javadoc)
-	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String, org.openhab.core.types.Command)
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
+    // The parser to converts received bytes to key/value maps
+    private EBusTelegramParser parser;
 
-		final String type = command.toString().toLowerCase();
+    private EBusConfigurationProvider configurationProvider;
 
-		for (EBusBindingProvider provider : providers) {
-			byte[] data = commandProcessor.composeSendData(
-					provider, itemName, type);
+    private EBusTelegramCSVWriter debugWriter;
 
-			connector.send(data);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String,
+     * org.openhab.core.types.Command)
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
 
-	/**
-	 * Set the OSGI Admin Service
-	 * @param configurationAdminService
-	 */
-	public void setConfigurationAdmin(ConfigurationAdmin configurationAdminService) {
-		this.configurationAdminService = configurationAdminService;
-	}
+        for (EBusBindingProvider provider : providers) {
+            byte[] data = commandProcessor.composeSendData(provider, itemName, command);
 
-	/**
-	 * Unset the OSGI Admin Service
-	 * @param configurationAdminService
-	 */
-	public void unsetConfigurationAdmin(ConfigurationAdmin configurationAdminService) {
-		this.configurationAdminService = null;
-	}
+            connector.addToSendQueue(data);
+        }
+    }
 
-	/**
-	 * Check and initialize if needed the configuration provider
-	 */
-	private void checkConfigurationProvider() {
-		if(configurationProvider == null)
-			configurationProvider = new EBusConfigurationProvider();
-	}
+    /**
+     * Check and initialize the configuration provider if needed
+     */
+    private void checkConfigurationProvider() {
+        if (configurationProvider == null) {
+            configurationProvider = new EBusConfigurationProvider();
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
+    /**
+     * Check and initialize the command processor if needed
+     */
+    private void checkCommandProcessor() {
+        if (commandProcessor == null) {
 
-		logger.info("Update eBus Binding configuration ...");
+            checkConfigurationProvider();
 
-		try {
-			// stop last thread if active
-			if(connector != null && connector.isAlive()) {
-				connector.interrupt();
-			}
+            commandProcessor = new EBusCommandProcessor();
+            commandProcessor.setConfigurationProvider(configurationProvider);
+        }
+    }
 
-			// check to ensure that it is available
-			checkConfigurationProvider();
+    private void stopConnector() {
 
-			// clear current configuration
-			configurationProvider.clear();
+        if (debugWriter != null) {
+            try {
+                debugWriter.close();
+                debugWriter = null;
+            } catch (IOException e) {
+                logger.error("error!", e);
+            }
+        }
 
-			// load parser from default url
-			parser = new EBusTelegramParser(configurationProvider);
+        // stop last thread if active
+        if (connector != null && connector.isAlive()) {
 
-			URL configurationUrl = null;
-			String parsers = (String) properties.get("parsers");
+            logger.info("Shutdown old eBus connector thread ...");
+            connector.interrupt();
 
-			if(StringUtils.isEmpty(parsers)) {
-				// set to current stable configurations as default
-				parsers = "common,wolf";
-			}
+            try {
+                // wait up to 20sec. for shutdown
+                logger.debug("Waiting for connector thread shutdown ...");
+                connector.join(20000);
 
-			for (String elem : parsers.split(",")) {
-				configurationUrl = null;
+                if (connector.isAlive()) {
+                    logger.debug("Unable to stop eBUS connection thread!");
+                } else {
+                    logger.debug("Connector thread successfully shutdown ...");
+                }
 
-				// check for keyword custom to load custom configuration
-				if(elem.trim().equals("custom")) {
-					String parserUrl = (String) properties.get("parserUrl");
-					if(parserUrl != null) {
-						logger.debug("Load custom eBus Parser with url {}", parserUrl);
-						configurationUrl = new URL(parserUrl);
-					}
+            } catch (InterruptedException e) {
+                logger.error("Interrupted while shutdown old connector thread!", e);
+            }
+        }
+    }
 
-				} else {
-					logger.debug("Load eBus Parser Configuration \"{}\" ...", elem.trim());
-					configurationUrl = this.getClass().getResource(
-							"/" + elem.trim() + "-configuration.json");
-				}
+    protected void addBindingProvider(EBusBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-				if(configurationUrl != null) {
-					configurationProvider.loadConfigurationFile(configurationUrl);
-				}
-			}
+    protected void removeBindingProvider(EBusBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
+     */
+    @Override
+    public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 
-			// check minimal config
-			if(properties.get("serialPort") != null && properties.get("hostname") != null) {
-				throw new ConfigurationException("hostname", "Set property serialPort or hostname, not both!");
-			}
+        logger.info("Update eBus Binding configuration ...");
 
-			if(StringUtils.isNotEmpty((String) properties.get("serialPort"))) {
+        if (properties == null || properties.isEmpty()) {
+            throw new RuntimeException("No properties in openhab.cfg set!");
+        }
 
-				// use the serial connector
-				connector = new EBusSerialConnector(
-						(String) properties.get("serialPort"));
+        try {
+            // stop last connector-thread if active
+            stopConnector();
 
-			} else if(StringUtils.isNotEmpty((String) properties.get("hostname"))) {
+            // check to ensure that it is available
+            checkConfigurationProvider();
 
-				// use the tcp-ip connector
-				connector = new EBusTCPConnector(
-						(String) properties.get("hostname"),
-						Integer.parseInt((String) properties.get("port")));
-			}
+            // clear current configuration
+            configurationProvider.clear();
 
-			// Set eBus sender id or default 0xFF
-			if(StringUtils.isNotEmpty((String)properties.get("senderId"))) {
-				connector.setSenderId(
-						EBusUtils.toByte((String) properties.get("senderId")));
-			}
+            // load parser from default url
+            parser = new EBusTelegramParser(configurationProvider);
 
-			// add event listener
-			connector.addEBusEventListener(this);
+            URL configurationUrl = null;
+            String parsers = (String) properties.get("parsers");
 
-			// start thread
-			connector.start();
+            if (StringUtils.isEmpty(parsers)) {
+                // set to current stable configurations as default
+                parsers = "common";
+            }
 
-			// set the new connector
-			commandProcessor.setConnector(connector);
-			commandProcessor.setConfigurationProvider(configurationProvider);
+            for (String elem : parsers.split(",")) {
+                configurationUrl = null;
 
-		} catch (MalformedURLException e) {
-			logger.error(e.toString(), e);
-		} catch (IOException e) {
-			throw new ConfigurationException("general", e.toString(), e);
-		}
-	}
+                // check for keyword custom to load custom configuration
+                if (elem.trim().equals("custom")) {
+                    String parserUrl = (String) properties.get("parserUrl");
+                    if (parserUrl != null) {
+                        logger.debug("Load custom eBus Parser with url {}", parserUrl);
+                        configurationUrl = new URL(parserUrl);
+                    }
 
-	/* (non-Javadoc)
-	 * @see org.openhab.core.binding.AbstractBinding#addBindingProvider(org.openhab.core.binding.BindingProvider)
-	 */
-	@Override
-	public void addBindingProvider(EBusBindingProvider provider) {
-		super.addBindingProvider(provider);
+                } else {
+                    logger.debug("Load eBus Parser Configuration \"{}\" ...", elem.trim());
+                    String filename = "src/main/resources/" + elem.trim() + "-configuration.json";
 
-		if(commandProcessor == null) {
-			commandProcessor = new EBusCommandProcessor();
-			commandProcessor.setConfigurationProvider(configurationProvider);
-		}
+                    Bundle bundle = FrameworkUtil.getBundle(EBusBinding.class);
+                    configurationUrl = bundle.getResource(filename);
 
-		if(provider.providesBinding()) {
-			// items already processed, so too late for this listener. do it manually
-			commandProcessor.allBindingsChanged(provider);
-		}
+                    if (configurationUrl == null) {
+                        logger.error("Unable to load file {} ...", elem.trim() + "-configuration.json");
+                    }
+                }
 
-		provider.addBindingChangeListener(commandProcessor);
-	}
+                if (configurationUrl != null) {
+                    configurationProvider.loadConfigurationFile(configurationUrl);
+                }
+            }
 
-	/* (non-Javadoc)
-	 * @see org.openhab.core.binding.AbstractBinding#removeBindingProvider(org.openhab.core.binding.BindingProvider)
-	 */
-	@Override
-	public void removeBindingProvider(EBusBindingProvider provider) {
-		super.removeBindingProvider(provider);
-		provider.removeBindingChangeListener(commandProcessor);
-	}
+            // check minimal config
+            if (properties.get("serialPort") != null && properties.get("hostname") != null) {
+                throw new ConfigurationException("hostname", "Set property serialPort or hostname, not both!");
+            }
 
-	/* (non-Javadoc)
-	 * @see org.openhab.core.binding.AbstractBinding#activate()
-	 */
-	public void activate() {
-		super.activate();
-		logger.debug("eBus binding has been started.");
+            // use the serial connector
+            if (StringUtils.isNotEmpty((String) properties.get("serialPort"))) {
 
-		// check to ensure that it is available
-		checkConfigurationProvider();
+                try {
+                    // load class by reflection to keep gnu.io (serial) optional. Declarative Services causes an
+                    // class not found exception, also if serial is not used!
+                    // FIXME: Is there a better way to avoid that a class not found exception?
+                    @SuppressWarnings("unchecked")
+                    Class<AbstractEBusWriteConnector> _tempClass = (Class<AbstractEBusWriteConnector>) EBusBinding.class
+                            .getClassLoader()
+                            .loadClass("org.openhab.binding.ebus.internal.connection.EBusSerialConnector");
 
-		// observe connection, if not started 15 sec. later than start it manually
-		// replacing a bundle doesn't recall update function, more 
-		// a bug/enhancement in openhab
-		new Thread() {
-			@Override
-			public void run() {
+                    Constructor<AbstractEBusWriteConnector> constructor = _tempClass
+                            .getDeclaredConstructor(String.class);
+                    connector = constructor.newInstance((String) properties.get("serialPort"));
 
-				try {
-					sleep(15000);
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.toString(), e);
+                } catch (NoSuchMethodException e) {
+                    logger.error(e.toString(), e);
+                } catch (SecurityException e) {
+                    logger.error(e.toString(), e);
+                } catch (InstantiationException e) {
+                    logger.error(e.toString(), e);
+                } catch (IllegalAccessException e) {
+                    logger.error(e.toString(), e);
+                } catch (IllegalArgumentException e) {
+                    logger.error(e.toString(), e);
+                } catch (InvocationTargetException e) {
+                    logger.error(e.toString(), e);
+                }
 
-					if(connector == null) {
-						logger.warn("eBus connector still not started, started it yet!");
+            } else if (StringUtils.isNotEmpty((String) properties.get("hostname"))) {
 
-						Configuration configuration = configurationAdminService.getConfiguration("org.openhab.ebus", null);
-						if(configuration != null) {
-							updated(configuration.getProperties());
+                // use the tcp-ip connector
+                connector = new EBusTCPConnector((String) properties.get("hostname"),
+                        Integer.parseInt((String) properties.get("port")));
+            }
 
-							for (EBusBindingProvider provider : EBusBinding.this.providers) {
-								commandProcessor.allBindingsChanged(provider);
-							}
-						}
-					}
+            // Set eBus sender id or default 0xFF
+            if (StringUtils.isNotEmpty((String) properties.get("senderId"))) {
+                connector.setSenderId(EBusUtils.toByte((String) properties.get("senderId")));
+            }
 
-				} catch (InterruptedException e) {
-					logger.error(e.toString(), e);
-				} catch (ConfigurationException e) {
-					logger.error(e.toString(), e);
-				} catch (IOException e) {
-					logger.error(e.toString(), e);
-				}
+            if (properties.get("record") != null) {
+                String debugWriterMode = (String) properties.get("record");
+                logger.info("Enable CSV writer for eBUS {}", debugWriterMode);
 
-			}
-		}.start();;
+                debugWriter = new EBusTelegramCSVWriter();
+                debugWriter.openInUserData("ebus-" + debugWriterMode + ".csv");
 
-	}
+                parser.setDebugCSVWriter(debugWriter, debugWriterMode);
+            }
 
-	/* (non-Javadoc)
-	 * @see org.openhab.core.binding.AbstractBinding#deactivate()
-	 */
-	public void deactivate() {
-		super.deactivate();
+            // add event listener
+            connector.addEBusEventListener(this);
 
-		logger.debug("eBus binding has been stopped.");
+            // start thread
+            connector.start();
 
-		if(connector != null && connector.isAlive()) {
-			connector.interrupt();
-			connector = null;
-		}
+            // set the new connector
+            commandProcessor.setConnector(connector);
+            commandProcessor.setConfigurationProvider(configurationProvider);
 
-		if(commandProcessor != null) {
-			commandProcessor.deactivate();
-			commandProcessor = null;
-		}
-	}
+        } catch (MalformedURLException e) {
+            logger.error(e.toString(), e);
+        } catch (IOException e) {
+            throw new ConfigurationException("general", e.toString(), e);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.openhab.binding.ebus.connection.EBusConnectorEventListener#onTelegramReceived(org.openhab.binding.ebus.EbusTelegram)
-	 */
-	@Override
-	public void onTelegramReceived(EBusTelegram telegram) {
+    @Override
+    public void allBindingsChanged(BindingProvider provider) {
+        super.allBindingsChanged(provider);
 
-		// parse the raw telegram to a key/value map
-		final Map<String, Object> results = parser.parse(telegram);
+        checkCommandProcessor();
 
-		if(results == null) {
-			logger.debug("No valid parser result for raw telegram!");
-			return;
-		}
-		
-		for (Entry<String, Object> entry : results.entrySet()) {
+        commandProcessor.allBindingsChanged(provider);
+    }
 
-			State state = StateUtils.convertToState(entry.getValue());
+    @Override
+    public void bindingChanged(BindingProvider provider, String itemName) {
+        super.bindingChanged(provider, itemName);
 
-			// process if the state is set
-			if(state != null) {
+        checkCommandProcessor();
 
-				// loop over all items to update the state
-				for (EBusBindingProvider provider : providers) {
-					for (String itemName : provider.getItemNames(entry.getKey())) {
+        commandProcessor.bindingChanged(provider, itemName);
+    }
 
-						Byte telegramSource = provider.getTelegramSource(itemName);
-						Byte telegramDestination = provider.getTelegramDestination(itemName);
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.core.binding.AbstractBinding#activate()
+     */
+    @Override
+    public void activate() {
+        super.activate();
+        logger.debug("eBus binding has been started.");
 
-						// check if this item has a src or dst defined
-						if(telegramSource == null || telegram.getSource() == telegramSource) {
-							if(telegramDestination == null || telegram.getDestination() == telegramDestination) {
-								eventPublisher.postUpdate(itemName, state);
-							}
-						}
-					}
-				} // for
-			} // if
-		}
-	}
+        // check to ensure that it is available
+        checkConfigurationProvider();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.core.binding.AbstractBinding#deactivate()
+     */
+    @Override
+    public void deactivate() {
+        super.deactivate();
+
+        // stop last connector-thread if active
+        stopConnector();
+
+        if (commandProcessor != null) {
+            commandProcessor.deactivate();
+            commandProcessor = null;
+        }
+
+        if (debugWriter != null) {
+            try {
+                debugWriter.close();
+            } catch (IOException e) {
+                logger.error("io error", e);
+            }
+            debugWriter = null;
+        }
+
+        logger.debug("eBus binding has been stopped.");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.binding.ebus.connection.EBusConnectorEventListener#onTelegramReceived(org.openhab.binding.ebus.
+     * EbusTelegram)
+     */
+    @Override
+    public void onTelegramReceived(EBusTelegram telegram) {
+
+        // parse the raw telegram to a key/value map
+        final Map<String, Object> results = parser.parse(telegram);
+
+        if (results == null) {
+            logger.trace("No valid parser result for raw telegram!");
+            return;
+        }
+
+        for (Entry<String, Object> entry : results.entrySet()) {
+
+            State state = StateUtils.convertToState(entry.getValue());
+
+            // process if the state is set
+            if (state != null) {
+
+                // loop over all items to update the state
+                for (EBusBindingProvider provider : providers) {
+                    for (String itemName : provider.getItemNames(entry.getKey())) {
+
+                        Byte telegramSource = provider.getTelegramSource(itemName);
+                        Byte telegramDestination = provider.getTelegramDestination(itemName);
+
+                        // check if this item has a src or dst defined
+                        if (telegramSource == null || telegram.getSource() == telegramSource) {
+                            if (telegramDestination == null || telegram.getDestination() == telegramDestination) {
+                                eventPublisher.postUpdate(itemName, state);
+                            }
+                        }
+                    }
+                } // for
+            } // if
+        }
+    }
 
 }

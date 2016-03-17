@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Class to parse the key - value base config for an EnOcean item. Generic
  * enough to be used for other bindings as well.
- * 
+ *
  * The values are set into the attributes which match the keys in the config
  * lines. Leading / trailing brackets ({}) or quotes are removed.
- * 
+ *
  * @author Thomas Letsch (contact@thomas-letsch.de)
- * 
+ *
  * @param <TYPE>
  *            The BindingConfig to parse into.
  * @since 1.3.0
@@ -32,7 +32,7 @@ public class BindingConfigParser<TYPE extends BindingConfig> {
 
     /**
      * Parse the configLine into the given config.
-     * 
+     *
      * @param configLine
      * @param config
      * @throws BindingConfigParseException
@@ -53,7 +53,7 @@ public class BindingConfigParser<TYPE extends BindingConfig> {
             try {
                 config.getClass().getDeclaredField(key).set(config, value);
             } catch (Exception e) {
-                logger.error("Could set value " + value + " to attribute " + key + " in class EnoceanBindingConfig");
+                logger.error("Could not set value " + value + " to attribute " + key + " in class EnoceanBindingConfig");
             }
         }
 

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>TZ88</Model>
+	<Label lang="en">Energy Monitoring Wall Plug</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+            <Index>1</Index>
+            <Type>int</Type>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+            <WriteOnly>false</WriteOnly>
+            <Default>720</Default>
+            <Size>2</Size>
+            <Label lang="en">Watt meter report interval (5s)</Label>
+            <Help lang="en"><![CDATA[Interval (x5 seconds) to send out watt meter report]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>2</Index>
+            <Type>int</Type>
+            <Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+            <WriteOnly>false</WriteOnly>
+            <Default>6</Default>
+            <Size>2</Size>
+            <Label lang="en">KWH Meter Report Interval (10min)</Label>
+            <Help lang="en"><![CDATA[Interval (x10 minutes) to send out KWH Meter Report]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>3</Index>
+            <Type>int</Type>
+            <Minimum>1</Minimum>
+            <Maximum>1300</Maximum>
+            <WriteOnly>false</WriteOnly>
+            <Default>1300</Default>
+            <Size>2</Size>
+            <Label lang="en">Threshold for Load Caution (10mA)</Label>
+            <Help lang="en"><![CDATA[Threshold (x0.01A) of current for Load Caution]]></Help>
+        </Parameter>
+        <Parameter>
+            <Index>4</Index>
+            <Type>int</Type>
+            <Minimum>1</Minimum>
+            <Maximum>10000</Maximum>
+            <WriteOnly>false</WriteOnly>
+            <Default>10000</Default>
+            <Size>2</Size>
+            <Label lang="en">Threshold of KWh for Load Caution</Label>
+        </Parameter>
+        <Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last switch state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on</Label>
+			</Item>
+			<Help lang="en"><![CDATA[defines the behavior after a power cut]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Mode of switch off function</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+			<Help lang="en"><![CDATA[?]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Behavior</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Show switch state</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Show night mode</Label>
+			</Item>
+			<Help lang="en"><![CDATA[defines the behavior of the LED]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>freelist</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Auto off timer</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0 : Disable auto off function</Label>
+			</Item>
+			<Minimum>1</Minimum>
+            <Maximum>32767</Maximum>
+			<Help lang="en"><![CDATA[Seconds before socket switches off. 0 to disable]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF off command mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch toggle</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on</Label>
+			</Item>
+			<Help lang="en"><![CDATA[?]]></Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+        	<Index>1</Index>
+            <Maximum>1</Maximum>
+            <SetToController>true</SetToController>
+            <Label lang="en">Target for automatic reports</Label>
+        </Group>
+	</Associations>
+</Product>
+

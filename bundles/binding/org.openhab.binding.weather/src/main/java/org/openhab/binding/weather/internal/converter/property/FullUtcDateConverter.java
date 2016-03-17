@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,35 +16,35 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
 
 /**
  * Date converter with a full UTC pattern.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class FullUtcDateConverter extends AbstractDateConverter {
-	private static final String DATE_PATTERN = "dd MMM yyyy hh:mm a";
+    private static final String DATE_PATTERN = "dd MMM yyyy hh:mm a";
 
-	public FullUtcDateConverter() {
-		super(DATE_PATTERN);
-	}
+    public FullUtcDateConverter() {
+        super(DATE_PATTERN);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Calendar convert(String value) throws ParseException {
-		String val = StringUtils.substringAfter(value, ",");
-		if ("".equals(val)) {
-			val = value;
-		}
-		return super.convert(val);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Calendar convert(String value) throws ParseException {
+        String val = StringUtils.substringAfter(value, ",");
+        if ("".equals(val)) {
+            val = value;
+        }
+        return super.convert(val);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ConverterType getType() {
-		return ConverterType.FULL_UTC_DATE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ConverterType getType() {
+        return ConverterType.FULL_UTC_DATE;
+    }
 
 }

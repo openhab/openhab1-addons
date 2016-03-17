@@ -93,6 +93,73 @@
 				<Label lang="de">Aktiviert</Label>
 			</Item>
 		</Parameter>
+				<Parameter>
+			<Index>40</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable/disable the selective reporting only when measurements reach a certain threshold or percentage set in 41‐44 below. This is used to reduce network traffic.</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>41</Index>
+			<Type>float</Type>
+			<Default>0x0100</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold change in temperature to induce an automatic report.</Label>
+			<Help lang="en">1. When the unit is Celsius, threshold=Value.
+				2. When the unit is Fahrenheit, threshold=Value*1.8.
+				The accuracy is 0.1.
+				3. The high byte is the part of integer, the low byte is
+				the fractional part.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>float</Type>
+			<Default>0x0500</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold change in humidity to induce an automatic report.</Label>
+			<Help lang="en">The accuracy is 0.1.
+				The high byte is the part of integer, the low byte is the fractional part.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>float</Type>
+			<Default>0x6400</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold change in luminance to induce an automatic report.</Label>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>float</Type>
+			<Default>0x0500</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold change in battery level to induce an automatic report.</Label>
+			<Help lang="en">The accuracy is 0.1.
+				The high byte is the part of integer, the low byte is the fractional part.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>46</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable/disable to send the alarm report of low temperature(‐15C)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled (The MultiSensor will report the Multi Level Temperature CC with the value=0xFFFF to controller if the current temperature is less than ‐15℃).</Label>
+			</Item>
+		</Parameter>
 		<Parameter>
 			<Index>101</Index>
 			<Type>int</Type>
@@ -164,6 +231,36 @@
 			<Size>4</Size>
 			<Label lang="en">Interval to send out reports of group 3</Label>
 			<Label lang="de">Interval in welchem die Berichte der Gruppe 3 gesendet werden</Label>
+		</Parameter>
+		<Parameter>
+			<Index>252</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable/disable Configuration Locked</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>255</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset to default factory setting.</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Resets all configuration parameters to default setting.</Label>
+			</Item>
+			<Item>
+				<Value>1431655765</Value>
+				<Label lang="en">Reset the product to default factory setting and be excluded from the Z-wave network.</Label>
+			</Item>
 		</Parameter>
 	</Configuration>
 	<Associations>

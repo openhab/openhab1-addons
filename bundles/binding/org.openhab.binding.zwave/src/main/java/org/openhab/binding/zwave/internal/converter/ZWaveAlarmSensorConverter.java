@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,89 +31,96 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /***
- * ZWaveAlarmSensorConverter class. Converter for communication with the 
+ * ZWaveAlarmSensorConverter class. Converter for communication with the
  * {@link ZWaveAlarmSensorCommandClass}. Implements polling of the alarm sensor
  * status and receiving of alarm sensor events.
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
 public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter<ZWaveAlarmSensorCommandClass> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveAlarmSensorConverter.class);
-	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the binary switch;
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveAlarmSensorConverter.class);
+    private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the binary switch;
 
-	/**
-	 * Constructor. Creates a new instance of the {@link ZWaveAlarmSensorConverter} class.
-	 * @param controller the {@link ZWaveController} to use for sending messages.
-	 * @param eventPublisher the {@link EventPublisher} to use to publish events.
-	 */
-	public ZWaveAlarmSensorConverter(ZWaveController controller, EventPublisher eventPublisher) {
-		super(controller, eventPublisher);
-		
-		// State and commmand converters used by this converter. 
-		this.addStateConverter(new IntegerDecimalTypeConverter());
-		this.addStateConverter(new IntegerPercentTypeConverter());
-		this.addStateConverter(new IntegerOnOffTypeConverter());
-		this.addStateConverter(new IntegerOpenClosedTypeConverter());
-	}
+    /**
+     * Constructor. Creates a new instance of the {@link ZWaveAlarmSensorConverter} class.
+     *
+     * @param controller the {@link ZWaveController} to use for sending messages.
+     * @param eventPublisher the {@link EventPublisher} to use to publish events.
+     */
+    public ZWaveAlarmSensorConverter(ZWaveController controller, EventPublisher eventPublisher) {
+        super(controller, eventPublisher);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public SerialMessage executeRefresh(ZWaveNode node, 
-			ZWaveAlarmSensorCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		String alarmType = arguments.get("alarm_type");
-		
-		if (alarmType != null) {
-			return node.encapsulate(commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))), commandClass, endpointId);
-		} else {
-			return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-		}
-	}
+        // State and commmand converters used by this converter.
+        this.addStateConverter(new IntegerDecimalTypeConverter());
+        this.addStateConverter(new IntegerPercentTypeConverter());
+        this.addStateConverter(new IntegerOnOffTypeConverter());
+        this.addStateConverter(new IntegerOpenClosedTypeConverter());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
-		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
-		String alarmType = arguments.get("alarm_type");
-		ZWaveAlarmSensorValueEvent alarmEvent = (ZWaveAlarmSensorValueEvent)event;
-		
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
-			return;
-		}
-		
-		// Don't trigger event if this item is bound to another alarm type
-		if (alarmType != null && AlarmType.getAlarmType(Integer.parseInt(alarmType)) != alarmEvent.getAlarmType())
-			return;
-		
-		State state = converter.convertFromValueToState(event.getValue());
-		this.getEventPublisher().postUpdate(item.getName(), state);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SerialMessage executeRefresh(ZWaveNode node, ZWaveAlarmSensorCommandClass commandClass, int endpointId,
+            Map<String, String> arguments) {
+        logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(),
+                commandClass.getCommandClass().getLabel(), endpointId);
+        String alarmType = arguments.get("alarm_type");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void receiveCommand(Item item, Command command, ZWaveNode node,
-			ZWaveAlarmSensorCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
-		
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
-			return;
-		}
-	}
+        if (alarmType != null) {
+            return node.encapsulate(commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))),
+                    commandClass, endpointId);
+        } else {
+            return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	int getRefreshInterval() {
-		return REFRESH_INTERVAL;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
+        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, event.getValue());
+        String alarmType = arguments.get("alarm_type");
+        ZWaveAlarmSensorValueEvent alarmEvent = (ZWaveAlarmSensorValueEvent) event;
+
+        if (converter == null) {
+            logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(),
+                    event.getNodeId(), event.getEndpoint());
+            return;
+        }
+
+        // Don't trigger event if this item is bound to another alarm type
+        if (alarmType != null && AlarmType.getAlarmType(Integer.parseInt(alarmType)) != alarmEvent.getAlarmType()) {
+            return;
+        }
+
+        State state = converter.convertFromValueToState(event.getValue());
+        this.getEventPublisher().postUpdate(item.getName(), state);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveAlarmSensorCommandClass commandClass,
+            int endpointId, Map<String, String> arguments) {
+        ZWaveCommandConverter<?, ?> converter = this.getCommandConverter(command.getClass());
+
+        if (converter == null) {
+            logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(),
+                    node.getNodeId(), endpointId);
+            return;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    int getRefreshInterval() {
+        return REFRESH_INTERVAL;
+    }
 }

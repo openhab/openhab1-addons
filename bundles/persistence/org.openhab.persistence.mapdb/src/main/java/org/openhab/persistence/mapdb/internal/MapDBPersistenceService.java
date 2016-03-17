@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,8 +36,7 @@ import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.osgi.framework.BundleContext;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -56,227 +54,205 @@ import org.slf4j.LoggerFactory;
  * This is the implementation of the MapDB {@link PersistenceService}. To learn
  * more about MapDB please visit their <a
  * href="http://www.mapdb.org/">website</a>.
- * 
+ *
  * @author Jens Viebig
  * @since 1.7.0
  */
-public class MapDBPersistenceService implements QueryablePersistenceService,
-		ManagedService {
+public class MapDBPersistenceService implements QueryablePersistenceService {
 
-	private static final String SERVICE_NAME = "mapdb";
+    private static final String SERVICE_NAME = "mapdb";
 
-	protected final static String DB_FOLDER_NAME = getUserDataFolder()
-			+ File.separator + "mapdb";
+    protected final static String DB_FOLDER_NAME = getUserDataFolder() + File.separator + "mapdb";
 
-	private static final String DB_FILE_NAME = "storage.mapdb";
+    private static final String DB_FILE_NAME = "storage.mapdb";
 
-	private static final String SCHEDULER_GROUP = "MapDB_SchedulerGroup";
+    private static final String SCHEDULER_GROUP = "MapDB_SchedulerGroup";
 
-	private static int commitInterval = 5;
+    private static int commitInterval = 5;
 
-	private static boolean commitSameState = false;
+    private static boolean commitSameState = false;
 
-	private static boolean needsCommit = false;
+    private static boolean needsCommit = false;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(MapDBPersistenceService.class);
+    private static final Logger logger = LoggerFactory.getLogger(MapDBPersistenceService.class);
 
-	/** holds the local instance of the MapDB database */
-	private static DB db;
-	private static Map<String, MapDBItem> map;
+    /** holds the local instance of the MapDB database */
+    private static DB db;
+    private static Map<String, MapDBItem> map;
 
-	public void activate() {
-		logger.debug("mapdb persistence service activated");
+    public void activate(final BundleContext bundleContext, final Map<String, Object> config) {
+        logger.debug("mapdb persistence service activated");
 
-		File folder = new File(DB_FOLDER_NAME);
-		if (!folder.exists()) {
-			folder.mkdir();
-		}
+        String commitIntervalString = (String) config.get("commitinterval");
+        if (StringUtils.isNotBlank(commitIntervalString)) {
+            try {
+                commitInterval = Integer.valueOf(commitIntervalString);
+            } catch (IllegalArgumentException iae) {
+                logger.warn("couldn't parse '{}' to an integer");
+            }
+        }
+        String commitSameStateString = (String) config.get("commitsamestate");
+        if (StringUtils.isNotBlank(commitSameStateString)) {
+            try {
+                commitSameState = Boolean.valueOf(commitSameStateString);
+            } catch (IllegalArgumentException iae) {
+                logger.warn("couldn't parse '{}' to an integer");
+            }
+        }
 
-		File dbFile = new File(DB_FOLDER_NAME, DB_FILE_NAME);
-		db = DBMaker.newFileDB(dbFile).closeOnJvmShutdown().make();
-		Serializer<MapDBItem> serializer = new MapDBitemSerializer();
-		map = db.createTreeMap("itemStore").valueSerializer(serializer)
-				.makeOrGet();
-		scheduleJob();
-	}
+        File folder = new File(DB_FOLDER_NAME);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
 
-	public void deactivate() {
-		logger.debug("mapdb persistence service deactivated");
-		if (db != null) {
-			db.close();
-		}
-		cancelAllJobs();
-	}
+        File dbFile = new File(DB_FOLDER_NAME, DB_FILE_NAME);
+        db = DBMaker.newFileDB(dbFile).closeOnJvmShutdown().make();
+        Serializer<MapDBItem> serializer = new MapDBitemSerializer();
+        map = db.createTreeMap("itemStore").valueSerializer(serializer).makeOrGet();
+        scheduleJob();
+    }
 
-	@Override
-	public String getName() {
-		return SERVICE_NAME;
-	}
+    public void deactivate(final int reason) {
+        logger.debug("mapdb persistence service deactivated");
+        if (db != null) {
+            db.close();
+        }
+        cancelAllJobs();
+    }
 
-	@Override
-	public void store(Item item) {
-		store(item, null);
-	}
+    @Override
+    public String getName() {
+        return SERVICE_NAME;
+    }
 
-	@Override
-	public void store(Item item, String alias) {
+    @Override
+    public void store(Item item) {
+        store(item, null);
+    }
 
-		if (item.getState() instanceof UnDefType)
-			return;
+    @Override
+    public void store(Item item, String alias) {
 
-		if (alias == null)
-			alias = item.getName();
+        if (item.getState() instanceof UnDefType) {
+            return;
+        }
 
-		logger.debug("store called for {}", alias);
+        if (alias == null) {
+            alias = item.getName();
+        }
 
-		State state = item.getState();
-		if (item instanceof DimmerItem || item instanceof RollershutterItem) {
-			state = item.getStateAs(PercentType.class);
-		} else if (item instanceof ColorItem) {
-			state = item.getStateAs(HSBType.class);
-		}
-		MapDBItem mItem = new MapDBItem();
-		mItem.setName(alias);
-		mItem.setState(state);
-		mItem.setTimestamp(new Date());
-		MapDBItem oldItem = map.put(alias, mItem);
+        logger.debug("store called for {}", alias);
 
-		if (!commitSameState) {
-			if (oldItem != null) {
-				if (!oldItem.getState().toString().equals(state.toString())) {
-					needsCommit = true;
-				}
-			}
-		}
-		logger.debug("Stored '{}' with state '{}' in mapdb database", alias,
-				state.toString());
-	}
+        State state = item.getState();
+        if (item instanceof DimmerItem || item instanceof RollershutterItem) {
+            state = item.getStateAs(PercentType.class);
+        } else if (item instanceof ColorItem) {
+            state = item.getStateAs(HSBType.class);
+        }
+        MapDBItem mItem = new MapDBItem();
+        mItem.setName(alias);
+        mItem.setState(state);
+        mItem.setTimestamp(new Date());
+        MapDBItem oldItem = map.put(alias, mItem);
 
-	@Override
-	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		HistoricItem item = map.get(filter.getItemName());
-		if (item != null) {
-			return Collections.singletonList(item);
-		}
-		return Collections.emptyList();
-	}
+        if (!commitSameState) {
+            if (oldItem != null) {
+                if (!oldItem.getState().toString().equals(state.toString())) {
+                    needsCommit = true;
+                }
+            }
+        }
+        logger.debug("Stored '{}' with state '{}' in mapdb database", alias, state.toString());
+    }
 
-	/**
-	 * Schedules new quartz scheduler jobs for committing transactions and
-	 * backing up the database
-	 */
-	private void scheduleJob() {
-		try {
-			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+    @Override
+    public Iterable<HistoricItem> query(FilterCriteria filter) {
+        HistoricItem item = map.get(filter.getItemName());
+        if (item != null) {
+            return Collections.singletonList(item);
+        }
+        return Collections.emptyList();
+    }
 
-			// schedule commit-job
-			JobDetail job = newJob(CommitJob.class).withIdentity(
-					"Commit_Transaction", SCHEDULER_GROUP).build();
+    /**
+     * Schedules new quartz scheduler jobs for committing transactions and
+     * backing up the database
+     */
+    private void scheduleJob() {
+        try {
+            Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
 
-			SimpleTrigger trigger = newTrigger()
-					.withIdentity("Commit_Transaction", SCHEDULER_GROUP)
-					.withSchedule(repeatSecondlyForever(commitInterval))
-					.build();
+            // schedule commit-job
+            JobDetail job = newJob(CommitJob.class).withIdentity("Commit_Transaction", SCHEDULER_GROUP).build();
 
-			sched.scheduleJob(job, trigger);
-			logger.debug("Scheduled Commit-Job with interval {}sec.",
-					commitInterval);
+            SimpleTrigger trigger = newTrigger().withIdentity("Commit_Transaction", SCHEDULER_GROUP)
+                    .withSchedule(repeatSecondlyForever(commitInterval)).build();
 
-		} catch (SchedulerException e) {
-			logger.warn("Could not create Job: {}", e.getMessage());
-		}
-	}
+            sched.scheduleJob(job, trigger);
+            logger.debug("Scheduled Commit-Job with interval {}sec.", commitInterval);
 
-	/**
-	 * Delete all quartz scheduler jobs of the group <code>Dropbox</code>.
-	 */
-	private void cancelAllJobs() {
-		try {
-			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-			Set<JobKey> jobKeys = sched
-					.getJobKeys(jobGroupEquals(SCHEDULER_GROUP));
-			if (jobKeys.size() > 0) {
-				sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
-				logger.debug(
-						"Found {} MapDB-Jobs to delete from DefaulScheduler (keys={})",
-						jobKeys.size(), jobKeys);
-			}
-		} catch (SchedulerException e) {
-			logger.warn("Couldn't remove Commit-Job: {}", e.getMessage());
-		}
-	}
+        } catch (SchedulerException e) {
+            logger.warn("Could not create Job: {}", e.getMessage());
+        }
+    }
 
-	/**
-	 * A quartz scheduler job to commit the mapdb transaction frequently. There
-	 * can be only one instance of a specific job type running at the same time.
-	 * 
-	 * @author Jens Viebig
-	 * @since 1.7.0
-	 */
-	@DisallowConcurrentExecution
-	public static class CommitJob implements Job {
+    /**
+     * Delete all quartz scheduler jobs of the group <code>Dropbox</code>.
+     */
+    private void cancelAllJobs() {
+        try {
+            Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
+            Set<JobKey> jobKeys = sched.getJobKeys(jobGroupEquals(SCHEDULER_GROUP));
+            if (jobKeys.size() > 0) {
+                sched.deleteJobs(new ArrayList<JobKey>(jobKeys));
+                logger.debug("Found {} MapDB-Jobs to delete from DefaulScheduler (keys={})", jobKeys.size(), jobKeys);
+            }
+        } catch (SchedulerException e) {
+            logger.warn("Couldn't remove Commit-Job: {}", e.getMessage());
+        }
+    }
 
-		@Override
-		public void execute(JobExecutionContext context)
-				throws JobExecutionException {
-			long startTime = System.currentTimeMillis();
-			try {
-				if (!db.isClosed() && (needsCommit || commitSameState)) {
-					needsCommit = false;
-					db.commit();
-					logger.trace(
-							"successfully commited mapdb transaction in {}ms",
-							System.currentTimeMillis() - startTime);
-				}
-			} catch (Exception e) {
-				try {
-					logger.warn("Error committing transaction : {}",
-							e.getMessage());
-					if (!db.isClosed()) {
-						db.rollback();
-					}
-				} catch (Exception re) {
-					logger.debug("Rollback Exception: {}", e.getMessage());
-				}
-			}
-		}
+    /**
+     * A quartz scheduler job to commit the mapdb transaction frequently. There
+     * can be only one instance of a specific job type running at the same time.
+     * 
+     * @author Jens Viebig
+     * @since 1.7.0
+     */
+    @DisallowConcurrentExecution
+    public static class CommitJob implements Job {
 
-	}
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            long startTime = System.currentTimeMillis();
+            try {
+                if (!db.isClosed() && (needsCommit || commitSameState)) {
+                    needsCommit = false;
+                    db.commit();
+                    logger.trace("successfully commited mapdb transaction in {}ms",
+                            System.currentTimeMillis() - startTime);
+                }
+            } catch (Exception e) {
+                try {
+                    logger.warn("Error committing transaction : {}", e.getMessage());
+                    if (!db.isClosed()) {
+                        db.rollback();
+                    }
+                } catch (Exception re) {
+                    logger.debug("Rollback Exception: {}", e.getMessage());
+                }
+            }
+        }
 
-	@Override
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
-		if (config != null) {
+    }
 
-			String commitIntervalString = (String) config.get("commitinterval");
-			if (StringUtils.isNotBlank(commitIntervalString)) {
-				try {
-					commitInterval = Integer.valueOf(commitIntervalString);
-				} catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
-			}
-			String commitSameStateString = (String) config
-					.get("commitsamestate");
-			if (StringUtils.isNotBlank(commitSameStateString)) {
-				try {
-					commitSameState = Boolean.valueOf(commitSameStateString);
-				} catch (IllegalArgumentException iae) {
-					logger.warn("couldn't parse '{}' to an integer");
-				}
-			}
-
-		}
-	}
-
-	private static String getUserDataFolder() {
-		String progArg = System.getProperty("smarthome.userdata");
-		if (progArg != null) {
-			return progArg + File.separator + "persistence";
-		} else {
-			return "etc";
-		}
-	}
+    private static String getUserDataFolder() {
+        String progArg = System.getProperty("smarthome.userdata");
+        if (progArg != null) {
+            return progArg + File.separator + "persistence";
+        } else {
+            return "etc";
+        }
+    }
 
 }

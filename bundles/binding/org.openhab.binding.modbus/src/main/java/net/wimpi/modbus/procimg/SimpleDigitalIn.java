@@ -27,40 +27,41 @@ package net.wimpi.modbus.procimg;
  */
 public class SimpleDigitalIn implements DigitalIn {
 
-  /**
-   * Field for the digital in state.
-   */
-  protected boolean m_Set = false;
+    /**
+     * Field for the digital in state.
+     */
+    protected boolean m_Set = false;
 
-  /**
-   * Constructs a new <tt>SimpleDigitalIn</tt> instance.
-   */
-  public SimpleDigitalIn() {
-  }//constructor
+    /**
+     * Constructs a new <tt>SimpleDigitalIn</tt> instance.
+     */
+    public SimpleDigitalIn() {
+    }// constructor
 
-  /**
-   * Constructs a new <tt>SimpleDigitalIn</tt> instance
-   * with a given valid state.
-   *
-   * @param b true if to be set, false otherwise.
-   */
-  public SimpleDigitalIn(boolean b) {
-    set(b);
-  }//constructor(boolean)
+    /**
+     * Constructs a new <tt>SimpleDigitalIn</tt> instance
+     * with a given valid state.
+     *
+     * @param b true if to be set, false otherwise.
+     */
+    public SimpleDigitalIn(boolean b) {
+        set(b);
+    }// constructor(boolean)
 
-  public boolean isSet() {
-    return m_Set;
-  }//isSet
+    @Override
+    public boolean isSet() {
+        return m_Set;
+    }// isSet
 
-  /**
-   * Sets the state of this <tt>SimpleDigitalIn</tt>.
-   * This method should only be used from master/device
-   * side.
-   *
-   * @param b true if to be set, false otherwise.
-   */
-  public synchronized void set(boolean b) {
-    m_Set = b;
-  }//set
+    /**
+     * Sets the state of this <tt>SimpleDigitalIn</tt>.
+     * This method should only be used from master/device
+     * side.
+     *
+     * @param b true if to be set, false otherwise.
+     */
+    public synchronized void set(boolean b) {
+        m_Set = b;
+    }// set
 
-}//SimpleDigitalIn
+}// SimpleDigitalIn

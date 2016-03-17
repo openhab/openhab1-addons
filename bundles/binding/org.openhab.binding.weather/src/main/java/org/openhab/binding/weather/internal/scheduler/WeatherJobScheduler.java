@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,6 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.util.TimerTask;
 
 import org.openhab.binding.weather.WeatherBindingProvider;
-import org.openhab.binding.weather.internal.bus.WeatherPublisher;
 import org.openhab.binding.weather.internal.common.LocationConfig;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
@@ -35,122 +34,121 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Main class for scheduling weather jobs.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class WeatherJobScheduler {
-	private static final Logger logger = LoggerFactory.getLogger(WeatherJobScheduler.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeatherJobScheduler.class);
 
-	private static final String JOB_GROUP = "Weather";
+    private static final String JOB_GROUP = "Weather";
 
-	private WeatherContext context;
-	private Scheduler scheduler;
+    private WeatherContext context;
+    private Scheduler scheduler;
 
-	private DelayedExecutor delayedExecutor = new DelayedExecutor();
+    private DelayedExecutor delayedExecutor = new DelayedExecutor();
 
-	public WeatherJobScheduler(WeatherContext context) {
-		try {
-			this.context = context;
-			scheduler = StdSchedulerFactory.getDefaultScheduler();
-		} catch (SchedulerException ex) {
-			logger.error(ex.getMessage(), ex);
-		}
-	}
+    public WeatherJobScheduler(WeatherContext context) {
+        try {
+            this.context = context;
+            scheduler = StdSchedulerFactory.getDefaultScheduler();
+        } catch (SchedulerException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+    }
 
-	/**
-	 * Restarts the JobScheduler after a short delay.
-	 */
-	public void restart() {
-		delayedExecutor.cancel();
-		delayedExecutor.schedule(new TimerTask() {
+    /**
+     * Restarts the JobScheduler after a short delay.
+     */
+    public void restart() {
+        delayedExecutor.cancel();
+        delayedExecutor.schedule(new TimerTask() {
 
-			@Override
-			public void run() {
-				stop();
-				start();
-			}
-		}, 3000);
-	}
+            @Override
+            public void run() {
+                stop();
+                start();
+            }
+        }, 3000);
+    }
 
-	/**
-	 * Start the weather jobs if a binding is available.
-	 */
-	public void start() {
-		validateItemLocationIds();
-		for (LocationConfig locationConfig : context.getConfig().getAllLocationConfigs()) {
-			if (hasBinding(locationConfig.getLocationId())) {
-				scheduleIntervalJob(locationConfig);
-			} else {
-				logger.info("Disabling weather locationId '{}', no binding available", locationConfig.getLocationId());
-			}
-		}
-	}
+    /**
+     * Start the weather jobs if a binding is available.
+     */
+    public void start() {
+        validateItemLocationIds();
+        for (LocationConfig locationConfig : context.getConfig().getAllLocationConfigs()) {
+            if (hasBinding(locationConfig.getLocationId())) {
+                scheduleIntervalJob(locationConfig);
+            } else {
+                logger.info("Disabling weather locationId '{}', no binding available", locationConfig.getLocationId());
+            }
+        }
+    }
 
-	/**
-	 * Validate the locationId in all items.
-	 */
-	private void validateItemLocationIds() {
-		new ItemIterator().iterate(new ItemIteratorCallback() {
+    /**
+     * Validate the locationId in all items.
+     */
+    private void validateItemLocationIds() {
+        new ItemIterator().iterate(new ItemIteratorCallback() {
 
-			@Override
-			public void next(WeatherBindingConfig bindingConfig, String itemName) {
-				if (context.getConfig().getLocationConfig(bindingConfig.getLocationId()) == null) {
-					throw new RuntimeException("Unknown locationId in item '" + itemName + "' with binding "
-							+ bindingConfig);
-				}
-			}
-		});
-	}
+            @Override
+            public void next(WeatherBindingConfig bindingConfig, String itemName) {
+                if (context.getConfig().getLocationConfig(bindingConfig.getLocationId()) == null) {
+                    throw new RuntimeException(
+                            "Unknown locationId in item '" + itemName + "' with binding " + bindingConfig);
+                }
+            }
+        });
+    }
 
-	/**
-	 * Returns true, if a binding for the locationId is available.
-	 */
-	private boolean hasBinding(String locationId) {
-		for (WeatherBindingProvider provider : context.getProviders()) {
-			if (provider.hasBinding(locationId)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Returns true, if a binding for the locationId is available.
+     */
+    private boolean hasBinding(String locationId) {
+        for (WeatherBindingProvider provider : context.getProviders()) {
+            if (provider.hasBinding(locationId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Stops all scheduled jobs and clears the WeatherPublisher cache.
-	 */
-	public void stop() {
-		try {
-			for (JobKey jobKey : scheduler.getJobKeys(jobGroupEquals(JOB_GROUP))) {
-				logger.info("Deleting " + jobKey.getName());
-				scheduler.deleteJob(jobKey);
-			}
-		} catch (SchedulerException ex) {
-			logger.error(ex.getMessage(), ex);
-		}
-		WeatherPublisher.getInstance().clear();
-	}
+    /**
+     * Stops all scheduled jobs and clears the WeatherPublisher cache.
+     */
+    public void stop() {
+        try {
+            for (JobKey jobKey : scheduler.getJobKeys(jobGroupEquals(JOB_GROUP))) {
+                logger.info("Deleting " + jobKey.getName());
+                scheduler.deleteJob(jobKey);
+            }
+        } catch (SchedulerException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+    }
 
-	/**
-	 * Schedules the WeatherJob with the specified interval and starts it
-	 * immediately.
-	 */
-	public void scheduleIntervalJob(LocationConfig locationConfig) {
-		String jobName = "weatherJob-" + locationConfig.getLocationId();
-		int interval = locationConfig.getUpdateInterval() * 60;
-		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put("locationId", locationConfig.getLocationId());
+    /**
+     * Schedules the WeatherJob with the specified interval and starts it
+     * immediately.
+     */
+    public void scheduleIntervalJob(LocationConfig locationConfig) {
+        String jobName = "weatherJob-" + locationConfig.getLocationId();
+        int interval = locationConfig.getUpdateInterval() * 60;
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("locationId", locationConfig.getLocationId());
 
-		try {
-			Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startNow()
-					.withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(interval)).build();
-			JobDetail jobDetail = newJob(WeatherJob.class).withIdentity(jobName, JOB_GROUP).usingJobData(jobDataMap)
-					.build();
-			scheduler.scheduleJob(jobDetail, trigger);
-			logger.info("Starting and scheduling {} with interval of {} minutes", jobName,
-					locationConfig.getUpdateInterval());
-		} catch (SchedulerException ex) {
-			logger.error(ex.getMessage(), ex);
-		}
-	}
+        try {
+            Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startNow()
+                    .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(interval)).build();
+            JobDetail jobDetail = newJob(WeatherJob.class).withIdentity(jobName, JOB_GROUP).usingJobData(jobDataMap)
+                    .build();
+            scheduler.scheduleJob(jobDetail, trigger);
+            logger.info("Starting and scheduling {} with interval of {} minutes", jobName,
+                    locationConfig.getUpdateInterval());
+        } catch (SchedulerException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,233 +32,234 @@ import org.slf4j.LoggerFactory;
 /**
  * The VDR binding connects to a VDR on the svdr port. The following features
  * are implemented
- * 
+ *
  * - Show message on OSD - power off - channel up / down - volume up / down - is
  * recoding
- * 
+ *
  * @author Wolfgang Willinghoefer
  * @since 0.9.0
  */
 
-public class VDRBinding extends AbstractBinding<VDRBindingProvider> implements ManagedService {
+public class VDRBinding extends AbstractBinding<VDRBindingProvider>implements ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(VDRBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(VDRBinding.class);
 
-	/** RegEx to validate a vdr config <code>'^(.*?)\\.(host|port)$'</code> */
-	private static final Pattern EXTRACT_VDR_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
+    /** RegEx to validate a vdr config <code>'^(.*?)\\.(host|port)$'</code> */
+    private static final Pattern EXTRACT_VDR_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|port)$");
 
-	protected Map<String, VDRConfig> vdrConfigCache = new HashMap<String, VDRConfig>();
+    protected Map<String, VDRConfig> vdrConfigCache = new HashMap<String, VDRConfig>();
 
-	public void activate() {
-	}
+    @Override
+    public void activate() {
+    }
 
-	public void deactivate() {
-	}
+    @Override
+    public void deactivate() {
+    }
 
-	/**
-	 * @{inheritDoc
-	 */
+    /**
+     * @{inheritDoc
+     */
 
-	public void internalReceiveCommand(String itemName, Command command) {
+    @Override
+    public void internalReceiveCommand(String itemName, Command command) {
 
-		VDRBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+        VDRBindingProvider provider = findFirstMatchingBindingProvider(itemName);
 
-		if (provider == null) {
-			logger.warn(
-					"cannot find matching binding provider [itemName={}, command={}]",
-					itemName, command);
-			return;
-		}
+        if (provider == null) {
+            logger.warn("cannot find matching binding provider [itemName={}, command={}]", itemName, command);
+            return;
+        }
 
-		List<String> vdrCommands = provider.getVDRCommand(itemName);
-		List<String> ids = provider.getVDRId(itemName);
+        List<String> vdrCommands = provider.getVDRCommand(itemName);
+        List<String> ids = provider.getVDRId(itemName);
 
-		if (ids != null) {
-			int i = 0;
-			for (String vdrId : ids) {
-				String vdrCommand = vdrCommands.get(i);
-				VDRCommandType vdrCmdType = VDRCommandType.create(vdrCommand,
-						command);
-				if (vdrCmdType != null) {
-					executeCommand(vdrId, vdrCmdType, command);
-				} else {
-					logger.error(
-							"wrong command type for binding [vdrId={}, command={}]",
-							itemName, command);
-				}
-				i++;
-			}
-		}
+        if (ids != null) {
+            int i = 0;
+            for (String vdrId : ids) {
+                String vdrCommand = vdrCommands.get(i);
+                VDRCommandType vdrCmdType = VDRCommandType.create(vdrCommand, command);
+                if (vdrCmdType != null) {
+                    executeCommand(vdrId, vdrCmdType, command);
+                } else {
+                    logger.error("wrong command type for binding [vdrId={}, command={}]", itemName, command);
+                }
+                i++;
+            }
+        }
 
-	}
+    }
 
-	private void executeCommand(String vdrId, VDRCommandType vdrCommandType,
-			Command command) {
-		VDRConnection connection = getVDRConnection(vdrId);
+    private void executeCommand(String vdrId, VDRCommandType vdrCommandType, Command command) {
+        VDRConnection connection = getVDRConnection(vdrId);
 
-		if (connection != null && vdrCommandType != null) {
-			switch (vdrCommandType) {
-			case MESSAGE:
-				connection.send(new MESG(command.toString()));
-				break;
-			case POWEROFF:
-				connection.send(new HITK("Power"));
-				break;
-			case CHANNEL_UP:
-				connection.send(new CHAN("+"));
-				break;
-			case CHANNEL_DOWN:
-				connection.send(new CHAN("-"));
-				break;
-			case CHANNEL:
-				connection.send(new CHAN (command.toString()));
-				break;
-			case VOLUME_UP:
-				connection.send(new VOLU("+"));
-				break;
-			case VOLUME_DOWN:
-				connection.send(new VOLU("-"));
-				break;
-			case VOLUME:
-				connection.send(new VOLU(command.toString()));
-				break;
-			}
-		}
-	}
+        if (connection != null && vdrCommandType != null) {
+            switch (vdrCommandType) {
+                case MESSAGE:
+                    connection.send(new MESG(command.toString()));
+                    break;
+                case POWEROFF:
+                    connection.send(new HITK("Power"));
+                    break;
+                case CHANNEL_UP:
+                    connection.send(new CHAN("+"));
+                    break;
+                case CHANNEL_DOWN:
+                    connection.send(new CHAN("-"));
+                    break;
+                case CHANNEL:
+                    connection.send(new CHAN(command.toString()));
+                    break;
+                case VOLUME_UP:
+                    connection.send(new VOLU("+"));
+                    break;
+                case VOLUME_DOWN:
+                    connection.send(new VOLU("-"));
+                    break;
+                case VOLUME:
+                    connection.send(new VOLU(command.toString()));
+                    break;
+            }
+        }
+    }
 
-	private VDRConnection getVDRConnection(String vdrId) {
-		VDRConfig vdrConfig = vdrConfigCache.get(vdrId);
-		if (vdrConfig != null) {
-			return vdrConfig.getVDRConnection();
-		}
-		return null;
-	}
+    private VDRConnection getVDRConnection(String vdrId) {
+        VDRConfig vdrConfig = vdrConfigCache.get(vdrId);
+        if (vdrConfig != null) {
+            return vdrConfig.getVDRConnection();
+        }
+        return null;
+    }
 
-	/**
-	 * Find the first matching {@link VDRBindingProvider} according to
-	 * <code>itemName</code>
-	 * 
-	 * @param itemName
-	 * 
-	 * @return the matching binding provider or <code>null</code> if no binding
-	 *         provider could be found
-	 */
-	private VDRBindingProvider findFirstMatchingBindingProvider(String itemName) {
-		VDRBindingProvider firstMatchingProvider = null;
-		for (VDRBindingProvider provider : this.providers) {
+    /**
+     * Find the first matching {@link VDRBindingProvider} according to
+     * <code>itemName</code>
+     *
+     * @param itemName
+     *
+     * @return the matching binding provider or <code>null</code> if no binding
+     *         provider could be found
+     */
+    private VDRBindingProvider findFirstMatchingBindingProvider(String itemName) {
+        VDRBindingProvider firstMatchingProvider = null;
+        for (VDRBindingProvider provider : this.providers) {
 
-			List<String> vdrIds = provider.getVDRId(itemName);
-			if (vdrIds != null && vdrIds.size() > 0) {
-				firstMatchingProvider = provider;
-				break;
-			}
-		}
-		return firstMatchingProvider;
-	}
+            List<String> vdrIds = provider.getVDRId(itemName);
+            if (vdrIds != null && vdrIds.size() > 0) {
+                firstMatchingProvider = provider;
+                break;
+            }
+        }
+        return firstMatchingProvider;
+    }
 
-	/**
-	 * Find the first matching {@link VDRBindingProvider} according to
-	 * <code>itemName</code> and <code>command</code>.
-	 * 
-	 * @param itemName
-	 * @param command
-	 * 
-	 * @return the matching binding provider or <code>null</code> if no binding
-	 *         provider could be found
-	 */
-	protected VDRBindingProvider findFirstMatchingBindingProviderByVDRId(
-			String vdrId) {
-		VDRBindingProvider firstMatchingProvider = null;
-		for (VDRBindingProvider provider : this.providers) {
+    /**
+     * Find the first matching {@link VDRBindingProvider} according to
+     * <code>itemName</code> and <code>command</code>.
+     *
+     * @param itemName
+     * @param command
+     *
+     * @return the matching binding provider or <code>null</code> if no binding
+     *         provider could be found
+     */
+    protected VDRBindingProvider findFirstMatchingBindingProviderByVDRId(String vdrId) {
+        VDRBindingProvider firstMatchingProvider = null;
+        for (VDRBindingProvider provider : this.providers) {
 
-			String bindingItemName = provider.getBindingItemName(vdrId,
-					VDRCommandType.MESSAGE);
-			if (bindingItemName != null) {
-				firstMatchingProvider = provider;
-				break;
-			}
-		}
-		return firstMatchingProvider;
-	}
+            String bindingItemName = provider.getBindingItemName(vdrId, VDRCommandType.MESSAGE);
+            if (bindingItemName != null) {
+                firstMatchingProvider = provider;
+                break;
+            }
+        }
+        return firstMatchingProvider;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
-		if (config != null) {
+    protected void addBindingProvider(VDRBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-			Enumeration keys = config.keys();
-			while (keys.hasMoreElements()) {
+    protected void removeBindingProvider(VDRBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-				String key = (String) keys.nextElement();
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void updated(Dictionary config) throws ConfigurationException {
+        if (config != null) {
 
-				// the config-key enumeration contains additional keys that we
-				// don't want to process here ...
-				if ("service.pid".equals(key)) {
-					continue;
-				}
+            Enumeration keys = config.keys();
+            while (keys.hasMoreElements()) {
 
-				Matcher matcher = EXTRACT_VDR_CONFIG_PATTERN.matcher(key);
-				if (!matcher.matches()) {
-					logger.debug("given vdr-config-key '"
-							+ key
-							+ "' does not follow the expected pattern '<vdrId>.<host|port>'");
-					continue;
-				}
+                String key = (String) keys.nextElement();
 
-				matcher.reset();
-				matcher.find();
+                // the config-key enumeration contains additional keys that we
+                // don't want to process here ...
+                if ("service.pid".equals(key)) {
+                    continue;
+                }
 
-				String playerId = matcher.group(1);
+                Matcher matcher = EXTRACT_VDR_CONFIG_PATTERN.matcher(key);
+                if (!matcher.matches()) {
+                    logger.debug("given vdr-config-key '" + key
+                            + "' does not follow the expected pattern '<vdrId>.<host|port>'");
+                    continue;
+                }
 
-				VDRConfig playerConfig = vdrConfigCache.get(playerId);
-				if (playerConfig == null) {
-					playerConfig = new VDRConfig(playerId);
-					vdrConfigCache.put(playerId, playerConfig);
-				}
+                matcher.reset();
+                matcher.find();
 
-				String configKey = matcher.group(2);
-				String value = (String) config.get(key);
+                String playerId = matcher.group(1);
 
-				if ("host".equals(configKey)) {
-					playerConfig.host = value;
-				} else if ("port".equals(configKey)) {
-					playerConfig.port = Integer.valueOf(value);
-				} else {
-					throw new ConfigurationException(configKey,
-							"the given configKey '" + configKey + "' is unknown");
-				}
+                VDRConfig playerConfig = vdrConfigCache.get(playerId);
+                if (playerConfig == null) {
+                    playerConfig = new VDRConfig(playerId);
+                    vdrConfigCache.put(playerId, playerConfig);
+                }
 
-			}
-		}
-	}
+                String configKey = matcher.group(2);
+                String value = (String) config.get(key);
 
-	/**
-	 * Internal data structure which carries the connection details of one VDR
-	 * (there could be several)
-	 * 
-	 * @author Wolfgang Willinghoefer
-	 */
-	static class VDRConfig {
+                if ("host".equals(configKey)) {
+                    playerConfig.host = value;
+                } else if ("port".equals(configKey)) {
+                    playerConfig.port = Integer.valueOf(value);
+                } else {
+                    throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
+                }
 
-		String host;
-		int port;
-		VDRConnection vdrConnection = null;
-		String vdrId;
+            }
+        }
+    }
 
-		public VDRConfig(String pVDRId) {
-			vdrId = pVDRId;
-		}
+    /**
+     * Internal data structure which carries the connection details of one VDR
+     * (there could be several)
+     *
+     * @author Wolfgang Willinghoefer
+     */
+    static class VDRConfig {
 
-		@Override
-		public String toString() {
-			return "VDR [id=" + vdrId + ", host=" + host + ", port=" + port
-					+ "]";
-		}
+        String host;
+        int port;
+        VDRConnection vdrConnection = null;
+        String vdrId;
 
-		VDRConnection getVDRConnection() {
-			if (vdrConnection == null) {
-				vdrConnection = new VDRConnection(host, port);
-			}
-			return vdrConnection;
-		}
-	}
+        public VDRConfig(String pVDRId) {
+            vdrId = pVDRId;
+        }
+
+        @Override
+        public String toString() {
+            return "VDR [id=" + vdrId + ", host=" + host + ", port=" + port + "]";
+        }
+
+        VDRConnection getVDRConnection() {
+            if (vdrConnection == null) {
+                vdrConnection = new VDRConnection(host, port);
+            }
+            return vdrConnection;
+        }
+    }
 }

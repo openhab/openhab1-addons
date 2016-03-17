@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,78 +18,79 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Meter in outlet addressed via webservice
- * 
+ *
  * @author Christian Brauers
  * @since 1.3.0
  */
 public class FritzahaWebserviceMeter implements FritzahaOutletMeter {
-	/**
-	 * Host ID
-	 */
-	String host;
-	/**
-	 * Device ID
-	 */
-	String id;
-	/**
-	 * Meter type
-	 */
-	MeterType type;
+    /**
+     * Host ID
+     */
+    String host;
+    /**
+     * Device ID
+     */
+    String id;
+    /**
+     * Meter type
+     */
+    MeterType type;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getHost() {
-		return host;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getHost() {
+        return host;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public MeterType getMeterType() {
-		return type;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public MeterType getMeterType() {
+        return type;
+    }
 
-	static final Logger logger = LoggerFactory.getLogger(FritzahaWebserviceMeter.class);
+    static final Logger logger = LoggerFactory.getLogger(FritzahaWebserviceMeter.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void updateMeterValue(String itemName, FritzahaWebInterface webIface) {
-		String valueType;
-		if (type == MeterType.POWER) {
-			valueType = "getswitchpower";
-		} else if (type == MeterType.ENERGY) {
-			valueType = "getswitchenergy";
-		} else if (type == MeterType.TEMPERATURE) {
-			valueType = "getdevicelistinfos";
-		} else
-			return;
-		logger.debug("Getting " + valueType + " value for AIN " + id);
-		String path = "webservices/homeautoswitch.lua";
-		String args = "switchcmd=" + valueType + "&ain=" + id;
-		if( type.equals(MeterType.TEMPERATURE) ) {
-			webIface.asyncGet(path, args, new FritzahaWebserviceUpdateXmlCallback(path, args, type, webIface,
-					FritzahaReauthCallback.Method.GET, 1, itemName, id));
-		} else {
-			webIface.asyncGet(path, args, new FritzahaWebserviceUpdateNumberCallback(path, args, type, webIface,
-					FritzahaReauthCallback.Method.GET, 1, itemName));
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void updateMeterValue(String itemName, FritzahaWebInterface webIface) {
+        String valueType;
+        if (type == MeterType.POWER) {
+            valueType = "getswitchpower";
+        } else if (type == MeterType.ENERGY) {
+            valueType = "getswitchenergy";
+        } else if (type == MeterType.TEMPERATURE) {
+            valueType = "getdevicelistinfos";
+        } else {
+            return;
+        }
+        logger.debug("Getting " + valueType + " value for AIN " + id);
+        String path = "webservices/homeautoswitch.lua";
+        String args = "switchcmd=" + valueType + "&ain=" + id;
+        if (type.equals(MeterType.TEMPERATURE)) {
+            webIface.asyncGet(path, args, new FritzahaWebserviceUpdateXmlCallback(path, args, type, webIface,
+                    FritzahaReauthCallback.Method.GET, 1, itemName, id));
+        } else {
+            webIface.asyncGet(path, args, new FritzahaWebserviceUpdateNumberCallback(path, args, type, webIface,
+                    FritzahaReauthCallback.Method.GET, 1, itemName));
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public FritzahaWebserviceMeter(String host, String id, MeterType type) {
-		this.host = host;
-		this.id = id;
-		this.type = type;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public FritzahaWebserviceMeter(String host, String id, MeterType type) {
+        this.host = host;
+        this.id = id;
+        this.type = type;
+    }
 }

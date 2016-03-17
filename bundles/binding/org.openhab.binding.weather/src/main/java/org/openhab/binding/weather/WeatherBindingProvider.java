@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,20 +13,20 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * The interface to implement to provide a binding for Weather.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public interface WeatherBindingProvider extends BindingProvider {
 
-	/**
-	 * Returns the WeatherBindingConfig for an item by name.
-	 */
-	public WeatherBindingConfig getBindingFor(String itemName);
+    /**
+     * Returns the WeatherBindingConfig for an item by name.
+     */
+    public WeatherBindingConfig getBindingFor(String itemName);
 
-	/**
-	 * Returns true, if a binding for the specified locationId is available.
-	 */
-	public boolean hasBinding(String locationId);
+    /**
+     * Returns true, if a binding for the specified locationId is available.
+     */
+    public boolean hasBinding(String locationId);
 
 }

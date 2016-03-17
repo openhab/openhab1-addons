@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,99 +16,101 @@ import java.util.List;
 import org.apache.commons.lang.math.LongRange;
 import org.quartz.Calendar;
 
-
 /**
  * This implementation of the Quartz Calendar stores a list of TimeRanges that
  * are excluded from scheduling.
- * 
+ *
  * @author Thomas.Eichstaedt-Engelen
  */
 public class TimeRangeCalendar implements Calendar, Serializable {
-	
-	private static final long serialVersionUID = 6840341227522646373L;
-	
-	private Calendar baseCalendar;
-	private String description;
-	
+
+    private static final long serialVersionUID = 6840341227522646373L;
+
+    private Calendar baseCalendar;
+    private String description;
+
     private static final long ONE_MILLI = 1;
-	
+
     private List<LongRange> excludedRanges = new ArrayList<LongRange>();
-    
-    
+
     public TimeRangeCalendar() {
-    	this.baseCalendar = null;
-    	this.description = "A special Quartz calendar which caries the excluded time ranges.";
+        this.baseCalendar = null;
+        this.description = "A special Quartz calendar which caries the excluded time ranges.";
     }
-    
-    
-	public Calendar getBaseCalendar() {
-		return baseCalendar;
-	}
-	
-	public void setBaseCalendar(Calendar baseCalendar) {
-		this.baseCalendar = baseCalendar;
-	}
 
-	public String getDescription() {
-		return description;
-	}
+    @Override
+    public Calendar getBaseCalendar() {
+        return baseCalendar;
+    }
 
+    @Override
+    public void setBaseCalendar(Calendar baseCalendar) {
+        this.baseCalendar = baseCalendar;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     /**
      * Determine whether the given time (in milliseconds) is 'included' by the
      * Calendar.
      */
+    @Override
     public boolean isTimeIncluded(long timeStamp) {
-		return findTimeRange(timeStamp) != null;
+        return findTimeRange(timeStamp) != null;
     }
 
     /**
      * Determine the next time (in milliseconds) that is 'included' by the
      * Calendar after the given time.
      */
+    @Override
     public long getNextIncludedTime(long timeStamp) {
-       long nextIncludedTime = timeStamp + ONE_MILLI;
-        
+        long nextIncludedTime = timeStamp + ONE_MILLI;
+
         while (isTimeIncluded(nextIncludedTime)) {
-        	LongRange timeRange = findTimeRange(timeStamp);
-            if (nextIncludedTime >= timeRange.getMinimumLong() && 
-                nextIncludedTime <= timeRange.getMaximumLong()) {
-                
+            LongRange timeRange = findTimeRange(timeStamp);
+            if (nextIncludedTime >= timeRange.getMinimumLong() && nextIncludedTime <= timeRange.getMaximumLong()) {
+
                 nextIncludedTime = timeRange.getMaximumLong() + ONE_MILLI;
-            } else if ((getBaseCalendar() != null) && (!getBaseCalendar().isTimeIncluded(nextIncludedTime))){
+            } else if ((getBaseCalendar() != null) && (!getBaseCalendar().isTimeIncluded(nextIncludedTime))) {
                 nextIncludedTime = getBaseCalendar().getNextIncludedTime(nextIncludedTime);
             } else {
                 nextIncludedTime++;
             }
         }
-        
+
         return nextIncludedTime;
     }
-    
+
     /**
      * Find first TimeRange which contains the given <code>timeStamp</code>
+     * 
      * @param timeStamp the TimeStamp to find
      * @return the first TimeRange which contains the given <code>timeStamp</code>
-     * or <code>null</code> if no matching TimeRange exists
+     *         or <code>null</code> if no matching TimeRange exists
      */
     protected LongRange findTimeRange(long timeStamp) {
-    	for (LongRange range : excludedRanges) {
-    		if (range.containsLong(timeStamp)) {
-    			return range;
-    		}
-    	}
-		return null;
+        for (LongRange range : excludedRanges) {
+            if (range.containsLong(timeStamp)) {
+                return range;
+            }
+        }
+        return null;
     }
 
     /**
      * Adds the given <code>timeRange</code> to the excluded ranges.
      */
     public void addTimeRange(LongRange timeRange) {
-		this.excludedRanges.add(timeRange);
+        this.excludedRanges.add(timeRange);
     }
 
     /**
@@ -117,21 +119,19 @@ public class TimeRangeCalendar implements Calendar, Serializable {
     public void removeExcludedDate(LongRange dateToRemove) {
         this.excludedRanges.remove(dateToRemove);
     }
-    
+
     /**
      * Returns an unmodifiable List of the excluded TimeRanges
      */
     protected List<LongRange> getExcludedRanges() {
-		return Collections.unmodifiableList(excludedRanges);
-	}
-    
-    
+        return Collections.unmodifiableList(excludedRanges);
+    }
+
     @Override
     public Object clone() {
-    	TimeRangeCalendar clone = new TimeRangeCalendar();
+        TimeRangeCalendar clone = new TimeRangeCalendar();
         clone.excludedRanges = new ArrayList<LongRange>(excludedRanges);
         return clone;
     }
-    
-	
+
 }

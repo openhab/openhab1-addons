@@ -82,6 +82,10 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
   string dev_interface= dev_obj.Interface();
   string interface_name = dom.GetObject(dev_interface).Name();
   boolean is_ready = dev_obj.ReadyConfig();
+  boolean isChannelFourPartyDevice = (dev_obj.HssType() == "HM-CC-RT-DN") || (dev_obj.HssType() == "HM-CC-RT-DN-BoM");
+  boolean isChannelTwoPartyDevice = (dev_obj.HssType() == "HM-TC-IT-WM-W-EU");
+  boolean isSmokeDevice = (dev_obj.HssType() == "HM-Sec-SD");
+
   if(is_ready && 
      (dev_obj.HssType() != "HMW-RCV-50")) {
 
@@ -89,11 +93,14 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
     Write(" address='"); WriteXML(dev_obj.Address());
     Write("' interface='"); WriteXML(interface_name);
     Write("' type='"); WriteXML(dev_obj.HssType());
-	Write("'>\n");
+    Write("'>\n");
     foreach(channel_id, dev_obj.Channels()) {
       object channel_obj = dom.GetObject(channel_id);
       string channel_number = channel_obj.Address().StrValueByIndex(":",1).ToString();
       boolean isChannelFour = channel_number == "4";
+      boolean isChannelTwo = channel_number == "2";
+      boolean isChannelOne = channel_number == "1";
+
       Write("    <channel");
       Write(" number='"); WriteXML(channel_number);
       Write("'>\n");
@@ -105,10 +112,10 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
           Write(" name='" # extraDatapointName);
           Write("' value='"); 
           if (edp.ValueType() == 2) {
-          	Write("false");
+            Write("false");
           }
           else {
-          	WriteXML(edp.Value());
+            WriteXML(edp.Value());
           }
           Write("' valueType='" # edp.ValueType());
           if (edp.ValueType() == 16) {
@@ -154,19 +161,23 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
           }
         }
       }
-
-      if (isChannelFour && dev_obj.HssType() == "HM-CC-RT-DN") {
-		Write("      <datapoint name='PARTY_TEMPERATURE' value='5.0' valueType='4' min='5.0' max='30.0' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_START_TIME' value='0' valueType='8' min='0' max='1410' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_START_DAY' value='1' valueType='8' min='1' max='31' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_START_MONTH' value='1' valueType='8' min='1' max='12' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_START_YEAR' value='12' valueType='8' min='0' max='99' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_STOP_TIME' value='0' valueType='8' min='0' max='1410' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_STOP_DAY' value='1' valueType='8' min='1' max='31' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_STOP_MONTH' value='1' valueType='8' min='1' max='12' writeable='true' />\n");
-		Write("      <datapoint name='PARTY_STOP_YEAR' value='12' valueType='8' min='0' max='99' writeable='true' />\n");
+      
+      if ((isChannelFour && isChannelFourPartyDevice) || (isChannelTwo && isChannelTwoPartyDevice)) {
+        Write("      <datapoint name='PARTY_TEMPERATURE' value='5.0' valueType='4' min='5.0' max='30.0' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_TIME' value='0' valueType='8' min='0' max='1410' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_DAY' value='1' valueType='8' min='1' max='31' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_MONTH' value='1' valueType='8' min='1' max='12' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_START_YEAR' value='12' valueType='8' min='0' max='99' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_TIME' value='0' valueType='8' min='0' max='1410' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_DAY' value='1' valueType='8' min='1' max='31' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_MONTH' value='1' valueType='8' min='1' max='12' writeable='true' />\n");
+        Write("      <datapoint name='PARTY_STOP_YEAR' value='12' valueType='8' min='0' max='99' writeable='true' />\n");
       }
       
+      if (isChannelOne && isSmokeDevice) {
+        Write("      <datapoint name='STATE' value='false' valueType='2' writeable='false' />\n");
+      }
+
       Write("    </channel>\n");
     }
     Write("  </device>\n");

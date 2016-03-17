@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,384 +37,406 @@ import org.slf4j.LoggerFactory;
  * ZWaveConverterHandler class. Acts as a factory and manager of all the
  * converters the binding can use to convert between the Z-Wave api and the
  * binding.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
 public class ZWaveConverterHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveConverterHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveConverterHandler.class);
 
-	private final Map<CommandClass, ZWaveCommandClassConverter<?>> converters = new HashMap<CommandClass, ZWaveCommandClassConverter<?>>();
-	private final Map<Class<? extends Item>, CommandClass[]> preferredCommandClasses = new HashMap<Class<? extends Item>, CommandClass[]>();
-	private final ZWaveController controller;
-	private final ZWaveInfoConverter infoConverter;
+    private final Map<CommandClass, ZWaveCommandClassConverter<?>> converters = new HashMap<CommandClass, ZWaveCommandClassConverter<?>>();
+    private final Map<Class<? extends Item>, CommandClass[]> preferredCommandClasses = new HashMap<Class<? extends Item>, CommandClass[]>();
+    private final ZWaveController controller;
+    private final ZWaveInfoConverter infoConverter;
 
-	/**
-	 * Constructor. Creates a new instance of the @ link ZWaveConverterHandler}
-	 * class.
-	 * 
-	 * @param controller
-	 *            the {@link ZWaveController} to use to send messages.
-	 * @param eventPublisher
-	 *            the {@link EventPublisher} to use to post updates.
-	 */
-	public ZWaveConverterHandler(ZWaveController controller, EventPublisher eventPublisher) {
-		this.controller = controller;
+    /**
+     * Constructor. Creates a new instance of the @ link ZWaveConverterHandler}
+     * class.
+     *
+     * @param controller
+     *            the {@link ZWaveController} to use to send messages.
+     * @param eventPublisher
+     *            the {@link EventPublisher} to use to post updates.
+     */
+    public ZWaveConverterHandler(ZWaveController controller, EventPublisher eventPublisher) {
+        this.controller = controller;
 
-		// add converters here
-		converters.put(CommandClass.THERMOSTAT_SETPOINT, new ZWaveThermostatSetpointConverter(controller,
-				eventPublisher));
-		converters.put(CommandClass.THERMOSTAT_MODE, new ZWaveThermostatModeConverter(controller, eventPublisher));
-		converters.put(CommandClass.THERMOSTAT_FAN_MODE,
-				new ZWaveThermostatFanModeConverter(controller, eventPublisher));
-		converters.put(CommandClass.THERMOSTAT_OPERATING_STATE, new ZWaveThermostatOperatingStateConverter(controller,
-				eventPublisher));
-		converters.put(CommandClass.THERMOSTAT_FAN_STATE, new ZWaveThermostatFanStateConverter(controller,
-				eventPublisher));
-		converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
-		converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
-		converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
-		converters.put(CommandClass.SENSOR_BINARY, new ZWaveBinarySensorConverter(controller, eventPublisher));
-		converters.put(CommandClass.SENSOR_MULTILEVEL, new ZWaveMultiLevelSensorConverter(controller, eventPublisher));
-		converters.put(CommandClass.SENSOR_ALARM, new ZWaveAlarmSensorConverter(controller, eventPublisher));
-		converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
-		converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
-		converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
-		converters.put(CommandClass.FIBARO_FGRM_222, new FibaroFGRM222Converter(controller, eventPublisher));
-		converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
-		converters.put(CommandClass.CONFIGURATION, new ZWaveConfigurationConverter(controller, eventPublisher));
+        // add converters here
+        converters.put(CommandClass.THERMOSTAT_SETPOINT,
+                new ZWaveThermostatSetpointConverter(controller, eventPublisher));
+        converters.put(CommandClass.THERMOSTAT_MODE, new ZWaveThermostatModeConverter(controller, eventPublisher));
+        converters.put(CommandClass.THERMOSTAT_FAN_MODE,
+                new ZWaveThermostatFanModeConverter(controller, eventPublisher));
+        converters.put(CommandClass.THERMOSTAT_OPERATING_STATE,
+                new ZWaveThermostatOperatingStateConverter(controller, eventPublisher));
+        converters.put(CommandClass.THERMOSTAT_FAN_STATE,
+                new ZWaveThermostatFanStateConverter(controller, eventPublisher));
+        converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
+        converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
+        converters.put(CommandClass.SWITCH_ALL, new ZWaveSwitchAllConverter(controller, eventPublisher));
+        converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
+        converters.put(CommandClass.SENSOR_BINARY, new ZWaveBinarySensorConverter(controller, eventPublisher));
+        converters.put(CommandClass.SENSOR_MULTILEVEL, new ZWaveMultiLevelSensorConverter(controller, eventPublisher));
+        converters.put(CommandClass.SENSOR_ALARM, new ZWaveAlarmSensorConverter(controller, eventPublisher));
+        converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
+        converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
+        converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
+        converters.put(CommandClass.FIBARO_FGRM_222, new FibaroFGRM222Converter(controller, eventPublisher));
+        converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
+        converters.put(CommandClass.CONFIGURATION, new ZWaveConfigurationConverter(controller, eventPublisher));
+        converters.put(CommandClass.INDICATOR, new ZWaveIndicatorConverter(controller, eventPublisher));
+        converters.put(CommandClass.WAKE_UP, new ZWaveWakeUpConverter(controller, eventPublisher));
 
-		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
+        infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 
-		// add preferred command classes per Item class here
-		preferredCommandClasses.put(SwitchItem.class, new CommandClass[] { CommandClass.SWITCH_BINARY,
-				CommandClass.SWITCH_MULTILEVEL, CommandClass.METER, CommandClass.BASIC, CommandClass.SENSOR_BINARY,
-				CommandClass.SENSOR_ALARM });
-		preferredCommandClasses.put(DimmerItem.class, new CommandClass[] { CommandClass.SWITCH_MULTILEVEL,
-				CommandClass.SWITCH_BINARY, CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL,
-				CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM });
-		preferredCommandClasses.put(RollershutterItem.class, new CommandClass[] { CommandClass.SWITCH_MULTILEVEL,
-				CommandClass.SWITCH_BINARY, CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL,
-				CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM });
-		preferredCommandClasses.put(NumberItem.class, new CommandClass[] { CommandClass.SENSOR_MULTILEVEL,
-				CommandClass.METER, CommandClass.SWITCH_MULTILEVEL, CommandClass.BATTERY, CommandClass.BASIC,
-				CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY,
-				CommandClass.THERMOSTAT_SETPOINT, CommandClass.THERMOSTAT_MODE, CommandClass.THERMOSTAT_FAN_MODE,
-				CommandClass.THERMOSTAT_OPERATING_STATE, CommandClass.THERMOSTAT_FAN_STATE });
-		preferredCommandClasses.put(ContactItem.class, new CommandClass[] { CommandClass.SENSOR_BINARY,
-				CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY, CommandClass.BASIC });
-	}
+        // add preferred command classes per Item class here
+        preferredCommandClasses
+                .put(SwitchItem.class,
+                        new CommandClass[] { CommandClass.SWITCH_BINARY, CommandClass.SWITCH_MULTILEVEL,
+                                CommandClass.METER, CommandClass.BASIC, CommandClass.SENSOR_BINARY,
+                                CommandClass.SENSOR_ALARM });
+        preferredCommandClasses
+                .put(DimmerItem.class,
+                        new CommandClass[] { CommandClass.SWITCH_MULTILEVEL, CommandClass.SWITCH_BINARY,
+                                CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL, CommandClass.SENSOR_BINARY,
+                                CommandClass.SENSOR_ALARM });
+        preferredCommandClasses
+                .put(RollershutterItem.class,
+                        new CommandClass[] { CommandClass.SWITCH_MULTILEVEL, CommandClass.SWITCH_BINARY,
+                                CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL, CommandClass.SENSOR_BINARY,
+                                CommandClass.SENSOR_ALARM });
+        preferredCommandClasses.put(NumberItem.class,
+                new CommandClass[] { CommandClass.SENSOR_MULTILEVEL, CommandClass.METER, CommandClass.SWITCH_MULTILEVEL,
+                        CommandClass.BATTERY, CommandClass.BASIC, CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM,
+                        CommandClass.SWITCH_BINARY, CommandClass.THERMOSTAT_SETPOINT, CommandClass.THERMOSTAT_MODE,
+                        CommandClass.THERMOSTAT_FAN_MODE, CommandClass.THERMOSTAT_OPERATING_STATE,
+                        CommandClass.THERMOSTAT_FAN_STATE, CommandClass.WAKE_UP });
+        preferredCommandClasses.put(ContactItem.class, new CommandClass[] { CommandClass.SENSOR_BINARY,
+                CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY, CommandClass.BASIC });
+    }
 
-	/**
-	 * Returns a converter to convert between the Z-Wave API and the binding.
-	 * 
-	 * @param commandClass
-	 *            the {@link CommandClass} to create a converter for.
-	 * @return a {@link ZWaveCommandClassConverter} or null if a converter is
-	 *         not found.
-	 */
-	public ZWaveCommandClassConverter<?> getConverter(CommandClass commandClass) {
-		return converters.get(commandClass);
-	}
+    /**
+     * Returns a converter to convert between the Z-Wave API and the binding.
+     *
+     * @param commandClass
+     *            the {@link CommandClass} to create a converter for.
+     * @return a {@link ZWaveCommandClassConverter} or null if a converter is
+     *         not found.
+     */
+    public ZWaveCommandClassConverter<?> getConverter(CommandClass commandClass) {
+        return converters.get(commandClass);
+    }
 
-	/**
-	 * Returns the command class that provides the best suitable converter to
-	 * convert between the Z-Wave API and the binding.
-	 * 
-	 * @param item
-	 *            the {@link item} to resolve a converter for.
-	 * @param node
-	 *            the {@link ZWaveNode} node to resolve a Command class on.
-	 * @param the
-	 *            enpoint ID to use to resolve a converter.
-	 * @return the {@link ZWaveCommandClass} that can be used to get a converter
-	 *         suitable to do the conversion.
-	 */
-	private ZWaveCommandClass resolveConverter(Item item, ZWaveNode node, int endpointId) {
-		if (item == null) {
-			return null;
-		}
+    /**
+     * Returns the command class that provides the best suitable converter to
+     * convert between the Z-Wave API and the binding.
+     *
+     * @param item
+     *            the {@link item} to resolve a converter for.
+     * @param node
+     *            the {@link ZWaveNode} node to resolve a Command class on.
+     * @param the
+     *            enpoint ID to use to resolve a converter.
+     * @return the {@link ZWaveCommandClass} that can be used to get a converter
+     *         suitable to do the conversion.
+     */
+    private ZWaveCommandClass resolveConverter(Item item, ZWaveNode node, int endpointId) {
+        if (item == null) {
+            return null;
+        }
 
-		if (!preferredCommandClasses.containsKey(item.getClass())) {
-			logger.warn("No preferred command classes found for item class = {}", item.getClass().toString());
-			return null;
-		}
+        if (!preferredCommandClasses.containsKey(item.getClass())) {
+            logger.warn("No preferred command classes found for item class = {}", item.getClass().toString());
+            return null;
+        }
 
-		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {
-			ZWaveCommandClass result = node.resolveCommandClass(commandClass, endpointId);
+        for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {
+            ZWaveCommandClass result = node.resolveCommandClass(commandClass, endpointId);
 
-			if (result != null && converters.containsKey(commandClass)) {
-				return result;
-			}
-		}
+            if (result != null && converters.containsKey(commandClass)) {
+                return result;
+            }
+        }
 
-		logger.warn("No matching command classes found for item class = {}, node id = {}, endpoint id = {}", item
-				.getClass().toString(), node.getNodeId(), endpointId);
-		return null;
-	}
+        logger.warn("No matching command classes found for item class = {}, node id = {}, endpoint id = {}",
+                item.getClass().toString(), node.getNodeId(), endpointId);
+        return null;
+    }
 
-	/**
-	 * Execute refresh method. This method is called every time a binding item
-	 * is refreshed and the corresponding node should be sent a message.
-	 * 
-	 * @param provider
-	 *            the {@link ZWaveBindingProvider} that provides the item
-	 * @param itemName
-	 *            the name of the item to poll.
-	 * @param forceRefresh
-	 *            indicates that a polling refresh should be forced.
-	 */
-	@SuppressWarnings("unchecked")
-	public void executeRefresh(ZWaveBindingProvider provider, String itemName, boolean forceRefresh) {
-		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
-		ZWaveCommandClass commandClass;
-		String commandClassName = bindingConfiguration.getArguments().get("command");
+    /**
+     * Execute refresh method. This method is called every time a binding item
+     * is refreshed and the corresponding node should be sent a message.
+     *
+     * @param provider
+     *            the {@link ZWaveBindingProvider} that provides the item
+     * @param itemName
+     *            the name of the item to poll.
+     * @param forceRefresh
+     *            indicates that a polling refresh should be forced.
+     */
+    @SuppressWarnings("unchecked")
+    public void executeRefresh(ZWaveBindingProvider provider, String itemName, boolean forceRefresh) {
+        ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
+        ZWaveCommandClass commandClass;
+        String commandClassName = bindingConfiguration.getArguments().get("command");
 
-		// this binding is configured not to poll.
-		if (!forceRefresh && bindingConfiguration.getRefreshInterval() != null
-				&& 0 == bindingConfiguration.getRefreshInterval()) {
-			return;
-		}
+        // this binding is configured not to poll.
+        if (!forceRefresh && bindingConfiguration.getRefreshInterval() != null
+                && 0 == bindingConfiguration.getRefreshInterval()) {
+            return;
+        }
 
-		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
+        ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
 
-		// ignore nodes that are not initialized.
-		if (node == null) {
-			return;
-		}
+        // ignore nodes that are not initialized.
+        if (node == null) {
+            return;
+        }
 
-		if (commandClassName != null) {
+        if (commandClassName != null) {
 
-			// this is a report item, handle it with the report info converter.
-			if (commandClassName.equalsIgnoreCase("info")) {
-				infoConverter.executeRefresh(provider.getItem(itemName), node, bindingConfiguration.getEndpoint(),
-						bindingConfiguration.getArguments());
-				return;
-			}
+            // this is a report item, handle it with the report info converter.
+            if (commandClassName.equalsIgnoreCase("info")) {
+                infoConverter.executeRefresh(provider.getItem(itemName), node, bindingConfiguration.getEndpoint(),
+                        bindingConfiguration.getArguments());
+                return;
+            }
 
-			// ignore nodes that are not initialized or dead.
-			if (node.getNodeState() != ZWaveNodeState.ALIVE || node.isInitializationComplete() == false) {
-				return;
-			}
+            // ignore nodes that are not initialized or dead.
+            if (node.getNodeState() != ZWaveNodeState.ALIVE || node.isInitializationComplete() == false) {
+                return;
+            }
 
-			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
-					bindingConfiguration.getEndpoint());
+            commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
+                    bindingConfiguration.getEndpoint());
 
-			if (commandClass == null) {
-				logger.warn("No command class found for item = {}, command class name = {}, ignoring execute refresh.",
-						itemName, commandClassName);
-				return;
-			}
-		} else {
-			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
-		}
+            if (commandClass == null) {
+                logger.warn("No command class found for item = {}, command class name = {}, ignoring execute refresh.",
+                        itemName, commandClassName);
+                return;
+            }
+        } else {
+            commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
+        }
 
-		if (commandClass == null) {
-			logger.warn("No converter found for item = {}, ignoring execute refresh.", itemName);
-			return;
-		}
+        if (commandClass == null) {
+            logger.warn("No converter found for item = {}, ignoring execute refresh.", itemName);
+            return;
+        }
 
-		ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass
-				.getCommandClass());
+        ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(
+                commandClass.getCommandClass());
 
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, ignoring execute refresh.", itemName);
-			return;
-		}
+        if (converter == null) {
+            logger.warn("No converter found for item = {}, ignoring execute refresh.", itemName);
+            return;
+        }
 
-		if (bindingConfiguration.getRefreshInterval() == null) {
-			bindingConfiguration.setRefreshInterval(converter.getRefreshInterval());
+        if (bindingConfiguration.getRefreshInterval() == null) {
+            bindingConfiguration.setRefreshInterval(converter.getRefreshInterval());
 
-			// this binding is configured not to poll.
-			if (!forceRefresh && 0 == bindingConfiguration.getRefreshInterval()) {
-				return;
-			}
-		}
+            // this binding is configured not to poll.
+            if (!forceRefresh && 0 == bindingConfiguration.getRefreshInterval()) {
+                return;
+            }
+        }
 
-		// not enough time has passed to refresh the item.
-		if (!forceRefresh
-				&& bindingConfiguration.getLastRefreshed() != null
-				&& (bindingConfiguration.getLastRefreshed().getTime()
-						+ (bindingConfiguration.getRefreshInterval() * 1000) > Calendar.getInstance().getTimeInMillis())) {
-			return;
-		}
+        // not enough time has passed to refresh the item.
+        if (!forceRefresh && bindingConfiguration.getLastRefreshed() != null
+                && (bindingConfiguration.getLastRefreshed().getTime()
+                        + (bindingConfiguration.getRefreshInterval() * 1000) > Calendar.getInstance()
+                                .getTimeInMillis())) {
+            return;
+        }
 
-		bindingConfiguration.setLastRefreshed(Calendar.getInstance().getTime());
-		SerialMessage serialMessage = converter.executeRefresh(node, commandClass, bindingConfiguration.getEndpoint(),
-				bindingConfiguration.getArguments());
+        bindingConfiguration.setLastRefreshed(Calendar.getInstance().getTime());
+        SerialMessage serialMessage = converter.executeRefresh(node, commandClass, bindingConfiguration.getEndpoint(),
+                bindingConfiguration.getArguments());
 
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}", node.getNodeId(),
-					commandClass.getCommandClass().getLabel());
-			return;
-		}
+        if (serialMessage == null) {
+            logger.warn("NODE {}: Generating message failed for command class = {}", node.getNodeId(),
+                    commandClass.getCommandClass().getLabel());
+            return;
+        }
 
-		// This is a poll - treat it as a low priority!
-		serialMessage.setPriority(SerialMessagePriority.Poll);
+        // This is a poll - treat it as a low priority!
+        serialMessage.setPriority(SerialMessagePriority.Poll);
 
-		// Queue the message
-		this.controller.sendData(serialMessage);
-	}
+        // Queue the message
+        this.controller.sendData(serialMessage);
+    }
 
-	/**
-	 * Get the refresh interval for an item binding
-	 * 
-	 * @param provider
-	 *            the {@link ZWaveBindingProvider} that provides the item
-	 * @param itemName
-	 *            the name of the item to poll.
-	 */
-	@SuppressWarnings("unchecked")
-	public Integer getRefreshInterval(ZWaveBindingProvider provider, String itemName) {
-		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
-		ZWaveCommandClass commandClass;
-		String commandClassName = bindingConfiguration.getArguments().get("command");
+    /**
+     * Get the refresh interval for an item binding
+     *
+     * @param provider
+     *            the {@link ZWaveBindingProvider} that provides the item
+     * @param itemName
+     *            the name of the item to poll.
+     */
+    @SuppressWarnings("unchecked")
+    public Integer getRefreshInterval(ZWaveBindingProvider provider, String itemName) {
+        ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
+        ZWaveCommandClass commandClass;
+        String commandClassName = bindingConfiguration.getArguments().get("command");
 
-		// this binding is configured not to poll.
-		if (bindingConfiguration.getRefreshInterval() != null && 0 == bindingConfiguration.getRefreshInterval())
-			return 0;
+        // this binding is configured not to poll.
+        if (bindingConfiguration.getRefreshInterval() != null && 0 == bindingConfiguration.getRefreshInterval()) {
+            return 0;
+        }
 
-		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
+        ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
 
-		// ignore nodes that are not initialized.
-		if (node == null)
-			return 0;
+        // ignore nodes that are not initialized.
+        if (node == null) {
+            return 0;
+        }
 
-		if (commandClassName != null) {
-			// this is a report item, handle it with the report info converter.
-			if (commandClassName.equalsIgnoreCase("info")) {
-				return infoConverter.getRefreshInterval();
-			}
+        if (commandClassName != null) {
+            // this is a report item, handle it with the report info converter.
+            if (commandClassName.equalsIgnoreCase("info")) {
+                return infoConverter.getRefreshInterval();
+            }
 
-			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
-					bindingConfiguration.getEndpoint());
+            if (node.getNodeId() == this.controller.getOwnNodeId() && commandClassName.equalsIgnoreCase("switch_all")) {
+                return 0;
+            }
 
-			if (commandClass == null) {
-				logger.warn("No command class found for item = {}, command class name = {}, using 0 refresh interval.",
-						itemName, commandClassName);
-				return 0;
-			}
-		} else {
-			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
-		}
+            commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
+                    bindingConfiguration.getEndpoint());
 
-		if (commandClass == null) {
-			logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
-			return 0;
-		}
+            if (commandClass == null) {
+                logger.warn("No command class found for item = {}, command class name = {}, using 0 refresh interval.",
+                        itemName, commandClassName);
+                return 0;
+            }
+        } else {
+            commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
+        }
 
-		ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass
-				.getCommandClass());
+        if (commandClass == null) {
+            logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
+            return 0;
+        }
 
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
-			return 0;
-		}
+        ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(
+                commandClass.getCommandClass());
 
-		if (bindingConfiguration.getRefreshInterval() == null) {
-			bindingConfiguration.setRefreshInterval(converter.getRefreshInterval());
-		}
+        if (converter == null) {
+            logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
+            return 0;
+        }
 
-		return bindingConfiguration.getRefreshInterval();
-	}
+        if (bindingConfiguration.getRefreshInterval() == null) {
+            bindingConfiguration.setRefreshInterval(converter.getRefreshInterval());
+        }
 
-	/**
-	 * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement this
-	 * message in derived classes to convert the value and post an update on the
-	 * openHAB bus.
-	 * 
-	 * @param provider
-	 *            the {@link ZWaveBindingProvider} that provides the item
-	 * @param itemName
-	 *            the name of the item that will receive the event.
-	 * @param event
-	 *            the received {@link ZWaveCommandClassValueEvent}.
-	 */
-	public void handleEvent(ZWaveBindingProvider provider, String itemName, ZWaveCommandClassValueEvent event) {
-		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
-		Item item = provider.getItem(itemName);
-		String commandClassName = bindingConfiguration.getArguments().get("command");
-		boolean respondToBasic = "true".equalsIgnoreCase(bindingConfiguration.getArguments().get("respond_to_basic"));
+        return bindingConfiguration.getRefreshInterval();
+    }
 
-		logger.trace("Getting converter for item = {}, command class = {}, item command class = {}", itemName, event
-				.getCommandClass().getLabel(), commandClassName);
+    /**
+     * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement this
+     * message in derived classes to convert the value and post an update on the
+     * openHAB bus.
+     *
+     * @param provider
+     *            the {@link ZWaveBindingProvider} that provides the item
+     * @param itemName
+     *            the name of the item that will receive the event.
+     * @param event
+     *            the received {@link ZWaveCommandClassValueEvent}.
+     */
+    public void handleEvent(ZWaveBindingProvider provider, String itemName, ZWaveCommandClassValueEvent event) {
+        ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
+        Item item = provider.getItem(itemName);
+        String commandClassName = bindingConfiguration.getArguments().get("command");
+        boolean respondToBasic = "true".equalsIgnoreCase(bindingConfiguration.getArguments().get("respond_to_basic"));
 
-		if (item == null) {
-			return;
-		}
+        logger.trace("Getting converter for item = {}, command class = {}, item command class = {}", itemName,
+                event.getCommandClass().getLabel(), commandClassName);
 
-		// check whether this item is bound to the right command class.
+        if (item == null) {
+            return;
+        }
 
-		if (commandClassName != null
-				&& !commandClassName.equalsIgnoreCase(event.getCommandClass().getLabel().toLowerCase())
-				&& !(respondToBasic && event.getCommandClass() == CommandClass.BASIC)) {
-			return;
-		}
+        // check whether this item is bound to the right command class.
 
-		ZWaveCommandClassConverter<?> converter = this.getConverter(event.getCommandClass());
+        if (commandClassName != null
+                && !commandClassName.equalsIgnoreCase(event.getCommandClass().getLabel().toLowerCase())
+                && !(respondToBasic && event.getCommandClass() == CommandClass.BASIC)) {
+            return;
+        }
 
-		if (converter == null) {
-			logger.warn("No converter found for command class = {}, ignoring event.", event.getCommandClass()
-					.toString());
-			return;
-		}
+        ZWaveCommandClassConverter<?> converter = this.getConverter(event.getCommandClass());
 
-		converter.handleEvent(event, item, bindingConfiguration.getArguments());
-	}
+        if (converter == null) {
+            logger.warn("No converter found for command class = {}, ignoring event.",
+                    event.getCommandClass().toString());
+            return;
+        }
 
-	/**
-	 * Receives a command from openHAB and translates it to an operation on the
-	 * Z-Wave network.
-	 * 
-	 * @param provider
-	 *            the {@link ZWaveBindingProvider} that provides the item
-	 * @param itemName
-	 *            the name of the item that will receive the event.
-	 * @param command
-	 *            the received {@link Command}
-	 */
-	@SuppressWarnings("unchecked")
-	public void receiveCommand(ZWaveBindingProvider provider, String itemName, Command command) {
-		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
-		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
-		if (node == null) {
-			logger.error("Item {} has non existant node {}", itemName, bindingConfiguration.getNodeId());
-			return;
-		}
-		ZWaveCommandClass commandClass;
-		String commandClassName = bindingConfiguration.getArguments().get("command");
+        converter.handleEvent(event, item, bindingConfiguration.getArguments());
+    }
 
-		if (commandClassName != null) {
-			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
-					bindingConfiguration.getEndpoint());
+    /**
+     * Receives a command from openHAB and translates it to an operation on the
+     * Z-Wave network.
+     *
+     * @param provider
+     *            the {@link ZWaveBindingProvider} that provides the item
+     * @param itemName
+     *            the name of the item that will receive the event.
+     * @param command
+     *            the received {@link Command}
+     */
+    @SuppressWarnings("unchecked")
+    public void receiveCommand(ZWaveBindingProvider provider, String itemName, Command command) {
+        ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
+        ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
+        if (node == null) {
+            logger.error("Item {} has non existant node {}", itemName, bindingConfiguration.getNodeId());
+            return;
+        }
+        ZWaveCommandClass commandClass;
+        String commandClassName = bindingConfiguration.getArguments().get("command");
 
-			if (commandClass == null) {
-				logger.warn(
-						"NODE {}: No command class found for item = {}. Class = {}({}), endpoint = {}. Ignoring command.",
-						node.getNodeId(), itemName, commandClassName, CommandClass.getCommandClass(commandClassName)
-								.toString(), bindingConfiguration.getEndpoint());
-				return;
-			}
-		} else {
-			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
-		}
+        if (commandClassName != null) {
 
-		if (commandClass == null) {
-			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
-			return;
-		}
+            if (node.getNodeId() == this.controller.getOwnNodeId() && commandClassName.equalsIgnoreCase("switch_all")) {
+                commandClass = ZWaveCommandClass.getInstance(0x27, node, this.controller);
+            } else {
+                commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
+                        bindingConfiguration.getEndpoint());
 
-		ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass
-				.getCommandClass());
+                if (commandClass == null) {
+                    logger.warn(
+                            "NODE {}: No command class found for item = {}. Class = {}({}), endpoint = {}. Ignoring command.",
+                            node.getNodeId(), itemName, commandClassName,
+                            CommandClass.getCommandClass(commandClassName).toString(),
+                            bindingConfiguration.getEndpoint());
+                    return;
+                }
+            }
+        } else {
+            commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
+        }
 
-		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
-			return;
-		}
+        if (commandClass == null) {
+            logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
+            return;
+        }
 
-		converter.receiveCommand(provider.getItem(itemName), command, node, commandClass,
-				bindingConfiguration.getEndpoint(), bindingConfiguration.getArguments());
-	}
+        ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(
+                commandClass.getCommandClass());
+
+        if (converter == null) {
+            logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
+            return;
+        }
+
+        converter.receiveCommand(provider.getItem(itemName), command, node, commandClass,
+                bindingConfiguration.getEndpoint(), bindingConfiguration.getArguments());
+    }
 
 }

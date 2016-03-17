@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,70 +10,82 @@ package org.openhab.binding.modbus.internal;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import net.wimpi.modbus.io.ModbusTCPTransaction;
-import net.wimpi.modbus.net.TCPMasterConnection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.wimpi.modbus.io.ModbusTCPTransaction;
+import net.wimpi.modbus.net.TCPMasterConnection;
+
 /**
- * ModbusSlave class instantiates physical Modbus slave. 
+ * ModbusSlave class instantiates physical Modbus slave.
  * It is responsible for polling data from physical device using TCPConnection.
- * It is also responsible for updating physical devices according to OpenHAB commands  
+ * It is also responsible for updating physical devices according to OpenHAB commands
  *
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
 public class ModbusTcpSlave extends ModbusIPSlave {
 
-	private static final Logger logger = LoggerFactory.getLogger(ModbusTcpSlave.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModbusTcpSlave.class);
 
+    private TCPMasterConnection connection = null;
 
-	private TCPMasterConnection connection = null;
+    public ModbusTcpSlave(String slave) {
+        super(slave);
+        transaction = new ModbusTCPTransaction();
+    }
 
-	public ModbusTcpSlave(String slave) {
-		super(slave);
-		transaction = new ModbusTCPTransaction();
-	}
+    /**
+     * Performs physical write to device when slave type is "holding" using Modbus FC06 function
+     * 
+     * @param command command received from OpenHAB
+     * @param readRegister reference to the register that stores current value
+     * @param writeRegister register reference to write data to
+     */
 
-	/**
-	 * Performs physical write to device when slave type is "holding" using Modbus FC06 function
-	 * @param command command received from OpenHAB
-	 * @param readRegister reference to the register that stores current value
-	 * @param writeRegister register reference to write data to
-	 */
+    @Override
+    public boolean isConnected() {
+        return connection != null;
+    }
 
-	public boolean isConnected() {
-		return connection != null;
-	}
+    /**
+     * Establishes connection to the device
+     */
+    @Override
+    public boolean connect() {
+        try {
+            if (connection == null) {
+                connection = new TCPMasterConnection(InetAddress.getByName(getHost()));
+            }
+        } catch (UnknownHostException e) {
+            logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
+            resetConnection();
+            return false;
+        }
+        if (!connection.isConnected()) {
+            try {
+                connection.setPort(getPort());
+                connection.connect();
+                ((ModbusTCPTransaction) transaction).setConnection(connection);
+                // We want to close connection after every transaction since some modbus tcp servers
+                // can accept only single connection at a time. If we would keep the connection open,
+                // the server would be blocked for other users.
+                ((ModbusTCPTransaction) transaction).setReconnecting(true);
+            } catch (Exception e) {
+                logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Establishes connection to the device
-	 */
-	public boolean connect() {
-		try {
-			if (connection == null)
-				connection = new TCPMasterConnection(InetAddress.getByName(getHost()));
-		} catch (UnknownHostException e) {
-			logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
-			connection = null;
-			return false;
-		}
-		if (!connection.isConnected())
-			try {
-				connection.setPort(getPort());
-				connection.connect();
-				((ModbusTCPTransaction)transaction).setConnection(connection);
-				((ModbusTCPTransaction)transaction).setReconnecting(false);
-			} catch (Exception e) {
-				logger.debug("ModbusSlave: Error connecting to master: {}", e.getMessage());
-				return false;
-			}
-		return true;
-	}
-	
-	public void resetConnection() {
-		connection = null;
-	}
-
+    @Override
+    public void resetConnection() {
+        if (connection != null) {
+            connection.close();
+        }
+        connection = null;
+    }
 
 }

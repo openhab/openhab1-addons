@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
+
 import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -23,244 +24,238 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Parse and hold the configuration information for the Max!CUL bindings.
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
 public class MaxCulBindingConfig implements BindingConfig {
-	private MaxCulDevice deviceType = MaxCulDevice.UNKNOWN;
-	private MaxCulFeature feature = MaxCulFeature.UNKNOWN;
-	private String serialNumber = "";
-	private String devAddr = "";
-	private boolean paired = false;
+    private MaxCulDevice deviceType = MaxCulDevice.UNKNOWN;
+    private MaxCulFeature feature = MaxCulFeature.UNKNOWN;
+    private String serialNumber = "";
+    private String devAddr = "";
+    private boolean paired = false;
 
-	private double comfortTemp = ConfigTemperaturesMsg.DEFAULT_COMFORT_TEMP;
-	private double ecoTemp = ConfigTemperaturesMsg.DEFAULT_ECO_TEMP;
-	private double maxTemp = ConfigTemperaturesMsg.DEFAULT_MAX_TEMP;
-	private double minTemp = ConfigTemperaturesMsg.DEFAULT_MIN_TEMP;
-	private double windowOpenTemperature = ConfigTemperaturesMsg.DEFAULT_WINDOW_OPEN_TEMP;
-	private double windowOpenDuration = ConfigTemperaturesMsg.DEFAULT_WINDOW_OPEN_TIME;
-	private double measurementOffset = ConfigTemperaturesMsg.DEFAULT_OFFSET;
-	private boolean temperatureConfigSet = false;
-	private HashSet<String> associatedSerialNum = new HashSet<String>();
+    private double comfortTemp = ConfigTemperaturesMsg.DEFAULT_COMFORT_TEMP;
+    private double ecoTemp = ConfigTemperaturesMsg.DEFAULT_ECO_TEMP;
+    private double maxTemp = ConfigTemperaturesMsg.DEFAULT_MAX_TEMP;
+    private double minTemp = ConfigTemperaturesMsg.DEFAULT_MIN_TEMP;
+    private double windowOpenTemperature = ConfigTemperaturesMsg.DEFAULT_WINDOW_OPEN_TEMP;
+    private double windowOpenDuration = ConfigTemperaturesMsg.DEFAULT_WINDOW_OPEN_TIME;
+    private double measurementOffset = ConfigTemperaturesMsg.DEFAULT_OFFSET;
+    private boolean temperatureConfigSet = false;
+    private HashSet<String> associatedSerialNum = new HashSet<String>();
 
-	private final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
+    private static final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(MaxCulBindingConfig.class);
+    static private String getUserPersistenceDataFolder() {
+        String progArg = System.getProperty("smarthome.userdata");
+        if (progArg != null) {
+            return progArg + File.separator + "maxcul";
+        } else {
+            return CONFIG_PROPERTIES_BASE;
+        }
+    }
 
-	MaxCulBindingConfig(String bindingConfig)
-			throws BindingConfigParseException {
+    private static final Logger logger = LoggerFactory.getLogger(MaxCulBindingConfig.class);
 
-		MaxCulBindingConfigParser.parseMaxCulBindingString(bindingConfig, this);
-	}
+    MaxCulBindingConfig(String bindingConfig) throws BindingConfigParseException {
 
-	public double getComfortTemp() {
-		return comfortTemp;
-	}
+        MaxCulBindingConfigParser.parseMaxCulBindingString(bindingConfig, this);
+    }
 
-	public double getEcoTemp() {
-		return ecoTemp;
-	}
+    public double getComfortTemp() {
+        return comfortTemp;
+    }
 
-	public double getMaxTemp() {
-		return maxTemp;
-	}
+    public double getEcoTemp() {
+        return ecoTemp;
+    }
 
-	public double getMinTemp() {
-		return minTemp;
-	}
+    public double getMaxTemp() {
+        return maxTemp;
+    }
 
-	public double getWindowOpenTemperature() {
-		return windowOpenTemperature;
-	}
+    public double getMinTemp() {
+        return minTemp;
+    }
 
-	public double getWindowOpenDuration() {
-		return windowOpenDuration;
-	}
+    public double getWindowOpenTemperature() {
+        return windowOpenTemperature;
+    }
 
-	public double getMeasurementOffset() {
-		return measurementOffset;
-	}
+    public double getWindowOpenDuration() {
+        return windowOpenDuration;
+    }
 
-	public boolean isTemperatureConfigSet() {
-		return temperatureConfigSet;
-	}
+    public double getMeasurementOffset() {
+        return measurementOffset;
+    }
 
-	void setPairedInfo(String dstAddr) {
-		this.devAddr = dstAddr;
-		this.paired = true;
-		saveStoredConfig();
-	}
+    public boolean isTemperatureConfigSet() {
+        return temperatureConfigSet;
+    }
 
-	private String generateConfigFilename() {
-		String base = CONFIG_PROPERTIES_BASE;
-		String filename = String.format("%s/%s.properties", base,
-				this.getSerialNumber());
-		return filename;
-	}
+    void setPairedInfo(String dstAddr) {
+        this.devAddr = dstAddr;
+        this.paired = true;
+        saveStoredConfig();
+    }
 
-	/**
-	 * Load the stored configuration information if it exists. This information
-	 * is established during the pairing process.
-	 */
-	public void loadStoredConfig() {
-		File cfgFile = new File(generateConfigFilename());
+    private String generateConfigFilename() {
+        String base = getUserPersistenceDataFolder();
+        String filename = String.format("%s/%s.properties", base, this.getSerialNumber());
+        return filename;
+    }
 
-		if (cfgFile.exists()) {
-			try {
-				FileInputStream fiStream = new FileInputStream(cfgFile);
-				Properties propertiesFile = new Properties();
-				propertiesFile.load(fiStream);
+    /**
+     * Load the stored configuration information if it exists. This information
+     * is established during the pairing process.
+     */
+    public void loadStoredConfig() {
+        File cfgFile = new File(generateConfigFilename());
 
-				this.devAddr = propertiesFile.getProperty("devAddr");
-				this.paired = true;
+        if (cfgFile.exists()) {
+            try {
+                FileInputStream fiStream = new FileInputStream(cfgFile);
+                Properties propertiesFile = new Properties();
+                propertiesFile.load(fiStream);
 
-				fiStream.close();
-			} catch (IOException e) {
-				logger.warn("Unable to load information for "
-						+ this.getDeviceType() + " " + this.getSerialNumber()
-						+ " it may not yet be paired. Error was "
-						+ e.getMessage());
-				this.paired = false;
-				return;
-			}
-			logger.debug("Successfully loaded pairing info for "
-					+ this.getSerialNumber());
-		} else {
-			logger.warn("Unable to locate information for "
-					+ this.getDeviceType() + " " + this.getSerialNumber()
-					+ " it may not yet be paired");
-			this.paired = false;
-		}
-	}
+                this.devAddr = propertiesFile.getProperty("devAddr");
+                this.paired = true;
 
-	/**
-	 * Save the stored configuration information. Will update it if it already
-	 * exists. The information is primarily established during the pairing
-	 * process.
-	 */
-	private void saveStoredConfig() {
-		if (this.paired) {
-			File cfgFile = new File(generateConfigFilename());
-			File cfgDir = new File(CONFIG_PROPERTIES_BASE);
+                fiStream.close();
+            } catch (IOException e) {
+                logger.warn("Unable to load information for " + this.getDeviceType() + " " + this.getSerialNumber()
+                        + " it may not yet be paired. Error was " + e.getMessage());
+                this.paired = false;
+                return;
+            }
+            logger.debug("Successfully loaded pairing info for " + this.getSerialNumber());
+        } else {
+            logger.warn("Unable to locate information for " + this.getDeviceType() + " " + this.getSerialNumber()
+                    + " it may not yet be paired");
+            this.paired = false;
+        }
+    }
 
-			if (!cfgFile.exists()) {
-				try {
-					if (!cfgDir.exists())
-						cfgDir.mkdirs();
-					cfgFile.createNewFile();
-				} catch (IOException e) {
-					logger.warn("Unable to create new properties file for "
-							+ this.getDeviceType()
-							+ " "
-							+ this.getSerialNumber()
-							+ ". Data won't be saved so pairing will be lost. Error was "
-							+ e.getMessage());
-					return;
-				}
-			}
+    /**
+     * Save the stored configuration information. Will update it if it already
+     * exists. The information is primarily established during the pairing
+     * process.
+     */
+    private void saveStoredConfig() {
+        if (this.paired) {
+            File cfgFile = new File(generateConfigFilename());
+            File cfgDir = new File(getUserPersistenceDataFolder());
 
-			Properties propertiesFile = new Properties();
-			propertiesFile.setProperty("devAddr", this.devAddr);
+            if (!cfgFile.exists()) {
+                try {
+                    if (!cfgDir.exists()) {
+                        cfgDir.mkdirs();
+                    }
+                    cfgFile.createNewFile();
+                } catch (IOException e) {
+                    logger.warn("Unable to create new properties file for " + this.getDeviceType() + " "
+                            + this.getSerialNumber() + ". Data won't be saved so pairing will be lost. Error was "
+                            + e.getMessage());
+                    return;
+                }
+            }
 
-			try {
-				FileOutputStream foStream = new FileOutputStream(cfgFile);
-				Date updateTime = new Date();
-				propertiesFile.store(
-						foStream,
-						"Autogenerated by MaxCul binding on "
-								+ updateTime.toString());
-				this.paired = true;
-				foStream.close();
-			} catch (IOException e) {
-				logger.warn("Unable to load information for "
-						+ this.getDeviceType() + " " + this.getSerialNumber()
-						+ " it may not yet be paired. Error was "
-						+ e.getMessage());
-				this.paired = false;
-				return;
-			}
-			logger.debug("Successfully wrote pairing info for "
-					+ this.getSerialNumber());
-		} else
-			logger.error("Tried saving configuration for "
-					+ this.getSerialNumber() + " which is not paired.");
-	}
+            Properties propertiesFile = new Properties();
+            propertiesFile.setProperty("devAddr", this.devAddr);
 
-	public MaxCulDevice getDeviceType() {
-		return deviceType;
-	}
+            try {
+                FileOutputStream foStream = new FileOutputStream(cfgFile);
+                Date updateTime = new Date();
+                propertiesFile.store(foStream, "Autogenerated by MaxCul binding on " + updateTime.toString());
+                this.paired = true;
+                foStream.close();
+            } catch (IOException e) {
+                logger.warn("Unable to load information for " + this.getDeviceType() + " " + this.getSerialNumber()
+                        + " it may not yet be paired. Error was " + e.getMessage());
+                this.paired = false;
+                return;
+            }
+            logger.debug("Successfully wrote pairing info for " + this.getSerialNumber());
+        } else {
+            logger.error("Tried saving configuration for " + this.getSerialNumber() + " which is not paired.");
+        }
+    }
 
-	public MaxCulFeature getFeature() {
-		return feature;
-	}
+    public MaxCulDevice getDeviceType() {
+        return deviceType;
+    }
 
-	public String getSerialNumber() {
-		return serialNumber;
-	}
+    public MaxCulFeature getFeature() {
+        return feature;
+    }
 
-	public String getDevAddr() {
-		return devAddr;
-	}
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 
-	public boolean isPaired() {
-		return paired;
-	}
+    public String getDevAddr() {
+        return devAddr;
+    }
 
-	public HashSet<String> getAssociatedSerialNum() {
-		return associatedSerialNum;
-	}
+    public boolean isPaired() {
+        return paired;
+    }
 
-	public void setDeviceType(MaxCulDevice deviceType) {
-		this.deviceType = deviceType;
-	}
+    public HashSet<String> getAssociatedSerialNum() {
+        return associatedSerialNum;
+    }
 
-	public void setFeature(MaxCulFeature feature) {
-		this.feature = feature;
-	}
+    public void setDeviceType(MaxCulDevice deviceType) {
+        this.deviceType = deviceType;
+    }
 
-	public void setTemperatureConfigSet(boolean temperatureConfigSet) {
-		this.temperatureConfigSet = temperatureConfigSet;
-	}
+    public void setFeature(MaxCulFeature feature) {
+        this.feature = feature;
+    }
 
-	public void setMeasurementOffset(double measurementOffset) {
-		this.measurementOffset = measurementOffset;
-	}
+    public void setTemperatureConfigSet(boolean temperatureConfigSet) {
+        this.temperatureConfigSet = temperatureConfigSet;
+    }
 
-	public void setWindowOpenDuration(double windowOpenDuration) {
-		this.windowOpenDuration = windowOpenDuration;
-	}
+    public void setMeasurementOffset(double measurementOffset) {
+        this.measurementOffset = measurementOffset;
+    }
 
-	public void setWindowOpenTemperature(double windowOpenTemperature) {
-		this.windowOpenTemperature = windowOpenTemperature;
-	}
+    public void setWindowOpenDuration(double windowOpenDuration) {
+        this.windowOpenDuration = windowOpenDuration;
+    }
 
-	public void setMinTemp(double minTemp) {
-		this.minTemp = minTemp;
-	}
+    public void setWindowOpenTemperature(double windowOpenTemperature) {
+        this.windowOpenTemperature = windowOpenTemperature;
+    }
 
-	public void setMaxTemp(double maxTemp) {
-		this.maxTemp = maxTemp;
-	}
+    public void setMinTemp(double minTemp) {
+        this.minTemp = minTemp;
+    }
 
-	public void setEcoTemp(double ecoTemp) {
-		this.ecoTemp = ecoTemp;
-	}
+    public void setMaxTemp(double maxTemp) {
+        this.maxTemp = maxTemp;
+    }
 
-	public void setComfortTemp(double comfortTemp) {
-		this.comfortTemp = comfortTemp;
-	}
+    public void setEcoTemp(double ecoTemp) {
+        this.ecoTemp = ecoTemp;
+    }
 
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
-	}
+    public void setComfortTemp(double comfortTemp) {
+        this.comfortTemp = comfortTemp;
+    }
 
-	public void clearAssociatedSerialNum() {
-		this.associatedSerialNum.clear();
-	}
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
 
-	public void addAssociatedSerialNum(String assocDeviceSerial) {
-		this.associatedSerialNum.add(assocDeviceSerial);
-	}
+    public void clearAssociatedSerialNum() {
+        this.associatedSerialNum.clear();
+    }
+
+    public void addAssociatedSerialNum(String assocDeviceSerial) {
+        this.associatedSerialNum.add(assocDeviceSerial);
+    }
 }

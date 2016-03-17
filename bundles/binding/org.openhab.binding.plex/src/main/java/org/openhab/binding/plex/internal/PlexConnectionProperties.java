@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,31 +8,95 @@
  */
 package org.openhab.binding.plex.internal;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
-* Holds the connection properties for a Plex server 
-* 
-* @author Jeroen Idserda
-* @since 1.7.0
-*/
+ * Holds the connection properties for a Plex server
+ *
+ * @author Jeroen Idserda
+ * @since 1.7.0
+ */
 public class PlexConnectionProperties {
 
-	private String host;
-	
-	private int port = 32400;
+    private static final Logger logger = LoggerFactory.getLogger(PlexConnectionProperties.class);
 
-	public String getHost() {
-		return host;
-	}
+    private String host;
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    private int port = 32400;
 
-	public int getPort() {
-		return port;
-	}
+    private String token;
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+    private URI uri;
+
+    private String username;
+
+    private String password;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public URI getUri() {
+        return uri;
+    }
+
+    public void setUri(URI uri) {
+        this.uri = uri;
+    }
+
+    public void setUri(String uri) {
+        if (!StringUtils.isBlank(uri)) {
+            try {
+                this.uri = new URI(uri);
+            } catch (URISyntaxException e) {
+                logger.debug(String.format("Error parsing uri %s", uri), e);
+            }
+        }
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean hasToken() {
+        return !StringUtils.isBlank(getToken());
+    }
+
 }

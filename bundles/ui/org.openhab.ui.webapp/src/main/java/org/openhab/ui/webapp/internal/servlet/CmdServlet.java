@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,8 +38,8 @@ public class CmdServlet extends BaseServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(CmdServlet.class);
 
-	public static final String SERVLET_NAME = "CMD";
-
+	public static final String SERVLET_NAME = "/CMD";
+	
 	private EventPublisher eventPublisher;	
 
 	
@@ -54,10 +54,10 @@ public class CmdServlet extends BaseServlet {
 
 	protected void activate() {
 		try {
-			logger.debug("Starting up CMD servlet at " + WEBAPP_ALIAS + SERVLET_NAME);
+			logger.debug("Starting up CMD servlet at " + SERVLET_NAME);
 
 			Hashtable<String, String> props = new Hashtable<String, String>();
-			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
+			httpService.registerServlet(SERVLET_NAME, this, props, createHttpContext());
 			
 		} catch (NamespaceException e) {
 			logger.error("Error during servlet startup", e);
@@ -67,7 +67,7 @@ public class CmdServlet extends BaseServlet {
 	}
 
 	protected void deactivate() {
-		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
+		httpService.unregister(SERVLET_NAME);
 	}
 	
 	/**

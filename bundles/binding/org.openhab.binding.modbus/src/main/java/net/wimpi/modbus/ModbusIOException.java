@@ -24,72 +24,74 @@ package net.wimpi.modbus;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class ModbusIOException
-    extends ModbusException {
+public class ModbusIOException extends ModbusException {
 
-  private boolean m_EOF = false;
+    private boolean m_EOF = false;
 
-  /**
-   * Constructs a new <tt>ModbusIOException</tt>
-   * instance.
-   */
-  public ModbusIOException() {
-  }//constructor
+    /**
+     * Constructs a new <tt>ModbusIOException</tt>
+     * instance.
+     */
+    public ModbusIOException() {
+    }// constructor
 
-  /**
-   * Constructs a new <tt>ModbusIOException</tt>
-   * instance with the given message.
-   * <p>
-   * @param message the message describing this
-   *        <tt>ModbusIOException</tt>.
-   */
-  public ModbusIOException(String message) {
-    super(message);
-  }//constructor(String)
+    /**
+     * Constructs a new <tt>ModbusIOException</tt>
+     * instance with the given message.
+     * <p>
+     * 
+     * @param message the message describing this
+     *            <tt>ModbusIOException</tt>.
+     */
+    public ModbusIOException(String message) {
+        super(message);
+    }// constructor(String)
 
-  /**
-   * Constructs a new <tt>ModbusIOException</tt>
-   * instance.
-   *
-   * @param b true if caused by end of stream, false otherwise.
-   */
-  public ModbusIOException(boolean b) {
-    m_EOF = b;
-  }//constructor
+    /**
+     * Constructs a new <tt>ModbusIOException</tt>
+     * instance.
+     *
+     * @param b true if caused by end of stream, false otherwise.
+     */
+    public ModbusIOException(boolean b) {
+        m_EOF = b;
+    }// constructor
 
-  /**
-   * Constructs a new <tt>ModbusIOException</tt>
-   * instance with the given message.
-   * <p>
-   * @param message the message describing this
-   *        <tt>ModbusIOException</tt>.
-   * @param b true if caused by end of stream, false otherwise.
-   */
-  public ModbusIOException(String message, boolean b) {
-    super(message);
-    m_EOF = b;
-  }//constructor(String)
+    /**
+     * Constructs a new <tt>ModbusIOException</tt>
+     * instance with the given message.
+     * <p>
+     * 
+     * @param message the message describing this
+     *            <tt>ModbusIOException</tt>.
+     * @param b true if caused by end of stream, false otherwise.
+     */
+    public ModbusIOException(String message, boolean b) {
+        super(message);
+        m_EOF = b;
+    }// constructor(String)
 
+    /**
+     * Tests if this <tt>ModbusIOException</tt>
+     * is caused by an end of the stream.
+     * <p>
+     * 
+     * @return true if stream ended, false otherwise.
+     */
+    public boolean isEOF() {
+        return m_EOF;
+    }// isEOF
 
-  /**
-   * Tests if this <tt>ModbusIOException</tt>
-   * is caused by an end of the stream.
-   * <p>
-   * @return true if stream ended, false otherwise.
-   */
-  public boolean isEOF() {
-    return m_EOF;
-  }//isEOF
+    /**
+     * Sets the flag that determines whether this
+     * <tt>ModbusIOException</tt> was caused by
+     * an end of the stream.
+     * <p>
+     * 
+     * @param b true if stream ended, false otherwise.
+     */
+    public void setEOF(boolean b) {
+        m_EOF = b;
+    }// setEOF
 
-  /**
-   * Sets the flag that determines whether this
-   * <tt>ModbusIOException</tt> was caused by
-   * an end of the stream.
-   * <p>
-   * @param b true if stream ended, false otherwise.
-   */
-  public void setEOF(boolean b) {
-    m_EOF = b;
-  }//setEOF
-
-}//ModbusIOException
+}// ModbusIOException

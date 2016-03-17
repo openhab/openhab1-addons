@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,216 +39,224 @@ import org.slf4j.LoggerFactory;
  * This Binding is also registered as {@link ConfigurationListener} at the
  * {@link ConfigurationAdmin} so all changes to configured items are posted to
  * the openHAB event bus as well.
- * 
+ *
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
  */
-public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvider> implements ConfigurationListener {
+public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvider>implements ConfigurationListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(ConfigAdminBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigAdminBinding.class);
 
-	private ConfigurationAdmin configAdmin;
+    private ConfigurationAdmin configAdmin;
 
-	private DelayedExecutor delayedExecutor = new DelayedExecutor();
+    private DelayedExecutor delayedExecutor = new DelayedExecutor();
 
-	public void addConfigurationAdmin(ConfigurationAdmin configAdmin) {
-		this.configAdmin = configAdmin;
-	}
+    public void addConfigurationAdmin(ConfigurationAdmin configAdmin) {
+        this.configAdmin = configAdmin;
+    }
 
-	public void removeConfigurationAdmin(ConfigurationAdmin configAdmin) {
-		this.configAdmin = null;
-	}
+    public void removeConfigurationAdmin(ConfigurationAdmin configAdmin) {
+        this.configAdmin = null;
+    }
 
-	/**
-	 * Returns a {@link State} which is inherited from the {@link Item}s
-	 * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
-	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
-	 * 
-	 * @param item
-	 * @param stateAsString
-	 * 
-	 * @return a {@link State} which type is inherited by the {@link TypeParser}
-	 *         or a {@link StringType} if <code>item</code> is <code>null</code>
-	 */
-	private State createState(Item item, String stateAsString) {
-		if (item != null) {
-			return TypeParser.parseState(item.getAcceptedDataTypes(), stateAsString);
-		} else {
-			return StringType.valueOf(stateAsString);
-		}
-	}
+    /**
+     * Returns a {@link State} which is inherited from the {@link Item}s
+     * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
+     * <code>item</code> is <code>null</code> the {@link StringType} is used.
+     *
+     * @param item
+     * @param stateAsString
+     *
+     * @return a {@link State} which type is inherited by the {@link TypeParser}
+     *         or a {@link StringType} if <code>item</code> is <code>null</code>
+     */
+    private State createState(Item item, String stateAsString) {
+        if (item != null) {
+            return TypeParser.parseState(item.getAcceptedDataTypes(), stateAsString);
+        } else {
+            return StringType.valueOf(stateAsString);
+        }
+    }
 
-	/**
-	 * <p>
-	 * Returns the {@link Configuration} with the given pid from the
-	 * {@link ConfigurationAdmin}-Service or null if <code>bindingConfig</code>
-	 * is null.
-	 * </p>
-	 * <p>
-	 * <b>Note:</b>If there are Configuration items configured for the given pid
-	 * an empty {@link Configuration} is returned.
-	 * 
-	 * @param bindingConfig
-	 * @return a Configuration (which could be empty if there are no entries for
-	 *         the given pid) or <code>null</code> if the given
-	 *         <code>bindingConfig</code> is null.
-	 */
-	private Configuration getConfiguration(ConfigAdminBindingConfig bindingConfig) {
-		Configuration result = null;
-		if (bindingConfig != null) {
-			try {
-				result = configAdmin.getConfiguration(bindingConfig.normalizedPid);
-			} catch (IOException ioe) {
-				logger.warn("Fetching configuration for pid '" + bindingConfig.normalizedPid + "' failed", ioe);
-			}
-		}
-		return result;
-	}
+    /**
+     * <p>
+     * Returns the {@link Configuration} with the given pid from the
+     * {@link ConfigurationAdmin}-Service or null if <code>bindingConfig</code>
+     * is null.
+     * </p>
+     * <p>
+     * <b>Note:</b>If there are Configuration items configured for the given pid
+     * an empty {@link Configuration} is returned.
+     *
+     * @param bindingConfig
+     * @return a Configuration (which could be empty if there are no entries for
+     *         the given pid) or <code>null</code> if the given
+     *         <code>bindingConfig</code> is null.
+     */
+    private Configuration getConfiguration(ConfigAdminBindingConfig bindingConfig) {
+        Configuration result = null;
+        if (bindingConfig != null) {
+            try {
+                result = configAdmin.getConfiguration(bindingConfig.normalizedPid);
+            } catch (IOException ioe) {
+                logger.warn("Fetching configuration for pid '" + bindingConfig.normalizedPid + "' failed", ioe);
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Gets the given configParameter from the given <code>config</code>
-	 * transforms the value to a {@link State} and posts this State to openHAB
-	 * event bus.
-	 * 
-	 * @param config
-	 *            the {@link Configuration} which contains the data to post
-	 * @param bindingConfig
-	 *            contains the name of the configParameter which is the key for
-	 *            the data to post an update for.
-	 */
-	private void postUpdate(Configuration config, ConfigAdminBindingConfig bindingConfig) {
-		if (config != null) {
-			String stateAsString = (String) config.getProperties().get(bindingConfig.configParameter);
-			if (StringUtils.isNotBlank(stateAsString)) {
-				State state = createState(bindingConfig.item, stateAsString);
-				eventPublisher.postUpdate(bindingConfig.item.getName(), state);
-			} else {
-				logger.debug("config parameter '{}:{}' has value 'null'. It won't be posted to the event bus hence.",
-						bindingConfig.normalizedPid, bindingConfig.configParameter);
-			}
-		}
-	}
+    /**
+     * Gets the given configParameter from the given <code>config</code>
+     * transforms the value to a {@link State} and posts this State to openHAB
+     * event bus.
+     *
+     * @param config
+     *            the {@link Configuration} which contains the data to post
+     * @param bindingConfig
+     *            contains the name of the configParameter which is the key for
+     *            the data to post an update for.
+     */
+    private void postUpdate(Configuration config, ConfigAdminBindingConfig bindingConfig) {
+        if (config != null) {
+            String stateAsString = (String) config.getProperties().get(bindingConfig.configParameter);
+            if (StringUtils.isNotBlank(stateAsString)) {
+                State state = createState(bindingConfig.item, stateAsString);
+                eventPublisher.postUpdate(bindingConfig.item.getName(), state);
+            } else {
+                logger.debug("config parameter '{}:{}' has value 'null'. It won't be posted to the event bus hence.",
+                        bindingConfig.normalizedPid, bindingConfig.configParameter);
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void allBindingsChanged(BindingProvider provider) {
-		initializeBus();
-		super.allBindingsChanged(provider);
-	}
+    protected void addBindingProvider(ConfigAdminBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		initializeBus();
-		super.bindingChanged(provider, itemName);
-	}
+    protected void removeBindingProvider(ConfigAdminBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-	/**
-	 * Publishes the items with the configuration values.
-	 */
-	private void initializeBus() {
-		delayedExecutor.cancel();
-		delayedExecutor.schedule(new TimerTask() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void allBindingsChanged(BindingProvider provider) {
+        initializeBus();
+        super.allBindingsChanged(provider);
+    }
 
-			@Override
-			public void run() {
-				for (ConfigAdminBindingProvider provider : providers) {
-					for (String itemName : provider.getItemNames()) {
-						ConfigAdminBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-						Configuration config = getConfiguration(bindingConfig);
-						postUpdate(config, bindingConfig);
-					}
-				}
-			}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void bindingChanged(BindingProvider provider, String itemName) {
+        initializeBus();
+        super.bindingChanged(provider, itemName);
+    }
 
-		}, 3000);
-	}
+    /**
+     * Publishes the items with the configuration values.
+     */
+    private void initializeBus() {
+        delayedExecutor.cancel();
+        delayedExecutor.schedule(new TimerTask() {
 
-	/**
-	 * @{inheritDoc
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		if (configAdmin != null) {
-			for (ConfigAdminBindingProvider provider : this.providers) {
-				ConfigAdminBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-				Configuration config = getConfiguration(bindingConfig);
-				if (config != null) {
-					Dictionary props = config.getProperties();
-					props.put(bindingConfig.configParameter, command.toString());
-					try {
-						config.update(props);
-					} catch (IOException ioe) {
-						logger.error("updating Configuration '{}' with '{}' failed", bindingConfig.normalizedPid,
-								command.toString());
-					}
-					logger.debug("successfully updated configuration (pid={}, value={})", bindingConfig.normalizedPid,
-							command.toString());
-				} else {
-					logger.info("There is no configuration found for pid '{}'", bindingConfig.normalizedPid);
-				}
-			}
-		}
-	}
+            @Override
+            public void run() {
+                for (ConfigAdminBindingProvider provider : providers) {
+                    for (String itemName : provider.getItemNames()) {
+                        ConfigAdminBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+                        Configuration config = getConfiguration(bindingConfig);
+                        postUpdate(config, bindingConfig);
+                    }
+                }
+            }
 
-	/**
-	 * @{inheritDoc
-	 * 
-	 *              Whenever a {@link Configuration} is updated all items for
-	 *              the given <code>pid</code> are queried and updated. Since
-	 *              the {@link ConfigurationEvent} contains no information which
-	 *              key changed we have to post updates for all configured
-	 *              items.
-	 */
-	@Override
-	public void configurationEvent(ConfigurationEvent event) {
-		// we do only care for updates of existing configs!
-		if (ConfigurationEvent.CM_UPDATED == event.getType()) {
-			try {
-				Configuration config = configAdmin.getConfiguration(event.getPid());
-				for (ConfigAdminBindingProvider provider : this.providers) {
-					for (ConfigAdminBindingConfig bindingConfig : provider.getBindingConfigByPid(event.getPid())) {
-						postUpdate(config, bindingConfig);
-					}
-				}
-			} catch (IOException ioe) {
-				logger.warn("Fetching configuration for pid '" + event.getPid() + "' failed", ioe);
-			}
-		}
-	}
+        }, 3000);
+    }
 
-	/**
-	 * Schedules a task for later execution with the possibility to cancel it.
-	 * 
-	 * @author Gerhard Riegler
-	 * @since 1.5.0
-	 */
-	public class DelayedExecutor {
-		private Timer timer;
-		private TimerTask task;
+    /**
+     * @{inheritDoc
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        if (configAdmin != null) {
+            for (ConfigAdminBindingProvider provider : this.providers) {
+                ConfigAdminBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+                Configuration config = getConfiguration(bindingConfig);
+                if (config != null) {
+                    Dictionary props = config.getProperties();
+                    props.put(bindingConfig.configParameter, command.toString());
+                    try {
+                        config.update(props);
+                    } catch (IOException ioe) {
+                        logger.error("updating Configuration '{}' with '{}' failed", bindingConfig.normalizedPid,
+                                command.toString());
+                    }
+                    logger.debug("successfully updated configuration (pid={}, value={})", bindingConfig.normalizedPid,
+                            command.toString());
+                } else {
+                    logger.info("There is no configuration found for pid '{}'", bindingConfig.normalizedPid);
+                }
+            }
+        }
+    }
 
-		public void cancel() {
-			if (task != null) {
-				task.cancel();
-				task = null;
-			}
-			if (timer != null) {
-				timer.cancel();
-				timer = null;
-			}
-		}
+    /**
+     * @{inheritDoc
+     *
+     *              Whenever a {@link Configuration} is updated all items for
+     *              the given <code>pid</code> are queried and updated. Since
+     *              the {@link ConfigurationEvent} contains no information which
+     *              key changed we have to post updates for all configured
+     *              items.
+     */
+    @Override
+    public void configurationEvent(ConfigurationEvent event) {
+        // we do only care for updates of existing configs!
+        if (ConfigurationEvent.CM_UPDATED == event.getType()) {
+            try {
+                Configuration config = configAdmin.getConfiguration(event.getPid());
+                for (ConfigAdminBindingProvider provider : this.providers) {
+                    for (ConfigAdminBindingConfig bindingConfig : provider.getBindingConfigByPid(event.getPid())) {
+                        postUpdate(config, bindingConfig);
+                    }
+                }
+            } catch (IOException ioe) {
+                logger.warn("Fetching configuration for pid '" + event.getPid() + "' failed", ioe);
+            }
+        }
+    }
 
-		public void schedule(TimerTask task, long delay) {
-			this.task = task;
-			timer = new Timer();
-			timer.schedule(task, delay);
-		}
+    /**
+     * Schedules a task for later execution with the possibility to cancel it.
+     *
+     * @author Gerhard Riegler
+     * @since 1.5.0
+     */
+    public class DelayedExecutor {
+        private Timer timer;
+        private TimerTask task;
 
-	}
+        public void cancel() {
+            if (task != null) {
+                task.cancel();
+                task = null;
+            }
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+        }
+
+        public void schedule(TimerTask task, long delay) {
+            this.task = task;
+            timer = new Timer();
+            timer.schedule(task, delay);
+        }
+
+    }
 
 }

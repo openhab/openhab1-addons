@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,25 +15,27 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator.
- * 
+ *
  * @author Jack Sleuters
  * @since 1.7.0
  */
 public final class MochadX10Activator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(MochadX10Activator.class);
+    private static Logger logger = LoggerFactory.getLogger(MochadX10Activator.class);
 
-	/**
-	 * Called whenever the OSGi framework starts our bundle
-	 */
-	public void start(BundleContext bc) throws Exception {
-		logger.debug("Mochad X10 binding has been started.");
-	}
+    /**
+     * Called whenever the OSGi framework starts our bundle
+     */
+    @Override
+    public void start(BundleContext bc) throws Exception {
+        logger.debug("Mochad X10 binding has been started.");
+    }
 
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-		logger.debug("Mochad X10 binding has been stopped.");
-	}
+    /**
+     * Called whenever the OSGi framework stops our bundle
+     */
+    @Override
+    public void stop(BundleContext bc) throws Exception {
+        logger.debug("Mochad X10 binding has been stopped.");
+    }
 }

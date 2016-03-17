@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,93 +32,101 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /***
- * ZWaveBinarySwitchConverter class. Converter for communication with the 
+ * ZWaveBinarySwitchConverter class. Converter for communication with the
  * {@link ZWaveBatteryCommandClass}. Implements polling of the battery
  * status and receiving of battery events.
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
 public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter<ZWaveBinarySwitchCommandClass> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySwitchConverter.class);
-	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the binary switch;
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySwitchConverter.class);
+    private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the binary switch;
 
-	/**
-	 * Constructor. Creates a new instance of the {@link ZWaveBinarySwitchConverter} class.
-	 * @param controller the {@link ZWaveController} to use for sending messages.
-	 * @param eventPublisher the {@link EventPublisher} to use to publish events.
-	 */
-	public ZWaveBinarySwitchConverter(ZWaveController controller, EventPublisher eventPublisher) {
-		super(controller, eventPublisher);
-		
-		// State and commmand converters used by this converter. 
-		this.addStateConverter(new BinaryDecimalTypeConverter());
-		this.addStateConverter(new BinaryPercentTypeConverter());
-		this.addStateConverter(new IntegerOnOffTypeConverter());
-		this.addStateConverter(new IntegerOpenClosedTypeConverter());
-		this.addStateConverter(new IntegerUpDownTypeConverter());
-		
-		this.addCommandConverter(new BinaryOnOffCommandConverter());
-	}
+    /**
+     * Constructor. Creates a new instance of the {@link ZWaveBinarySwitchConverter} class.
+     *
+     * @param controller the {@link ZWaveController} to use for sending messages.
+     * @param eventPublisher the {@link EventPublisher} to use to publish events.
+     */
+    public ZWaveBinarySwitchConverter(ZWaveController controller, EventPublisher eventPublisher) {
+        super(controller, eventPublisher);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public SerialMessage executeRefresh(ZWaveNode node, 
-			ZWaveBinarySwitchCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-	}
+        // State and commmand converters used by this converter.
+        this.addStateConverter(new BinaryDecimalTypeConverter());
+        this.addStateConverter(new BinaryPercentTypeConverter());
+        this.addStateConverter(new IntegerOnOffTypeConverter());
+        this.addStateConverter(new IntegerOpenClosedTypeConverter());
+        this.addStateConverter(new IntegerUpDownTypeConverter());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
-		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
-		
-		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, node = {} endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
-			return;
-		}
-		
-		State state = converter.convertFromValueToState(event.getValue());
-		this.getEventPublisher().postUpdate(item.getName(), state);
-	}
+        this.addCommandConverter(new BinaryOnOffCommandConverter());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void receiveCommand(Item item, Command command, ZWaveNode node,
-			ZWaveBinarySwitchCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
-		
-		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(), item.getName(), endpointId);
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SerialMessage executeRefresh(ZWaveNode node, ZWaveBinarySwitchCommandClass commandClass, int endpointId,
+            Map<String, String> arguments) {
+        logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(),
+                commandClass.getCommandClass().getLabel(), endpointId);
+        return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+    }
 
-		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage((Integer)converter.convertFromCommandToValue(item, command)), commandClass, endpointId);
-		
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-			return;
-		}
-		
-		this.getController().sendData(serialMessage);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
+        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, event.getValue());
 
-		if (command instanceof State) {
-			this.getEventPublisher().postUpdate(item.getName(), (State)command);
-		}
-	}
+        if (converter == null) {
+            logger.warn("NODE {}: No converter found for item = {}, node = {} endpoint = {}, ignoring event.",
+                    event.getNodeId(), item.getName(), event.getEndpoint());
+            return;
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	int getRefreshInterval() {
-		return REFRESH_INTERVAL;
-	}
+        State state = converter.convertFromValueToState(event.getValue());
+        this.getEventPublisher().postUpdate(item.getName(), state);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveBinarySwitchCommandClass commandClass,
+            int endpointId, Map<String, String> arguments) {
+        ZWaveCommandConverter<?, ?> converter = this.getCommandConverter(command.getClass());
+
+        if (converter == null) {
+            logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(),
+                    item.getName(), endpointId);
+            return;
+        }
+
+        SerialMessage serialMessage = node.encapsulate(
+                commandClass.setValueMessage((Integer) converter.convertFromCommandToValue(item, command)),
+                commandClass, endpointId);
+
+        if (serialMessage == null) {
+            logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(),
+                    commandClass.getCommandClass().getLabel(), endpointId);
+            return;
+        }
+
+        this.getController().sendData(serialMessage);
+
+        if (command instanceof State) {
+            this.getEventPublisher().postUpdate(item.getName(), (State) command);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    int getRefreshInterval() {
+        return REFRESH_INTERVAL;
+    }
 }

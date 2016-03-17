@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,124 +19,124 @@ import org.openhab.binding.homematic.internal.model.HmInterface;
 
 /**
  * Class with the datapoint bindingConfig parsed from an item file.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 public class DatapointConfig extends ValueBindingConfig {
-	private HmInterface hmInterface;
-	private String address;
-	private String channel;
-	private String parameter;
+    private HmInterface hmInterface;
+    private String address;
+    private String channel;
+    private String parameter;
 
-	/**
-	 * Creates a datapoint config from an Homematic server event.
-	 */
-	public DatapointConfig(HmInterface hmInterface, String addressWithChannel, String parameter) {
-		this.hmInterface = hmInterface;
-		String[] configParts = StringUtils.trimToEmpty(addressWithChannel).split(":");
-		setAddress(configParts[0]);
-		this.channel = configParts[1];
-		this.parameter = parameter;
-	}
+    /**
+     * Creates a datapoint config from an Homematic server event.
+     */
+    public DatapointConfig(HmInterface hmInterface, String addressWithChannel, String parameter) {
+        this.hmInterface = hmInterface;
+        String[] configParts = StringUtils.trimToEmpty(addressWithChannel).split(":");
+        setAddress(configParts[0]);
+        this.channel = configParts[1];
+        this.parameter = parameter;
+    }
 
-	/**
-	 * Creates a datapoint config.
-	 */
-	public DatapointConfig(String address, String channel, String parameter) {
-		this(address, channel, parameter, null, null, false, 0.0);
-	}
+    /**
+     * Creates a datapoint config.
+     */
+    public DatapointConfig(String address, String channel, String parameter) {
+        this(address, channel, parameter, null, null, false, 0.0);
+    }
 
-	/**
-	 * Creates a datapoint config from the binding parser.
-	 */
-	public DatapointConfig(String address, String channel, String parameter, Converter<?> converter,
-			BindingAction action, boolean forceUpdate, double delay) {
-		setAddress(address);
-		this.channel = channel;
-		this.parameter = parameter;
-		this.converter = converter;
-		this.action = action;
-		this.forceUpdate = forceUpdate;
-		this.delay = delay;
-	}
+    /**
+     * Creates a datapoint config from the binding parser.
+     */
+    public DatapointConfig(String address, String channel, String parameter, Converter<?> converter,
+            BindingAction action, boolean forceUpdate, double delay) {
+        setAddress(address);
+        this.channel = channel;
+        this.parameter = parameter;
+        this.converter = converter;
+        this.action = action;
+        this.forceUpdate = forceUpdate;
+        this.delay = delay;
+    }
 
-	/**
-	 * Returns the address.
-	 */
-	public String getAddress() {
-		return address;
-	}
-	
-	/**
-	 * Sets the address, strips a leading CCU team marker.
-	 */
-	private void setAddress(String address) {
-		this.address = StringUtils.stripStart(address, "*");
-	}
+    /**
+     * Returns the address.
+     */
+    public String getAddress() {
+        return address;
+    }
 
-	/**
-	 * Returns the channel.
-	 */
-	public String getChannel() {
-		return channel;
-	}
+    /**
+     * Sets the address, strips a leading CCU team marker.
+     */
+    private void setAddress(String address) {
+        this.address = StringUtils.stripStart(address, "*");
+    }
 
-	/**
-	 * Returns the parameter.
-	 */
-	public String getParameter() {
-		return parameter;
-	}
+    /**
+     * Returns the channel.
+     */
+    public String getChannel() {
+        return channel;
+    }
 
-	/**
-	 * Returns the interface.
-	 */
-	public HmInterface getHmInterface() {
-		return hmInterface;
-	}
+    /**
+     * Returns the parameter.
+     */
+    public String getParameter() {
+        return parameter;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(address).append(channel).append(parameter).toHashCode();
-	}
+    /**
+     * Returns the interface.
+     */
+    public HmInterface getHmInterface() {
+        return hmInterface;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof DatapointConfig)) {
-			return false;
-		}
-		DatapointConfig comp = (DatapointConfig) obj;
-		return new EqualsBuilder().append(address, comp.getAddress()).append(channel, comp.getChannel())
-				.append(parameter, comp.getParameter()).isEquals();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(address).append(channel).append(parameter).toHashCode();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		tsb.append("address", address).append("channel", channel).append("parameter", parameter);
-		if (converter != null) {
-			tsb.append("converter", converter);
-		}
-		if (action != null) {
-			tsb.append("action", action);
-		}
-		if (forceUpdate) {
-			tsb.append("forceUpdate", forceUpdate);
-		}
-		if (delay > 0.0) {
-			tsb.append("delay", delay);
-		}
-		return tsb.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof DatapointConfig)) {
+            return false;
+        }
+        DatapointConfig comp = (DatapointConfig) obj;
+        return new EqualsBuilder().append(address, comp.getAddress()).append(channel, comp.getChannel())
+                .append(parameter, comp.getParameter()).isEquals();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        tsb.append("address", address).append("channel", channel).append("parameter", parameter);
+        if (converter != null) {
+            tsb.append("converter", converter);
+        }
+        if (action != null) {
+            tsb.append("action", action);
+        }
+        if (forceUpdate) {
+            tsb.append("forceUpdate", forceUpdate);
+        }
+        if (delay > 0.0) {
+            tsb.append("delay", delay);
+        }
+        return tsb.toString();
+    }
 
 }

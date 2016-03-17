@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,113 +28,126 @@ import org.openhab.io.transport.xpl.XplTransportService;
 
 /**
  * xPL binding for openHAB
- * 
+ *
  * @author clinique
  * @since 1.6.0
  */
-public class XplBinding extends AbstractBinding<XplBindingProvider> implements xPL_MessageListenerI {
+public class XplBinding extends AbstractBinding<XplBindingProvider>implements xPL_MessageListenerI {
 
-	//private static final Logger logger = LoggerFactory.getLogger(XplBinding.class);	
-	private XplTransportService xplTransportService;
-	private EventPublisher eventPublisher;
+    // private static final Logger logger = LoggerFactory.getLogger(XplBinding.class);
+    private XplTransportService xplTransportService;
+    private EventPublisher eventPublisher;
 
-	public XplBinding() {
-	}
+    public XplBinding() {
+    }
 
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
+    @Override
+    public void setEventPublisher(EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
 
-	public void unsetEventPublisher(EventPublisher eventPublisher) {
-		this.eventPublisher = null;
-	}
+    @Override
+    public void unsetEventPublisher(EventPublisher eventPublisher) {
+        this.eventPublisher = null;
+    }
 
+    protected void addBindingProvider(XplBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-	/**
-	 * Sends an xPL message upon command received by an Item
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		for (XplBindingProvider provider : providers) {
-			XplBindingConfig config = provider.getConfig(itemName);
-			if ((config == null) || (config.NamedParameter == null)) continue;
+    protected void removeBindingProvider(XplBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-			if (config.Message.getSource() == null) 
-				config.Message.setSource(xplTransportService.getSourceIdentifier());
-			
-			config.Message.setNamedValue(config.NamedParameter, command.toString().toLowerCase());
-			xplTransportService.sendMessage(config.Message);
-		}
-	}
+    /**
+     * Sends an xPL message upon command received by an Item
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        for (XplBindingProvider provider : providers) {
+            XplBindingConfig config = provider.getConfig(itemName);
+            if ((config == null) || (config.NamedParameter == null)) {
+                continue;
+            }
 
-	@Override	 
-	public void handleXPLMessage(xPL_MessageI theMessage) {
-		
-		for (XplBindingProvider provider : providers) {
-			List<String> matchingItems = provider.hasMessage(theMessage);
-			for (String itemName : matchingItems) {
-				XplBindingConfig config = provider.getConfig(itemName);
-				if (config == null) continue;
-				
-				String current = theMessage.getNamedValue(config.NamedParameter);
-			
-				Item item = provider.getItem(itemName);
-				if (item != null) {
-					if (item instanceof SwitchItem) {
-					   OnOffType status = ( current.equalsIgnoreCase("on") || current.equalsIgnoreCase("true") ||
-							   				current.equalsIgnoreCase("1")	|| current.equalsIgnoreCase("open") || 
-							   				current.equalsIgnoreCase("high")) ? OnOffType.ON : OnOffType.OFF;
-					   synchronized (item) {
-						 if (!item.getState().equals(status)) {
-							 eventPublisher.postUpdate(itemName, status);
-							 ((SwitchItem) item).setState(status);
-						 }
-					   }						
-					} else 
-					if (item instanceof NumberItem) {
-						DecimalType value = new DecimalType(current);
-						synchronized (item) {
-							if (!item.getState().equals(value)) {								
-								eventPublisher.postUpdate(itemName, value);
-								((NumberItem) item).setState(value);
-							}
-						}
-					}
-					if (item instanceof StringItem) {
-						StringType value = new StringType(current);
-						synchronized (item) {
-							if (!item.getState().equals(value)) {								
-								eventPublisher.postUpdate(itemName, value);
-								((StringItem) item).setState(value);
-							}
-						}						
-					}
-				}
-			}										
-		}
+            if (config.Message.getSource() == null) {
+                config.Message.setSource(xplTransportService.getSourceIdentifier());
+            }
 
-	}
-	
-	/**
-	 * Setter for Declarative Services. Adds the XplTransportService instance.
-	 * 
-	 * @param xplTransportService
-	 *            Service.
-	 */
-	public void setXplTransportService(XplTransportService xplTransportService) {
-		this.xplTransportService = xplTransportService;
-		this.xplTransportService.addMessageListener(this);
-	}
+            config.Message.setNamedValue(config.NamedParameter, command.toString().toLowerCase());
+            xplTransportService.sendMessage(config.Message);
+        }
+    }
 
-	/**
-	 * Unsetter for Declarative Services.
-	 * 
-	 * @param xplTransportService
-	 *            Service to remove.
-	 */
-	public void unsetXplTransportService(XplTransportService xplTransportService) {
-		this.xplTransportService.removeMessageListener(this);
-		this.xplTransportService = null;
-	}
+    @Override
+    public void handleXPLMessage(xPL_MessageI theMessage) {
+
+        for (XplBindingProvider provider : providers) {
+            List<String> matchingItems = provider.hasMessage(theMessage);
+            for (String itemName : matchingItems) {
+                XplBindingConfig config = provider.getConfig(itemName);
+                if (config == null) {
+                    continue;
+                }
+
+                String current = theMessage.getNamedValue(config.NamedParameter);
+
+                Item item = provider.getItem(itemName);
+                if (item != null) {
+                    if (item instanceof SwitchItem) {
+                        OnOffType status = (current.equalsIgnoreCase("on") || current.equalsIgnoreCase("true")
+                                || current.equalsIgnoreCase("1") || current.equalsIgnoreCase("open")
+                                || current.equalsIgnoreCase("high")) ? OnOffType.ON : OnOffType.OFF;
+                        synchronized (item) {
+                            if (!item.getState().equals(status)) {
+                                eventPublisher.postUpdate(itemName, status);
+                                ((SwitchItem) item).setState(status);
+                            }
+                        }
+                    } else if (item instanceof NumberItem) {
+                        DecimalType value = new DecimalType(current);
+                        synchronized (item) {
+                            if (!item.getState().equals(value)) {
+                                eventPublisher.postUpdate(itemName, value);
+                                ((NumberItem) item).setState(value);
+                            }
+                        }
+                    }
+                    if (item instanceof StringItem) {
+                        StringType value = new StringType(current);
+                        synchronized (item) {
+                            if (!item.getState().equals(value)) {
+                                eventPublisher.postUpdate(itemName, value);
+                                ((StringItem) item).setState(value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Setter for Declarative Services. Adds the XplTransportService instance.
+     *
+     * @param xplTransportService
+     *            Service.
+     */
+    public void setXplTransportService(XplTransportService xplTransportService) {
+        this.xplTransportService = xplTransportService;
+        this.xplTransportService.addMessageListener(this);
+    }
+
+    /**
+     * Unsetter for Declarative Services.
+     *
+     * @param xplTransportService
+     *            Service to remove.
+     */
+    public void unsetXplTransportService(XplTransportService xplTransportService) {
+        this.xplTransportService.removeMessageListener(this);
+        this.xplTransportService = null;
+    }
 
 }

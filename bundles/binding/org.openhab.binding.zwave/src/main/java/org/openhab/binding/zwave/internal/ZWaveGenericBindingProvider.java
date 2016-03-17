@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
+ *
  * @author Victor Belov
  * @author Brian Crosby
  * @author Chris Jackson
@@ -29,119 +30,123 @@ import org.slf4j.LoggerFactory;
  */
 public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider implements ZWaveBindingProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveGenericBindingProvider.class);
-	private final Map<String, Item> items = new HashMap<String, Item>();
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveGenericBindingProvider.class);
+    private final Map<String, Item> items = new HashMap<String, Item>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getBindingType() {
-		return "zwave";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBindingType() {
+        return "zwave";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		// All types are valid
-		logger.trace("validateItemType({}, {})", item.getName(), bindingConfig);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+        // All types are valid
+        logger.trace("validateItemType({}, {})", item.getName(), bindingConfig);
+    }
 
-	/**
-	 * Processes Z-Wave binding configuration string.
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		logger.trace("processBindingConfiguration({}, {})", item.getName(), bindingConfig);
-		super.processBindingConfiguration(context, item, bindingConfig);
-		String[] segments = bindingConfig.split(":");
-		
-		if (segments.length < 1 || segments.length > 3) {
-			throw new BindingConfigParseException("Invalid number of segments in binding: " + bindingConfig);
-		}
+    /**
+     * Processes Z-Wave binding configuration string.
+     * {@inheritDoc}
+     */
+    @Override
+    public void processBindingConfiguration(String context, Item item, String bindingConfig)
+            throws BindingConfigParseException {
+        logger.trace("processBindingConfiguration({}, {})", item.getName(), bindingConfig);
+        super.processBindingConfiguration(context, item, bindingConfig);
+        String[] segments = bindingConfig.split(":");
 
-		int nodeId;
-		try {
-			nodeId = Integer.parseInt(segments[0]);
-		} catch (Exception e) {
-			logger.error("{}: Invalid node ID '{}'", item.getName(), segments[0]);
-			throw new BindingConfigParseException(segments[0] + " is not a valid node id.");
-		}
+        if (segments.length < 1 || segments.length > 3) {
+            throw new BindingConfigParseException("Invalid number of segments in binding: " + bindingConfig);
+        }
 
-		if(nodeId <= 0 || nodeId > 232) {
-			logger.error("{}: Invalid node ID '{}'", item.getName(), nodeId);
-			throw new BindingConfigParseException(nodeId + " is not a valid node number.");			
-		}
+        int nodeId;
+        try {
+            nodeId = Integer.parseInt(segments[0]);
+        } catch (Exception e) {
+            logger.error("{}: Invalid node ID '{}'", item.getName(), segments[0]);
+            throw new BindingConfigParseException(segments[0] + " is not a valid node id.");
+        }
 
-		int endpoint = 0;
-		Integer refreshInterval = null;
-		Map<String, String> arguments = new HashMap<String, String>();
+        if (nodeId <= 0 || nodeId > 232) {
+            logger.error("{}: Invalid node ID '{}'", item.getName(), nodeId);
+            throw new BindingConfigParseException(nodeId + " is not a valid node number.");
+        }
 
-		for (int i = 1; i < segments.length; i++) {
-			try {
-				if (segments[i].contains("=")) {
-					for (String keyValuePairString : segments[i].split(",")) {
-						String[] pair = keyValuePairString.split("=");
-						String key = pair[0].trim().toLowerCase();
-						String value = pair[1].trim().toLowerCase();
+        int endpoint = 0;
+        Integer refreshInterval = null;
+        Map<String, String> arguments = new HashMap<String, String>();
 
-						if (key.equals("refresh_interval")) {
-							refreshInterval = Integer.parseInt(value);
-						} else {
-							arguments.put(key, value);
-						}
+        for (int i = 1; i < segments.length; i++) {
+            try {
+                if (segments[i].contains("=")) {
+                    for (String keyValuePairString : segments[i].split(",")) {
+                        String[] pair = keyValuePairString.split("=");
+                        String key = pair[0].trim().toLowerCase();
+                        String value = pair[1].trim().toLowerCase();
 
-						// Sanity check the command class
-						if (key.equals("command")) {
-							if(ZWaveCommandClass.CommandClass.getCommandClass(pair[1]) == null &&
-									value.equals("info") == false) {
-								logger.error("{}: Invalid command class '{}'", item.getName(), pair[1].toUpperCase());
-								throw new BindingConfigParseException("Invalid command class " + pair[1].toUpperCase());
-							}
-						}
-					}
-				} else {
-					try {
-						endpoint = Integer.parseInt(segments[i]); 
-					} catch (Exception e) {
-						logger.error("{}: Invalid endpoint ID '{}'", item.getName(), segments[i]);
-						throw new BindingConfigParseException(segments[i] + " is not a valid endpoint.");
-					}
-				}
-			} catch (Exception e){
-				throw new BindingConfigParseException(segments[i] + " is not a valid argument.");
-			}
-		}
+                        if (key.equals("refresh_interval")) {
+                            refreshInterval = Integer.parseInt(value);
+                        } else {
+                            arguments.put(key, value);
+                        }
 
-		ZWaveBindingConfig config = new ZWaveBindingConfig(nodeId, endpoint, refreshInterval, arguments);
-		addBindingConfig(item, config);
-		items.put(item.getName(), item);
-	}
-	
-	/**
-	 * Returns the binding configuration for a string.
-	 * @return the binding configuration.
-	 */
-	public ZWaveBindingConfig getZwaveBindingConfig(String itemName) {
-		return (ZWaveBindingConfig) this.bindingConfigs.get(itemName);
-	}
+                        // Sanity check the command class
+                        if (key.equals("command")) {
+                            if (ZWaveCommandClass.CommandClass.getCommandClass(pair[1]) == null
+                                    && value.equals("info") == false) {
+                                logger.error("{}: Invalid command class '{}'", item.getName(), pair[1].toUpperCase());
+                                throw new BindingConfigParseException("Invalid command class " + pair[1].toUpperCase());
+                            }
+                        }
+                    }
+                } else {
+                    try {
+                        endpoint = Integer.parseInt(segments[i]);
+                    } catch (Exception e) {
+                        logger.error("{}: Invalid endpoint ID '{}'", item.getName(), segments[i]);
+                        throw new BindingConfigParseException(segments[i] + " is not a valid endpoint.");
+                    }
+                }
+            } catch (Exception e) {
+                throw new BindingConfigParseException(segments[i] + " is not a valid argument.");
+            }
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Boolean autoUpdate(String itemName) {
-		return false;
-	}
+        ZWaveBindingConfig config = new ZWaveBindingConfig(nodeId, endpoint, refreshInterval, arguments);
+        addBindingConfig(item, config);
+        items.put(item.getName(), item);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Item getItem(String itemName) {
-		return items.get(itemName);
-	}
-	
+    /**
+     * Returns the binding configuration for a string.
+     *
+     * @return the binding configuration.
+     */
+    @Override
+    public ZWaveBindingConfig getZwaveBindingConfig(String itemName) {
+        return (ZWaveBindingConfig) this.bindingConfigs.get(itemName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean autoUpdate(String itemName) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Item getItem(String itemName) {
+        return items.get(itemName);
+    }
+
 }

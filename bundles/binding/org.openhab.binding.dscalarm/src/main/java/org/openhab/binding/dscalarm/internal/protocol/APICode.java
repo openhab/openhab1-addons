@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,14 +13,15 @@ import java.util.Map;
 
 /**
  * Enumerator for API Command and Message Codes
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
 public enum APICode {
-	
-	Poll("000"),
-	StatusReport("001"),
-	LabelsRequest("002"),
+
+    Poll("000"),
+    StatusReport("001"),
+    LabelsRequest("002"),
     NetworkLogin("005"),
     DumpZoneTimers("008"),
     SetTimeDate("010"),
@@ -58,8 +59,8 @@ public enum APICode {
     OutdoorTemperatureBroadcast("562"),
     ThermostatSetPoints("563"),
     BroadcastLabels("570"),
-    BaudRateSet ("580"),
-    
+    BaudRateSet("580"),
+
     ZoneAlarm("601"),
     ZoneAlarmRestore("602"),
     ZoneTamper("603"),
@@ -97,13 +98,13 @@ public enum APICode {
     PartitionBusy("673"),
     SystemArmingInProgress("674"),
     SystemInInstallerMode("680"),
-    
+
     UserClosing("700"),
     SpecialClosing("701"),
     PartialClosing("702"),
     UserOpening("750"),
     SpecialOpening("751"),
-    
+
     PanelBatteryTrouble("800"),
     PanelBatteryTroubleRestore("801"),
     PanelACTrouble("802"),
@@ -149,58 +150,59 @@ public enum APICode {
 
     UnknownCode("-1");
 
-	private String code;
+    private String code;
 
-	/**
-	 * Lookup map to get a APICode value from its string code
-	 */
-	private static Map<String, APICode> codeToAPICodeValue;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param code
-	 */
-	private APICode(String code) {
-		this.code = code;
-	}
+    /**
+     * Lookup map to get a APICode value from its string code
+     */
+    private static Map<String, APICode> codeToAPICodeValue;
 
-	/**
-	 * Initialize the lookup map that gets a APICode value from a string code
-	 */
-	private static void initMapping() {
-		codeToAPICodeValue = new HashMap<String, APICode>();
-		for (APICode s : values()) {
-			codeToAPICodeValue.put(s.code, s);
-		}
-	}
-	
-	/**
-	 * The API command/message code string (example '005')
-	 */
-	public String getCode() {
-		return code;
-	}
-	
-   /**
-	 * Lookup function to return the APICode value based on the string code
-	 * Returns null if the string code is not found
-	 * 
-	 * @param code
-	 * @return enum value
-	 */
-	public static APICode getAPICodeValue(String code) {
-		APICode apiCode;
-		
-		if (codeToAPICodeValue == null) {
-			initMapping();
-		}
-		
-		apiCode = codeToAPICodeValue.get(code);
-		
-		if(apiCode == null)
-			apiCode = UnknownCode;
-		
-		return apiCode;
-	}
+    /**
+     * Constructor
+     * 
+     * @param code
+     */
+    private APICode(String code) {
+        this.code = code;
+    }
+
+    /**
+     * Initialize the lookup map that gets a APICode value from a string code
+     */
+    private static void initMapping() {
+        codeToAPICodeValue = new HashMap<String, APICode>();
+        for (APICode s : values()) {
+            codeToAPICodeValue.put(s.code, s);
+        }
+    }
+
+    /**
+     * The API command/message code string (example '005')
+     */
+    public String getCode() {
+        return code;
+    }
+
+    /**
+     * Lookup function to return the APICode value based on the string code.
+     * Returns null if the string code is not found
+     * 
+     * @param code
+     * @return enum value
+     */
+    public static APICode getAPICodeValue(String code) {
+        APICode apiCode;
+
+        if (codeToAPICodeValue == null) {
+            initMapping();
+        }
+
+        apiCode = codeToAPICodeValue.get(code);
+
+        if (apiCode == null) {
+            apiCode = UnknownCode;
+        }
+
+        return apiCode;
+    }
 }

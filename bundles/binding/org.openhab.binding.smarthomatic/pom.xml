@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.9.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.smarthomatic</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.smarthomatic</bundle.namespace>
+		<deb.name>openhab-addon-binding-Smarthomatic</deb.name>
+		<deb.description>openhab addon binding Smarthomatic</deb.description>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.smarthomatic</artifactId>
+
+	<name>openHAB Smarthomatic Binding</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+			<plugin>
+			  <groupId>org.codehaus.mojo</groupId>
+			  <artifactId>jaxb2-maven-plugin</artifactId>
+			  <version>1.5</version>
+			  <executions>
+			    <execution>
+			      <id>id1</id>
+			      <phase>generate-sources</phase>
+			      <goals>
+			    	<goal>xjc</goal>
+			      </goals>
+			      <configuration>
+			       <outputDirectory>src-gen/main/java</outputDirectory>
+			       <packageName>org.openhab.binding.smarthomatic.internal.packetData</packageName>
+			       <schemaDirectory>src/main/resources</schemaDirectory>
+			       <schemaFiles>packet_metamodel.xsd,data_types.xsd</schemaFiles>
+			      </configuration>
+			    </execution>
+			  </executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

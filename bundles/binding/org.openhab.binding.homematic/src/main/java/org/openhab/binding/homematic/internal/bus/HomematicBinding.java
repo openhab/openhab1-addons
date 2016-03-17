@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,195 +29,203 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Homematic binding implementation.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProvider> implements ManagedService {
+public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProvider>implements ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(HomematicBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomematicBinding.class);
 
-	private HomematicContext context = HomematicContext.getInstance();
-	private HomematicCommunicator communicator = new HomematicCommunicator();
-	private BindingChangedDelayedExecutor delayedExecutor = new BindingChangedDelayedExecutor(communicator);
+    private HomematicContext context = HomematicContext.getInstance();
+    private HomematicCommunicator communicator = new HomematicCommunicator();
+    private BindingChangedDelayedExecutor delayedExecutor = new BindingChangedDelayedExecutor(communicator);
 
-	/**
-	 * Adding shudown hook to stop the Homematic server communicator.
-	 */
-	public HomematicBinding() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				communicator.stop();
-			}
-		});
-	}
+    /**
+     * Adding shudown hook to stop the Homematic server communicator.
+     */
+    public HomematicBinding() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                communicator.stop();
+            }
+        });
+    }
 
-	/**
-	 * Saves the eventPublisher in the Homematic context.
-	 */
-	@Override
-	public void setEventPublisher(EventPublisher eventPublisher) {
-		super.setEventPublisher(eventPublisher);
-		context.setEventPublisher(eventPublisher);
-	}
+    /**
+     * Saves the eventPublisher in the Homematic context.
+     */
+    @Override
+    public void setEventPublisher(EventPublisher eventPublisher) {
+        super.setEventPublisher(eventPublisher);
+        context.setEventPublisher(eventPublisher);
+    }
 
-	/**
-	 * Saves the providers in the Homematic context.
-	 */
-	@Override
-	public void activate() {
-		context.setProviders(providers);
-	}
+    /**
+     * Saves the providers in the Homematic context.
+     */
+    @Override
+    public void activate() {
+        context.setProviders(providers);
+    }
 
-	/**
-	 * Stops the communicator.
-	 */
-	@Override
-	public void deactivate() {
-		communicator.stop();
-	}
+    /**
+     * Stops the communicator.
+     */
+    @Override
+    public void deactivate() {
+        communicator.stop();
+    }
 
-	/**
-	 * Updates the configuration for the binding and (re-)starts the
-	 * communicator.
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config != null) {
-			setProperlyConfigured(false);
-			communicator.stop();
+    /**
+     * Updates the configuration for the binding and (re-)starts the
+     * communicator.
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        if (config != null) {
+            setProperlyConfigured(false);
+            communicator.stop();
 
-			context.getConfig().parse(config);
-			logger.info(context.getConfig().toString());
+            context.getConfig().parse(config);
+            logger.info(context.getConfig().toString());
 
-			if (context.getConfig().isValid()) {
-				communicator.start();
-				setProperlyConfigured(true);
+            if (context.getConfig().isValid()) {
+                communicator.start();
+                setProperlyConfigured(true);
 
-				for (HomematicBindingProvider hmProvider : providers) {
-					for (String itemName : hmProvider.getItemNames()) {
-						informCommunicator(hmProvider, itemName);
-					}
-				}
-			}
-		}
-	}
+                for (HomematicBindingProvider hmProvider : providers) {
+                    for (String itemName : hmProvider.getItemNames()) {
+                        informCommunicator(hmProvider, itemName);
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void allBindingsChanged(BindingProvider provider) {
-		super.allBindingsChanged(provider);
-		if (isProperlyConfigured()) {
-			if (provider instanceof HomematicBindingProvider) {
-				HomematicBindingProvider hmProvider = (HomematicBindingProvider) provider;
-				for (String itemName : hmProvider.getItemNames()) {
-					informCommunicator(hmProvider, itemName);
-				}
-			}
-		}
-	}
+    protected void addBindingProvider(HomematicBindingProvider bindingProvider) {
+        super.addBindingProvider(bindingProvider);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		super.bindingChanged(provider, itemName);
-		if (isProperlyConfigured()) {
-			if (provider instanceof HomematicBindingProvider) {
-				HomematicBindingProvider hmProvider = (HomematicBindingProvider) provider;
-				informCommunicator(hmProvider, itemName);
-			}
-		}
-	}
+    protected void removeBindingProvider(HomematicBindingProvider bindingProvider) {
+        super.removeBindingProvider(bindingProvider);
+    }
 
-	/**
-	 * Schedules a job with a short delay to populate changed items to openHAB
-	 * after startup or an item reload.
-	 * 
-	 * @see BindingChangedDelayedExecutor
-	 */
-	private void informCommunicator(HomematicBindingProvider hmProvider, String itemName) {
-		final Item item = hmProvider.getItem(itemName);
-		final HomematicBindingConfig bindingConfig = hmProvider.getBindingFor(itemName);
-		if (bindingConfig != null) {
-			delayedExecutor.cancel();
-			delayedExecutor.addBindingConfig(item, bindingConfig);
-			delayedExecutor.schedule(new TimerTask() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void allBindingsChanged(BindingProvider provider) {
+        super.allBindingsChanged(provider);
+        if (isProperlyConfigured()) {
+            if (provider instanceof HomematicBindingProvider) {
+                HomematicBindingProvider hmProvider = (HomematicBindingProvider) provider;
+                for (String itemName : hmProvider.getItemNames()) {
+                    informCommunicator(hmProvider, itemName);
+                }
+            }
+        }
+    }
 
-				@Override
-				public void run() {
-					delayedExecutor.publishChangedBindings();
-				}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void bindingChanged(BindingProvider provider, String itemName) {
+        super.bindingChanged(provider, itemName);
+        if (isProperlyConfigured()) {
+            if (provider instanceof HomematicBindingProvider) {
+                HomematicBindingProvider hmProvider = (HomematicBindingProvider) provider;
+                informCommunicator(hmProvider, itemName);
+            }
+        }
+    }
 
-			}, 3000);
-		}
-	}
+    /**
+     * Schedules a job with a short delay to populate changed items to openHAB
+     * after startup or an item reload.
+     *
+     * @see BindingChangedDelayedExecutor
+     */
+    private void informCommunicator(HomematicBindingProvider hmProvider, String itemName) {
+        final Item item = hmProvider.getItem(itemName);
+        final HomematicBindingConfig bindingConfig = hmProvider.getBindingFor(itemName);
+        if (bindingConfig != null) {
+            delayedExecutor.cancel();
+            delayedExecutor.addBindingConfig(item, bindingConfig);
+            delayedExecutor.schedule(new TimerTask() {
 
-	/**
-	 * Receives a command and send it to the Homematic communicator.
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		for (HomematicBindingProvider provider : providers) {
-			Item item = provider.getItem(itemName);
-			HomematicBindingConfig config = provider.getBindingFor(itemName);
-			communicator.receiveCommand(item, command, config);
-		}
-	}
+                @Override
+                public void run() {
+                    delayedExecutor.publishChangedBindings();
+                }
 
-	/**
-	 * Receives a state and send it to the Homematic communicator.
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		for (HomematicBindingProvider provider : providers) {
-			Item item = provider.getItem(itemName);
-			HomematicBindingConfig config = provider.getBindingFor(itemName);
-			communicator.receiveUpdate(item, newState, config);
-		}
-	}
+            }, 3000);
+        }
+    }
 
-	/**
-	 * Restarts the Homematic communicator if no messages arrive within a
-	 * configured time or the reconnect interval is reached.
-	 */
-	@Override
-	protected void execute() {
-		if (context.getConfig().getReconnectInterval() == null) {
-			long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
-			if (timeSinceLastEvent >= context.getConfig().getAliveInterval()) {
-				logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
-				communicator.stop();
-				communicator.start();
-			}
-		} else {
-			long timeSinceLastReconnect = (System.currentTimeMillis() - communicator.getLastReconnectTime()) / 1000;
-			if (timeSinceLastReconnect >= context.getConfig().getReconnectInterval()) {
-				logger.info("Reconnect interval reached, refreshing Homematic server connections");
-				communicator.stop();
-				communicator.start();
-			}
-		}
-	}
+    /**
+     * Receives a command and send it to the Homematic communicator.
+     */
+    @Override
+    protected void internalReceiveCommand(String itemName, Command command) {
+        for (HomematicBindingProvider provider : providers) {
+            Item item = provider.getItem(itemName);
+            HomematicBindingConfig config = provider.getBindingFor(itemName);
+            communicator.receiveCommand(item, command, config);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return 60000;
-	}
+    /**
+     * Receives a state and send it to the Homematic communicator.
+     */
+    @Override
+    protected void internalReceiveUpdate(String itemName, State newState) {
+        for (HomematicBindingProvider provider : providers) {
+            Item item = provider.getItem(itemName);
+            HomematicBindingConfig config = provider.getBindingFor(itemName);
+            communicator.receiveUpdate(item, newState, config);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "Homematic server connection tracker";
-	}
+    /**
+     * Restarts the Homematic communicator if no messages arrive within a
+     * configured time or the reconnect interval is reached.
+     */
+    @Override
+    protected void execute() {
+        if (context.getConfig().getReconnectInterval() == null) {
+            long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
+            if (timeSinceLastEvent >= context.getConfig().getAliveInterval()) {
+                logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
+                communicator.stop();
+                communicator.start();
+            }
+        } else {
+            long timeSinceLastReconnect = (System.currentTimeMillis() - communicator.getLastReconnectTime()) / 1000;
+            if (timeSinceLastReconnect >= context.getConfig().getReconnectInterval()) {
+                logger.info("Reconnect interval reached, refreshing Homematic server connections");
+                communicator.stop();
+                communicator.start();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected long getRefreshInterval() {
+        return 60000;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getName() {
+        return "Homematic server connection tracker";
+    }
 
 }

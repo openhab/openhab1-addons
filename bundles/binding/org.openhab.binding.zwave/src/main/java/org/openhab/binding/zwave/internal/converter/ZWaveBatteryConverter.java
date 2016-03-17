@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,75 +27,80 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /***
- * ZWaveBatteryConverter class. Converter for communication with the 
+ * ZWaveBatteryConverter class. Converter for communication with the
  * {@link ZWaveBatteryCommandClass}. Implements polling of the battery
  * status and receiving of battery events.
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
 public class ZWaveBatteryConverter extends ZWaveCommandClassConverter<ZWaveBatteryCommandClass> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveBatteryConverter.class);
-	private static final int REFRESH_INTERVAL = 3600; // refresh interval in seconds for the battery level;
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveBatteryConverter.class);
+    private static final int REFRESH_INTERVAL = 3600; // refresh interval in seconds for the battery level;
 
-	/**
-	 * Constructor. Creates a new instance of the {@link ZWaveBatteryConverter} class.
-	 * @param controller the {@link ZWaveController} to use for sending messages.
-	 * @param eventPublisher the {@link EventPublisher} to use to publish events.
-	 */
-	public ZWaveBatteryConverter(ZWaveController controller, EventPublisher eventPublisher) {
-		super(controller, eventPublisher);
-		
-		// State and commmand converters used by this converter. 
-		this.addStateConverter(new BatteryDecimalTypeConverter());
-		this.addStateConverter(new BatteryPercentTypeConverter());
-	}
+    /**
+     * Constructor. Creates a new instance of the {@link ZWaveBatteryConverter} class.
+     *
+     * @param controller the {@link ZWaveController} to use for sending messages.
+     * @param eventPublisher the {@link EventPublisher} to use to publish events.
+     */
+    public ZWaveBatteryConverter(ZWaveController controller, EventPublisher eventPublisher) {
+        super(controller, eventPublisher);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public SerialMessage executeRefresh(ZWaveNode node, 
-			ZWaveBatteryCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-	}
+        // State and commmand converters used by this converter.
+        this.addStateConverter(new BatteryDecimalTypeConverter());
+        this.addStateConverter(new BatteryPercentTypeConverter());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
-		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());		
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
-			return;
-		}
-		
-		State state = converter.convertFromValueToState(event.getValue());
-		this.getEventPublisher().postUpdate(item.getName(), state);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SerialMessage executeRefresh(ZWaveNode node, ZWaveBatteryCommandClass commandClass, int endpointId,
+            Map<String, String> arguments) {
+        logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(),
+                commandClass.getCommandClass().getLabel(), endpointId);
+        return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void receiveCommand(Item item, Command command, ZWaveNode node,
-			ZWaveBatteryCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
-		
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
-			return;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
+        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, event.getValue());
+        if (converter == null) {
+            logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(),
+                    event.getNodeId(), event.getEndpoint());
+            return;
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	int getRefreshInterval() {
-		return REFRESH_INTERVAL;
-	}
+        State state = converter.convertFromValueToState(event.getValue());
+        this.getEventPublisher().postUpdate(item.getName(), state);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveBatteryCommandClass commandClass,
+            int endpointId, Map<String, String> arguments) {
+        ZWaveCommandConverter<?, ?> converter = this.getCommandConverter(command.getClass());
+
+        if (converter == null) {
+            logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(),
+                    node.getNodeId(), endpointId);
+            return;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    int getRefreshInterval() {
+        return REFRESH_INTERVAL;
+    }
 
 }

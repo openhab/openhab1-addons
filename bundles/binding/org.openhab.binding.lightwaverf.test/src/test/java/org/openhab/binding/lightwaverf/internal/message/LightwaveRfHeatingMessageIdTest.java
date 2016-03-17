@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,33 +8,30 @@
  */
 package org.openhab.binding.lightwaverf.internal.message;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.openhab.binding.lightwaverf.internal.message.LightwaveRfHeatingMessageId;
-import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 
 public class LightwaveRfHeatingMessageIdTest {
 
-	@Test
-	public void testGetMessageIdString() {
-		LightwaveRfMessageId messageId001 = new LightwaveRfHeatingMessageId(1);
-		assertEquals("1", messageId001.getMessageIdString());
+    @Test
+    public void testGetMessageIdString() {
+        LightwaveRfMessageId messageId001 = new LightwaveRfJsonMessageId(1);
+        assertEquals("1", messageId001.getMessageIdString());
 
-		LightwaveRfMessageId messageId012 = new LightwaveRfHeatingMessageId(12);
-		assertEquals("12", messageId012.getMessageIdString());
+        LightwaveRfMessageId messageId012 = new LightwaveRfJsonMessageId(12);
+        assertEquals("12", messageId012.getMessageIdString());
 
-		LightwaveRfMessageId messageId = new LightwaveRfHeatingMessageId(123);
-		assertEquals("123", messageId.getMessageIdString());
-	}
+        LightwaveRfMessageId messageId = new LightwaveRfJsonMessageId(123);
+        assertEquals("123", messageId.getMessageIdString());
+    }
 
-	@Test
-	public void testEqualsObject() {
-		LightwaveRfMessageId messageId = new LightwaveRfHeatingMessageId(123);
-		LightwaveRfMessageId otherMessageId = new LightwaveRfHeatingMessageId(123);
-		assertTrue(otherMessageId.equals(messageId));
-		assertTrue(messageId.hashCode() == otherMessageId.hashCode());
-	}
+    @Test
+    public void testEqualsObject() {
+        LightwaveRfMessageId messageId = new LightwaveRfJsonMessageId(123);
+        LightwaveRfMessageId otherMessageId = new LightwaveRfJsonMessageId(123);
+        assertTrue(otherMessageId.equals(messageId));
+        assertTrue(messageId.hashCode() == otherMessageId.hashCode());
+    }
 
 }

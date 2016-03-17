@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,75 +25,75 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ZWaveThermostatFanStateConverter class. Converter for communication with the 
+ * ZWaveThermostatFanStateConverter class. Converter for communication with the
  * {@link ZWaveThermostatFanStateCommandClass}. Implements polling of the fan
  * state and receiving of fan state events.
- *  @author Dan Cunningham
- *	@since 1.6.0
+ *
+ * @author Dan Cunningham
+ * @since 1.6.0
  */
-public class ZWaveThermostatFanStateConverter extends
-ZWaveCommandClassConverter<ZWaveThermostatFanStateCommandClass> {
+public class ZWaveThermostatFanStateConverter extends ZWaveCommandClassConverter<ZWaveThermostatFanStateCommandClass> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatFanStateConverter.class);
-	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the thermostat setpoint;
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatFanStateConverter.class);
+    private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the thermostat setpoint;
 
-	/**
-	 * Constructor. Creates a new instance of the {@link ZWaveThermostatFanStateConverter} class.
-	 * @param controller the {@link ZWaveController} to use for sending messages.
-	 * @param eventPublisher the {@link EventPublisher} to use to publish events.
-	 */
-	public ZWaveThermostatFanStateConverter(ZWaveController controller,
-			EventPublisher eventPublisher) {
-		super(controller, eventPublisher);
-		this.addStateConverter(new IntegerDecimalTypeConverter());
-	}
+    /**
+     * Constructor. Creates a new instance of the {@link ZWaveThermostatFanStateConverter} class.
+     *
+     * @param controller the {@link ZWaveController} to use for sending messages.
+     * @param eventPublisher the {@link EventPublisher} to use to publish events.
+     */
+    public ZWaveThermostatFanStateConverter(ZWaveController controller, EventPublisher eventPublisher) {
+        super(controller, eventPublisher);
+        this.addStateConverter(new IntegerDecimalTypeConverter());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	SerialMessage executeRefresh(ZWaveNode node,
-			ZWaveThermostatFanStateCommandClass commandClass, int endpointId,
-			Map<String, String> arguments) {
-		logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    SerialMessage executeRefresh(ZWaveNode node, ZWaveThermostatFanStateCommandClass commandClass, int endpointId,
+            Map<String, String> arguments) {
+        logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(),
+                commandClass.getCommandClass().getLabel(), endpointId);
+        return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void handleEvent(ZWaveCommandClassValueEvent event, Item item,
-			Map<String, String> arguments) {
-		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
+        ZWaveStateConverter<?, ?> converter = this.getStateConverter(item, event.getValue());
 
-		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {} endpoint = {}, ignoring event.",  event.getNodeId(), item.getName(),event.getEndpoint());
-			return;
-		}
+        if (converter == null) {
+            logger.warn("NODE {}: No converter found for item = {} endpoint = {}, ignoring event.", event.getNodeId(),
+                    item.getName(), event.getEndpoint());
+            return;
+        }
 
-		State state = converter.convertFromValueToState(event.getValue());
-		
-		this.getEventPublisher().postUpdate(item.getName(), state);
+        State state = converter.convertFromValueToState(event.getValue());
 
-	}
+        this.getEventPublisher().postUpdate(item.getName(), state);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void receiveCommand(Item item, Command command, ZWaveNode node,
-			ZWaveThermostatFanStateCommandClass commandClass, int endpointId,
-			Map<String, String> arguments) {
-			logger.warn("NODE {}: We do not take commands: item = {} endpoint = {}, ignoring.", node.getNodeId(), item.getName(),endpointId);
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	int getRefreshInterval() {
-		return REFRESH_INTERVAL;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void receiveCommand(Item item, Command command, ZWaveNode node, ZWaveThermostatFanStateCommandClass commandClass,
+            int endpointId, Map<String, String> arguments) {
+        logger.warn("NODE {}: We do not take commands: item = {} endpoint = {}, ignoring.", node.getNodeId(),
+                item.getName(), endpointId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    int getRefreshInterval() {
+        return REFRESH_INTERVAL;
+    }
 
 }

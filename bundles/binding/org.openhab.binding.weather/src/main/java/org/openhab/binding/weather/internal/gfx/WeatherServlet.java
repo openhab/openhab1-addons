@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.io.net.http.SecureHttpContext;
-import org.openhab.ui.items.ItemUIRegistry;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
@@ -33,110 +32,102 @@ import org.slf4j.LoggerFactory;
 /**
  * The weather servlet serves the Html code based on the weather layouts.
  * Example layouts and icons can be downloaded from the wiki page.
- * 
+ *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class WeatherServlet extends HttpServlet {
-	private static final long serialVersionUID = -8254216127563270956L;
-	private static final Logger logger = LoggerFactory.getLogger(WeatherServlet.class);
+    private static final long serialVersionUID = -8254216127563270956L;
+    private static final Logger logger = LoggerFactory.getLogger(WeatherServlet.class);
 
-	private static final String SERVLET_NAME = "/weather";
-	private static final String WEBAPP_LOCATION = "./webapps/weather-data";
-	private static final String LAYOUTS_LOCATION = WEBAPP_LOCATION + "/layouts";
+    private static final String SERVLET_NAME = "/weather";
+    private static final String WEBAPP_LOCATION = "./webapps/weather-data";
+    private static final String LAYOUTS_LOCATION = WEBAPP_LOCATION + "/layouts";
 
-	private HttpService httpService;
-	protected ItemUIRegistry itemUIRegistry;
+    private HttpService httpService;
 
-	public void setHttpService(HttpService httpService) {
-		this.httpService = httpService;
-	}
+    public void setHttpService(HttpService httpService) {
+        this.httpService = httpService;
+    }
 
-	public void unsetHttpService(HttpService httpService) {
-		this.httpService = null;
-	}
+    public void unsetHttpService(HttpService httpService) {
+        this.httpService = null;
+    }
 
-	public void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = itemUIRegistry;
-	}
+    /**
+     * Activates the weather servlet.
+     */
+    protected void activate() {
+        try {
+            logger.debug("Starting up weather servlet at " + SERVLET_NAME);
 
-	public void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = null;
-	}
+            Hashtable<String, String> props = new Hashtable<String, String>();
+            httpService.registerServlet(SERVLET_NAME, this, props, createHttpContext());
 
-	/**
-	 * Activates the weather servlet.
-	 */
-	protected void activate() {
-		try {
-			logger.debug("Starting up weather servlet at " + SERVLET_NAME);
+        } catch (Exception ex) {
+            logger.error("Error during weather servlet startup", ex);
+        }
+    }
 
-			Hashtable<String, String> props = new Hashtable<String, String>();
-			httpService.registerServlet(SERVLET_NAME, this, props, createHttpContext());
+    /**
+     * Deactivates the weather servlet.
+     */
+    protected void deactivate() {
+        httpService.unregister(SERVLET_NAME);
+    }
 
-		} catch (Exception ex) {
-			logger.error("Error during weather servlet startup", ex);
-		}
-	}
+    /**
+     * Creates a SecureHttpContext which handles the security for this servlet.
+     */
+    private HttpContext createHttpContext() {
+        HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
+        return new SecureHttpContext(defaultHttpContext, "openHAB.org");
+    }
 
-	/**
-	 * Deactivates the weather servlet.
-	 */
-	protected void deactivate() {
-		httpService.unregister(SERVLET_NAME);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        logger.debug("Received incoming weather request");
 
-	/**
-	 * Creates a SecureHttpContext which handles the security for this servlet.
-	 */
-	private HttpContext createHttpContext() {
-		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
-	}
+        String locationId = request.getParameter("locationId");
+        if (StringUtils.isBlank(locationId)) {
+            throw new ServletException("Weather locationId required, please add parameter locationId to the request");
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("Received incoming weather request");
+        Weather weather = WeatherContext.getInstance().getWeather(locationId);
+        if (weather == null) {
+            throw new ServletException("Weather locationId '" + locationId + "' does not exist");
+        }
 
-		String locationId = request.getParameter("locationId");
-		if (StringUtils.isBlank(locationId)) {
-			throw new ServletException("Weather locationId required, please add parameter locationId to the request");
-		}
+        String layout = request.getParameter("layout");
+        if (StringUtils.isBlank(layout)) {
+            throw new ServletException("Weather layout required, please add parameter layout to the request");
+        }
 
-		Weather weather = WeatherContext.getInstance().getWeather(locationId);
-		if (weather == null) {
-			throw new ServletException("Weather locationId '" + locationId + "' does not exist");
-		}
+        layout += ".html";
 
-		String layout = request.getParameter("layout");
-		if (StringUtils.isBlank(layout)) {
-			throw new ServletException("Weather layout required, please add parameter layout to the request");
-		}
+        File layoutFile = new File(LAYOUTS_LOCATION + "/" + layout);
+        if (!layoutFile.exists()) {
+            throw new ServletException("File with weather layout '" + layout
+                    + "' does not exist, make sure it is in the layouts folder " + LAYOUTS_LOCATION);
+        }
 
-		layout += ".html";
+        WeatherTokenResolver tokenResolver = new WeatherTokenResolver(weather, locationId);
+        Enumeration<String> parameter = request.getParameterNames();
+        while (parameter.hasMoreElements()) {
+            String parameterName = parameter.nextElement();
+            tokenResolver.addParameter(parameterName, request.getParameter(parameterName));
+        }
 
-		File layoutFile = new File(LAYOUTS_LOCATION + "/" + layout);
-		if (!layoutFile.exists()) {
-			throw new ServletException("File with weather layout '" + layout
-					+ "' does not exist, make sure it is in the layouts folder " + LAYOUTS_LOCATION);
-		}
+        if (request.getParameter("iconset") == null) {
+            tokenResolver.addParameter("iconset", "colorful");
+        }
 
-		WeatherTokenResolver tokenResolver = new WeatherTokenResolver(itemUIRegistry, weather, locationId);
-		Enumeration<String> parameter = request.getParameterNames();
-		while (parameter.hasMoreElements()) {
-			String parameterName = parameter.nextElement();
-			tokenResolver.addParameter(parameterName, request.getParameter(parameterName));
-		}
-
-		if (request.getParameter("iconset") == null) {
-			tokenResolver.addParameter("iconset", "colorful");
-		}
-
-		TokenReplacingReader replReader = new TokenReplacingReader(new FileReader(layoutFile), tokenResolver);
-		IOUtils.copy(replReader, response.getOutputStream());
-	}
+        TokenReplacingReader replReader = new TokenReplacingReader(new FileReader(layoutFile), tokenResolver);
+        IOUtils.copy(replReader, response.getOutputStream());
+    }
 
 }

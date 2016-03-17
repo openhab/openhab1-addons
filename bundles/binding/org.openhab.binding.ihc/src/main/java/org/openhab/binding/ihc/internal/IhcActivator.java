@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,38 +15,40 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
- * 
+ *
  * @author Pauli Anttila
  * @since 1.1.0
  */
 public final class IhcActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(IhcActivator.class);
+    private static Logger logger = LoggerFactory.getLogger(IhcActivator.class);
 
-	private static BundleContext context;
+    private static BundleContext context;
 
-	/**
-	 * Called whenever the OSGi framework starts our bundle
-	 */
-	public void start(BundleContext bc) throws Exception {
-		context = bc;
-		logger.debug("IHC / ELKO LS binding has been started.");
-	}
+    /**
+     * Called whenever the OSGi framework starts our bundle
+     */
+    @Override
+    public void start(BundleContext bc) throws Exception {
+        context = bc;
+        logger.debug("IHC / ELKO LS binding has been started.");
+    }
 
-	/**
-	 * Called whenever the OSGi framework stops our bundle
-	 */
-	public void stop(BundleContext bc) throws Exception {
-		context = null;
-		logger.debug("IHC / ELKO LS binding has been stopped.");
-	}
+    /**
+     * Called whenever the OSGi framework stops our bundle
+     */
+    @Override
+    public void stop(BundleContext bc) throws Exception {
+        context = null;
+        logger.debug("IHC / ELKO LS binding has been stopped.");
+    }
 
-	/**
-	 * Returns the bundle context of this bundle
-	 * 
-	 * @return the bundle context
-	 */
-	public static BundleContext getContext() {
-		return context;
-	}
+    /**
+     * Returns the bundle context of this bundle
+     * 
+     * @return the bundle context
+     */
+    public static BundleContext getContext() {
+        return context;
+    }
 }

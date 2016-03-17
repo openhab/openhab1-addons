@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,8 +8,7 @@
  */
 package org.openhab.action.twitter.internal;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,11 +30,10 @@ import org.slf4j.LoggerFactory;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-	
 
 /**
  * This class registers an OSGi service for the Twitter action.
- * 
+ *
  * @author Ben Jones
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
@@ -43,215 +41,238 @@ import twitter4j.auth.RequestToken;
  */
 public class TwitterActionService implements ActionService, ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(TwitterActionService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TwitterActionService.class);
 
-	/**
-	 * Indicates whether this action is properly configured which means all
-	 * necessary configurations are set. This flag can be checked by the
-	 * action methods before executing code.
-	 */
-	/* default */ static boolean isProperlyConfigured = false;
-	
-	/** the configured ConsumerKey (optional, defaults to the official Twitter-App key 'IPqVDkyMvhblm7pobBMYw') */
-	static String consumerKey = "IPqVDkyMvhblm7pobBMYw";
-	
-	/** the configured ConsumerSecret (optional, defaults to official Twitter-App secret '2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM') */
-	static String consumerSecret = "2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM";
+    /**
+     * Indicates whether this action is properly configured which means all
+     * necessary configurations are set. This flag can be checked by the
+     * action methods before executing code.
+     */
+    /* default */ static boolean isProperlyConfigured = false;
 
-	private static final String TOKEN_PATH = "etc";
-	private static final String TOKEN_FILE = "twitter.token";
-	private static final File tokenFile = new File(TOKEN_PATH + File.separator + TOKEN_FILE);
+    /** the configured ConsumerKey (optional, defaults to the official Twitter-App key 'IPqVDkyMvhblm7pobBMYw') */
+    static String consumerKey = "IPqVDkyMvhblm7pobBMYw";
 
-	public TwitterActionService() {
-	}
-	
-	public void activate(ComponentContext componentContext) {
-	}
-	
-	public void deactivate(ComponentContext componentContext) {
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
-	}
+    /**
+     * the configured ConsumerSecret (optional, defaults to official Twitter-App secret
+     * '2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM')
+     */
+    static String consumerSecret = "2HatstDfLbz236WCXyf8lKCk985HdaK5zbXFrcJ2BM";
 
-	@Override
-	public String getActionClassName() {
-		return Twitter.class.getCanonicalName();
-	}
+    private static final String TOKEN_FILE = "twitter.token";
+    private static File tokenFile;
 
-	@Override
-	public Class<?> getActionClass() {
-		return Twitter.class;
-	}
+    public TwitterActionService() {
+    }
 
-	/**
-	 * Creates and returns a Twitter4J Twitter client.
-	 * 
-	 * @return a new instance of a Twitter4J Twitter client.
-	 */
-	private static twitter4j.Twitter createClient() {
-		twitter4j.Twitter client = TwitterFactory.getSingleton();
-		client.setOAuthConsumer(consumerKey, consumerSecret);
-		return client;
-	}
+    public void activate(ComponentContext componentContext) {
+    }
 
-	private static void start() {
-		if (!Twitter.isEnabled) {
-			return;
-		}
-		
-		Twitter.client = createClient();
-		
-		AccessToken accessToken = getAccessToken();
-		if (accessToken != null) {
-			Twitter.client.setOAuthAccessToken(accessToken);
-			logger.info("TwitterAction has been successfully authenticated > awaiting your Tweets!");
-		} else {
-			logger.info("Twitter authentication failed. Please use OSGi "
-				+ "console to restart the org.openhab.io.net-Bundle and re-initiate the authorization process!");
-		}
-	}
+    public void deactivate(ComponentContext componentContext) {
+        // deallocate resources here that are no longer needed and
+        // should be reset when activating this binding again
+    }
 
-	private static AccessToken getAccessToken() {
-		try {
-			String accessToken = loadToken(tokenFile, "accesstoken");
-			String accessTokenSecret = loadToken(tokenFile, "accesstokensecret");
+    @Override
+    public String getActionClassName() {
+        return Twitter.class.getCanonicalName();
+    }
 
-			if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(accessTokenSecret)) {
-				RequestToken requestToken = Twitter.client.getOAuthRequestToken();
+    @Override
+    public Class<?> getActionClass() {
+        return Twitter.class;
+    }
 
-				// no access token/secret specified so display the authorisation URL in the log
-				logger.info("################################################################################################");
-				logger.info("# Twitter-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
-				logger.info("# 1. Open URL '{}'", requestToken.getAuthorizationURL());
-				logger.info("# 2. Grant openHAB access to your Twitter account");
-				logger.info("# 3. Create an empty file 'twitter.pin' in your openHAB home directory");
-				logger.info("# 4. Add the line 'pin=<authpin>' to the twitter.pin file");
-				logger.info("# 5. openHAB will automatically detect the file and complete the authentication process");
-				logger.info("# NOTE: You will only have 5 mins before openHAB gives up waiting for the pin!!!");
-				logger.info("################################################################################################");
+    /**
+     * Creates and returns a Twitter4J Twitter client.
+     *
+     * @return a new instance of a Twitter4J Twitter client.
+     */
+    private static twitter4j.Twitter createClient() {
+        twitter4j.Twitter client = TwitterFactory.getSingleton();
+        client.setOAuthConsumer(consumerKey, consumerSecret);
+        return client;
+    }
 
-				String authPin = null;
-				int interval = 5000;
-				int waitedFor = 0;
-				
-				while (StringUtils.isEmpty(authPin)) {
-					try {
-						Thread.sleep(interval);
-						waitedFor += interval;
-						// attempt to read the authentication pin from them temp file
-					} catch (InterruptedException e) {
-						// ignore
-					}
-					
-					File pinFile = new File("twitter.pin");
-					authPin = (String) loadToken(pinFile, "pin");
+    private static void start() {
+        if (!Twitter.isEnabled) {
+            return;
+        }
 
-					// if we already waited for more than five minutes then stop
-					if (waitedFor > 300000) {
-						logger.info("Took too long to enter your Twitter authorisation pin! Please use OSGi "
-								+ "console to restart the org.openhab.io.net-Bundle and re-initiate the authorization process!");
-						break;
-					}
-				}
+        Twitter.client = createClient();
 
-				// if no pin was detected after 5 mins then we can't continue
-				if (StringUtils.isEmpty(authPin)) {
-					logger.warn("Timed out waiting for the Twitter authorisation pin.");
-					return null;
-				}
+        AccessToken accessToken = getAccessToken();
+        if (accessToken != null) {
+            Twitter.client.setOAuthAccessToken(accessToken);
+            logger.info("TwitterAction has been successfully authenticated > awaiting your Tweets!");
+        } else {
+            logger.info("Twitter authentication failed. Please use OSGi "
+                    + "console to restart the org.openhab.io.net-Bundle and re-initiate the authorization process!");
+        }
+    }
 
-				// attempt to get an access token using the user-entered pin
-				AccessToken token = Twitter.client.getOAuthAccessToken(requestToken, authPin);
-				accessToken = token.getToken();
-				accessTokenSecret = token.getTokenSecret();
+    private static AccessToken getAccessToken() {
+        try {
+            String accessToken = loadToken(getTokenFile(), "accesstoken");
+            String accessTokenSecret = loadToken(getTokenFile(), "accesstokensecret");
 
-				// save the access token details
-				saveToken(tokenFile, "accesstoken", accessToken);
-				saveToken(tokenFile, "accesstokensecret", accessTokenSecret);
-			}
-			
-			// generate an access token from the token details
-			return new AccessToken(accessToken, accessTokenSecret);
-		} catch (Exception e) {
-			logger.error("Failed to authenticate openHAB against Twitter", e);
-			return null;
-		}
-	}
-	
-	// Helpers for storing/retrieving tokens from a flat file
+            if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(accessTokenSecret)) {
 
-	private static String loadToken(File file, String key) throws IOException {
-		Properties properties = loadProperties(file);
-		String token = (String) properties.get(key);
-		if (StringUtils.isEmpty(token))
-			return null;
-		return token;
-	}
+                File pinFile = new File("twitter.pin");
 
-	private static Properties loadProperties(File file) throws IOException {
-		Properties properties = new Properties();
-		try {
-			FileInputStream inputStream = new FileInputStream(file);
-			try {
-				properties.load(inputStream);
-			} finally {
-				IOUtils.closeQuietly(inputStream);
-			}
-		} catch (FileNotFoundException e) {
-			// ignore a missing file exception
-		}
-		return properties;
-	}
+                RequestToken requestToken = Twitter.client.getOAuthRequestToken();
 
-	private static void saveToken(File file, String key, String token) throws IOException {
-		Properties properties = loadProperties(file);
-		if (token == null) {
-			token = "";
-		}
-		properties.setProperty(key, token);
-		saveProperties(file, properties);
-	}
+                // no access token/secret specified so display the authorisation URL in the log
+                logger.info(
+                        "################################################################################################");
+                logger.info("# Twitter-Integration: U S E R   I N T E R A C T I O N   R E Q U I R E D !!");
+                logger.info("# 1. Open URL '{}'", requestToken.getAuthorizationURL());
+                logger.info("# 2. Grant openHAB access to your Twitter account");
+                logger.info("# 3. Create an empty file 'twitter.pin' in your openHAB home directory at "
+                        + pinFile.getAbsolutePath());
+                logger.info("# 4. Add the line 'pin=<authpin>' to the twitter.pin file");
+                logger.info("# 5. openHAB will automatically detect the file and complete the authentication process");
+                logger.info("# NOTE: You will only have 5 mins before openHAB gives up waiting for the pin!!!");
+                logger.info(
+                        "################################################################################################");
 
-	private static void saveProperties(File file, Properties properties) throws IOException {
-		FileOutputStream outputStream = new FileOutputStream(file);
-		try {
-			properties.store(outputStream, "Twitter OAuth Authentication Tokens");
-		} finally {
-			IOUtils.closeQuietly(outputStream);
-		}
-	}
-	
+                String authPin = null;
+                int interval = 5000;
+                int waitedFor = 0;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config != null) {
+                while (StringUtils.isEmpty(authPin)) {
+                    try {
+                        Thread.sleep(interval);
+                        waitedFor += interval;
+                        // attempt to read the authentication pin from them temp file
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
 
-			String appKeyString = (String) config.get("key");
-			if (isNotBlank(appKeyString)) {
-				consumerKey = appKeyString;
-			}
-			
-			String appSecretString = (String) config.get("secret");
-			if (isNotBlank(appSecretString)) {
-				consumerSecret = appSecretString;
-			}
-			
-			if (isBlank(consumerKey) || isBlank(consumerSecret)) {
-				throw new ConfigurationException("twitter",
-					"The parameters 'key' or 'secret' are missing! Please refer to your 'openhab.cfg'");
-			}
-			
-			String enabledString = (String) config.get("enabled");
-			if (StringUtils.isNotBlank(enabledString)) {
-				Twitter.isEnabled = Boolean.parseBoolean(enabledString);
-			}
-			
-			isProperlyConfigured = true;
-			start();
-		}
-	}
-	
+                    authPin = loadToken(pinFile, "pin");
+
+                    // if we already waited for more than five minutes then stop
+                    if (waitedFor > 300000) {
+                        logger.info("Took too long to enter your Twitter authorisation pin! Please use OSGi "
+                                + "console to restart the org.openhab.io.net-Bundle and re-initiate the authorization process!");
+                        break;
+                    }
+                }
+
+                // if no pin was detected after 5 mins then we can't continue
+                if (StringUtils.isEmpty(authPin)) {
+                    logger.warn("Timed out waiting for the Twitter authorisation pin.");
+                    return null;
+                }
+
+                // attempt to get an access token using the user-entered pin
+                AccessToken token = Twitter.client.getOAuthAccessToken(requestToken, authPin);
+                accessToken = token.getToken();
+                accessTokenSecret = token.getTokenSecret();
+
+                // save the access token details
+                saveToken(getTokenFile(), "accesstoken", accessToken);
+                saveToken(getTokenFile(), "accesstokensecret", accessTokenSecret);
+            }
+
+            // generate an access token from the token details
+            return new AccessToken(accessToken, accessTokenSecret);
+        } catch (Exception e) {
+            logger.error("Failed to authenticate openHAB against Twitter", e);
+            return null;
+        }
+    }
+
+    // Helpers for storing/retrieving tokens from a flat file
+
+    private static File getTokenFile() {
+        if (tokenFile == null) {
+            File tokenPath = null;
+            String userdata = System.getProperty("smarthome.userdata");
+            if (StringUtils.isEmpty(userdata)) {
+                tokenPath = new File("etc");
+            } else {
+                tokenPath = new File(userdata);
+            }
+
+            tokenFile = new File(tokenPath, TOKEN_FILE);
+        }
+
+        return tokenFile;
+    }
+
+    private static String loadToken(File file, String key) throws IOException {
+        Properties properties = loadProperties(file);
+        String token = (String) properties.get(key);
+        if (StringUtils.isEmpty(token)) {
+            return null;
+        }
+        return token;
+    }
+
+    private static Properties loadProperties(File file) throws IOException {
+        Properties properties = new Properties();
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            try {
+                properties.load(inputStream);
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+            }
+        } catch (FileNotFoundException e) {
+            // ignore a missing file exception
+        }
+        return properties;
+    }
+
+    private static void saveToken(File file, String key, String token) throws IOException {
+        Properties properties = loadProperties(file);
+        if (token == null) {
+            token = "";
+        }
+        properties.setProperty(key, token);
+        saveProperties(file, properties);
+    }
+
+    private static void saveProperties(File file, Properties properties) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(file);
+        try {
+            properties.store(outputStream, "Twitter OAuth Authentication Tokens");
+        } finally {
+            IOUtils.closeQuietly(outputStream);
+        }
+    }
+
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+        if (config != null) {
+
+            String appKeyString = (String) config.get("key");
+            if (isNotBlank(appKeyString)) {
+                consumerKey = appKeyString;
+            }
+
+            String appSecretString = (String) config.get("secret");
+            if (isNotBlank(appSecretString)) {
+                consumerSecret = appSecretString;
+            }
+
+            if (isBlank(consumerKey) || isBlank(consumerSecret)) {
+                throw new ConfigurationException("twitter",
+                        "The parameters 'key' or 'secret' are missing! Please refer to your 'openhab.cfg'");
+            }
+
+            String enabledString = (String) config.get("enabled");
+            if (StringUtils.isNotBlank(enabledString)) {
+                Twitter.isEnabled = Boolean.parseBoolean(enabledString);
+            }
+
+            isProperlyConfigured = true;
+            start();
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles scene activation messages
+ *
  * @author Chris Jackson
  * @since 1.4.0
  */
@@ -28,74 +29,72 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("sceneActivationCommandClass")
 public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass {
 
-	@XStreamOmitField
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveBasicCommandClass.class);
-	
-	private static final int SCENEACTIVATION_SET = 0x01;
-	
-	/**
-	 * Creates a new instance of the ZWaveSceneActivationCommandClass class.
-	 * @param node the node this command class belongs to
-	 * @param controller the controller to use
-	 * @param endpoint the endpoint this Command class belongs to
-	 */
-	public ZWaveSceneActivationCommandClass(ZWaveNode node,
-			ZWaveController controller, ZWaveEndpoint endpoint) {
-		super(node, controller, endpoint);
-	}
+    @XStreamOmitField
+    private static final Logger logger = LoggerFactory.getLogger(ZWaveBasicCommandClass.class);
 
+    private static final int SCENEACTIVATION_SET = 0x01;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CommandClass getCommandClass() {
-		return CommandClass.SCENE_ACTIVATION;
-	}
+    /**
+     * Creates a new instance of the ZWaveSceneActivationCommandClass class.
+     *
+     * @param node the node this command class belongs to
+     * @param controller the controller to use
+     * @param endpoint the endpoint this Command class belongs to
+     */
+    public ZWaveSceneActivationCommandClass(ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
+        super(node, controller, endpoint);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleApplicationCommandRequest(SerialMessage serialMessage,
-			int offset, int endpoint) {
-		logger.debug(String.format("Received Scene Activation for Node ID = %d", this.getNode().getNodeId()));
-		int command = serialMessage.getMessagePayloadByte(offset);
-		switch (command) {
-			case SCENEACTIVATION_SET:
-				logger.debug("Scene Activation Set");
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CommandClass getCommandClass() {
+        return CommandClass.SCENE_ACTIVATION;
+    }
 
-				processSceneActivationSet(serialMessage, offset, endpoint);
-				break;
-			default:
-				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
-					command, 
-					this.getCommandClass().getLabel(),
-					this.getCommandClass().getKey()));
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleApplicationCommandRequest(SerialMessage serialMessage, int offset, int endpoint) {
+        logger.debug(String.format("Received Scene Activation for Node ID = %d", this.getNode().getNodeId()));
+        int command = serialMessage.getMessagePayloadByte(offset);
+        switch (command) {
+            case SCENEACTIVATION_SET:
+                logger.debug("Scene Activation Set");
 
-	/**
-	 * Processes a SCENEACTIVATION_SET message.
-	 * @param serialMessage the incoming message to process.
-	 * @param offset the offset position from which to start message processing.
-	 * @param endpoint the endpoint or instance number this message is meant for.
-	 */
-	protected void processSceneActivationSet(SerialMessage serialMessage, int offset, int endpoint) {
-        int sceneId = serialMessage.getMessagePayloadByte(offset + 1);              
+                processSceneActivationSet(serialMessage, offset, endpoint);
+                break;
+            default:
+                logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", command,
+                        this.getCommandClass().getLabel(), this.getCommandClass().getKey()));
+        }
+    }
+
+    /**
+     * Processes a SCENEACTIVATION_SET message.
+     *
+     * @param serialMessage the incoming message to process.
+     * @param offset the offset position from which to start message processing.
+     * @param endpoint the endpoint or instance number this message is meant for.
+     */
+    protected void processSceneActivationSet(SerialMessage serialMessage, int offset, int endpoint) {
+        int sceneId = serialMessage.getMessagePayloadByte(offset + 1);
         int sceneTime = 0;
 
         // Aeon Minimote fw 1.19 sends SceneActivationSet without Time parameter
-        if (serialMessage.getMessagePayload().length > (offset  + 2)) {
-        	sceneTime = serialMessage.getMessagePayloadByte(offset + 2);
+        if (serialMessage.getMessagePayload().length > (offset + 2)) {
+            sceneTime = serialMessage.getMessagePayloadByte(offset + 2);
         }
 
         logger.debug(String.format("Scene activation node from node %d: Scene %d, Time %d", this.getNode().getNodeId(),
-        		sceneId, sceneTime));
+                sceneId, sceneTime));
 
         // Ignore the time for now at least!
 
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), sceneId);
-		this.getController().notifyEventListeners(zEvent);
-	}
+        ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint,
+                this.getCommandClass(), sceneId);
+        this.getController().notifyEventListeners(zEvent);
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,6 +54,7 @@ abstract public class ResourceStateChangeListener {
 	
 	static ScheduledFuture<?> executorFuture;
 	
+	protected Item lastChange;
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
 	protected GeneralBroadcaster broadcaster;
@@ -149,6 +150,7 @@ abstract public class ResourceStateChangeListener {
 			}
 			
 			public void stateChanged(final Item item, State oldState, State newState) {
+				lastChange = item;
 				broadcaster.broadcast(item);
 //				Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
 //				if(!resources.isEmpty()) {

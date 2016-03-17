@@ -1,0 +1,4 @@
+INCREASE=urn:upnp-org:serviceId:RenderingControl/SetVolume(DesiredVolume=?++)
+DECREASE=urn:upnp-org:serviceId:RenderingControl/SetVolume(DesiredVolume=?--)
+0=urn:upnp-org:serviceId:RenderingControl/SetVolume(DesiredVolume=0)
+_defaultCommand=urn:upnp-org:serviceId:RenderingControl/SetVolume(DesiredVolume=??)

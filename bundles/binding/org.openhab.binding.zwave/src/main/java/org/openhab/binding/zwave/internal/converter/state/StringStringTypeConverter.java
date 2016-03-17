@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,18 +12,18 @@ import org.openhab.core.library.types.StringType;
 
 /**
  * Converts from a {@link String} to a {@link StringType}
+ *
  * @author Ben Jones
  * @since 1.4.0
  */
-public class StringStringTypeConverter extends
-		ZWaveStateConverter<String, StringType> {
+public class StringStringTypeConverter extends ZWaveStateConverter<String, StringType> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected StringType convert(String value) {
-		return new StringType(value);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected StringType convert(String value) {
+        return new StringType(value);
+    }
 
 }

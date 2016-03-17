@@ -9,7 +9,11 @@
 		<Class><id>0x32</id></Class>
 		<Class><id>0x70</id></Class>
 		<Class><id>0x72</id></Class>
-		<Class><id>0x85</id></Class>
+        <Class>
+            <id>0x84</id>
+            <isGetSupported>false</isGetSupported>
+        </Class>
+        <Class><id>0x85</id></Class>
 		<Class><id>0x86</id></Class>
 	</CommandClasses>
 	<Configuration>
@@ -267,6 +271,22 @@
 			<Item>
 				<Value>5</Value>
 				<Label lang="en">Learn Mode</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>250</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Secondary Controller Mode</Label>
+			<Help lang="en">When in Group Mode, the minimote is paired directly to devices.  When in Scene Mode, minimote button presses will send SCENE_ACTIVATION commands.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Group Mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
 			</Item>
 		</Parameter>
 	</Configuration>

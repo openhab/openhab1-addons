@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,91 +18,95 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.AudioSourceProperties;
 
 /**
  * Audio Sources are the numbered input found in AudioZones
- * 
+ *
  * @author Dan Cunningham
  * @since 1.5.0
  */
 public class AudioSource extends OmnilinkDevice {
-	private AudioSourceProperties properties;
-	private String[] audioText;
+    private AudioSourceProperties properties;
+    private String[] audioText;
 
-	public AudioSource(AudioSourceProperties properties) {
-		this.properties = properties;
-		this.audioText = new String[0];
-	}
+    public AudioSource(AudioSourceProperties properties) {
+        this.properties = properties;
+        this.audioText = new String[0];
+    }
 
-	@Override
-	public AudioSourceProperties getProperties() {
-		return properties;
-	}
+    @Override
+    public AudioSourceProperties getProperties() {
+        return properties;
+    }
 
-	public void setProperties(AudioSourceProperties properties) {
-		this.properties = properties;
-	}
+    public void setProperties(AudioSourceProperties properties) {
+        this.properties = properties;
+    }
 
-	/**
-	 * Returns the display text for this audio source.
-	 * @return array of audio fields 
-	 */
-	public String[] getAudioText() {
-		return audioText;
-	}
+    /**
+     * Returns the display text for this audio source.
+     * 
+     * @return array of audio fields
+     */
+    public String[] getAudioText() {
+        return audioText;
+    }
 
-	/**
-	 * Sets the display text for this audio source.
-	 * @param audioText
-	 */
-	public void setAudioText(String[] audioText) {
-		this.audioText = audioText;
-	}
+    /**
+     * Sets the display text for this audio source.
+     * 
+     * @param audioText
+     */
+    public void setAudioText(String[] audioText) {
+        this.audioText = audioText;
+    }
 
-	@Override
-	public void updateItem(Item item, OmniLinkBindingConfig config,
-			EventPublisher publisher) {
-		String str = " ";
+    @Override
+    public void updateItem(Item item, OmniLinkBindingConfig config, EventPublisher publisher) {
+        String str = " ";
 
-		switch (config.getObjectType()) {
+        switch (config.getObjectType()) {
 
-		case AUDIOSOURCE_TEXT:
-			str = formatAudioText();
-			break;
-		case AUDIOSOURCE_TEXT_FIELD1:
-			str = getAudioText(0);
-			break;
-		case AUDIOSOURCE_TEXT_FIELD2:
-			str = getAudioText(1);
-			break;
-		case AUDIOSOURCE_TEXT_FIELD3:
-			str = getAudioText(2);
-			break;
-		default:
-			return;
-		}
+            case AUDIOSOURCE_TEXT:
+                str = formatAudioText();
+                break;
+            case AUDIOSOURCE_TEXT_FIELD1:
+                str = getAudioText(0);
+                break;
+            case AUDIOSOURCE_TEXT_FIELD2:
+                str = getAudioText(1);
+                break;
+            case AUDIOSOURCE_TEXT_FIELD3:
+                str = getAudioText(2);
+                break;
+            default:
+                return;
+        }
 
-		if (item instanceof StringItem) {
-			publisher.postUpdate(item.getName(), new StringType(str));
-		}
-	}
+        if (item instanceof StringItem) {
+            publisher.postUpdate(item.getName(), new StringType(str));
+        }
+    }
 
-	/**
-	 * Formats the multiple lines of audio text into a single delimited string.
-	 * @return pipe delimited audio text string.
-	 */
-	public String formatAudioText() {
-		StringBuilder sb = new StringBuilder();
-		for (String s : audioText) {
-			if (sb.length() > 0)
-				sb.append(" | ");
-			sb.append(s);
-		}
-		if (sb.length() == 0)
-			sb.append(" ");
+    /**
+     * Formats the multiple lines of audio text into a single delimited string.
+     * 
+     * @return pipe delimited audio text string.
+     */
+    public String formatAudioText() {
+        StringBuilder sb = new StringBuilder();
+        for (String s : audioText) {
+            if (sb.length() > 0) {
+                sb.append(" | ");
+            }
+            sb.append(s);
+        }
+        if (sb.length() == 0) {
+            sb.append(" ");
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	public String getAudioText(int fieldNum) {
-		String ret = fieldNum < audioText.length ? audioText[fieldNum] : null;
-		return ret != null ? ret : " ";
-	}
+    public String getAudioText(int fieldNum) {
+        String ret = fieldNum < audioText.length ? audioText[fieldNum] : null;
+        return ret != null ? ret : " ";
+    }
 }
