@@ -84,7 +84,6 @@ public class MockMystromClient implements IMystromClient {
 
 	@Override
 	public List<MystromDevice> getDevicesState() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

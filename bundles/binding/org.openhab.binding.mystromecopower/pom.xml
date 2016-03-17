@@ -5,11 +5,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-<<<<<<< HEAD
-		<version>1.8.0-SNAPSHOT-SNAPSHOT</version>
-=======
 		<version>1.9.0-SNAPSHOT</version>
->>>>>>> refs/remotes/openhab/master
 	</parent>
 
 	<properties>
@@ -35,6 +31,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<version>1.8.1</version>
 </project>
