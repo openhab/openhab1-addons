@@ -1,315 +1,362 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>MiniMote</Model>
-	<Label lang="en">4 button Minimote</Label>
-	<CommandClasses>
-		<Class><id>0x20</id></Class>
-		<Class><id>0x25</id></Class>
-		<Class><id>0x27</id></Class>
-		<Class><id>0x32</id></Class>
-		<Class><id>0x70</id></Class>
-		<Class><id>0x72</id></Class>
+    <Model>DSA03202</Model>
+    <Label lang="en">Minimote 4 button remote control</Label>
+
+    <CommandClasses>
         <Class>
-            <id>0x84</id>
+            <id>0x2B</id>             <!-- SCENE_ACTIVATION -->
+        </Class>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x84</id>             <!-- WAKE_UP -->
             <isGetSupported>false</isGetSupported>
         </Class>
-        <Class><id>0x85</id></Class>
-		<Class><id>0x86</id></Class>
-	</CommandClasses>
-	<Configuration>
-		<Parameter>
-			<Index>241</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 1 (upper left)</Label>
-			<Help lang="en">Defines the switching mode of Button 1</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>242</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 2 (upper right)</Label>
-			<Help lang="en">Defines the switching mode of Button 2</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>243</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 3 (lower left)</Label>
-			<Help lang="en">Defines the switching mode of Button 3</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>244</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 4 (lower right)</Label>
-			<Help lang="en">Defines the switching mode of Button 4</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>245</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 5 (Include)</Label>
-			<Help lang="en">Defines the switching mode of Button 5</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>246</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 6 (Exclude)</Label>
-			<Help lang="en">Defines the switching mode of Button 6</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>247</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 7 (Association)</Label>
-			<Help lang="en">Defines the switching mode of Button 7</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>248</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Mode of Button 8 (Learn)</Label>
-			<Help lang="en">Defines the switching mode of Button 8</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Factory Default</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-			<Item>
-				<Value>2</Value>
-				<Label lang="en">Add Mode</Label>
-			</Item>
-			<Item>
-				<Value>3</Value>
-				<Label lang="en">Remove Mode</Label>
-			</Item>
-			<Item>
-				<Value>4</Value>
-				<Label lang="en">Association Mode</Label>
-			</Item>
-			<Item>
-				<Value>5</Value>
-				<Label lang="en">Learn Mode</Label>
-			</Item>
-		</Parameter>
-		<Parameter>
-			<Index>250</Index>
-			<Type>list</Type>
-			<Default>0</Default>
-			<Size>1</Size>
-			<Label lang="en">Secondary Controller Mode</Label>
-			<Help lang="en">When in Group Mode, the minimote is paired directly to devices.  When in Scene Mode, minimote button presses will send SCENE_ACTIVATION commands.</Help>
-			<Item>
-				<Value>0</Value>
-				<Label lang="en">Group Mode</Label>
-			</Item>
-			<Item>
-				<Value>1</Value>
-				<Label lang="en">Scene Mode</Label>
-			</Item>
-		</Parameter>
-	</Configuration>
-	<Associations>
-		<Group>
-			<Index>1</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Scene 1</Label>
-		</Group>
-		<Group>
-			<Index>2</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Scene 2</Label>
-		</Group>
-		<Group>
-			<Index>3</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Scene 3</Label>
-		</Group>
-		<Group>
-			<Index>4</Index>
-			<Maximum>5</Maximum>
-			<Label lang="en">Scene 4</Label>
-		</Group>
-	</Associations>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>241</Index>
+            <Label lang="en">Mode of Button 1 (upper left)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>242</Index>
+            <Label lang="en">Mode of Button 2 (upper right)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>243</Index>
+            <Label lang="en">Mode of Button 3 (lower left)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>244</Index>
+            <Label lang="en">Mode of Button 4 (lower right)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>245</Index>
+            <Label lang="en">Mode of Button 5 (Include)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>246</Index>
+            <Label lang="en">Mode of Button 6 (Exclude)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>247</Index>
+            <Label lang="en">Mode of Button 7 (Association)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>248</Index>
+            <Label lang="en">Mode of Button 8 (Learn)</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Factory Default</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Add Mode</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Remove Mode</Label>
+            </Item>
+            <Item>
+                <Value>4</Value>
+                <Label lang="en">Association Mode</Label>
+            </Item>
+            <Item>
+                <Value>5</Value>
+                <Label lang="en">Learn Mode</Label>
+            </Item>
+        </Parameter>
+
+        <Parameter>
+            <Index>250</Index>
+            <Label lang="en">Secondary Controller Mode</Label>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Minimum>0</Minimum>
+            <Maximum>255</Maximum>
+            <WriteOnly>true</WriteOnly>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Group Mode</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Scene Mode</Label>
+            </Item>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Scene 1</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Scene 2</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Scene 3</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>4</Index>
+            <Label lang="en">Scene 4</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
 </Product>
