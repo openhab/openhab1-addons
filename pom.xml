@@ -38,7 +38,7 @@
 
     <properties>
         <ohdr.version>1.0.0</ohdr.version>
-        <ohc.version>2.0.0.b1</ohc.version>
+        <ohc.version>2.0.0.x</ohc.version>
         <jdeb-version>1.4</jdeb-version>
 
         <tycho-version>0.24.0</tycho-version>
