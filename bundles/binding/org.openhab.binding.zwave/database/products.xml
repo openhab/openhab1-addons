@@ -2194,7 +2194,16 @@
     </Manufacturer>
     <Manufacturer>
         <Id>013C</Id>
-        <Name>Philio Technology Corporation</Name>
+        <Name>Philio Technology Corporation</Name>    
+        <Product>
+            <Reference>
+                <Type>0009</Type>
+                <Id>0022</Id>
+            </Reference>
+            <Model>PSR04</Model>
+            <Label lang="en">Smart Color Button</Label>
+            <ConfigFile>philio/psr04.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>0002</Type>
