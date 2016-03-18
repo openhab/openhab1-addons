@@ -251,7 +251,7 @@
         <!-- openHAB core p2 repository -->
         <repository>
             <id>p2-openhab-core</id>
-            <url>https://dl.bintray.com/kaikreuzer/openhab-core/p2/${ohc.version}</url>
+            <url>https://dl.bintray.com/openhab/p2/openhab-core/${ohc.version}</url>
             <layout>p2</layout>
         </repository>
 
