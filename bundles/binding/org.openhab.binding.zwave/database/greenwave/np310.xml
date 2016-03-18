@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>NP210</Model>
+	<Model>NP310</Model>
 	<Label lang="en">Smart PowerNode</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class><!-- COMMAND_CLASS_BASIC -->
@@ -49,50 +49,50 @@
 			<Size>1</Size>
 			<ReadOnly>true</ReadOnly>
 			<Item>
-				<Value>128</Value>
+				<Value>-128</Value>
 				<Label lang="en">Black</Label>
 			</Item>
 			<Item>
-				<Value>129</Value>
-				<Label lang="en">Green</Label>
+				<Value>-127</Value>
+				<Label lang="en">Green (1)</Label>
 			</Item>
 			<Item>
-				<Value>130</Value>
-				<Label lang="en">Dark Blue</Label>
+				<Value>-126</Value>
+				<Label lang="en">Dark Blue (2)</Label>
 			</Item>
 			<Item>
-				<Value>131</Value>
-				<Label lang="en">Red</Label>
+				<Value>-125</Value>
+				<Label lang="en">Red (3)</Label>
 			</Item>
 			<Item>
-				<Value>132</Value>
-				<Label lang="en">Yellow</Label>
+				<Value>-124</Value>
+				<Label lang="en">Yellow (4)</Label>
 			</Item>
 			<Item>
-				<Value>133</Value>
-				<Label lang="en">Purple</Label>
+				<Value>-123</Value>
+				<Label lang="en">Purple (5)</Label>
 			</Item>
 			<Item>
-				<Value>134</Value>
-				<Label lang="en">Orange</Label>
+				<Value>-122</Value>
+				<Label lang="en">Orange (6)</Label>
 			</Item>
 			<Item>
-				<Value>135</Value>
-				<Label lang="en">Light Blue</Label>
+				<Value>-121</Value>
+				<Label lang="en">Light Blue (7)</Label>
 			</Item>
 			<Item>
-				<Value>136</Value>
-				<Label lang="en">Pink</Label>
+				<Value>-120</Value>
+				<Label lang="en">Pink (8)</Label>
 			</Item>
 			<Item>
-				<Value>137</Value>
+				<Value>-119</Value>
 				<Label lang="en">Locked</Label>
 			</Item>
 
-			<Label lang="en">Room color</Label>
-			<Help lang="en">The room color (Corner wheel color) on the GreenWave device</Help>
+			<Label lang="en">Wheel position</Label>
+			<Help lang="en">Wheel position on the GreenWave device (read-only)</Help>
 		</Parameter>
-		
+
 		<Parameter>
 			<Index>3</Index>
 			<Type>list</Type>
@@ -113,7 +113,7 @@
 			<Label lang="en">Power-on state</Label>
 			<Help lang="en">Default state after power loss</Help>
 		</Parameter>
-		
+
 		<Parameter>
 			<Index>4</Index>
 			<Type>list</Type>
