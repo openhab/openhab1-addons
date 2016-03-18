@@ -84,7 +84,7 @@ public abstract class Device {
         String rfAddress = Utils.toHex(raw[0] & 0xFF, raw[1] & 0xFF, raw[2] & 0xFF);
 
         // Based on the RF address and the corresponding configuration,
-        // create the device based on the type specified in it's configuration
+        // create the device based on the type specified in its configuration
 
         Device device = Device.create(rfAddress, configurations);
         if (device == null) {

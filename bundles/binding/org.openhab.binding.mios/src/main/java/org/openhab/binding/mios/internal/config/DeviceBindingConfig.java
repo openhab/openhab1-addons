@@ -76,7 +76,7 @@ import org.osgi.framework.BundleContext;
  * <p>
  *
  * In addition to binding against a Device's Variables, you can bind to the set of Device Attributes it exposes.
- * Specifically it's <code>id</code> and <code>status</code>:
+ * Specifically its <code>id</code> and <code>status</code>:
  * <p>
  * <ul>
  * <li>

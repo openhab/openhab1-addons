@@ -39,7 +39,7 @@ public final class S_Message extends Message {
                 logger.debug("Exception occurred during parsing of S message: {}", e.getMessage(), e);
             }
         } else {
-            logger.debug("Unexpected # of tolkens ({}) received in S message: {}", tokens.length, this.getPayload());
+            logger.debug("Unexpected # of tokens ({}) received in S message: {}", tokens.length, this.getPayload());
         }
     }
 
