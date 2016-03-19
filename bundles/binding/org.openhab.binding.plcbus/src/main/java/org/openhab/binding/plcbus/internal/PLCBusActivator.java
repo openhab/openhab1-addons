@@ -30,7 +30,7 @@ public class PLCBusActivator implements BundleActivator {
      */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-        logger.debug("PLCBus Binding startet");
+        logger.debug("PLCBus Binding started");
     }
 
     /*
