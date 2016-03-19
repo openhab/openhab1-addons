@@ -233,7 +233,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                     HeatpumpCommandType.TYPE_COOLING_STOP_AFTER_HOURS);
 
         } catch (UnknownHostException e) {
-            logger.warn("the given hostname '{}' of the Novela heatpump is unknown", ip);
+            logger.warn("the given hostname '{}' of the Novelan heatpump is unknown", ip);
         } catch (IOException e) {
             logger.warn("couldn't establish network connection [host '{}']", ip);
         } finally {
@@ -424,10 +424,10 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                             }
 
                         } else {
-                            logger.warn("Headpump heating operation mode with value {} is unknown.", value);
+                            logger.warn("Heatpump heating operation mode with value {} is unknown.", value);
                         }
                     } else {
-                        logger.warn("Headpump heating operation mode item {} must be from type:{}.", itemName,
+                        logger.warn("Heatpump heating operation mode item {} must be from type:{}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -436,10 +436,10 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                         float temperature = ((DecimalType) command).floatValue();
                         int value = (int) (temperature * 10.);
                         if (sendParamToHeatpump(PARAM_HEATING_TEMPERATURE, value)) {
-                            logger.info("Heatpump heating temeprature set to {}.", temperature);
+                            logger.info("Heatpump heating temperature set to {}.", temperature);
                         }
                     } else {
-                        logger.warn("Headpump heating temperature item {} must be from type:{}.", itemName,
+                        logger.warn("Heatpump heating temperature item {} must be from type:{}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -453,10 +453,10 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                             }
 
                         } else {
-                            logger.warn("Headpump warmwater operation mode with value {} is unknown.", value);
+                            logger.warn("Heatpump warmwater operation mode with value {} is unknown.", value);
                         }
                     } else {
-                        logger.warn("Headpump warmwater operation mode item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump warmwater operation mode item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -465,10 +465,10 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                         float temperature = ((DecimalType) command).floatValue();
                         int value = (int) (temperature * 10.);
                         if (sendParamToHeatpump(PARAM_WARMWATER_TEMPERATURE, value)) {
-                            logger.info("Heatpump warmwater temeprature set to {}.", temperature);
+                            logger.info("Heatpump warmwater temperature set to {}.", temperature);
                         }
                     } else {
-                        logger.warn("Headpump warmwater temperature item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump warmwater temperature item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -482,10 +482,10 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                             }
 
                         } else {
-                            logger.warn("Headpump cooling operation mode with value {} is unknown.", value);
+                            logger.warn("Heatpump cooling operation mode with value {} is unknown.", value);
                         }
                     } else {
-                        logger.warn("Headpump cooling operation mode item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump cooling operation mode item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -494,10 +494,10 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                         float temperature = ((DecimalType) command).floatValue();
                         int value = (int) (temperature * 10.);
                         if (sendParamToHeatpump(PARAM_COOLING_RELEASE_TEMP, value)) {
-                            logger.info("Heatpump cooling release temeprature set to {}.", temperature);
+                            logger.info("Heatpump cooling release temperature set to {}.", temperature);
                         }
                     } else {
-                        logger.warn("Headpump cooling release temperature item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump cooling release temperature item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -509,7 +509,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                             logger.info("Heatpump cooling target temp MK1 set to {}.", temperature);
                         }
                     } else {
-                        logger.warn("Headpump cooling target temp MK1 item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump cooling target temp MK1 item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -521,7 +521,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                             logger.info("Heatpump cooling start after hours set to {}.", hours);
                         }
                     } else {
-                        logger.warn("Headpump cooling start after hours item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump cooling start after hours item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -533,7 +533,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                             logger.info("Heatpump cooling stop after hours set to {}.", hours);
                         }
                     } else {
-                        logger.warn("Headpump cooling stop after hours item {} must be from type: {}.", itemName,
+                        logger.warn("Heatpump cooling stop after hours item {} must be from type: {}.", itemName,
                                 DecimalType.class.getSimpleName());
                     }
                     break;
@@ -545,7 +545,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
     }
 
     /**
-     * Set a parameter on the Novela heatpump.
+     * Set a parameter on the Novelan heatpump.
      *
      * @param param
      * @param value
@@ -556,7 +556,7 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             connector.connect();
             return connector.setParam(param, value);
         } catch (UnknownHostException e) {
-            logger.warn("the given hostname '{}' of the Novela heatpump is unknown", ip);
+            logger.warn("the given hostname '{}' of the Novelan heatpump is unknown", ip);
             return false;
         } catch (IOException e) {
             logger.warn("couldn't establish network connection [host '{}']", ip);

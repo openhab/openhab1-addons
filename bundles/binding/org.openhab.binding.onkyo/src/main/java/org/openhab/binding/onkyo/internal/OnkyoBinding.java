@@ -365,7 +365,7 @@ public class OnkyoBinding extends AbstractBinding<OnkyoBindingProvider>
                                 }
 
                             } catch (Exception e) {
-                                logger.error("Unregonized command '" + deviceCmd + "'", e);
+                                logger.error("Unrecognized command '" + deviceCmd + "'", e);
                             }
                         }
 
