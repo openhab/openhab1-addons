@@ -88,6 +88,7 @@ public class ZWaveConverterHandler {
         converters.put(CommandClass.INDICATOR, new ZWaveIndicatorConverter(controller, eventPublisher));
         converters.put(CommandClass.WAKE_UP, new ZWaveWakeUpConverter(controller, eventPublisher));
         converters.put(CommandClass.DOOR_LOCK, new ZWaveDoorLockConverter(controller, eventPublisher));
+        converters.put(CommandClass.BARRIER_OPERATOR, new ZWaveBarrierOperatorConverter(controller, eventPublisher));
 
         infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 
