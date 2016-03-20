@@ -56,6 +56,7 @@
                                 <artifact><file>src/main/resources/conf/jdbc.cfg</file><type>cfg</type><classifier>jdbc</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/jpa.cfg</file><type>cfg</type><classifier>jpa</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/knx.cfg</file><type>cfg</type><classifier>knx</classifier></artifact>
+                                <artifact><file>src/main/resources/conf/koubachi.cfg</file><type>cfg</type><classifier>koubachi</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/logging.cfg</file><type>cfg</type><classifier>logging</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mail.cfg</file><type>cfg</type><classifier>mail</classifier></artifact>
                                 <artifact><file>src/main/resources/conf/mapdb.cfg</file><type>cfg</type><classifier>mapdb</classifier></artifact>

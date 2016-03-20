@@ -253,6 +253,13 @@
         <configfile finalname="${openhab.conf}/services/knx.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/knx</configfile>
     </feature>
 
+    <feature name="openhab-binding-koubachi" description="Koubachi Binding" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <feature>openhab-runtime-compat1x</feature>
+        <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.koubachi/${project.version}</bundle>
+        <configfile finalname="${openhab.conf}/services/koubachi.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/koubachi</configfile>
+    </feature>
+
     <feature name="openhab-binding-lcn" description="LCN Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
