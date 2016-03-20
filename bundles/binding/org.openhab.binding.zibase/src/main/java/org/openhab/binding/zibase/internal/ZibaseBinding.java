@@ -175,7 +175,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
                 State state = config.getOpenhabStateFromZibaseValue(zibase, null);
                 
                 if(state != null) {
-                    logger.debug("  got value : " + State);
+                    logger.debug("  got value : " + state);
                     eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
                 } else {
                     logger.info("  got null value from zibase for ID: " + config.getId());

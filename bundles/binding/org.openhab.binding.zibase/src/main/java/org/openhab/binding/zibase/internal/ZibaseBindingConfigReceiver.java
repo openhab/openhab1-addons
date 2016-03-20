@@ -100,11 +100,13 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
     @Override
     public State getOpenhabStateFromZibaseValue(Zibase zibase, String zbResponseStr) {
 
+        Boolean zibaseValue;
+    
         if(this.getProtocol() == ZbProtocol.ZWAVE.toString()) {
             logger.debug("Zwave item detected for getState()");
-            Boolean zibaseValue = zibase.getState(this.getId(), true);
+            zibaseValue = zibase.getState(this.getId(), true);
         } else {
-            Boolean zibaseValue = zibase.getState(this.getId(), false);
+            zibaseValue = zibase.getState(this.getId(), false);
         }
 		
         if (zibaseValue != null) {
