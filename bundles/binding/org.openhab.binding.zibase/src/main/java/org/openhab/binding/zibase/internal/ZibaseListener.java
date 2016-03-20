@@ -47,15 +47,15 @@ public class ZibaseListener extends Thread {
     /**
      * Regex pattern to extact X10 / Chacon RfId from zibase log
      */
-    private static final Pattern X10CHACONPATTERN = Pattern.compile(": ([A-Z][0-9]{1,2})(_)");
+    private static final Pattern X10CHACONPATTERN = Pattern.compile(": ([A-Z]{1,3}[0-9]{1,2})(_)");
     /**
      * Regex pattern to extact Radio ID from zibase log
      */
-    private static final Pattern RADIODIDPATTERM = Pattern.compile(": (<id>)([A-Z]{2}[0-9]*)");
+    private static final Pattern RADIODIDPATTERM = Pattern.compile(": (<id>)(.+)(</id>)");
     /**
      * Regex pattern to extact Radio ID from zibase log
      */
-    private static final Pattern CHACONPATTERN 	= Pattern.compile(": (<id>)([A-Z][0-9]{1,2})");
+    //private static final Pattern CHACONZWAVEPATTERN 	= Pattern.compile(": (<id>)(Z?[A-Z][0-9]{1,2})");
     /**
      * Regex pattern to extact Scenario id from zibase log
      */
@@ -194,10 +194,11 @@ public class ZibaseListener extends Thread {
             return matcher.group(1);
         }
         
-        matcher = ZibaseListener.CHACONPATTERN.matcher(zbResponseStr);
+        /*
+        matcher = ZibaseListener.CHACONZWAVEPATTERN.matcher(zbResponseStr);
         if(matcher.find()) {
             return matcher.group(2);
-        }
+        }*/
 
         matcher = ZibaseListener.RADIODIDPATTERM.matcher(zbResponseStr);
         if (matcher.find()) {
