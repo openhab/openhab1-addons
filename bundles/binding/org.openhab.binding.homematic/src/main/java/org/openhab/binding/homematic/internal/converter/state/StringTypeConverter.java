@@ -53,7 +53,7 @@ public class StringTypeConverter extends AbstractTypeConverter<StringType> {
             if (idx != -1) {
                 return String.valueOf(idx);
             } else {
-                logger.warn("Cant' find value '{}' in valueList for item {}, converting plain value", type.toString(),
+                logger.warn("Can't find value '{}' in valueList for item {}, converting plain value", type.toString(),
                         hmValueItem);
             }
         }
@@ -109,7 +109,7 @@ public class StringTypeConverter extends AbstractTypeConverter<StringType> {
             if (valueListValue != null) {
                 return valueListValue;
             } else {
-                logger.warn("Cant' find value '{}' in valueList for item {}, converting plain value",
+                logger.warn("Can't find value '{}' in valueList for item {}, converting plain value",
                         hmValueItem.getValue(), hmValueItem);
             }
         }

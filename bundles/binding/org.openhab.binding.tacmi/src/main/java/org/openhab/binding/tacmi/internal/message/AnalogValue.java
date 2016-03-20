@@ -33,7 +33,7 @@ public final class AnalogValue {
         switch (type) {
             case 1:
                 measureType = TACmiMeasureType.TEMPERATURE;
-                value = new BigDecimal(rawValue / 10.0);
+                value = new BigDecimal(rawValue).movePointLeft(1);
                 break;
             case 4:
                 measureType = TACmiMeasureType.SECONDS;

@@ -322,10 +322,10 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
                 network.setDeviceLibrary(new CompoundDeviceLibrary(new FileLibrary(xmlDir), new ClassLoaderLibrary()));
                 logger.info("Configured XML directory to {}", cfg.xmlDir);
             } else {
-                logger.error("devices.xml in XML directory {} can not be read", cfg.xmlDir);
+                logger.error("devices.xml in XML directory {} cannot be read", cfg.xmlDir);
             }
         } else {
-            logger.error("XML directory {} can not be read", cfg.xmlDir);
+            logger.error("XML directory {} cannot be read", cfg.xmlDir);
         }
     }
 
@@ -438,7 +438,7 @@ public class PanStampBinding extends AbstractBinding<PanStampBindingProvider> {
     }
 
     /**
-     * Update all items associated with an endpoint with it's new value
+     * Update all items associated with an endpoint with its new value
      *
      * @param ep
      *            The endpoint for which a new value is available

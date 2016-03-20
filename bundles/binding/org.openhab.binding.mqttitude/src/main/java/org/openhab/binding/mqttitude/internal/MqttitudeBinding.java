@@ -91,7 +91,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider>i
      */
     @Override
     public void deactivate() {
-        logger.debug("Deactivating Mqtt binding");
+        logger.debug("Deactivating Mqttitude binding");
         super.deactivate();
         unregisterAll();
     }

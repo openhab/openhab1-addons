@@ -35,7 +35,7 @@ public class ZWaveCRC16EncapsulationCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveMultiCommandCommandClass class.
-     * 
+     *
      * @param node
      *            the node this command class belongs to
      * @param controller
@@ -72,7 +72,7 @@ public class ZWaveCRC16EncapsulationCommandClass extends ZWaveCommandClass {
     /**
      * Handle the crc16 encapsulated message. This processes the received frame,
      * checks the crc and forwards to the real command class.
-     * 
+     *
      * @param serialMessage
      *            The received message
      * @param offset

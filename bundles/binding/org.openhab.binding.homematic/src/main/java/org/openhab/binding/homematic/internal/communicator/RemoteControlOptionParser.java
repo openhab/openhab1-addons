@@ -50,10 +50,10 @@ public class RemoteControlOptionParser {
         String[] unitValueList = getValueItems("UNIT");
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Remote control {} supports these beep parameter: {}", remoteControlAddress, beepValueList);
-            logger.debug("Remote control {} supports these backlight parameter: {}", remoteControlAddress,
+            logger.debug("Remote control {} supports these beep parameters: {}", remoteControlAddress, beepValueList);
+            logger.debug("Remote control {} supports these backlight parameters: {}", remoteControlAddress,
                     backlightValueList);
-            logger.debug("Remote control {} supports these unit parameter: {}", remoteControlAddress, unitValueList);
+            logger.debug("Remote control {} supports these unit parameters: {}", remoteControlAddress, unitValueList);
             logger.debug("Remote control {} supports these symbols: {}", remoteControlAddress, symbols);
         }
 

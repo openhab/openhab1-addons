@@ -32,7 +32,7 @@ public enum HarmonyHubBindingType {
     private HarmonyHubBindingDirection direction;
 
     /**
-     * helper map retrieve HarmonyHubBindingType by it's label
+     * helper map retrieve HarmonyHubBindingType by its label
      */
     private static Map<String, HarmonyHubBindingType> labelToHarmonyHubBindingType;
 

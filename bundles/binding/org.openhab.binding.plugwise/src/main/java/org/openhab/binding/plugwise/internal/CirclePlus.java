@@ -64,7 +64,7 @@ public class CirclePlus extends Circle {
         try {
             sched = StdSchedulerFactory.getDefaultScheduler();
         } catch (SchedulerException e) {
-            logger.error("Error getting a reference to the Quarz Scheduler");
+            logger.error("Error getting a reference to the Quartz Scheduler");
         }
 
         JobDataMap map = new JobDataMap();

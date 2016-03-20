@@ -16,7 +16,7 @@ import org.openhab.core.types.State;
 /**
  * State Comparator class. Compares two States to determine which one is more
  * specific.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

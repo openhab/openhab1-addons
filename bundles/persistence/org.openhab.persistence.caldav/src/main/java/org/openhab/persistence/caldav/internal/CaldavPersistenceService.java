@@ -8,7 +8,10 @@
  */
 package org.openhab.persistence.caldav.internal;
 
-import static org.openhab.persistence.caldav.internal.CaldavConfiguration.*;
+import static org.openhab.persistence.caldav.internal.CaldavConfiguration.calendarId;
+import static org.openhab.persistence.caldav.internal.CaldavConfiguration.duration;
+import static org.openhab.persistence.caldav.internal.CaldavConfiguration.singleEvents;
+import static org.openhab.persistence.caldav.internal.CaldavConfiguration.futureOffset;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,6 +113,8 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
             return;
         }
 
+        DateTime dateOffset = DateTime.now().plusDays(futureOffset);
+
         if (alias == null) {
             alias = item.getName();
         }
@@ -125,12 +130,12 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
                     event.setLastChanged(DateTime.now());
                     String offContent = EventUtils.createEnd(alias, state);
                     event.setContent(event.getContent() + "\n" + offContent);
-                    event.setEnd(DateTime.now());
+                    event.setEnd(dateOffset);
                     logger.debug("existing event found, updated for persistence: {}", event);
                     this.calDavLoader.addEvent(event);
                 } else {
                     CalDavEvent event = lastOn.getEvent();
-                    event.setLastChanged(DateTime.now());
+                    event.setLastChanged(dateOffset);
 
                     String offContent = EventUtils.createBetween(alias, state);
                     event.setContent(event.getContent() + "\n" + offContent);
@@ -148,9 +153,8 @@ public class CaldavPersistenceService implements QueryablePersistenceService {
         event.setName(alias);
         event.setLastChanged(DateTime.now());
         event.setContent(EventUtils.createBegin(alias, state));
-        DateTime now = DateTime.now();
-        event.setStart(now);
-        event.setEnd(now.plusMinutes(duration));
+        event.setStart(dateOffset);
+        event.setEnd(dateOffset.plusMinutes(duration));
         event.setCalendarId(calendarId);
         event.setFilename("openHAB-" + id);
         logger.debug("new event for persistence created: {}", event);

@@ -67,7 +67,7 @@ public class Auxiliary extends OmnilinkDevice {
             default:
                 return;
         }
-        logger.debug("updating item {} for type {} to  {}", item.getName(), config.getObjectType(), setting);
+        logger.debug("updating item {} for type {} to {}", item.getName(), config.getObjectType(), setting);
         if (item instanceof NumberItem) {
             publisher.postUpdate(item.getName(), new DecimalType(setting));
         }

@@ -96,7 +96,7 @@ public class MyqData {
      * 
      */
     public GarageDoorData getGarageData() throws InvalidLoginException, IOException {
-        logger.trace("Retreiveing door data");
+        logger.trace("Retrieving door data");
         String url = String.format("%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s", WEBSITE, enc(appId),
                 enc(getSecurityToken()));
 
@@ -175,7 +175,7 @@ public class MyqData {
     private synchronized JsonNode request(String method, String url, String payload, String payloadType, boolean retry)
             throws IOException, InvalidLoginException {
 
-        logger.trace("Requsting URL {}", url);
+        logger.trace("Requesting URL {}", url);
 
         String dataString = executeUrl(method, url, header, payload == null ? null : IOUtils.toInputStream(payload),
                 payloadType, timeout);

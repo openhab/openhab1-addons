@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveBinarySwitchConverter class. Converter for communication with the
  * {@link ZWaveBatteryCommandClass}. Implements polling of the battery
  * status and receiving of battery events.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -65,7 +65,7 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveMultiLevelSwitchConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

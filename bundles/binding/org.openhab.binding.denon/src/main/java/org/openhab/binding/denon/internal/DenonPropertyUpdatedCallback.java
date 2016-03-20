@@ -23,7 +23,7 @@ public interface DenonPropertyUpdatedCallback {
      * 
      * @param instance Name of the Denon receiver instance
      * @param property The property that was updated
-     * @param state It's current state
+     * @param state Its current state
      */
     public void updated(String instance, String property, State state);
 

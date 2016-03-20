@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * ZWaveInfoConverter class. Converters between binding items
  * and the Z-Wave API to gather statistic information.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */
@@ -42,7 +42,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
     /**
      * Constructor. Creates a new instance of the {@link ZWaveConverterBase}
      * class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use to send messages.
      * @param eventPublisher the {@link EventPublisher} that can be used to send updates.
      */
@@ -61,7 +61,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
     /**
      * Execute refresh method. This method is called every time a binding item is
      * refreshed and information for the corresponding node should be looked up.
-     * 
+     *
      * @param item the item to refresh.
      * @param node the {@link ZWaveNode} that is bound to the item.
      * @param endpointId the endpoint id to send the message.
@@ -168,7 +168,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
     /**
      * Z-Wave information item enumeration. It Defines the information that can be
      * requested by the binding on the item.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @author Brian Crosby
      * @since 1.3.0
@@ -306,7 +306,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 
         /**
          * Returns the label of the ZWaveInformationItem enumeration
-         * 
+         *
          * @return the label
          */
         public String getLabel() {
@@ -316,7 +316,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
         /**
          * Lookup function based on the binding information label.
          * Returns null if the binding information item is not found.
-         * 
+         *
          * @param label the label to lookup
          * @return enumeration value of the binding information item.
          */

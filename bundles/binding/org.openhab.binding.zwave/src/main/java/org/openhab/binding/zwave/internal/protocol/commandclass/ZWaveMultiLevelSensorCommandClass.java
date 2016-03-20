@@ -62,7 +62,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveMultiLevelSensorCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -128,6 +128,11 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
                 break;
             case SENSOR_MULTI_LEVEL_REPORT:
                 logger.debug("NODE {}: Sensor Multi Level REPORT received", this.getNode().getNodeId());
+                if (serialMessage.getMessagePayload().length < offset + 2) {
+                    logger.debug("NODE {}: Sensor Multi Level REPORT received with incorrect length ({})",
+                            this.getNode().getNodeId(), serialMessage.getMessagePayload().length);
+                    return;
+                }
 
                 int sensorTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
                 int sensorScale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;
@@ -184,7 +189,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_MULTI_LEVEL_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -212,7 +217,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_MULTI_LEVEL_SUPPORTED_GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getSupportedValueMessage() {
@@ -228,7 +233,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the SENSOR_MULTI_LEVEL_GET command
-     * 
+     *
      * @param sensorType the {@link SensorType} to get the value for.
      * @return the serial message
      */
@@ -305,7 +310,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave SensorType enumeration. The sensor type indicates the type
      * of sensor that is reported.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.3.0
      */
@@ -368,7 +373,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the sensor type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the sensor type.
          */
@@ -397,7 +402,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
 
     /**
      * Class to hold alarm state
-     * 
+     *
      * @author Chris Jackson
      */
     @XStreamAlias("multilevelSensor")
@@ -429,7 +434,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave Multilevel Sensor Event class. Indicates that an sensor value
      * changed.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.4.0
      */
@@ -440,7 +445,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a instance of the ZWaveMultiLevelSensorValueEvent class.
-         * 
+         *
          * @param nodeId the nodeId of the event
          * @param endpoint the endpoint of the event.
          * @param sensorType the sensor type that triggered the event;

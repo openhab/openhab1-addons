@@ -14,7 +14,7 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
  * Implements a label class for the XML product database
- * 
+ *
  * @author Chris Jackson
  * @since 1.4.0
  *

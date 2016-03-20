@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -35,7 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Wake Up Command Class. Enables a node to notify another device
  * that it woke up and is ready to receive commands.
- * 
+ *
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.3.0
@@ -88,9 +89,11 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
     @XStreamOmitField
     private boolean initialiseDone = false;
 
+    private boolean isGetSupported = true;
+
     /**
      * Creates a new instance of the ZWaveWakeUpCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -208,7 +211,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the WAKE_UP_NO_MORE_INFORMATION command.
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getNoMoreInformationMessage() {
@@ -230,7 +233,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
      * The message is only added if it's not the WAKE_UP_NO_MORE_INFORMATION message
      * since we don't want to send this at the next wakeup.
      * This combines the previous 'putInWakeUpQueue' with 'isAlive'.
-     * 
+     *
      * @param serialMessage the message to put in the wake-up queue.
      * @return true if the message can be sent immediately
      */
@@ -264,10 +267,15 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the WAKE UP INTERVAL GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getIntervalMessage() {
+        if (isGetSupported == false) {
+            logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+            return null;
+        }
+
         logger.debug("NODE {}: Creating new message for application command WAKE_UP_INTERVAL_GET",
                 this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -280,10 +288,15 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the WAKE UP INTERVAL CAPABILITIES GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getIntervalCapabilitiesMessage() {
+        if (isGetSupported == false) {
+            logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+            return null;
+        }
+
         logger.debug("NODE {}: Creating new message for application command WAKE_UP_INTERVAL_CAPABILITIES_GET",
                 this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -296,7 +309,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the interval at which the device wakes up every time.
-     * 
+     *
      * @return the interval in seconds.
      */
     public int getInterval() {
@@ -305,7 +318,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the minimum wake up interval that can be set to the device.
-     * 
+     *
      * @return the minInterval in seconds.
      */
     public int getMinInterval() {
@@ -314,7 +327,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the maximum wake up interval that can be set to the device.
-     * 
+     *
      * @return the maxInterval in seconds.
      */
     public int getMaxInterval() {
@@ -323,7 +336,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the factory default wake up interval for the device.
-     * 
+     *
      * @return the defaultInterval in seconds.
      */
     public int getDefaultInterval() {
@@ -332,7 +345,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Returns the minimum step that must be taken into account when setting the interval for the device.
-     * 
+     *
      * @return the intervalStep in seconds.
      */
     public int getIntervalStep() {
@@ -415,7 +428,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Returns whether the node is awake.
-     * 
+     *
      * @return the isAwake
      */
     public boolean isAwake() {
@@ -426,7 +439,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
      * Sets whether the node is awake.
      * If the node is awake we send the first message in the wake-up queue.
      * The remaining messages are triggered within the notification handler
-     * 
+     *
      * @param isAwake the isAwake to set
      */
     public void setAwake(boolean isAwake) {
@@ -463,7 +476,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
     /**
      * Sends a command to the device to set the wakeup interval.
      * The wakeup node is set to the controller.
-     * 
+     *
      * @param interval the wakeup interval in seconds
      * @return the serial message
      * @author Chris Jackson
@@ -484,7 +497,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Gets the size of the wake up queue
-     * 
+     *
      * @return number of messages currently queued
      */
     public int getWakeupQueueLength() {
@@ -493,7 +506,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Gets the target node for the Wakeup command class
-     * 
+     *
      * @return wakeup target node id
      */
     public int getTargetNodeId() {
@@ -502,7 +515,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
 
     /**
      * Gets the time the node last woke up
-     * 
+     *
      * @return Date of the last wakeup
      */
     public Date getLastWakeup() {
@@ -552,10 +565,19 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
         timerTask = null;
     }
 
+    @Override
+    public boolean setOptions(ZWaveDbCommandClass options) {
+        if (options.isGetSupported != null) {
+            isGetSupported = options.isGetSupported;
+        }
+
+        return true;
+    }
+
     /**
      * ZWave wake-up event.
      * Notifies users that a device has woken up or changed its wakeup parameters
-     * 
+     *
      * @author Chris Jackson
      * @since 1.5.0
      */
@@ -565,7 +587,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass
         /**
          * Constructor. Creates a new instance of the ZWaveWakeUpEvent
          * class.
-         * 
+         *
          * @param nodeId the nodeId of the event.
          */
         public ZWaveWakeUpEvent(int nodeId, int event) {

@@ -179,7 +179,7 @@ public class AutelisBinding extends AbstractActiveBinding<AutelisBindingProvider
     private long refreshInterval = 5000;
 
     public AutelisBinding() {
-        logger.debug("Autelius binding started");
+        logger.debug("Autelis binding started");
     }
 
     /**
@@ -235,7 +235,7 @@ public class AutelisBinding extends AbstractActiveBinding<AutelisBindingProvider
 
         baseURL = "http://" + prefix + host + ":" + port;
 
-        logger.debug("Autelius binding configured for host {}", host);
+        logger.debug("Autelis binding configured for host {}", host);
 
         setProperlyConfigured(true);
     }

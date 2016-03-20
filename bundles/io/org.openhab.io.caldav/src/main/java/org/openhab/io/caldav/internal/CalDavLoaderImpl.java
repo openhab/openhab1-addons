@@ -13,6 +13,8 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
+
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.DateTimeZone;
@@ -57,9 +62,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.sardine.Sardine;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.util.CompatibilityHints;
-
 /**
  * Loads all events from the configured calDAV servers. This is done with an
  * interval. All interesting events are hold in memory.
@@ -79,6 +81,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
     private static final String PROP_PASSWORD = "password";
     private static final String PROP_USERNAME = "username";
     private static final String PROP_TIMEZONE = "timeZone";
+    private static final String PROP_CHARSET = "charset";
     public static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
     private static final String PROP_LAST_MODIFIED_TIMESTAMP_VALID = "lastModifiedFileTimeStampValid";
     public static DateTimeZone defaultTimeZone = DateTimeZone.getDefault();
@@ -183,11 +186,22 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                 } else if (paramKey.equals(PROP_PRELOAD_TIME)) {
                     calDavConfig.setPreloadMinutes(Integer.parseInt(value));
                 } else if (paramKey.equals(PROP_HISTORIC_LOAD_TIME)) {
-                    calDavConfig.setHistoricLoadMinutes(Integer.parseInt(value));
+                    calDavConfig
+                            .setHistoricLoadMinutes(Integer.parseInt(value));
                 } else if (paramKey.equals(PROP_LAST_MODIFIED_TIMESTAMP_VALID)) {
-                    calDavConfig.setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
-                } else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
-                    calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
+                    calDavConfig
+                            .setLastModifiedFileTimeStampValid(BooleanUtils.toBoolean(value));
+                } else if (paramKey
+                        .equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
+                    calDavConfig.setDisableCertificateVerification(BooleanUtils
+                            .toBoolean(value));
+                } else if (paramKey.equals(PROP_CHARSET)) {
+                    try {
+                        Charset.forName(value);
+                        calDavConfig.setCharset(value);
+                    } catch (UnsupportedCharsetException e) {
+                        log.error("charset not valid: {}", value);
+                    }
                 }
             }
 
@@ -493,6 +507,20 @@ public class CalDavLoaderImpl extends AbstractActiveService implements ManagedSe
                         if (query.getTo() != null) {
                             if (calDavEvent.getStart().isAfter(query.getTo())) {
                                 continue;
+                            }
+                        }
+                        if (query.getFilterName() != null) {
+                            if (!calDavEvent.getName().matches(query.getFilterName())) {
+                                continue;
+                            }
+                        }
+                        if (query.getFilterCategory() != null) {
+                            if (calDavEvent.getCategoryList() == null) {
+                                continue;
+                            } else {
+                                if (!calDavEvent.getCategoryList().containsAll(query.getFilterCategory())) {
+                                    continue;
+                                }
                             }
                         }
                         eventList.add(calDavEvent);

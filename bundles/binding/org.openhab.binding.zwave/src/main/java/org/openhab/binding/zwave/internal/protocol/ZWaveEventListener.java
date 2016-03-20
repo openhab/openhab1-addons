@@ -13,7 +13,7 @@ import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 /**
  * ZWave Event Listener interface. Classes that implement this interface
  * need to be able to handle incoming ZWaveEvent events.
- * 
+ *
  * @author Brian Crosby
  * @since 1.3.0
  */
@@ -21,7 +21,7 @@ public interface ZWaveEventListener {
 
     /**
      * Event handler method for incoming Z-Wave events.
-     * 
+     *
      * @param event the incoming Z-Wave event.
      */
     void ZWaveIncomingEvent(ZWaveEvent event);

@@ -32,7 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat FanState command class.
- * 
+ *
  * @author Dan Cunningham
  * @since 1.6.0
  */
@@ -55,7 +55,7 @@ public class ZWaveThermostatFanStateCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveThermostatFanStateCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -100,7 +100,7 @@ public class ZWaveThermostatFanStateCommandClass extends ZWaveCommandClass
 
     /**
      * Processes a THERMOSTAT_FAN_STATE_REPORT message.
-     * 
+     *
      * @param serialMessage the incoming message to process.
      * @param offset the offset position from which to start message processing.
      * @param endpoint the endpoint or instance number this message is meant for.
@@ -177,7 +177,7 @@ public class ZWaveThermostatFanStateCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave FanStateType enumeration. The fanState type indicates the type
      * of fanState that is reported.
-     * 
+     *
      * @author Dan Cunningham
      * @since 1.6.0
      */
@@ -225,7 +225,7 @@ public class ZWaveThermostatFanStateCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the fanState type code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the fanState type.
          */

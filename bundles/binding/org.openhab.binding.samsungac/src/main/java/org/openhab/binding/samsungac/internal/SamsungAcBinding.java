@@ -61,7 +61,7 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
 
     @Override
     public void deactivate() {
-        logger.info("deactive");
+        logger.debug("deactive");
         // close any open connections
         if (nameHostMapper != null) {
             for (AirConditioner connector : nameHostMapper.values()) {
@@ -229,6 +229,13 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
             if ("token".equals(parts[1])) {
                 host.setToken(value);
             }
+            if ("certificate".equals(parts[1])) {
+                host.setCertificateFileName(value);
+            }
+
+            if ("password".equals(parts[1])) {
+                host.setCertificatePassword(value);
+            }
             hosts.put(hostname, host);
         }
         nameHostMapper = hosts;
@@ -276,27 +283,27 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
     }
 
     private void reconnectToAirConditioner(String key, AirConditioner host) {
-        logger.info("Broken connection found for '{}', attempting to reconnect...", key);
+        logger.debug("Broken connection found for '{}', attempting to reconnect...", key);
         try {
             host.login();
-            logger.info("Connection to {} has succeeded", host.toString());
+            logger.debug("Connection to {} has succeeded", host.toString());
         } catch (Exception e) {
             if (e == null || e.toString() == null || e.getCause() == null) {
-                logger.info("Returned null-exception...");
+                logger.debug("Returned null-exception...");
             } else {
                 logger.debug(e.toString() + " : " + e.getCause().toString());
             }
-            logger.info("Reconnect failed for '{}', will retry in {}s", key, refreshInterval / 1000);
+            logger.debug("Reconnect failed for '{}', will retry in {}s", key, refreshInterval / 1000);
         }
     }
 
     private void getAndUpdateStatusForAirConditioner(String acName, AirConditioner host) {
         Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
         try {
-            logger.info("Getting status for ac: '" + acName + "'");
+            logger.debug("Getting status for ac: '" + acName + "'");
             status = host.getStatus();
         } catch (Exception e) {
-            logger.info("Could not get status.. returning.., got exception: " + e.toString());
+            logger.debug("Could not get status.. returning.., got exception: " + e.toString());
             return;
         }
 
@@ -311,32 +318,38 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
     }
 
     private void updateItemWithValue(CommandEnum cmd, String item, String value) {
-        switch (cmd) {
-            case AC_FUN_TEMPNOW:
-            case AC_FUN_TEMPSET:
-                postUpdate(item, DecimalType.valueOf(value));
-                break;
-            case AC_FUN_POWER:
-            case AC_ADD_SPI:
-            case AC_ADD_AUTOCLEAN:
-                postUpdate(item, value.toUpperCase().equals("ON") ? OnOffType.ON : OnOffType.OFF);
-                break;
-            case AC_FUN_COMODE:
-                postUpdate(item, DecimalType.valueOf(Integer.toString(ConvenientModeEnum.valueOf(value).value)));
-                break;
-            case AC_FUN_OPMODE:
-                postUpdate(item, DecimalType.valueOf(Integer.toString(OperationModeEnum.valueOf(value).value)));
-                break;
-            case AC_FUN_WINDLEVEL:
-                postUpdate(item, DecimalType.valueOf(Integer.toString(WindLevelEnum.valueOf(value).value)));
-                break;
-            case AC_FUN_DIRECTION:
-                postUpdate(item, DecimalType.valueOf(Integer.toString(DirectionEnum.valueOf(value).value)));
-                break;
-            case AC_FUN_ERROR:
-            default:
-                postUpdate(item, StringType.valueOf(value));
-                break;
+        try {
+            switch (cmd) {
+                case AC_FUN_TEMPNOW:
+                case AC_FUN_TEMPSET:
+                    postUpdate(item, DecimalType.valueOf(value));
+                    break;
+                case AC_FUN_POWER:
+                case AC_ADD_SPI:
+                case AC_ADD_AUTOCLEAN:
+                    postUpdate(item, value.toUpperCase().equals("ON") ? OnOffType.ON : OnOffType.OFF);
+                    break;
+                case AC_FUN_COMODE:
+                    postUpdate(item, DecimalType.valueOf(Integer.toString(ConvenientModeEnum.valueOf(value).value)));
+                    break;
+                case AC_FUN_OPMODE:
+                    postUpdate(item, DecimalType.valueOf(Integer.toString(OperationModeEnum.valueOf(value).value)));
+                    break;
+                case AC_FUN_WINDLEVEL:
+                    postUpdate(item, DecimalType.valueOf(Integer.toString(WindLevelEnum.valueOf(value).value)));
+                    break;
+                case AC_FUN_DIRECTION:
+                    postUpdate(item, DecimalType.valueOf(Integer.toString(DirectionEnum.valueOf(value).value)));
+                    break;
+                case AC_FUN_ERROR:
+                default:
+                    postUpdate(item, StringType.valueOf(value));
+                    break;
+            }
+        } catch (IllegalArgumentException iae) {
+            logger.warn("Update of item [" + item
+                    + "] failed, probably because the received value for the command is not implemented [" + cmd + "."
+                    + value + "]");
         }
     }
 

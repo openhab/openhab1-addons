@@ -12,7 +12,7 @@ import org.openhab.core.library.types.UpDownType;
 
 /**
  * Converts from a {@link Integer} to a {@link UpDownType}
- * 
+ *
  * @author Ben Jones
  * @since 1.4.0
  */

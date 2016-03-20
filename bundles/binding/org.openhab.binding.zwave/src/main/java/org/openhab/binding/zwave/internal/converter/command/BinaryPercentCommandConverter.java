@@ -13,7 +13,7 @@ import org.openhab.core.library.types.PercentType;
 
 /**
  * Converts from {@link PercentType} command to a Z-Wave value.
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

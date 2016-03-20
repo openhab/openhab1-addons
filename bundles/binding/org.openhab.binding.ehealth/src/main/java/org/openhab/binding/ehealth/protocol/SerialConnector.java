@@ -70,7 +70,7 @@ public class SerialConnector implements SerialPortEventListener {
     }
 
     public void connect() throws EHealthException {
-        logger.debug("Goint to open Serial connection on port '{}'", portName);
+        logger.debug("Going to open Serial connection on port '{}'", portName);
 
         // parse ports and if the default port is found, initialized the reader
         Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();

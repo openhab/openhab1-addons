@@ -525,7 +525,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
      */
     private void enableResourceValueNotifications() throws IhcExecption {
 
-        logger.debug("Subscripe resource runtime value notifications");
+        logger.debug("Subscribe resource runtime value notifications");
 
         if (ihc != null) {
 

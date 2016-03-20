@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveThermostatModeConverter class. Converter for communication with the
  * {@link ZWaveThermostatModeCommandClass}. Implements polling of the mode
  * state and receiving of mode state events.
- * 
+ *
  * @author Dan Cunningham
  * @since 1.6.0
  */
@@ -41,7 +41,7 @@ public class ZWaveThermostatModeConverter extends ZWaveCommandClassConverter<ZWa
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveThermostatModeConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

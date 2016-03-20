@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * ZWaveThermostatOperatingStateConverter class. Converter for communication with the
  * {@link ZWaveThermostatOperatingStateCommandClass}. Implements polling of the operating
  * state and receiving of operating state events.
- * 
+ *
  * @author Dan Cunningham
  * @since 1.6.0
  */
@@ -40,7 +40,7 @@ public class ZWaveThermostatOperatingStateConverter
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveThermostatOperatingStateConverter} class.
-     * 
+     *
      * @param controller the {@link ZWaveController} to use for sending messages.
      * @param eventPublisher the {@link EventPublisher} to use to publish events.
      */

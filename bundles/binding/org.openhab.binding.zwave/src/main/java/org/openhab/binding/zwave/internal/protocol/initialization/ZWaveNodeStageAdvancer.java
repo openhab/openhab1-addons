@@ -150,7 +150,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Constructor. Creates a new instance of the ZWaveNodeStageAdvancer class.
-     * 
+     *
      * @param node
      *            the node this advancer belongs to.
      * @param controller
@@ -217,7 +217,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Sends a message if there is one queued
-     * 
+     *
      * @return true if a message was sent. false otherwise.
      */
     private boolean sendMessage() {
@@ -894,7 +894,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Move the messages to the queue
-     * 
+     *
      * @param msgs
      *            the message collection
      */
@@ -909,7 +909,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Move all the messages in a collection to the queue
-     * 
+     *
      * @param msgs
      *            the message collection
      */
@@ -924,7 +924,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Move all the messages in a collection to the queue and encapsulates them
-     * 
+     *
      * @param msgs
      *            the message collection
      * @param the
@@ -943,7 +943,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Gets the current node stage
-     * 
+     *
      * @return current node stage
      */
     public ZWaveNodeInitStage getCurrentStage() {
@@ -963,7 +963,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Sets the time stamp the node was last queried.
-     * 
+     *
      * @param queryStageTimeStamp
      *            the queryStageTimeStamp to set
      */
@@ -973,7 +973,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Returns whether the initialization process has completed.
-     * 
+     *
      * @return true if initialization has completed. False otherwise.
      */
     public boolean isInitializationComplete() {
@@ -982,7 +982,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
     /**
      * Returns whether the node was restored from a config file.
-     * 
+     *
      * @return the restoredFromConfigfile
      */
     public boolean isRestoredFromConfigfile() {
