@@ -250,7 +250,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
                                     variable.toString());
                         }
                     } else {
-                        logger.trace("PDU doesn't contain a variable with OID ‘{}‘", oid.toString());
+                        logger.trace("PDU doesn't contain a variable with OID '{}'", oid.toString());
                     }
                 }
             }

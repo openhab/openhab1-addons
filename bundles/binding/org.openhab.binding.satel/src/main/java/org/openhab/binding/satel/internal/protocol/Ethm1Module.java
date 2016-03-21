@@ -65,7 +65,7 @@ public class Ethm1Module extends SatelModule {
         try {
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress(this.host, this.port), this.getTimeout());
-            logger.info("ETHM-1 module connected successfuly");
+            logger.info("ETHM-1 module connected successfully");
 
             if (StringUtils.isBlank(this.encryptionKey)) {
                 return new TCPCommunicationChannel(socket);
