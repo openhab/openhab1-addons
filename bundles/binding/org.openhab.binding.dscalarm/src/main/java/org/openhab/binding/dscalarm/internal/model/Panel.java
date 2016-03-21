@@ -36,7 +36,7 @@ public class Panel extends DSCAlarmDevice {
 
     /**
      * Constructor
-     * 
+     *
      * @param panelId
      */
     public Panel(int panelId) {
@@ -268,6 +268,10 @@ public class Panel extends DSCAlarmDevice {
                         break;
                     case PANEL_COMMAND:
                         panelProperties.setSystemCommand(state);
+                        break;
+                    case PANEL_SYSTEM_ERROR:
+                        panelProperties.setSystemErrorCode(state);
+                        panelProperties.setSystemErrorDescription(description);
                         break;
                     case PANEL_TROUBLE_MESSAGE:
                         panelProperties.setTroubleMessage(description);
