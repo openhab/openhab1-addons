@@ -554,9 +554,9 @@ public class CommunicationService {
             throw new StiebelHeatPumpException("heat pump communication could not be established !");
         }
         if (response != DataParser.ESCAPE) {
-            logger.warn("heat pump is communicating, but did not received Escape message in inital handshake!");
+            logger.warn("heat pump is communicating, but did not receive Escape message in initial handshake!");
             throw new StiebelHeatPumpException(
-                    "heat pump is communicating, but did not received Escape message in inital handshake!");
+                    "heat pump is communicating, but did not receive Escape message in initial handshake!");
         }
     }
 
