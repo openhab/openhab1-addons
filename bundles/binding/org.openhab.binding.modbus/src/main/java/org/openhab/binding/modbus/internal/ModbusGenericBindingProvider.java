@@ -29,15 +29,15 @@ import org.slf4j.LoggerFactory;
  *
  * 1) single coil/register per item
  * Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:5"}
- * 
+ *
  * This binds MySwitch to modbus slave defined as "slave1" in openhab.config reading/writing to the coil 5
  *
  * 2) separate coils/registers for reading and writing
  * Switch MySwitch "My Modbus Switch" (ALL) {modbus="slave1:<6:>7"}
- * 
+ *
  * In this case coil 6 is used as status coil (readonly) and commands are put to coil 7 by setting coil 7 to true.
  * You hardware should then set coil 7 back to false to allow further commands processing.
- * 
+ *
  * @author Dmitry Krasnov
  * @since 1.1.0
  */
@@ -127,10 +127,13 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
     public class ModbusBindingConfig implements BindingConfig {
 
         /**
-         * readRegister and writeRegister store references to the register in device data space
+         * Index to read, relative to start
          */
-        int readRegister;
-        int writeRegister;
+        int readIndex;
+        /**
+         * Index to write, relative to start
+         */
+        int writeIndex;
 
         /**
          * Name of the ModbusSlave instance to read/write data
@@ -195,8 +198,8 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
                 String[] items = config.split(":");
                 slaveName = items[0];
                 if (items.length == 2) {
-                    readRegister = Integer.valueOf(items[1]);
-                    writeRegister = Integer.valueOf(items[1]);
+                    readIndex = Integer.valueOf(items[1]);
+                    writeIndex = Integer.valueOf(items[1]);
                 } else if (items.length == 3) {
                     assignRegisters(items[1]);
                     assignRegisters(items[2]);
@@ -216,9 +219,9 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
          */
         private void assignRegisters(String item) throws BindingConfigParseException {
             if (item.startsWith("<")) {
-                readRegister = Integer.valueOf(item.substring(1, item.length()));
+                readIndex = Integer.valueOf(item.substring(1, item.length()));
             } else if (item.startsWith(">")) {
-                writeRegister = Integer.valueOf(item.substring(1, item.length()));
+                writeIndex = Integer.valueOf(item.substring(1, item.length()));
             } else {
                 throw new BindingConfigParseException("Register references should be either :X or :<X:>Y");
             }
