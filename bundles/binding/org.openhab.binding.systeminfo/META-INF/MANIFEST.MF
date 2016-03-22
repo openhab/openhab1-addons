@@ -13,7 +13,7 @@ Bundle-Description: This is the Systeminfo Binding of the open Home Aut
 Bundle-NativeCode: lib/amd64/freebsd/6/libsigar.so;processor=amd64;osname=freebsd;osversion=6,
  lib/amd64/linux/libsigar.so;processor=amd64;osname=linux,
  lib/amd64/solaris/libsigar.so;processor=amd64;osname=solaris,
- lib/amd64/winnt/sigar.dll;processor=amd64;osname=win32,
+ lib/amd64/winnt/sigar.dll;processor=amd64;osname=win32;osname=Windows8;osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win10,
  lib/arm/linux/libsigar-cubian.so;lib/arm/linux/libsigar-odroid-u3.so;lib/arm/linux/libsigar-raspbian.so;processor=arm;osname=linux,
  lib/ia64/hpux/11/libsigar.sl;processor=ia64w;osname=hpux,
  lib/ia64/linux/libsigar.so;processor=ia64w;osname=linux,
@@ -31,7 +31,7 @@ Bundle-NativeCode: lib/amd64/freebsd/6/libsigar.so;processor=amd64;osname=freebs
  lib/x86/freebsd/6/libsigar.so;processor=x86;osname=freebsd;osversion=6,
  lib/x86/linux/libsigar.so;processor=x86;osname=linux,
  lib/x86/solaris/libsigar.so;processor=x86;osname=solaris,
- lib/x86/winnt/sigar.dll;processor=x86;osname=win32
+ lib/x86/winnt/sigar.dll;processor=x86;osname=win32;osname=Windows8;osname=Windows 8;osname=Win8;osname=Windows10;osname=Windows 10;osname=Win10
 Import-Package: org.apache.commons.lang,
  org.eclipse.emf.ecore,
  org.openhab.core.binding,
