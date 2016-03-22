@@ -12,7 +12,7 @@
 <feature
       id="org.openhab.runtime.feature"
       label="openHAB Runtime"
-      version="1.8.2.qualifier"
+      version="1.8.2"
       provider-name="openHAB.org">
 
    <description>

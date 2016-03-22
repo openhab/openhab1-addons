@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>features</artifactId>
-        <version>1.8.2-SNAPSHOT</version>
+        <version>1.8.2</version>
     </parent>
 
     <groupId>org.openhab.addons</groupId>
