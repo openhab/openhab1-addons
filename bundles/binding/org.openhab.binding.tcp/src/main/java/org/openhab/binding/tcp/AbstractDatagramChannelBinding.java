@@ -1047,7 +1047,7 @@ public abstract class AbstractDatagramChannelBinding<P extends ChannelBindingPro
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
-                        logger.warn("An Exception occurred while waiting waiting during a blocking buffer write");
+                        logger.warn("An Exception occurred while waiting during a blocking buffer write");
                     }
                 }
 
