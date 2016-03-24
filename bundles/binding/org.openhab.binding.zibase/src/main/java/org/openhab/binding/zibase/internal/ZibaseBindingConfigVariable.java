@@ -58,7 +58,7 @@ public class ZibaseBindingConfigVariable extends ZibaseBindingConfig {
      */
     @Override
     protected boolean isItemConfigValid() {
-        logger.info("Checking config for variable n°" + this.getId());
+        logger.info("Checking config for variable " + this.getId());
 
         int variableNumber = Integer.parseInt(this.getId());
 
