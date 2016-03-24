@@ -434,6 +434,15 @@
         </Product>
         <Product>
             <Reference>
+                <Type>0004</Type>
+                <Id>0006</Id>
+            </Reference>
+            <Model>AN181</Model>
+            <Label lang="en">Miniplug On/Off with meter function</Label>
+            <ConfigFile>everspring/an181.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
                 <Type>0101</Type>
                 <Id>0001</Id>
             </Reference>
