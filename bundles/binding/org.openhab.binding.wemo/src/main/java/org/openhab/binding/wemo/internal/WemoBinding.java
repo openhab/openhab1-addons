@@ -289,7 +289,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider>imple
             try {
                 String udn = provider.getUDN(itemName);
                 logger.trace("item '{}' has UDN '{}'", itemName, udn);
-                logger.trace("Command '{}' is about to be send to item '{}'", command, itemName);
+                logger.trace("Command '{}' is about to be sent to item '{}'", command, itemName);
                 sendCommand(itemName, command);
 
             } catch (Exception e) {

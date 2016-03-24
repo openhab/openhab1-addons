@@ -162,7 +162,7 @@ public class WithingsAuthenticator implements ManagedService {
     private void printSetupInstructions(String url) {
         logger.info(LINE);
         logger.info("# Withings Binding Setup: ");
-        logger.info("# 1. Open URL '" + url + "' in your webbrowser");
+        logger.info("# 1. Open URL '" + url + "' in your web browser");
         logger.info("# 2. Login, choose your user and allow openHAB to access your Withings data");
         logger.info(
                 "# 3. Execute 'withings:finishAuthentication \"<accountId>\" \"<verifier>\" \"<userId>\"' on OSGi console");
