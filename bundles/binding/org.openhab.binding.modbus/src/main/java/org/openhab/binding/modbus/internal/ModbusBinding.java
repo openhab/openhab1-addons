@@ -163,6 +163,22 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider>i
             buff.put(registers[index * 2 + 0].toBytes());
             buff.put(registers[index * 2 + 1].toBytes());
             return new DecimalType(buff.order(ByteOrder.BIG_ENDIAN).getFloat(0));
+        } else if (type.equals(ModbusBindingProvider.VALUE_TYPE_INT32_SWAP)) {
+            ByteBuffer buff = ByteBuffer.allocate(4);
+            buff.put(registers[index * 2 + 1].toBytes());
+            buff.put(registers[index * 2 + 0].toBytes());
+            return new DecimalType(buff.order(ByteOrder.BIG_ENDIAN).getInt(0));
+        } else if (type.equals(ModbusBindingProvider.VALUE_TYPE_UINT32_SWAP)) {
+            ByteBuffer buff = ByteBuffer.allocate(8);
+            buff.position(4);
+            buff.put(registers[index * 2 + 1].toBytes());
+            buff.put(registers[index * 2 + 0].toBytes());
+            return new DecimalType(buff.order(ByteOrder.BIG_ENDIAN).getLong(0));
+        } else if (type.equals(ModbusBindingProvider.VALUE_TYPE_FLOAT32_SWAP)) {
+            ByteBuffer buff = ByteBuffer.allocate(4);
+            buff.put(registers[index * 2 + 1].toBytes());
+            buff.put(registers[index * 2 + 0].toBytes());
+            return new DecimalType(buff.order(ByteOrder.BIG_ENDIAN).getFloat(0));
         } else {
             throw new IllegalArgumentException();
         }
