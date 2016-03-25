@@ -31,7 +31,7 @@ To see openHAB in action, you can directly access our demo server - choose one o
 
 If you just want to watch for a start, you might also like our [YouTube channel](http://www.youtube.com/watch?v=F0ImuuIPjYk&list=PLKshtVD6aY8Ig9Vg6qCBy8kcm1Owdajgb)!
 
-[![HABDroid](https://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=org.openhab.habdroid) [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8")
+<a href="https://play.google.com/store/apps/details?id=org.openhab.habdroid"><img src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" height="50" alt="HABDroid"></a> [![iOSApp](http://wiki.openhab.googlecode.com/hg/images/app-store-badges.png)](http://itunes.apple.com/us/app/openhab/id492054521?mt=8")
 
 ## Downloads
 
