@@ -794,7 +794,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e1) {
-                            logger.debug("connect interrupt recieved: {}:{}", host, port);
+                            logger.debug("connect interrupt received: {}:{}", host, port);
                             interrupt();
                         }
                     } catch (UnknownHostException e) {
@@ -806,7 +806,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e1) {
-                            logger.debug("connect interrupt recieved: {}:{}", host, port);
+                            logger.debug("connect interrupt received: {}:{}", host, port);
                             interrupt();
                         }
                     }

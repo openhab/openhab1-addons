@@ -67,7 +67,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Creates a new instance of the ZWaveAssociationCommandClass class.
-     * 
+     *
      * @param node
      *            the node this command class belongs to
      * @param controller
@@ -125,7 +125,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Processes a CONFIGURATIONCMD_REPORT / CONFIGURATIONCMD_SET message.
-     * 
+     *
      * @param serialMessage
      *            the incoming message to process.
      * @param offset
@@ -219,7 +219,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Processes a ASSOCIATIONCMD_GROUPINGSREPORT message.
-     * 
+     *
      * @param serialMessage
      *            the incoming message to process.
      * @param offset
@@ -243,7 +243,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Gets a SerialMessage with the ASSOCIATIONCMD_SET command
-     * 
+     *
      * @param group
      *            the association group
      * @param node
@@ -265,7 +265,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Gets a SerialMessage with the ASSOCIATIONCMD_REMOVE command
-     * 
+     *
      * @param group
      *            the association group
      * @param node
@@ -287,7 +287,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Gets a SerialMessage with the ASSOCIATIONCMD_GET command
-     * 
+     *
      * @param group
      *            the association group to read
      * @return the serial message
@@ -305,7 +305,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Gets a SerialMessage with the ASSOCIATIONCMD_GROUPINGSGET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getGroupingsMessage() {
@@ -340,9 +340,9 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
      * Returns a list of nodes that are currently members of the association
      * group. This method only returns the list that is currently in the
      * class - it does not interact with the device.
-     * 
+     *
      * To update the list stored in the class, call getAssociationMessage
-     * 
+     *
      * @param group
      *            number of the association group
      * @return List of nodes in the group
@@ -356,7 +356,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Returns the number of association groups
-     * 
+     *
      * @return Number of association groups
      */
     public int getGroupCount() {
@@ -365,7 +365,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
 
     /**
      * Returns the maximum number of association groups
-     * 
+     *
      * @return Number of association groups
      */
     public int getMaxGroups() {
@@ -376,7 +376,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
      * ZWave association group received event.
      * Send from the association members to the binding
      * Note that multiple events can be required to build up the full list.
-     * 
+     *
      * @author Chris Jackson
      * @since 1.4.0
      */
@@ -388,7 +388,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass implements Z
         /**
          * Constructor. Creates a new instance of the ZWaveAssociationEvent
          * class.
-         * 
+         *
          * @param nodeId the nodeId of the event. Must be set to the controller node.
          */
         public ZWaveAssociationEvent(int nodeId, int group) {

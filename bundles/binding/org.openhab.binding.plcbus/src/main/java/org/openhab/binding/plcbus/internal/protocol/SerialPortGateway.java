@@ -49,7 +49,7 @@ public class SerialPortGateway implements ISerialPortGateway {
             }
 
         } catch (Exception e) {
-            logger.info("Error in write methode: " + e.getMessage());
+            logger.info("Error in write method: " + e.getMessage());
         }
     }
 

@@ -120,7 +120,7 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
             case Standby:
                 return deviceInfo.isStandby() ? OnOffType.ON : OnOffType.OFF;
             case Heating:
-                return deviceInfo.isHeating() ? OnOffType.ON : OnOffType.OFF;
+                return (deviceInfo.isHeating() || deviceInfo.isPreHeat()) ? OnOffType.ON : OnOffType.OFF;
             default:
                 throw new IllegalStateException(
                         String.format("No result mapping configured for this neo stat property: %s", property));

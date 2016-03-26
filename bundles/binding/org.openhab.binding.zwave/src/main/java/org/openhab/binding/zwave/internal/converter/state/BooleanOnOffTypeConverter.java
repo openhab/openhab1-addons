@@ -12,7 +12,7 @@ import org.openhab.core.library.types.OnOffType;
 
 /**
  * Converts from Z-Wave boolean value to a {@link OnOffType}
- * 
+ *
  * @author Ben Jones
  * @since 1.4.0
  */

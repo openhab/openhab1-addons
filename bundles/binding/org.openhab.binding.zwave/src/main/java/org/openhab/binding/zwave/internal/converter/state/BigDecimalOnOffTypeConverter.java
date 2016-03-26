@@ -14,7 +14,7 @@ import org.openhab.core.library.types.OnOffType;
 
 /**
  * Converts from big decimal Z-Wave value to a {@link OnOffType}
- * 
+ *
  * @author Jan-Willem Spuij
  * @since 1.4.0
  */

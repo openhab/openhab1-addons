@@ -172,7 +172,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
                         }
                     }
                 } else {
-                    logger.warn("The device itemName '{}' not found on discovery verify device is not offline",
+                    logger.warn("The device itemName '{}' not found on discovery. Verify device is not offline",
                             itemName);
                 }
             }
@@ -198,7 +198,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
             if (deviceId != null) {
                 if (provider.getIsSwitch(itemName)) {
                     try {
-                        logger.debug("Command '{}' is about to be send to item '{}'", command, itemName);
+                        logger.debug("Command '{}' is about to be sent to item '{}'", command, itemName);
 
                         if (OnOffType.ON.equals(command) || OnOffType.OFF.equals(command)) {
                             // on/off command
@@ -253,7 +253,7 @@ public class MyStromEcoPowerBinding extends AbstractActiveBinding<MyStromEcoPowe
                     }
                 }
             } else {
-                logger.error("Unable to send command to '{}' device is not in discovery table", itemName);
+                logger.error("Unable to send command to '{}'. Device is not in discovery table", itemName);
             }
         }
     }

@@ -132,7 +132,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
         logger.info("Shutting down zibase connection and/or thread...");
         zibaseListener.shutdown();
         zibase = null;
-        logger.info("Zibase binding desactivated");
+        logger.info("Zibase binding deactivated");
     }
 
     /**

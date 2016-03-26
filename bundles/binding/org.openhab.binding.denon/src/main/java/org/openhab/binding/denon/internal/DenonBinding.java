@@ -238,7 +238,7 @@ public class DenonBinding extends AbstractActiveBinding<DenonBindingProvider>imp
     }
 
     /**
-     * Only update the property if newState is different than it's current state.
+     * Only update the property if newState is different than its current state.
      */
     private void updateIfChanged(String instance, String property, State newState) {
         DenonBindingProvider firstProvider = getFirstMatchingProvider(instance, property);

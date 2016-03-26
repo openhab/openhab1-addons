@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Yamaha Reciever binding. Handles all commands and polls configured devices to
+ * Yamaha Receiver binding. Handles all commands and polls configured devices to
  * process updates.
  *
  * @author Eric Thill

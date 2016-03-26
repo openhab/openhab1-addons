@@ -191,7 +191,7 @@ public class MiosUnitConnector {
                     command.toString(), config.getItemName());
             return;
         } else if (newCommand.equals("")) {
-            logger.trace("callDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
+            logger.trace("callDevice: Item '{}' has disabled the use of Command '{}' via its configuration '{}'",
                     new Object[] { config.getItemName(), command.toString(), config.toProperty() });
             return;
         }

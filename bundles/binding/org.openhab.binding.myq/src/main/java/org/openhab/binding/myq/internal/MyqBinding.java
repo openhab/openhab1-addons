@@ -290,7 +290,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 
     /**
      * Checks whether the command is value and if the deviceID exists then get
-     * status of Garage Door Opener and send command to change it's state
+     * status of Garage Door Opener and send command to change its state
      * opposite of its current state
      *
      * @param command
@@ -353,7 +353,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
             pollFuture.cancel(false);
         }
 
-        logger.trace("rapidRefreshFuture scheduleing for {} millis", millis);
+        logger.trace("rapidRefreshFuture scheduling for {} millis", millis);
         // start polling at the RAPID_REFRESH_SECS interval
         pollFuture = pollService.scheduleAtFixedRate(new Runnable() {
             @Override

@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Node Stage Enumeration for node initialisation.
- * 
+ *
  * @author Brian Crosby
  * @author Chris Jackson
  * @since 1.3.0
@@ -69,7 +69,7 @@ public enum ZWaveNodeInitStage {
 
     /**
      * Get the stage protocol number.
-     * 
+     *
      * @return number
      */
     public int getStage() {
@@ -78,7 +78,7 @@ public enum ZWaveNodeInitStage {
 
     /**
      * Get the stage label
-     * 
+     *
      * @return label
      */
     public String getLabel() {
@@ -88,7 +88,7 @@ public enum ZWaveNodeInitStage {
     /**
      * Lookup function based on the command class code.
      * Returns null if there is no command class with code i
-     * 
+     *
      * @param i the code to lookup
      * @return enumeration value of the command class.
      */
@@ -102,7 +102,7 @@ public enum ZWaveNodeInitStage {
 
     /**
      * Return the next stage after the current stage
-     * 
+     *
      * @return the next stage
      */
     public ZWaveNodeInitStage getNextStage() {
@@ -117,7 +117,7 @@ public enum ZWaveNodeInitStage {
 
     /**
      * Check if the current stage has completed the static stages.
-     * 
+     *
      * @return true if static stages complete
      */
     public boolean isStaticComplete() {
@@ -129,7 +129,7 @@ public enum ZWaveNodeInitStage {
 
     /**
      * Check if the current stage has completed the static stages.
-     * 
+     *
      * @return true if static stages complete
      */
     public boolean isStageMandatory() {

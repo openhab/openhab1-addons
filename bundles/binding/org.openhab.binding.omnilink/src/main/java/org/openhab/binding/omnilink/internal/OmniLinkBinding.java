@@ -194,7 +194,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
                 }
             }
         } else {
-            logger.debug("Could not send message, conncetion not established {}", omniWorker == null);
+            logger.debug("Could not send message, connection not established {}", omniWorker == null);
         }
 
         // get the

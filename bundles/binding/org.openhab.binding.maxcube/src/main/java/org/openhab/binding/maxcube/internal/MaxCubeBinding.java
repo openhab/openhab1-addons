@@ -282,7 +282,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
                     logger.info("Unsupported MAX!Cube message detected. Ignoring and continue with next Line.");
                     this.messageProcessor.reset();
                 } catch (MessageIsWaitingException ex) {
-                    logger.info("There was and unhandled message waiting. Ignoring and continue with next Line.");
+                    logger.info("There was an unhandled message waiting. Ignoring and continue with next Line.");
                     this.messageProcessor.reset();
                 } catch (Exception e) {
                     logger.info("Failed to process message received by MAX! protocol.");

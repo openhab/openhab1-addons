@@ -199,7 +199,7 @@ public class OneWireUpdateScheduler {
         int lvOldListNumber = getAutoRefreshTimeInSecs(pvItemName);
         if (lvOldListNumber > 0) {
             if (lvOldListNumber == pvAutoRefreshTimeInSecs) {
-                logger.debug("item '{}' was already in  auto refresh list {}", pvItemName, pvAutoRefreshTimeInSecs);
+                logger.debug("item '{}' was already in auto refresh list {}", pvItemName, pvAutoRefreshTimeInSecs);
                 return true;
             }
             List<String> lvOldList = cvScheduleMap.get(lvOldListNumber);

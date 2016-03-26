@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Multi Command command class.
- * 
+ *
  * @author Chris Jackson
  * @since 1.6.0
  */
@@ -34,7 +34,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveMultiCommandCommandClass class.
-     * 
+     *
      * @param node the node this command class belongs to
      * @param controller the controller to use
      * @param endpoint the endpoint this Command class belongs to
@@ -68,7 +68,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
     /**
      * Handle the multi command message. This processes the received frame, processing each
      * command class in turn.
-     * 
+     *
      * @param serialMessage The received message
      * @param offset The starting offset into the payload
      */

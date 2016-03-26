@@ -85,7 +85,7 @@ public class MystromClient implements IMystromClient {
             if (!status.equals("ok")) {
                 return false;
             }
-            logger.debug("Logon successfull");
+            logger.debug("Logon successful");
 
             authToken = jsonObject.get("authToken").getAsString();
 
@@ -243,7 +243,7 @@ public class MystromClient implements IMystromClient {
             }
 
             String newState = jsonObject.get("state").getAsString();
-            logger.debug("Switch state for device '{}' successfull, state is '{}'", deviceId, newState);
+            logger.debug("Switch state for device '{}' successful, state is '{}'", deviceId, newState);
 
             return true;
         } catch (Exception ex) {

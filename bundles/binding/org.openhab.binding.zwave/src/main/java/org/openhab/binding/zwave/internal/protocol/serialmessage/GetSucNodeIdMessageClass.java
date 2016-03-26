@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a serial message to get the SUC node ID
- * 
+ *
  * @author Chris Jackson
  * @since 1.5.0
  */

@@ -198,7 +198,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
             logger.trace("send command ON to socket {} at host {}", pmsSocketId, pmsIp);
 
         } catch (Exception e) {
-            logger.error("failed so send command ON to socket {} at ip {}", pmsIp, pmsSocketId);
+            logger.error("failed to send command ON to socket {} at ip {}", pmsIp, pmsSocketId);
         }
 
     }
@@ -214,7 +214,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
             logger.trace("sending 'POST' request to URL : {}", url);
             logger.trace("send command OFF to socket {} at host {}", pmsSocketId, pmsIp);
         } catch (Exception e) {
-            logger.error("failed so send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
+            logger.error("failed to send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
         }
     }
 

@@ -53,7 +53,7 @@ public class BindingConfigParser<TYPE extends BindingConfig> {
             try {
                 config.getClass().getDeclaredField(key).set(config, value);
             } catch (Exception e) {
-                logger.error("Could set value " + value + " to attribute " + key + " in class EnoceanBindingConfig");
+                logger.error("Could not set value " + value + " to attribute " + key + " in class EnoceanBindingConfig");
             }
         }
 

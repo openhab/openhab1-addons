@@ -93,7 +93,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
 
     /**
      * Creates a new instance of the ZWaveSwitchAllCommandClass class.
-     * 
+     *
      * @param node
      *            the node this command class belongs to
      * @param controller
@@ -179,7 +179,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
 
     /**
      * Create a new SwitchAll set message
-     * 
+     *
      * @param mode
      *            as (0x00 - Exclude, 0x01 Only All On, 0x02 Only All Off, 0xFF
      *            Both All on and All off)
@@ -207,7 +207,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
 
     /**
      * Create the All On message
-     * 
+     *
      * @return
      */
     public SerialMessage allOnMessage() {
@@ -223,7 +223,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
 
     /**
      * Create the All Off message
-     * 
+     *
      * @return
      */
     public SerialMessage allOffMessage() {
@@ -247,7 +247,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
 
     /**
      * get the Switch All mode
-     * 
+     *
      * @return the mode
      */
     public SwitchAllMode getMode() {
@@ -257,7 +257,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
     /**
      * ZWave Switch All mode received event. Sent from the Switch All Command
      * Class to the binding when the switch all mode is received.
-     * 
+     *
      * @author Pedro Paixao
      * @since 1.8.0
      */
@@ -266,7 +266,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
         /**
          * Constructor. Creates a new instance of the ZWaveSwitchAllModeEvent
          * class.
-         * 
+         *
          * @param nodeId
          *            the nodeId of the event
          */
@@ -276,7 +276,7 @@ public class ZWaveSwitchAllCommandClass extends ZWaveCommandClass implements ZWa
 
         /**
          * Returns the switch all mode that was received as event.
-         * 
+         *
          * @return the mode.
          */
         public Integer getParameter() {

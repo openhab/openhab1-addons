@@ -29,7 +29,7 @@ public class SimpleRegister extends SynchronizedAbstractRegister implements Regi
 
     /**
      * Constructs a new <tt>SimpleRegister</tt> instance.
-     * It's state will be invalid.
+     * Its state will be invalid.
      */
     public SimpleRegister() {
         m_Register = null;

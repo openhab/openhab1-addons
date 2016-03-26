@@ -88,7 +88,7 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
      */
     @Override
     public void sendCommand(Zibase zibase, Command command, int dim) {
-        logger.error("sendCommand : not implemeted for Config receiver");
+        logger.error("sendCommand : not implemented for Config receiver");
     }
 
     /**

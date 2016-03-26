@@ -1168,7 +1168,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
         }
         if (newPosition > max) {
             if (this.targetPosition < newPosition) {
-                logger.debug("setting value to max speed {}, which is lower then target speed {}", max, newPosition);
+                logger.debug("setting value to max speed {}, which is lower than target speed {}", max, newPosition);
                 newPosition = max;
             } else {
                 logger.debug("max value already reached {}", max);
@@ -1176,7 +1176,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
             }
         } else if (newPosition < min) {
             if (this.targetPosition > newPosition) {
-                logger.debug("setting velocity to min speed {}, which is higher then target speed {}", min,
+                logger.debug("setting velocity to min speed {}, which is higher than target speed {}", min,
                         newPosition);
                 newPosition = min;
             } else {
@@ -1198,7 +1198,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
         Short min = getMinPosition();
         if (newPosition > max) {
             if (this.targetPosition < newPosition) {
-                logger.debug("setting value to max speed {}, which is lower then target speed {}", max, newPosition);
+                logger.debug("setting value to max speed {}, which is lower than target speed {}", max, newPosition);
                 newPosition = max;
             } else {
                 logger.debug("max value already reached {}", max);
@@ -1206,7 +1206,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo {
             }
         } else if (newPosition < min) {
             if (this.targetPosition > newPosition) {
-                logger.debug("setting velocity to min speed {}, which is higher then target speed {}", min,
+                logger.debug("setting velocity to min speed {}, which is higher than target speed {}", min,
                         newPosition);
                 newPosition = min;
             } else {

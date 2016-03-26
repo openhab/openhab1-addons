@@ -73,7 +73,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
     /**
      * Creates a new instance of the ZWaveMeterCommandClass class.
-     * 
+     *
      * @param node
      *            the node this command class belongs to
      * @param controller
@@ -218,7 +218,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the METER_GET command
-     * 
+     *
      * @return the serial message
      */
     @Override
@@ -276,7 +276,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the METER_GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getMessage(MeterScale meterScale) {
@@ -291,7 +291,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the METER_SUPPORTED_GET command
-     * 
+     *
      * @return the serial message, or null if the supported command is not
      *         supported.
      */
@@ -308,7 +308,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
     /**
      * Gets a SerialMessage with the METER_RESET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getResetMessage() {
@@ -368,7 +368,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave MeterType enumeration. The meter type indicates the type of meter
      * that is reported.
-     * 
+     *
      * @author Ben Jones
      * @since 1.4.0
      */
@@ -402,7 +402,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the meter type code. Returns null if the
          * code does not exist.
-         * 
+         *
          * @param i
          *            the code to lookup
          * @return enumeration value of the meter type.
@@ -433,7 +433,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
     /**
      * Z-Wave MeterScale enumeration. The meter scale indicates the meter scale
      * that is reported.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.4.0
      */
@@ -473,7 +473,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a new enumeration value.
-         * 
+         *
          * @param scale the scale number
          * @param meterType the meter type
          * @param unit the unit
@@ -501,7 +501,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the meter type and code. Returns null if the
          * code does not exist.
-         * 
+         *
          * @param meterType the meter type to use to lookup the scale
          * @param i the code to lookup
          * @return enumeration value of the meter scale.
@@ -520,7 +520,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
         /**
          * Lookup function based on the name. Returns null if the
          * name does not exist.
-         * 
+         *
          * @param name the name to lookup
          * @return enumeration value of the meter scale.
          */
@@ -534,7 +534,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Returns the scale code.
-         * 
+         *
          * @return the scale code.
          */
         protected int getScale() {
@@ -543,7 +543,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Returns the meter type.
-         * 
+         *
          * @return the meterType
          */
         protected MeterType getMeterType() {
@@ -552,7 +552,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Returns the unit as string.
-         * 
+         *
          * @return the unit
          */
         protected String getUnit() {
@@ -561,7 +561,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Returns the label (category).
-         * 
+         *
          * @return the label
          */
         protected String getLabel() {
@@ -572,7 +572,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
     /**
      * Z-Wave Meter value Event class. Indicates that a meter value changed.
-     * 
+     *
      * @author Jan-Willem Spuij
      * @since 1.4.0
      */
@@ -583,7 +583,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Constructor. Creates a instance of the ZWaveMeterValueEvent class.
-         * 
+         *
          * @param nodeId
          *            the nodeId of the event
          * @param endpoint
@@ -604,7 +604,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Gets the meter type for this meter value event.
-         * 
+         *
          * @return the meter type for this meter value event.
          */
         public MeterType getMeterType() {
@@ -613,7 +613,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass
 
         /**
          * Gets the meter scale for this meter value event.
-         * 
+         *
          * @return the meter scale for this meter value event.
          */
         public MeterScale getMeterScale() {
