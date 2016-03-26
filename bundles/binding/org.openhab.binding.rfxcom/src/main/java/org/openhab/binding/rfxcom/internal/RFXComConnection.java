@@ -15,7 +15,9 @@ import java.util.EventObject;
 import javax.xml.bind.DatatypeConverter;
 
 import org.openhab.binding.rfxcom.internal.connector.RFXComEventListener;
+import org.openhab.binding.rfxcom.internal.connector.RFXComBaseConnector;
 import org.openhab.binding.rfxcom.internal.connector.RFXComSerialConnector;
+import org.openhab.binding.rfxcom.internal.connector.RFXComTcpConnector;
 import org.openhab.binding.rfxcom.internal.messages.RFXComMessageFactory;
 import org.openhab.binding.rfxcom.internal.messages.RFXComMessageInterface;
 import org.osgi.service.cm.ConfigurationException;
@@ -40,7 +42,7 @@ public class RFXComConnection implements ManagedService {
     private static String serialPort = null;
     private static byte[] setMode = null;
 
-    static RFXComSerialConnector connector = new RFXComSerialConnector();
+    static RFXComBaseConnector connector = new RFXComSerialConnector();
     private final MessageLister eventLister = new MessageLister();
 
     public void activate() {
@@ -62,7 +64,7 @@ public class RFXComConnection implements ManagedService {
      * 
      * @return instance to current RFXCOM client.
      */
-    public static synchronized RFXComSerialConnector getCommunicator() {
+    public static synchronized RFXComBaseConnector getCommunicator() {
         return connector;
     }
 
@@ -80,6 +82,12 @@ public class RFXComConnection implements ManagedService {
         if (config != null) {
 
             serialPort = (String) config.get("serialPort");
+            if (serialPort.startsWith("tcp:")) {
+                serialPort = serialPort.substring(4);
+                connector = new RFXComTcpConnector();
+            } else {
+                connector = new RFXComSerialConnector();
+            }
             String setModeStr = (String) config.get("setMode");
 
             if (setModeStr != null && setModeStr.isEmpty() == false) {

@@ -9,56 +9,53 @@
 package org.openhab.binding.rfxcom.internal.connector;
 
 import java.io.IOException;
+import java.net.Socket;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * RFXCOM connector for TCP/IP communication.
+ *  serial port over TCP
  *
- * @author Pauli Anttila, Evert van Es
+ * @author Pauli Anttila, Evert van Es, Ivan F. Martinez
  * @since 1.2.0
  */
-public class RFXComTcpConnector implements RFXComConnectorInterface {
+public class RFXComTcpConnector extends RFXComBaseConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(RFXComTcpConnector.class);
 
-    RFXComTcpConnector() {
+    private Socket socket = null;
+    
+    public RFXComTcpConnector() {
 
     }
 
     @Override
-    public void connect(String device) throws Exception {
-
-        logger.error("connect not implemented");
+    public void doConnect(String device) throws IOException {
+        logger.info("Connecting to " + device);
+        final int idx = device.lastIndexOf(":");
+        final String host = device.substring(0, idx);
+        final int port =  Integer.valueOf(device.substring(idx+1));
+        socket = new Socket(host, port);
+        realPort = socket;
+        in = socket.getInputStream();
+        out = socket.getOutputStream();
     }
 
     @Override
-    public void disconnect() {
-        logger.error("disconnect not implemented");
+    public void doClose() {
+        IOUtils.closeQuietly(socket);
     }
 
     @Override
-    public void sendMessage(byte[] data) throws IOException {
-
-        logger.error("sendPacket not implemented");
+    protected void readerStart() {
     }
 
     @Override
-    public void addEventListener(RFXComEventListener listener) {
-
-        logger.error("addEventListener not implemented");
+    protected void readerStop() {
     }
 
-    @Override
-    public void removeEventListener(RFXComEventListener listener) {
-
-        logger.error("removeEventListener not implemented");
-    }
-
-    @Override
-    public void clearReceiveBuffer() {
-        logger.error("clearReceiveBuffer not implemented");
-    }
 
 }
