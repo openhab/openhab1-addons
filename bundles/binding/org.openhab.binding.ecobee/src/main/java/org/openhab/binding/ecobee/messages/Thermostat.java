@@ -40,7 +40,7 @@ public class Thermostat extends AbstractMessagePart {
      * Numeric values whose value is not known are expressed as -5002. This is the numeric equivalent to a null value.
      * The value of -5002 had been chosen as an unknown value because the representation of -500.2F is below absolute
      * zero when representing temperatures.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core Concepts</a>
      */
     public static final int UNKNOWN_VALUE = -5002;
@@ -48,11 +48,11 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * There is a concept of dates "before time began" which is equivalent to a NULL time and "end of time" which
      * represents infinite durations (i.e. events). The API represents these as:
-     * 
+     *
      * Before Time Began Date: 2008-01-02
-     * 
+     *
      * End of Time Date: 2035-01-01
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core Concepts</a>
      */
     public static final Date BEFORE_TIME_BEGAN = new GregorianCalendar(2008, 1, 2).getTime();
@@ -98,7 +98,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * Return a JavaBean property by name.
-     * 
+     *
      * @param name
      *            the named property to return
      * @return the named property's value
@@ -119,7 +119,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * Set the specified property value, performing type conversions as required to conform to the type of the
      * destination property. Nested beans are created if they are currently <code>null</code>.
-     * 
+     *
      * @param name
      *            property name (can be nested/indexed/mapped/combo)
      * @param value
@@ -416,10 +416,10 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The status of all equipment controlled by this Thermostat. Only running equipment is listed in the CSV String. If
      * no equipment is currently running an empty string is returned.
-     * 
+     *
      * Values: heatPump, heatPump2, heatPump3, compCool1, compCool2, auxHeat1, auxHeat2, auxHeat3, fan, humidifier,
      * dehumidifier, ventilator, economizer, compHotWater, auxHotWater.
-     * 
+     *
      * @return the equipmentStatus
      */
     @JsonProperty("equipmentStatus")
@@ -556,7 +556,7 @@ public class Thermostat extends AbstractMessagePart {
      * The Alert object represents an alert generated either by a thermostat or user which requires user attention. It
      * may be an error, or a reminder for a filter change. Alerts may not be modified directly but rather they must be
      * acknowledged using the Acknowledge Function.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Alert.shtml">Alert</a>
      * @author John Cocula
      */
@@ -740,7 +740,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The Settings Java Bean contains all the configuration properties of the thermostat in which it is contained.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Settings.shtml">Settings</a>
      * @author John Cocula
      */
@@ -2836,22 +2836,22 @@ public class Thermostat extends AbstractMessagePart {
      * The Runtime Java Bean represents the last known thermostat running state. This state is composed from the last
      * interval status message received from a thermostat. It is also updated each time the thermostat posts
      * configuration changes to the server.
-     * 
+     *
      * <p>
      * The runtime object contains the last 5 minute interval value sent by the thermostat for the past 15 minutes of
      * runtime. The thermostat updates the server every 15 minutes with the last three 5 minute readings.
-     * 
+     *
      * <p>
      * The actual temperature and humidity will also be updated when the equipment state changes by the thermostat, this
      * may occur at a frequency of 3 minutes, however it is only transmitted when there is an equipment state change on
      * the thermostat.
-     * 
+     *
      * <p>
      * See Thermostat Interval Report Data for additional information about the interval readings.
-     * 
+     *
      * <p>
      * The Runtime class is read-only.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Runtime.shtml">Runtime</a>
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#data">Thermostat
      *      Interval Report Data</a>
@@ -3041,20 +3041,20 @@ public class Thermostat extends AbstractMessagePart {
      * past 15 minutes of runtime. The interval values are valuable when you are interested in analyzing the runtime
      * data in a more granular fashion, at 5 minute increments rather than the more general 15 minute value from the
      * Runtime Object.
-     * 
+     *
      * <p>
      * For the runtime values (i.e. heatPump, auxHeat, cool, etc.) refer to the {@link Thermostat#settings} values (
      * {@link Settings#hasHeatPump}, {@link Settings#heatStages}, {@link Settings#coolStages}) to determine whether a
      * heat pump exists and how many stages the thermostat supports.
-     * 
+     *
      * <p>
      * The actual temperature and humidity will also be updated when the equipment state changes by the thermostat, this
      * may occur at a frequency of 3 minutes, however it is only transmitted when there is an equipment state change on
      * the thermostat.
-     * 
+     *
      * <p>
      * The extended runtime object is read-only.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/ExtendedRuntime.shtml">
      *      ExtendedRuntime</a>
@@ -3349,7 +3349,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The Electricity class contains the last collected electricity usage measurements for the thermostat. An
      * electricity object is composed of ElectricityDevices, each of which contains readings from an ElectricityTier.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Electricity.shtml">Electricity</a>
      * @author John Cocula
@@ -3383,7 +3383,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * An ElectricityDevice represents an energy recording device. At this time, only meters are supported by the API.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/ElectricityDevice.shtml">
      *      ElectricityDevice</a>
@@ -3448,7 +3448,7 @@ public class Thermostat extends AbstractMessagePart {
      * An ElectricityTier object represents the last reading from a given pricing tier if the utility provides such
      * information. If there are no pricing tiers defined, than an unnamed tier will represent the total reading. The
      * values represented here are a daily cumulative total in kWh. The cost is likewise a cumulative total in cents.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/ElectricityTier.shtml">
      *      ElectricityTier</a>
@@ -3502,7 +3502,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * Represents a device attached to the thermostat. Devices may not be modified remotely; all changes must occur on
      * the thermostat.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Device.shtml">Device</a>
      * @author John Cocula
      */
@@ -3560,12 +3560,12 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The RemoteSensor object represents a sensor connected to the thermostat.
-     * 
+     *
      * The remote sensor data will only show computed occupancy, as does the thermostat. Definition - For a given
      * sensor, computed occupancy means a sensor is occupied if any motion was detected in the past 30 minutes.
      * RemoteSensor data changes trigger the runtimeRevision to be updated. The data updates are sent at an interval of
      * 3 mins maximum. This means that you should not poll quicker than once every 3 mins for revision changes.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/RemoteSensor.shtml">RemoteSensor
      *      </a>
@@ -3671,9 +3671,9 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The RemoteSensorCapability object represents the specific capability of a sensor connected to the thermostat.
-     * 
+     *
      * For the occupancy type capability the data will only show computed occupancy, as does the thermostat.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/RemoteSensorCapability.shtml">
      *      RemoteSensorCapability</a>
@@ -3757,7 +3757,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The Sensor class represents a sensor connected to the thermostat. Sensors may not be modified using the API,
      * however some configuration may occur through the web portal.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Sensor.shtml">Sensor</a>
      * @author John Cocula
      */
@@ -3925,7 +3925,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * A sensor state is a configurable trigger for a number of {@link StateAction}s.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/State.shtml">State</a>
      * @author John Cocula
      */
@@ -3983,7 +3983,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * A StateAction defines an action to take when a {@link SensorState} is triggered.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Action.shtml">Action</a>
      * @author John Cocula
      */
@@ -4103,7 +4103,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * An output is a relay connected to the thermostat.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Output.shtml">Output</a>
      * @author John Cocula
      */
@@ -4205,7 +4205,7 @@ public class Thermostat extends AbstractMessagePart {
      * The Location describes the physical location and coordinates of the thermostat as entered by the thermostat
      * owner. The address information is used in a geocode look up to obtain the thermostat coordinates. The coordinates
      * are used to obtain accurate weather information.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Location.shtml">Location</a>
      * @author John Cocula
      */
@@ -4405,7 +4405,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The Technician object contains information pertaining to the technician associated with a thermostat. The
      * technician may not be modified through the API.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Technician.shtml">Technician</a>
      * @author John Cocula
      */
@@ -4523,7 +4523,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The Utility information the {@link Thermostat} belongs to. The utility may not be modified through the API.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Utility.shtml">Utility</a>
      * @author John Cocula
      */
@@ -4582,7 +4582,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The Management object contains information about the management company the thermostat belongs to. The Management
      * object is read-only, it may be modified in the web portal.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Management.shtml">Management</a>
      * @author John Cocula
      */
@@ -4680,7 +4680,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The Weather object contains the weather and forecast information for the thermostat's location.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Weather.shtml">Weather</a>
      * @author John Cocula
      */
@@ -4729,10 +4729,10 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The Weather Forecast contains the weather forecast information for the thermostat. The first forecast is the most
      * accurate, later forecasts become less accurate in distance and time.
-     * 
+     *
      * The <code>weatherSymbol</code> field can be used by the API caller to display a particular icon or message for
      * example. The values mapping for the weather to <code>weatherSymbol</code> field is:
-     * 
+     *
      * <table>
      * <tbody>
      * <tr>
@@ -4831,7 +4831,7 @@ public class Thermostat extends AbstractMessagePart {
      * </tr>
      * </tbody>
      * </table>
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/WeatherForecast.shtml">
      *      WeatherForecast</a>
@@ -5016,14 +5016,14 @@ public class Thermostat extends AbstractMessagePart {
      * events ordered by whether they are currently running and the internal priority of each event. It is safe to take
      * the first event which is running and show it as the currently running event. When the resume function is used,
      * events are removed in the order they are listed here.
-     * 
+     *
      * Note that the start/end date/time for the event must be in thermostat time and are not specified in UTC.
-     * 
+     *
      * Event Priorities
-     * 
+     *
      * The events are listed from top priority first to lowest priority. They will appear in the events list in the same
      * order as listed here provided they are active currently.
-     * 
+     *
      * <table>
      * <tr>
      * <td>Type</td>
@@ -5064,7 +5064,7 @@ public class Thermostat extends AbstractMessagePart {
      * events are never active and are only used to store the last used vacation settings of the thermostat owner.</td>
      * </tr>
      * </table>
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Event.shtml">Event</a>
      * @author John Cocula
      */
@@ -5172,11 +5172,29 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the isOccupied.
+         *
+         * @param occupied
+         */
+        public void setOccupied(Boolean occupied) {
+            this._isOccupied = occupied;
+        }
+
+        /**
          * @return whether cooling will be turned off during the event
          */
         @JsonProperty("isCoolOff")
         public Boolean isCoolOff() {
             return this._isCoolOff;
+        }
+
+        /**
+         * Set the isCoolOff.
+         *
+         * @param coolOff
+         */
+        public void setCoolOff(Boolean coolOff) {
+            this._isCoolOff = coolOff;
         }
 
         /**
@@ -5188,11 +5206,29 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the isHeatOff.
+         *
+         * @param heatOff
+         */
+        public void setHeatOff(Boolean heatOff) {
+            this._isHeatOff = heatOff;
+        }
+
+        /**
          * @return the cooling absolute temperature to set
          */
         @JsonProperty("coolHoldTemp")
         public Temperature getCoolHoldTemp() {
             return this.coolHoldTemp;
+        }
+
+        /**
+         * Set the coolHoldTemp.
+         *
+         * @param coolHoldTemp
+         */
+        public void setCoolHoldTemp(Temperature coolHoldTemp) {
+            this.coolHoldTemp = coolHoldTemp;
         }
 
         /**
@@ -5204,11 +5240,29 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the heatHoldTemp.
+         *
+         * @param heatHoldTemp
+         */
+        public void setHeatHoldTemp(Temperature heatHoldTemp) {
+            this.heatHoldTemp = heatHoldTemp;
+        }
+
+        /**
          * @return the fan mode during the event. Values: auto, on Default: based on current climate and hvac mode
          */
         @JsonProperty("fan")
         public FanMode getFan() {
             return this.fan;
+        }
+
+        /**
+         * Set the fan mode.
+         *
+         * @param fan
+         */
+        public void setFan(FanMode fan) {
+            this.fan = fan;
         }
 
         /**
@@ -5220,11 +5274,29 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the ventilator mode.
+         *
+         * @param vent
+         */
+        public void setVent(VentilatorMode vent) {
+            this.vent = vent;
+        }
+
+        /**
          * @return the minimum amount of time the ventilator equipment must stay on on each duty cycle
          */
         @JsonProperty("ventilatorMinOnTime")
         public Integer getVentilatorMinOnTime() {
             return this.ventilatorMinOnTime;
+        }
+
+        /**
+         * Set the ventilatorMinOnTime.
+         *
+         * @param ventilatorMinOnTime
+         */
+        public void setVentilatorMinOnTime(Integer ventilatorMinOnTime) {
+            this.ventilatorMinOnTime = ventilatorMinOnTime;
         }
 
         /**
@@ -5236,11 +5308,29 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the isOptional.
+         *
+         * @param optional
+         */
+        public void setOptional(Boolean optional) {
+            this._isOptional = optional;
+        }
+
+        /**
          * @return whether the event is using a relative temperature setting to the currently active program climate
          */
         @JsonProperty("isTemperatureRelative")
         public Boolean isTemperatureRelative() {
             return this._isTemperatureRelative;
+        }
+
+        /**
+         * Set the isTemperatureRelative.
+         *
+         * @param temperatureRelative
+         */
+        public void setTemperatureRelative(Boolean temperatureRelative) {
+            this._isTemperatureRelative = temperatureRelative;
         }
 
         /**
@@ -5252,6 +5342,15 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the coolRelativeTemp.
+         *
+         * @param coolRelativeTemp
+         */
+        public void setCoolRelativeTemp(Temperature coolRelativeTemp) {
+            this.coolRelativeTemp = coolRelativeTemp;
+        }
+
+        /**
          * @return the relative heat temperature adjustment
          */
         @JsonProperty("heatRelativeTemp")
@@ -5260,11 +5359,29 @@ public class Thermostat extends AbstractMessagePart {
         }
 
         /**
+         * Set the heatRelativeTemp.
+         *
+         * @param heatRelativeTemp
+         */
+        public void setHeatRelativeTemp(Temperature heatRelativeTemp) {
+            this.heatRelativeTemp = heatRelativeTemp;
+        }
+
+        /**
          * @return whether the event uses absolute temperatures to set the values. Default: true for DRs
          */
         @JsonProperty("isTemperatureAbsolute")
         public Boolean isTemperatureAbsolute() {
             return this._isTemperatureAbsolute;
+        }
+
+        /**
+         * Set the isTemperatureAbsolute.
+         *
+         * @param temperatureAbsolute
+         */
+        public void setTemperatureAbsolute(Boolean temperatureAbsolute) {
+            this._isTemperatureAbsolute = temperatureAbsolute;
         }
 
         /**
@@ -5281,6 +5398,15 @@ public class Thermostat extends AbstractMessagePart {
         @JsonProperty("fanMinOnTime")
         public Integer getFanMinOnTime() {
             return this.fanMinOnTime;
+        }
+
+        /**
+         * Set the fanMinOnTime.
+         *
+         * @param fanMinOnTime
+         */
+        public void setFanMinOnTime(Integer fanMinOnTime) {
+            this.fanMinOnTime = fanMinOnTime;
         }
 
         /**
@@ -5331,6 +5457,15 @@ public class Thermostat extends AbstractMessagePart {
             return this.holdClimateRef;
         }
 
+        /**
+         * Set the holdClimateRef.
+         *
+         * @param holdClimateRef
+         */
+        public void setHoldClimateRef(String holdClimateRef) {
+            this.holdClimateRef = holdClimateRef;
+        }
+
         @Override
         public String toString() {
             final ToStringBuilder builder = createToStringBuilder();
@@ -5370,10 +5505,10 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The thermostat Program is a container for the {@link #schedule} and its {@link #climates}.
-     * 
+     *
      * See Core Concepts for details on how the program is structured. The {@link #schedule} property is a two
      * dimensional array containing the climate names.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Program.shtml">Program</a>
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core Concepts</a>
      * @author John Cocula
@@ -5442,27 +5577,27 @@ public class Thermostat extends AbstractMessagePart {
      * A climate defines a thermostat settings template which is then applied to individual period cells of the
      * schedule. The result is that if you modify the Climate, all schedule cells which reference that Climate will
      * automatically be changed.
-     * 
+     *
      * <p>
      * When adding a Climate it is optional whether you reference the new Climate in the schedule cells in the same
      * request or not. However, when deleting a Climate (by omitting that entire Climate object from the POST request)
      * it can not be be deleted if it is still referenced in the schedule cells.
-     * 
+     *
      * <p>
      * There are three default Climates for each {@link Thermostat}, with possible <code>climateRef</code> values of
      * "away", "home", and "sleep". There are two default Climates for the EMS thermostat, with possible
      * <code>climateRef</code> values of "occupied" and "unoccupied". None of these defaults can be deleted and trying
      * to do so will return an exception. The remaining fields can be modified.
-     * 
+     *
      * <p>
      * Climates may be modified (you can add, update or remove climates). However, it is important to note that the
      * <code>climateRef</code> is required and read-only for an existing climate and cannot be changed. The
      * {@link Climate#name} can be edited so long as it is unique.
-     * 
+     *
      * <p>
      * If the <code>climateRef</code> for an existing climate is not included in an API call it is assumed this is a net
      * new climate. The climateRef must always be supplied for the default climates.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Climate.shtml">Climate</a>
      * @author John Cocula
      */
@@ -5730,7 +5865,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The HouseDetails object contains the information about the house the thermostat is installed in.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/HouseDetails.shtml">HouseDetails
      *      </a>
@@ -5866,7 +6001,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The OemCfg object contains information about the OEM specific thermostat.
-     * 
+     *
      * @author John Cocula
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -5884,20 +6019,20 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The Thermostat NotificationSettings object is a container for the configuration of the possible alerts and
      * reminders which can be generated by the Thermostat.
-     * 
+     *
      * <p>
      * The NotificationsSettings supports retrieval through a Thermostat GET call, setting the
      * <code>includeNotificationSettings</code> to <code>true</code> in the {@link Selection}.
-     * 
+     *
      * <p>
      * The NotificationsSettings object can also be updated using the Thermostat POST method. When POSTing updates to
      * this object please take a note of the required fields, allowed values, and notes about the email address below.
-     * 
+     *
      * <p>
      * The type corresponds to the {@link Alert#notificationType} returned when alerts are included in the selection.
      * See {@link Alert} for more information. When the type is anything other than alert its configuration will be
      * listed here as part of the NotificationSettings.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/NotificationSettings.shtml">
      *      NotificationSettings</a>
@@ -6018,15 +6153,15 @@ public class Thermostat extends AbstractMessagePart {
      * The EquipmentSetting object represents the alert/reminder type which is associated with and dependent upon
      * specific equipment controlled by the Thermostat. It is used when getting/setting the Thermostat
      * NotificationSettings object.
-     * 
+     *
      * <p>
      * Note: Only the notification settings for the equipment/devices currently controlled by the Thermostat are
      * returned during GET request, and only those same settings can be updated using the POST request.
-     * 
+     *
      * <p>
      * The type corresponds to the {@link Alert#notificationType} returned when alerts are also included in the
      * selection. See {@link Alert} for more information.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/EquipmentSetting.shtml">
      *      EquipmentSetting</a>
@@ -6176,11 +6311,11 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The GeneralSetting object represent the General alert/reminder type. It is used when getting/setting the
      * Thermostat {@link NotificationSettings} object.
-     * 
+     *
      * <p>
      * The <code>type</code> corresponds to the {@link Alert#notificationType} returned when alerts are included in the
      * selection. See {@link Alert} for more information.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/GeneralSetting.shtml">
      *      GeneralSetting</a>
@@ -6261,10 +6396,10 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The LimitSetting object represents the alert/reminder type which is associated specific values, such as highHeat
      * or lowHumidity. It is used when getting/setting the Thermostat NotificationSettings object.
-     * 
+     *
      * The type corresponds to the {@link Alert#notificationType} returned when alerts are also included in the
      * selection. See {@link Alert} for more information.
-     * 
+     *
      * @see <a
      *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/LimitSetting.shtml">LimitSetting
      *      </a>
@@ -6370,7 +6505,7 @@ public class Thermostat extends AbstractMessagePart {
     /**
      * The ThermostatPrivacy object containing the privacy settings for the Thermostat. Note: access to this object is
      * restricted to callers with implicit authentication.
-     * 
+     *
      * @author John Cocula
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -6387,7 +6522,7 @@ public class Thermostat extends AbstractMessagePart {
 
     /**
      * The Version object contains version information about the thermostat.
-     * 
+     *
      * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Version.shtml">Version</a>
      * @author John Cocula
      */
