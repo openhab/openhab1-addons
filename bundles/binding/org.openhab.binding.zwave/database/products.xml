@@ -2530,15 +2530,15 @@
             <Label lang="en">Scene Capable Push On/Off Dimmer</Label>
             <ConfigFile>leviton/vrmx1-1lz.xml</ConfigFile>
         </Product>
-                <Product>
-                        <Reference>
-                                <Type>0e01</Type>
-                                <Id>0334</Id>
-                        </Reference>
-                        <Model>VRE06-1LZ</Model>
-                        <Label lang="en">Scene Capable Push On/Off Dimmer</Label>
-                        <ConfigFile>leviton/vre06-1lz.xml</ConfigFile>
-                </Product>
+        <Product>
+            <Reference>
+                <Type>0e01</Type>
+                <Id>0334</Id>
+            </Reference>
+            <Model>VRE06-1LZ</Model>
+            <Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+            <ConfigFile>leviton/vre06-1lz.xml</ConfigFile>
+        </Product>
         <Product>
             <Reference>
                 <Type>1902</Type>
@@ -2581,6 +2581,15 @@
             <Model>DZS15-1LZ</Model>
             <Label lang="en">Scene Capable Push On/Off</Label>
             <ConfigFile>leviton/dzs15-1lz.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>1A02</Type>
+                <Id>0334</Id>
+            </Reference>
+            <Model>DZPA1</Model>
+            <Label lang="en">Plug-in Appliance Module</Label>
+            <ConfigFile>leviton/dzpa1.xml</ConfigFile>
         </Product>
         <Product>
             <Reference>
