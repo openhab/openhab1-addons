@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
 /**
  * Common definitions and helpers for LCN.
  * 
- * @author Tobias Jüttner
+ * @author Tobias Jï¿½ttner
  */
 public final class LcnDefs {
 	
@@ -380,7 +380,7 @@ public final class LcnDefs {
 	/** Measurement units used with LCN variables. */
 	public enum VarUnit {
 		
-		NATIVE,  // LCN internal representation (0 = -100°C for absolute values)
+		NATIVE,  // LCN internal representation (0 = -100ï¿½C for absolute values)
 		CELSIUS, KELVIN, FAHRENHEIT,
 		LUX_T, LUX_I,
 		METERPERSECOND,  // Used for LCN-WIH wind speed
@@ -401,16 +401,16 @@ public final class LcnDefs {
 				case "LCN":
 					return NATIVE;
 				case "CELSIUS":
-				case "°CELSIUS":
-				case "°C":
+				case "ï¿½CELSIUS":
+				case "ï¿½C":
 					return CELSIUS;
 				case "KELVIN":
-				case "°KELVIN":
-				case "°K":
+				case "ï¿½KELVIN":
+				case "ï¿½K":
 					return KELVIN;
 				case "FAHRENHEIT":
-				case "°FAHRENHEIT":
-				case "°F":
+				case "ï¿½FAHRENHEIT":
+				case "ï¿½F":
 					return FAHRENHEIT;
 				case "LUX_T":
 				case "LX_T":
@@ -432,7 +432,7 @@ public final class LcnDefs {
 				case "A":
 					return AMPERE;
 				case "DEGREE":
-				case "°":
+				case "ï¿½":
 					return DEGREE;
 				default:
 					throw new IllegalArgumentException();
@@ -522,7 +522,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates a variable value from °C input.
+		 * Creates a variable value from ï¿½C input.
 		 *  
 		 * @param c the input value
 		 * @param abs true for absolute values (relative values are used to add/subtract from other {@link VarValue}s)
@@ -534,7 +534,7 @@ public final class LcnDefs {
 		}
 
 		/**
-		 * Creates an absolute variable value from °C input.
+		 * Creates an absolute variable value from ï¿½C input.
 		 *  
 		 * @param c the input value
 		 * @return the variable value (never null)
@@ -544,7 +544,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates a variable value from °K input.
+		 * Creates a variable value from ï¿½K input.
 		 *  
 		 * @param k the input value
 		 * @param abs true for absolute values (relative values are used to add/subtract from other {@link VarValue}s)
@@ -559,7 +559,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates an absolute variable value from °K input.
+		 * Creates an absolute variable value from ï¿½K input.
 		 *  
 		 * @param k the input value
 		 * @return the variable value (never null)
@@ -569,7 +569,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates a variable value from °F input.
+		 * Creates a variable value from ï¿½F input.
 		 *  
 		 * @param f the input value
 		 * @param abs true for absolute values (relative values are used to add/subtract from other {@link VarValue}s)
@@ -584,7 +584,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates an absolute variable value from °F input.
+		 * Creates an absolute variable value from ï¿½F input.
 		 *  
 		 * @param f the input value
 		 * @return the variable value (never null)
@@ -668,7 +668,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates a variable value from ° (angle) input.
+		 * Creates a variable value from ï¿½ (angle) input.
 		 *  
 		 * @param d the input value
 		 * @param abs true for absolute values (relative values are used to add/subtract from other {@link VarValue}s)
@@ -680,7 +680,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Creates an absolute variable value from ° (angle) input.
+		 * Creates an absolute variable value from ï¿½ (angle) input.
 		 *  
 		 * @param d the input value
 		 * @return the variable value (never null)
@@ -737,7 +737,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Converts to °C value.
+		 * Converts to ï¿½C value.
 		 * 
 		 * @return the converted value
 		 */
@@ -746,7 +746,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Converts to °K value.
+		 * Converts to ï¿½K value.
 		 * 
 		 * @return the converted value
 		 */
@@ -755,7 +755,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Converts to °F value.
+		 * Converts to ï¿½F value.
 		 * 
 		 * @return the converted value
 		 */
@@ -829,7 +829,7 @@ public final class LcnDefs {
 		}
 		
 		/**
-		 * Converts to ° (angle) value.
+		 * Converts to ï¿½ (angle) value.
 		 * 
 		 * @return the converted value
 		 */

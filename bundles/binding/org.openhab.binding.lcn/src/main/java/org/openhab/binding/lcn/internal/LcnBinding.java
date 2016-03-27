@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * This assures the required thread-safety.
  * Input data is received through {@link #connections}.
  * 
- * @author Tobias Jüttner
+ * @author Tobias Jï¿½ttner
  *
  * @param <P> {@link LcnGenericBindingProvider}
  */

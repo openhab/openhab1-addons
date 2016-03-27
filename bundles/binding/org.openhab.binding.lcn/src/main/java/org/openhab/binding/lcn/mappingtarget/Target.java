@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * Targets are bound to openHAB item mappings ({@link LcnBindingConfig.Mapping}) and
  * represent LCN related actions and/or visualizations.
  * 
- * @author Tobias Jüttner
+ * @author Tobias Jï¿½ttner
  */
 public abstract class Target implements Input.VisualizationVisitor {
 	

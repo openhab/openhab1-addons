@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -241,7 +241,7 @@ public class EBusCommandProcessor implements BindingChangeListener {
 
 			for (Entry<String, TelegramValue> value : valuesConfig.entrySet()) {
 
-				// check if the special value type for kromschöder/wolf crc is availabel
+				// check if the special value type for kromschï¿½der/wolf crc is availabel
 				if(StringUtils.equals(value.getValue().getType(), "crc-kw")) {
 
 					byte b = 0;
