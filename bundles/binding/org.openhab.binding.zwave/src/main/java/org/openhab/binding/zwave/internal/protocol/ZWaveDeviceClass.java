@@ -378,12 +378,15 @@ public class ZWaveDeviceClass {
         PORTABLE_REMOTE_CONTROLLER(1, Generic.REMOTE_CONTROLLER, "Portable Remote Controller"),
         PORTABLE_SCENE_CONTROLLER(2, Generic.REMOTE_CONTROLLER, "Portable Scene Controller"),
         PORTABLE_INSTALLER_TOOL(3, Generic.REMOTE_CONTROLLER, "Portable Installer Tool"),
+        AV_REMOTE_CONTROLLER(4, Generic.REMOTE_CONTROLLER, "AV Remote Controller"),
+        SIMPLE_REMOTE_CONTROLLER(6, Generic.REMOTE_CONTROLLER, "Simple Remote Controller"),
 
         PC_CONTROLLER(1, Generic.STATIC_CONTROLLER, "PC Controller"),
         SCENE_CONTROLLER(2, Generic.STATIC_CONTROLLER, "Scene Controller"),
         INSTALLER_TOOL(3, Generic.STATIC_CONTROLLER, "Static Installer Tool"),
-        AV_REMOTE_CONTROLLER(4, Generic.STATIC_CONTROLLER, "AV Remote Controller"),
-        SIMPLE_REMOTE_CONTROLLER(6, Generic.STATIC_CONTROLLER, "Simple Remote Controller"),
+        SET_TOP_BOX_CONTROLLER(4, Generic.STATIC_CONTROLLER, "Set-Top Box Controller"),
+        SUB_SYSTEM_CONTROLLER(4, Generic.STATIC_CONTROLLER, "Sub-System Controller"),
+        TV_CONTROLLER(6, Generic.STATIC_CONTROLLER, "TV Controller"),
 
         SATELLITE_RECEIVER(4, Generic.AV_CONTROL_POINT, "Satellite Receiver"),
         SATELLITE_RECEIVER_V2(17, Generic.AV_CONTROL_POINT, "Satellite Receiver V2"),
