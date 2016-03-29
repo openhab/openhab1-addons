@@ -21,6 +21,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -142,6 +143,8 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			type = ISYNodeType.STRING;
 		} else if (item instanceof DimmerItem) {
 			type = ISYNodeType.DIMMER;
+        } else if (item instanceof DateTimeItem) {
+            type = ISYNodeType.HEARTBEAT;
 		} else {
 			type = ISYNodeType.SWITCH;
 		}
@@ -167,6 +170,12 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 					if ("thermostat".equalsIgnoreCase(value)) {
 						type = ISYNodeType.THERMOSTAT;
 					}
+                    if ("lock".equalsIgnoreCase(value)) {
+                        type = ISYNodeType.LOCK;
+                    }
+                    if ("heartbeat".equalsIgnoreCase(value)) {
+                        type = ISYNodeType.HEARTBEAT;
+                    }
 					break;
 				case "cmd":
 					try {
