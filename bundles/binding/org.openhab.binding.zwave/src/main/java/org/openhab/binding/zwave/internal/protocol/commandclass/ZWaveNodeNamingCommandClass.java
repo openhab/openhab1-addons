@@ -206,30 +206,38 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
             numBytes = MAX_STRING_LENGTH;
         }
 
-        // Check for null terminations - ignore anything after the first null
-        for (int c = offset + 2; c < numBytes; c++) {
+        // Check for non-printable characters - ignore anything after the first one!
+        for (int c = 0; c < numBytes; c++) {
             if (serialMessage.getMessagePayloadByte(c + offset + 2) == 0) {
                 numBytes = c;
+                logger.debug("NODE {} : Node name string truncated to {} characters", this.getNode().getNodeId(),
+                        numBytes);
                 break;
             }
         }
 
         byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, offset + 2 + numBytes);
 
+        String response = null;
         try {
             switch (charPresentation) {
                 case ENCODING_ASCII:
                 case ENCODING_EXTENDED_ASCII:
-                    return new String(strBuffer, "ASCII");
-
+                    response = new String(strBuffer, "ASCII");
+                    break;
                 case ENCODING_UTF16:
                     String sTemp = new String(strBuffer, "UTF-16");
-                    return new String(sTemp.getBytes("UTF-8"), "UTF-8");
+                    response = new String(sTemp.getBytes("UTF-8"), "UTF-8");
+                    break;
             }
         } catch (UnsupportedEncodingException uee) {
             System.out.println("Exception: " + uee);
         }
-        return null;
+        if (response == null) {
+            return null;
+        }
+
+        return response.replaceAll("\\p{C}", "?");
     }
 
     /**
