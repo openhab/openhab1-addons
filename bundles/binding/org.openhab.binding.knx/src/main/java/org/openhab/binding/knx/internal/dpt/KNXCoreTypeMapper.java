@@ -326,7 +326,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
             }
             int subNumber = getSubNumber(id);
             if (subNumber == -1) {
-                logger.debug("toType: couldn't identify su number in dptID: {}.", id);
+                logger.debug("toType: couldn't identify sub number in dptID: {}.", id);
                 return null;
             }
             /*
@@ -487,13 +487,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
                 return new HSBType(color);
             }
         } catch (KNXFormatException kfe) {
-            logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXFormatException).",
+            logger.info("Translator couldn't parse data for datapoint type '{}' (KNXFormatException).",
                     datapoint.getDPT());
         } catch (KNXIllegalArgumentException kiae) {
-            logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXIllegalArgumentException).",
+            logger.info("Translator couldn't parse data for datapoint type '{}' (KNXIllegalArgumentException).",
                     datapoint.getDPT());
         } catch (KNXException e) {
-            logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
+            logger.warn("Failed creating a translator for datapoint type '{}'.", datapoint.getDPT(), e);
         }
 
         return null;
