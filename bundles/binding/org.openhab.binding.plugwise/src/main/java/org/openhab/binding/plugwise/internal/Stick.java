@@ -816,7 +816,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
             JobDataMap dataMap = context.getJobDetail().getJobDataMap();
             Stick theStick = (Stick) dataMap.get("Stick");
 
-            // logger.debug("SendJobListener: SJobListeren reschedule a job");
+            // logger.debug("SendJobListener: SJobListener reschedule a job");
 
             Scheduler sched = null;
             try {

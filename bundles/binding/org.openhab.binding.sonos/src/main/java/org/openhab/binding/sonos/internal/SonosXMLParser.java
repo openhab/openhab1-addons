@@ -347,7 +347,7 @@ public class SonosXMLParser {
                 try {
                     md = getEmbededMetaDataFromResource(desc.toString());
                 } catch (SAXException ignore) {
-                    logger.debug("Failed to parse embeded", ignore);
+                    logger.debug("Failed to parse embedded", ignore);
                 }
 
                 artists.add(new SonosEntry(id, title.toString(), parentId, album.toString(), albumArtUri.toString(),

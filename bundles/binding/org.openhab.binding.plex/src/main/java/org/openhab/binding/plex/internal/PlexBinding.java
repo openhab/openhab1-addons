@@ -191,7 +191,7 @@ public class PlexBinding extends AbstractActiveBinding<PlexBindingProvider> {
     }
 
     public void deactivate(final int reason) {
-        logger.trace("Plex binding deactived");
+        logger.trace("Plex binding deactivated");
         disconnect();
     }
 

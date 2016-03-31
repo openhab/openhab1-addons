@@ -255,7 +255,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             try {
                 connector.disconnect();
             } catch (SwegonVentilationException e) {
-                logger.error("Error occured when disconnecting form Swegon ventilation system", e);
+                logger.error("Error occured when disconnecting from Swegon ventilation system", e);
             }
 
         }

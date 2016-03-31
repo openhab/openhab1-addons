@@ -261,7 +261,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
                 if (host != null) {
                     logger.info("Created heatpump configuration with tcp {}:{}, version:{} ", host, port, version);
                 } else {
-                    logger.info("Created heatpump configuration with  serialport:{}, baudrate:{}, version:{} ",
+                    logger.info("Created heatpump configuration with serialport:{}, baudrate:{}, version:{} ",
                             serialPort, baudRate, version);
                 }
                 setProperlyConfigured(isInitialized);
@@ -294,7 +294,7 @@ public class StiebelHeatPumpBinding extends AbstractActiveBinding<StiebelHeatPum
                         return false;
                     }
                 } catch (InterruptedException e) {
-                    logger.error("could not access Heat pump for has version {}", version);
+                    logger.error("could not access Heat pump for version {}", version);
                 }
             }
 

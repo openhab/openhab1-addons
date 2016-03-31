@@ -224,7 +224,7 @@ public class Tr064Comm {
         // check if special "soap value parser" handler for extracting SOAP value is defined. If yes, use svp
         if (itemMap.getSoapValueParser() == null) { // extract dataOutName1 as default, no handler used
             NodeList nlDataOutNodes = response.getSOAPPart().getElementsByTagName(itemMap.getReadDataOutName());
-            if (nlDataOutNodes != null & nlDataOutNodes.getLength() > 0) {
+            if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                 // extract value from soap response
                 value = nlDataOutNodes.item(0).getTextContent();
             } else {
@@ -734,7 +734,7 @@ public class Tr064Comm {
                         }
                     } else {
                         NodeList nlDataOutNodes = sm.getSOAPPart().getElementsByTagName(mapping.getReadDataOutName()); // URL
-                        if (nlDataOutNodes != null & nlDataOutNodes.getLength() > 0) {
+                        if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                             // extract URL from soap response
                             String url = nlDataOutNodes.item(0).getTextContent();
                             Document xmlTamInfo = getFboxXmlResponse(url);
@@ -799,7 +799,7 @@ public class Tr064Comm {
                         }
                     } else {
                         NodeList nlDataOutNodes = sm.getSOAPPart().getElementsByTagName(mapping.getReadDataOutName()); // URL
-                        if (nlDataOutNodes != null & nlDataOutNodes.getLength() > 0) {
+                        if (nlDataOutNodes != null && nlDataOutNodes.getLength() > 0) {
                             // extract URL from soap response
                             String url = nlDataOutNodes.item(0).getTextContent();
                             // only get missed calls of the last x days

@@ -104,7 +104,7 @@ public class EKeyBinding extends AbstractBinding<EKeyBindingProvider>implements 
 
     @Override
     public void deactivate() {
-        logger.debug("Stoppig eKey listener...");
+        logger.debug("Stopping eKey listener...");
         if (packetlistener != null) {
             packetlistener.stopListener();
         }

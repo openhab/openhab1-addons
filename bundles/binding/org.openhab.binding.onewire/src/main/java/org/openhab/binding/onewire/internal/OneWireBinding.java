@@ -175,13 +175,13 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
                             if (lvAutoRefreshTimeInSecs > 0) {
                                 if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
-                                    logger.warn("Clouldn't add to OneWireUpdate scheduler",
+                                    logger.warn("Couldn't add to OneWireUpdate scheduler",
                                             lvDevicePropertyBindingConfig);
                                 }
                             }
                         }
                     } else {
-                        logger.debug("Didn't schedule item {} because it is not an DevicePropertyBinding.", lvItemName);
+                        logger.debug("Didn't schedule item {} because it is not a DevicePropertyBinding.", lvItemName);
                     }
                 }
             }
@@ -220,10 +220,10 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
 
                 if (lvAutoRefreshTimeInSecs > 0) {
                     if (!ivOneWireReaderScheduler.scheduleUpdate(pvItemName, lvAutoRefreshTimeInSecs)) {
-                        logger.warn("Clouldn't add to OneWireUpdate scheduler", lvDeviceBindingConfig);
+                        logger.warn("Couldn't add to OneWireUpdate scheduler", lvDeviceBindingConfig);
                     }
                 } else {
-                    logger.debug("Didnt't add to OneWireUpdate scheduler, because refresh is <= 0: "
+                    logger.debug("Didn't add to OneWireUpdate scheduler, because refresh is <= 0: "
                             + lvDeviceBindingConfig.toString());
                 }
             }
@@ -323,7 +323,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider>
                 ivCacheItemStates.put(pvItem.getName(), lvNewState);
                 eventPublisher.postUpdate(pvItem.getName(), lvNewState);
             } else {
-                logger.debug("didn't post update to eventPublisher, because state did not changed for item "
+                logger.debug("didn't post update to eventPublisher, because state did not change for item "
                         + pvItem.getName());
             }
         }

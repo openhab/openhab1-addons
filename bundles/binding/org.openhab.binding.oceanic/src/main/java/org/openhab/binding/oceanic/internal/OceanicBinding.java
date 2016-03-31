@@ -228,7 +228,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 }
                             }
                         } catch (SchedulerException e1) {
-                            logger.error("An exception occurred while quering the Quartz Scheduler ({})",
+                            logger.error("An exception occurred while querying the Quartz Scheduler ({})",
                                     e1.getMessage());
                         }
 
@@ -275,7 +275,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 }
                             }
                         } catch (SchedulerException e1) {
-                            logger.error("An exception occurred while quering the Quartz Scheduler ({})",
+                            logger.error("An exception occurred while querying the Quartz Scheduler ({})",
                                     e1.getMessage());
                         }
                     }
@@ -568,7 +568,7 @@ public class OceanicBinding extends AbstractActiveBinding<OceanicBindingProvider
                                 try {
                                     value = createStateForType(valueSelector, response);
                                 } catch (BindingConfigParseException e) {
-                                    logger.error("An exception occured while converting {} to a valide state : {}",
+                                    logger.error("An exception occured while converting {} to a valid state : {}",
                                             response, e.getMessage());
                                     return;
                                 }

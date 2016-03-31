@@ -208,7 +208,7 @@ public class ZWaveIndicatorConverter extends ZWaveCommandClassConverter<ZWaveInd
      * {@inheritDoc}
      *
      * The node's indicator status can change at any time, and without the knowledge of the Z-Wave binding so
-     * before any changes are made to the indicator we need to get it's actual value from the device.
+     * before any changes are made to the indicator we need to get its actual value from the device.
      * Hence the receiveCommand method adds the desired command to a "pending" list, and issues an INDICATOR_GET
      * it does not change the actual device Indicator value.
      *

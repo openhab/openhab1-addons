@@ -171,7 +171,7 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 
     @Override
     public void eventReceived(EslEvent event) {
-        logger.debug("Recieved ESLEvent {}", event.getEventName());
+        logger.debug("Received ESLEvent {}", event.getEventName());
         logger.trace(printEvent(event));
         if (CHANNEl_CREATE.matches(event.getEventName())) {
             handleNewCallEvent(event);

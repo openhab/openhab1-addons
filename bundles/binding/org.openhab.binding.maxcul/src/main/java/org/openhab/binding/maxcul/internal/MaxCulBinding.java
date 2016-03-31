@@ -145,7 +145,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
                                 TimerTask task = new TimerTask() {
                                     @Override
                                     public void run() {
-                                        logger.debug(itemName + " pairMode time out executed");
+                                        logger.debug(itemName + " pairMode timeout executed");
                                         pairMode = false;
                                         eventPublisher.postUpdate(itemName, OnOffType.OFF);
                                     }

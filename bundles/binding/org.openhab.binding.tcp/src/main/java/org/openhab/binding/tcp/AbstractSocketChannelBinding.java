@@ -1067,7 +1067,7 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        logger.warn("Exception occurred while waiting waiting during a blocking buffer write");
+                        logger.warn("Exception occurred while waiting during a blocking buffer write");
                     }
                 }
 
@@ -1532,12 +1532,12 @@ public abstract class AbstractSocketChannelBinding<P extends ChannelBindingProvi
                         } catch (NoConnectionPendingException e) {
                             // this channel is not connected and a connection operation
                             // has not been initiated
-                            logger.warn("The channel  {} has no connection pending ({})", theSocketChannel,
+                            logger.warn("The channel {} has no connection pending ({})", theSocketChannel,
                                     e.getMessage());
                             error = true;
                         } catch (ClosedChannelException e) {
                             // If some other I/O error occurs
-                            logger.warn("The channel  {} is closed ({})", theSocketChannel, e.getMessage());
+                            logger.warn("The channel {} is closed ({})", theSocketChannel, e.getMessage());
                             error = true;
                         } catch (IOException e) {
                             // If some other I/O error occurs

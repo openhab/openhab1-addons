@@ -211,7 +211,7 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
     private void setupEventBusCommandSubscriber(String topic) {
 
         if (StringUtils.isBlank(topic)) {
-            logger.trace("No topic defined for Event Bus Command Subsriber");
+            logger.trace("No topic defined for Event Bus Command Subscriber");
             return;
         }
 
@@ -260,7 +260,7 @@ public class MqttEventBusBinding extends AbstractBinding<MqttBindingProvider>imp
     private void setupEventBusStateSubscriber(String topic) {
 
         if (StringUtils.isBlank(topic)) {
-            logger.trace("No topic defined for Event Bus State Subsriber");
+            logger.trace("No topic defined for Event Bus State Subscriber");
             return;
         }
 

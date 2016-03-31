@@ -126,7 +126,7 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
         try {
             sched = StdSchedulerFactory.getDefaultScheduler();
         } catch (SchedulerException e) {
-            logger.error("An exception occurred while getting a reference to the Quarz Scheduler");
+            logger.error("An exception occurred while getting a reference to the Quartz Scheduler");
         }
 
         for (HDanywhereBindingProvider provider : providers) {
@@ -262,7 +262,7 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
                                 }
                             }
                         } catch (SchedulerException e1) {
-                            logger.error("An exception occurred while quering the Quartz Scheduler ({})",
+                            logger.error("An exception occurred while querying the Quartz Scheduler ({})",
                                     e1.getMessage());
                         }
 

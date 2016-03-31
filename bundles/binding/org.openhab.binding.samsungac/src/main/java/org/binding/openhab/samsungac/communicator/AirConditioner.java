@@ -77,7 +77,7 @@ public class AirConditioner {
             getToken();
             loginWithToken();
         } catch (Exception e) {
-            logger.debug("Disconneting...", e);
+            logger.debug("Disconnecting...", e);
             disconnect();
             throw e;
         }

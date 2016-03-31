@@ -262,7 +262,7 @@ public class S300THBinding extends AbstractActiveBinding<S300THBindingProvider>i
 
     @Override
     public void error(Exception e) {
-        logger.error("Received error from CUL instead fo data", e);
+        logger.error("Received error from CUL instead of data", e);
 
     }
 

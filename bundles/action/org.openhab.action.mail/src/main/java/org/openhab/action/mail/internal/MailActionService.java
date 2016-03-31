@@ -68,7 +68,11 @@ public class MailActionService implements ActionService, ManagedService {
 
             String tlsString = (String) config.get("tls");
             if (StringUtils.isNotBlank(tlsString)) {
-                Mail.tls = tlsString.equalsIgnoreCase("true");
+                Mail.startTLSEnabled = tlsString.equalsIgnoreCase("true");
+            }
+            String sslString = (String) config.get("ssl");
+            if (StringUtils.isNotBlank(sslString)) {
+                Mail.sslOnConnect = sslString.equalsIgnoreCase("true");
             }
             String popBeforeSmtpString = (String) config.get("popbeforesmtp");
             if (StringUtils.isNotBlank(popBeforeSmtpString)) {
@@ -85,7 +89,7 @@ public class MailActionService implements ActionService, ManagedService {
 
             // set defaults for optional settings
             if (Mail.port == null) {
-                Mail.port = Mail.tls ? 587 : 25;
+                Mail.port = (Mail.startTLSEnabled || Mail.sslOnConnect) ? 587 : 25;
             }
 
             isProperlyConfigured = true;

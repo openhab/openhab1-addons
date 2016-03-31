@@ -65,7 +65,7 @@ public class MiosUnit {
     private static final Logger logger = LoggerFactory.getLogger(MiosUnit.class);
 
     /**
-     * All MiOS unit's have a name, that must be specified as the configuration is being loaded.
+     * All MiOS units have a name, that must be specified as the configuration is being loaded.
      */
     public MiosUnit(String name) {
         this.name = name;
