@@ -22487,6 +22487,26 @@ public interface ModelPackage extends EPackage {
     int OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING = 2;
 
     /**
+     * The operation id for the '<em>Simple Gauge</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int OLED_BRICKLET___SIMPLE_GAUGE__INT = 3;
+
+    /**
+     * The operation id for the '<em>Simple Gauge</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int OLED_BRICKLET___SIMPLE_GAUGE__INT_INT_INT = 4;
+
+    /**
      * The number of operations of the '<em>OLED Bricklet</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -22494,7 +22514,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int OLED_BRICKLET_OPERATION_COUNT = 3;
+    int OLED_BRICKLET_OPERATION_COUNT = 5;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLED128x64Impl
@@ -22727,6 +22747,26 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING = OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING;
+
+    /**
+     * The operation id for the '<em>Simple Gauge</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___SIMPLE_GAUGE__INT = OLED_BRICKLET___SIMPLE_GAUGE__INT;
+
+    /**
+     * The operation id for the '<em>Simple Gauge</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLED12_8X64___SIMPLE_GAUGE__INT_INT_INT = OLED_BRICKLET___SIMPLE_GAUGE__INT_INT_INT;
 
     /**
      * The operation id for the '<em>Init</em>' operation.
@@ -23009,6 +23049,26 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int MBRICKLET_OLE6_4X48___WRITE_LINE__SHORT_SHORT_STRING = OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING;
+
+    /**
+     * The operation id for the '<em>Simple Gauge</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48___SIMPLE_GAUGE__INT = OLED_BRICKLET___SIMPLE_GAUGE__INT;
+
+    /**
+     * The operation id for the '<em>Simple Gauge</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MBRICKLET_OLE6_4X48___SIMPLE_GAUGE__INT_INT_INT = OLED_BRICKLET___SIMPLE_GAUGE__INT_INT_INT;
 
     /**
      * The operation id for the '<em>Init</em>' operation.
@@ -33831,6 +33891,32 @@ public interface ModelPackage extends EPackage {
     EOperation getOLEDBricklet__WriteLine__short_short_String();
 
     /**
+     * Returns the meta object for the '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#simpleGauge(int) <em>Simple Gauge</em>}'
+     * operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the '<em>Simple Gauge</em>' operation.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#simpleGauge(int)
+     * @generated
+     */
+    EOperation getOLEDBricklet__SimpleGauge__int();
+
+    /**
+     * Returns the meta object for the '
+     * {@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#simpleGauge(int, int, int)
+     * <em>Simple Gauge</em>}' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the '<em>Simple Gauge</em>' operation.
+     * @see org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#simpleGauge(int, int, int)
+     * @generated
+     */
+    EOperation getOLEDBricklet__SimpleGauge__int_int_int();
+
+    /**
      * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64
      * <em>MBricklet OLED12 8x64</em>}'.
      * <!-- begin-user-doc -->
@@ -40833,6 +40919,24 @@ public interface ModelPackage extends EPackage {
          */
         EOperation OLED_BRICKLET___WRITE_LINE__SHORT_SHORT_STRING = eINSTANCE
                 .getOLEDBricklet__WriteLine__short_short_String();
+
+        /**
+         * The meta object literal for the '<em><b>Simple Gauge</b></em>' operation.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EOperation OLED_BRICKLET___SIMPLE_GAUGE__INT = eINSTANCE.getOLEDBricklet__SimpleGauge__int();
+
+        /**
+         * The meta object literal for the '<em><b>Simple Gauge</b></em>' operation.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EOperation OLED_BRICKLET___SIMPLE_GAUGE__INT_INT_INT = eINSTANCE.getOLEDBricklet__SimpleGauge__int_int_int();
 
         /**
          * The meta object literal for the '

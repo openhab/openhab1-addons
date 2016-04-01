@@ -950,6 +950,8 @@ interface OLEDBricklet {
     op void clear()
     op void clear(short columnFrom, short columnTo, short rowFrom, short rowTo)
     op void writeLine(short line, short position, String text)
+    op void simpleGauge(int angle)
+    op void simpleGauge(int min, int max, int value)
 }
 
 class MBrickletOLED128x64 extends OLEDBricklet, MDevice<TinkerBrickletOLED128x64>, MTextActor,
