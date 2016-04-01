@@ -94,4 +94,18 @@ public class TinkerForge {
             @ParamDoc(name = "text", text = "the text to write") String text) {
         return context.tfOLEDWriteLine(uid, line.shortValue(), position.shortValue(), text);
     }
+
+    @ActionDoc(text = "Write a line to an OLED Bricklet. The 64x48 Oled has 6 Lines (0-5) and 14 Columns (0 - 13). The 128x64 Oled has 8 Lines (0 - 7) and 26 Columns (0 - 25).", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDSimpleGauge(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid,
+            @ParamDoc(name = "angle", text = "the angel") Integer angle) {
+        return context.tfOLEDSimpleGauge(uid, angle);
+    }
+
+    @ActionDoc(text = "Write a line to an OLED Bricklet. The 64x48 Oled has 6 Lines (0-5) and 14 Columns (0 - 13). The 128x64 Oled has 8 Lines (0 - 7) and 26 Columns (0 - 25).", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+    public static boolean tfOLEDSimpleGauge(@ParamDoc(name = "uid", text = "Bricklet OLED uid") String uid,
+            @ParamDoc(name = "angle", text = "the angel") Integer min,
+            @ParamDoc(name = "angle", text = "the angel") Integer max,
+            @ParamDoc(name = "angle", text = "the angel") Integer value) {
+        return context.tfOLEDSimpleGauge(uid, min, max, value);
+    }
 }

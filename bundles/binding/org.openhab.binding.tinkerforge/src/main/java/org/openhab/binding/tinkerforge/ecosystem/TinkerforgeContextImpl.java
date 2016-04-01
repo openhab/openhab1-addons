@@ -189,4 +189,36 @@ public class TinkerforgeContextImpl implements TinkerforgeContext {
         }
     }
 
+    @Override
+    public boolean tfOLEDSimpleGauge(String uid, int angle) {
+        if (ecosystem == null) {
+            logger.error("tfOLEDSimpleGauge action failed ecosystem is null");
+            return false;
+        }
+        MBaseDevice mDevice = ecosystem.getDevice(uid, null);
+        if (mDevice instanceof OLEDBricklet) {
+            ((OLEDBricklet) mDevice).simpleGauge(angle);
+            return true;
+        } else {
+            logger.error("no OLED Bricklet found for uid {}", uid);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean tfOLEDSimpleGauge(String uid, Integer min, Integer max, Integer value) {
+        if (ecosystem == null) {
+            logger.error("tfOLEDSimpleGauge action failed ecosystem is null");
+            return false;
+        }
+        MBaseDevice mDevice = ecosystem.getDevice(uid, null);
+        if (mDevice instanceof OLEDBricklet) {
+            ((OLEDBricklet) mDevice).simpleGauge(min, max, value);
+            return true;
+        } else {
+            logger.error("no OLED Bricklet found for uid {}", uid);
+            return false;
+        }
+    }
+
 }

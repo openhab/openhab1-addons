@@ -97,4 +97,8 @@ public interface TinkerforgeContext {
      */
     public boolean tfOLEDWriteLine(String uid, short line, short position, String text);
 
+    public boolean tfOLEDSimpleGauge(String uid, int angle);
+
+    public boolean tfOLEDSimpleGauge(String uid, Integer min, Integer max, Integer value);
+
 }

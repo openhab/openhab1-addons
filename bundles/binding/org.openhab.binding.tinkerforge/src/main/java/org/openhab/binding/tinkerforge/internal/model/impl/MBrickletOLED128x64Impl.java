@@ -2,6 +2,9 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -1051,6 +1054,86 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
      * @generated NOT
      */
     @Override
+    public void simpleGauge(int angle) {
+        short WIDTH = 128;
+        short HEIGHT = 64;
+        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        int originX = WIDTH / 2;
+        int originY = HEIGHT / 2;
+        int length = HEIGHT / 2 - 2;
+
+        double radians = Math.toRadians(angle);
+        int x = (int) (originX + length * Math.cos(radians));
+        int y = (int) (originY + length * Math.sin(radians));
+        Graphics g = image.createGraphics();
+
+        g.setColor(Color.black);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+        g.setColor(Color.white);
+        g.drawLine(originX, originY, x, y);
+        g.dispose();
+        drawImage(image, HEIGHT, WIDTH);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void simpleGauge(int min, int max, int value) {
+        int angle = 180 / (((max - min) / 100) * value);
+        simpleGauge(angle);
+    }
+
+    private void drawImage(BufferedImage image, short HEIGHT, short WIDTH) {
+        short[][] column = new short[HEIGHT / 8][WIDTH];
+        short[] columnWrite = new short[64];
+        short page = 0;
+        short i, j, k, l;
+        for (i = 0; i < HEIGHT / 8; i++) {
+            for (j = 0; j < WIDTH; j++) {
+                page = 0;
+
+                for (k = 0; k < 8; k++) {
+                    if ((image.getRGB(j, (i * 8) + k) & 0x00FFFFFF) > 0) {
+                        page |= (short) (1 << k);
+                    }
+                }
+                column[i][j] = page;
+            }
+        }
+        try {
+            tinkerforgeDevice.newWindow((short) 0, (short) (WIDTH - 1), (short) 0, (short) 7);
+            for (i = 0; i < HEIGHT / 8; i++) {
+                l = 0;
+                for (j = 0; j < WIDTH / 2; j++) {
+                    columnWrite[l] = column[i][j];
+                    l++;
+                }
+                tinkerforgeDevice.write(columnWrite);
+                l = 0;
+                for (k = (short) (WIDTH / 2); k < WIDTH; k++) {
+                    columnWrite[l] = column[i][k];
+                    l++;
+                }
+                tinkerforgeDevice.write(columnWrite);
+            }
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
     public void writeLine(short line, short position, String text) {
         if (position < 0 || position > maxColumn) {
             logger.error("position must have a value from 0 to {}", maxColumn);
@@ -1621,6 +1704,12 @@ public class MBrickletOLED128x64Impl extends MinimalEObjectImpl.Container implem
                 return null;
             case ModelPackage.MBRICKLET_OLED12_8X64___WRITE_LINE__SHORT_SHORT_STRING:
                 writeLine((Short) arguments.get(0), (Short) arguments.get(1), (String) arguments.get(2));
+                return null;
+            case ModelPackage.MBRICKLET_OLED12_8X64___SIMPLE_GAUGE__INT:
+                simpleGauge((Integer) arguments.get(0));
+                return null;
+            case ModelPackage.MBRICKLET_OLED12_8X64___SIMPLE_GAUGE__INT_INT_INT:
+                simpleGauge((Integer) arguments.get(0), (Integer) arguments.get(1), (Integer) arguments.get(2));
                 return null;
         }
         return super.eInvoke(operationID, arguments);

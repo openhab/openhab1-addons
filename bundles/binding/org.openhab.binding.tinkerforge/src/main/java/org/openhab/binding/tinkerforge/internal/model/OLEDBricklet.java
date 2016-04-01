@@ -173,4 +173,22 @@ public interface OLEDBricklet extends EObject {
      */
     void writeLine(short line, short position, String text);
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model angleUnique="false"
+     * @generated
+     */
+    void simpleGauge(int angle);
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model minUnique="false" maxUnique="false" valueUnique="false"
+     * @generated
+     */
+    void simpleGauge(int min, int max, int value);
+
 } // OLEDBricklet
