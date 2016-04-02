@@ -25,6 +25,7 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -290,6 +291,20 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 						BigDecimal dim = new BigDecimal(Math.round((new DecimalType((String) action).doubleValue() * 100) / 255));
 						state = new PercentType(dim);
 					}
+					break;
+				case LOCK:
+				    if ("0".equals(action)) {
+				        state = OnOffType.OFF;
+				    } else {
+				        state = OnOffType.ON;
+				    }
+				    break;
+				case HEARTBEAT:
+				    if ("255".equals(action)) {
+				        // Return current timestamp when we get a heartbeat
+				        state = new DateTimeType();
+				    }
+				    break;
 				default:
 					break;
 				}
@@ -395,6 +410,15 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 			}
 			break;
 
+		case BATLVL:
+            for (ISYBindingConfig config : getBindingConfigFromAddress(
+                    node.address, control.name)) {
+                
+                state = new DecimalType((String) action);
+                this.eventPublisher.postUpdate(config.getItemName(), state);
+            }
+            break;
+		    
 		default:
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("Unsupported control {}", control.name);
@@ -538,6 +562,10 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					// or else the switch button will not be refreshed until the
 					// new state has been reached
 					this.eventPublisher.postUpdate(config.getItemName(), type);
+				} else if (ISYNodeType.LOCK.equals(config.getType())) {
+				    this.insteonClient.changeNodeState(ISYControl.SECMD.name(), 
+				            "1", node.address);
+				    this.eventPublisher.postUpdate(config.getItemName(), type);
 				} else if (node instanceof UDGroup) {
 					this.insteonClient.turnSceneOn(node.address);
 				} else {
@@ -557,6 +585,10 @@ public class ISYActiveBinding extends AbstractActiveBinding<ISYBindingProvider>
 					// new state has been reached
 					this.eventPublisher.postUpdate(config.getItemName(), type);
 				
+                } else if (ISYNodeType.LOCK.equals(config.getType())) {
+                    this.insteonClient.changeNodeState(ISYControl.SECMD.name(), 
+                            "0", node.address);
+                    this.eventPublisher.postUpdate(config.getItemName(), type);
 				} else if (node instanceof UDGroup) {
 					this.insteonClient.turnSceneFastOff(node.address);
 				} else {

@@ -21,6 +21,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -53,13 +54,14 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	public void validateItemType(final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof ContactItem || item instanceof SwitchItem 
-				|| item instanceof NumberItem || item instanceof StringItem)) {
+				|| item instanceof NumberItem || item instanceof StringItem
+				|| item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', only Switch, Contact, String and Number Items are supported yet - please check your *.items configuration");
+							+ "', only Switch, Contact, String, Number and DateTime Items are supported yet - please check your *.items configuration");
 		}
 	}
 
@@ -142,6 +144,8 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			type = ISYNodeType.STRING;
 		} else if (item instanceof DimmerItem) {
 			type = ISYNodeType.DIMMER;
+		} else if (item instanceof DateTimeItem) {
+			type = ISYNodeType.HEARTBEAT;
 		} else {
 			type = ISYNodeType.SWITCH;
 		}
@@ -167,6 +171,12 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 					if ("thermostat".equalsIgnoreCase(value)) {
 						type = ISYNodeType.THERMOSTAT;
 					}
+                    if ("lock".equalsIgnoreCase(value)) {
+                        type = ISYNodeType.LOCK;
+                    }
+                    if ("heartbeat".equalsIgnoreCase(value)) {
+                        type = ISYNodeType.HEARTBEAT;
+                    }
 					break;
 				case "cmd":
 					try {
@@ -184,7 +194,7 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			address = controller;
 		}
 
-		return new ISYBindingConfig(item, type, address, address, command);
+		return new ISYBindingConfig(item, type, controller, address, command);
 	}
 
 }
