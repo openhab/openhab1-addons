@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0175</Id>
@@ -3320,6 +3320,19 @@
 			<Model>TZDW-100</Model>
 			<Label lang="en">Door Sensor</Label>
 			<ConfigFile>telldus/tzdw-100.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+ 	<Manufacturer>
+		<Id>0144</Id>
+		<Name>Kwikset</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>900 series</Model>
+			<Label lang="en">Keypad Door Lock</Label>
+			<ConfigFile>kwikset/kwikset-9xx.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
