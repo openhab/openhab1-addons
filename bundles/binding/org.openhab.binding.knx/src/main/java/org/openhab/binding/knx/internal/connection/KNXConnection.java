@@ -436,7 +436,7 @@ public class KNXConnection implements ManagedService {
             if (sPC == null) {
                 sLogger.debug("Not connected yet. Trying to connect.");
                 if (!connect()) {
-                    sLogger.warn("Inital connection to KNX bus failed!");
+                    sLogger.warn("Initial connection to KNX bus failed!");
                     if (sAutoReconnectPeriod > 0) {
                         sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
                         final Timer timer = new Timer();

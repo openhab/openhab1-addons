@@ -63,7 +63,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
                 if (dp != null) {
                     if (mKNXConnected) {
-                        sLogger.debug("Autorefresh: Trying to read form KNX bus: {}", dp);
+                        sLogger.debug("Autorefresh: Trying to read from KNX bus: {}", dp);
                         readFromKNXBus(dp);
 
                         long readingPause = KNXConnection.getReadingPause();

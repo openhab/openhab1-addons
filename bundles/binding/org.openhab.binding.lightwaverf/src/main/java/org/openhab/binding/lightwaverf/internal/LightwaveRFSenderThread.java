@@ -122,7 +122,7 @@ public class LightwaveRFSenderThread implements Runnable, LightwaveRFMessageList
                 if (!unlatched) {
                     Integer sendCount = retryCountMap.get(commandToSend.getMessageId());
                     if (sendCount.intValue() >= MAX_RETRY_ATTEMPS) {
-                        logger.error("Unable to send message {} after {} attemps giving up",
+                        logger.error("Unable to send message {} after {} attempts giving up",
                                 commandToSend.getLightwaveRfCommandString(), MAX_RETRY_ATTEMPS);
                         return;
                     }

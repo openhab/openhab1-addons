@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -206,30 +206,54 @@ public class ZWaveNodeNamingCommandClass extends ZWaveCommandClass
             numBytes = MAX_STRING_LENGTH;
         }
 
+        if (charPresentation != ENCODING_ASCII) {
+            logger.debug("NODE {}: Switching to using ASCII encoding", getNode().getNodeId());
+            charPresentation = ENCODING_ASCII;
+        }
+
+        ByteArrayOutputStream str = new ByteArrayOutputStream();
         // Check for null terminations - ignore anything after the first null
-        for (int c = offset + 2; c < numBytes; c++) {
-            if (serialMessage.getMessagePayloadByte(c + offset + 2) == 0) {
-                numBytes = c;
-                break;
+        for (int c = 0; c < numBytes; c++) {
+            if (serialMessage.getMessagePayloadByte(c + offset + 2) > 32
+                    && serialMessage.getMessagePayloadByte(c + offset + 2) < 127) {
+                str.write((byte) (serialMessage.getMessagePayloadByte(c + offset + 2)));
             }
         }
-
-        byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, offset + 2 + numBytes);
-
         try {
-            switch (charPresentation) {
-                case ENCODING_ASCII:
-                case ENCODING_EXTENDED_ASCII:
-                    return new String(strBuffer, "ASCII");
-
-                case ENCODING_UTF16:
-                    String sTemp = new String(strBuffer, "UTF-16");
-                    return new String(sTemp.getBytes("UTF-8"), "UTF-8");
-            }
-        } catch (UnsupportedEncodingException uee) {
-            System.out.println("Exception: " + uee);
+            return new String(str.toByteArray(), "ASCII");
+        } catch (UnsupportedEncodingException e) {
+            return null;
         }
-        return null;
+
+        /*
+         * byte[] strBuffer = Arrays.copyOfRange(serialMessage.getMessagePayload(), offset + 2, offset + 2 + numBytes);
+         *
+         * String response = null;
+         * try {
+         * switch (charPresentation) {
+         * case ENCODING_ASCII:
+         * // Using standard ASCII codes. (values 128-255 are ignored)
+         * break;
+         * case ENCODING_EXTENDED_ASCII:
+         * // Using standard and OEM Extended ASCII
+         * response = new String(strBuffer, "ASCII");
+         * break;
+         *
+         * case ENCODING_UTF16:
+         * // Unicode UTF-16
+         * String sTemp = new String(strBuffer, "UTF-16");
+         * response = new String(sTemp.getBytes("UTF-8"), "UTF-8");
+         * break;
+         * }
+         * } catch (UnsupportedEncodingException uee) {
+         * System.out.println("Exception: " + uee);
+         * }
+         * if (response == null) {
+         * return null;
+         * }
+         *
+         * return response.replaceAll("\\p{C}", "?");
+         */
     }
 
     /**
