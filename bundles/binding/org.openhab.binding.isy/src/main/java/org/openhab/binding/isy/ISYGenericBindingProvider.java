@@ -194,7 +194,7 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			address = controller;
 		}
 
-		return new ISYBindingConfig(item, type, address, address, command);
+		return new ISYBindingConfig(item, type, controller, address, command);
 	}
 
 }
