@@ -22,6 +22,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveSecurityCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
@@ -408,6 +409,11 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
                 masterController = true;
                 logger.error("Error parsing 'masterController'. This must be boolean.");
             }
+        }
+        if (StringUtils.isNotBlank((String) config.get("networkKey"))) {
+            String keyString = (String) config.get("networkKey");
+            // All errors will be caught and logged by
+            ZWaveSecurityCommandClass.setRealNetworkKey(keyString);
         }
 
         // Now that we've read ALL the configuration, initialise the binding.

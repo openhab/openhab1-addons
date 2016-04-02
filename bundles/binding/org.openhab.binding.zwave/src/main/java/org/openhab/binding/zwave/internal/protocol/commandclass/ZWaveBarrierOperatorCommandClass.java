@@ -157,7 +157,7 @@ public class ZWaveBarrierOperatorCommandClass extends ZWaveCommandClass implemen
 
     /**
      * Enhanced command class to provide all the various states possible for the BarrierOperator
-     *
+     * 
      * @author sankala
      *
      */
