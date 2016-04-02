@@ -154,6 +154,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
     /**
      * @{inheritDoc}
      * TODO : handle all states (variables, calendars...)
+     * TODO : catch java.net.SocketTimeoutException and deactivate / activate the binding to restart connection
      */
     @Override
     protected void execute() {

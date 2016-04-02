@@ -168,11 +168,11 @@ public class ZibaseListener extends Thread {
             } catch (UnknownHostException ex) {
                 logger.error("Given Zibase host not reachable : " + ex);
             } catch (IOException ex) {
-                logger.error("IO eror reading Zibase soket : " + ex);
+                logger.error("IO eror reading Zibase socket : " + ex);
             }
 
         } else {
-            logger.error("Zibase listener thread launched with no associated zibase and/or eventPublisher !");
+            logger.error("Zibase not initialized. Ip Address may be wrong or not reachable !");
         }
     }
 

@@ -43,14 +43,48 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
             ZbProtocol.X2D868INSH.toString(), ZbProtocol.X2D868PIWI.toString(), ZbProtocol.ZWAVE.toString(), };
 
     /**
+     * X10 formed id (Z prefix removed for ZWave items
+     */
+    protected String x10Id;
+
+    /**
+     * Zwave indicator used for some Zibase command (eg. getState() )
+     */
+    protected Boolean isZWave = false;
+    
+            
+    /**
      * Constructor
      * 
      * @param configParameters
      */
     public ZibaseBindingConfigReceiver(String[] configParameters) {
         super(configParameters);
+        
+        // handle Zwave case : items' id begin with Z, but some zibase call must be called
+        // with the X10 version of the ID (no Z prefix) and a special flag
+        logger.debug("Item protocol : " + this.getProtocol());
+        
+        if(this.getProtocol().equals(ZbProtocol.ZWAVE.toString())) {
+            logger.debug("Item is ZWAVE !");
+            this.isZWave = true;
+            this.x10Id = this.getId().substring(1);
+        } else {
+            this.x10Id = this.getId();
+        }
+        
+        logger.debug("Item X10 id set to : " + this.x10Id);
     }
-
+    
+    /**
+     * get x10 id (remove Z prefix if item use Zwave protovol)
+     * 
+     * @return
+     */
+    public String getX10Id() {
+        return this.x10Id;
+    }
+    
     /**
      * {@link Inherited}
      */
@@ -60,10 +94,12 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
         ZbAction action = ZbAction.valueOf(command.toString());
         ZbProtocol protocol = ZbProtocol.valueOf(this.getProtocol());
 
+        logger.debug("SendCommand => item id is : " + this.getId() + " / X10 id is : " + this.getX10Id() );
+                
         if (dim >= 0) {
-            zibase.sendCommand(this.getId(), action, protocol, dim, 1);
+            zibase.sendCommand(this.getX10Id(), action, protocol, dim, 1);
         } else {
-            zibase.sendCommand(this.getId(), action, protocol);
+            zibase.sendCommand(this.getX10Id(), action, protocol);
         }
 
         logger.debug("Send command to " + this.getId() + " : " + action.toString() + " / " + protocol.toString());
@@ -102,13 +138,11 @@ public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {
 
         Boolean zibaseValue;
     
-        if(this.getProtocol() == ZbProtocol.ZWAVE.toString()) {
-            logger.debug("Zwave item detected for getState()");
-            zibaseValue = zibase.getState(this.getId(), true);
-        } else {
-            zibaseValue = zibase.getState(this.getId(), false);
-        }
-		
+        logger.debug("getState => item protocol is : " + this.getProtocol());
+        logger.debug("getState => item id is : " + this.getId() + " / X10 id is : " + this.getX10Id() );
+        
+        zibaseValue = zibase.getState(this.getX10Id(), this.isZWave);
+        
         if (zibaseValue != null) {
             logger.debug("zibase returned value for " + this.getId() + ": " + zibaseValue);
             return OnOffType.valueOf(zibaseValue ? "ON":"OFF");

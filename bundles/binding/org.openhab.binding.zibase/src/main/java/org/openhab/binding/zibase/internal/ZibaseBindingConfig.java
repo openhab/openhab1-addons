@@ -152,6 +152,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
     public ZibaseBindingConfig(String[] configParameters) {
 
         this.values = configParameters;
+        logger.debug("Item Constructor - saved valued : " + StringUtils.join(this.values, ","));
     }
 
     /**
@@ -163,6 +164,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
         return values[POS_ID];
     }
 
+    
     /**
      * get type
      * 
