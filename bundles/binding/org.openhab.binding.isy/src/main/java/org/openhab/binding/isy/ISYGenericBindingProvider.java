@@ -54,13 +54,14 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 	public void validateItemType(final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof ContactItem || item instanceof SwitchItem 
-				|| item instanceof NumberItem || item instanceof StringItem)) {
+				|| item instanceof NumberItem || item instanceof StringItem
+				|| item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', only Switch, Contact, String and Number Items are supported yet - please check your *.items configuration");
+							+ "', only Switch, Contact, String, Number and DateTime Items are supported yet - please check your *.items configuration");
 		}
 	}
 
@@ -143,8 +144,8 @@ public class ISYGenericBindingProvider extends AbstractGenericBindingProvider
 			type = ISYNodeType.STRING;
 		} else if (item instanceof DimmerItem) {
 			type = ISYNodeType.DIMMER;
-        } else if (item instanceof DateTimeItem) {
-            type = ISYNodeType.HEARTBEAT;
+		} else if (item instanceof DateTimeItem) {
+			type = ISYNodeType.HEARTBEAT;
 		} else {
 			type = ISYNodeType.SWITCH;
 		}
