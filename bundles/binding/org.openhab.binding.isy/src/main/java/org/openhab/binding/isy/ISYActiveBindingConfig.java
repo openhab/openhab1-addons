@@ -41,15 +41,21 @@ public class ISYActiveBindingConfig {
 			refreshInterval = Long.parseLong((String) config.get("refresh"));
 		}
 
+		if (StringUtils.isNotBlank((String) config.get("user"))
+				&& StringUtils.isNotBlank((String) config.get("password"))) {
+			this.user = (String) config.get("user");
+			this.password = (String) config.get("password");
+		} else {
+			this.logger.warn("No user/password specified");
+		}
+
 		if (StringUtils.isNotBlank((String) config.get("upnp"))) {
 			useUpnp = Boolean.parseBoolean((String) config.get("upnp"));
 		}
 
 		if (!useUpnp && StringUtils.isNotBlank((String) config.get("uuid"))
 				&& StringUtils.isNotBlank((String) config.get("ip"))
-				&& StringUtils.isNotBlank((String) config.get("port"))
-				&& StringUtils.isNotBlank((String) config.get("user"))
-				&& StringUtils.isNotBlank((String) config.get("password"))) {
+				&& StringUtils.isNotBlank((String) config.get("port"))) {
 
 			this.uuid = (String) config.get("uuid");
 			this.ipAddress = (String) config.get("ip");
@@ -65,9 +71,6 @@ public class ISYActiveBindingConfig {
 				this.logger.error("Port out of range (0-65535)");
 				throw new NumberFormatException("Invalid port");
 			}
-
-			this.user = (String) config.get("user");
-			this.password = (String) config.get("password");
 
 		} else {
 			this.logger.info("Using UPNP for ISY connection.");
