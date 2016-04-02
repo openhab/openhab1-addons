@@ -317,6 +317,8 @@ public class ZWaveNode {
 
         SerialMessage m = commandClass.setNameMessage(name);
         this.controller.sendData(m);
+        m = commandClass.getNameMessage();
+        this.controller.sendData(m);
     }
 
     /**
@@ -354,6 +356,8 @@ public class ZWaveNode {
         }
 
         SerialMessage m = commandClass.setLocationMessage(location);
+        this.controller.sendData(m);
+        m = commandClass.getLocationMessage();
         this.controller.sendData(m);
     }
 
