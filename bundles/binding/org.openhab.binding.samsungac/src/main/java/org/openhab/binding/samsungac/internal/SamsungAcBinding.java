@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.binding.openhab.samsungac.communicator.AirConditioner;
-import org.binding.openhab.samsungac.communicator.SsdpDiscovery;
 import org.openhab.binding.samsungac.SamsungAcBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
@@ -89,7 +87,7 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
             String cmd = getCmdStringFromEnumValue(command, property);
 
             if (cmd != null) {
-                sendCommand(host, property, cmd);
+                sendCommand(host, property, cmd, hostName);
             } else {
                 logger.warn("Not sending for itemName: '" + itemName + "' because property not implemented: '"
                         + property + "'");
@@ -126,16 +124,18 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
         return cmd;
     }
 
-    private void sendCommand(AirConditioner aircon, CommandEnum property, String value) {
+    private void sendCommand(AirConditioner aircon, CommandEnum property, String value, String hostName) {
         int i = 1;
         boolean commandSent = false;
         while (i < 5 && !commandSent) {
             try {
                 logger.debug("[" + i + "/5] Sending command: " + value + " to property:" + property + " with ip:"
                         + aircon.getIpAddress());
-                if (aircon.sendCommand(property, value) != null) {
+                Map<CommandEnum, String> status = aircon.sendCommand(property, value);
+                if (status != null) {
                     commandSent = true;
                     logger.debug("Command[" + value + "] sent on try number " + i);
+                    updateAllItemsFromStatusMap(status, hostName);
                 }
             } catch (Exception e) {
                 logger.warn("Could not send value: '" + value + "' to property:'" + property + "', try " + i + "/5");
@@ -307,6 +307,10 @@ public class SamsungAcBinding extends AbstractActiveBinding<SamsungAcBindingProv
             return;
         }
 
+        updateAllItemsFromStatusMap(status, acName);
+    }
+
+    private void updateAllItemsFromStatusMap(Map<CommandEnum, String> status, String acName) {
         for (CommandEnum cmd : status.keySet()) {
             logger.debug("Trying to find item for: " + acName + " and cmd: " + cmd.toString());
             String item = getItemName(acName, cmd);
