@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
 
-import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
+import org.openhab.binding.homematic.internal.rpc.BinRpcResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

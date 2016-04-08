@@ -183,6 +183,11 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
     Write("  </device>\n");
   }
 }
+Write("  <device address='CENTRAL' interface='BidCos-RF' type='CENTRAL'>\n");
+Write("    <channel number='0'>\n");
+Write("      <datapoint name='PONG' value='' valueType='20' writeable='false' />\n");
+Write("    </channel>\n");
+Write("  </device>\n");
 Write("</devices>");
 		]]>
 		</data>

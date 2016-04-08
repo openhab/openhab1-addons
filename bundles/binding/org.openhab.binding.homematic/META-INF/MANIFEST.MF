@@ -38,4 +38,5 @@ Export-Package: org.openhab.binding.homematic.internal.common,org.open
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/nanohttpd-2.3.0.jar

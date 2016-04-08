@@ -18,6 +18,7 @@ package org.openhab.binding.homematic.internal.model;
 public enum HmInterface {
     RF,
     WIRED,
+    HMIP,
     CUXD,
     TCL,
     HOMEGEAR,
@@ -30,6 +31,8 @@ public enum HmInterface {
                 return "BidCos-RF";
             case WIRED:
                 return "BidCos-Wired";
+            case HMIP:
+                return "HmIP-RF";
             case CUXD:
                 return "CUxD";
             case TCL:
@@ -53,6 +56,8 @@ public enum HmInterface {
                 return 2001;
             case WIRED:
                 return 2000;
+            case HMIP:
+                return 2010;
             case CUXD:
                 return 8701;
             case TCL:
@@ -73,6 +78,8 @@ public enum HmInterface {
             return VIRTUALDEVICES;
         } else if (WIRED.toString().equals(interfaceType)) {
             return WIRED;
+        } else if (HMIP.toString().equals(interfaceType)) {
+            return HMIP;
         } else if (CUXD.toString().equals(interfaceType)) {
             return CUXD;
         } else if (HOMEGEAR.toString().equals(interfaceType)) {

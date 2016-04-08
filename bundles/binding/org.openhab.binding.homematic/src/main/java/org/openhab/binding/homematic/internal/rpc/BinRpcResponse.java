@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.homematic.internal.binrpc;
+package org.openhab.binding.homematic.internal.rpc;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class BinRpcResponse {
+public class BinRpcResponse implements RpcResponse {
     private final static Logger logger = LoggerFactory.getLogger(BinRpcResponse.class);
 
     private byte data[];
@@ -85,15 +85,17 @@ public class BinRpcResponse {
     }
 
     /**
-     * Returns the decoded methodName.
+     * {@inheritDoc}
      */
+    @Override
     public String getMethodName() {
         return methodName;
     }
 
     /**
-     * Returns the decoded data.
+     * {@inheritDoc}
      */
+    @Override
     public Object[] getResponseData() {
         return responseData;
     }
@@ -153,73 +155,7 @@ public class BinRpcResponse {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (methodName != null) {
-            sb.append(methodName);
-            sb.append("()\n");
-        }
-        dumpCollection(responseData, sb, 0);
-        return sb.toString();
+        return RpcUtils.dumpRpcMessage(methodName, responseData);
     }
 
-    private void dumpCollection(Object[] c, StringBuilder sb, int indent) {
-        if (indent > 0) {
-            for (int in = 0; in < indent - 1; in++) {
-                sb.append('\t');
-            }
-            sb.append("[\n");
-        }
-        for (Object o : c) {
-            if (o instanceof Map) {
-                dumpMap((Map<?, ?>) o, sb, indent + 1);
-            } else if (o instanceof Object[]) {
-                dumpCollection((Object[]) o, sb, indent + 1);
-            } else {
-                for (int in = 0; in < indent; in++) {
-                    sb.append('\t');
-                }
-                sb.append(o);
-                sb.append('\n');
-            }
-        }
-        if (indent > 0) {
-            for (int in = 0; in < indent - 1; in++) {
-                sb.append('\t');
-            }
-            sb.append("]\n");
-        }
-    }
-
-    private void dumpMap(Map<?, ?> c, StringBuilder sb, int indent) {
-        if (indent > 0) {
-            for (int in = 0; in < indent - 1; in++) {
-                sb.append('\t');
-            }
-            sb.append("{\n");
-        }
-        for (Map.Entry<?, ?> me : c.entrySet()) {
-            Object o = me.getValue();
-            for (int in = 0; in < indent; in++) {
-                sb.append('\t');
-            }
-            sb.append(me.getKey());
-            sb.append('=');
-            if (o instanceof Map<?, ?>) {
-                sb.append("\n");
-                dumpMap((Map<?, ?>) o, sb, indent + 1);
-            } else if (o instanceof Object[]) {
-                sb.append("\n");
-                dumpCollection((Object[]) o, sb, indent + 1);
-            } else {
-                sb.append(o);
-                sb.append('\n');
-            }
-        }
-        if (indent > 0) {
-            for (int in = 0; in < indent - 1; in++) {
-                sb.append('\t');
-            }
-            sb.append("}\n");
-        }
-    }
 }

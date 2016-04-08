@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.homematic.internal.binrpc;
+package org.openhab.binding.homematic.internal.rpc;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class BinRpcRequest {
+public class BinRpcRequest implements RpcRequest {
     private byte data[];
     private int dataoffset;
     private String methodName;
@@ -39,19 +39,17 @@ public class BinRpcRequest {
     }
 
     /**
-     * Adds arguments to the method.
+     * {@inheritDoc}
      */
+    @Override
     public void addArg(Object arg) {
         args.add(arg);
     }
 
-    public String getMethodName() {
-        return methodName;
-    }
-
     /**
-     * Generates the binrpc data.
+     * {@inheritDoc}
      */
+    @Override
     public byte[] createMessage() {
         data = new byte[256];
         if (methodName != null) {

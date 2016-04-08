@@ -19,9 +19,11 @@ import org.openhab.binding.homematic.internal.communicator.client.BinRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.CcuClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomegearClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
+import org.openhab.binding.homematic.internal.communicator.client.XmlRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
+import org.openhab.binding.homematic.internal.communicator.server.XmlRpcCallbackServer;
 import org.openhab.binding.homematic.internal.config.BindingAction;
 import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
@@ -57,6 +59,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
     private int newDevicesCounter;
 
     private HomematicCallbackServer homematicCallbackServer;
+
     private HomematicClient homematicClient;
     private ItemDisabler itemDisabler;
 
@@ -73,8 +76,6 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
         if (homematicCallbackServer == null) {
             logger.info("Starting Homematic communicator");
             try {
-                homematicCallbackServer = new BinRpcCallbackServer(this);
-
                 itemDisabler = new ItemDisabler();
                 itemDisabler.start();
                 newDevicesCounter = 0;
@@ -83,8 +84,18 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
                 context.setServerId(rpcClient.getServerId(HmInterface.RF));
                 logger.info("Homematic {}", context.getServerId());
 
-                homematicClient = context.getServerId().isHomegear() ? new HomegearClient(rpcClient)
-                        : new CcuClient(rpcClient);
+                if (context.getServerId().isHomegear()) {
+                    homematicClient = new HomegearClient(rpcClient);
+                    homematicCallbackServer = new BinRpcCallbackServer(this);
+                } else {
+                    if (context.getConfig().isHomematicIpEnabled()) {
+                        homematicClient = new CcuClient(new XmlRpcClient());
+                        homematicCallbackServer = new XmlRpcCallbackServer(this);
+                    } else {
+                        homematicClient = new CcuClient(rpcClient);
+                        homematicCallbackServer = new BinRpcCallbackServer(this);
+                    }
+                }
 
                 context.setHomematicClient(homematicClient);
                 homematicClient.start();

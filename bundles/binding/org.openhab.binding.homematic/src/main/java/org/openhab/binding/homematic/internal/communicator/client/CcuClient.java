@@ -106,6 +106,9 @@ public class CcuClient extends BaseHomematicClient {
         rpcClient.init(getDefaultInterface());
         rpcClient.init(HmInterface.WIRED);
         rpcClient.init(HmInterface.CUXD);
+        if (context.getConfig().isHomematicIpEnabled()) {
+            rpcClient.init(HmInterface.HMIP);
+        }
     }
 
     /**
@@ -114,6 +117,9 @@ public class CcuClient extends BaseHomematicClient {
     @Override
     public void releaseCallback() throws HomematicClientException {
         rpcClient.release(getDefaultInterface());
+        if (context.getConfig().isHomematicIpEnabled()) {
+            rpcClient.release(HmInterface.HMIP);
+        }
         rpcClient.release(HmInterface.WIRED);
         rpcClient.release(HmInterface.CUXD);
     }

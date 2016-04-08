@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.config.binding;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -35,6 +36,9 @@ public class DatapointConfig extends ValueBindingConfig {
     public DatapointConfig(HmInterface hmInterface, String addressWithChannel, String parameter) {
         this.hmInterface = hmInterface;
         String[] configParts = StringUtils.trimToEmpty(addressWithChannel).split(":");
+        if (configParts.length == 1) {
+            configParts = (String[]) ArrayUtils.add(configParts, "0");
+        }
         setAddress(configParts[0]);
         this.channel = configParts[1];
         this.parameter = parameter;

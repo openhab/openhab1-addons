@@ -48,6 +48,12 @@ import org.osgi.service.cm.ConfigurationException;
  * # The reconnect.interval disables the alive.interval and reconnects after a fixed period in time.
  * # Think in hours when configuring (one hour = 3600)
  * # homematic:reconnect.interval=
+ *
+ * # Enables CCU2 HomematicIP support (optional, default is disabled)
+ * # HomematicIP does currently not support BIN-RPC. Therefore it's disabled by default, because if you don't
+ * # have HM-IP devices, the binding still communicates with BIN-RPC. If you enable HM-IP support, the binding
+ * # uses XML-RPC.
+ * # homematic:homematicIP.enabled=
  * </pre>
  *
  * @author Gerhard Riegler
@@ -60,6 +66,7 @@ public class HomematicConfig {
     private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
     private static final String CONFIG_KEY_ALIVE_INTERVAL = "alive.interval";
     private static final String CONFIG_KEY_RECONNECT_INTERVAL = "reconnect.interval";
+    private static final String CONFIG_KEY_HOMEMATIC_IP_ENABLED = "homematicIP.enabled";
 
     private static final Integer DEFAULT_CALLBACK_PORT = 9123;
     private static final int DEFAULT_ALIVE_INTERVAL = 300;
@@ -72,6 +79,7 @@ public class HomematicConfig {
     private Integer callbackPort;
     private Integer aliveInterval;
     private Integer reconnectInterval;
+    private Boolean homematicIpEnabled;
 
     /**
      * Parses and validates the properties in the openhab.cfg.
@@ -95,6 +103,7 @@ public class HomematicConfig {
         callbackPort = parseInt(properties, CONFIG_KEY_CALLBACK_PORT, DEFAULT_CALLBACK_PORT);
         aliveInterval = parseInt(properties, CONFIG_KEY_ALIVE_INTERVAL, DEFAULT_ALIVE_INTERVAL);
         reconnectInterval = parseInt(properties, CONFIG_KEY_RECONNECT_INTERVAL, null);
+        homematicIpEnabled = Boolean.parseBoolean((String) properties.get(CONFIG_KEY_HOMEMATIC_IP_ENABLED));
         valid = true;
     }
 
@@ -167,10 +176,10 @@ public class HomematicConfig {
     }
 
     /**
-     * Returns the BIN-RPC url.
+     * Returns true, if HomematicIP support is enabled.
      */
-    public String getBinRpcCallbackUrl() {
-        return "binary://" + callbackHost + ":" + callbackPort;
+    public boolean isHomematicIpEnabled() {
+        return homematicIpEnabled;
     }
 
     /**
@@ -185,6 +194,7 @@ public class HomematicConfig {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("host", host)
                 .append("timeout", timeout).append("callbackHost", callbackHost).append("callbackPort", callbackPort)
                 .append("aliveInterval", reconnectInterval == null ? aliveInterval : "disabled")
-                .append("reconnectInterval", reconnectInterval == null ? "disabled" : reconnectInterval).toString();
+                .append("reconnectInterval", reconnectInterval == null ? "disabled" : reconnectInterval)
+                .append("homematicIpEnabled", homematicIpEnabled).toString();
     }
 }
