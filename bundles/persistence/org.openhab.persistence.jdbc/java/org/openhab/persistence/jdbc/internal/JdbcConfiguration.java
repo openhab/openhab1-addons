@@ -227,7 +227,6 @@ public class JdbcConfiguration {
             dBDAO.databaseProps.setProperty("dataSourceClassName", ds);
         }
 
-        driverAvailable = true;
         String dn = dBDAO.databaseProps.getProperty("driverClassName");
         if (dn == null) {
             dn = dBDAO.databaseProps.getProperty("dataSourceClassName");
@@ -236,8 +235,11 @@ public class JdbcConfiguration {
         }
 
         try {
-            Class.forName(dn);
-            logger.debug("JDBC::updateConfig: load JDBC-driverClass was successful: '{}'", dn);
+            if (dn != null) {
+                driverAvailable = true;
+                Class.forName(dn);
+                logger.debug("JDBC::updateConfig: load JDBC-driverClass was successful: '{}'", dn);
+            }
         } catch (ClassNotFoundException e) {
             driverAvailable = false;
             logger.error(
