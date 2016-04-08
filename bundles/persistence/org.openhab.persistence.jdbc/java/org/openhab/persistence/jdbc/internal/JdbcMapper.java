@@ -179,7 +179,7 @@ public class JdbcMapper {
         conf.setDbConnected(false);
     }
 
-    protected boolean checkDBAcessability() {
+    protected boolean checkDBAccessability() {
         // Check if connection is valid
         if (initialized) {
             return true;
