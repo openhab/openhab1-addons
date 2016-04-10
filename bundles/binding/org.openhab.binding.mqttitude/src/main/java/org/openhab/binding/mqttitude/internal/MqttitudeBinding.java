@@ -49,6 +49,8 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
     private Location homeLocation = null;
     private float geoFence = 0;
     
+    private int maxGpsAccuracy;
+    
     // list of consumers (grouped by broker)
     private Map<String, List<MqttitudeConsumer>> consumers = new HashMap<String, List<MqttitudeConsumer>>();
     
@@ -118,6 +120,15 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 			logger.debug("Mqttitude binding configuration updated, 'home' location specified ({}) with a geofence of {}m.", homeLocation.toString(), geoFence);
         }
 		
+		maxGpsAccuracy = Integer.parseInt(getOptionalProperty(properties, "max_gps_accuracy", "-1"));
+		if (maxGpsAccuracy < 0)
+		{
+			logger.debug("Mqttitude binding configuration: no limit on GPS accuracy");
+		}
+		else {
+			logger.debug("Mqttitude binding configuration: GPS accuracy limit is {}", maxGpsAccuracy);
+		}
+		
 		// need to re-register all the consumers/topics if the home location has changed
 		unregisterAll();
 		registerAll();
@@ -170,7 +181,7 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
 		// 		 have multiple item bindings - i.e. monitoring multiple regions
 		if (consumer == null) {
 			// create a new consumer for this topic
-			consumer = new MqttitudeConsumer(homeLocation, geoFence);
+			consumer = new MqttitudeConsumer(homeLocation, geoFence, maxGpsAccuracy);
 			consumer.setTopic(topic);
 			
 			// register the new consumer

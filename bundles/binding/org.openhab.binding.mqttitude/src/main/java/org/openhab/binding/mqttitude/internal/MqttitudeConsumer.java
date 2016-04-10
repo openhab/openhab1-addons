@@ -43,6 +43,7 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	// home location - optionally set for the binding if using non-region based item bindings
 	private final Location homeLocation;
 	private final float geoFence;
+	private final int maxGpsAccuracy;
 	
 	// the topic this consumer is subscribed to
 	private String topic;
@@ -52,9 +53,10 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		
 	private EventPublisher eventPublisher;
 	
-	public MqttitudeConsumer(Location homeLocation, float geoFence) {		
+	public MqttitudeConsumer(Location homeLocation, float geoFence, int maxGpsAccuracy) {		
 		this.homeLocation = homeLocation;
 		this.geoFence = geoFence;
+		this.maxGpsAccuracy = maxGpsAccuracy;
 	}
 
 	public void addItemConfig(MqttitudeItemConfig itemConfig) {
@@ -109,12 +111,12 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 		logger.trace("Message received on topic {}: {}", topic, decoded);
 		
 		// read the payload into a JSON param/value map
-		Map<String, String> jsonPayload = readJsonPayload(decoded);
+		Map<String, Object> jsonPayload = readJsonPayload(decoded);
 		if (jsonPayload == null)
 			return;
 
 		// only interested in 'location' or 'transition' publishes
-		String type = jsonPayload.get("_type");
+		String type = jsonPayload.get("_type").toString();
 		if (StringUtils.isEmpty(type))
 			return;
 		if (!type.equals("location") && !type.equals("transition"))
@@ -166,20 +168,28 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 				}
 			} else {
 				// we are only interested in location updates with an 'event' (i.e. enter/leave)
-				String event = jsonPayload.get("event");
+				String event = jsonPayload.get("event").toString();
 				if (StringUtils.isEmpty(event)) {
 					logger.trace("Not a location enter/leave event, ignoring");
 					continue;
 				}
 
 				// check this event is for the region we are monitoring
-				String desc = jsonPayload.get("desc");
+				String desc = jsonPayload.get("desc").toString();
 				if (StringUtils.isEmpty(desc)) {
 					logger.trace("Location {} event has no region (missing or empty 'desc'), ignoring", event);
 					continue;
 				}
+				
 				if (!itemConfig.getRegion().equals(desc)) {
 					logger.trace("Location {} event is for region '{}', ignoring", event, desc);
+					continue;
+				}
+				
+				int accuracy = (Integer) jsonPayload.get("acc");
+				if (accuracy > maxGpsAccuracy) {
+					logger.debug("GPS accuracy (radius) exceeds max allowed, ignoring: region={},acc={},max={}",
+							desc, accuracy, maxGpsAccuracy);
 					continue;
 				}
 
@@ -195,7 +205,7 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, String> readJsonPayload(String payload) {
+	private Map<String, Object> readJsonPayload(String payload) {
 		// parse the response to build our location object
 		ObjectMapper jsonReader = new ObjectMapper();
 		try {
