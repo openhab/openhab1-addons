@@ -2,7 +2,6 @@
 <!--- If the issue is related to a binding, please include it in the title. -->
 <!--- For example, "[astro] My issue..." -->
 <!--- For questions or requests for assistance please use community.openhab.org instead. -->
-<!--- Include log and configuration data longer than a few lines as an attachment -->
 <!--- Feel free to delete any comment lines in the template (starting with &lt;!--) -->
 ## Expected Behavior
 <!--- If you're describing a bug, tell us what should happen -->
@@ -10,6 +9,8 @@
 
 ## Current Behavior
 <!--- If describing a bug, tell us what happens instead of the expected behavior -->
+<!--- When possible, include related log information (preferably debug level) and related configs. -->
+<!--- Use file attachment for log and config information longer than a few lines -->
 <!--- If suggesting a change/improvement, explain the difference from current behavior -->
 <!--- For improvements, discuss in at community.openhab.org first and include link to topic -->
 
@@ -31,6 +32,6 @@
 
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
-* Version used:
+* Version used: (e.g., openhab and addon versions)
 * Environment name and version (e.g. Chrome 39, node.js 5.4, Java 8, ...):
 * Operating System and version (desktop or mobile, Windows 10, Raspbian Jessie, ...):
