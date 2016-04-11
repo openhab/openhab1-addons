@@ -116,7 +116,7 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 			return;
 
 		// only interested in 'location' or 'transition' publishes
-		String type = jsonPayload.get("_type").toString();
+		String type = (String)jsonPayload.get("_type");
 		if (StringUtils.isEmpty(type))
 			return;
 		if (!type.equals("location") && !type.equals("transition"))
@@ -168,14 +168,14 @@ public class MqttitudeConsumer implements MqttMessageConsumer {
 				}
 			} else {
 				// we are only interested in location updates with an 'event' (i.e. enter/leave)
-				String event = jsonPayload.get("event").toString();
+				String event = (String)jsonPayload.get("event");
 				if (StringUtils.isEmpty(event)) {
 					logger.trace("Not a location enter/leave event, ignoring");
 					continue;
 				}
 
 				// check this event is for the region we are monitoring
-				String desc = jsonPayload.get("desc").toString();
+				String desc = (String)jsonPayload.get("desc");
 				if (StringUtils.isEmpty(desc)) {
 					logger.trace("Location {} event has no region (missing or empty 'desc'), ignoring", event);
 					continue;

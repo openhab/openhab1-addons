@@ -121,11 +121,10 @@ public class MqttitudeBinding extends AbstractBinding<MqttitudeBindingProvider> 
         }
 		
 		maxGpsAccuracy = Integer.parseInt(getOptionalProperty(properties, "max_gps_accuracy", "-1"));
-		if (maxGpsAccuracy < 0)
-		{
+		
+		if (maxGpsAccuracy < 0) {
 			logger.debug("Mqttitude binding configuration: no limit on GPS accuracy");
-		}
-		else {
+		} else {
 			logger.debug("Mqttitude binding configuration: GPS accuracy limit is {}", maxGpsAccuracy);
 		}
 		
