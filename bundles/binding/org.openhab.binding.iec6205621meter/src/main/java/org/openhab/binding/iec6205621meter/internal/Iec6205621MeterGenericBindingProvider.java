@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  * Here are some examples for valid binding configuration strings:
  *
  * <ul>
- * <li><code>{ iec6205621meter="meter1:1.8.1" }</code> - shows the tarif 1 counter value of 'meter1'</li>
- * <li><code>{ iec6205621meter="meter1:1.8.2" }</code> - shows the tarif 1 counter value of 'meter1'</li>
- * <li><code>{  iec6205621meter="meter2:16.7" }</code> - shows the current power usage value of 'meter2'</li>
+ * <li><code>{ iec6205621meter="meter1;1.8.1" }</code> - shows the tarif 1 counter value of 'meter1'</li>
+ * <li><code>{ iec6205621meter="meter1;1.8.2" }</code> - shows the tarif 1 counter value of 'meter1'</li>
+ * <li><code>{ iec6205621meter="meter2;16.7" }</code> - shows the current power usage value of 'meter2'</li>
  * </ul>
  * 
  * @author Peter Kreutzer
@@ -72,7 +72,7 @@ public class Iec6205621MeterGenericBindingProvider extends AbstractGenericBindin
             throws BindingConfigParseException {
         super.processBindingConfiguration(context, item, bindingConfig);
         Iec6205621MeterBindingConfig config = new Iec6205621MeterBindingConfig();
-        StringTokenizer tokenizer = new StringTokenizer(bindingConfig.trim(), ":");
+        StringTokenizer tokenizer = new StringTokenizer(bindingConfig.trim(), ";");
         String[] tokens = new String[tokenizer.countTokens()];
         for (int i = 0; i < tokens.length; i++) {
             tokens[i] = tokenizer.nextToken();
