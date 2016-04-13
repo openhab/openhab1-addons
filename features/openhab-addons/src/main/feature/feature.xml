@@ -9,7 +9,9 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+<features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+
+    <repository>mvn:de.maggu2810.kat.features/apache-httpcomponents/${kat.version}/xml/features</repository>
 
     <!-- action -->
 
@@ -113,7 +115,7 @@
     <feature name="openhab-binding-denon" description="Denon Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
-        <feature>shk-apache-httpclient</feature>
+        <feature>kat-apache-httpcomponents-httpclient</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.denon/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/denon.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/denon</configfile>
     </feature>
@@ -233,7 +235,7 @@
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
         <feature>openhab-transport-serial</feature>
-        <feature>shk-apache-httpclient</feature>
+        <feature>kat-apache-httpcomponents-httpclient</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.insteonplm/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/insteonplm.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/insteonplm</configfile>
     </feature>
@@ -329,7 +331,7 @@
     <feature name="openhab-binding-myq" description="Chamberlain MyQ Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
-        <feature>shk-apache-httpclient</feature>
+        <feature>kat-apache-httpcomponents-httpclient</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.myq/${project.version}</bundle>
         <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
     </feature>
@@ -409,7 +411,7 @@
     <feature name="openhab-binding-rwesmarthome" description="RWE SmartHome Binding" version="${project.version}">
         <feature>openhab-runtime-base</feature>
         <feature>openhab-runtime-compat1x</feature>
-        <feature>shk-apache-httpclient</feature>
+        <feature>kat-apache-httpcomponents-httpclient</feature>
         <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.rwesmarthome/${project.version}</bundle>
     </feature>
 
