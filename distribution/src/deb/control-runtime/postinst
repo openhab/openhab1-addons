@@ -35,7 +35,11 @@ case "$1" in
 		fi
 	# if $2 is set, this is an upgrade
 		if [ -n $2 ] ; then
-			startOpenHAB
+			if [ x"${OH_DOCKER_INSTALLATION}" = x ]; then
+				startOpenHAB
+			else
+				echo "docker installation \"${OH_DOCKER_INSTALLATION}\""
+			fi
 	# this is a fresh installation
 		elif [ -z $2 ] ; then
 			if [ -x /bin/systemctl ] ; then
