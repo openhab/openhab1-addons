@@ -49,7 +49,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -129,7 +129,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
      * Adds or re-adds a datapoint to readQueue,
      * if datapoint is known in dpReadRetries, retries will be reduced.
      * Otherwise it will be registered in dpReadRetries with retriesLimit.
-     * 
+     *
      * @param datapoint
      */
     private void addToReadQueue(Datapoint datapoint) throws InterruptedException {
@@ -148,7 +148,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
      */
     @Override
@@ -158,7 +158,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionLost()
      */
     @Override

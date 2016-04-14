@@ -29,6 +29,9 @@ import gnu.io.RXTXVersion;
 import tuwien.auto.calimero.CloseEvent;
 import tuwien.auto.calimero.FrameEvent;
 import tuwien.auto.calimero.IndividualAddress;
+import tuwien.auto.calimero.cemi.CEMILData;
+import tuwien.auto.calimero.datapoint.Datapoint;
+import tuwien.auto.calimero.device.ProcessCommunicationResponder;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.knxnetip.KNXnetIPConnection;
 import tuwien.auto.calimero.link.KNXNetworkLink;
@@ -38,7 +41,7 @@ import tuwien.auto.calimero.link.NetworkLinkListener;
 import tuwien.auto.calimero.link.medium.TPSettings;
 import tuwien.auto.calimero.process.ProcessCommunicator;
 import tuwien.auto.calimero.process.ProcessCommunicatorImpl;
-import tuwien.auto.calimero.process.ProcessListener;
+import tuwien.auto.calimero.process.ProcessListenerEx;
 
 /**
  * This class establishes the connection to the KNX bus.
@@ -53,7 +56,9 @@ public class KNXConnection implements ManagedService {
 
     private static ProcessCommunicator sPC = null;
 
-    private static ProcessListener sProcessCommunicationListener = null;
+    public static ProcessListenerEx processListenerEx = null;
+
+    private static ProcessCommunicationResponder communicationResponder = null;
 
     private static KNXNetworkLink sLink;
 
@@ -63,7 +68,13 @@ public class KNXConnection implements ManagedService {
     /** the ip address to use for connecting to the KNX bus */
     private static String sIp;
 
-    /** the KNX bus address to use as local sourceaddress in KNX bus */
+    /**
+     * the KNX bus address to use as local sourceaddress in KNX bus.
+     * For connection type TUNNEL:
+     * If '0.0.0' is set as device/source address, means no/unset Address.
+     * Then the Tunnel addresses provided by the router can be used,
+     * otherwise confirmation fails!
+     */
     private static String sLocalSourceAddr = "0.0.0";
 
     /** the KNX bus address to use as local sourceaddress in KNX bus */
@@ -77,6 +88,10 @@ public class KNXConnection implements ManagedService {
      * <a href="http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml">iana</a> EIBnet/IP)
      */
     private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
+
+    public static final int GROUP_READ = 0x00;
+    public static final int GROUP_RESPONSE = 0x40;
+    public static final int GROUP_WRITE = 0x80;
 
     /** KNXnet/IP port number */
     private static int sPort;
@@ -121,10 +136,12 @@ public class KNXConnection implements ManagedService {
     /** listeners for connection/re-connection events */
     private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
 
+    public static boolean bundleActivated = false;
+
     /**
      * Returns the KNXNetworkLink for talking to the KNX bus.
      * The link can be null, if it has not (yet) been established successfully.
-     * 
+     *
      * @return the KNX network link
      */
     public static synchronized ProcessCommunicator getCommunicator() {
@@ -134,36 +151,60 @@ public class KNXConnection implements ManagedService {
         return sPC;
     }
 
-    public void setProcessListener(ProcessListener listener) {
-        if (sPC != null) {
-            sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
-            sLogger.debug("Adding Process Listener: {}", listener);
-            sPC.addProcessListener(listener);
+    /**
+     * Returns the communicationResponder for responding to the KNX bus.
+     * The communicationResponder can be null, if it has not (yet) been established successfully.
+     *
+     * @return the communicationResponder
+     */
+    public static ProcessCommunicationResponder getCommunicationResponder() {
+        if (sLink != null && !sLink.isOpen()) {
+            connect();
         }
-        KNXConnection.sProcessCommunicationListener = listener;
+        return communicationResponder;
     }
 
-    public void unsetProcessListener(ProcessListener listener) {
-        if (sPC != null) {
-            sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
+    public static void writeReadResponse(final Datapoint datapoint, final String value) {
+        try {
+            communicationResponder.write(datapoint, value);
+        } catch (KNXException e) {
+            sLogger.error("Could not write readResponse datapoint '{}' value '{}' ", datapoint, value);
         }
-        KNXConnection.sProcessCommunicationListener = null;
+    }
+
+    public static void addProcessListenerEx(ProcessListenerEx pListener) {
+        if (sPC != null) {
+            sPC.removeProcessListener(KNXConnection.processListenerEx);
+            sLogger.debug("Adding ProcessListenerEx: {}", pListener);
+            sPC.addProcessListener(pListener);
+        }
+        KNXConnection.processListenerEx = pListener;
+    }
+
+    public static void removeProcessListenerEx() {
+        if (sPC != null) {
+            sPC.removeProcessListener(KNXConnection.processListenerEx);
+        }
+        KNXConnection.processListenerEx = null;
     }
 
     public static void addConnectionListener(KNXConnectionListener listener) {
+        sLogger.debug("addConnectionListener: {}", listener.getClass().getName());
         KNXConnection.sConnectionListeners.add(listener);
     }
 
     public static void removeConnectionListener(KNXConnectionListener listener) {
+        sLogger.debug("removeConnectionListener: {}", listener.getClass().getName());
         KNXConnection.sConnectionListeners.remove(listener);
     }
 
     /**
      * Tries to connect either by IP or serial bus, depending on supplied config data.
-     * 
+     *
      * @return true if connection was established, false otherwise
      */
     public static synchronized boolean connect() {
+        sLogger.info("calling connect()");
         boolean successRetVal = false;
 
         sShutdown = false;
@@ -180,6 +221,7 @@ public class KNXConnection implements ManagedService {
             NetworkLinkListener linkListener = new NetworkLinkListener() {
                 @Override
                 public void linkClosed(CloseEvent e) {
+                    sLogger.debug("     KNX NetworkLinkListener linkClosed");
                     if (!(CloseEvent.USER_REQUEST == e.getInitiator()) && !sShutdown) {
                         sLogger.warn("KNX link has been lost (reason: {} on object {})", e.getReason(),
                                 e.getSource().toString());
@@ -203,25 +245,36 @@ public class KNXConnection implements ManagedService {
 
                 @Override
                 public void indication(FrameEvent e) {
+                    sLogger.debug("     KNX NetworkLinkListener indication for '{}'",
+                            ((CEMILData) e.getFrame()).getDestination());
                 }
 
                 @Override
                 public void confirmation(FrameEvent e) {
+                    sLogger.debug("     KNX NetworkLinkListener confirmation for '{}'",
+                            ((CEMILData) e.getFrame()).getDestination());
                 }
             };
 
             sLink.addLinkListener(linkListener);
 
+            if (communicationResponder != null) {
+                communicationResponder.detach();
+                communicationResponder = null;
+            }
+            communicationResponder = new ProcessCommunicationResponder(sLink);
+
             if (sPC != null) {
-                sPC.removeProcessListener(sProcessCommunicationListener);
+                sPC.removeProcessListener(processListenerEx);
                 sPC.detach();
             }
 
             sPC = new ProcessCommunicatorImpl(sLink);
             sPC.setResponseTimeout((int) sResponseTimeout / 1000);
 
-            if (sProcessCommunicationListener != null) {
-                sPC.addProcessListener(sProcessCommunicationListener);
+            if (processListenerEx != null) {
+                communicationResponder.addProcessListener(processListenerEx);
+                sPC.addProcessListener(processListenerEx);
             }
 
             if (sLogger.isInfoEnabled()) {
@@ -236,6 +289,7 @@ public class KNXConnection implements ManagedService {
             }
 
             for (KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
+                sLogger.info("calling connectionEstablished");
                 listener.connectionEstablished();
             }
 
@@ -255,9 +309,9 @@ public class KNXConnection implements ManagedService {
         sShutdown = true;
         if (sPC != null) {
             KNXNetworkLink link = sPC.detach();
-            if (sProcessCommunicationListener != null) {
-                sPC.removeProcessListener(sProcessCommunicationListener);
-                sProcessCommunicationListener = null;
+            if (processListenerEx != null) {
+                sPC.removeProcessListener(processListenerEx);
+                processListenerEx = null;
             }
             if (link != null) {
                 sLogger.info("Closing KNX connection");
@@ -283,14 +337,14 @@ public class KNXConnection implements ManagedService {
         }
 
         return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false,
-                new TPSettings(new IndividualAddress(sLocalSourceAddr), true));
+                new TPSettings(new IndividualAddress(sLocalSourceAddr)));
     }
 
     private static KNXNetworkLink connectBySerial(String serialPort) throws KNXException {
 
         try {
             RXTXVersion.getVersion();
-            return new KNXNetworkLinkFT12(serialPort, new TPSettings(true));
+            return new KNXNetworkLinkFT12(serialPort, new TPSettings());
         } catch (NoClassDefFoundError e) {
             throw new KNXException(
                     "The serial FT1.2 KNX connection requires the RXTX libraries to be available, but they could not be found!");
@@ -313,19 +367,25 @@ public class KNXConnection implements ManagedService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
      */
     @Override
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+
+        while (!bundleActivated) {
+            try {
+                sLogger.debug("updated, waiting for bundle activation.");
+                Thread.sleep(500);
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+
         if (config != null) {
             sLogger.debug("KNXBinding configuration present. Setting up KNX bus connection.");
             sIp = (String) config.get("ip");
-
-            String readingBusAddrString = (String) config.get("busaddr");
-            if (StringUtils.isNotBlank(readingBusAddrString)) {
-                sLocalSourceAddr = readingBusAddrString;
-            }
 
             String readingIgnLocEv = (String) config.get("ignorelocalevents");
             if (StringUtils.isNotBlank(readingIgnLocEv)) {
@@ -347,6 +407,19 @@ public class KNXConnection implements ManagedService {
                 }
             } else {
                 sIpConnectionType = KNXNetworkLinkIP.TUNNELING;
+            }
+
+            String readingBusAddrString = (String) config.get("busaddr");
+            if (StringUtils.isNotBlank(readingBusAddrString)) {
+                /*
+                 * For connection type TUNNEL:
+                 * If '0.0.0' is set as device/source address, means no/unset Address.
+                 * Then the Tunnel addresses provided by the router can be used,
+                 * otherwise confirmation fails!
+                 */
+                if (!("TUNNEL".equals(connectionTypeString))) {
+                    sLocalSourceAddr = readingBusAddrString;
+                }
             }
 
             String portConfig = (String) config.get("port");
