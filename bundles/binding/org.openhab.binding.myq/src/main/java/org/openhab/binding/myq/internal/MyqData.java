@@ -43,11 +43,15 @@ public class MyqData {
 
 	private static final String WEBSITE = "https://myqexternal.myqdevice.com";
 	public static final String DEFAULT_APP_ID = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
+	
+	private static final String CRAFTSMAN_WEBSITE = "https://craftexternal.myqdevice.com";
+	public static final String CRAFTSMAN_DEFAULT_APP_ID = "eU97d99kMG4t3STJZO/Mu2wt69yTQwM0WXZA5oZ74/ascQ2xQrLD/yjeVhEQccBZ";
 	public static final int DEFAUALT_TIMEOUT = 5000;
 
 	private String userName;
 	private String password;
 	private String appId;
+	private String websiteUrl;
 	private int timeout;
 
 	private String sercurityToken;
@@ -68,15 +72,28 @@ public class MyqData {
 	 * @param timeout
 	 *            HTTP timeout in milliseconds, defaults to DEFAUALT_TIMEOUT if
 	 *            not > 0
+	 *
+	 * @param craftman
+	 *            Use Craftman url instead of MyQ
 	 */
-	public MyqData(String username, String password, String appId, int timeout) {
+	public MyqData(String username, String password, String appId, int timeout, boolean craftman) {
 		this.userName = username;
 		this.password = password;
 
 		if (appId != null) {
 			this.appId = appId;
 		} else {
-			this.appId = DEFAULT_APP_ID;
+			if(craftman) {
+				this.appId = CRAFTSMAN_DEFAULT_APP_ID;
+			} else {
+				this.appId = DEFAULT_APP_ID;
+			}
+		}
+		
+		if(craftman) {
+			this.websiteUrl = CRAFTSMAN_WEBSITE;
+		} else {
+			this.websiteUrl = WEBSITE;
 		}
 
 		if (timeout > 0) {
@@ -100,7 +117,7 @@ public class MyqData {
 		logger.trace("Retreiveing door data");
 		String url = String.format(
 				"%s/api/v4/userdevicedetails/get?appId=%s&SecurityToken=%s",
-				WEBSITE, enc(appId), enc(getSecurityToken()));
+				websiteUrl, enc(appId), enc(getSecurityToken()));
 
 		JsonNode data = request("GET", url, null, null, true);
 
@@ -114,7 +131,7 @@ public class MyqData {
 		logger.trace("attempting to login");
 		String url = String
 				.format("%s/api/user/validate?appId=%s&SecurityToken=null&username=%s&password=%s",
-						WEBSITE, enc(appId), enc(userName), enc(password));
+						websiteUrl, enc(appId), enc(userName), enc(password));
 
 		JsonNode data = request("GET", url, null, null, true);
 		LoginData login = new LoginData(data);
@@ -143,7 +160,7 @@ public class MyqData {
 				appId, sercurityToken, deviceID, name, state);
 		String url = String
 				.format("%s/api/v4/deviceattribute/putdeviceattribute?appId=%s&SecurityToken=%s",
-						WEBSITE, enc(appId), enc(getSecurityToken()));
+						websiteUrl, enc(appId), enc(getSecurityToken()));
 
 		request("PUT", url, message, "application/json", true);
 	}

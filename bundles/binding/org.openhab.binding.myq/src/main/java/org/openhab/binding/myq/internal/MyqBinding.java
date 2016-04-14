@@ -100,6 +100,11 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 	private boolean invalidCredentials;
 
 	/**
+	 * Use Craftman URL and APPID
+	 */
+	private boolean useCraftman;
+
+	/**
 	 * Called by the SCR to activate the component with its configuration read
 	 * from CAS
 	 * 
@@ -144,11 +149,16 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 			timeout = Integer.parseInt(timeoutString);
 		}
 
+		String craftmanString = (String) configuration.get("craftman");
+		if (StringUtils.isNotBlank(craftmanString)) {
+			useCraftman = Boolean.parseBoolean(craftmanString);
+		}
+
 		// reinitialize connection object if username and password is changed
 		if (StringUtils.isNotBlank(usernameString)
 				&& StringUtils.isNotBlank(passwordString)) {
 			myqOnlineData = new MyqData(usernameString, passwordString, appId,
-					timeout);
+					timeout, useCraftman);
 
 			invalidCredentials = false;
 			schedulePoll(refreshInterval);
