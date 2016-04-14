@@ -235,7 +235,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.config.KNXBindingProvider#isCommandGA(tuwien.auto.calimero.GroupAddress)
      */
     @Override
@@ -265,7 +265,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.config.KNXBindingProvider#getReadableDatapoints()
      */
     @Override
@@ -297,7 +297,39 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
+     * @see org.openhab.binding.knx.config.KNXBindingProvider#getRespondingDatapoints()
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterable<Datapoint> getRespondingDatapoints() {
+        synchronized (bindingConfigs) {
+            Iterable<KNXBindingConfig> configList = Iterables.filter(Iterables.concat(bindingConfigs.values()),
+                    KNXBindingConfig.class);
+            Iterable<KNXBindingConfigItem> configItemList = Iterables.filter(Iterables.concat(configList),
+                    KNXBindingConfigItem.class);
+            Iterable<KNXBindingConfigItem> filteredBindingConfigs = Iterables.filter(configItemList,
+                    new Predicate<KNXBindingConfigItem>() {
+                        @Override
+                        public boolean apply(KNXBindingConfigItem input) {
+                            if (input == null) {
+                                return false;
+                            }
+                            return input.respondingDataPoint != null;
+                        }
+                    });
+            return Iterables.transform(filteredBindingConfigs, new Function<KNXBindingConfigItem, Datapoint>() {
+                @Override
+                public Datapoint apply(KNXBindingConfigItem from) {
+                    return from.respondingDataPoint;
+                }
+            });
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see
      * org.openhab.binding.knx.config.KNXBindingProvider#isAutoRefreshEnabled(tuwien.auto.calimero.datapoint.Datapoint)
      */
@@ -308,7 +340,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.openhab.binding.knx.config.KNXBindingProvider#getAutoRefreshTime(tuwien.auto.calimero.datapoint.Datapoint)
      */
@@ -329,7 +361,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.core.autoupdate.AutoUpdateBindingProvider#autoUpdate(java.lang.String)
      */
     @Override
@@ -357,7 +389,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
      * This is the main method that takes care of parsing a binding configuration
      * string for a given item. It returns a collection of {@link BindingConfig}
      * instances, which hold all relevant data about the binding to KNX of an item.
-     * 
+     *
      * @param item the item for which the binding configuration string is provided
      * @param bindingConfig a string which holds the binding information
      * @return a knx binding config, a collection of {@link KNXBindingConfigItem}
@@ -369,6 +401,30 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
         KNXBindingConfig config = new KNXBindingConfig();
         String[] datapointConfigs = bindingConfig.trim().split(",");
 
+        /*
+         * For a SwitchItem:
+         *
+         * knx="1/1/10"
+         * knx="1.001:1/1/10"
+         * knx="<1/1/10"
+         * knx="<(5)1/1/10"
+         * knx="<1/1/10+0/1/13+0/1/14+0/1/15"
+         * knx="<(10)1/1/10+0/1/13+0/1/14+0/1/15"
+         * knx="1/1/10+<0/1/13+0/1/14+0/1/15"
+         * knx="1/1/10+<(60)0/1/13+0/1/14+0/1/15"
+         *
+         * For a RollershutterItem:
+         *
+         * knx="4/2/10"
+         * knx="4/2/10, 4/2/11"
+         * knx="4/2/10, 4/2/11, 4/2/12"
+         * knx="1.008:4/2/10, 5.001:4/2/11"
+         * knx="<4/2/10+0/2/10, 5.001:4/2/11+0/2/11"
+         * knx="<(60)4/2/10+0/2/10, 5.001:4/2/11+0/2/11"
+         * knx="<(60)5.001:4/2/10+0/2/10, 5.001:4/2/11+0/2/11"
+         * knx=">(60)5.001:4/2/10+0/2/10, >5.001:4/2/11+0/2/11"
+         *
+         */
         // we can have one datapoint per accepted command type of this item
         for (int i = 0; i < datapointConfigs.length; i++) {
             try {
@@ -378,6 +434,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
                 if (datapointConfig.split("<").length > 2) {
                     throw new BindingConfigParseException("Only one readable GA allowed.");
+                }
+                if (datapointConfig.split(">").length > 2) {
+                    throw new BindingConfigParseException("Only one responding GA allowed.");
                 }
 
                 Class<? extends Type> typeClass = item.getAcceptedCommandTypes().size() > 0
@@ -395,6 +454,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                         continue;
                     }
 
+                    boolean isResponding = false;
                     boolean isReadable = false;
                     int autoRefreshTimeInSecs = 0;
                     // check for the readable flag
@@ -427,6 +487,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                                         "Closing ')' missing on autorefresh time parameter.");
                             }
                         }
+                    } else if (dataPoint.startsWith(">")) {// check for the responding flag
+                        // isResponding = true;
+                        dataPoint = dataPoint.substring(1);
                     }
 
                     // find the DPT for this entry
@@ -462,6 +525,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
                             configItem.autoRefreshInSecs = autoRefreshTimeInSecs;
                         }
                     }
+                    if (isResponding) {
+                        configItem.respondingDataPoint = dp;
+                    }
                     if (!configItem.allDataPoints.contains(dp)) {
                         configItem.allDataPoints.add(dp);
                     } else {
@@ -484,7 +550,7 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * Returns a default datapoint type id for a type class.
-     * 
+     *
      * @param typeClass the type class
      * @return the default datapoint type id
      */
@@ -494,9 +560,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
 
     /**
      * This is an internal container to gather all config items for one opeHAB item.
-     * 
+     *
      * @author Kai Kreuzer
-     * 
+     *
      */
     @SuppressWarnings("serial")
     /* default */ static class KNXBindingConfig extends LinkedList<KNXBindingConfigItem>implements BindingConfig {
@@ -505,14 +571,15 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider
     /**
      * This is an internal data structure to store information from the binding config strings and use it to answer the
      * requests to the KNX binding provider.
-     * 
+     *
      * @author Kai Kreuzer
-     * 
+     *
      */
     /* default */ static class KNXBindingConfigItem {
         public String itemName;
         public Datapoint mainDataPoint = null;
         public Datapoint readableDataPoint = null;
+        public Datapoint respondingDataPoint = null;
         public DatapointMap allDataPoints = new DatapointMap();
         public int autoRefreshInSecs = 0;
     }

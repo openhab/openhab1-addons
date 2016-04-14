@@ -15,5 +15,4 @@
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
    <property name="service.pid" type="String" value="org.openhab.knx"/>
-   <reference bind="setProcessListener" cardinality="1..1" interface="tuwien.auto.calimero.process.ProcessListener" name="ProcessListener" policy="dynamic" unbind="unsetProcessListener"/>
 </scr:component>
